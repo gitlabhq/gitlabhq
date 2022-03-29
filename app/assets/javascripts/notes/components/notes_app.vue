@@ -3,7 +3,6 @@ import { mapGetters, mapActions } from 'vuex';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-import initUserPopovers from '~/user_popovers';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -169,7 +168,6 @@ export default {
   updated() {
     this.$nextTick(() => {
       highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member'));
-      initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
     });
   },
   beforeDestroy() {

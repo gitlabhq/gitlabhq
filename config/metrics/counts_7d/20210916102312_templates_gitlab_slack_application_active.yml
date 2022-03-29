@@ -7,8 +7,9 @@ product_stage: ecosystem
 product_group: group::integrations
 product_category: integrations
 value_type: number
-status: active
+status: removed
 milestone: "14.3"
+milestone_removed: "14.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70496
 time_frame: 7d
 data_source: database

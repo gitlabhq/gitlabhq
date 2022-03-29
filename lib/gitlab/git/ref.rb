@@ -24,7 +24,7 @@ module Gitlab
       # Ex.
       #   Ref.extract_branch_name('refs/heads/master') #=> 'master'
       def self.extract_branch_name(str)
-        str.gsub(%r{\Arefs/heads/}, '')
+        str.delete_prefix('refs/heads/')
       end
 
       def initialize(repository, name, target, dereferenced_target)

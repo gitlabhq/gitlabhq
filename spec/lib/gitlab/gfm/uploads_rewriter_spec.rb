@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
 
     it 'does not rewrite plain links as embedded' do
       embedded_link = image_uploader.markdown_link
-      plain_image_link = embedded_link.sub(/\A!/, "")
+      plain_image_link = embedded_link.delete_prefix('!')
       text = "#{plain_image_link} and #{embedded_link}"
 
       moved_text = described_class.new(text, old_project, user).rewrite(new_project)

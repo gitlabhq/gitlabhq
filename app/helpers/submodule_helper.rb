@@ -30,7 +30,7 @@ module SubmoduleHelper
         end
       end
 
-      namespace.sub!(%r{\A/}, '')
+      namespace.delete_prefix!('/')
       project.rstrip!
       project.delete_suffix!('.git')
 

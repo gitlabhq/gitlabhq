@@ -1,3 +1,9 @@
+---
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
 # Workhorse configuration
 
 For historical reasons Workhorse uses both command line flags, a configuration file and environment variables.
@@ -6,7 +12,7 @@ All new configuration options that get added to Workhorse should go into the con
 
 ## CLI options
 
-```
+```plaintext
   gitlab-workhorse [OPTIONS]
 
 Options:
@@ -60,10 +66,10 @@ HTTP.
 
 GitLab Workhorse can listen on either a TCP or a Unix domain socket. It
 can also open a second listening TCP listening socket with the Go
-[net/http/pprof profiler server](http://golang.org/pkg/net/http/pprof/).
+[`net/http/pprof` profiler server](http://golang.org/pkg/net/http/pprof/).
 
-GitLab Workhorse can listen on redis events (currently only builds/register
-for runners). This requires you to pass a valid TOML config file via
+GitLab Workhorse can listen on Redis events (currently only builds/register
+for runners). This requires you to pass a valid TOML configuration file via
 `-config` flag.
 For regular setups it only requires the following (replacing the string
 with the actual socket)
@@ -73,19 +79,19 @@ with the actual socket)
 GitLab Workhorse integrates with Redis to do long polling for CI build
 requests. This is configured via two things:
 
--   Redis settings in the TOML config file
--   The `-apiCiLongPollingDuration` command line flag to control polling
-    behavior for CI build requests
+- Redis settings in the TOML configuration file
+- The `-apiCiLongPollingDuration` command line flag to control polling
+  behavior for CI build requests
 
-It is OK to enable Redis in the config file but to leave CI polling
+It is OK to enable Redis in the configuration file but to leave CI polling
 disabled; this just results in an idle Redis pubsub connection. The
 opposite is not possible: CI long polling requires a correct Redis
 configuration.
 
-Below we discuss the options for the `[redis]` section in the config
+Below we discuss the options for the `[redis]` section in the configuration
 file.
 
-```
+```plaintext
 [redis]
 URL = "unix:///var/run/gitlab/redis.sock"
 Password = "my_awesome_password"
@@ -95,12 +101,15 @@ SentinelMaster = "mymaster"
 
 - `URL` takes a string in the format `unix://path/to/redis.sock` or
 `tcp://host:port`.
-- `Password` is only required if your redis instance is password-protected
+- `Password` is only required if your Redis instance is password-protected
 - `Sentinel` is used if you are using Sentinel.
-  *NOTE* that if both `Sentinel` and `URL` are given, only `Sentinel` will be used
+
+  NOTE:
+  If both `Sentinel` and `URL` are given, only `Sentinel` will be used.
 
 Optional fields are as follows:
-```
+
+```plaintext
 [redis]
 DB = 0
 MaxIdle = 1
@@ -108,7 +117,7 @@ MaxActive = 1
 ```
 
 - `DB` is the Database to connect to. Defaults to `0`
-- `MaxIdle` is how many idle connections can be in the redis-pool at once. Defaults to 1
+- `MaxIdle` is how many idle connections can be in the Redis pool at once. Defaults to 1
 - `MaxActive` is how many connections the pool can keep. Defaults to 1
 
 ## Relative URL support
@@ -117,7 +126,7 @@ If you are mounting GitLab at a relative URL, e.g.
 `example.com/gitlab`, then you should also use this relative URL in
 the `authBackend` setting:
 
-```
+```plaintext
 gitlab-workhorse -authBackend http://localhost:8080/gitlab
 ```
 
@@ -151,7 +160,7 @@ development.
 
 Omnibus (`/etc/gitlab/gitlab.rb`):
 
-```
+```ruby
 gitlab_workhorse['env'] = {
     'GITLAB_WORKHORSE_SENTRY_DSN' => 'https://foobar'
     'GITLAB_WORKHORSE_SENTRY_ENVIRONMENT' => 'production'
@@ -160,16 +169,16 @@ gitlab_workhorse['env'] = {
 
 Source installations (`/etc/default/gitlab`):
 
-```
+```plaintext
 export GITLAB_WORKHORSE_SENTRY_DSN='https://foobar'
 export GITLAB_WORKHORSE_SENTRY_ENVIRONMENT='production'
 ```
 
 ## Distributed Tracing
 
-Workhorse supports distributed tracing through [LabKit][] using [OpenTracing APIs](https://opentracing.io).
+Workhorse supports distributed tracing through [LabKit](https://gitlab.com/gitlab-org/labkit/) using [OpenTracing APIs](https://opentracing.io).
 
-By default, no tracing implementation is linked into the binary, but different OpenTracing providers can be linked in using [build tags][build-tags]/[build constraints][build-tags]. This can be done by setting the `BUILD_TAGS` make variable.
+By default, no tracing implementation is linked into the binary, but different OpenTracing providers can be linked in using [build tags](https://golang.org/pkg/go/build/#hdr-Build_Constraints) or build constraints. This can be done by setting the `BUILD_TAGS` make variable.
 
 For more details of the supported providers, see LabKit, but as an example, for Jaeger tracing support, include the tags: `BUILD_TAGS="tracer_static tracer_static_jaeger"`.
 
@@ -187,9 +196,9 @@ GITLAB_TRACING=opentracing://jaeger ./gitlab-workhorse
 
 ## Continuous Profiling
 
-Workhorse supports continuous profiling through [LabKit][] using [Stackdriver Profiler](https://cloud.google.com/profiler).
+Workhorse supports continuous profiling through [LabKit](https://gitlab.com/gitlab-org/labkit/) using [Stackdriver Profiler](https://cloud.google.com/profiler).
 
-By default, the Stackdriver Profiler implementation is linked in the binary using [build tags][build-tags], though it's not
+By default, the Stackdriver Profiler implementation is linked in the binary using [build tags](https://golang.org/pkg/go/build/#hdr-Build_Constraints), though it's not
 required and can be skipped.
 
 For example:
@@ -207,7 +216,4 @@ For example:
 GITLAB_CONTINUOUS_PROFILING="stackdriver?service=workhorse&service_version=1.0.1&project_id=test-123 ./gitlab-workhorse"
 ```
 
-More information about see the [LabKit monitoring docs](https://gitlab.com/gitlab-org/labkit/-/blob/master/monitoring/doc.go).
-
-[LabKit]: https://gitlab.com/gitlab-org/labkit/
-[build-tags]: https://golang.org/pkg/go/build/#hdr-Build_Constraints
+More information about see the [LabKit monitoring documentation](https://gitlab.com/gitlab-org/labkit/-/blob/master/monitoring/doc.go).

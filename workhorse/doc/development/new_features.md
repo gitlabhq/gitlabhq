@@ -1,4 +1,10 @@
-## Adding new features to Workhorse
+---
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
+# Adding new features to Workhorse
 
 GitLab Workhorse is a smart reverse proxy for GitLab. It handles
 "long" HTTP requests such as file downloads, file uploads, Git
@@ -16,14 +22,14 @@ We suggest to follow this route only if absolutely necessary and no other option
 
 Splitting a feature between the Rails code-base and Workhorse is deliberately choosing to introduce technical debt. It adds complexity to the system and coupling between the two components.
 
-* Building features using Workhorse has a considerable complexity cost, so you should prefer designs based on Rails requests and Sidekiq jobs.
-* Even when using Rails+Sidekiq is "more work" than using Rails+Workhorse, Rails+Sidekiq is easier to maintain in the long term because Workhorse is unique to GitLab while Rails+Sidekiq is an industry standard.
-* For "global" behaviors around web requests consider using a Rack middleware instead of Workhorse.
-* Generally speaking, we should only use Rails+Workhorse if the HTTP client expects behavior that is not reasonable to implement in Rails, like "long" requests.
+- Building features using Workhorse has a considerable complexity cost, so you should prefer designs based on Rails requests and Sidekiq jobs.
+- Even when using Rails+Sidekiq is "more work" than using Rails+Workhorse, Rails+Sidekiq is easier to maintain in the long term because Workhorse is unique to GitLab while Rails+Sidekiq is an industry standard.
+- For "global" behaviors around web requests consider using a Rack middleware instead of Workhorse.
+- Generally speaking, we should only use Rails+Workhorse if the HTTP client expects behavior that is not reasonable to implement in Rails, like "long" requests.
 
 ## What is a "long" request?
 
-There is one order of magnitude between Workhorse and puma RAM usage. Having connection open for a period longer than milliseconds is a problem because of the amount of RAM it monopolizes once it reaches the Ruby on Rails controller.
+There is one order of magnitude between Workhorse and Puma RAM usage. Having connection open for a period longer than milliseconds is a problem because of the amount of RAM it monopolizes once it reaches the Ruby on Rails controller.
 
 So far we identified two classes of "long" requests: data transfers and HTTP long polling.
 
@@ -37,5 +43,4 @@ You can watch the recording for more details on the history of Workhorse and the
 [Uploads development documentation]( https://docs.gitlab.com/ee/development/uploads.html)
 contains the most common use-cases for adding a new type of upload and may answer all of your questions.
 
-If you still think we should add a new feature to Workhorse, please open an issue explaining **what you want to implement** and **why it can't be implemented in our ruby code-base**. Workhorse maintainers will be happy to help you assessing the situation.
-
+If you still think we should add a new feature to Workhorse, please open an issue explaining **what you want to implement** and **why it can't be implemented in our Ruby code-base**. Workhorse maintainers will be happy to help you assessing the situation.

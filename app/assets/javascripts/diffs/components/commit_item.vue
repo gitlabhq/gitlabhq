@@ -7,8 +7,6 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import initUserPopovers from '../../user_popovers';
-
 /**
  * CommitItem
  *
@@ -81,11 +79,6 @@ export default {
       // Strip the newline at the beginning
       return this.commit.description_html.replace(/^&#x000A;/, '');
     },
-  },
-  created() {
-    this.$nextTick(() => {
-      initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
-    });
   },
   safeHtmlConfig: {
     ADD_TAGS: ['gl-emoji'],

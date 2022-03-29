@@ -339,7 +339,7 @@ RSpec.describe Projects::ArtifactsController do
 
         def params
           @params ||= begin
-            base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
+            base64_params = send_data.delete_prefix('artifacts-entry:')
             Gitlab::Json.parse(Base64.urlsafe_decode64(base64_params))
           end
         end

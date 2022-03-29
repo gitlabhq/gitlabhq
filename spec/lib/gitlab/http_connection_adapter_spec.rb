@@ -27,16 +27,6 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
       end
     end
 
-    context 'with header_read_timeout_buffered_io feature disabled' do
-      before do
-        stub_feature_flags(header_read_timeout_buffered_io: false)
-      end
-
-      it 'uses the regular Net::HTTP class' do
-        expect(connection).to be_a(Net::HTTP)
-      end
-    end
-
     context 'when local requests are allowed' do
       let(:options) { { allow_local_requests: true } }
 

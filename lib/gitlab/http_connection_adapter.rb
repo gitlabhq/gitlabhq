@@ -29,17 +29,13 @@ module Gitlab
       http = super
       http.hostname_override = hostname if hostname
 
-      if Feature.enabled?(:header_read_timeout_buffered_io, default_enabled: :yaml)
-        gitlab_http = Gitlab::NetHttpAdapter.new(http.address, http.port)
+      gitlab_http = Gitlab::NetHttpAdapter.new(http.address, http.port)
 
-        http.instance_variables.each do |variable|
-          gitlab_http.instance_variable_set(variable, http.instance_variable_get(variable))
-        end
-
-        return gitlab_http
+      http.instance_variables.each do |variable|
+        gitlab_http.instance_variable_set(variable, http.instance_variable_get(variable))
       end
 
-      http
+      gitlab_http
     end
 
     private

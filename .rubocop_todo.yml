@@ -544,15 +544,6 @@ Style/Lambda:
 Style/MissingRespondToMissing:
   Enabled: false
 
-# Offense count: 5
-Style/MixinUsage:
-  Exclude:
-    - 'spec/factories/ci/builds.rb'
-    - 'spec/factories/ci/job_artifacts.rb'
-    - 'spec/factories/lfs_objects.rb'
-    - 'spec/factories/notes.rb'
-    - 'spec/lib/gitlab/import_export/version_checker_spec.rb'
-
 # Offense count: 35
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, MinBodyLength.
@@ -602,13 +593,6 @@ Style/SingleArgumentDig:
 # Configuration parameters: AllowModifier.
 Style/SoleNestedConditional:
   Enabled: false
-
-# Offense count: 120
-# Cop supports --auto-correct.
-# Configuration parameters: .
-# SupportedStyles: use_perl_names, use_english_names
-Style/SpecialGlobalVars:
-  EnforcedStyle: use_perl_names
 
 # Offense count: 562
 # Cop supports --auto-correct.

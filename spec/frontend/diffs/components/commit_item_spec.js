@@ -6,8 +6,6 @@ import Component from '~/diffs/components/commit_item.vue';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 
-jest.mock('~/user_popovers');
-
 const TEST_AUTHOR_NAME = 'test';
 const TEST_AUTHOR_EMAIL = 'test+test@gitlab.com';
 const TEST_AUTHOR_GRAVATAR = `${TEST_HOST}/avatar/test?s=40`;

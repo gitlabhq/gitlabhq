@@ -112,6 +112,38 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
       let(:item_id) { :google_cloud }
 
       it_behaves_like 'access rights checks'
+
+      context 'when feature flag is turned off globally' do
+        before do
+          stub_feature_flags(incubation_5mp_google_cloud: false)
+        end
+
+        it { is_expected.to be_nil }
+
+        context 'when feature flag is enabled for specific project' do
+          before do
+            stub_feature_flags(incubation_5mp_google_cloud: project)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+
+        context 'when feature flag is enabled for specific group' do
+          before do
+            stub_feature_flags(incubation_5mp_google_cloud: project.group)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+
+        context 'when feature flag is enabled for specific project' do
+          before do
+            stub_feature_flags(incubation_5mp_google_cloud: user)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+      end
     end
   end
 end

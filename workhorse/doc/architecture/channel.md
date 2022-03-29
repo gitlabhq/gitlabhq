@@ -1,3 +1,9 @@
+---
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
 # Websocket channel support
 
 In some cases, GitLab can provide in-browser terminal access to an
@@ -22,7 +28,7 @@ responses. WebSocket URLs have schemes like `ws://` (unencrypted) or
 When requesting an upgrade to WebSocket, the browser sends a HTTP/1.1
 request that looks like this:
 
-```
+```plaintext
 GET /path.ws HTTP/1.1
 Connection: upgrade
 Upgrade: websocket
@@ -116,10 +122,10 @@ This returns a JSON response containing details of where the
 terminal can be found, and how to connect it. In particular,
 the following details are returned in case of success:
 
-* WebSocket URL to **connect** to, e.g.: `wss://example.com/terminals/1.ws?tty=1`
-* WebSocket subprotocols to support, e.g.: `["channel.k8s.io"]`
-* Headers to send, e.g.: `Authorization: Token xxyyz..`
-* Certificate authority to verify `wss` connections with (optional)
+- WebSocket URL to **connect** to, e.g.: `wss://example.com/terminals/1.ws?tty=1`
+- WebSocket subprotocols to support, e.g.: `["channel.k8s.io"]`
+- Headers to send, e.g.: `Authorization: Token xxyyz..`
+- Certificate authority to verify `wss` connections with (optional)
 
 Workhorse periodically re-checks this endpoint, and if it gets an
 error response, or the details of the terminal change, it will
@@ -186,9 +192,8 @@ written to that fd.
 Also used by Kubernetes, this subprotocol defines a similar multiplexed
 channel to `channel.k8s.io`. The main differences are:
 
-* `TextMessage` frames are valid, rather than `BinaryMessage` frames.
-* The first byte of each `TextMessage` frame represents the file
+- `TextMessage` frames are valid, rather than `BinaryMessage` frames.
+- The first byte of each `TextMessage` frame represents the file
   descriptor as a numeric UTF-8 character, so the character `U+0030`,
   or "0", is fd 0, STDIN).
-* The remaining bytes represent base64-encoded arbitrary data.
-
+- The remaining bytes represent base64-encoded arbitrary data.

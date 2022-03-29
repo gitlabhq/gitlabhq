@@ -325,7 +325,7 @@ Rails.application.routes.draw do
 
   root to: "root#index"
 
-  get '*unmatched_route', to: 'application#route_not_found'
+  get '*unmatched_route', to: 'application#route_not_found', format: false
 end
 
 Gitlab::Routing.add_helpers(TimeboxesRoutingHelper)

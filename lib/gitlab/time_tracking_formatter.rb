@@ -8,7 +8,8 @@ module Gitlab
     CUSTOM_DAY_AND_MONTH_LENGTH = { hours_per_day: 8, days_per_month: 20 }.freeze
 
     def parse(string)
-      string = string.sub(/\A-/, '')
+      negative_time = string.start_with?('-')
+      string = string.delete_prefix('-')
 
       seconds =
         begin
@@ -19,7 +20,7 @@ module Gitlab
           nil
         end
 
-      seconds *= -1 if seconds && Regexp.last_match
+      seconds *= -1 if seconds && negative_time
       seconds
     end
 

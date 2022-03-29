@@ -2,6 +2,7 @@
 - diff_limit = local_assigns.fetch(:diff_limit, nil)
 - target_url = local_assigns.fetch(:target_url, @target_url)
 - note_style = local_assigns.fetch(:note_style, "")
+- skip_stylesheet_link = local_assigns.fetch(:skip_stylesheet_link, false)
 
 - discussion = note.discussion if note.part_of_discussion?
 
@@ -22,8 +23,9 @@
         = link_to 'discussion', target_url
 
 - if discussion&.diff_discussion? && discussion.on_text?
-  = content_for :head do
-    = stylesheet_link_tag 'mailers/highlighted_diff_email'
+  - unless skip_stylesheet_link
+    = content_for :head do
+      = stylesheet_link_tag 'mailers/highlighted_diff_email'
 
   %table.code
     = render partial: "projects/diffs/email_line",

@@ -1,3 +1,6 @@
+= content_for :head do
+  = stylesheet_link_tag 'mailers/highlighted_diff_email'
+
 %table{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;margin:0 auto;border-collapse:separate;border-spacing:0;" }
   %tbody
     %tr
@@ -13,4 +16,4 @@
               %td{ style: "overflow:hidden;font-size:14px;line-height:1.4;display:grid;" }
                 - @notes.each do |note|
                   - target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{note.id}")
-                  = render 'note_email', note: note, diff_limit: 3, target_url: target_url, note_style: "border-bottom:1px solid #ededed;"
+                  = render 'note_email', note: note, diff_limit: 3, target_url: target_url, note_style: "border-bottom:1px solid #ededed;", skip_stylesheet_link: true

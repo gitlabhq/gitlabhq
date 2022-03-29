@@ -98,7 +98,7 @@ module Gitlab
             storages << { name: key, path: storage_paths[key] }
           end
 
-          config = { socket_path: address.sub(/\Aunix:/, '') }
+          config = { socket_path: address.delete_prefix('unix:') }
 
           if Rails.env.test?
             socket_filename = options[:gitaly_socket] || "gitaly.socket"
