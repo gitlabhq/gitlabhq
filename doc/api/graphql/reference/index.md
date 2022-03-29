@@ -20533,8 +20533,8 @@ Field that are available while modifying the custom mapping attributes for an HT
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="complianceviolationinputmergedafter"></a>`mergedAfter` | [`Date`](#date) | Merged date of merge requests merged after a compliance violation was created. |
-| <a id="complianceviolationinputmergedbefore"></a>`mergedBefore` | [`Date`](#date) | Merged date of merge requests merged before a compliance violation was created. |
+| <a id="complianceviolationinputmergedafter"></a>`mergedAfter` | [`Date`](#date) | Merge requests merged after this date (inclusive). |
+| <a id="complianceviolationinputmergedbefore"></a>`mergedBefore` | [`Date`](#date) | Merge requests merged before this date (inclusive). |
 | <a id="complianceviolationinputprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter compliance violations by project. |
 
 ### `DastProfileCadenceInput`

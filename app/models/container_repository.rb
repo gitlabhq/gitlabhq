@@ -125,7 +125,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :finish_import do
-      transition %i[pre_importing importing import_aborted] => :import_done
+      transition %i[default pre_importing importing import_aborted] => :import_done
     end
 
     event :already_migrated do
@@ -294,7 +294,7 @@ class ContainerRepository < ApplicationRecord
   def reconcile_import_status(status)
     case status
     when 'native'
-      finish_import_as_native
+      finish_import_as(:native_import)
     when *IRRECONCILABLE_MIGRATIONS_STATUSES
       nil
     when 'import_complete'
@@ -321,9 +321,9 @@ class ContainerRepository < ApplicationRecord
       when :ok
         return true
       when :not_found
-        skip_import(reason: :not_found)
+        finish_import_as(:not_found)
       when :already_imported
-        finish_import_as_native
+        finish_import_as(:native_import)
       else
         abort_import
       end
@@ -513,8 +513,8 @@ class ContainerRepository < ApplicationRecord
 
   private
 
-  def finish_import_as_native
-    self.migration_skipped_reason = :native_import
+  def finish_import_as(reason)
+    self.migration_skipped_reason = reason
     finish_import
   end
 end

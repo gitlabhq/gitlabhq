@@ -132,6 +132,16 @@ RSpec.describe ContainerRepository, :aggregate_failures do
             .and change { repository.reload.migration_skipped_reason }.to('native_import')
         end
       end
+
+      context 'non-existing repository' do
+        it 'finishes the import' do
+          expect(repository).to receive(:migration_pre_import).and_return(:not_found)
+
+          expect { subject }
+            .to change { repository.reload.migration_state }.to('import_done')
+            .and change { repository.reload.migration_skipped_reason }.to('not_found')
+        end
+      end
     end
 
     shared_examples 'transitioning to importing', skip_import_success: true do
@@ -283,7 +293,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
       subject { repository.finish_import }
 
-      it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
+      it_behaves_like 'transitioning from allowed states', %w[default pre_importing importing import_aborted]
       it_behaves_like 'queueing the next import'
 
       it 'sets migration_import_done_at and queues the next import' do
@@ -1155,10 +1165,10 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     context 'not found response' do
       let(:response) { :not_found }
 
-      it 'aborts the migration' do
+      it 'completes the migration' do
         expect(subject).to eq(false)
 
-        expect(container_repository).to be_import_skipped
+        expect(container_repository).to be_import_done
         expect(container_repository.reload.migration_skipped_reason).to eq('not_found')
       end
     end
