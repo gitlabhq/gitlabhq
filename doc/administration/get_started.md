@@ -20,7 +20,7 @@ Authentication is the first step in making your installation secure.
     This one-time secret code is an additional safeguard that keeps intruders out, even if they have your password.
   - Add a backup email. If you lose access to your account, the GitLab Support team can help you more quickly.
   - Save or print your recovery codes. If you can't access your authentication device, you can use these recovery codes to sign in to your GitLab account.
-  - Add [an SSH key](../ssh/index.md) to your profile. You can generate new recovery codes as needed with SSH.
+  - Add [an SSH key](../user/ssh.md) to your profile. You can generate new recovery codes as needed with SSH.
   - Enable [personal access tokens](../user/profile/personal_access_tokens.md). When using 2FA, you can use these tokens to access the GitLab API.
 
 ## Projects and groups

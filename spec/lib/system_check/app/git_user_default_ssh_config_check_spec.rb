@@ -71,7 +71,31 @@ RSpec.describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
     end
   end
 
+  describe '#show_error' do
+    subject(:show_error) { described_class.new.show_error }
+
+    before do
+      stub_user
+      stub_home_dir
+      stub_ssh_file(forbidden_file)
+    end
+
+    it 'outputs error information' do
+      expected = %r{
+        Try\ fixing\ it:\s+
+        mkdir\ ~/gitlab-check-backup-(.+)\s+
+        sudo\ mv\ (.+)\s+
+        For\ more\ information\ see:\s+
+        doc/user/ssh\.md\#overriding-ssh-settings-on-the-gitlab-server\s+
+        Please\ fix\ the\ error\ above\ and\ rerun\ the\ checks
+      }x
+
+      expect { show_error }.to output(expected).to_stdout
+    end
+  end
+
   def stub_user
+    allow(File).to receive(:expand_path).and_call_original
     allow(File).to receive(:expand_path).with("~#{username}").and_return(home_dir)
   end
 

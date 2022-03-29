@@ -83,7 +83,7 @@ file (start the line with a `#` to comment it), and from your local machine, att
 ssh -T git@gitlab.example.com
 ```
 
-A successful pull or [welcome message](../../ssh/index.md#verify-that-you-can-connect) would mean that GitLab was able to find the key in the database,
+A successful pull or [welcome message](../../user/ssh.md#verify-that-you-can-connect) would mean that GitLab was able to find the key in the database,
 since it is not present in the file anymore.
 
 NOTE:

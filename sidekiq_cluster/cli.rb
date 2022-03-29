@@ -100,6 +100,11 @@ module Gitlab
 
         unless @dryrun
           @logger.info("Starting cluster with #{queue_groups.length} processes")
+
+          # Make sure we reset the metrics directory prior to:
+          # - starting a metrics server process
+          # - starting new workers
+          ::Prometheus::CleanupMultiprocDirService.new(@metrics_dir).execute
         end
 
         start_and_supervise_workers(queue_groups)
@@ -117,11 +122,6 @@ module Gitlab
         )
 
         return if @dryrun
-
-        # Make sure we reset the metrics directory prior to:
-        # - starting a metrics server process
-        # - starting new workers
-        ::Prometheus::CleanupMultiprocDirService.new(@metrics_dir).execute
 
         ProcessManagement.write_pid(@pid) if @pid
 

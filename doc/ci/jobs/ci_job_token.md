@@ -83,8 +83,7 @@ to be accessed by authenticating with the current project's job token. By defaul
 the token scope only allows access to the same project where the token comes from.
 Other projects can be added and removed by maintainers with access to both projects.
 
-This setting is enabled by default for all new projects, and disabled by default in projects
-created before GitLab 14.1. It is strongly recommended that project maintainers enable this
+This setting is disabled by default for all new projects. It is recommended that project maintainers enable this
 setting at all times, and configure the allowlist for cross-project access if needed.
 
 For example, when the setting is enabled, jobs in a pipeline in project `A` have

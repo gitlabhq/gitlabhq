@@ -206,8 +206,8 @@ used or renamed project, use the [UI](#create-a-project) or the [Projects API](.
 
 Prerequisites:
 
-- To push with SSH, you must have [an SSH key](../../ssh/index.md) that is
-  [added to your GitLab account](../../ssh/index.md#add-an-ssh-key-to-your-gitlab-account).
+- To push with SSH, you must have [an SSH key](../ssh.md) that is
+  [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
   1. On the top bar, select **Menu > Projects**.

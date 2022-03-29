@@ -31,7 +31,7 @@ module SystemCheck
         end
 
         try_fixing_it("mkdir #{backup_dir}", *instructions)
-        for_more_information('doc/ssh/index.md in section "Overriding SSH settings on the GitLab server"')
+        for_more_information('doc/user/ssh.md#overriding-ssh-settings-on-the-gitlab-server')
         fix_and_rerun
       end
 

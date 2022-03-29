@@ -303,8 +303,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             allow(Gitlab::SidekiqCluster).to receive(:start).and_return([])
           end
 
-          it 'wipes the metrics directory' do
-            expect(metrics_cleanup_service).to receive(:execute)
+          it 'wipes the metrics directory before starting workers' do
+            expect(metrics_cleanup_service).to receive(:execute).ordered
+            expect(Gitlab::SidekiqCluster).to receive(:start).ordered.and_return([])
 
             cli.run(%w(foo))
           end

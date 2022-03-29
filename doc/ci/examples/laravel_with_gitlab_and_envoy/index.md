@@ -104,7 +104,7 @@ sudo apt install acl
 
 ### Add SSH key
 
-Let's suppose we want to deploy our app to the production server from a private repository on GitLab. First, we need to [generate a new SSH key pair **with no passphrase**](../../../ssh/index.md) for the deployer user.
+Let's suppose we want to deploy our app to the production server from a private repository on GitLab. First, we need to [generate a new SSH key pair **with no passphrase**](../../../user/ssh.md) for the deployer user.
 
 After that, we need to copy the private key, which will be used to connect to our server as the deployer user with SSH, to be able to automate our deployment process:
 

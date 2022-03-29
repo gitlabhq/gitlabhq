@@ -69,7 +69,7 @@ The deploy keys available are listed:
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
-- [Generate an SSH key pair](../../../ssh/index.md#generate-an-ssh-key-pair). Put the private SSH
+- [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
 1. On the top bar, select **Menu > Projects** and find your project.
@@ -87,7 +87,7 @@ name and permissions.
 Prerequisites:
 
 - You must have administrator access.
-- [Generate an SSH key pair](../../../ssh/index.md#generate-an-ssh-key-pair). Put the private SSH
+- [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
 To create a public deploy key:

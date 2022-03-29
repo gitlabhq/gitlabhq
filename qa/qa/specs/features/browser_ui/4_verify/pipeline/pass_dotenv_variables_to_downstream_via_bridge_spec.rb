@@ -3,8 +3,8 @@
 module QA
   RSpec.describe 'Verify', :runner do
     describe 'Pass dotenv variables to downstream via bridge' do
-      let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(8)}" }
-      let(:upstream_var) { Faker::Alphanumeric.alphanumeric(8) }
+      let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
+      let(:upstream_var) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:group) { Resource::Group.fabricate_via_api! }
 
       let(:upstream_project) do
@@ -73,7 +73,7 @@ module QA
               stage: build
               tags: ["#{executor}"]
               script:
-                - echo "DYNAMIC_ENVIRONMENT_VAR=#{upstream_var}" >> variables.env
+                - for i in `seq 1 20`; do echo "VAR_$i=#{upstream_var}" >> variables.env; done;
               artifacts:
                 reports:
                   dotenv: variables.env
@@ -81,7 +81,7 @@ module QA
             trigger:
               stage: deploy
               variables:
-                PASSED_MY_VAR: $DYNAMIC_ENVIRONMENT_VAR
+                PASSED_MY_VAR: "$VAR_#{rand(1..20)}"
               trigger: #{downstream_project.full_path}
           YAML
         }

@@ -155,7 +155,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 
 Streaming audit events can be sent when signed-in users push or pull a project's remote Git repositories:
 
-- [Using SSH](../ssh/index.md).
+- [Using SSH](../user/ssh.md).
 - Using HTTP or HTTPS.
 - Using the **Download** button (**{download}**) in GitLab UI.
 

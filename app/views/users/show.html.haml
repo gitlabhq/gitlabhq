@@ -188,7 +188,7 @@
               = s_('UserProfile|Most Recent Activity')
             .content_list{ data: { href: user_activity_path } }
             .loading
-              .gl-spinner.gl-spinner-md
+              = gl_loading_icon(size: 'md')
       - unless @user.bot?
         - if profile_tab?(:groups)
           #groups.tab-pane
