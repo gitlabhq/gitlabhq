@@ -521,7 +521,7 @@ RSpec.describe RegistrationsController do
       end
 
       it 'succeeds if password is confirmed' do
-        post :destroy, params: { password: Gitlab::Password.test_default }
+        post :destroy, params: { password: '12345678' }
 
         expect_success
       end
@@ -562,7 +562,7 @@ RSpec.describe RegistrationsController do
           end
 
           it 'fails' do
-            delete :destroy, params: { password: Gitlab::Password.test_default }
+            delete :destroy, params: { password: '12345678' }
 
             expect_failure(s_('Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account'))
           end
