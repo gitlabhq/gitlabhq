@@ -14472,6 +14472,7 @@ CREATE TABLE dora_daily_metrics (
     deployment_frequency integer,
     lead_time_for_changes_in_seconds integer,
     time_to_restore_service_in_seconds integer,
+    incidents_count integer,
     CONSTRAINT dora_daily_metrics_deployment_frequency_positive CHECK ((deployment_frequency >= 0)),
     CONSTRAINT dora_daily_metrics_lead_time_for_changes_in_seconds_positive CHECK ((lead_time_for_changes_in_seconds >= 0))
 );
@@ -16101,7 +16102,6 @@ CREATE TABLE integrations (
     confidential_note_events boolean DEFAULT true,
     deployment_events boolean DEFAULT false NOT NULL,
     comment_on_event_enabled boolean DEFAULT true NOT NULL,
-    template boolean DEFAULT false,
     instance boolean DEFAULT false NOT NULL,
     comment_detail smallint,
     inherit_from_id bigint,
@@ -27864,21 +27864,15 @@ CREATE UNIQUE INDEX index_integrations_on_project_id_and_type_new_unique ON inte
 
 CREATE UNIQUE INDEX index_integrations_on_project_id_and_type_unique ON integrations USING btree (project_id, type);
 
-CREATE INDEX index_integrations_on_template ON integrations USING btree (template);
-
 CREATE INDEX index_integrations_on_type ON integrations USING btree (type);
 
 CREATE UNIQUE INDEX index_integrations_on_type_and_instance_partial ON integrations USING btree (type, instance) WHERE (instance = true);
-
-CREATE UNIQUE INDEX index_integrations_on_type_and_template_partial ON integrations USING btree (type, template) WHERE (template = true);
 
 CREATE INDEX index_integrations_on_type_id_when_active_and_project_id_not_nu ON integrations USING btree (type, id) WHERE ((active = true) AND (project_id IS NOT NULL));
 
 CREATE INDEX index_integrations_on_type_new ON integrations USING btree (type_new);
 
 CREATE INDEX index_integrations_on_type_new_and_instance_partial ON integrations USING btree (type_new, instance) WHERE (instance = true);
-
-CREATE INDEX index_integrations_on_type_new_and_template_partial ON integrations USING btree (type_new, template) WHERE (template = true);
 
 CREATE INDEX index_integrations_on_type_new_id_when_active_and_has_project ON integrations USING btree (type_new, id) WHERE ((active = true) AND (project_id IS NOT NULL));
 

@@ -12,7 +12,7 @@ RSpec.describe FinderMethods do
       end
 
       def execute
-        Project.all.order(id: :desc)
+        Project.where.not(name: 'foo').order(id: :desc)
       end
 
       private
@@ -21,13 +21,16 @@ RSpec.describe FinderMethods do
     end
   end
 
-  let(:user) { create(:user) }
-  let(:finder) { finder_class.new(user) }
-  let(:authorized_project) { create(:project) }
-  let(:unauthorized_project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:authorized_project) { create(:project) }
+  let_it_be(:unmatched_project) { create(:project, name: 'foo') }
+  let_it_be(:unauthorized_project) { create(:project) }
 
-  before do
+  subject(:finder) { finder_class.new(user) }
+
+  before_all do
     authorized_project.add_developer(user)
+    unmatched_project.add_developer(user)
   end
 
   # rubocop:disable Rails/FindById
@@ -36,8 +39,12 @@ RSpec.describe FinderMethods do
       expect(finder.find_by!(id: authorized_project.id)).to eq(authorized_project)
     end
 
-    it 'raises not found when the project is not found' do
-      expect { finder.find_by!(id: 0) }.to raise_error(ActiveRecord::RecordNotFound)
+    it 'raises not found when the project is not found by id' do
+      expect { finder.find_by!(id: non_existing_record_id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'raises not found when the project is not found by filter' do
+      expect { finder.find_by!(id: unmatched_project.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'raises not found the user does not have access' do
@@ -61,12 +68,26 @@ RSpec.describe FinderMethods do
       expect(finder.find(authorized_project.id)).to eq(authorized_project)
     end
 
-    it 'raises not found when the project is not found' do
-      expect { finder.find(0) }.to raise_error(ActiveRecord::RecordNotFound)
+    it 'raises not found when the project is not found by id' do
+      expect { finder.find(non_existing_record_id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'raises not found when the project is not found by filter' do
+      expect { finder.find(unmatched_project.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'raises not found the user does not have access' do
       expect { finder.find(unauthorized_project.id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'ignores ordering' do
+      # Memoise the finder result so we can add message expectations to it
+      relation = finder.execute
+      allow(finder).to receive(:execute).and_return(relation)
+
+      expect(relation).to receive(:reorder).with(nil).and_call_original
+
+      finder.find(authorized_project.id)
     end
   end
 
@@ -75,8 +96,12 @@ RSpec.describe FinderMethods do
       expect(finder.find_by(id: authorized_project.id)).to eq(authorized_project)
     end
 
-    it 'returns nil when the project is not found' do
-      expect(finder.find_by(id: 0)).to be_nil
+    it 'returns nil when the project is not found by id' do
+      expect(finder.find_by(id: non_existing_record_id)).to be_nil
+    end
+
+    it 'returns nil when the project is not found by filter' do
+      expect(finder.find_by(id: unmatched_project.id)).to be_nil
     end
 
     it 'returns nil when the user does not have access' do
