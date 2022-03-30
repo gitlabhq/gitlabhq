@@ -179,6 +179,18 @@ module DiffHelper
     }
   end
 
+  def diff_file_stats_data(diff_file)
+    old_blob = diff_file.old_blob
+    new_blob = diff_file.new_blob
+    {
+      old_size: old_blob&.size,
+      new_size: new_blob&.size,
+      added_lines: diff_file.added_lines,
+      removed_lines: diff_file.removed_lines,
+      viewer_name: diff_file.viewer.partial_name
+    }
+  end
+
   def editable_diff?(diff_file)
     !diff_file.deleted_file? && @merge_request && @merge_request.source_project
   end

@@ -726,6 +726,17 @@ RSpec.describe QuickActions::InterpretService do
 
         expect(reviewer).to be_attention_requested
       end
+
+      it 'supports attn alias' do
+        attn_cmd = content.gsub(/attention/, 'attn')
+        _, _, message = service.execute(attn_cmd, issuable)
+
+        expect(message).to eq("Requested attention from #{developer.to_reference}.")
+
+        reviewer.reload
+
+        expect(reviewer).to be_attention_requested
+      end
     end
 
     shared_examples 'remove attention command' do

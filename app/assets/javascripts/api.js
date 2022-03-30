@@ -234,7 +234,7 @@ const Api = {
 
     return axios
       .get(url, {
-        params: Object.assign(defaults, options),
+        params: { ...defaults, ...options },
       })
       .then(({ data, headers }) => {
         callback(data);
@@ -445,7 +445,7 @@ const Api = {
   },
 
   // Return group projects list. Filtered by query
-  groupProjects(groupId, query, options, callback) {
+  groupProjects(groupId, query, options, callback = () => {}, useCustomErrorHandler = false) {
     const url = Api.buildUrl(Api.groupProjectsPath).replace(':id', groupId);
     const defaults = {
       search: query,
@@ -455,14 +455,21 @@ const Api = {
       .get(url, {
         params: { ...defaults, ...options },
       })
-      .then(({ data }) => (callback ? callback(data) : data))
-      .catch(() => {
+      .then(({ data, headers }) => {
+        callback(data);
+
+        return { data, headers };
+      })
+      .catch((error) => {
+        if (useCustomErrorHandler) {
+          throw error;
+        }
+
         createFlash({
           message: __('Something went wrong while fetching projects'),
         });
-        if (callback) {
-          callback();
-        }
+
+        callback();
       });
   },
 

@@ -9413,6 +9413,9 @@ msgstr ""
 msgid "Configure existing installation"
 msgstr ""
 
+msgid "Configure pipeline"
+msgstr ""
+
 msgid "Configure pipelines to deploy web apps, backend services, APIs and static resources to Google Cloud"
 msgstr ""
 
@@ -10509,9 +10512,6 @@ msgid "Create new"
 msgstr ""
 
 msgid "Create new %{name} by email"
-msgstr ""
-
-msgid "Create new CI/CD pipeline"
 msgstr ""
 
 msgid "Create new Value Stream"
@@ -13407,6 +13407,45 @@ msgid "Due date"
 msgstr ""
 
 msgid "Duration"
+msgstr ""
+
+msgid "Duration|%s days"
+msgstr ""
+
+msgid "Duration|%s hours"
+msgstr ""
+
+msgid "Duration|%s minutes"
+msgstr ""
+
+msgid "Duration|%s months"
+msgstr ""
+
+msgid "Duration|%s seconds"
+msgstr ""
+
+msgid "Duration|%s weeks"
+msgstr ""
+
+msgid "Duration|%s years"
+msgstr ""
+
+msgid "Duration|1 day"
+msgstr ""
+
+msgid "Duration|1 hour"
+msgstr ""
+
+msgid "Duration|1 minute"
+msgstr ""
+
+msgid "Duration|1 month"
+msgstr ""
+
+msgid "Duration|1 week"
+msgstr ""
+
+msgid "Duration|1 year"
 msgstr ""
 
 msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use the URLs shown below."
@@ -18260,6 +18299,76 @@ msgid "HarborIntegration|The name of the project in Harbor."
 msgstr ""
 
 msgid "HarborIntegration|Use Harbor as this project's container registry."
+msgstr ""
+
+msgid "HarborRegistry|%{count} Image repository"
+msgid_plural "HarborRegistry|%{count} Image repositories"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "HarborRegistry|%{count} Tag"
+msgid_plural "HarborRegistry|%{count} Tags"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "HarborRegistry|Configuration digest: %{digest}"
+msgstr ""
+
+msgid "HarborRegistry|Digest: %{imageId}"
+msgstr ""
+
+msgid "HarborRegistry|Harbor Registry"
+msgstr ""
+
+msgid "HarborRegistry|Harbor connection error"
+msgstr ""
+
+msgid "HarborRegistry|Invalid tag: missing manifest digest"
+msgstr ""
+
+msgid "HarborRegistry|Last updated %{time}"
+msgstr ""
+
+msgid "HarborRegistry|Manifest digest: %{digest}"
+msgstr ""
+
+msgid "HarborRegistry|Please try different search criteria"
+msgstr ""
+
+msgid "HarborRegistry|Published %{timeInfo}"
+msgstr ""
+
+msgid "HarborRegistry|Published to the %{repositoryPath} image repository at %{time} on %{date}"
+msgstr ""
+
+msgid "HarborRegistry|Root image"
+msgstr ""
+
+msgid "HarborRegistry|Sorry, your filter produced no results."
+msgstr ""
+
+msgid "HarborRegistry|The filter returned no results"
+msgstr ""
+
+msgid "HarborRegistry|The image repository could not be found."
+msgstr ""
+
+msgid "HarborRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
+msgstr ""
+
+msgid "HarborRegistry|The requested image repository does not exist or has been deleted. If you think this is an error, try refreshing the page."
+msgstr ""
+
+msgid "HarborRegistry|This image has no active tags"
+msgstr ""
+
+msgid "HarborRegistry|To widen your search, change or remove the filters above."
+msgstr ""
+
+msgid "HarborRegistry|We are having trouble connecting to the Harbor Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
+msgstr ""
+
+msgid "HarborRegistry|With the Harbor Registry, every project can have its own space to store images. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
 msgid "Hashed Storage must be enabled to use Geo"

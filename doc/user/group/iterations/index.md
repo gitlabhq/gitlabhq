@@ -84,6 +84,12 @@ From there you can create a new iteration or select an iteration to get a more d
 
 ## Create an iteration
 
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+
+WARNING:
+Manual iteration management is in its end-of-life process. Creating an iteration is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
+for use in GitLab 14.10, and is planned for removal in GitLab 15.6.
+
 Prerequisites:
 
 - You must have at least the Developer role for a group.
@@ -100,7 +106,13 @@ To create an iteration:
 
 ## Edit an iteration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in GitLab 13.2.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+
+WARNING:
+Editing all attributes, with the exception of `description` is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
+for use in GitLab 14.10, and is planned for removal in GitLab 15.6.
+In the future only editing an iteration's `description` will be allowed.
 
 Prerequisites:
 
@@ -110,7 +122,12 @@ To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
 
 ## Delete an iteration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292268) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292268) in GitLab 14.3.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+
+WARNING:
+Manual iteration management is in its end-of-life process. Deleting an iteration is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
+for use in GitLab 14.10, and is planned for removal in GitLab 15.6.
 
 Prerequisites:
 

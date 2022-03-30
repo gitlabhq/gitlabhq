@@ -56,7 +56,7 @@ describe('Global Search Store Actions', () => {
     ${actions.fetchGroups}   | ${{ method: 'onGet', code: 200, res: MOCK_GROUPS }}   | ${'success'} | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_SUCCESS, payload: MOCK_GROUPS }]}       | ${0}
     ${actions.fetchGroups}   | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_ERROR }]}                               | ${1}
     ${actions.fetchProjects} | ${{ method: 'onGet', code: 200, res: MOCK_PROJECTS }} | ${'success'} | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_SUCCESS, payload: MOCK_PROJECTS }]} | ${0}
-    ${actions.fetchProjects} | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_ERROR }]}                           | ${2}
+    ${actions.fetchProjects} | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_ERROR }]}                           | ${1}
   `(`axios calls`, ({ action, axiosMock, type, expectedMutations, flashCallCount }) => {
     describe(action.name, () => {
       describe(`on ${type}`, () => {
@@ -121,8 +121,8 @@ describe('Global Search Store Actions', () => {
 
     describe('when groupId is set', () => {
       it('calls Api.groupProjects with expected parameters', () => {
-        actions.fetchProjects({ commit: mockCommit, state });
-
+        const callbackTest = jest.fn();
+        actions.fetchProjects({ commit: mockCommit, state }, undefined, callbackTest);
         expect(Api.groupProjects).toHaveBeenCalledWith(
           state.query.group_id,
           state.query.search,
@@ -131,7 +131,8 @@ describe('Global Search Store Actions', () => {
             include_subgroups: true,
             with_shared: false,
           },
-          expect.any(Function),
+          callbackTest,
+          true,
         );
         expect(Api.projects).not.toHaveBeenCalled();
       });
@@ -144,15 +145,10 @@ describe('Global Search Store Actions', () => {
 
       it('calls Api.projects', () => {
         actions.fetchProjects({ commit: mockCommit, state });
-
         expect(Api.groupProjects).not.toHaveBeenCalled();
-        expect(Api.projects).toHaveBeenCalledWith(
-          state.query.search,
-          {
-            order_by: 'similarity',
-          },
-          expect.any(Function),
-        );
+        expect(Api.projects).toHaveBeenCalledWith(state.query.search, {
+          order_by: 'similarity',
+        });
       });
     });
   });

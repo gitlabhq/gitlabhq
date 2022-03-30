@@ -14,8 +14,12 @@ The numbers indicate how many issues, merge requests, and to-do items are assign
 
 ![issues and MRs dashboard links](img/dashboard_links_v14_6.png)
 
-- **{issues}** **Issues**: The open issues assigned to you.
-- **{merge-request-open}** **Merge requests**: The [merge requests](../project/merge_requests/index.md) assigned to you.
+- **{issues}** **Issues**: Issues assigned to you.
+- **{merge-request-open}** **Merge requests**: Open [merge requests](../project/merge_requests/index.md).
+  Select the icon to show a dropdown list of merge request filters:
+  - [Attention requests](../project/merge_requests/index.md#request-attention-to-a-merge-request) (**{attention-solid}**) for you.
+  - [Review requests](../project/merge_requests/reviews/index.md) for you.
+  - Merge requests assigned to you.
 - **{todo-done}** **To-do items**: The [to-do items](../todos.md) assigned to you.
 
 You can search through **Open**, **Closed**, or **All** issues.
@@ -37,6 +41,7 @@ in the search field in the upper right corner:
 > - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
 > - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
 > - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
+> - Filtering by attention request was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343528) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `mr_attention_requests`. Disabled by default.
 
 Follow these steps to filter the **Issues** and **Merge requests** list pages in projects and
 groups:
@@ -44,6 +49,7 @@ groups:
 1. Select **Search or filter results...**.
 1. In the dropdown list that appears, select the attribute you wish to filter by:
    - Assignee
+   - [Attention requests](../project/merge_requests/index.md#request-attention-to-a-merge-request)
    - Author
    - Confidential
    - [Epic and child Epic](../group/epics/index.md) (available only for the group the Epic was created, not for [higher group levels](https://gitlab.com/gitlab-org/gitlab/-/issues/233729)).

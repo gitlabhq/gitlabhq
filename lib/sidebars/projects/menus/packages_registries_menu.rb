@@ -47,7 +47,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Container Registry'),
             link: project_container_registry_index_path(context.project),
-            active_routes: { controller: :repositories },
+            active_routes: { controller: 'projects/registry/repositories' },
             item_id: :container_registry
           )
         end
@@ -71,7 +71,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Harbor Registry'),
             link: project_harbor_registry_index_path(context.project),
-            active_routes: { controller: :harbor_registry },
+            active_routes: { controller: 'projects/harbor/repositories' },
             item_id: :harbor_registry
           )
         end

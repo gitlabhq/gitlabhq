@@ -2,6 +2,9 @@ import MockAdapter from 'axios-mock-adapter';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
+import createFlash from '~/flash';
+
+jest.mock('~/flash');
 
 describe('Api', () => {
   const dummyApiVersion = 'v3000';
@@ -674,6 +677,33 @@ describe('Api', () => {
         expect(response[0].name).toBe('test');
         done();
       });
+    });
+
+    it('uses flesh on error by default', async () => {
+      const groupId = '123456';
+      const query = 'dummy query';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
+      const flashCallback = (callCount) => {
+        expect(createFlash).toHaveBeenCalledTimes(callCount);
+        createFlash.mockClear();
+      };
+
+      mock.onGet(expectedUrl).reply(500, null);
+
+      const response = await Api.groupProjects(groupId, query, {}, () => {}).then(() => {
+        flashCallback(1);
+      });
+      expect(response).toBeUndefined();
+    });
+
+    it('NOT uses flesh on error with param useCustomErrorHandler', async () => {
+      const groupId = '123456';
+      const query = 'dummy query';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
+
+      mock.onGet(expectedUrl).reply(500, null);
+      const apiCall = Api.groupProjects(groupId, query, {}, () => {}, true);
+      await expect(apiCall).rejects.toThrow();
     });
   });
 

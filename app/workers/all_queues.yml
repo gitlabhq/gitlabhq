@@ -2771,7 +2771,7 @@
   :worker_name: ProjectExportWorker
   :feature_category: :importers
   :has_external_dependencies:
-  :urgency: :throttled
+  :urgency: :low
   :resource_boundary: :memory
   :weight: 1
   :idempotent:

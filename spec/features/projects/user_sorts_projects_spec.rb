@@ -14,25 +14,29 @@ RSpec.describe 'User sorts projects and order persists' do
     it "is set on the dashboard_projects_path" do
       visit(dashboard_projects_path)
 
-      expect(find('.dropdown-menu a.is-active', text: project_paths_label)).to have_content(project_paths_label)
+      expect(find('#sort-projects-dropdown')).to have_content(project_paths_label)
     end
 
     it "is set on the explore_projects_path" do
       visit(explore_projects_path)
 
-      expect(find('.dropdown-menu a.is-active', text: project_paths_label)).to have_content(project_paths_label)
+      expect(find('#sort-projects-dropdown')).to have_content(project_paths_label)
     end
 
     it "is set on the group_canonical_path" do
       visit(group_canonical_path(group))
 
-      expect(find('.dropdown-menu a.is-active', text: group_paths_label)).to have_content(group_paths_label)
+      within '[data-testid=group_sort_by_dropdown]' do
+        expect(find('.gl-dropdown-toggle')).to have_content(group_paths_label)
+      end
     end
 
     it "is set on the details_group_path" do
       visit(details_group_path(group))
 
-      expect(find('.dropdown-menu a.is-active', text: group_paths_label)).to have_content(group_paths_label)
+      within '[data-testid=group_sort_by_dropdown]' do
+        expect(find('.gl-dropdown-toggle')).to have_content(group_paths_label)
+      end
     end
   end
 
@@ -58,23 +62,27 @@ RSpec.describe 'User sorts projects and order persists' do
     it_behaves_like "sort order persists across all views", "Name", "Name"
   end
 
-  context 'from group homepage' do
+  context 'from group homepage', :js do
     before do
       sign_in(user)
       visit(group_canonical_path(group))
-      find('button.dropdown-menu-toggle').click
-      first(:link, 'Last created').click
+      within '[data-testid=group_sort_by_dropdown]' do
+        find('button.gl-dropdown-toggle').click
+        first(:button, 'Last created').click
+      end
     end
 
     it_behaves_like "sort order persists across all views", "Created date", "Last created"
   end
 
-  context 'from group details' do
+  context 'from group details', :js do
     before do
       sign_in(user)
       visit(details_group_path(group))
-      find('button.dropdown-menu-toggle').click
-      first(:link, 'Most stars').click
+      within '[data-testid=group_sort_by_dropdown]' do
+        find('button.gl-dropdown-toggle').click
+        first(:button, 'Most stars').click
+      end
     end
 
     it_behaves_like "sort order persists across all views", "Stars", "Most stars"

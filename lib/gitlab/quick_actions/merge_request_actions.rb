@@ -291,7 +291,7 @@ module Gitlab
         parse_params do |attention_param|
           extract_users(attention_param)
         end
-        command :attention do |users|
+        command :attention, :attn do |users|
           next if users.empty?
 
           users.each do |user|

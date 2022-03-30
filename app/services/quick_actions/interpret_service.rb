@@ -168,7 +168,7 @@ module QuickActions
         next unless definition
 
         definition.execute(self, arg)
-        usage_ping_tracking(name, arg)
+        usage_ping_tracking(definition.name, arg)
       end
     end
 
@@ -186,7 +186,7 @@ module QuickActions
 
     def usage_ping_tracking(quick_action_name, arg)
       Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter.track_unique_action(
-        quick_action_name,
+        quick_action_name.to_s,
         args: arg&.strip,
         user: current_user
       )
