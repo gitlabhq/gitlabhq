@@ -1,5 +1,5 @@
 #import "~/packages_and_registries/package_registry/graphql/fragments/package_data.fragment.graphql"
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getPackages(
   $fullPath: ID!

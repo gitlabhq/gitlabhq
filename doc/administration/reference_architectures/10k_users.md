@@ -14,7 +14,7 @@ full list of reference architectures, see
 > - **High Availability:** Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
 > - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Performance tested daily with the [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance)**:
+> - **Validation and test results:** The Quality Engineering team does [regular smoke and performance tests](index.md#validation-and-test-results) to ensure the reference architectures remain compliant
 >   - **Test requests per second (RPS) rates:** API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)**
 

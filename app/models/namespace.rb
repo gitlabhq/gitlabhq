@@ -661,10 +661,6 @@ class Namespace < ApplicationRecord
     # Use SHA2 of `traversal_ids` to account for moving a namespace within the same root ancestor hierarchy.
     "namespaces:{#{traversal_ids.first}}:first_auto_devops_config:#{group_id}:#{Digest::SHA2.hexdigest(traversal_ids.join(' '))}"
   end
-
-  def allow_serialization?(options = nil)
-    Feature.disabled?(:block_namespace_serialization, self, default_enabled: :yaml) || super
-  end
 end
 
 Namespace.prepend_mod_with('Namespace')

@@ -332,7 +332,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/graphql/sample_issue_boards.md @msedlakjakubowski
 /doc/api/group_access_tokens.md @eread
 /doc/api/group_activity_analytics.md @fneill
-/doc/api/group_badges.md @eread
+/doc/api/group_badges.md @fneill
 /doc/api/group_boards.md @msedlakjakubowski
 /doc/api/group_clusters.md @sselhorn
 /doc/api/group_import_export.md @ngaskill
@@ -344,7 +344,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/group_relations_export.md @ngaskill
 /doc/api/group_repository_storage_moves.md @aqualls
 /doc/api/group_wikis.md @aqualls
-/doc/api/groups.md @eread
+/doc/api/groups.md @fneill
 /doc/api/import.md @ngaskill
 /doc/api/index.md @kpaizee
 /doc/api/instance_clusters.md @sselhorn
@@ -705,7 +705,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/group/epics/index.md @msedlakjakubowski
 /doc/user/group/epics/linked_epics.md @msedlakjakubowski
 /doc/user/group/epics/manage_epics.md @msedlakjakubowski
-/doc/user/group/index.md @eread
+/doc/user/group/index.md @fneill
 /doc/user/group/import/index.md @ngaskill
 /doc/user/group/insights/index.md @fneill
 /doc/user/group/issues_analytics/index.md @msedlakjakubowski
@@ -718,7 +718,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/group/saml_sso/scim_setup.md @eread
 /doc/user/group/settings/group_access_tokens.md @eread
 /doc/user/group/settings/import_export.md @ngaskill
-/doc/user/group/subgroups/index.md @eread
+/doc/user/group/subgroups/index.md @fneill
 /doc/user/group/value_stream_analytics/index.md @fneill
 /doc/user/infrastructure/clusters/ @sselhorn
 /doc/user/infrastructure/clusters/manage/management_project_applications/apparmor.md @ngaskill
@@ -761,7 +761,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @ngaskill
 /doc/user/project/labels.md @msedlakjakubowski
-/doc/user/project/members/index.md @eread
+/doc/user/project/members/index.md @fneill
 /doc/user/project/members/share_project_with_groups.md @fneill
 /doc/user/project/merge_requests/ @aqualls
 /doc/user/project/merge_requests/accessibility_testing.md @eread

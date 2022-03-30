@@ -72,8 +72,8 @@ export default {
 <template>
   <div>
     <template v-if="!loading">
-      <div v-for="option in autocompleteGroupedSearchOptions" :key="option.category">
-        <gl-dropdown-divider />
+      <div v-for="(option, index) in autocompleteGroupedSearchOptions" :key="option.category">
+        <gl-dropdown-divider v-if="index > 0" />
         <gl-dropdown-section-header>{{ option.category }}</gl-dropdown-section-header>
         <gl-dropdown-item
           v-for="data in option.data"

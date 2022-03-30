@@ -1,4 +1,4 @@
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getPipelineJobs($fullPath: ID!, $iid: ID!, $after: String) {
   project(fullPath: $fullPath) {

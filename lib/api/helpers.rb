@@ -707,7 +707,6 @@ module API
 
     def send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
-      header(*Gitlab::Workhorse.detect_content_type)
 
       body ''
     end

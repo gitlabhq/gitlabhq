@@ -1,17 +1,21 @@
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import HeaderSearchScopedItems from '~/header_search/components/header_search_scoped_items.vue';
-import { MOCK_SEARCH, MOCK_SCOPED_SEARCH_OPTIONS } from '../mock_data';
+import {
+  MOCK_SEARCH,
+  MOCK_SCOPED_SEARCH_OPTIONS,
+  MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
+} from '../mock_data';
 
 Vue.use(Vuex);
 
 describe('HeaderSearchScopedItems', () => {
   let wrapper;
 
-  const createComponent = (initialState, props) => {
+  const createComponent = (initialState, mockGetters, props) => {
     const store = new Vuex.Store({
       state: {
         search: MOCK_SEARCH,
@@ -19,6 +23,8 @@ describe('HeaderSearchScopedItems', () => {
       },
       getters: {
         scopedSearchOptions: () => MOCK_SCOPED_SEARCH_OPTIONS,
+        autocompleteGroupedSearchOptions: () => MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
+        ...mockGetters,
       },
     });
 
@@ -35,6 +41,7 @@ describe('HeaderSearchScopedItems', () => {
   });
 
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findGlDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
   const findFirstDropdownItem = () => findDropdownItems().at(0);
   const findDropdownItemTitles = () => findDropdownItems().wrappers.map((w) => trimText(w.text()));
   const findDropdownItemAriaLabels = () =>
@@ -79,7 +86,7 @@ describe('HeaderSearchScopedItems', () => {
     `('isOptionFocused', ({ currentFocusedOption, isFocused, ariaSelected }) => {
       describe(`when currentFocusedOption.html_id is ${currentFocusedOption?.html_id}`, () => {
         beforeEach(() => {
-          createComponent({}, { currentFocusedOption });
+          createComponent({}, {}, { currentFocusedOption });
         });
 
         it(`should${isFocused ? '' : ' not'} have gl-bg-gray-50 applied`, () => {
@@ -88,6 +95,22 @@ describe('HeaderSearchScopedItems', () => {
 
         it(`sets "aria-selected to ${ariaSelected}`, () => {
           expect(findFirstDropdownItem().attributes('aria-selected')).toBe(ariaSelected);
+        });
+      });
+    });
+
+    describe.each`
+      autosuggestResults                   | showDivider
+      ${[]}                                | ${false}
+      ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${true}
+    `('scoped search items', ({ autosuggestResults, showDivider }) => {
+      describe(`when when we have ${autosuggestResults.length} auto-sugest results`, () => {
+        beforeEach(() => {
+          createComponent({}, { autocompleteGroupedSearchOptions: () => autosuggestResults }, {});
+        });
+
+        it(`divider should${showDivider ? '' : ' not'} be shown`, () => {
+          expect(findGlDropdownDivider().exists()).toBe(showDivider);
         });
       });
     });

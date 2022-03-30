@@ -2235,13 +2235,5 @@ RSpec.describe Namespace do
     let(:object) { build(:namespace) }
 
     it_behaves_like 'blocks unsafe serialization'
-
-    context 'when feature flag block_namespace_serialization is disabled' do
-      before do
-        stub_feature_flags(block_namespace_serialization: false)
-      end
-
-      it_behaves_like 'allows unsafe serialization'
-    end
   end
 end

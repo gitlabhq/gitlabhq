@@ -583,7 +583,7 @@ we want to fetch after or before a given endpoint.
 For example, here we're fetching 10 designs after a cursor (let us call this `projectQuery`):
 
 ```javascript
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query {
   project(fullPath: "root/my-project") {
@@ -606,7 +606,7 @@ query {
 }
 ```
 
-Note that we are using the [`pageInfo.fragment.graphql`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/graphql_shared/fragments/pageInfo.fragment.graphql) to populate the `pageInfo` information.
+Note that we are using the [`page_info.fragment.graphql`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/graphql_shared/fragments/page_info.fragment.graphql) to populate the `pageInfo` information.
 
 #### Using `fetchMore` method in components
 
@@ -869,7 +869,7 @@ You'd then be able to retrieve the data without providing any pagination-specifi
 Here's an example of a query using the `@connection` directive:
 
 ```graphql
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query DastSiteProfiles($fullPath: ID!, $after: String, $before: String, $first: Int, $last: Int) {
   project(fullPath: $fullPath) {

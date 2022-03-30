@@ -21,7 +21,7 @@ import { __, s__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import createFlash, { FLASH_TYPES } from '~/flash';
 
-import DeleteSnippetMutation from '../mutations/deleteSnippet.mutation.graphql';
+import DeleteSnippetMutation from '../mutations/delete_snippet.mutation.graphql';
 
 export const i18n = {
   snippetSpamSuccess: sprintf(
@@ -294,9 +294,9 @@ export default {
     <gl-modal ref="deleteModal" modal-id="delete-modal" title="Example title">
       <template #modal-title>{{ __('Delete snippet?') }}</template>
 
-      <gl-alert v-if="errorMessage" variant="danger" class="mb-2" @dismiss="errorMessage = ''">
-        {{ errorMessage }}
-      </gl-alert>
+      <gl-alert v-if="errorMessage" variant="danger" class="mb-2" @dismiss="errorMessage = ''">{{
+        errorMessage
+      }}</gl-alert>
 
       <gl-sprintf :message="__('Are you sure you want to delete %{name}?')">
         <template #name>

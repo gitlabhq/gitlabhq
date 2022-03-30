@@ -1,8 +1,0 @@
----
-name: block_namespace_serialization
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82661
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355553
-milestone: '14.9'
-type: development
-group: group::global search
-default_enabled: false

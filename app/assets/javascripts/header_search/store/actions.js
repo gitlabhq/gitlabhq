@@ -5,7 +5,9 @@ export const fetchAutocompleteOptions = ({ commit, getters }) => {
   commit(types.REQUEST_AUTOCOMPLETE);
   return axios
     .get(getters.autocompleteQuery)
-    .then(({ data }) => commit(types.RECEIVE_AUTOCOMPLETE_SUCCESS, data))
+    .then(({ data }) => {
+      commit(types.RECEIVE_AUTOCOMPLETE_SUCCESS, data);
+    })
     .catch(() => {
       commit(types.RECEIVE_AUTOCOMPLETE_ERROR);
     });

@@ -7,9 +7,9 @@ import * as commonUtils from '~/lib/utils/common_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 
-import getAnnotations from '~/monitoring/queries/getAnnotations.query.graphql';
-import getDashboardValidationWarnings from '~/monitoring/queries/getDashboardValidationWarnings.query.graphql';
-import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
+import getAnnotations from '~/monitoring/queries/get_annotations.query.graphql';
+import getDashboardValidationWarnings from '~/monitoring/queries/get_dashboard_validation_warnings.query.graphql';
+import getEnvironments from '~/monitoring/queries/get_environments.query.graphql';
 import { createStore } from '~/monitoring/stores';
 import {
   setGettingStartedEmptyState,

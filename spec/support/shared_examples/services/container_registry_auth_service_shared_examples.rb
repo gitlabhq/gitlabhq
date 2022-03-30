@@ -204,6 +204,46 @@ RSpec.shared_examples 'a container registry auth service' do
     it_behaves_like 'not a container repository factory'
   end
 
+  describe '.pull_nested_repositories_access_token' do
+    let_it_be(:project) { create(:project) }
+
+    let(:token) { described_class.pull_nested_repositories_access_token(project.full_path) }
+    let(:access) do
+      [
+        {
+          'type' => 'repository',
+          'name' => project.full_path,
+          'actions' => ['pull']
+        },
+        {
+          'type' => 'repository',
+          'name' => "#{project.full_path}/*",
+          'actions' => ['pull']
+        }
+      ]
+    end
+
+    subject { { token: token } }
+
+    it 'has the correct scope' do
+      expect(payload).to include('access' => access)
+    end
+
+    it_behaves_like 'a valid token'
+    it_behaves_like 'not a container repository factory'
+
+    context 'with path ending with a slash' do
+      let(:token) { described_class.pull_nested_repositories_access_token("#{project.full_path}/") }
+
+      it 'has the correct scope' do
+        expect(payload).to include('access' => access)
+      end
+
+      it_behaves_like 'a valid token'
+      it_behaves_like 'not a container repository factory'
+    end
+  end
+
   context 'user authorization' do
     let_it_be(:current_user) { create(:user) }
 

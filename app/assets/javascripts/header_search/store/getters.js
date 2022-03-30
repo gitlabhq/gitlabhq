@@ -190,7 +190,6 @@ export const autocompleteGroupedSearchOptions = (state) => {
       results.push(groupedOptions[option.category]);
     }
   });
-
   return results;
 };
 

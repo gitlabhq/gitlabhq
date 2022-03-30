@@ -1,4 +1,4 @@
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "../fragments/count.fragment.graphql"
 
 query getUsersCount($first: Int, $after: String) {

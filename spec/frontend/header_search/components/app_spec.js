@@ -16,6 +16,7 @@ import {
   MOCK_USERNAME,
   MOCK_DEFAULT_SEARCH_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
+  MOCK_SORTED_AUTOCOMPLETE_OPTIONS,
 } from '../mock_data';
 
 Vue.use(Vuex);
@@ -108,6 +109,11 @@ describe('HeaderSearchApp', () => {
       search         | showDefault | showScoped | showAutocomplete | showDropdownNavigation
       ${null}        | ${true}     | ${false}   | ${false}         | ${true}
       ${''}          | ${true}     | ${false}   | ${false}         | ${true}
+      ${'1'}         | ${false}    | ${false}   | ${false}         | ${false}
+      ${')'}         | ${false}    | ${false}   | ${false}         | ${false}
+      ${'t'}         | ${false}    | ${false}   | ${true}          | ${true}
+      ${'te'}        | ${false}    | ${true}    | ${true}          | ${true}
+      ${'tes'}       | ${false}    | ${true}    | ${true}          | ${true}
       ${MOCK_SEARCH} | ${false}    | ${true}    | ${true}          | ${true}
     `(
       'Header Search Dropdown Items',
@@ -115,7 +121,13 @@ describe('HeaderSearchApp', () => {
         describe(`when search is ${search}`, () => {
           beforeEach(() => {
             window.gon.current_username = MOCK_USERNAME;
-            createComponent({ search });
+            createComponent(
+              { search },
+              {
+                autocompleteGroupedSearchOptions: () =>
+                  search.match(/^[A-Za-z]+$/g) ? MOCK_SORTED_AUTOCOMPLETE_OPTIONS : [],
+              },
+            );
             findHeaderSearchInput().vm.$emit('click');
           });
 

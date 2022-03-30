@@ -28,6 +28,8 @@ export const FIRST_DROPDOWN_INDEX = 0;
 
 export const SEARCH_BOX_INDEX = -1;
 
+export const SEARCH_SHORTCUTS_MIN_CHARACTERS = 2;
+
 export const SEARCH_INPUT_DESCRIPTION = 'search-input-description';
 
 export const SEARCH_RESULTS_DESCRIPTION = 'search-results-description';

@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlLoadingIcon, GlAvatar, GlAlert } from '@gitlab/ui';
+import { GlDropdownItem, GlLoadingIcon, GlAvatar, GlAlert, GlDropdownDivider } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -9,7 +9,14 @@ import {
   PROJECTS_CATEGORY,
   SMALL_AVATAR_PX,
 } from '~/header_search/constants';
-import { MOCK_GROUPED_AUTOCOMPLETE_OPTIONS, MOCK_SORTED_AUTOCOMPLETE_OPTIONS } from '../mock_data';
+import {
+  MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
+  MOCK_SORTED_AUTOCOMPLETE_OPTIONS,
+  MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_SETTINGS_HELP,
+  MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_HELP,
+  MOCK_SEARCH,
+  MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_2,
+} from '../mock_data';
 
 Vue.use(Vuex);
 
@@ -41,6 +48,7 @@ describe('HeaderSearchAutocompleteItems', () => {
   });
 
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findGlDropdownDividers = () => wrapper.findAllComponents(GlDropdownDivider);
   const findFirstDropdownItem = () => findDropdownItems().at(0);
   const findDropdownItemTitles = () => findDropdownItems().wrappers.map((w) => w.text());
   const findDropdownItemLinks = () => findDropdownItems().wrappers.map((w) => w.attributes('href'));
@@ -137,6 +145,34 @@ describe('HeaderSearchAutocompleteItems', () => {
 
         it(`sets "aria-selected to ${ariaSelected}`, () => {
           expect(findFirstDropdownItem().attributes('aria-selected')).toBe(ariaSelected);
+        });
+      });
+    });
+
+    describe.each`
+      search         | items                                              | dividerCount
+      ${null}        | ${[]}                                              | ${0}
+      ${''}          | ${[]}                                              | ${0}
+      ${'1'}         | ${[]}                                              | ${0}
+      ${')'}         | ${[]}                                              | ${0}
+      ${'t'}         | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_SETTINGS_HELP} | ${1}
+      ${'te'}        | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_HELP}          | ${0}
+      ${'tes'}       | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_2}             | ${1}
+      ${MOCK_SEARCH} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_2}             | ${1}
+    `('Header Search Dropdown Dividers', ({ search, items, dividerCount }) => {
+      describe(`when search is ${search}`, () => {
+        beforeEach(() => {
+          createComponent(
+            { search },
+            {
+              autocompleteGroupedSearchOptions: () => items,
+            },
+            {},
+          );
+        });
+
+        it(`component should have ${dividerCount} dividers`, () => {
+          expect(findGlDropdownDividers()).toHaveLength(dividerCount);
         });
       });
     });

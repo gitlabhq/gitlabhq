@@ -87,18 +87,79 @@ module Gitlab
             end
 
             def initialize(report_type, report_data, report_version = nil)
-              @report_type = report_type
+              @report_type = report_type&.to_sym
               @report_data = report_data
               @report_version = report_version
+              @errors = []
+              @warnings = []
+
+              populate_errors
+              populate_warnings
             end
 
             def valid?
               errors.empty?
             end
 
-            def errors
-              @errors ||= schema.validate(report_data).map { |error| JSONSchemer::Errors.pretty(error) }
+            def populate_errors
+              if Feature.enabled?(:enforce_security_report_validation)
+                @errors += schema.validate(report_data).map { |error| JSONSchemer::Errors.pretty(error) }
+              else
+                @warnings += schema.validate(report_data).map { |error| JSONSchemer::Errors.pretty(error) }
+              end
             end
+
+            def populate_warnings
+              add_deprecated_report_version_message if report_uses_deprecated_schema_version?
+              add_unsupported_report_version_message if !report_uses_supported_schema_version? && !report_uses_deprecated_schema_version?
+            end
+
+            def add_deprecated_report_version_message
+              message = "Version #{report_version} for report type #{report_type} has been deprecated, supported versions for this report type are: #{supported_schema_versions}"
+              add_message_as(level: :warning, message: message)
+            end
+
+            def add_unsupported_report_version_message
+              if Feature.enabled?(:enforce_security_report_validation)
+                handle_unsupported_report_version(treat_as: :error)
+              else
+                handle_unsupported_report_version(treat_as: :warning)
+              end
+            end
+
+            def report_uses_deprecated_schema_version?
+              DEPRECATED_VERSIONS[report_type].include?(report_version)
+            end
+
+            def report_uses_supported_schema_version?
+              SUPPORTED_VERSIONS[report_type].include?(report_version)
+            end
+
+            def handle_unsupported_report_version(treat_as:)
+              if report_version.nil?
+                message = "Report version not provided, #{report_type} report type supports versions: #{supported_schema_versions}"
+                add_message_as(level: treat_as, message: message)
+              else
+                message = "Version #{report_version} for report type #{report_type} is unsupported, supported versions for this report type are: #{supported_schema_versions}"
+              end
+
+              add_message_as(level: treat_as, message: message)
+            end
+
+            def supported_schema_versions
+              SUPPORTED_VERSIONS[report_type].join(", ")
+            end
+
+            def add_message_as(level:, message:)
+              case level
+              when :error
+                @errors << message
+              when :warning
+                @warnings << message
+              end
+            end
+
+            attr_reader :errors, :warnings
 
             private
 
