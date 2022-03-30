@@ -1,0 +1,3 @@
+query getCheckedRunnerIds {
+  checkedRunnerIds @client
+}

@@ -55,7 +55,7 @@ describe('RunnerList', () => {
   });
 
   it('Sets runner id as a row key', () => {
-    createComponent({});
+    createComponent();
 
     expect(findTable().attributes('primary-key')).toBe('id');
   });
@@ -88,6 +88,35 @@ describe('RunnerList', () => {
 
     // Actions
     expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
+  });
+
+  describe('When the list is checkable', () => {
+    beforeEach(() => {
+      createComponent(
+        {
+          props: {
+            checkable: true,
+          },
+        },
+        mountExtended,
+      );
+    });
+
+    it('Displays a checkbox field', () => {
+      expect(findCell({ fieldKey: 'checkbox' }).find('input').exists()).toBe(true);
+    });
+
+    it('Emits a checked event', () => {
+      const checkbox = findCell({ fieldKey: 'checkbox' }).find('input');
+
+      checkbox.setChecked();
+
+      expect(wrapper.emitted('checked')).toHaveLength(1);
+      expect(wrapper.emitted('checked')[0][0]).toEqual({
+        isChecked: true,
+        runner: mockRunners[0],
+      });
+    });
   });
 
   describe('Scoped cell slots', () => {

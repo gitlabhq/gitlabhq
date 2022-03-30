@@ -4,9 +4,11 @@ import { createAlert } from '~/flash';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { formatNumber } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
+import RunnerBulkDelete from '../components/runner_bulk_delete.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerName from '../components/runner_name.vue';
 import RunnerStats from '../components/stat/runner_stats.vue';
@@ -53,6 +55,7 @@ export default {
     GlLink,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
+    RunnerBulkDelete,
     RunnerList,
     RunnerName,
     RunnerStats,
@@ -60,6 +63,8 @@ export default {
     RunnerTypeTabs,
     RunnerActionsCell,
   },
+  mixins: [glFeatureFlagMixin()],
+  inject: ['localMutations'],
   props: {
     registrationToken: {
       type: String,
@@ -180,6 +185,11 @@ export default {
         },
       ];
     },
+    isBulkDeleteEnabled() {
+      // Feature flag: admin_runners_bulk_delete
+      // Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/353981
+      return this.glFeatures.adminRunnersBulkDelete;
+    },
   },
   watch: {
     search: {
@@ -238,6 +248,12 @@ export default {
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
     },
+    onChecked({ runner, isChecked }) {
+      this.localMutations.setRunnerChecked({
+        runner,
+        isChecked,
+      });
+    },
   },
   filteredSearchNamespace: ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
@@ -286,7 +302,13 @@ export default {
       {{ __('No runners found') }}
     </div>
     <template v-else>
-      <runner-list :runners="runners.items" :loading="runnersLoading">
+      <runner-bulk-delete v-if="isBulkDeleteEnabled" />
+      <runner-list
+        :runners="runners.items"
+        :loading="runnersLoading"
+        :checkable="isBulkDeleteEnabled"
+        @checked="onChecked"
+      >
         <template #runner-name="{ runner }">
           <gl-link :href="runner.adminUrl">
             <runner-name :runner="runner" />

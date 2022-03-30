@@ -1,6 +1,8 @@
 - page_title _('No repository')
 - @skip_current_level_breadcrumb = true
 
+= render_if_exists 'shared/user_over_limit_free_plan_alert', source: @project
+
 %h2.gl-display-flex
   .gl-display-flex.gl-align-items-center.gl-justify-content-center
     = sprite_icon('warning-solid', size: 24, css_class: 'gl-mr-2')

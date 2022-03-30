@@ -28,6 +28,12 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## 15.0
+
+### Request a new review
+
+The ability to [request a new review](https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#request-a-new-review) has been removed in GitLab 15.0. This feature is replaced with [requesting attention](https://docs.gitlab.com/ee/user/project/merge_requests/#request-attention-to-a-merge-request) to a merge request.
+
 ## 14.9
 
 ### Integrated error tracking disabled by default

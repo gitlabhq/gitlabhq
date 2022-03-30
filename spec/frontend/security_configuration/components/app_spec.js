@@ -33,6 +33,7 @@ const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
 const autoDevopsPath = '/autoDevopsPath';
 const gitlabCiHistoryPath = 'test/historyPath';
 const projectFullPath = 'namespace/project';
+const vulnerabilityTrainingDocsPath = 'user/application_security/vulnerabilities/index';
 
 useLocalStorageSpy();
 
@@ -55,6 +56,7 @@ describe('App component', () => {
           autoDevopsHelpPagePath,
           autoDevopsPath,
           projectFullPath,
+          vulnerabilityTrainingDocsPath,
           glFeatures: {
             secureVulnerabilityTraining,
           },
@@ -462,9 +464,7 @@ describe('App component', () => {
       const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
 
       expect(trainingLink.text()).toBe('Learn more about vulnerability training');
-      expect(trainingLink.attributes('href')).toBe(
-        '/help/user/application_security/vulnerabilities/index#enable-security-training-for-vulnerabilities',
-      );
+      expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
     });
   });
 

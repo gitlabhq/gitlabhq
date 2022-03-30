@@ -24,7 +24,7 @@ export const formatJobCount = (jobCount) => {
  * @param {Object} options
  * @returns Field object to add to GlTable fields
  */
-export const tableField = ({ key, label = '', thClasses = [] }) => {
+export const tableField = ({ key, label = '', thClasses = [], ...options }) => {
   return {
     key,
     label,
@@ -32,6 +32,7 @@ export const tableField = ({ key, label = '', thClasses = [] }) => {
     tdAttr: {
       'data-testid': `td-${key}`,
     },
+    ...options,
   };
 };
 

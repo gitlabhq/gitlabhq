@@ -37,5 +37,10 @@ FactoryBot.define do
       base_type { WorkItems::Type.base_types[:requirement] }
       icon_name { 'issue-type-requirements' }
     end
+
+    trait :task do
+      base_type { WorkItems::Type.base_types[:task] }
+      icon_name { 'issue-type-task' }
+    end
   end
 end

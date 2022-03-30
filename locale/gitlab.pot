@@ -15153,6 +15153,9 @@ msgstr ""
 msgid "Explore groups"
 msgstr ""
 
+msgid "Explore paid plans"
+msgstr ""
+
 msgid "Explore projects"
 msgstr ""
 
@@ -16256,6 +16259,9 @@ msgid "From %{code_open}%{source_title}%{code_close} into"
 msgstr ""
 
 msgid "From %{providerTitle}"
+msgstr ""
+
+msgid "From June 22, 2022 (GitLab 15.1), free personal namespaces and top-level groups will be limited to %{free_limit} members"
 msgstr ""
 
 msgid "From issue creation until deploy to production"
@@ -22894,6 +22900,9 @@ msgid "Manage group labels"
 msgstr ""
 
 msgid "Manage labels"
+msgstr ""
+
+msgid "Manage members"
 msgstr ""
 
 msgid "Manage milestones"
@@ -32184,6 +32193,16 @@ msgstr ""
 msgid "Runners|%{percentage} spot."
 msgstr ""
 
+msgid "Runners|%{strongStart}%{count}%{strongEnd} runner selected"
+msgid_plural "Runners|%{strongStart}%{count}%{strongEnd} runners selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Runners|%{strongStart}%{count}%{strongEnd} runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
+msgid_plural "Runners|%{strongStart}%{count}%{strongEnd} runners will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Runners|A capacity of 1 enables warm HA through Auto Scaling group re-spawn. A capacity of 2 enables hot HA because the service is available even when a node is lost. A capacity of 3 or more enables hot HA and manual scaling of runner fleet."
 msgstr ""
 
@@ -32229,7 +32248,13 @@ msgstr ""
 msgid "Runners|Change to project runner"
 msgstr ""
 
+msgid "Runners|Checkbox"
+msgstr ""
+
 msgid "Runners|Choose your preferred GitLab Runner"
+msgstr ""
+
+msgid "Runners|Clear selection"
 msgstr ""
 
 msgid "Runners|Command to register runner"
@@ -32244,10 +32269,18 @@ msgstr ""
 msgid "Runners|Copy registration token"
 msgstr ""
 
+msgid "Runners|Delete %d runner"
+msgid_plural "Runners|Delete %d runners"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Runners|Delete runner"
 msgstr ""
 
 msgid "Runners|Delete runner %{name}?"
+msgstr ""
+
+msgid "Runners|Delete selected"
 msgstr ""
 
 msgid "Runners|Deploy GitLab Runner in AWS"
@@ -32339,6 +32372,11 @@ msgstr ""
 
 msgid "Runners|Paused"
 msgstr ""
+
+msgid "Runners|Permanently delete %d runner"
+msgid_plural "Runners|Permanently delete %d runners"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Runners|Platform"
 msgstr ""
@@ -43241,6 +43279,9 @@ msgid "YouTube"
 msgstr ""
 
 msgid "YouTube URL or ID"
+msgstr ""
+
+msgid "Your %{doc_link_start}namespace%{doc_link_end}, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_limit} members. From June 22, 2022, it will be limited to %{free_limit}, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access to the namespace. You can go to the Usage Quotas page to manage which %{free_limit} members will remain in your namespace. To get more members, an owner can start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "Your %{group} membership will now expire in %{days}."

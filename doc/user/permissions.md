@@ -422,7 +422,7 @@ The following table lists group permissions available for each role:
 | View 2FA status of members                                                              |       |          |           |            | ✓     |
 | View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (4) |
 | View [Usage Quotas](usage_quotas.md) Page                                               |       |          |           | ✓          | ✓ (4) |
-| Manage runners                                                                          |       |          |           |            | ✓     |
+| Manage group runners                                                                          |       |          |           |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->
 

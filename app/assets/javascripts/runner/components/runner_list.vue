@@ -4,10 +4,21 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/toolt
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { formatJobCount, tableField } from '../utils';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerTags from './runner_tags.vue';
+
+const defaultFields = [
+  tableField({ key: 'status', label: s__('Runners|Status') }),
+  tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-25p'] }),
+  tableField({ key: 'version', label: __('Version') }),
+  tableField({ key: 'jobCount', label: __('Jobs') }),
+  tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
+  tableField({ key: 'contactedAt', label: __('Last contact') }),
+  tableField({ key: 'actions', label: '' }),
+];
 
 export default {
   components: {
@@ -22,7 +33,20 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  apollo: {
+    checkedRunnerIds: {
+      query: checkedRunnerIdsQuery,
+      skip() {
+        return !this.checkable;
+      },
+    },
+  },
   props: {
+    checkable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     loading: {
       type: Boolean,
       required: false,
@@ -33,6 +57,10 @@ export default {
       required: true,
     },
   },
+  emits: ['checked'],
+  data() {
+    return { checkedRunnerIds: [] };
+  },
   computed: {
     tableClass() {
       // <gl-table-lite> does not provide a busy state, add
@@ -41,6 +69,18 @@ export default {
       return {
         'gl-opacity-6': this.loading,
       };
+    },
+    fields() {
+      if (this.checkable) {
+        const checkboxField = tableField({
+          key: 'checkbox',
+          label: s__('Runners|Checkbox'),
+          thClasses: ['gl-w-9'],
+          tdClass: ['gl-text-center'],
+        });
+        return [checkboxField, ...defaultFields];
+      }
+      return defaultFields;
     },
   },
   methods: {
@@ -55,16 +95,16 @@ export default {
       }
       return {};
     },
+    onCheckboxChange(runner, isChecked) {
+      this.$emit('checked', {
+        runner,
+        isChecked,
+      });
+    },
+    isChecked(runner) {
+      return this.checkedRunnerIds.includes(runner.id);
+    },
   },
-  fields: [
-    tableField({ key: 'status', label: s__('Runners|Status') }),
-    tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-25p'] }),
-    tableField({ key: 'version', label: __('Version') }),
-    tableField({ key: 'jobCount', label: __('Jobs') }),
-    tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
-    tableField({ key: 'contactedAt', label: __('Last contact') }),
-    tableField({ key: 'actions', label: '' }),
-  ],
 };
 </script>
 <template>
@@ -73,13 +113,29 @@ export default {
       :aria-busy="loading"
       :class="tableClass"
       :items="runners"
-      :fields="$options.fields"
+      :fields="fields"
       :tbody-tr-attr="runnerTrAttr"
       data-testid="runner-list"
       stacked="md"
       primary-key="id"
       fixed
     >
+      <template #head(checkbox)>
+        <!--
+          Checkbox to select all to be added here
+          See https://gitlab.com/gitlab-org/gitlab/-/issues/339525/
+        -->
+        <span></span>
+      </template>
+
+      <template #cell(checkbox)="{ item }">
+        <input
+          type="checkbox"
+          :checked="isChecked(item)"
+          @change="onCheckboxChange(item, $event.target.checked)"
+        />
+      </template>
+
       <template #cell(status)="{ item }">
         <runner-status-cell :runner="item" />
       </template>

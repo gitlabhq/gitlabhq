@@ -13,6 +13,7 @@ import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
+import { createLocalState } from '~/runner/graphql/list/local_state';
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
@@ -43,6 +44,7 @@ import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered
 import { runnersData, runnersCountData, runnersDataPaginated } from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
+const mockRunners = runnersData.data.runners.nodes;
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -58,6 +60,8 @@ describe('AdminRunnersApp', () => {
   let wrapper;
   let mockRunnersQuery;
   let mockRunnersCountQuery;
+  let cacheConfig;
+  let localMutations;
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
@@ -69,18 +73,30 @@ describe('AdminRunnersApp', () => {
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
+  const createComponent = ({
+    props = {},
+    mountFn = shallowMountExtended,
+    provide,
+    ...options
+  } = {}) => {
+    ({ cacheConfig, localMutations } = createLocalState());
+
     const handlers = [
       [adminRunnersQuery, mockRunnersQuery],
       [adminRunnersCountQuery, mockRunnersCountQuery],
     ];
 
     wrapper = mountFn(AdminRunnersApp, {
-      apolloProvider: createMockApollo(handlers),
+      apolloProvider: createMockApollo(handlers, {}, cacheConfig),
       propsData: {
         registrationToken: mockRegistrationToken,
         ...props,
       },
+      provide: {
+        localMutations,
+        ...provide,
+      },
+      ...options,
     });
   };
 
@@ -173,7 +189,7 @@ describe('AdminRunnersApp', () => {
   });
 
   it('shows the runners list', () => {
-    expect(findRunnerList().props('runners')).toEqual(runnersData.data.runners.nodes);
+    expect(findRunnerList().props('runners')).toEqual(mockRunners);
   });
 
   it('runner item links to the runner admin page', async () => {
@@ -181,7 +197,7 @@ describe('AdminRunnersApp', () => {
 
     await waitForPromises();
 
-    const { id, shortSha } = runnersData.data.runners.nodes[0];
+    const { id, shortSha } = mockRunners[0];
     const numericId = getIdFromGraphQLId(id);
 
     const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
@@ -197,7 +213,7 @@ describe('AdminRunnersApp', () => {
 
     const runnerActions = wrapper.find('tr [data-testid="td-actions"]').find(RunnerActionsCell);
 
-    const runner = runnersData.data.runners.nodes[0];
+    const runner = mockRunners[0];
 
     expect(runnerActions.props()).toEqual({
       runner,
@@ -232,8 +248,7 @@ describe('AdminRunnersApp', () => {
   describe('Single runner row', () => {
     let showToast;
 
-    const mockRunner = runnersData.data.runners.nodes[0];
-    const { id: graphqlId, shortSha } = mockRunner;
+    const { id: graphqlId, shortSha } = mockRunners[0];
     const id = getIdFromGraphQLId(graphqlId);
     const COUNT_QUERIES = 7; // Smart queries that display a filtered count of runners
     const FILTERED_COUNT_QUERIES = 4; // Smart queries that display a count of runners in tabs
@@ -331,6 +346,41 @@ describe('AdminRunnersApp', () => {
   it('when runners have not loaded, shows a loading state', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
+  });
+
+  describe('when bulk delete is enabled', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: {
+          glFeatures: { adminRunnersBulkDelete: true },
+        },
+      });
+    });
+
+    it('runner list is checkable', () => {
+      expect(findRunnerList().props('checkable')).toBe(true);
+    });
+
+    it('responds to checked items by updating the local cache', () => {
+      const setRunnerCheckedMock = jest
+        .spyOn(localMutations, 'setRunnerChecked')
+        .mockImplementation(() => {});
+
+      const runner = mockRunners[0];
+
+      expect(setRunnerCheckedMock).toHaveBeenCalledTimes(0);
+
+      findRunnerList().vm.$emit('checked', {
+        runner,
+        isChecked: true,
+      });
+
+      expect(setRunnerCheckedMock).toHaveBeenCalledTimes(1);
+      expect(setRunnerCheckedMock).toHaveBeenCalledWith({
+        runner,
+        isChecked: true,
+      });
+    });
   });
 
   describe('when no runners are found', () => {
