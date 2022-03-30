@@ -49,15 +49,15 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
       expect(page).to have_current_path edit_user_password_path, ignore_query: true
       expect(page).to have_content('Please create a password for your new account.')
 
-      fill_in 'user_password',              with: Gitlab::Password.test_default
-      fill_in 'user_password_confirmation', with: Gitlab::Password.test_default
+      fill_in 'user_password',              with: 'password'
+      fill_in 'user_password_confirmation', with: 'password'
       click_button 'Change your password'
 
       expect(page).to have_current_path new_user_session_path, ignore_query: true
       expect(page).to have_content(I18n.t('devise.passwords.updated_not_active'))
 
       fill_in 'user_login',    with: user.username
-      fill_in 'user_password', with: Gitlab::Password.test_default
+      fill_in 'user_password', with: 'password'
       click_button 'Sign in'
 
       expect_single_session_with_authenticated_ttl
@@ -210,7 +210,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
       end
 
       it 'does not allow sign-in if the user password is updated before entering a one-time code' do
-        user.update!(password: "new" + Gitlab::Password.test_default)
+        user.update!(password: 'new_password')
 
         enter_code(user.current_otp)
 
@@ -447,7 +447,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
           visit new_user_session_path
 
           fill_in 'user_login', with: user.email
-          fill_in 'user_password', with: Gitlab::Password.test_default
+          fill_in 'user_password', with: '12345678'
           click_button 'Sign in'
 
           expect(page).to have_current_path(new_profile_password_path, ignore_query: true)
@@ -456,7 +456,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
     end
 
     context 'with invalid username and password' do
-      let(:user) { create(:user, password: "not" + Gitlab::Password.test_default) }
+      let(:user) { create(:user, password: 'not-the-default') }
 
       it 'blocks invalid login' do
         expect(authentication_metrics)
@@ -767,7 +767,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
       visit new_user_session_path
 
       fill_in 'user_login', with: user.email
-      fill_in 'user_password', with: Gitlab::Password.test_default
+      fill_in 'user_password', with: '12345678'
 
       click_button 'Sign in'
 
@@ -788,7 +788,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
       visit new_user_session_path
 
       fill_in 'user_login', with: user.email
-      fill_in 'user_password', with: Gitlab::Password.test_default
+      fill_in 'user_password', with: '12345678'
 
       click_button 'Sign in'
 
@@ -810,7 +810,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
           visit new_user_session_path
 
           fill_in 'user_login', with: user.email
-          fill_in 'user_password', with: Gitlab::Password.test_default
+          fill_in 'user_password', with: '12345678'
 
           click_button 'Sign in'
 
@@ -845,7 +845,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
           visit new_user_session_path
 
           fill_in 'user_login', with: user.email
-          fill_in 'user_password', with: Gitlab::Password.test_default
+          fill_in 'user_password', with: '12345678'
           click_button 'Sign in'
 
           fill_in 'user_otp_attempt', with: user.reload.current_otp
@@ -871,7 +871,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
         visit new_user_session_path
 
         fill_in 'user_login', with: user.email
-        fill_in 'user_password', with: Gitlab::Password.test_default
+        fill_in 'user_password', with: '12345678'
         click_button 'Sign in'
 
         expect_to_be_on_terms_page
@@ -879,7 +879,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
 
         expect(page).to have_current_path(new_profile_password_path, ignore_query: true)
 
-        fill_in 'user_password', with: Gitlab::Password.test_default
+        fill_in 'user_password', with: '12345678'
         fill_in 'user_new_password', with: 'new password'
         fill_in 'user_password_confirmation', with: 'new password'
         click_button 'Set new password'

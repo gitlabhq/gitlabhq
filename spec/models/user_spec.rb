@@ -1757,9 +1757,9 @@ RSpec.describe User do
 
   describe '#generate_password' do
     it 'does not generate password by default' do
-      user = create(:user, password: Gitlab::Password.test_default)
+      user = create(:user, password: 'abcdefghe')
 
-      expect(user.password).to eq(Gitlab::Password.test_default)
+      expect(user.password).to eq('abcdefghe')
     end
   end
 
