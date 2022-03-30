@@ -13,7 +13,7 @@ class Gitlab::Seeder::ProjectFeatures
     Gitlab::Seeder.with_mass_insert(Project.count, "Project features") do
       Project.each_batch(of: BATCH_SIZE) do |batch, index|
         range = batch.pluck(Arel.sql('MIN(id)'), Arel.sql('MAX(id)')).first
-        count = index * BATCH_SIZE
+        count = index * batch.size
 
         Gitlab::Seeder.log_message("Creating project features: #{count}.")
         ActiveRecord::Base.connection.execute <<~SQL

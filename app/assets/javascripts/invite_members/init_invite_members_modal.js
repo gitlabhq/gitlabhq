@@ -24,7 +24,12 @@ export default (function initInviteMembersModal() {
         el,
         name: 'InviteMembersModalRoot',
         provide: {
+          name: el.dataset.name,
           newProjectPath: el.dataset.newProjectPath,
+          newTrialRegistrationPath: el.dataset.newTrialRegistrationPath,
+          purchasePath: el.dataset.purchasePath,
+          freeUsersLimit: el.dataset.freeUsersLimit && parseInt(el.dataset.freeUsersLimit, 10),
+          membersCount: el.dataset.membersCount && parseInt(el.dataset.membersCount, 10),
         },
         render: (createElement) =>
           createElement(InviteMembersModal, {

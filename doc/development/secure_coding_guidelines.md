@@ -203,7 +203,7 @@ Go's [`regexp`](https://pkg.go.dev/regexp) package uses `re2` and isn't vulnerab
 
 ### Description
 
-A [Server-side Request Forgery (SSRF)](https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF) is an attack in which an attacker
+A [Server-side Request Forgery (SSRF)](https://www.hackerone.com/application-security/how-server-side-request-forgery-ssrf) is an attack in which an attacker
 is able coerce a application into making an outbound request to an unintended
 resource. This resource is usually internal. In GitLab, the connection most
 commonly uses HTTP, but an SSRF can be performed with any protocol, such as

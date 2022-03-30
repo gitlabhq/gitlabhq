@@ -213,7 +213,7 @@ function create_application_secret() {
   local initial_root_password_shared_secret
   local gitlab_license_shared_secret
 
-  initial_root_password_shared_secret=$(kubectl get secret --namespace ${namespace} --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-initial-root-password | tail -n 1)
+  initial_root_password_shared_secret=$(kubectl get secret --namespace ${namespace} --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-initial-root-password 2> /dev/null | tail -n 1)
   if [[ "${initial_root_password_shared_secret}" == "" ]]; then
     echoinfo "Creating the 'shared-gitlab-initial-root-password' secret in the ${namespace} namespace..." true
     kubectl create secret generic --namespace "${namespace}" \
@@ -226,7 +226,7 @@ function create_application_secret() {
 
   if [ -z "${REVIEW_APPS_EE_LICENSE_FILE}" ]; then echo "License not found" && return; fi
 
-  gitlab_license_shared_secret=$(kubectl get secret --namespace ${namespace} --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-license | tail -n 1)
+  gitlab_license_shared_secret=$(kubectl get secret --namespace ${namespace} --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-license 2> /dev/null | tail -n 1)
   if [[ "${gitlab_license_shared_secret}" == "" ]]; then
     echoinfo "Creating the 'shared-gitlab-license' secret in the ${namespace} namespace..." true
     kubectl create secret generic --namespace "${namespace}" \

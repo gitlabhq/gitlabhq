@@ -215,6 +215,8 @@ export default {
           <slot name="intro-text-after"></slot>
         </div>
 
+        <slot name="user-limit-notification"></slot>
+
         <gl-form-group
           :invalid-feedback="invalidFeedbackMessage"
           :state="validationState"

@@ -46,6 +46,7 @@ module InviteMembersHelper
     }
   end
 
+  # Overridden in EE
   def common_invite_modal_dataset(source)
     dataset = {
       id: source.id,

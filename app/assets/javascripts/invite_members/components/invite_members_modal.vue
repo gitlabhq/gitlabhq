@@ -24,6 +24,7 @@ import { responseMessageFromSuccess } from '../utils/response_message_parser';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import ModalConfetti from './confetti.vue';
 import MembersTokenSelect from './members_token_select.vue';
+import UserLimitNotification from './user_limit_notification.vue';
 
 export default {
   name: 'InviteMembersModal',
@@ -37,6 +38,7 @@ export default {
     InviteModalBase,
     MembersTokenSelect,
     ModalConfetti,
+    UserLimitNotification,
   },
   inject: ['newProjectPath'],
   props: {
@@ -308,6 +310,11 @@ export default {
       <span v-if="isCelebration">{{ $options.labels.modal.celebrate.intro }} </span>
       <modal-confetti v-if="isCelebration" />
     </template>
+
+    <template #user-limit-notification>
+      <user-limit-notification />
+    </template>
+
     <template #select="{ validationState, labelId }">
       <members-token-select
         v-model="newUsersToInvite"

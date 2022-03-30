@@ -34,8 +34,8 @@ GitLab SaaS or GitLab self-managed:
   your own GitLab instance.
 
 On a GitLab self-managed instance, a GitLab subscription provides the same set of
-features for _all_ users. On GitLab SaaS, you can apply a subscription to either
-a group or a personal namespace.
+features for _all_ users. On GitLab SaaS, you can apply a subscription to a group
+namespace. You cannot apply a subscription to a personal namespace.
 
 NOTE:
 Subscriptions cannot be transferred between GitLab SaaS and GitLab self-managed.

@@ -33,6 +33,9 @@ export default {
     description() {
       return this.runner.description;
     },
+    ipAddress() {
+      return this.runner.ipAddress;
+    },
   },
   i18n: {
     I18N_LOCKED_RUNNER_DESCRIPTION,
@@ -53,10 +56,11 @@ export default {
       :title="$options.i18n.I18N_LOCKED_RUNNER_DESCRIPTION"
       name="lock"
     />
-    <tooltip-on-truncate class="gl-display-block" :title="description" truncate-target="child">
-      <div class="gl-text-truncate">
-        {{ description }}
-      </div>
+    <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="description">
+      {{ description }}
+    </tooltip-on-truncate>
+    <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="ipAddress">
+      {{ __('IP Address') }} <strong>{{ ipAddress }}</strong>
     </tooltip-on-truncate>
   </div>
 </template>

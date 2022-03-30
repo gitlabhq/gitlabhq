@@ -47,7 +47,6 @@ describe('RunnerList', () => {
       'Status',
       'Runner',
       'Version',
-      'IP',
       'Jobs',
       'Tags',
       'Last contact',
@@ -68,7 +67,7 @@ describe('RunnerList', () => {
   });
 
   it('Displays details of a runner', () => {
-    const { id, description, version, ipAddress, shortSha } = mockRunners[0];
+    const { id, description, version, shortSha } = mockRunners[0];
 
     // Badges
     expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
@@ -83,7 +82,6 @@ describe('RunnerList', () => {
 
     // Other fields
     expect(findCell({ fieldKey: 'version' }).text()).toBe(version);
-    expect(findCell({ fieldKey: 'ipAddress' }).text()).toBe(ipAddress);
     expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('0');
     expect(findCell({ fieldKey: 'tagList' }).text()).toBe('');
     expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));

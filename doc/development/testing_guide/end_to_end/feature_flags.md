@@ -162,7 +162,7 @@ for details.
 
 ## Confirming that end-to-end tests pass with a feature flag enabled
 
-End-to-end tests should pass with a feature flag enabled before it is enabled on Staging or on GitLab.com. Tests that need to be updated should be identified as part of [quad-planning](https://about.gitlab.com/handbook/engineering/quality/quad-planning/). The relevant [counterpart Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) is responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through quad-planning and a required test update is not made, test failures could block deployment.
+End-to-end tests should pass with a feature flag enabled before it is enabled on Staging or on GitLab.com. Tests that need to be updated should be identified as part of [quad-planning](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/quad-planning/). The relevant [counterpart Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) is responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through quad-planning and a required test update is not made, test failures could block deployment.
 
 ### Automatic test execution when a feature flag definition changes
 

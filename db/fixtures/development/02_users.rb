@@ -4,7 +4,7 @@ class Gitlab::Seeder::Users
   include ActionView::Helpers::NumberHelper
 
   RANDOM_USERS_COUNT = 20
-  MASS_NAMESPACES_COUNT = 100
+  MASS_NAMESPACES_COUNT = ENV['CI'] ? 1 : 100
   MASS_USERS_COUNT = ENV['CI'] ? 10 : 1_000_000
   attr_reader :opts
 

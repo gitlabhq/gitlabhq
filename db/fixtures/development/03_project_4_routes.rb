@@ -13,7 +13,7 @@ class Gitlab::Seeder::ProjectRoutes
     Gitlab::Seeder.with_mass_insert(Project.count, "Project routes") do
       Project.each_batch(of: BATCH_SIZE / 2) do |batch, index|
         range = batch.pluck(Arel.sql('MIN(id)'), Arel.sql('MAX(id)')).first
-        count = index * BATCH_SIZE / 2
+        count = index * batch.size
 
         Gitlab::Seeder.log_message("Creating project routes: #{count}.")
         ActiveRecord::Base.connection.execute <<~SQL

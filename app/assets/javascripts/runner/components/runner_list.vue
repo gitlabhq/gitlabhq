@@ -60,7 +60,6 @@ export default {
     tableField({ key: 'status', label: s__('Runners|Status') }),
     tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'version', label: __('Version') }),
-    tableField({ key: 'ipAddress', label: __('IP') }),
     tableField({ key: 'jobCount', label: __('Jobs') }),
     tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'contactedAt', label: __('Last contact') }),
@@ -96,12 +95,6 @@ export default {
       <template #cell(version)="{ item: { version } }">
         <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="version">
           {{ version }}
-        </tooltip-on-truncate>
-      </template>
-
-      <template #cell(ipAddress)="{ item: { ipAddress } }">
-        <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="ipAddress">
-          {{ ipAddress }}
         </tooltip-on-truncate>
       </template>
 

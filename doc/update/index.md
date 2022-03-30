@@ -576,6 +576,8 @@ for how to proceed.
 - The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+- See [Custom Rack Attack initializers](#custom-rack-attack-initializers) if you persist your own custom Rack Attack
+  initializers during upgrades.
 
 #### Upgrading to later 14.Y releases
 
@@ -753,6 +755,14 @@ all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later
    ```
 
 1. Only then, continue to upgrade to later versions of GitLab.
+
+#### Custom Rack Attack initializers
+
+From GitLab 13.0.1, custom Rack Attack initializers (`config/initializers/rack_attack.rb`) are replaced with initializers
+supplied with GitLab during upgrades. We recommend you use these GitLab-supplied initializers.
+
+If you persist your own Rack Attack initializers between upgrades, you might
+[get `500` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/334681) when [upgrading to GitLab 14.0 and later](#1400).
 
 ### 12.2.0
 

@@ -32,7 +32,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Install](../install/index.md): Requirements, directory structures, and installation methods.
 - [Reference architectures](reference_architectures/index.md): Add additional resources to support more users.
-  - [Installing GitLab on Amazon Web Services (AWS)](../install/aws/index.md): Set up GitLab on Amazon AWS.
+- [Installing GitLab on Amazon Web Services (AWS)](../install/aws/index.md): Set up GitLab on Amazon AWS.
 - [Geo](geo/index.md): Replicate your GitLab instance to other geographic locations as a read-only fully operational version.
 - [Disaster Recovery](geo/disaster_recovery/index.md): Quickly fail-over to a different site with minimal effort in a disaster situation.
 - [Add License](../user/admin_area/license.md): Add a license at install time to unlock features that are in paid tiers of GitLab.

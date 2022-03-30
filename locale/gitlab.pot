@@ -18659,9 +18659,6 @@ msgstr ""
 msgid "INFO: Your SSH key is expiring soon. Please generate a new key."
 msgstr ""
 
-msgid "IP"
-msgstr ""
-
 msgid "IP Address"
 msgstr ""
 
@@ -20542,6 +20539,9 @@ msgstr ""
 msgid "InviteMembersModal|Members were successfully added"
 msgstr ""
 
+msgid "InviteMembersModal|New members will be unable to participate. You can manage your members by removing ones you no longer need."
+msgstr ""
+
 msgid "InviteMembersModal|Search for a group to invite"
 msgstr ""
 
@@ -20560,6 +20560,12 @@ msgstr ""
 msgid "InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}"
 msgstr ""
 
+msgid "InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
+msgstr ""
+
+msgid "InviteMembersModal|You only have space for %{count} more %{members} in %{name}"
+msgstr ""
+
 msgid "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group."
 msgstr ""
 
@@ -20570,6 +20576,9 @@ msgid "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{
 msgstr ""
 
 msgid "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} project."
+msgstr ""
+
+msgid "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}"
 msgstr ""
 
 msgid "InviteMembers|Invite a group"
@@ -44458,6 +44467,11 @@ msgstr ""
 
 msgid "math|There was an error rendering this math block"
 msgstr ""
+
+msgid "member"
+msgid_plural "members"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "merge request"
 msgid_plural "merge requests"

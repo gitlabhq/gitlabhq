@@ -299,7 +299,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 
 #### Notes
 
-- You can find the full image address from a pipeline by [following these instructions](https://about.gitlab.com/handbook/engineering/quality/guidelines/tips-and-tricks/#running-gitlab-qa-pipeline-against-a-specific-gitlab-release). You might be prompted to set the `GITLAB_QA_ACCESS_TOKEN` variable if you specify the full image address.
+- You can find the full image address from a pipeline by [following these instructions](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/tips-and-tricks/#running-gitlab-qa-pipeline-against-a-specific-gitlab-release). You might be prompted to set the `GITLAB_QA_ACCESS_TOKEN` variable if you specify the full image address.
 - You can increase the wait time for replication by setting `GEO_MAX_FILE_REPLICATION_TIME` and `GEO_MAX_DB_REPLICATION_TIME`. The default is 120 seconds.
 - To save time during tests, create a Personal Access Token with API access on the Geo primary node, and pass that value in as `GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN`.
 
@@ -395,7 +395,7 @@ Tests that are tagged with `:mobile` can be run against specified mobile devices
 
 Running directly against an environment like staging is not recommended because Sauce Labs test logs expose credentials. Therefore, it is best practice and the default to use a tunnel.
 
-For tunnel installation instructions, read [Sauce Connect Proxy Installation](https://docs.saucelabs.com/secure-connections/sauce-connect/installation). To start the tunnel, after following the installation above, copy the run command in Sauce Labs > Tunnels (must be logged in to Sauce Labs with the credentials found in 1Password) and run in terminal.
+For tunnel installation instructions, read [Sauce Connect Proxy Installation](https://docs.saucelabs.com/secure-connections/sauce-connect/installation/index.html). To start the tunnel, after following the installation above, copy the run command in Sauce Labs > Tunnels (must be logged in to Sauce Labs with the credentials found in 1Password) and run in terminal.
 
 NOTE:
 It is highly recommended to use `GITLAB_QA_ACCESS_TOKEN` to speed up tests and reduce flakiness.

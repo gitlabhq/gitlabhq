@@ -457,6 +457,6 @@ General tips:
 ## Additional Resources
 
 - [WebPage Test](https://www.webpagetest.org) for testing site loading time and size.
-- [Google PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) grades web pages and provides feedback to improve the page.
+- [Google PageSpeed Insights](https://pagespeed.web.dev/) grades web pages and provides feedback to improve the page.
 - [Profiling with Chrome DevTools](https://developer.chrome.com/docs/devtools/)
 - [Browser Diet](https://browserdiet.com/) is a community-built guide that catalogues practical tips for improving web page performance.

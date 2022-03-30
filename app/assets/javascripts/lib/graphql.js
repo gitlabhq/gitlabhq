@@ -47,6 +47,9 @@ export const typePolicies = {
   DesignCollection: {
     merge: true,
   },
+  TreeEntry: {
+    keyFields: ['webPath'],
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {

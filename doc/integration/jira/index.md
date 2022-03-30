@@ -56,7 +56,7 @@ or the Jira DVCS (distributed version control system) connector,
 ## Authentication in Jira
 
 The authentication method in Jira depends on whether you host Jira on your own server or on
-[Atlassian cloud](https://www.atlassian.com/cloud):
+[Atlassian cloud](https://www.atlassian.com/migration/assess/why-cloud):
 
 - **Jira Server** supports basic authentication. When connecting, a **username and password** are
   required. Connecting to Jira Server using the Central Authentication Service (CAS) is not possible. For more information, read

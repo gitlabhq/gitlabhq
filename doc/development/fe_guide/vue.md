@@ -499,7 +499,7 @@ component under test, with the `computed` property, for example). Remember to us
 We should test for events emitted in response to an action in our component. This is used to
 verify the correct events are being fired with the correct arguments.
 
-For any DOM events we should use [`trigger`](https://vue-test-utils.vuejs.org/api/wrapper/#trigger)
+For any DOM events we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
 to fire out event.
 
 ```javascript
@@ -530,7 +530,7 @@ it('should fire the itemClicked event', () => {
 ```
 
 We should verify an event has been fired by asserting against the result of the
-[`emitted()`](https://vue-test-utils.vuejs.org/api/wrapper/#emitted) method.
+[`emitted()`](https://v1.test-utils.vuejs.org/api/wrapper/#emitted) method.
 
 ## Vue.js Expert Role
 
