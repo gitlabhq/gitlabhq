@@ -18,6 +18,29 @@ RSpec.describe API::BulkImports do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.pluck('id')).to contain_exactly(import_1.id, import_2.id)
     end
+
+    context 'sort parameter' do
+      it 'sorts by created_at descending by default' do
+        get api('/bulk_imports', user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to eq([import_2.id, import_1.id])
+      end
+
+      it 'sorts by created_at descending when explicitly specified' do
+        get api('/bulk_imports', user), params: { sort: 'desc' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to eq([import_2.id, import_1.id])
+      end
+
+      it 'sorts by created_at ascending when explicitly specified' do
+        get api('/bulk_imports', user), params: { sort: 'asc' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to eq([import_1.id, import_2.id])
+      end
+    end
   end
 
   describe 'POST /bulk_imports' do

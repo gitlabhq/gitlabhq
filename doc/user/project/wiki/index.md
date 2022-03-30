@@ -327,13 +327,7 @@ to disable the wiki but toggle it on (in blue).
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5643) in GitLab 14.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345398) switching between editing experiences in GitLab 14.7 [with a flag](../../../administration/feature_flags.md) named `wiki_switch_between_content_editor_raw_markdown`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, ask an administrator to
-[disable the feature flag](../../../administration/feature_flags.md) named
-`wiki_switch_between_content_editor_raw_markdown`.
-On GitLab.com, this feature is available.
+> - Switching between editing experiences generally available in GitLab 14.10. [Feature flag `wiki_switch_between_content_editor_raw_markdown`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83760) removed.
 
 GitLab version 14.0 introduces a WYSIWYG editing experience for GitLab Flavored Markdown
 in Wikis through the [Content Editor](../../../development/fe_guide/content_editor.md).

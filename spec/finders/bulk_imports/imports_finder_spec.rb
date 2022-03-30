@@ -16,17 +16,37 @@ RSpec.describe BulkImports::ImportsFinder do
     end
 
     context 'when status is specified' do
-      subject { described_class.new(user: user, status: 'started') }
+      subject { described_class.new(user: user, params: { status: 'started' }) }
 
       it 'returns a list of import entities filtered by status' do
         expect(subject.execute).to contain_exactly(started_import)
       end
 
       context 'when invalid status is specified' do
-        subject { described_class.new(user: user, status: 'invalid') }
+        subject { described_class.new(user: user, params: { status: 'invalid' }) }
 
         it 'does not filter entities by status' do
           expect(subject.execute).to contain_exactly(started_import, finished_import)
+        end
+      end
+    end
+
+    context 'when order is specifed' do
+      subject { described_class.new(user: user, params: { sort: order }) }
+
+      context 'when order is specified as asc' do
+        let(:order) { :asc }
+
+        it 'returns entities sorted ascending' do
+          expect(subject.execute).to eq([started_import, finished_import])
+        end
+      end
+
+      context 'when order is specified as desc' do
+        let(:order) { :desc }
+
+        it 'returns entities sorted descending' do
+          expect(subject.execute).to eq([finished_import, started_import])
         end
       end
     end

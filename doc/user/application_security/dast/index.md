@@ -1053,7 +1053,7 @@ To run an on-demand scan either at a scheduled date or frequency, read
 
 1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left
    sidebar.
-1. Select **New DAST scan**.
+1. Select **New scan**.
 1. Complete the **Scan name** and **Description** fields.
 1. In GitLab 13.10 and later, select the desired branch from the **Branch** dropdown.
 1. In **Scanner profile**, select a scanner profile from the dropdown.
@@ -1088,7 +1088,7 @@ To schedule a scan:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
-1. Select **New DAST scan**.
+1. Select **New scan**.
 1. Complete the **Scan name** and **Description** text boxes.
 1. In GitLab 13.10 and later, from the **Branch** dropdown list, select the desired branch.
 1. In the **Scanner profile** section, from the dropdown list, select a scanner profile.

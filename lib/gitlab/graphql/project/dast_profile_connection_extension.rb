@@ -2,7 +2,7 @@
 module Gitlab
   module Graphql
     module Project
-      class DastProfileConnectionExtension < GraphQL::Schema::Field::ConnectionExtension
+      class DastProfileConnectionExtension < GraphQL::Schema::FieldExtension
         def after_resolve(value:, object:, context:, **rest)
           preload_authorizations(context[:project_dast_profiles])
           context[:project_dast_profiles] = nil

@@ -10,7 +10,7 @@ module API
       def bulk_imports
         @bulk_imports ||= ::BulkImports::ImportsFinder.new(
           user: current_user,
-          status: params[:status]
+          params: params
         ).execute
       end
 
@@ -22,7 +22,7 @@ module API
         @bulk_import_entities ||= ::BulkImports::EntitiesFinder.new(
           user: current_user,
           bulk_import: bulk_import,
-          status: params[:status]
+          params: params
         ).execute
       end
 
@@ -70,6 +70,8 @@ module API
       end
       params do
         use :pagination
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+        desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
         optional :status, type: String, values: BulkImport.all_human_statuses,
           desc: 'Return GitLab Migrations with specified status'
       end
@@ -82,13 +84,15 @@ module API
       end
       params do
         use :pagination
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+          desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
         optional :status, type: String, values: ::BulkImports::Entity.all_human_statuses,
           desc: "Return all GitLab Migrations' entities with specified status"
       end
       get :entities do
         entities = ::BulkImports::EntitiesFinder.new(
           user: current_user,
-          status: params[:status]
+          params: params
         ).execute
 
         present paginate(entities), with: Entities::BulkImports::Entity

@@ -58,11 +58,12 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 GET /bulk_imports
 ```
 
-| Attribute  | Type    | Required | Description                            |
-|:-----------|:--------|:---------|:---------------------------------------|
-| `per_page` | integer | no       | Number of records to return per page.  |
-| `page`     | integer | no       | Page to retrieve.                      |
-| `status`   | string  | no       | Import status.                         |
+| Attribute  | Type    | Required | Description                                                                                 |
+|:-----------|:--------|:---------|:--------------------------------------------------------------------------------------------|
+| `per_page` | integer | no       | Number of records to return per page.                                                       |
+| `page`     | integer | no       | Page to retrieve.                                                                           |
+| `sort`     | string  | no       | Return GitLab migration sorted in `asc` or `desc` order by creation date. Default is `desc` |
+| `status`   | string  | no       | Import status.                                                                              |
 
 The status can be one of the following:
 
@@ -100,11 +101,12 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 GET /bulk_imports/entities
 ```
 
-| Attribute  | Type    | Required | Description                            |
-|:-----------|:--------|:---------|:---------------------------------------|
-| `per_page` | integer | no       | Number of records to return per page.  |
-| `page`     | integer | no       | Page to retrieve.                      |
-| `status`   | string  | no       | Import status.                         |
+| Attribute  | Type    | Required | Description                                                                                          |
+|:-----------|:--------|:---------|:-----------------------------------------------------------------------------------------------------|
+| `per_page` | integer | no       | Number of records to return per page.                                                                |
+| `page`     | integer | no       | Page to retrieve.                                                                                    |
+| `sort`     | string  | no       | Return GitLab migration entities sorted in `asc` or `desc` order by creation date. Default is `desc` |
+| `status`   | string  | no       | Import status.                                                                                       |
 
 The status can be one of the following:
 
@@ -184,11 +186,12 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 GET /bulk_imports/:id/entities
 ```
 
-| Attribute  | Type    | Required | Description                            |
-|:-----------|:--------|:---------|:---------------------------------------|
-| `per_page` | integer | no       | Number of records to return per page.  |
-| `page`     | integer | no       | Page to retrieve.                      |
-| `status`   | string  | no       | Import status.                         |
+| Attribute  | Type    | Required | Description                                                                                 |
+|:-----------|:--------|:---------|:--------------------------------------------------------------------------------------------|
+| `per_page` | integer | no       | Number of records to return per page.                                                       |
+| `page`     | integer | no       | Page to retrieve.                                                                           |
+| `sort`     | string  | no       | Return GitLab migration sorted in `asc` or `desc` order by creation date. Default is `desc` |
+| `status`   | string  | no       | Import status.                                                                              |
 
 The status can be one of the following:
 

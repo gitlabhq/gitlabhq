@@ -21,10 +21,6 @@ module WikiActions
     before_action :load_sidebar, except: [:pages]
     before_action :set_content_class
 
-    before_action do
-      push_frontend_feature_flag(:wiki_switch_between_content_editor_raw_markdown, @group, default_enabled: :yaml)
-    end
-
     before_action only: [:show, :edit, :update] do
       @valid_encoding = valid_encoding?
     end
