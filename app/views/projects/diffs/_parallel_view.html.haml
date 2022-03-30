@@ -11,6 +11,8 @@
           - case left.type
           - when 'match'
             = diff_match_line left.old_pos, nil, text: left.text, view: :parallel
+          - when 'old-nomappinginraw', 'new-nomappinginraw', 'unchanged-nomappinginraw'
+            = diff_nomappinginraw_line left, %w[old_line diff-line-num], nil, %w[line_content parallel left-side]
           - when 'old-nonewline', 'new-nonewline'
             %td.old_line.diff-line-num
             %td.line_content.match.left-side= left.text
@@ -29,6 +31,8 @@
           - case right.type
           - when 'match'
             = diff_match_line nil, right.new_pos, text: left.text, view: :parallel
+          - when 'old-nomappinginraw', 'new-nomappinginraw', 'unchanged-nomappinginraw'
+            = diff_nomappinginraw_line right, %w[new_line diff-line-num], nil, %w[line_content parallel right-side]
           - when 'old-nonewline', 'new-nonewline'
             %td.new_line.diff-line-num
             %td.line_content.match.right-side= right.text

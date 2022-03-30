@@ -535,6 +535,10 @@ RSpec.describe Group do
       describe '#ancestors_upto' do
         it { expect(group.ancestors_upto.to_sql).not_to include "WITH ORDINALITY" }
       end
+
+      describe '.shortest_traversal_ids_prefixes' do
+        it { expect { described_class.shortest_traversal_ids_prefixes }.to raise_error /Feature not supported since the `:use_traversal_ids` is disabled/ }
+      end
     end
 
     context 'linear' do
@@ -574,6 +578,90 @@ RSpec.describe Group do
 
       describe '#ancestors_upto' do
         it { expect(group.ancestors_upto.to_sql).to include "WITH ORDINALITY" }
+      end
+
+      describe '.shortest_traversal_ids_prefixes' do
+        subject { filter.shortest_traversal_ids_prefixes }
+
+        context 'for many top-level namespaces' do
+          let!(:top_level_groups) { create_list(:group, 4) }
+
+          context 'when querying all groups' do
+            let(:filter) { described_class.id_in(top_level_groups) }
+
+            it "returns all traversal_ids" do
+              is_expected.to contain_exactly(
+                *top_level_groups.map { |group| [group.id] }
+              )
+            end
+          end
+
+          context 'when querying selected groups' do
+            let(:filter) { described_class.id_in(top_level_groups.first) }
+
+            it "returns only a selected traversal_ids" do
+              is_expected.to contain_exactly([top_level_groups.first.id])
+            end
+          end
+        end
+
+        context 'for namespace hierarchy' do
+          let!(:group_a) { create(:group) }
+          let!(:group_a_sub_1) { create(:group, parent: group_a) }
+          let!(:group_a_sub_2) { create(:group, parent: group_a) }
+          let!(:group_b) { create(:group) }
+          let!(:group_b_sub_1) { create(:group, parent: group_b) }
+          let!(:group_c) { create(:group) }
+
+          context 'when querying all groups' do
+            let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_a_sub_2, group_b, group_b_sub_1, group_c]) }
+
+            it 'returns only shortest prefixes of top-level groups' do
+              is_expected.to contain_exactly(
+                [group_a.id],
+                [group_b.id],
+                [group_c.id]
+              )
+            end
+          end
+
+          context 'when sub-group is reparented' do
+            let(:filter) { described_class.id_in([group_b_sub_1, group_c]) }
+
+            before do
+              group_b_sub_1.update!(parent: group_c)
+            end
+
+            it 'returns a proper shortest prefix of a new group' do
+              is_expected.to contain_exactly(
+                [group_c.id]
+              )
+            end
+          end
+
+          context 'when querying sub-groups' do
+            let(:filter) { described_class.id_in([group_a_sub_1, group_b_sub_1, group_c]) }
+
+            it 'returns sub-groups as they are shortest prefixes' do
+              is_expected.to contain_exactly(
+                [group_a.id, group_a_sub_1.id],
+                [group_b.id, group_b_sub_1.id],
+                [group_c.id]
+              )
+            end
+          end
+
+          context 'when querying group and sub-group of this group' do
+            let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_c]) }
+
+            it 'returns parent groups as this contains all sub-groups' do
+              is_expected.to contain_exactly(
+                [group_a.id],
+                [group_c.id]
+              )
+            end
+          end
+        end
       end
 
       context 'when project namespace exists in the group' do

@@ -11,6 +11,8 @@ module Ci
     end
 
     scope :contains_any_of_namespaces, -> (ids) do
+      return none if ids.empty?
+
       where('traversal_ids && ARRAY[?]::int[]', ids)
     end
 

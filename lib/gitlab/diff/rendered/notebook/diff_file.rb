@@ -87,10 +87,7 @@ module Gitlab
             line.new_pos = removal_line_maps[line.old_pos] if line.new_pos == 0 && line.old_pos != 0
 
             # Lines that do not appear on the original diff should not be commentable
-
-            unless addition_line_maps[line.new_pos] || removal_line_maps[line.old_pos]
-              line.discussable = false
-            end
+            line.type = "#{line.type || 'unchanged'}-nomappinginraw" unless addition_line_maps[line.new_pos] || removal_line_maps[line.old_pos]
 
             line.line_code = line_code(line)
             line
@@ -113,8 +110,8 @@ module Gitlab
             additions = {}
 
             source_diff.highlighted_diff_lines.each do |line|
-              removals[line.old_pos] = line.new_pos
-              additions[line.new_pos] = line.old_pos
+              removals[line.old_pos] = line.new_pos unless source_diff.new_file?
+              additions[line.new_pos] = line.old_pos unless source_diff.deleted_file?
             end
 
             [removals, additions]

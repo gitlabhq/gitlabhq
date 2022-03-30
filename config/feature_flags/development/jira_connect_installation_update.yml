@@ -1,8 +1,0 @@
----
-name: jira_connect_installation_update
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83038
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356083
-milestone: '14.9'
-type: development
-group: group::integrations
-default_enabled: false

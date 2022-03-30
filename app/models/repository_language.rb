@@ -8,8 +8,8 @@ class RepositoryLanguage < ApplicationRecord
 
   default_scope { includes(:programming_language) } # rubocop:disable Cop/DefaultScope
 
-  scope :with_programming_language, ->(name) do
-    joins(:programming_language).merge(ProgrammingLanguage.with_name_case_insensitive(name))
+  scope :with_programming_language, ->(*names) do
+    joins(:programming_language).merge(ProgrammingLanguage.with_name_case_insensitive(*names))
   end
 
   validates :project, presence: true

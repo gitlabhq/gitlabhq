@@ -2812,6 +2812,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_record_target_platforms
+  :worker_name: Projects::RecordTargetPlatformsWorker
+  :feature_category: :experimentation_activation
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_refresh_build_artifacts_size_statistics
   :worker_name: Projects::RefreshBuildArtifactsSizeStatisticsWorker
   :feature_category: :build_artifacts

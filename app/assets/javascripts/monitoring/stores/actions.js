@@ -385,7 +385,7 @@ export const fetchDashboardValidationWarnings = ({ state, dispatch, getters }) =
         dashboardPath,
       },
     })
-    .then((resp) => resp.data?.project?.environments?.nodes?.[0]?.metricsDashboard)
+    .then((resp) => resp.data?.project?.environments?.nodes?.[0]?.metricsDashboard || undefined)
     .then(({ schemaValidationWarnings } = {}) => {
       const hasWarnings = schemaValidationWarnings && schemaValidationWarnings.length !== 0;
       /**

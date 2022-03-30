@@ -32,10 +32,12 @@ module BulkImports
       strong_memoize(:export_status) do
         status = fetch_export_status
 
-        # Consider empty response as failed export
-        raise StandardError, 'Empty export status response' unless status&.present?
+        relation_export_status = status&.find { |item| item['relation'] == relation }
 
-        status.find { |item| item['relation'] == relation }
+        # Consider empty response as failed export
+        raise StandardError, 'Empty relation export status' unless relation_export_status&.present?
+
+        relation_export_status
       end
     rescue StandardError => e
       { 'status' => Export::FAILED, 'error' => e.message }

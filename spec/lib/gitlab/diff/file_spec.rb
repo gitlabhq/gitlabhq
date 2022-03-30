@@ -66,6 +66,12 @@ RSpec.describe Gitlab::Diff::File do
       it 'does not have renderable viewer' do
         expect(diff_file.has_renderable?).to be_falsey
       end
+
+      it 'does not create a Notebook DiffFile' do
+        expect(diff_file.rendered).to be_nil
+
+        expect(::Gitlab::Diff::Rendered::Notebook::DiffFile).not_to receive(:new)
+      end
     end
   end
 

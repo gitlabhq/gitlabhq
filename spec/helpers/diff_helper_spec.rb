@@ -290,6 +290,53 @@ RSpec.describe DiffHelper do
     end
   end
 
+  describe "#diff_nomappinginraw_line" do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:line) { double("line") }
+    let(:line_type) { 'line_type' }
+
+    before do
+      allow(line).to receive(:rich_text).and_return('line_text')
+      allow(line).to receive(:type).and_return(line_type)
+    end
+
+    it 'generates only single line num' do
+      output = diff_nomappinginraw_line(line, ['line_num_1'], nil, ['line_content'])
+
+      expect(output).to be_html_safe
+      expect(output).to have_css 'td:nth-child(1).line_num_1'
+      expect(output).to have_css 'td:nth-child(2).line_content', text: 'line_text'
+      expect(output).not_to have_css 'td:nth-child(3)'
+    end
+
+    it 'generates only both line nums' do
+      output = diff_nomappinginraw_line(line, ['line_num_1'], ['line_num_2'], ['line_content'])
+
+      expect(output).to be_html_safe
+      expect(output).to have_css 'td:nth-child(1).line_num_1'
+      expect(output).to have_css 'td:nth-child(2).line_num_2'
+      expect(output).to have_css 'td:nth-child(3).line_content', text: 'line_text'
+    end
+
+    where(:line_type, :added_class) do
+      'old-nomappinginraw'       | '.old'
+      'new-nomappinginraw'       | '.new'
+      'unchanged-nomappinginraw' | ''
+    end
+
+    with_them do
+      it "appends the correct class" do
+        output = diff_nomappinginraw_line(line, ['line_num_1'], ['line_num_2'], ['line_content'])
+
+        expect(output).to be_html_safe
+        expect(output).to have_css 'td:nth-child(1).line_num_1' + added_class
+        expect(output).to have_css 'td:nth-child(2).line_num_2' + added_class
+        expect(output).to have_css 'td:nth-child(3).line_content' + added_class, text: 'line_text'
+      end
+    end
+  end
+
   describe '#render_overflow_warning?' do
     using RSpec::Parameterized::TableSyntax
 

@@ -5622,6 +5622,18 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
       end
     end
+
+    describe 'project target platforms detection' do
+      before do
+        create(:import_state, :started, project: project)
+      end
+
+      it 'calls enqueue_record_project_target_platforms' do
+        expect(project).to receive(:enqueue_record_project_target_platforms)
+
+        project.after_import
+      end
+    end
   end
 
   describe '#update_project_counter_caches' do
@@ -8089,6 +8101,44 @@ RSpec.describe Project, factory_default: :keep do
     let(:object) { build(:project) }
 
     it_behaves_like 'blocks unsafe serialization'
+  end
+
+  describe '#enqueue_record_project_target_platforms' do
+    let_it_be(:project) { create(:project) }
+
+    let(:com) { true }
+
+    before do
+      allow(Gitlab).to receive(:com?).and_return(com)
+    end
+
+    it 'enqueues a Projects::RecordTargetPlatformsWorker' do
+      expect(Projects::RecordTargetPlatformsWorker).to receive(:perform_async).with(project.id)
+
+      project.enqueue_record_project_target_platforms
+    end
+
+    shared_examples 'does not enqueue a Projects::RecordTargetPlatformsWorker' do
+      it 'does not enqueue a Projects::RecordTargetPlatformsWorker' do
+        expect(Projects::RecordTargetPlatformsWorker).not_to receive(:perform_async)
+
+        project.enqueue_record_project_target_platforms
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(record_projects_target_platforms: false)
+      end
+
+      it_behaves_like 'does not enqueue a Projects::RecordTargetPlatformsWorker'
+    end
+
+    context 'when not in gitlab.com' do
+      let(:com) { false }
+
+      it_behaves_like 'does not enqueue a Projects::RecordTargetPlatformsWorker'
+    end
   end
 
   private

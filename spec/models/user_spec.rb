@@ -4251,16 +4251,26 @@ RSpec.describe User do
     end
   end
 
-  it_behaves_like '#ci_owned_runners'
+  describe '#ci_owned_runners' do
+    it_behaves_like '#ci_owned_runners'
 
-  context 'when FF ci_owned_runners_cross_joins_fix is disabled' do
-    before do
-      skip_if_multiple_databases_are_setup
+    context 'when FF use_traversal_ids is disabled fallbacks to inefficient implementation' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
 
-      stub_feature_flags(ci_owned_runners_cross_joins_fix: false)
+      it_behaves_like '#ci_owned_runners'
     end
 
-    it_behaves_like '#ci_owned_runners'
+    context 'when FF ci_owned_runners_cross_joins_fix is disabled' do
+      before do
+        skip_if_multiple_databases_are_setup
+
+        stub_feature_flags(ci_owned_runners_cross_joins_fix: false)
+      end
+
+      it_behaves_like '#ci_owned_runners'
+    end
   end
 
   describe '#projects_with_reporter_access_limited_to' do

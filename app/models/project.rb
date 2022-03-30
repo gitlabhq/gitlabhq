@@ -1989,6 +1989,8 @@ class Project < ApplicationRecord
     ProjectCacheWorker.perform_async(self.id, [], [:repository_size])
     AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
 
+    enqueue_record_project_target_platforms
+
     # The import assigns iid values on its own, e.g. by re-using GitHub ids.
     # Flush existing InternalId records for this project for consistency reasons.
     # Those records are going to be recreated with the next normal creation
@@ -2846,6 +2848,13 @@ class Project < ApplicationRecord
 
   def work_items_feature_flag_enabled?
     group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self, default_enabled: :yaml)
+  end
+
+  def enqueue_record_project_target_platforms
+    return unless Gitlab.com?
+    return unless Feature.enabled?(:record_projects_target_platforms, self, default_enabled: :yaml)
+
+    Projects::RecordTargetPlatformsWorker.perform_async(id)
   end
 
   private

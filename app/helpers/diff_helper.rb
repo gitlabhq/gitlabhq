@@ -60,6 +60,18 @@ module DiffHelper
     html.join.html_safe
   end
 
+  def diff_nomappinginraw_line(line, first_line_num_class, second_line_num_class, content_line_class)
+    css_class = ''
+    css_class = 'old' if line.type == 'old-nomappinginraw'
+    css_class = 'new' if line.type == 'new-nomappinginraw'
+
+    html = [content_tag(:td, '', class: [*first_line_num_class, css_class])]
+    html << content_tag(:td, '', class: [*second_line_num_class, css_class]) if second_line_num_class
+    html << content_tag(:td, diff_line_content(line.rich_text), class: [*content_line_class, 'nomappinginraw', css_class])
+
+    html.join.html_safe
+  end
+
   def diff_line_content(line)
     if line.blank?
       "&nbsp;".html_safe
@@ -74,7 +86,7 @@ module DiffHelper
   end
 
   def diff_link_number(line_type, match, text)
-    line_type == match || text == 0 ? " " : text
+    line_type == match ? " " : text
   end
 
   def parallel_diff_discussions(left, right, diff_file)

@@ -114,17 +114,6 @@ RSpec.describe JiraConnect::EventsController do
             base_url: base_url
           )
         end
-
-        context 'when the `jira_connect_installation_update` feature flag is disabled' do
-          before do
-            stub_feature_flags(jira_connect_installation_update: false)
-          end
-
-          it 'does not update the installation', :aggregate_failures do
-            expect { subject }.not_to change { installation.reload.attributes }
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
       end
 
       context 'when the new base_url is invalid' do

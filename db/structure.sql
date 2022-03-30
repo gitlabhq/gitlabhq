@@ -17331,7 +17331,8 @@ CREATE TABLE namespace_root_storage_statistics (
     snippets_size bigint DEFAULT 0 NOT NULL,
     pipeline_artifacts_size bigint DEFAULT 0 NOT NULL,
     uploads_size bigint DEFAULT 0 NOT NULL,
-    dependency_proxy_size bigint DEFAULT 0 NOT NULL
+    dependency_proxy_size bigint DEFAULT 0 NOT NULL,
+    notification_level smallint DEFAULT 100 NOT NULL
 );
 
 CREATE TABLE namespace_settings (
@@ -19371,6 +19372,7 @@ CREATE TABLE project_settings (
     has_shimo boolean DEFAULT false NOT NULL,
     squash_commit_template text,
     legacy_open_source_license_available boolean DEFAULT true NOT NULL,
+    target_platforms character varying[] DEFAULT '{}'::character varying[] NOT NULL,
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),

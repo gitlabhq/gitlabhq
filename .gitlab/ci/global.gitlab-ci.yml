@@ -41,6 +41,7 @@
   key:
     files:
       - GITALY_SERVER_VERSION
+      - lib/gitlab/setup_helper.rb
     prefix: "gitaly-binaries-${DEBIAN-VERSION}"
   paths:
     - tmp/tests/gitaly/_build/bin/

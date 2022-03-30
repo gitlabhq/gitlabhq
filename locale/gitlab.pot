@@ -7807,6 +7807,9 @@ msgstr ""
 msgid "Cluster type must be specified for Stages::ClusterEndpointInserter"
 msgstr ""
 
+msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
+msgstr ""
+
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr ""
 
@@ -7844,6 +7847,9 @@ msgid "ClusterAgents|Agent %{strongStart}connected%{strongEnd}"
 msgstr ""
 
 msgid "ClusterAgents|Agent %{strongStart}disconnected%{strongEnd}"
+msgstr ""
+
+msgid "ClusterAgents|Agent access token:"
 msgstr ""
 
 msgid "ClusterAgents|Agent might not be connected to GitLab"
@@ -7885,6 +7891,9 @@ msgstr ""
 msgid "ClusterAgents|Configuration"
 msgstr ""
 
+msgid "ClusterAgents|Connect a Kubernetes cluster"
+msgstr ""
+
 msgid "ClusterAgents|Connect a cluster"
 msgstr ""
 
@@ -7895,9 +7904,6 @@ msgid "ClusterAgents|Connect a cluster (certificate - deprecated)"
 msgstr ""
 
 msgid "ClusterAgents|Connect a cluster (deprecated)"
-msgstr ""
-
-msgid "ClusterAgents|Connect a cluster through an agent"
 msgstr ""
 
 msgid "ClusterAgents|Connect existing cluster"
@@ -7969,7 +7975,7 @@ msgstr ""
 msgid "ClusterAgents|Failed to register an agent"
 msgstr ""
 
-msgid "ClusterAgents|For the advanced installation method %{linkStart}see the documentation%{linkEnd}."
+msgid "ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included."
 msgstr ""
 
 msgid "ClusterAgents|GitLab Agent"
@@ -8032,9 +8038,6 @@ msgstr ""
 msgid "ClusterAgents|Registering agent"
 msgstr ""
 
-msgid "ClusterAgents|Registration token"
-msgstr ""
-
 msgid "ClusterAgents|Requires a Maintainer or greater role to delete agents"
 msgstr ""
 
@@ -8065,13 +8068,10 @@ msgstr ""
 msgid "ClusterAgents|The agent has not been connected in a long time. There might be a connectivity issue. Last contact was %{timeAgo}."
 msgstr ""
 
+msgid "ClusterAgents|The agent uses the token to connect with GitLab."
+msgstr ""
+
 msgid "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods."
-msgstr ""
-
-msgid "ClusterAgents|The recommended installation method includes the token. If you want to follow the advanced installation method provided in the docs, make sure you save the token value before you close this window."
-msgstr ""
-
-msgid "ClusterAgents|The registration token will be used to connect the agent on your cluster to GitLab. %{linkStart}What are registration tokens?%{linkEnd}"
 msgstr ""
 
 msgid "ClusterAgents|There's no activity from the past day"
@@ -26148,9 +26148,6 @@ msgid "Open"
 msgstr ""
 
 msgid "Open Selection"
-msgstr ""
-
-msgid "Open a CLI and connect to the cluster you want to install the agent in. Use this installation method to minimize any manual steps. The token is already included in the command."
 msgstr ""
 
 msgid "Open errors"
