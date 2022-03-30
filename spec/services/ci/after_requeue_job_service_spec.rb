@@ -202,7 +202,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         stub_feature_flags(ci_fix_order_of_subsequent_jobs: false)
       end
 
-      it 'does not mark b1 as processable' do
+      it 'does not mark b1 as processable', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/356571' do
         execute_after_requeue_service(a1)
 
         check_jobs_statuses(

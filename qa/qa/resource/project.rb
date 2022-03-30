@@ -90,7 +90,12 @@ module QA
         Page::Project::New.perform(&:click_blank_project_link)
 
         Page::Project::New.perform do |new_page|
-          new_page.choose_test_namespace unless @personal_namespace
+          if @personal_namespace
+            new_page.choose_namespace(@personal_namespace)
+          else
+            new_page.choose_test_namespace
+          end
+
           new_page.choose_name(@name)
           new_page.add_description(@description)
           new_page.set_visibility(@visibility)

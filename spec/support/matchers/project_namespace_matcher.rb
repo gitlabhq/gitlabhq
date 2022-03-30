@@ -10,7 +10,7 @@ RSpec::Matchers.define :be_in_sync_with_project do |project|
     project_namespace.present? &&
       project.name == project_namespace.name &&
       project.path == project_namespace.path &&
-      project.namespace == project_namespace.parent &&
+      project.namespace_id == project_namespace.parent_id &&
       project.visibility_level == project_namespace.visibility_level &&
       project.shared_runners_enabled == project_namespace.shared_runners_enabled
   end

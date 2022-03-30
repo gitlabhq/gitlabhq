@@ -9,27 +9,29 @@
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
     = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { qa_selector: 'project_name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
-  .form-group.project-path.col-sm-6
+  .form-group.project-path.col-sm-6.gl-pr-0
     = f.label :namespace_id, class: 'label-bold' do
       %span= _('Project URL')
     .input-group.gl-flex-nowrap
       - if current_user.can_select_namespace?
         - namespace_id = namespace_id_from(params)
-        .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path,
-          namespace_id: namespace_id,
+        .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || @current_user_group&.full_path,
+          namespace_id: namespace_id || @current_user_group&.id,
           root_url: root_url,
           track_label: track_label,
-          user_namespace_full_path: current_user.namespace.full_path,
           user_namespace_id: current_user.namespace.id } }
       - else
         .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
           .input-group-text.border-0
             #{user_url(current_user.username)}/
         = f.hidden_field :namespace_id, value: current_user.namespace_id
+      .gl-align-self-center.gl-pl-5 /
   .form-group.project-path.col-sm-6
     = f.label :path, class: 'label-bold' do
       %span= _("Project slug")
     = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { qa_selector: 'project_path', username: current_user.username }
+.js-group-namespace-error.form-text.gl-text-red-500.gl-display-none
+  = s_('ProjectsNew|Pick a group or namespace where you want to create this project.')
 - if current_user.can_create_group?
   .form-text.text-muted
     - link_start_group_path = '<a href="%{path}">' % { path: new_group_path }
@@ -73,5 +75,5 @@
         = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
         = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
-= f.submit _('Create project'), class: "btn gl-button btn-confirm", data: { qa_selector: 'project_create_button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }
+= f.submit _('Create project'), class: "btn gl-button btn-confirm js-create-project-button", data: { qa_selector: 'project_create_button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }
 = link_to _('Cancel'), dashboard_projects_path, class: 'btn gl-button btn-default btn-cancel', data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

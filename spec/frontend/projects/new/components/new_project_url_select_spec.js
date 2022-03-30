@@ -15,6 +15,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '~/projects/new/event_hub';
 import NewProjectUrlSelect from '~/projects/new/components/new_project_url_select.vue';
 import searchQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import { s__ } from '~/locale';
 
 describe('NewProjectUrlSelect component', () => {
   let wrapper;
@@ -61,7 +62,6 @@ describe('NewProjectUrlSelect component', () => {
     namespaceId: '28',
     rootUrl: 'https://gitlab.com/',
     trackLabel: 'blank_project',
-    userNamespaceFullPath: 'root',
     userNamespaceId: '1',
   };
 
@@ -91,7 +91,10 @@ describe('NewProjectUrlSelect component', () => {
   const findButtonLabel = () => wrapper.findComponent(GlButton);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findInput = () => wrapper.findComponent(GlSearchBoxByType);
-  const findHiddenInput = () => wrapper.find('[name="project[namespace_id]"]');
+  const findHiddenNamespaceInput = () => wrapper.find('[name="project[namespace_id]"]');
+
+  const findHiddenSelectedNamespaceInput = () =>
+    wrapper.find('[name="project[selected_namespace_id]"]');
 
   const clickDropdownItem = async () => {
     wrapper.findComponent(GlDropdownItem).vm.$emit('click');
@@ -122,11 +125,20 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('renders a dropdown with the given namespace full path as the text', () => {
-      expect(findDropdown().props('text')).toBe(defaultProvide.namespaceFullPath);
+      const dropdownProps = findDropdown().props();
+
+      expect(dropdownProps.text).toBe(defaultProvide.namespaceFullPath);
+      expect(dropdownProps.toggleClass).not.toContain('gl-text-gray-500!');
     });
 
-    it('renders a dropdown with the given namespace id in the hidden input', () => {
-      expect(findHiddenInput().attributes('value')).toBe(defaultProvide.namespaceId);
+    it('renders a hidden input with the given namespace id', () => {
+      expect(findHiddenNamespaceInput().attributes('value')).toBe(defaultProvide.namespaceId);
+    });
+
+    it('renders a hidden input with the selected namespace id', () => {
+      expect(findHiddenSelectedNamespaceInput().attributes('value')).toBe(
+        defaultProvide.namespaceId,
+      );
     });
   });
 
@@ -142,11 +154,18 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it("renders a dropdown with the user's namespace full path as the text", () => {
-      expect(findDropdown().props('text')).toBe(defaultProvide.userNamespaceFullPath);
+      const dropdownProps = findDropdown().props();
+
+      expect(dropdownProps.text).toBe(s__('ProjectsNew|Pick a group or namespace'));
+      expect(dropdownProps.toggleClass).toContain('gl-text-gray-500!');
     });
 
-    it("renders a dropdown with the user's namespace id in the hidden input", () => {
-      expect(findHiddenInput().attributes('value')).toBe(defaultProvide.userNamespaceId);
+    it("renders a hidden input with the user's namespace id", () => {
+      expect(findHiddenNamespaceInput().attributes('value')).toBe(defaultProvide.userNamespaceId);
+    });
+
+    it('renders a hidden input with the selected namespace id', () => {
+      expect(findHiddenSelectedNamespaceInput().attributes('value')).toBe(undefined);
     });
   });
 
@@ -270,7 +289,7 @@ describe('NewProjectUrlSelect component', () => {
 
     await clickDropdownItem();
 
-    expect(findHiddenInput().attributes('value')).toBe(
+    expect(findHiddenNamespaceInput().attributes('value')).toBe(
       getIdFromGraphQLId(data.currentUser.groups.nodes[0].id).toString(),
     );
   });

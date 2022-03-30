@@ -222,7 +222,7 @@ class WikiPage
 
     update_attributes(attrs)
 
-    if title.present? && title_changed? && wiki.find_page(title).present?
+    if title.present? && title_changed? && wiki.find_page(title, load_content: false).present?
       attributes[:title] = page.title
       raise PageRenameError, s_('WikiEdit|There is already a page with the same title in that path.')
     end

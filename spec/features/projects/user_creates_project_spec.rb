@@ -70,7 +70,7 @@ RSpec.describe 'User creates a project', :js do
       fill_in :project_name, with: 'A Subgroup Project'
       fill_in :project_path, with: 'a-subgroup-project'
 
-      click_button user.username
+      click_on 'Pick a group or namespace'
       click_button subgroup.full_path
 
       click_button('Create project')
@@ -96,9 +96,6 @@ RSpec.describe 'User creates a project', :js do
       click_link 'Create blank project'
       fill_in :project_name, with: 'a-new-project'
       fill_in :project_path, with: 'a-new-project'
-
-      click_button user.username
-      click_button group.full_path
 
       page.within('#content-body') do
         click_button('Create project')

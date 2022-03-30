@@ -396,6 +396,11 @@ When you are ready to have your merge request reviewed,
 you should [request an initial review](../user/project/merge_requests/getting_started.md#reviewer) by selecting a reviewer from your group or team.
 However, you can also assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
 
+When a merge request has multiple areas for review, it is recommended you specify which area a reviewer should be reviewing, and at which stage (first or second).
+This will help team members who qualify as a reviewer for multiple areas to know which area they're being requested to review.
+For example, when a merge request has both `backend` and `frontend` concerns, you can mention the reviewer in this manner:
+`@john_doe can you please review ~backend?` or `@jane_doe - could you please give this MR a ~frontend maintainer review?`
+
 You can also use `workflow::ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
 
 When your merge request receives an approval from the first reviewer it can be passed to a maintainer. You should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.

@@ -7,6 +7,8 @@ module Gitlab
       #
       # rubocop: disable Metrics/ClassLength
       class BackfillProjectNamespaces
+        attr_accessor :project_ids, :sub_batch_size
+
         SUB_BATCH_SIZE = 25
         PROJECT_NAMESPACE_STI_NAME = 'Project'
 
@@ -18,7 +20,7 @@ module Gitlab
 
           case migration_type
           when 'up'
-            backfill_project_namespaces(namespace_id)
+            backfill_project_namespaces
             mark_job_as_succeeded(start_id, end_id, namespace_id, 'up')
           when 'down'
             cleanup_backfilled_project_namespaces(namespace_id)
@@ -28,11 +30,7 @@ module Gitlab
           end
         end
 
-        private
-
-        attr_accessor :project_ids, :sub_batch_size
-
-        def backfill_project_namespaces(namespace_id)
+        def backfill_project_namespaces
           project_ids.each_slice(sub_batch_size) do |project_ids|
             # cleanup gin indexes on namespaces table
             cleanup_gin_index('namespaces')
@@ -63,6 +61,8 @@ module Gitlab
             ActiveRecord::Base.connection.execute("select gin_clean_pending_list('#{index_name}')")
           end
         end
+
+        private
 
         def cleanup_backfilled_project_namespaces(namespace_id)
           project_ids.each_slice(sub_batch_size) do |project_ids|

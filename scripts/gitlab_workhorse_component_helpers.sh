@@ -30,6 +30,7 @@ function create_gitlab_workhorse_package() {
 
 function extract_gitlab_workhorse_package() {
   local tar_working_folder="${TMP_TEST_FOLDER}"
+  mkdir -p "${tar_working_folder}"
 
   echoinfo "Extracting archive to ${tar_working_folder}"
 

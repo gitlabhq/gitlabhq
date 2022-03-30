@@ -29885,6 +29885,12 @@ msgstr ""
 msgid "ProjectsNew|No import options available"
 msgstr ""
 
+msgid "ProjectsNew|Pick a group or namespace"
+msgstr ""
+
+msgid "ProjectsNew|Pick a group or namespace where you want to create this project."
+msgstr ""
+
 msgid "ProjectsNew|Project Configuration"
 msgstr ""
 
