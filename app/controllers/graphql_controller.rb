@@ -32,6 +32,7 @@ class GraphqlController < ApplicationController
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :track_jetbrains_usage
+  before_action :track_gitlab_cli_usage
   before_action :disable_query_limiting
   before_action :limit_query_size
 
@@ -140,6 +141,11 @@ class GraphqlController < ApplicationController
 
   def track_jetbrains_usage
     Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter
+      .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
+  end
+
+  def track_gitlab_cli_usage
+    Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter
       .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
   end
 

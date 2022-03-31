@@ -11,6 +11,7 @@ import NoteBody from '~/notes/components/note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import issueNote from '~/notes/components/noteable_note.vue';
 import NotesModule from '~/notes/stores/modules';
+import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
@@ -226,6 +227,7 @@ describe('issue_note', () => {
       expect(noteHeaderProps.author).toBe(note.author);
       expect(noteHeaderProps.createdAt).toBe(note.created_at);
       expect(noteHeaderProps.noteId).toBe(note.id);
+      expect(noteHeaderProps.noteableType).toBe(NOTEABLE_TYPE_MAPPING[note.noteable_type]);
     });
 
     it('should render note actions', () => {

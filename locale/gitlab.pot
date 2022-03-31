@@ -21107,10 +21107,13 @@ msgstr ""
 msgid "Iterations"
 msgstr ""
 
+msgid "Iterations|Add a duration, and number of future iterations in order to convert this cadence to automatic scheduling."
+msgstr ""
+
 msgid "Iterations|Add iteration"
 msgstr ""
 
-msgid "Iterations|Automated scheduling"
+msgid "Iterations|All"
 msgstr ""
 
 msgid "Iterations|Cadence configuration is invalid."
@@ -21125,12 +21128,6 @@ msgstr ""
 msgid "Iterations|Create cadence"
 msgstr ""
 
-msgid "Iterations|Create cadence and start iteration"
-msgstr ""
-
-msgid "Iterations|Create iteration"
-msgstr ""
-
 msgid "Iterations|Delete cadence"
 msgstr ""
 
@@ -21138,6 +21135,9 @@ msgid "Iterations|Delete iteration cadence?"
 msgstr ""
 
 msgid "Iterations|Delete iteration?"
+msgstr ""
+
+msgid "Iterations|Done"
 msgstr ""
 
 msgid "Iterations|Duration"
@@ -21161,10 +21161,13 @@ msgstr ""
 msgid "Iterations|Iteration cadences"
 msgstr ""
 
-msgid "Iterations|Iteration scheduling will be handled automatically"
+msgid "Iterations|Iterations are a way to track issues over a period of time, allowing teams to also track velocity and volatility metrics."
 msgstr ""
 
-msgid "Iterations|Iterations are a way to track issues over a period of time, allowing teams to also track velocity and volatility metrics."
+msgid "Iterations|Iterations can no longer be scheduled manually. Convert all cadences to automatic scheduling to keep your iterations working as expected."
+msgstr ""
+
+msgid "Iterations|Learn more about automatic scheduling"
 msgstr ""
 
 msgid "Iterations|Move incomplete issues to the next iteration"
@@ -21194,10 +21197,16 @@ msgstr ""
 msgid "Iterations|Number of future iterations you would like to have scheduled"
 msgstr ""
 
+msgid "Iterations|Open"
+msgstr ""
+
+msgid "Iterations|Requires update"
+msgstr ""
+
 msgid "Iterations|Roll over issues"
 msgstr ""
 
-msgid "Iterations|Save cadence"
+msgid "Iterations|Save changes"
 msgstr ""
 
 msgid "Iterations|Select duration"
@@ -21207,6 +21216,9 @@ msgid "Iterations|Select number"
 msgstr ""
 
 msgid "Iterations|Select start date"
+msgstr ""
+
+msgid "Iterations|Some of your cadences need to be updated"
 msgstr ""
 
 msgid "Iterations|Start date"
@@ -21219,6 +21231,9 @@ msgid "Iterations|The iteration has been deleted."
 msgstr ""
 
 msgid "Iterations|The start date of your first iteration"
+msgstr ""
+
+msgid "Iterations|This cadence requires an update"
 msgstr ""
 
 msgid "Iterations|This will delete the cadence as well as all of the iterations within it."
@@ -25644,6 +25659,9 @@ msgid "Notes|Show history only"
 msgstr ""
 
 msgid "Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost"
+msgstr ""
+
+msgid "Notes|This comment is confidential and only visible to group members"
 msgstr ""
 
 msgid "Notes|This comment is confidential and only visible to project members"

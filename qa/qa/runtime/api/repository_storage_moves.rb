@@ -24,7 +24,7 @@ module QA
           Logger.debug('Getting repository storage moves')
 
           Support::Waiter.wait_until do
-            with_paginated_response_body(Request.new(api_client, "/#{resource_name(resource)}_repository_storage_moves", per_page: '100').url) do |page|
+            get(Request.new(api_client, "/#{resource_name(resource)}_repository_storage_moves", per_page: '100').url) do |page|
               break true if page.any? { |item| yield item }
             end
           end

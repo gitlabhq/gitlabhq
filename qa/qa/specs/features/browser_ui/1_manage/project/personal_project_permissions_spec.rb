@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Personal project permissions' do
+    describe 'Personal project permissions', :reliable do
       let!(:owner) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
 
       let!(:owner_api_client) { Runtime::API::Client.new(:gitlab, user: owner) }

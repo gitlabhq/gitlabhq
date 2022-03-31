@@ -432,6 +432,7 @@ export default {
           :created-at="note.created_at"
           :note-id="note.id"
           :is-confidential="note.confidential"
+          :noteable-type="noteableType"
         >
           <template #note-header-info>
             <slot name="note-header-info"></slot>

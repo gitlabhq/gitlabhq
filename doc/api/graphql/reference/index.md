@@ -1458,7 +1458,7 @@ Input type: `CreateIssueInput`
 
 WARNING:
 **Deprecated** in 14.0.
-Use iterationCreate.
+Manual iteration management is deprecated. Only automatic iteration cadences will be supported in the future.
 
 Input type: `CreateIterationInput`
 
@@ -1470,7 +1470,7 @@ Input type: `CreateIterationInput`
 | <a id="mutationcreateiterationdescription"></a>`description` | [`String`](#string) | Description of the iteration. |
 | <a id="mutationcreateiterationduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationcreateiterationgrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
-| <a id="mutationcreateiterationiterationscadenceid"></a>`iterationsCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iterations cadence to be assigned to newly created iteration. |
+| <a id="mutationcreateiterationiterationscadenceid"></a>`iterationsCadenceId` **{warning-solid}** | [`IterationsCadenceID`](#iterationscadenceid) | **Deprecated:** `iterationCadenceId` is deprecated and will be removed in the future. This argument is ignored, because you can't create an iteration in a specific cadence. In the future only automatic iteration cadences will be allowed. Deprecated in 14.10. |
 | <a id="mutationcreateiterationprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
 | <a id="mutationcreateiterationstartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
 | <a id="mutationcreateiterationtitle"></a>`title` | [`String`](#string) | Title of the iteration. |
@@ -3213,6 +3213,10 @@ Input type: `IterationCadenceUpdateInput`
 
 ### `Mutation.iterationCreate`
 
+WARNING:
+**Deprecated** in 14.10.
+Manual iteration management is deprecated. Only automatic iteration cadences will be supported in the future.
+
 Input type: `iterationCreateInput`
 
 #### Arguments
@@ -3223,7 +3227,7 @@ Input type: `iterationCreateInput`
 | <a id="mutationiterationcreatedescription"></a>`description` | [`String`](#string) | Description of the iteration. |
 | <a id="mutationiterationcreateduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationiterationcreategrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
-| <a id="mutationiterationcreateiterationscadenceid"></a>`iterationsCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iterations cadence to be assigned to newly created iteration. |
+| <a id="mutationiterationcreateiterationscadenceid"></a>`iterationsCadenceId` **{warning-solid}** | [`IterationsCadenceID`](#iterationscadenceid) | **Deprecated:** `iterationCadenceId` is deprecated and will be removed in the future. This argument is ignored, because you can't create an iteration in a specific cadence. In the future only automatic iteration cadences will be allowed. Deprecated in 14.10. |
 | <a id="mutationiterationcreateprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
 | <a id="mutationiterationcreatestartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
 | <a id="mutationiterationcreatetitle"></a>`title` | [`String`](#string) | Title of the iteration. |

@@ -6,9 +6,8 @@ module Releases
   #
   # order_by - only ordering by released_at is supported
   # filter by tag - currently not supported
+  # include_subgroups - always true for group releases finder
   class GroupReleasesFinder
-    include Gitlab::Utils::StrongMemoize
-
     attr_reader :parent, :current_user, :params
 
     def initialize(parent, current_user = nil, params = {})
@@ -25,45 +24,26 @@ module Releases
     def execute(preload: true)
       return Release.none unless Ability.allowed?(current_user, :read_release, parent)
 
-      releases = get_releases(preload: preload)
-
+      releases = get_releases
+      releases.preloaded if preload
       paginate_releases(releases)
     end
 
     private
 
-    def include_subgroups?
-      params.fetch(:include_subgroups, false)
-    end
-
-    def accessible_projects_scope
-      if include_subgroups?
-        Project.for_group_and_its_subgroups(parent)
-      else
-        parent.projects
-      end
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
-    def get_releases(preload: true)
+    def get_releases
       Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
-        scope: releases_scope(preload: preload),
-        array_scope: accessible_projects_scope.select(:id),
+        scope: releases_scope,
+        array_scope:  Project.for_group_and_its_subgroups(parent).select(:id),
         array_mapping_scope: -> (project_id_expression) { Release.where(Release.arel_table[:project_id].eq(project_id_expression)) },
         finder_query: -> (order_by, id_expression) { Release.where(Release.arel_table[:id].eq(id_expression)) }
       )
       .execute
     end
 
-    def releases_scope(preload: true)
-      scope = Release.all
-      scope = order_releases(scope)
-      scope = scope.preloaded if preload
-      scope
-    end
-
-    def order_releases(scope)
-      scope.sort_by_attribute("released_at_#{params[:sort]}").order(id: params[:sort])
+    def releases_scope
+      Release.sort_by_attribute("released_at_#{params[:sort]}").order(id: params[:sort])
     end
 
     def paginate_releases(releases)

@@ -95,8 +95,6 @@ RSpec.describe Releases::GroupReleasesFinder do
     end
 
     describe 'with subgroups' do
-      let(:params) { { include_subgroups: true } }
-
       subject(:releases) { described_class.new(group, user, params).execute(**args) }
 
       context 'with a single-level subgroup' do
@@ -164,22 +162,12 @@ RSpec.describe Releases::GroupReleasesFinder do
           end
         end
 
-        context 'when the user a guest on the group' do
-          before do
-            group.add_guest(user)
-          end
-
-          it 'returns all releases' do
-            expect(releases).to match_array([v1_1_1, v1_1_0, v6, v1_0_0, p3])
-          end
-        end
-
         context 'performance testing' do
           shared_examples 'avoids N+1 queries' do |query_params = {}|
             context 'with subgroups' do
               let(:params) { query_params }
 
-              it 'include_subgroups avoids N+1 queries' do
+              it 'subgroups avoids N+1 queries' do
                 control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
                   releases
                 end.count
@@ -196,7 +184,6 @@ RSpec.describe Releases::GroupReleasesFinder do
           end
 
           it_behaves_like 'avoids N+1 queries'
-          it_behaves_like 'avoids N+1 queries', { simple: true }
         end
       end
     end

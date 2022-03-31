@@ -135,6 +135,16 @@ RSpec.describe GraphqlController do
         post :execute
       end
 
+      it 'calls the track gitlab cli when trackable method' do
+        agent = 'GLab - GitLab CLI'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        post :execute
+      end
+
       it "assigns username in ApplicationContext" do
         post :execute
 
@@ -216,6 +226,16 @@ RSpec.describe GraphqlController do
         request.env['HTTP_USER_AGENT'] = agent
 
         expect(Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        subject
+      end
+
+      it 'calls the track gitlab cli when trackable method' do
+        agent = 'GLab - GitLab CLI'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter)
           .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
 
         subject

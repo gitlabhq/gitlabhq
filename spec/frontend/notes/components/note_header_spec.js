@@ -296,5 +296,13 @@ describe('NoteHeader component', () => {
       createComponent({ isConfidential: status });
       expect(findConfidentialIndicator().exists()).toBe(status);
     });
+
+    it('shows confidential indicator tooltip for project context', () => {
+      createComponent({ isConfidential: true, noteableType: 'issue' });
+
+      expect(findConfidentialIndicator().attributes('title')).toBe(
+        'This comment is confidential and only visible to project members',
+      );
+    });
   });
 });
