@@ -22,6 +22,14 @@ RSpec.describe Gitlab::ExceptionLogFormatter do
       expect(payload['exception.sql']).to be_nil
     end
 
+    it 'cleans the exception message' do
+      expect(Gitlab::Sanitizers::ExceptionMessage).to receive(:clean).with('RuntimeError', 'bad request').and_return('cleaned')
+
+      described_class.format!(exception, payload)
+
+      expect(payload['exception.message']).to eq('cleaned')
+    end
+
     context 'when exception is ActiveRecord::StatementInvalid' do
       let(:exception) { ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1') }
 

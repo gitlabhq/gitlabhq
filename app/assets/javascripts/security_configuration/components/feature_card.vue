@@ -2,6 +2,7 @@
 import { GlButton, GlCard, GlIcon, GlLink } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
+import { REPORT_TYPE_SAST_IAC } from '~/vue_shared/security_reports/constants';
 
 export default {
   components: {
@@ -61,6 +62,12 @@ export default {
       const { name, description, configurationText } = this.feature.secondary ?? {};
       return Boolean(name && description && configurationText);
     },
+    // This condition is a temporary hack to not display any wrong information
+    // until this BE Bug is fixed: https://gitlab.com/gitlab-org/gitlab/-/issues/350307.
+    // More Information: https://gitlab.com/gitlab-org/gitlab/-/issues/350307#note_825447417
+    isNotSastIACTemporaryHack() {
+      return this.feature.type !== REPORT_TYPE_SAST_IAC;
+    },
   },
   methods: {
     onError(message) {
@@ -85,6 +92,7 @@ export default {
       <h3 class="gl-font-lg gl-m-0 gl-mr-3">{{ feature.name }}</h3>
 
       <div
+        v-if="isNotSastIACTemporaryHack"
         :class="statusClasses"
         data-testid="feature-status"
         :data-qa-selector="`${feature.type}_status`"
@@ -109,7 +117,7 @@ export default {
       <gl-link :href="feature.helpPath">{{ $options.i18n.learnMore }}</gl-link>
     </p>
 
-    <template v-if="available">
+    <template v-if="available && isNotSastIACTemporaryHack">
       <gl-button
         v-if="feature.configurationPath"
         :href="feature.configurationPath"

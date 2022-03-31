@@ -1,5 +1,10 @@
 <script>
-import { GlAlert, GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlKeysetPagination,
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlPagination,
+} from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';

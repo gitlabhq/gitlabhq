@@ -143,7 +143,7 @@ module Gitlab
               file_class.new(location, context)
             end.select(&:matching?)
 
-            raise AmbigiousSpecificationError, "Include `#{location.to_json}` needs to match exactly one accessor!" unless matching.one?
+            raise AmbigiousSpecificationError, "Include `#{masked_location(location.to_json)}` needs to match exactly one accessor!" unless matching.one?
 
             matching.first
           end
@@ -181,6 +181,10 @@ module Gitlab
 
           def expand(data)
             ExpandVariables.expand(data, -> { context.variables_hash })
+          end
+
+          def masked_location(location)
+            context.mask_variables_from(location)
           end
         end
       end

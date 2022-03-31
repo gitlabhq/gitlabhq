@@ -10,7 +10,7 @@ module Gitlab
         # Use periods to flatten the fields.
         payload.merge!(
           'exception.class' => exception.class.name,
-          'exception.message' => exception.message
+          'exception.message' => sanitize_message(exception)
         )
 
         if exception.backtrace
@@ -37,6 +37,10 @@ module Gitlab
         PgQuery.normalize(sql)
       rescue PgQuery::ParseError
         sql
+      end
+
+      def sanitize_message(exception)
+        Gitlab::Sanitizers::ExceptionMessage.clean(exception.class.name, exception.message)
       end
     end
   end

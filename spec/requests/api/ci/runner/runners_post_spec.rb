@@ -130,7 +130,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           }
         end
 
-        let_it_be(:new_runner) { create(:ci_runner) }
+        let_it_be(:new_runner) { build(:ci_runner) }
 
         it 'uses active value in registration' do
           expect_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
@@ -182,6 +182,54 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
           expect(response).to have_gitlab_http_status(:created)
           expect(::Ci::Runner.last.ip_address).to eq('123.111.123.111')
+        end
+
+        context 'when tags parameter is provided' do
+          def request
+            post api('/runners'), params: {
+              token: registration_token,
+              tag_list: tag_list
+            }
+          end
+
+          context 'with number of tags above limit' do
+            let(:tag_list) { (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" } }
+
+            it 'uses tag_list value in registration and returns error' do
+              expect_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
+                expected_params = { tag_list: tag_list }.stringify_keys
+
+                expect(service).to receive(:execute)
+                  .once
+                  .with(registration_token, a_hash_including(expected_params))
+                  .and_call_original
+              end
+
+              request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response.dig('message', 'tags_list')).to contain_exactly("Too many tags specified. Please limit the number of tags to #{::Ci::Runner::TAG_LIST_MAX_LENGTH}")
+            end
+          end
+
+          context 'with number of tags below limit' do
+            let(:tag_list) { (1..20).map { |i| "tag#{i}" } }
+
+            it 'uses tag_list value in registration and successfully creates runner' do
+              expect_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
+                expected_params = { tag_list: tag_list }.stringify_keys
+
+                expect(service).to receive(:execute)
+                  .once
+                  .with(registration_token, a_hash_including(expected_params))
+                  .and_call_original
+              end
+
+              request
+
+              expect(response).to have_gitlab_http_status(:created)
+            end
+          end
         end
       end
     end

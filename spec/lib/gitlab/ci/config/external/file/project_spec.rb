@@ -11,6 +11,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
   let(:parent_pipeline) { double(:parent_pipeline) }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:project_file) { described_class.new(params, context) }
+  let(:variables) { project.predefined_variables.to_runner_variables }
 
   let(:context_params) do
     {
@@ -18,7 +19,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       sha: '12345',
       user: context_user,
       parent_pipeline: parent_pipeline,
-      variables: project.predefined_variables.to_runner_variables
+      variables: variables
     }
   end
 
@@ -109,18 +110,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
 
     context 'when an empty file is used' do
       let(:params) do
-        { project: project.full_path, file: '/file.yml' }
+        { project: project.full_path, file: '/secret_file.yml' }
       end
 
+      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
       let(:root_ref_sha) { project.repository.root_ref_sha }
 
       before do
-        stub_project_blob(root_ref_sha, '/file.yml') { '' }
+        stub_project_blob(root_ref_sha, '/secret_file.yml') { '' }
       end
 
       it 'returns false' do
         expect(valid?).to be_falsy
-        expect(project_file.error_message).to include("Project `#{project.full_path}` file `/file.yml` is empty!")
+        expect(project_file.error_message).to include("Project `#{project.full_path}` file `/xxxxxxxxxxx.yml` is empty!")
       end
     end
 
@@ -136,13 +138,15 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
     end
 
     context 'when non-existing file is requested' do
+      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret-invalid-file', 'masked' => true }]) }
+
       let(:params) do
-        { project: project.full_path, file: '/invalid-file.yml' }
+        { project: project.full_path, file: '/secret-invalid-file.yml' }
       end
 
       it 'returns false' do
         expect(valid?).to be_falsy
-        expect(project_file.error_message).to include("Project `#{project.full_path}` file `/invalid-file.yml` does not exist!")
+        expect(project_file.error_message).to include("Project `#{project.full_path}` file `/xxxxxxxxxxxxxxxxxxx.yml` does not exist!")
       end
     end
 

@@ -57,11 +57,13 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template do
     end
 
     context 'with invalid template name' do
-      let(:template) { 'Template.yml' }
+      let(:template) { 'SecretTemplate.yml' }
+      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'SecretTemplate', 'masked' => true }]) }
+      let(:context_params) { { project: project, sha: '12345', user: user, variables: variables } }
 
       it 'returns false' do
         expect(valid?).to be_falsy
-        expect(template_file.error_message).to include('Template file `Template.yml` is not a valid location!')
+        expect(template_file.error_message).to include('`xxxxxxxxxxxxxx.yml` is not a valid location!')
       end
     end
 

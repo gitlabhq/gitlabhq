@@ -5,11 +5,9 @@ import VueRouter from 'vue-router';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import OrganizationsRoot from '~/crm/components/organizations_root.vue';
-import NewOrganizationForm from '~/crm/components/new_organization_form.vue';
-import { NEW_ROUTE_NAME } from '~/crm/constants';
-import routes from '~/crm/routes';
-import getGroupOrganizationsQuery from '~/crm/components/queries/get_group_organizations.query.graphql';
+import OrganizationsRoot from '~/crm/organizations/components/organizations_root.vue';
+import routes from '~/crm/organizations/routes';
+import getGroupOrganizationsQuery from '~/crm/organizations/components/graphql/get_group_organizations.query.graphql';
 import { getGroupOrganizationsQueryResponse } from './mock_data';
 
 describe('Customer relations organizations root app', () => {
@@ -23,7 +21,6 @@ describe('Customer relations organizations root app', () => {
   const findRowByName = (rowName) => wrapper.findAllByRole('row', { name: rowName });
   const findIssuesLinks = () => wrapper.findAllByTestId('issues-link');
   const findNewOrganizationButton = () => wrapper.findByTestId('new-organization-button');
-  const findNewOrganizationForm = () => wrapper.findComponent(NewOrganizationForm);
   const findError = () => wrapper.findComponent(GlAlert);
   const successQueryHandler = jest.fn().mockResolvedValue(getGroupOrganizationsQueryResponse);
 
@@ -37,7 +34,11 @@ describe('Customer relations organizations root app', () => {
     fakeApollo = createMockApollo([[getGroupOrganizationsQuery, queryHandler]]);
     wrapper = mountFunction(OrganizationsRoot, {
       router,
-      provide: { canAdminCrmOrganization, groupFullPath: 'flightjs', groupIssuesPath: '/issues' },
+      provide: {
+        canAdminCrmOrganization,
+        groupFullPath: 'flightjs',
+        groupIssuesPath: '/issues',
+      },
       apolloProvider: fakeApollo,
     });
   };
@@ -73,42 +74,6 @@ describe('Customer relations organizations root app', () => {
       mountComponent({ canAdminCrmOrganization: false });
 
       expect(findNewOrganizationButton().exists()).toBe(false);
-    });
-  });
-
-  describe('new organization form', () => {
-    it('should not exist by default', async () => {
-      mountComponent();
-      await waitForPromises();
-
-      expect(findNewOrganizationForm().exists()).toBe(false);
-    });
-
-    it('should exist when user clicks new contact button', async () => {
-      mountComponent();
-
-      findNewOrganizationButton().vm.$emit('click');
-      await waitForPromises();
-
-      expect(findNewOrganizationForm().exists()).toBe(true);
-    });
-
-    it('should exist when user navigates directly to /new', async () => {
-      router.replace({ name: NEW_ROUTE_NAME });
-      mountComponent();
-      await waitForPromises();
-
-      expect(findNewOrganizationForm().exists()).toBe(true);
-    });
-
-    it('should not exist when form emits close', async () => {
-      router.replace({ name: NEW_ROUTE_NAME });
-      mountComponent();
-
-      findNewOrganizationForm().vm.$emit('close');
-      await waitForPromises();
-
-      expect(findNewOrganizationForm().exists()).toBe(false);
     });
   });
 

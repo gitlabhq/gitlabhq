@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import runnerJobsQuery from '../graphql/details/runner_jobs.query.graphql';
 import { I18N_FETCH_ERROR, I18N_NO_JOBS_FOUND, RUNNER_DETAILS_JOBS_PAGE_SIZE } from '../constants';

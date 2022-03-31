@@ -240,7 +240,6 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:guest_access) }.policy do
     enable :read_project
-    enable :create_merge_request_in
     enable :read_issue_board
     enable :read_issue_board_list
     enable :read_wiki
@@ -497,7 +496,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:issue_board_list))
   end
 
-  rule { merge_requests_disabled | repository_disabled }.policy do
+  rule { merge_requests_disabled | repository_disabled | ~can?(:download_code) }.policy do
     prevent :create_merge_request_in
     prevent :create_merge_request_from
     prevent(*create_read_update_admin_destroy(:merge_request))
@@ -600,12 +599,13 @@ class ProjectPolicy < BasePolicy
     enable :read_cycle_analytics
     enable :read_pages_content
     enable :read_analytics
-    enable :read_ci_cd_analytics
     enable :read_insights
 
     # NOTE: may be overridden by IssuePolicy
     enable :read_issue
   end
+
+  rule { can?(:public_access) & public_builds }.enable :read_ci_cd_analytics
 
   rule { public_builds }.policy do
     enable :read_build
@@ -662,6 +662,10 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:developer_access) }.policy do
     enable :read_security_configuration
+  end
+
+  rule { can?(:guest_access) & can?(:read_commit_status) }.policy do
+    enable :create_merge_request_in
   end
 
   # Design abilities could also be prevented in the issue policy.

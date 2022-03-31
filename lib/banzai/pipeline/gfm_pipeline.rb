@@ -12,10 +12,10 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           Filter::PlantumlFilter,
-          Filter::KrokiFilter,
           # Must always be before the SanitizationFilter to prevent XSS attacks
           Filter::SpacedLinkFilter,
           Filter::SanitizationFilter,
+          Filter::KrokiFilter,
           Filter::AssetProxyFilter,
           Filter::SyntaxHighlightFilter,
           Filter::MathFilter,

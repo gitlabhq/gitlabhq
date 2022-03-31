@@ -1757,9 +1757,9 @@ RSpec.describe User do
 
   describe '#generate_password' do
     it 'does not generate password by default' do
-      user = create(:user, password: Gitlab::Password.test_default)
+      user = create(:user, password: 'abcdefghe')
 
-      expect(user.password).to eq(Gitlab::Password.test_default)
+      expect(user.password).to eq('abcdefghe')
     end
   end
 
@@ -5719,6 +5719,36 @@ RSpec.describe User do
         create(:notification_setting, user: user, source: group, notification_email: group_notification_email)
 
         is_expected.to eq(group_notification_email)
+      end
+    end
+  end
+
+  describe '#valid_password?' do
+    subject { user.valid_password?(password) }
+
+    context 'user with password not in disallowed list' do
+      let(:user) { create(:user) }
+      let(:password) { user.password }
+
+      it { is_expected.to be_truthy }
+
+      context 'using a wrong password' do
+        let(:password) { 'WRONG PASSWORD' }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'user with disallowed password' do
+      let(:user) { create(:user, :disallowed_password) }
+      let(:password) { user.password }
+
+      it { is_expected.to be_falsey }
+
+      context 'using a wrong password' do
+        let(:password) { 'WRONG PASSWORD' }
+
+        it { is_expected.to be_falsey }
       end
     end
   end

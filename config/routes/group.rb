@@ -135,7 +135,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     namespace :crm do
       resources :contacts, only: [:index, :new, :edit]
-      resources :organizations, only: [:index, :new]
+      resources :organizations, only: [:index, :new, :edit]
     end
   end
 

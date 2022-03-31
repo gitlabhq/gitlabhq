@@ -2,11 +2,9 @@
 import { GlAlert, GlButton, GlLoadingIcon, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_CRM_CONTACT } from '~/graphql_shared/constants';
-import { INDEX_ROUTE_NAME, NEW_ROUTE_NAME, EDIT_ROUTE_NAME } from '../constants';
-import getGroupContactsQuery from './queries/get_group_contacts.query.graphql';
-import ContactForm from './contact_form.vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { EDIT_ROUTE_NAME, NEW_ROUTE_NAME } from '../../constants';
+import getGroupContactsQuery from './graphql/get_group_contacts.query.graphql';
 
 export default {
   components: {
@@ -14,12 +12,11 @@ export default {
     GlButton,
     GlLoadingIcon,
     GlTable,
-    ContactForm,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['groupFullPath', 'groupIssuesPath', 'canAdminCrmContact'],
+  inject: ['canAdminCrmContact', 'groupFullPath', 'groupIssuesPath'],
   data() {
     return {
       contacts: [],
@@ -48,19 +45,8 @@ export default {
     isLoading() {
       return this.$apollo.queries.contacts.loading;
     },
-    showNewForm() {
-      return this.$route.name === NEW_ROUTE_NAME;
-    },
-    showEditForm() {
-      return !this.isLoading && this.$route.name === EDIT_ROUTE_NAME;
-    },
     canAdmin() {
       return parseBoolean(this.canAdminCrmContact);
-    },
-    editingContact() {
-      return this.contacts.find(
-        (contact) => contact.id === convertToGraphQLId(TYPE_CRM_CONTACT, this.$route.params.id),
-      );
     },
   },
   methods: {
@@ -68,30 +54,11 @@ export default {
       const contacts = data?.group?.contacts?.nodes || [];
       return contacts.slice().sort((a, b) => a.firstName.localeCompare(b.firstName));
     },
-    displayNewForm() {
-      if (this.showNewForm) return;
-
-      this.$router.push({ name: NEW_ROUTE_NAME });
-    },
-    hideNewForm(success) {
-      if (success) this.$toast.show(s__('Crm|Contact has been added'));
-
-      this.$router.replace({ name: INDEX_ROUTE_NAME });
-    },
-    hideEditForm(success) {
-      if (success) this.$toast.show(s__('Crm|Contact has been updated'));
-
-      this.editingContactId = 0;
-      this.$router.replace({ name: INDEX_ROUTE_NAME });
-    },
     getIssuesPath(path, value) {
       return `${path}?scope=all&state=opened&crm_contact_id=${value}`;
     },
-    edit(value) {
-      if (this.showEditForm) return;
-
-      this.editingContactId = value;
-      this.$router.push({ name: EDIT_ROUTE_NAME, params: { id: value } });
+    getEditRoute(id) {
+      return { name: this.$options.EDIT_ROUTE_NAME, params: { id } };
     },
   },
   fields: [
@@ -119,10 +86,12 @@ export default {
     emptyText: s__('Crm|No contacts found'),
     issuesButtonLabel: __('View issues'),
     editButtonLabel: __('Edit'),
-    title: s__('Crm|Customer Relations Contacts'),
+    title: s__('Crm|Customer relations contacts'),
     newContact: s__('Crm|New contact'),
     errorText: __('Something went wrong. Please try again.'),
   },
+  EDIT_ROUTE_NAME,
+  NEW_ROUTE_NAME,
 };
 </script>
 
@@ -137,24 +106,15 @@ export default {
       <h2 class="gl-font-size-h2 gl-my-0">
         {{ $options.i18n.title }}
       </h2>
-      <div class="gl-display-none gl-md-display-flex gl-align-items-center gl-justify-content-end">
-        <gl-button
-          v-if="canAdmin"
-          variant="confirm"
-          data-testid="new-contact-button"
-          @click="displayNewForm"
-        >
-          {{ $options.i18n.newContact }}
-        </gl-button>
+      <div v-if="canAdmin">
+        <router-link :to="{ name: $options.NEW_ROUTE_NAME }">
+          <gl-button variant="confirm" data-testid="new-contact-button">
+            {{ $options.i18n.newContact }}
+          </gl-button>
+        </router-link>
       </div>
     </div>
-    <contact-form v-if="showNewForm" :drawer-open="showNewForm" @close="hideNewForm" />
-    <contact-form
-      v-if="showEditForm"
-      :contact="editingContact"
-      :drawer-open="showEditForm"
-      @close="hideEditForm"
-    />
+    <router-view />
     <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="lg" />
     <gl-table
       v-else
@@ -164,23 +124,24 @@ export default {
       :empty-text="$options.i18n.emptyText"
       show-empty
     >
-      <template #cell(id)="data">
+      <template #cell(id)="{ value: id }">
         <gl-button
           v-gl-tooltip.hover.bottom="$options.i18n.issuesButtonLabel"
           class="gl-mr-3"
           data-testid="issues-link"
           icon="issues"
           :aria-label="$options.i18n.issuesButtonLabel"
-          :href="getIssuesPath(groupIssuesPath, data.value)"
+          :href="getIssuesPath(groupIssuesPath, id)"
         />
-        <gl-button
-          v-if="canAdmin"
-          v-gl-tooltip.hover.bottom="$options.i18n.editButtonLabel"
-          data-testid="edit-contact-button"
-          icon="pencil"
-          :aria-label="$options.i18n.editButtonLabel"
-          @click="edit(data.value)"
-        />
+        <router-link :to="getEditRoute(id)">
+          <gl-button
+            v-if="canAdmin"
+            v-gl-tooltip.hover.bottom="$options.i18n.editButtonLabel"
+            data-testid="edit-contact-button"
+            icon="pencil"
+            :aria-label="$options.i18n.editButtonLabel"
+          />
+        </router-link>
       </template>
     </gl-table>
   </div>

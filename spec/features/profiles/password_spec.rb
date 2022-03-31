@@ -39,7 +39,7 @@ RSpec.describe 'Profile > Password' do
 
       describe 'User puts the same passwords in the field and in the confirmation' do
         it 'shows a success message' do
-          fill_passwords(Gitlab::Password.test_default, Gitlab::Password.test_default)
+          fill_passwords('mypassword', 'mypassword')
 
           page.within('[data-testid="alert-info"]') do
             expect(page).to have_content('Password was successfully updated. Please sign in again.')
@@ -79,7 +79,7 @@ RSpec.describe 'Profile > Password' do
   end
 
   context 'Change password' do
-    let(:new_password) { "new" + Gitlab::Password.test_default }
+    let(:new_password) { '22233344' }
 
     before do
       sign_in(user)
@@ -170,8 +170,8 @@ RSpec.describe 'Profile > Password' do
       expect(page).to have_current_path new_profile_password_path, ignore_query: true
 
       fill_in :user_password,      with: user.password
-      fill_in :user_new_password,  with: Gitlab::Password.test_default
-      fill_in :user_password_confirmation, with: Gitlab::Password.test_default
+      fill_in :user_new_password,  with: '12345678'
+      fill_in :user_password_confirmation, with: '12345678'
       click_button 'Set new password'
 
       expect(page).to have_current_path new_user_session_path, ignore_query: true

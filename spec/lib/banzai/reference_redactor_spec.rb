@@ -35,7 +35,7 @@ RSpec.describe Banzai::ReferenceRedactor do
       end
 
       context 'when data-original attribute provided' do
-        let(:original_content) { '<code>foo</code>' }
+        let(:original_content) { '&lt;script&gt;alert(1);&lt;/script&gt;' }
 
         it 'replaces redacted reference with original content' do
           doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue' data-original='#{original_content}'>bar</a>")

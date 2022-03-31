@@ -35,9 +35,9 @@ module Gitlab
               elsif sha.nil?
                 errors.push("Project `#{project_name}` reference `#{ref_name}` does not exist!")
               elsif content.nil?
-                errors.push("Project `#{project_name}` file `#{location}` does not exist!")
+                errors.push("Project `#{project_name}` file `#{masked_location}` does not exist!")
               elsif content.blank?
-                errors.push("Project `#{project_name}` file `#{location}` is empty!")
+                errors.push("Project `#{project_name}` file `#{masked_location}` is empty!")
               end
             end
 

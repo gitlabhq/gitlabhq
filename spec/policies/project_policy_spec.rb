@@ -81,25 +81,62 @@ RSpec.describe ProjectPolicy do
 
   context 'merge requests feature' do
     let(:current_user) { owner }
+    let(:mr_permissions) do
+      [:create_merge_request_from, :read_merge_request, :update_merge_request,
+       :admin_merge_request, :create_merge_request_in]
+    end
 
     it 'disallows all permissions when the feature is disabled' do
       project.project_feature.update!(merge_requests_access_level: ProjectFeature::DISABLED)
 
-      mr_permissions = [:create_merge_request_from, :read_merge_request,
-                        :update_merge_request, :admin_merge_request,
-                        :create_merge_request_in]
-
       expect_disallowed(*mr_permissions)
+    end
+
+    context 'for a guest in a private project' do
+      let(:current_user) { guest }
+      let(:project) { private_project }
+
+      it 'disallows the guest from all merge request permissions' do
+        expect_disallowed(*mr_permissions)
+      end
     end
   end
 
-  context 'for a guest in a private project' do
-    let(:current_user) { guest }
-    let(:project) { private_project }
+  context 'creating_merge_request_in' do
+    context 'when project is public' do
+      let(:project) { public_project }
 
-    it 'disallows the guest from reading the merge request and merge request iid' do
-      expect_disallowed(:read_merge_request)
-      expect_disallowed(:read_merge_request_iid)
+      context 'when the current_user is guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_allowed(:create_merge_request_in) }
+      end
+    end
+
+    context 'when project is internal' do
+      let(:project) { internal_project }
+
+      context 'when the current_user is guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_allowed(:create_merge_request_in) }
+      end
+    end
+
+    context 'when project is private' do
+      let(:project) { private_project }
+
+      context 'when the current_user is guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.not_to be_allowed(:create_merge_request_in) }
+      end
+
+      context 'when the current_user is reporter or above' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_allowed(:create_merge_request_in) }
+      end
     end
   end
 
@@ -1342,6 +1379,110 @@ RSpec.describe ProjectPolicy do
             it { is_expected.to be_disallowed(:read_analytics) }
           end
         end
+      end
+    end
+  end
+
+  describe 'read_ci_cd_analytics' do
+    context 'public project' do
+      let(:project) { create(:project, :public, :analytics_enabled) }
+      let(:current_user) { create(:user) }
+
+      context 'when public pipelines are disabled for the project' do
+        before do
+          project.update!(public_builds: false)
+        end
+
+        context 'project member' do
+          %w(guest reporter developer maintainer).each do |role|
+            context role do
+              before do
+                project.add_user(current_user, role.to_sym)
+              end
+
+              if role == 'guest'
+                it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
+              else
+                it { is_expected.to be_allowed(:read_ci_cd_analytics) }
+              end
+            end
+          end
+        end
+
+        context 'non member' do
+          let(:current_user) { non_member }
+
+          it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
+        end
+
+        context 'anonymous' do
+          let(:current_user) { anonymous }
+
+          it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
+        end
+      end
+
+      context 'when public pipelines are enabled for the project' do
+        before do
+          project.update!(public_builds: true)
+        end
+
+        context 'project member' do
+          %w(guest reporter developer maintainer).each do |role|
+            context role do
+              before do
+                project.add_user(current_user, role.to_sym)
+              end
+
+              it { is_expected.to be_allowed(:read_ci_cd_analytics) }
+            end
+          end
+        end
+
+        context 'non member' do
+          let(:current_user) { non_member }
+
+          it { is_expected.to be_allowed(:read_ci_cd_analytics) }
+        end
+
+        context 'anonymous' do
+          let(:current_user) { anonymous }
+
+          it { is_expected.to be_allowed(:read_ci_cd_analytics) }
+        end
+      end
+    end
+
+    context 'private project' do
+      let(:project) { create(:project, :private, :analytics_enabled) }
+      let(:current_user) { create(:user) }
+
+      context 'project member' do
+        %w(guest reporter developer maintainer).each do |role|
+          context role do
+            before do
+              project.add_user(current_user, role.to_sym)
+            end
+
+            if role == 'guest'
+              it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
+            else
+              it { is_expected.to be_allowed(:read_ci_cd_analytics) }
+            end
+          end
+        end
+      end
+
+      context 'non member' do
+        let(:current_user) { non_member }
+
+        it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
+      end
+
+      context 'anonymous' do
+        let(:current_user) { anonymous }
+
+        it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
       end
     end
   end

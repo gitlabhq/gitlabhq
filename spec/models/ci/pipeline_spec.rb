@@ -1146,6 +1146,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
       end
     end
+
+    describe 'variable CI_GITLAB_FIPS_MODE' do
+      context 'when FIPS flag is enabled' do
+        before do
+          allow(Gitlab::FIPS).to receive(:enabled?).and_return(true)
+        end
+
+        it "is included with value 'true'" do
+          expect(subject.to_hash).to include('CI_GITLAB_FIPS_MODE' => 'true')
+        end
+      end
+
+      context 'when FIPS flag is disabled' do
+        before do
+          allow(Gitlab::FIPS).to receive(:enabled?).and_return(false)
+        end
+
+        it 'is not included' do
+          expect(subject.to_hash).not_to have_key('CI_GITLAB_FIPS_MODE')
+        end
+      end
+    end
   end
 
   describe '#protected_ref?' do

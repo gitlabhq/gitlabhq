@@ -879,6 +879,23 @@ class User < ApplicationRecord
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
+  # See https://gitlab.com/gitlab-org/security/gitlab/-/issues/638
+  DISALLOWED_PASSWORDS = %w[123qweQWE!@#000000000].freeze
+
+  # Overwrites valid_password? from Devise::Models::DatabaseAuthenticatable
+  # In constant-time, check both that the password isn't on a denylist AND
+  # that the password is the user's password
+  def valid_password?(password)
+    password_allowed = true
+    DISALLOWED_PASSWORDS.each do |disallowed_password|
+      password_allowed = false if Devise.secure_compare(password, disallowed_password)
+    end
+
+    original_result = super
+
+    password_allowed && original_result
+  end
+
   def remember_me!
     super if ::Gitlab::Database.read_write?
   end

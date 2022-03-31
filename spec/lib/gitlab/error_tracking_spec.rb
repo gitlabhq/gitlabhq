@@ -368,5 +368,61 @@ RSpec.describe Gitlab::ErrorTracking do
         end
       end
     end
+
+    context 'when processing invalid URI exceptions' do
+      let(:invalid_uri) { 'http://foo:bar' }
+      let(:raven_exception_values) { raven_event['exception']['values'] }
+      let(:sentry_exception_values) { sentry_event.exception.to_hash[:values] }
+
+      context 'when the error is a URI::InvalidURIError' do
+        let(:exception) do
+          URI.parse(invalid_uri)
+        rescue URI::InvalidURIError => error
+          error
+        end
+
+        it 'filters the URI from the error message' do
+          track_exception
+
+          expect(raven_exception_values).to include(
+            hash_including(
+              'type' => 'URI::InvalidURIError',
+              'value' => 'bad URI(is not URI?): [FILTERED]'
+            )
+          )
+          expect(sentry_exception_values).to include(
+            hash_including(
+              type: 'URI::InvalidURIError',
+              value: 'bad URI(is not URI?): [FILTERED]'
+            )
+          )
+        end
+      end
+
+      context 'when the error is a Addressable::URI::InvalidURIError' do
+        let(:exception) do
+          Addressable::URI.parse(invalid_uri)
+        rescue Addressable::URI::InvalidURIError => error
+          error
+        end
+
+        it 'filters the URI from the error message' do
+          track_exception
+
+          expect(raven_exception_values).to include(
+            hash_including(
+              'type' => 'Addressable::URI::InvalidURIError',
+              'value' => 'Invalid port number: [FILTERED]'
+            )
+          )
+          expect(sentry_exception_values).to include(
+            hash_including(
+              type: 'Addressable::URI::InvalidURIError',
+              value: 'Invalid port number: [FILTERED]'
+            )
+          )
+        end
+      end
+    end
   end
 end

@@ -5,7 +5,7 @@ FactoryBot.define do
     email { generate(:email) }
     name { generate(:name) }
     username { generate(:username) }
-    password { Gitlab::Password.test_default }
+    password { "12345678" }
     role { 'software_developer' }
     confirmed_at { Time.now }
     confirmation_token { nil }
@@ -25,6 +25,10 @@ FactoryBot.define do
 
     trait :blocked do
       after(:build) { |user, _| user.block! }
+    end
+
+    trait :disallowed_password do
+      password { User::DISALLOWED_PASSWORDS.first }
     end
 
     trait :blocked_pending_approval do

@@ -125,7 +125,7 @@ class GroupSeeder
       name: FFaker::Name.name,
       email: FFaker::Internet.email,
       confirmed_at: DateTime.now,
-      password: Gitlab::Password.test_default
+      password: Devise.friendly_token
     )
   end
 

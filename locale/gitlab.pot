@@ -10829,43 +10829,25 @@ msgstr ""
 msgid "Critical vulnerabilities present"
 msgstr ""
 
-msgid "Crm|Contact has been added"
+msgid "Crm|Contact has been added."
 msgstr ""
 
-msgid "Crm|Contact has been updated"
+msgid "Crm|Contact has been updated."
 msgstr ""
 
-msgid "Crm|Create new contact"
+msgid "Crm|Customer relations contacts"
 msgstr ""
 
-msgid "Crm|Create organization"
+msgid "Crm|Customer relations organizations"
 msgstr ""
 
-msgid "Crm|Customer Relations Contacts"
-msgstr ""
-
-msgid "Crm|Customer Relations Organizations"
-msgstr ""
-
-msgid "Crm|Default rate (optional)"
-msgstr ""
-
-msgid "Crm|Description (optional)"
+msgid "Crm|Default rate"
 msgstr ""
 
 msgid "Crm|Edit contact"
 msgstr ""
 
-msgid "Crm|Email"
-msgstr ""
-
-msgid "Crm|First name"
-msgstr ""
-
-msgid "Crm|Last name"
-msgstr ""
-
-msgid "Crm|New Organization"
+msgid "Crm|Edit organization"
 msgstr ""
 
 msgid "Crm|New contact"
@@ -10880,10 +10862,10 @@ msgstr ""
 msgid "Crm|No organizations found"
 msgstr ""
 
-msgid "Crm|Organization has been added"
+msgid "Crm|Organization has been added."
 msgstr ""
 
-msgid "Crm|Phone number (optional)"
+msgid "Crm|Organization has been updated."
 msgstr ""
 
 msgid "Cron Timezone"
@@ -10994,16 +10976,16 @@ msgstr ""
 msgid "Custom range (UTC)"
 msgstr ""
 
-msgid "Customer Relations Contacts"
-msgstr ""
-
-msgid "Customer Relations Organizations"
-msgstr ""
-
 msgid "Customer experience improvement and third-party offers"
 msgstr ""
 
 msgid "Customer relations"
+msgstr ""
+
+msgid "Customer relations contacts"
+msgstr ""
+
+msgid "Customer relations organizations"
 msgstr ""
 
 msgid "Customize CI/CD settings, including Auto DevOps, shared runners, and job artifacts."
@@ -13221,6 +13203,9 @@ msgid "Dismissed on pipeline %{pipelineLink}"
 msgstr ""
 
 msgid "Dismissed on pipeline %{pipelineLink} at %{projectLink}"
+msgstr ""
+
+msgid "Display"
 msgstr ""
 
 msgid "Display alerts from all configured monitoring tools."
@@ -27267,6 +27252,9 @@ msgid "Phabricator Server URL"
 msgstr ""
 
 msgid "Phabricator Tasks"
+msgstr ""
+
+msgid "Phone"
 msgstr ""
 
 msgid "Pick a name"

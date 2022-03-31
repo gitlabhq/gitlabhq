@@ -396,6 +396,19 @@ RSpec.describe API::Ci::Runners do
           expect(shared_runner.reload.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
         end
 
+        it 'unrelated runner attribute on an existing runner with too many tags' do
+          # This test ensures that it is possible to update any attribute on a runner that currently fails the
+          # validation that ensures that there aren't too many tags associated with a runner
+          existing_invalid_shared_runner = build(:ci_runner, :instance, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" } )
+          existing_invalid_shared_runner.save!(validate: false)
+
+          active = existing_invalid_shared_runner.active
+          update_runner(existing_invalid_shared_runner.id, admin, paused: active)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(existing_invalid_shared_runner.reload.active).to eq(!active)
+        end
+
         it 'runner untagged flag' do
           # Ensure tag list is non-empty before setting untagged to false.
           update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])

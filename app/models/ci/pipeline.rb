@@ -824,6 +824,8 @@ module Ci
           variables.append(key: 'CI_OPEN_MERGE_REQUESTS', value: open_merge_requests_refs.join(','))
         end
 
+        variables.append(key: 'CI_GITLAB_FIPS_MODE', value: 'true') if Gitlab::FIPS.enabled?
+
         variables.append(key: 'CI_KUBERNETES_ACTIVE', value: 'true') if has_kubernetes_active?
         variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true') if freeze_period?
 

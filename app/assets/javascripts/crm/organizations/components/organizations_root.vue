@@ -3,9 +3,8 @@ import { GlAlert, GlButton, GlLoadingIcon, GlTable, GlTooltipDirective } from '@
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { INDEX_ROUTE_NAME, NEW_ROUTE_NAME } from '../constants';
-import getGroupOrganizationsQuery from './queries/get_group_organizations.query.graphql';
-import NewOrganizationForm from './new_organization_form.vue';
+import { EDIT_ROUTE_NAME, NEW_ROUTE_NAME } from '../../constants';
+import getGroupOrganizationsQuery from './graphql/get_group_organizations.query.graphql';
 
 export default {
   components: {
@@ -13,7 +12,6 @@ export default {
     GlButton,
     GlLoadingIcon,
     GlTable,
-    NewOrganizationForm,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -21,8 +19,8 @@ export default {
   inject: ['canAdminCrmOrganization', 'groupFullPath', 'groupIssuesPath'],
   data() {
     return {
-      error: false,
       organizations: [],
+      error: false,
     };
   },
   apollo: {
@@ -47,10 +45,7 @@ export default {
     isLoading() {
       return this.$apollo.queries.organizations.loading;
     },
-    showNewForm() {
-      return this.$route.name === NEW_ROUTE_NAME;
-    },
-    canCreateNew() {
+    canAdmin() {
       return parseBoolean(this.canAdminCrmOrganization);
     },
   },
@@ -62,15 +57,8 @@ export default {
     getIssuesPath(path, value) {
       return `${path}?scope=all&state=opened&crm_organization_id=${value}`;
     },
-    displayNewForm() {
-      if (this.showNewForm) return;
-
-      this.$router.push({ name: NEW_ROUTE_NAME });
-    },
-    hideNewForm(success) {
-      if (success) this.$toast.show(this.$options.i18n.organizationAdded);
-
-      this.$router.replace({ name: INDEX_ROUTE_NAME });
+    getEditRoute(id) {
+      return { name: this.$options.EDIT_ROUTE_NAME, params: { id } };
     },
   },
   fields: [
@@ -79,7 +67,7 @@ export default {
     { key: 'description', sortable: true },
     {
       key: 'id',
-      label: __('Issues'),
+      label: '',
       formatter: (id) => {
         return getIdFromGraphQLId(id);
       },
@@ -88,11 +76,13 @@ export default {
   i18n: {
     emptyText: s__('Crm|No organizations found'),
     issuesButtonLabel: __('View issues'),
-    title: s__('Crm|Customer Relations Organizations'),
+    editButtonLabel: __('Edit'),
+    title: s__('Crm|Customer relations organizations'),
     newOrganization: s__('Crm|New organization'),
     errorText: __('Something went wrong. Please try again.'),
-    organizationAdded: s__('Crm|Organization has been added'),
   },
+  EDIT_ROUTE_NAME,
+  NEW_ROUTE_NAME,
 };
 </script>
 
@@ -108,15 +98,17 @@ export default {
         {{ $options.i18n.title }}
       </h2>
       <div
-        v-if="canCreateNew"
+        v-if="canAdmin"
         class="gl-display-none gl-md-display-flex gl-align-items-center gl-justify-content-end"
       >
-        <gl-button variant="confirm" data-testid="new-organization-button" @click="displayNewForm">
-          {{ $options.i18n.newOrganization }}
-        </gl-button>
+        <router-link :to="{ name: $options.NEW_ROUTE_NAME }">
+          <gl-button variant="confirm" data-testid="new-organization-button">
+            {{ $options.i18n.newOrganization }}
+          </gl-button>
+        </router-link>
       </div>
     </div>
-    <new-organization-form v-if="showNewForm" :drawer-open="showNewForm" @close="hideNewForm" />
+    <router-view />
     <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="lg" />
     <gl-table
       v-else
@@ -126,14 +118,24 @@ export default {
       :empty-text="$options.i18n.emptyText"
       show-empty
     >
-      <template #cell(id)="data">
+      <template #cell(id)="{ value: id }">
         <gl-button
           v-gl-tooltip.hover.bottom="$options.i18n.issuesButtonLabel"
+          class="gl-mr-3"
           data-testid="issues-link"
           icon="issues"
           :aria-label="$options.i18n.issuesButtonLabel"
-          :href="getIssuesPath(groupIssuesPath, data.value)"
+          :href="getIssuesPath(groupIssuesPath, id)"
         />
+        <router-link :to="getEditRoute(id)">
+          <gl-button
+            v-if="canAdmin"
+            v-gl-tooltip.hover.bottom="$options.i18n.editButtonLabel"
+            data-testid="edit-organization-button"
+            icon="pencil"
+            :aria-label="$options.i18n.editButtonLabel"
+          />
+        </router-link>
       </template>
     </gl-table>
   </div>

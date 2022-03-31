@@ -5,11 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::File::Remote do
   include StubRequests
 
-  let(:context_params) { { sha: '12345' } }
+  let(:variables) {Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
+  let(:context_params) { { sha: '12345', variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:params) { { remote: location } }
   let(:remote_file) { described_class.new(params, context) }
-  let(:location) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
+  let(:location) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.secret_file.yml' }
   let(:remote_file_content) do
     <<~HEREDOC
       before_script:
@@ -142,10 +143,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
     end
 
     context 'when remote file location is not valid' do
-      let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
+      let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/?secret_file.yml' }
 
       it 'returns an error message describing invalid address' do
-        expect(subject).to match /does not have a valid address!/
+        expect(subject).to eq('Remote file `not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/?xxxxxxxxxxx.yml` does not have a valid address!')
       end
     end
 
@@ -155,7 +156,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
       end
 
       it 'returns error message about a timeout' do
-        expect(subject).to match /could not be fetched because of a timeout error!/
+        expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml` could not be fetched because of a timeout error!')
       end
     end
 
@@ -165,7 +166,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
       end
 
       it 'returns error message about a HTTP error' do
-        expect(subject).to match /could not be fetched because of HTTP error!/
+        expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml` could not be fetched because of HTTP error!')
       end
     end
 
@@ -175,7 +176,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
       end
 
       it 'returns error message about a timeout' do
-        expect(subject).to match /could not be fetched because of HTTP code `404` error!/
+        expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml` could not be fetched because of HTTP code `404` error!')
       end
     end
 

@@ -671,6 +671,19 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'assign command' do
+      it 'assigns to users with escaped underscores' do
+        user = create(:user)
+        base = user.username
+        user.update!(username: "#{base}_")
+        issuable.project.add_developer(user)
+
+        cmd = "/assign @#{base}\\_"
+
+        _, updates, _ = service.execute(cmd, issuable)
+
+        expect(updates).to eq(assignee_ids: [user.id])
+      end
+
       it 'assigns to a single user' do
         _, updates, _ = service.execute(content, issuable)
 

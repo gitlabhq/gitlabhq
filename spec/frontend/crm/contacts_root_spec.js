@@ -5,11 +5,9 @@ import VueRouter from 'vue-router';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import ContactsRoot from '~/crm/components/contacts_root.vue';
-import ContactForm from '~/crm/components/contact_form.vue';
-import getGroupContactsQuery from '~/crm/components/queries/get_group_contacts.query.graphql';
-import { NEW_ROUTE_NAME, EDIT_ROUTE_NAME } from '~/crm/constants';
-import routes from '~/crm/routes';
+import ContactsRoot from '~/crm/contacts/components/contacts_root.vue';
+import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
+import routes from '~/crm/contacts/routes';
 import { getGroupContactsQueryResponse } from './mock_data';
 
 describe('Customer relations contacts root app', () => {
@@ -23,8 +21,6 @@ describe('Customer relations contacts root app', () => {
   const findRowByName = (rowName) => wrapper.findAllByRole('row', { name: rowName });
   const findIssuesLinks = () => wrapper.findAllByTestId('issues-link');
   const findNewContactButton = () => wrapper.findByTestId('new-contact-button');
-  const findEditContactButton = () => wrapper.findByTestId('edit-contact-button');
-  const findContactForm = () => wrapper.findComponent(ContactForm);
   const findError = () => wrapper.findComponent(GlAlert);
   const successQueryHandler = jest.fn().mockResolvedValue(getGroupContactsQueryResponse);
 
@@ -40,8 +36,8 @@ describe('Customer relations contacts root app', () => {
       router,
       provide: {
         groupFullPath: 'flightjs',
-        groupIssuesPath: '/issues',
         groupId: 26,
+        groupIssuesPath: '/issues',
         canAdminCrmContact,
       },
       apolloProvider: fakeApollo,
@@ -79,71 +75,6 @@ describe('Customer relations contacts root app', () => {
       mountComponent({ canAdminCrmContact: false });
 
       expect(findNewContactButton().exists()).toBe(false);
-    });
-  });
-
-  describe('contact form', () => {
-    it('should not exist by default', async () => {
-      mountComponent();
-      await waitForPromises();
-
-      expect(findContactForm().exists()).toBe(false);
-    });
-
-    it('should exist when user clicks new contact button', async () => {
-      mountComponent();
-
-      findNewContactButton().vm.$emit('click');
-      await waitForPromises();
-
-      expect(findContactForm().exists()).toBe(true);
-    });
-
-    it('should exist when user navigates directly to `new` route', async () => {
-      router.replace({ name: NEW_ROUTE_NAME });
-      mountComponent();
-      await waitForPromises();
-
-      expect(findContactForm().exists()).toBe(true);
-    });
-
-    it('should exist when user clicks edit contact button', async () => {
-      mountComponent({ mountFunction: mountExtended });
-      await waitForPromises();
-
-      findEditContactButton().vm.$emit('click');
-      await waitForPromises();
-
-      expect(findContactForm().exists()).toBe(true);
-    });
-
-    it('should exist when user navigates directly to `edit` route', async () => {
-      router.replace({ name: EDIT_ROUTE_NAME, params: { id: 16 } });
-      mountComponent();
-      await waitForPromises();
-
-      expect(findContactForm().exists()).toBe(true);
-    });
-
-    it('should not exist when new form emits close', async () => {
-      router.replace({ name: NEW_ROUTE_NAME });
-      mountComponent();
-
-      findContactForm().vm.$emit('close');
-      await waitForPromises();
-
-      expect(findContactForm().exists()).toBe(false);
-    });
-
-    it('should not exist when edit form emits close', async () => {
-      router.replace({ name: EDIT_ROUTE_NAME, params: { id: 16 } });
-      mountComponent();
-      await waitForPromises();
-
-      findContactForm().vm.$emit('close');
-      await waitForPromises();
-
-      expect(findContactForm().exists()).toBe(false);
     });
   });
 

@@ -49,7 +49,7 @@ To view a group's contacts:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Contacts**.
 
-![Contacts list](crm_contacts_v14_6.png)
+![Contacts list](crm_contacts_v14_10.png)
 
 ### Create a contact
 
@@ -86,7 +86,7 @@ To view a group's organizations:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Organizations**.
 
-![Organizations list](crm_organizations_v14_6.png)
+![Organizations list](crm_organizations_v14_10.png)
 
 ### Create an organization
 
