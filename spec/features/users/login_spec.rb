@@ -150,6 +150,27 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
     end
   end
 
+  describe 'with a disallowed password' do
+    let(:user) { create(:user, :disallowed_password) }
+
+    before do
+      expect(authentication_metrics)
+        .to increment(:user_unauthenticated_counter)
+        .and increment(:user_password_invalid_counter)
+    end
+
+    it 'disallows login' do
+      gitlab_sign_in(user, password: user.password)
+
+      expect(page).to have_content('Invalid login or password.')
+    end
+
+    it 'does not update Devise trackable attributes' do
+      expect { gitlab_sign_in(user, password: user.password) }
+        .not_to change { User.ghost.reload.sign_in_count }
+    end
+  end
+
   describe 'with the ghost user' do
     it 'disallows login' do
       expect(authentication_metrics)
