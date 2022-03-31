@@ -9,6 +9,7 @@ import {
 } from '~/lib/utils/url_utility';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { setAttributes } from '~/lib/utils/dom_utils';
+import { unrestrictedPages } from './constants';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
 // `js-render-mermaid` class.
@@ -35,23 +36,6 @@ const BUFFER_IFRAME_HEIGHT = 10;
 // Keep a map of mermaid blocks we've already rendered.
 const elsProcessingMap = new WeakMap();
 let renderedMermaidBlocks = 0;
-
-// Pages without any restrictions on mermaid rendering
-const PAGES_WITHOUT_RESTRICTIONS = [
-  // Group wiki
-  'groups:wikis:show',
-  'groups:wikis:edit',
-  'groups:wikis:create',
-
-  // Project wiki
-  'projects:wikis:show',
-  'projects:wikis:edit',
-  'projects:wikis:create',
-
-  // Project files
-  'projects:show',
-  'projects:blob:show',
-];
 
 function shouldLazyLoadMermaidBlock(source) {
   /**
@@ -149,7 +133,7 @@ function renderMermaids($els) {
      * up the entire thread and causing a DoS.
      */
     if (
-      !PAGES_WITHOUT_RESTRICTIONS.includes(pageName) &&
+      !unrestrictedPages.includes(pageName) &&
       ((source && source.length > MAX_CHAR_LIMIT) ||
         renderedChars > MAX_CHAR_LIMIT ||
         renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT ||

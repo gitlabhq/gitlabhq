@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe SshHostKey do
   using RSpec::Parameterized::TableSyntax
+
   include ReactiveCachingHelpers
+  include StubRequests
 
   let(:key1) do
     'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3UpyF2iLqy1d63M6k3jH1vuEnq/NWtE+o' \
@@ -35,6 +37,7 @@ RSpec.describe SshHostKey do
   let(:extra) { known_hosts + "foo\nbar\n" }
   let(:reversed) { known_hosts.lines.reverse.join }
 
+  let(:url) { 'ssh://example.com:2222' }
   let(:compare_host_keys) { nil }
 
   def stub_ssh_keyscan(args, status: true, stdout: "", stderr: "")
@@ -50,7 +53,7 @@ RSpec.describe SshHostKey do
 
   let(:project) { build(:project) }
 
-  subject(:ssh_host_key) { described_class.new(project: project, url: 'ssh://example.com:2222', compare_host_keys: compare_host_keys) }
+  subject(:ssh_host_key) { described_class.new(project: project, url: url, compare_host_keys: compare_host_keys) }
 
   describe '.primary_key' do
     it 'returns a symbol' do
@@ -189,6 +192,46 @@ RSpec.describe SshHostKey do
         stub_ssh_keyscan(%w[-T 5 -p 2222 -f-], stderr: 'Unknown host')
 
         is_expected.to eq(error: 'Failed to detect SSH host keys')
+      end
+    end
+
+    context 'DNS rebinding protection enabled' do
+      before do
+        stub_application_setting(dns_rebinding_protection_enabled: true)
+      end
+
+      it 'sends an address as well as hostname to ssh-keyscan' do
+        stub_dns(url, ip_address: '1.2.3.4')
+
+        stdin = stub_ssh_keyscan(%w[-T 5 -p 2222 -f-])
+
+        cache
+
+        expect(stdin.string).to eq("1.2.3.4 example.com\n")
+      end
+    end
+  end
+
+  describe 'URL validation' do
+    let(:url) { 'ssh://127.0.0.1' }
+
+    context 'when local requests are not allowed' do
+      before do
+        stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
+      end
+
+      it 'forbids scanning localhost' do
+        expect { ssh_host_key }.to raise_error(/Invalid URL/)
+      end
+    end
+
+    context 'when local requests are allowed' do
+      before do
+        stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
+      end
+
+      it 'permits scanning localhost' do
+        expect(ssh_host_key.url.to_s).to eq('ssh://127.0.0.1:22')
       end
     end
   end
