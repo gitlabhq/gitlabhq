@@ -26,7 +26,7 @@ module Gitlab
               super
 
               unless template_name_valid?
-                errors.push("Template file `#{location}` is not a valid location!")
+                errors.push("Template file `#{masked_location}` is not a valid location!")
               end
             end
 

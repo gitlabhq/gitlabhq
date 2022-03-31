@@ -9,10 +9,20 @@ module Releases
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/218753
     # Regex modified to prevent catastrophic backtracking
     FILEPATH_REGEX = %r{\A\/[^\/](?!.*\/\/.*)[\-\.\w\/]+[\da-zA-Z]+\z}.freeze
+    FILEPATH_MAX_LENGTH = 128
 
     validates :url, presence: true, addressable_url: { schemes: %w(http https ftp) }, uniqueness: { scope: :release }
     validates :name, presence: true, uniqueness: { scope: :release }
-    validates :filepath, uniqueness: { scope: :release }, format: { with: FILEPATH_REGEX }, allow_blank: true, length: { maximum: 128 }
+    validates :filepath, uniqueness: { scope: :release }, allow_blank: true
+    validate :filepath_format_valid?
+
+    # we use a custom validator here to prevent running the regex if the string is too long
+    # see https://gitlab.com/gitlab-org/gitlab/-/issues/273771
+    def filepath_format_valid?
+      return if filepath.nil? # valid use case
+      return errors.add(:filepath, "is too long (maximum is #{FILEPATH_MAX_LENGTH} characters)") if filepath.length > FILEPATH_MAX_LENGTH
+      return errors.add(:filepath, 'is in an invalid format') unless FILEPATH_REGEX.match? filepath
+    end
 
     scope :sorted, -> { order(created_at: :desc) }
 
