@@ -2,6 +2,32 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.8.5 (2022-03-31)
+
+### Security (21 changes)
+
+- [Update to commonmarker 0.23.4](gitlab-org/security/gitlab@51532ccc5f1b6b053d4ca6c54496607e62f8f25c) ([merge request](gitlab-org/security/gitlab!2282))
+- [Revert merge request approval groups behavior](gitlab-org/security/gitlab@dd9724e429033974da6c3852dc6fd33f0f2b0a46) ([merge request](gitlab-org/security/gitlab!2334))
+- [Disallow login if password matches a fixed list](gitlab-org/security/gitlab@6779d5f2948425a7ad7f19a6e10f82cc10b80989) ([merge request](gitlab-org/security/gitlab!2358))
+- [Update devise-two-factor to 4.0.2](gitlab-org/security/gitlab@0329d2d82a9064c0bae36e7b993ee40df7c999bc) ([merge request](gitlab-org/security/gitlab!2350))
+- [Limit the number of tags associated with a CI runner](gitlab-org/security/gitlab@8d5938c08fe66c22f1bc54ff76cc9daf2de86b1a) ([merge request](gitlab-org/security/gitlab!2302))
+- [GitLab Pages Security Updates for 14.9](gitlab-org/security/gitlab@5a5a862c8a9e37ca2ea84133f92b216eaa7cd148) ([merge request](gitlab-org/security/gitlab!2328))
+- [Upgrade swagger-ui dependency](gitlab-org/security/gitlab@afcb570867db61347bb6a4e243bb2557340191be) ([merge request](gitlab-org/security/gitlab!2337))
+- [Modify release link format check to avoid regex if string is too long](gitlab-org/security/gitlab@a3ab0ff9c470c1c6e5b4fd055ddd02dffce32652) ([merge request](gitlab-org/security/gitlab!2243))
+- [Masks variables in error messages](gitlab-org/security/gitlab@94236bbdb8eef6600562bdc4e242e07eaed8c50f) ([merge request](gitlab-org/security/gitlab!2291))
+- [Escape user provided string to prevent XSS](gitlab-org/security/gitlab@03e695d4c34546582b503b3f7712246206b56b99) ([merge request](gitlab-org/security/gitlab!2314))
+- [Monkey patch of RDoc to prevent Ruby segfault](gitlab-org/security/gitlab@14eec4487387bc0c999f1c48b046a3ed3848c5a1) ([merge request](gitlab-org/security/gitlab!2232))
+- [Project import maps members' created_by_id users based on source user ID](gitlab-org/security/gitlab@7fd7ab3f57e8d8b4e0aed42aebe9a8b7436a6255) ([merge request](gitlab-org/security/gitlab!2238))
+- [Redact InvalidURIError error messages](gitlab-org/security/gitlab@0592c182bfd60aee501c4c66f47a71c9469f2bcd) ([merge request](gitlab-org/security/gitlab!2296))
+- [Fix access for approval rules API](gitlab-org/security/gitlab@987e06bacba224519adf94cda73b5a8b2e7b917a) ([merge request](gitlab-org/security/gitlab!2323))
+- [Fix kroki exploit](gitlab-org/security/gitlab@bf056c683af25ec4b94c0efa7166eea399ed6502) ([merge request](gitlab-org/security/gitlab!2277))
+- [Fix blind SSRF when looking up SSH host keys for mirroring](gitlab-org/security/gitlab@3c853a32a73aba15e309d05111b744455a360cca) ([merge request](gitlab-org/security/gitlab!2310))
+- [Escape original content in reference redactor](gitlab-org/security/gitlab@00ee99bc3834d9d59572272064c9ad6abeae5975) ([merge request](gitlab-org/security/gitlab!2318))
+- [Security fix for CI/CD analytics visibility](gitlab-org/security/gitlab@691d69be77ae3c8e0a2598b75ccf336b672fd540) ([merge request](gitlab-org/security/gitlab!2273))
+- [Latest commit exposed through fork of a private project](gitlab-org/security/gitlab@6ca7a3b040edac06b23a697bfc2bf46f457d6b81) ([merge request](gitlab-org/security/gitlab!2271))
+- [Fix Asana integration restricted branch filter](gitlab-org/security/gitlab@4c1db692b4e99fab6cdbb818cf02fb879f6d4886) ([merge request](gitlab-org/security/gitlab!2218))
+- [Revert "JH need more complex passwords"](gitlab-org/security/gitlab@919aa2b28645d49fb71508362a0c61da39893c69) ([merge request](gitlab-org/security/gitlab!2353))
+
 ## 14.8.4 (2022-03-16)
 
 ### Added (1 change)
