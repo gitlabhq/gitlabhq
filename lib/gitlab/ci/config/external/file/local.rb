@@ -23,11 +23,11 @@ module Gitlab
 
             def validate_content!
               if context.project&.repository.nil?
-                errors.push("Local file `#{location}` does not have project!")
+                errors.push("Local file `#{masked_location}` does not have project!")
               elsif content.nil?
-                errors.push("Local file `#{location}` does not exist!")
+                errors.push("Local file `#{masked_location}` does not exist!")
               elsif content.blank?
-                errors.push("Local file `#{location}` is empty!")
+                errors.push("Local file `#{masked_location}` is empty!")
               end
             end
 
