@@ -4,6 +4,8 @@ module Gitlab
   module ErrorTracking
     module Processor
       module GrpcErrorProcessor
+        extend Gitlab::ErrorTracking::Processor::Concerns::ProcessesExceptions
+
         DEBUG_ERROR_STRING_REGEX = RE2('(.*) debug_error_string:(.*)')
 
         class << self
@@ -18,10 +20,7 @@ module Gitlab
           # only the first one since that's what is used for grouping.
           def process_first_exception_value(event)
             # Better in new version, will be event.exception.values
-            exceptions = event.instance_variable_get(:@interfaces)[:exception]&.values
-
-            return unless exceptions.is_a?(Array)
-
+            exceptions = extract_exceptions_from(event)
             exception = exceptions.first
 
             return unless valid_exception?(exception)
@@ -67,15 +66,6 @@ module Gitlab
             return unless match
 
             [match[1], match[2]]
-          end
-
-          def valid_exception?(exception)
-            case exception
-            when Raven::SingleExceptionInterface
-              exception&.value
-            else
-              false
-            end
           end
         end
       end

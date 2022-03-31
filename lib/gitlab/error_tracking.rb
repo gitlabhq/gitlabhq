@@ -19,7 +19,8 @@ module Gitlab
     PROCESSORS = [
       ::Gitlab::ErrorTracking::Processor::SidekiqProcessor,
       ::Gitlab::ErrorTracking::Processor::GrpcErrorProcessor,
-      ::Gitlab::ErrorTracking::Processor::ContextPayloadProcessor
+      ::Gitlab::ErrorTracking::Processor::ContextPayloadProcessor,
+      ::Gitlab::ErrorTracking::Processor::SanitizeErrorMessageProcessor
     ].freeze
 
     class << self
