@@ -59,12 +59,9 @@ module Integrations
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
-      # check the branch restriction is poplulated and branch is not included
       branch = Gitlab::Git.ref_name(data[:ref])
-      branch_restriction = restrict_to_branch.to_s
-      if branch_restriction.present? && branch_restriction.index(branch).nil?
-        return
-      end
+
+      return unless branch_allowed?(branch)
 
       user = data[:user_name]
       project_name = project.full_name
@@ -102,6 +99,14 @@ module Integrations
           next
         end
       end
+    end
+
+    private
+
+    def branch_allowed?(branch_name)
+      return true if restrict_to_branch.blank?
+
+      restrict_to_branch.to_s.gsub(/\s+/, '').split(',').include?(branch_name)
     end
   end
 end

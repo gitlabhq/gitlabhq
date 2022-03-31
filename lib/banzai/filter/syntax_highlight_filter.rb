@@ -56,7 +56,7 @@ module Banzai
           retry
         end
 
-        sourcepos_attr = sourcepos ? "data-sourcepos=\"#{sourcepos}\"" : ''
+        sourcepos_attr = sourcepos ? "data-sourcepos=\"#{escape_once(sourcepos)}\"" : ''
 
         highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code"><pre #{sourcepos_attr} class="#{css_classes}"
                              lang="#{language}"

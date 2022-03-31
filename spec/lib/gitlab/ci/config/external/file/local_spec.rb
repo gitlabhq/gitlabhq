@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
   let_it_be(:user) { create(:user) }
 
   let(:sha) { '12345' }
+  let(:variables) { project.predefined_variables.to_runner_variables }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:params) { { local: location } }
   let(:local_file) { described_class.new(params, context) }
@@ -18,7 +19,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
       sha: sha,
       user: user,
       parent_pipeline: parent_pipeline,
-      variables: project.predefined_variables.to_runner_variables
+      variables: variables
     }
   end
 
@@ -66,7 +67,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
       end
     end
 
-    context 'when is not a valid local path' do
+    context 'when it is not a valid local path' do
       let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
       it 'returns false' do
@@ -74,11 +75,21 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
       end
     end
 
-    context 'when is not a yaml file' do
+    context 'when it is not a yaml file' do
       let(:location) { '/config/application.rb' }
 
       it 'returns false' do
         expect(local_file.valid?).to be_falsy
+      end
+    end
+
+    context 'when it is an empty file' do
+      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret', 'masked' => true }]) }
+      let(:location) { '/lib/gitlab/ci/templates/secret/existent-file.yml' }
+
+      it 'returns false and adds an error message about an empty file' do
+        allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return("")
+        expect(local_file.errors).to include("Local file `/lib/gitlab/ci/templates/xxxxxx/existent-file.yml` is empty!")
       end
     end
 
@@ -126,10 +137,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
   end
 
   describe '#error_message' do
-    let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
+    let(:location) { '/lib/gitlab/ci/templates/secret_file.yml' }
+    let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
 
     it 'returns an error message' do
-      expect(local_file.error_message).to eq("Local file `#{location}` does not exist!")
+      expect(local_file.error_message).to eq("Local file `/lib/gitlab/ci/templates/xxxxxxxxxxx.yml` does not exist!")
     end
   end
 

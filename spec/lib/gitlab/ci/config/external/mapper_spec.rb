@@ -11,7 +11,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
   let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
   let(:template_file) { 'Auto-DevOps.gitlab-ci.yml' }
-  let(:context_params) { { project: project, sha: '123456', user: user, variables: project.predefined_variables } }
+  let(:variables) { project.predefined_variables }
+  let(:context_params) { { project: project, sha: '123456', user: user, variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 
   let(:file_content) do
@@ -92,13 +93,16 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       end
 
       context 'when the key is a hash of file and remote' do
+        let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file', 'masked' => true }]) }
+        let(:local_file) { 'secret-file.yml' }
+        let(:remote_url) { 'https://gitlab.com/secret-file.yml' }
         let(:values) do
           { include: { 'local' => local_file, 'remote' => remote_url },
             image: 'ruby:2.7' }
         end
 
         it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError)
+          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, 'Include `{"local":"xxxxxxxxxxx.yml","remote":"https://gitlab.com/xxxxxxxxxxx.yml"}` needs to match exactly one accessor!')
         end
       end
 

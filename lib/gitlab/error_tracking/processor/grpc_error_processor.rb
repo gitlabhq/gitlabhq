@@ -4,6 +4,8 @@ module Gitlab
   module ErrorTracking
     module Processor
       module GrpcErrorProcessor
+        extend Gitlab::ErrorTracking::Processor::Concerns::ProcessesExceptions
+
         DEBUG_ERROR_STRING_REGEX = RE2('(.*) debug_error_string:(.*)')
 
         class << self
@@ -19,9 +21,6 @@ module Gitlab
           def process_first_exception_value(event)
             # Better in new version, will be event.exception.values
             exceptions = extract_exceptions_from(event)
-
-            return unless exceptions.is_a?(Array)
-
             exception = exceptions.first
 
             return unless valid_exception?(exception)
@@ -39,11 +38,7 @@ module Gitlab
               exceptions.each do |exception|
                 next unless valid_exception?(exception)
 
-                if exception.respond_to?(:value=)
-                  exception.value = message
-                else
-                  exception.instance_variable_set(:@value, message)
-                end
+                set_exception_message(exception, message)
               end
             end
 
@@ -59,16 +54,6 @@ module Gitlab
             fingerprint[1] = message if message
           end
 
-          private
-
-          def extract_exceptions_from(event)
-            if event.is_a?(Raven::Event)
-              event.instance_variable_get(:@interfaces)[:exception]&.values
-            else
-              event.exception&.instance_variable_get(:@values)
-            end
-          end
-
           def custom_grpc_fingerprint?(fingerprint)
             fingerprint.is_a?(Array) && fingerprint.length == 2 && fingerprint[0].start_with?('GRPC::')
           end
@@ -81,15 +66,6 @@ module Gitlab
             return unless match
 
             [match[1], match[2]]
-          end
-
-          def valid_exception?(exception)
-            case exception
-            when Raven::SingleExceptionInterface, Sentry::SingleExceptionInterface
-              exception&.value
-            else
-              false
-            end
           end
         end
       end

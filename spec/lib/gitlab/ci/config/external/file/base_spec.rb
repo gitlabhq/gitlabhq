@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Base do
-  let(:context_params) { { sha: 'HEAD' } }
+  let(:variables) { }
+  let(:context_params) { { sha: 'HEAD', variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 
   let(:test_class) do
@@ -76,7 +77,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
     end
 
     context 'when there are YAML syntax errors' do
-      let(:location) { 'some/file/config.yml' }
+      let(:location) { 'some/file/secret_file_name.yml' }
+      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file_name', 'masked' => true }]) }
 
       before do
         allow_any_instance_of(test_class)
@@ -85,7 +87,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
 
       it 'is not a valid file' do
         expect(subject).not_to be_valid
-        expect(subject.error_message).to match /does not have valid YAML syntax/
+        expect(subject.error_message).to eq('Included file `some/file/xxxxxxxxxxxxxxxx.yml` does not have valid YAML syntax!')
       end
     end
   end

@@ -107,6 +107,19 @@ RSpec.shared_examples 'deploy token does not get confused with user' do
 end
 
 RSpec.shared_examples 'project policies as guest' do
+  context 'abilities for public projects' do
+    let(:project) { public_project }
+    let(:current_user) { guest }
+
+    it do
+      expect_allowed(*guest_permissions)
+      expect_allowed(*public_permissions)
+      expect_disallowed(*developer_permissions)
+      expect_disallowed(*maintainer_permissions)
+      expect_disallowed(*owner_permissions)
+    end
+  end
+
   context 'abilities for non-public projects' do
     let(:project) { private_project }
     let(:current_user) { guest }

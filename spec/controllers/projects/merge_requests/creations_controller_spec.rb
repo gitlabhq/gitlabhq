@@ -186,6 +186,7 @@ RSpec.describe Projects::MergeRequests::CreationsController do
 
     it 'fetches the commit if a user has access' do
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
+      expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { true }.at_least(:once)
 
       get :branch_to,
           params: {
@@ -199,8 +200,25 @@ RSpec.describe Projects::MergeRequests::CreationsController do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it 'does not load the commit when the user cannot create_merge_request_in' do
+      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
+      expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { false }.at_least(:once)
+
+      get :branch_to,
+          params: {
+            namespace_id: fork_project.namespace,
+            project_id: fork_project,
+            target_project_id: project.id,
+            ref: 'master'
+          }
+
+      expect(assigns(:commit)).to be_nil
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     it 'does not load the commit when the user cannot read the project' do
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { false }
+      expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { true }.at_least(:once)
 
       get :branch_to,
           params: {
