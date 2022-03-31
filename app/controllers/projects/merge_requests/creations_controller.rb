@@ -81,7 +81,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def branch_to
     @target_project = selected_target_project
 
-    if @target_project && params[:ref].present?
+    if @target_project && params[:ref].present? && Ability.allowed?(current_user, :create_merge_request_in, @target_project)
       @ref = params[:ref]
       @commit = @target_project.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end

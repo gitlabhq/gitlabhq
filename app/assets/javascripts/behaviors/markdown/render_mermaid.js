@@ -3,6 +3,7 @@ import { once, countBy } from 'lodash';
 import createFlash from '~/flash';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { __, sprintf } from '~/locale';
+import { unrestrictedPages } from './constants';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
 // `js-render-mermaid` class.
@@ -29,24 +30,6 @@ const elsProcessingMap = new WeakMap();
 let renderedMermaidBlocks = 0;
 
 let mermaidModule = {};
-
-// Whitelist pages where we won't impose any restrictions
-// on mermaid rendering
-const WHITELISTED_PAGES = [
-  // Group wiki
-  'groups:wikis:show',
-  'groups:wikis:edit',
-  'groups:wikis:create',
-
-  // Project wiki
-  'projects:wikis:show',
-  'projects:wikis:edit',
-  'projects:wikis:create',
-
-  // Project files
-  'projects:show',
-  'projects:blob:show',
-];
 
 export function initMermaid(mermaid) {
   let theme = 'neutral';
@@ -163,7 +146,7 @@ function renderMermaids($els) {
          * up the entire thread and causing a DoS.
          */
         if (
-          !WHITELISTED_PAGES.includes(pageName) &&
+          !unrestrictedPages.includes(pageName) &&
           ((source && source.length > MAX_CHAR_LIMIT) ||
             renderedChars > MAX_CHAR_LIMIT ||
             renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT ||
