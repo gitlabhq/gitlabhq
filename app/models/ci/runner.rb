@@ -65,6 +65,8 @@ module Ci
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
     MINUTES_COST_FACTOR_FIELDS = %i[public_projects_minutes_cost_factor private_projects_minutes_cost_factor].freeze
 
+    TAG_LIST_MAX_LENGTH = 50
+
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects, disable_joins: true
@@ -519,6 +521,11 @@ module Ci
       unless has_tags? || run_untagged?
         errors.add(:tags_list,
           'can not be empty when runner is not allowed to pick untagged jobs')
+      end
+
+      if tag_list_changed? && tag_list.count > TAG_LIST_MAX_LENGTH
+        errors.add(:tags_list,
+          "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
       end
     end
 

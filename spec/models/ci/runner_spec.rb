@@ -41,15 +41,25 @@ RSpec.describe Ci::Runner do
 
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
+        let(:runner) { build(:ci_runner, tag_list: [], run_untagged: false) }
+
         it 'is not valid' do
-          runner = build(:ci_runner, tag_list: [], run_untagged: false)
+          expect(runner).to be_invalid
+        end
+      end
+
+      context 'when runner has too many tags' do
+        let(:runner) { build(:ci_runner, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" }, run_untagged: false) }
+
+        it 'is not valid' do
           expect(runner).to be_invalid
         end
       end
 
       context 'when runner has tags' do
+        let(:runner) { build(:ci_runner, tag_list: ['tag'], run_untagged: false) }
+
         it 'is valid' do
-          runner = build(:ci_runner, tag_list: ['tag'], run_untagged: false)
           expect(runner).to be_valid
         end
       end
