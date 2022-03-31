@@ -58,9 +58,7 @@ class ProjectImportState < ApplicationRecord
     end
 
     after_transition any => :failed do |state, _|
-      if Feature.enabled?(:remove_import_data_on_failure, state.project, default_enabled: :yaml)
-        state.project.remove_import_data
-      end
+      state.project.remove_import_data
     end
 
     after_transition started: :finished do |state, _|

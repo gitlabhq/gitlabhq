@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-PUMA_EXTERNAL_METRICS_SERVER = Gitlab::Utils.to_boolean(ENV['PUMA_EXTERNAL_METRICS_SERVER'])
-require Rails.root.join('metrics_server', 'metrics_server') if PUMA_EXTERNAL_METRICS_SERVER
+require Rails.root.join('metrics_server', 'metrics_server')
 
 # Keep separate directories for separate processes
 def metrics_temp_dir
@@ -20,11 +19,17 @@ def prometheus_metrics_dir
   ENV['prometheus_multiproc_dir'] || metrics_temp_dir
 end
 
-def puma_metrics_server_process?
+def puma_master?
   Prometheus::PidProvider.worker_id == 'puma_master'
 end
 
-if puma_metrics_server_process?
+# Whether a dedicated process should run that serves Rails application metrics, as opposed
+# to using a Rails controller.
+def puma_dedicated_metrics_server?
+  Settings.monitoring.web_exporter.enabled
+end
+
+if puma_master?
   # The following is necessary to ensure stale Prometheus metrics don't accumulate over time.
   # It needs to be done as early as possible to ensure new metrics aren't being deleted.
   #
@@ -77,11 +82,7 @@ Gitlab::Cluster::LifecycleEvents.on_master_start do
   if Gitlab::Runtime.puma?
     Gitlab::Metrics::Samplers::PumaSampler.instance.start
 
-    if PUMA_EXTERNAL_METRICS_SERVER && Settings.monitoring.web_exporter.enabled
-      MetricsServer.start_for_puma
-    else
-      Gitlab::Metrics::Exporter::WebExporter.instance.start
-    end
+    MetricsServer.start_for_puma if puma_dedicated_metrics_server?
   end
 
   Gitlab::Ci::Parsers.instrument!
@@ -100,11 +101,7 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
   if Gitlab::Runtime.puma?
     # Since we are observing a metrics server from the Puma primary, we would inherit
     # this supervision thread after forking into workers, so we need to explicitly stop it here.
-    if PUMA_EXTERNAL_METRICS_SERVER
-      ::MetricsServer::PumaProcessSupervisor.instance.stop
-    else
-      Gitlab::Metrics::Exporter::WebExporter.instance.stop
-    end
+    ::MetricsServer::PumaProcessSupervisor.instance.stop if puma_dedicated_metrics_server?
 
     Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
   end
@@ -119,15 +116,11 @@ rescue IOError => e
   Gitlab::Metrics.error_detected!
 end
 
-if Gitlab::Runtime.puma?
+if Gitlab::Runtime.puma? && puma_dedicated_metrics_server?
   Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
     # We need to ensure that before we re-exec or shutdown server
     # we also stop the metrics server
-    if PUMA_EXTERNAL_METRICS_SERVER
-      ::MetricsServer::PumaProcessSupervisor.instance.shutdown
-    else
-      Gitlab::Metrics::Exporter::WebExporter.instance.stop
-    end
+    ::MetricsServer::PumaProcessSupervisor.instance.shutdown
   end
 
   Gitlab::Cluster::LifecycleEvents.on_before_master_restart do
@@ -136,10 +129,6 @@ if Gitlab::Runtime.puma?
     #
     # We do it again, for being extra safe,
     # but it should not be needed
-    if PUMA_EXTERNAL_METRICS_SERVER
-      ::MetricsServer::PumaProcessSupervisor.instance.shutdown
-    else
-      Gitlab::Metrics::Exporter::WebExporter.instance.stop
-    end
+    ::MetricsServer::PumaProcessSupervisor.instance.shutdown
   end
 end

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::HookData::IssuableBuilder do
   let_it_be(:user) { create(:user) }
 
   # This shared example requires a `builder` and `user` variable
-  shared_examples 'issuable hook data' do |kind|
+  shared_examples 'issuable hook data' do |kind, hook_data_issuable_builder_class|
     let(:data) { builder.build(user: user) }
 
     include_examples 'project hook data' do
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::HookData::IssuableBuilder do
         expect(data[:object_kind]).to eq(kind)
         expect(data[:user]).to eq(user.hook_attrs)
         expect(data[:project]).to eq(builder.issuable.project.hook_attrs)
-        expect(data[:object_attributes]).to eq(builder.issuable.hook_attrs)
+        expect(data[:object_attributes]).to eq(hook_data_issuable_builder_class.new(issuable).build)
         expect(data[:changes]).to eq({})
         expect(data[:repository]).to eq(builder.issuable.project.hook_attrs.slice(:name, :url, :description, :homepage))
       end
@@ -95,12 +95,12 @@ RSpec.describe Gitlab::HookData::IssuableBuilder do
   end
 
   describe '#build' do
-    it_behaves_like 'issuable hook data', 'issue' do
+    it_behaves_like 'issuable hook data', 'issue', Gitlab::HookData::IssueBuilder do
       let(:issuable) { create(:issue, description: 'A description') }
       let(:builder) { described_class.new(issuable) }
     end
 
-    it_behaves_like 'issuable hook data', 'merge_request' do
+    it_behaves_like 'issuable hook data', 'merge_request', Gitlab::HookData::MergeRequestBuilder do
       let(:issuable) { create(:merge_request, description: 'A description') }
       let(:builder) { described_class.new(issuable) }
     end

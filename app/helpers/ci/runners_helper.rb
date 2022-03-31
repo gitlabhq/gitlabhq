@@ -63,7 +63,9 @@ module Ci
         # Runner install help page is external, located at
         # https://gitlab.com/gitlab-org/gitlab-runner
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
-        registration_token: Gitlab::CurrentSettings.runners_registration_token
+        registration_token: Gitlab::CurrentSettings.runners_registration_token,
+        online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
       }
     end
 
@@ -83,7 +85,9 @@ module Ci
         registration_token: group.runners_token,
         group_id: group.id,
         group_full_path: group.full_path,
-        runner_install_help_page: 'https://docs.gitlab.com/runner/install/'
+        runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
+        online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
       }
     end
 

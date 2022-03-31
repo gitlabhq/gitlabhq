@@ -5,7 +5,7 @@ import SignInLegacyButton from '~/jira_connect/subscriptions/components/sign_in_
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
 import createStore from '~/jira_connect/subscriptions/store';
-import { I18N_DEFAULT_SIGN_IN_BUTTON_TEXT } from '../../../../../app/assets/javascripts/jira_connect/subscriptions/constants';
+import { I18N_DEFAULT_SIGN_IN_BUTTON_TEXT } from '~/jira_connect/subscriptions/constants';
 
 jest.mock('~/jira_connect/subscriptions/utils');
 

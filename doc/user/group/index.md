@@ -278,8 +278,8 @@ To view the activity feed in Atom format, select the
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
-you can share a group with another group. Members get direct access
-to the shared group. This includes members who inherited group membership from a parent group.
+you can share a group with another group. To invite a group, you must be a member of it. Members get direct access
+to the shared group. This includes members who inherited group membership from a parent group. 
 
 To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:

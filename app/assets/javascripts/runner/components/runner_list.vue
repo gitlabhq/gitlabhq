@@ -7,6 +7,7 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { formatJobCount, tableField } from '../utils';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
+import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerTags from './runner_tags.vue';
 
@@ -26,6 +27,7 @@ export default {
     GlSkeletonLoader,
     TooltipOnTruncate,
     TimeAgo,
+    RunnerStatusPopover,
     RunnerSummaryCell,
     RunnerTags,
     RunnerStatusCell,
@@ -134,6 +136,11 @@ export default {
           :checked="isChecked(item)"
           @change="onCheckboxChange(item, $event.target.checked)"
         />
+      </template>
+
+      <template #head(status)="{ label }">
+        {{ label }}
+        <runner-status-popover />
       </template>
 
       <template #cell(status)="{ item }">

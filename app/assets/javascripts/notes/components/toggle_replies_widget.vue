@@ -57,7 +57,7 @@ export default {
           :link-href="author.path"
           :img-alt="author.name"
           :img-src="author.avatar_url"
-          :img-size="26"
+          :img-size="24"
           :tooltip-text="author.name"
           tooltip-placement="bottom"
         />

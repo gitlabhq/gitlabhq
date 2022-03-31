@@ -26,11 +26,15 @@ a {
   text-decoration: none;
 }
 
-.content {
-  .md {
-    padding: 1rem 0;
-  }
+.gl-mb-5 {
+  @include gl-mb-5;
+}
 
+.gl-mt-5 {
+  @include gl-mt-5;
+}
+
+.content {
   hr {
     border: 1px solid #e1e1e1;
   }

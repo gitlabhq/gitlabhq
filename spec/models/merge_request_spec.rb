@@ -1757,18 +1757,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe '#hook_attrs' do
-    it 'delegates to Gitlab::HookData::MergeRequestBuilder#build' do
-      builder = double
-
-      expect(Gitlab::HookData::MergeRequestBuilder)
-        .to receive(:new).with(subject).and_return(builder)
-      expect(builder).to receive(:build)
-
-      subject.hook_attrs
-    end
-  end
-
   describe '#diverged_commits_count' do
     let(:project) { create(:project, :repository) }
     let(:forked_project) { fork_project(project, nil, repository: true) }

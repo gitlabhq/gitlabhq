@@ -13,7 +13,7 @@ module Gitlab
           event_type: event_type,
           user: user.hook_attrs,
           project: issuable.project.hook_attrs,
-          object_attributes: issuable.hook_attrs,
+          object_attributes: issuable_builder.new(issuable).build,
           labels: issuable.labels.map(&:hook_attrs),
           changes: final_changes(changes.slice(*safe_keys)),
           # DEPRECATED

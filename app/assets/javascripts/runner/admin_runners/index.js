@@ -26,7 +26,12 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
     return null;
   }
 
-  const { runnerInstallHelpPage, registrationToken } = el.dataset;
+  const {
+    runnerInstallHelpPage,
+    registrationToken,
+    onlineContactTimeoutSecs,
+    staleTimeoutSecs,
+  } = el.dataset;
 
   const { cacheConfig, typeDefs, localMutations } = createLocalState();
 
@@ -40,6 +45,8 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
     provide: {
       runnerInstallHelpPage,
       localMutations,
+      onlineContactTimeoutSecs,
+      staleTimeoutSecs,
     },
     render(h) {
       return h(AdminRunnersApp, {

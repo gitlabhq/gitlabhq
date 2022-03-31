@@ -2,11 +2,13 @@ import $ from 'jquery';
 import { nextTick } from 'vue';
 import '~/behaviors/markdown/render_gfm';
 import { GlTooltip, GlModal } from '@gitlab/ui';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Description from '~/issues/show/components/description.vue';
+import { updateHistory } from '~/lib/utils/url_utility';
 import TaskList from '~/task_list';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
@@ -17,6 +19,10 @@ import {
 } from '../mock_data/mock_data';
 
 jest.mock('~/flash');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  updateHistory: jest.fn(),
+}));
 jest.mock('~/task_list');
 
 const showModal = jest.fn();
@@ -55,6 +61,8 @@ describe('Description component', () => {
   }
 
   beforeEach(() => {
+    setWindowLocation(TEST_HOST);
+
     if (!document.querySelector('.issuable-meta')) {
       const metaData = document.createElement('div');
       metaData.classList.add('issuable-meta');
@@ -285,47 +293,85 @@ describe('Description component', () => {
     describe('work items detail', () => {
       const findTaskLink = () => wrapper.find('a.gfm-issue');
 
-      beforeEach(() => {
-        createComponent({
-          props: {
-            descriptionHtml: descriptionHtmlWithTask,
-          },
-          provide: {
-            glFeatures: { workItems: true },
-          },
+      describe('when opening and closing', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              descriptionHtml: descriptionHtmlWithTask,
+            },
+            provide: {
+              glFeatures: { workItems: true },
+            },
+          });
+          return nextTick();
         });
-        return nextTick();
-      });
 
-      it('opens when task button is clicked', async () => {
-        expect(findWorkItemDetailModal().props('visible')).toBe(false);
+        it('opens when task button is clicked', async () => {
+          expect(findWorkItemDetailModal().props('visible')).toBe(false);
 
-        await findTaskLink().trigger('click');
+          await findTaskLink().trigger('click');
 
-        expect(findWorkItemDetailModal().props('visible')).toBe(true);
-      });
-
-      it('closes from an open state', async () => {
-        await findTaskLink().trigger('click');
-
-        expect(findWorkItemDetailModal().props('visible')).toBe(true);
-
-        findWorkItemDetailModal().vm.$emit('close');
-        await nextTick();
-
-        expect(findWorkItemDetailModal().props('visible')).toBe(false);
-      });
-
-      it('tracks when opened', async () => {
-        const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-
-        await findTaskLink().trigger('click');
-
-        expect(trackingSpy).toHaveBeenCalledWith('workItems:show', 'viewed_work_item_from_modal', {
-          category: 'workItems:show',
-          label: 'work_item_view',
-          property: 'type_task',
+          expect(findWorkItemDetailModal().props('visible')).toBe(true);
+          expect(updateHistory).toHaveBeenCalledWith({
+            url: `${TEST_HOST}/?work_item_id=2`,
+            replace: true,
+          });
         });
+
+        it('closes from an open state', async () => {
+          await findTaskLink().trigger('click');
+
+          expect(findWorkItemDetailModal().props('visible')).toBe(true);
+
+          findWorkItemDetailModal().vm.$emit('close');
+          await nextTick();
+
+          expect(findWorkItemDetailModal().props('visible')).toBe(false);
+          expect(updateHistory).toHaveBeenLastCalledWith({
+            url: `${TEST_HOST}/`,
+            replace: true,
+          });
+        });
+
+        it('tracks when opened', async () => {
+          const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+          await findTaskLink().trigger('click');
+
+          expect(trackingSpy).toHaveBeenCalledWith(
+            'workItems:show',
+            'viewed_work_item_from_modal',
+            {
+              category: 'workItems:show',
+              label: 'work_item_view',
+              property: 'type_task',
+            },
+          );
+        });
+      });
+
+      describe('when url query `work_item_id` exists', () => {
+        it.each`
+          behavior           | workItemId     | visible
+          ${'opens'}         | ${'123'}       | ${true}
+          ${'does not open'} | ${'123e'}      | ${false}
+          ${'does not open'} | ${'12e3'}      | ${false}
+          ${'does not open'} | ${'1e23'}      | ${false}
+          ${'does not open'} | ${'x'}         | ${false}
+          ${'does not open'} | ${'undefined'} | ${false}
+        `(
+          '$behavior when url contains `work_item_id=$workItemId`',
+          async ({ workItemId, visible }) => {
+            setWindowLocation(`?work_item_id=${workItemId}`);
+
+            createComponent({
+              props: { descriptionHtml: descriptionHtmlWithTask },
+              provide: { glFeatures: { workItems: true } },
+            });
+
+            expect(findWorkItemDetailModal().props('visible')).toBe(visible);
+          },
+        );
       });
     });
   });

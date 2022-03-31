@@ -386,10 +386,6 @@ class Issue < ApplicationRecord
     resource_parent.root_namespace&.issue_repositioning_disabled?
   end
 
-  def hook_attrs
-    Gitlab::HookData::IssueBuilder.new(self).build
-  end
-
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
@@ -528,10 +524,6 @@ class Issue < ApplicationRecord
 
   def merge_requests_count(user = nil)
     ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
-  end
-
-  def labels_hook_attrs
-    labels.map(&:hook_attrs)
   end
 
   def previous_updated_at

@@ -4,6 +4,8 @@ import $ from 'jquery';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
+import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import TaskList from '~/task_list';
 import Tracking from '~/tracking';
@@ -65,13 +67,17 @@ export default {
     },
   },
   data() {
+    const workItemId = getParameterByName('work_item_id');
+
     return {
       preAnimation: false,
       pulseAnimation: false,
       initialUpdate: true,
       taskButtons: [],
       activeTask: {},
-      workItemId: null,
+      workItemId: isPositiveInteger(workItemId)
+        ? convertToGraphQLId(TYPE_WORK_ITEM, workItemId)
+        : undefined,
     };
   },
   computed: {
@@ -184,6 +190,7 @@ export default {
           taskLink.addEventListener('click', (e) => {
             e.preventDefault();
             this.workItemId = convertToGraphQLId(TYPE_WORK_ITEM, issue);
+            this.updateWorkItemIdUrlQuery(issue);
             this.track('viewed_work_item_from_modal', {
               category: 'workItems:show',
               label: 'work_item_view',
@@ -232,11 +239,18 @@ export default {
       this.$refs.modal.hide();
     },
     closeWorkItemDetailModal() {
-      this.workItemId = null;
+      this.workItemId = undefined;
+      this.updateWorkItemIdUrlQuery(undefined);
     },
     handleCreateTask(description) {
       this.$emit('updateDescription', description);
       this.closeCreateTaskModal();
+    },
+    updateWorkItemIdUrlQuery(workItemId) {
+      updateHistory({
+        url: setUrlParams({ work_item_id: workItemId }),
+        replace: true,
+      });
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji', 'copy-code'] },
@@ -281,7 +295,7 @@ export default {
       body-class="gl-p-0!"
     >
       <create-work-item
-        :is-modal="true"
+        is-modal
         :initial-title="activeTask.title"
         :issue-gid="issueGid"
         :lock-version="lockVersion"

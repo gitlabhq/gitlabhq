@@ -256,12 +256,11 @@ Send all questions and requests related to the GitLab for Startups program to `s
 
 ### Support for Community Programs
 
-Because these Community Programs are free of cost, regular Priority Support is not included. However, it can be purchased at a 95% discount in some cases.
-If interested, email the relevant community program team: `education@gitlab.com`, `opensource@gitlab.com`, or `startups@gitlab.com`.
+Because these Community Programs are free of cost, regular Priority Support is not included.
 
 As a community member, you can follow this diagram to find support:
 
-![Support diagram](img/support-diagram.png)
+![Support diagram](img/support_diagram_c.png)
 
 ## Contact Support
 

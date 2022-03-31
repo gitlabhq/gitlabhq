@@ -14,6 +14,10 @@ import runnerWithGroupData from 'test_fixtures/graphql/runner/details/runner.que
 import runnerProjectsData from 'test_fixtures/graphql/runner/details/runner_projects.query.graphql.json';
 import runnerJobsData from 'test_fixtures/graphql/runner/details/runner_jobs.query.graphql.json';
 
+// Other mock data
+export const onlineContactTimeoutSecs = 2 * 60 * 60;
+export const staleTimeoutSecs = 5259492; // Ruby's `2.months`
+
 export {
   runnersData,
   runnersCountData,

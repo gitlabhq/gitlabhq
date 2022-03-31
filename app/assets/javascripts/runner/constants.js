@@ -21,6 +21,26 @@ export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
 );
 export const I18N_PROJECT_RUNNER_DESCRIPTION = s__('Runners|Associated with one or more projects');
 
+// Status help popover
+export const I18N_STATUS_POPOVER_TITLE = s__('Runners|Runner statuses');
+
+export const I18N_STATUS_POPOVER_NEVER_CONTACTED = s__('Runners|Never contacted:');
+export const I18N_STATUS_POPOVER_NEVER_CONTACTED_DESCRIPTION = s__(
+  'Runners|Runner has never contacted GitLab (when you register a runner, use %{codeStart}gitlab-runner run%{codeEnd} to bring it online)',
+);
+export const I18N_STATUS_POPOVER_ONLINE = s__('Runners|Online:');
+export const I18N_STATUS_POPOVER_ONLINE_DESCRIPTION = s__(
+  'Runners|Runner has contacted GitLab within the last %{elapsedTime}',
+);
+export const I18N_STATUS_POPOVER_OFFLINE = s__('Runners|Offline:');
+export const I18N_STATUS_POPOVER_OFFLINE_DESCRIPTION = s__(
+  'Runners|Runner has not contacted GitLab in more than %{elapsedTime}',
+);
+export const I18N_STATUS_POPOVER_STALE = s__('Runners|Stale:');
+export const I18N_STATUS_POPOVER_STALE_DESCRIPTION = s__(
+  'Runners|Runner has not contacted GitLab in more than %{elapsedTime}',
+);
+
 // Status tooltips
 export const I18N_ONLINE_TIMEAGO_TOOLTIP = s__(
   'Runners|Runner is online; last contact was %{timeAgo}',
@@ -63,7 +83,7 @@ export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
 
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
 export const I18N_NONE = __('None');
-export const I18N_NO_JOBS_FOUND = s__('Runner|This runner has not run any jobs.');
+export const I18N_NO_JOBS_FOUND = s__('Runners|This runner has not run any jobs.');
 
 // Styles
 

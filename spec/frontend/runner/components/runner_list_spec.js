@@ -6,7 +6,8 @@ import {
 } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
-import { runnersData } from '../mock_data';
+import RunnerStatusPopover from '~/runner/components/runner_status_popover.vue';
+import { runnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
 
 const mockRunners = runnersData.data.runners.nodes;
 const mockActiveRunnersCount = mockRunners.length;
@@ -28,20 +29,33 @@ describe('RunnerList', () => {
         activeRunnersCount: mockActiveRunnersCount,
         ...props,
       },
+      provide: {
+        onlineContactTimeoutSecs,
+        staleTimeoutSecs,
+      },
       ...options,
     });
   };
-
-  beforeEach(() => {
-    createComponent({}, mountExtended);
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   it('Displays headers', () => {
+    createComponent(
+      {
+        stubs: {
+          RunnerStatusPopover: {
+            template: '<div/>',
+          },
+        },
+      },
+      mountExtended,
+    );
+
     const headerLabels = findHeaders().wrappers.map((w) => w.text());
+
+    expect(findHeaders().at(0).findComponent(RunnerStatusPopover).exists()).toBe(true);
 
     expect(headerLabels).toEqual([
       'Status',
@@ -61,6 +75,8 @@ describe('RunnerList', () => {
   });
 
   it('Displays a list of runners', () => {
+    createComponent({}, mountExtended);
+
     expect(findRows()).toHaveLength(4);
 
     expect(findSkeletonLoader().exists()).toBe(false);
@@ -68,6 +84,8 @@ describe('RunnerList', () => {
 
   it('Displays details of a runner', () => {
     const { id, description, version, shortSha } = mockRunners[0];
+
+    createComponent({}, mountExtended);
 
     // Badges
     expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
@@ -182,6 +200,8 @@ describe('RunnerList', () => {
   it('Shows runner identifier', () => {
     const { id, shortSha } = mockRunners[0];
     const numericId = getIdFromGraphQLId(id);
+
+    createComponent({}, mountExtended);
 
     expect(findCell({ fieldKey: 'summary' }).text()).toContain(`#${numericId} (${shortSha})`);
   });

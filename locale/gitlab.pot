@@ -5686,6 +5686,12 @@ msgstr ""
 msgid "BillingPlans|While GitLab is ending availability of the Bronze plan, you can still renew your Bronze subscription one additional time before %{eoa_bronze_plan_end_date}. We are also offering a limited time free upgrade to our Premium Plan (up to 25 users)! Learn more about the changes and offers in our %{announcement_link}."
 msgstr ""
 
+msgid "BillingPlans|You don't have any groups. You'll need to %{create_group_link_start}create one%{create_group_link_end} and %{move_link_start}move this project to it%{move_link_end}."
+msgstr ""
+
+msgid "BillingPlans|You'll have to %{move_link_start}move this project%{move_link_end} to one of your groups."
+msgstr ""
+
 msgid "BillingPlans|Your GitLab.com %{plan} trial will %{strong_open}expire after %{expiration_date}%{strong_close}. You can retain access to the %{plan} features by upgrading below."
 msgstr ""
 
@@ -24566,16 +24572,16 @@ msgstr ""
 msgid "MrDeploymentActions|Stop environment"
 msgstr ""
 
-msgid "MrList|Assigned to %{name}, go to their profile."
+msgid "MrList|Assigned to %{name}"
 msgstr ""
 
-msgid "MrList|Attention requested from assignee %{name}, go to their profile."
+msgid "MrList|Attention requested from assignee %{name}"
 msgstr ""
 
-msgid "MrList|Attention requested from reviewer %{name}, go to their profile."
+msgid "MrList|Attention requested from reviewer %{name}"
 msgstr ""
 
-msgid "MrList|Review requested from %{name}, go to their profile."
+msgid "MrList|Review requested from %{name}"
 msgstr ""
 
 msgid "Multi-project"
@@ -32367,6 +32373,9 @@ msgstr ""
 msgid "Runners|Never contacted"
 msgstr ""
 
+msgid "Runners|Never contacted:"
+msgstr ""
+
 msgid "Runners|New group runners view"
 msgstr ""
 
@@ -32388,10 +32397,16 @@ msgstr ""
 msgid "Runners|Offline runners"
 msgstr ""
 
+msgid "Runners|Offline:"
+msgstr ""
+
 msgid "Runners|Online"
 msgstr ""
 
 msgid "Runners|Online runners"
+msgstr ""
+
+msgid "Runners|Online:"
 msgstr ""
 
 msgid "Runners|Pause from accepting jobs"
@@ -32462,7 +32477,16 @@ msgstr ""
 msgid "Runners|Runner cannot be deleted, please contact your administrator"
 msgstr ""
 
+msgid "Runners|Runner has contacted GitLab within the last %{elapsedTime}"
+msgstr ""
+
+msgid "Runners|Runner has never contacted GitLab (when you register a runner, use %{codeStart}gitlab-runner run%{codeEnd} to bring it online)"
+msgstr ""
+
 msgid "Runners|Runner has never contacted this instance"
+msgstr ""
+
+msgid "Runners|Runner has not contacted GitLab in more than %{elapsedTime}"
 msgstr ""
 
 msgid "Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects."
@@ -32490,6 +32514,9 @@ msgid "Runners|Runner is stale; last contact was %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Runner registration"
+msgstr ""
+
+msgid "Runners|Runner statuses"
 msgstr ""
 
 msgid "Runners|Runner unassigned from project."
@@ -32522,6 +32549,9 @@ msgstr ""
 msgid "Runners|Stale runners"
 msgstr ""
 
+msgid "Runners|Stale:"
+msgstr ""
+
 msgid "Runners|Status"
 msgstr ""
 
@@ -32538,6 +32568,9 @@ msgid "Runners|The new view gives you more space and better visibility into your
 msgstr ""
 
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Runners|This runner has not run any jobs."
 msgstr ""
 
 msgid "Runners|This runner is associated with specific projects."
@@ -32616,9 +32649,6 @@ msgid "Runners|specific"
 msgstr ""
 
 msgid "Runners|stale"
-msgstr ""
-
-msgid "Runner|This runner has not run any jobs."
 msgstr ""
 
 msgid "Running"
@@ -33790,6 +33820,9 @@ msgid "SecurityReports|Set status"
 msgstr ""
 
 msgid "SecurityReports|Severity"
+msgstr ""
+
+msgid "SecurityReports|Show %{pageSize} items"
 msgstr ""
 
 msgid "SecurityReports|Sometimes a scanner can't determine a finding's severity. Those findings may still be a potential source of risk though. Please review these manually."

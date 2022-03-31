@@ -1172,18 +1172,6 @@ RSpec.describe Issue do
     end
   end
 
-  describe '#hook_attrs' do
-    it 'delegates to Gitlab::HookData::IssueBuilder#build' do
-      builder = double
-
-      expect(Gitlab::HookData::IssueBuilder)
-        .to receive(:new).with(subject).and_return(builder)
-      expect(builder).to receive(:build)
-
-      subject.hook_attrs
-    end
-  end
-
   describe '#check_for_spam?' do
     let_it_be(:support_bot) { ::User.support_bot }
 
@@ -1330,15 +1318,6 @@ RSpec.describe Issue do
 
   it_behaves_like 'throttled touch' do
     subject { create(:issue, updated_at: 1.hour.ago) }
-  end
-
-  describe "#labels_hook_attrs" do
-    let(:label) { create(:label) }
-    let(:issue) { create(:labeled_issue, project: reusable_project, labels: [label]) }
-
-    it "returns a list of label hook attributes" do
-      expect(issue.labels_hook_attrs).to eq([label.hook_attrs])
-    end
   end
 
   context "relative positioning" do

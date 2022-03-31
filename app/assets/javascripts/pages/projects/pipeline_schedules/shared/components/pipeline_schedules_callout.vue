@@ -2,8 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
 import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
-
-import Translate from '../../../../../vue_shared/translate';
+import Translate from '~/vue_shared/translate';
 
 Vue.use(Translate);
 

@@ -154,6 +154,30 @@ RSpec.shared_examples 'logs an auth warning' do |requested_actions|
   end
 end
 
+RSpec.shared_examples 'allowed to delete container repository images' do
+  let(:authentication_abilities) do
+    [:admin_container_image]
+  end
+
+  it_behaves_like 'a valid token'
+
+  context 'allow to delete images' do
+    let(:current_params) do
+      { scopes: ["repository:#{project.full_path}:*"] }
+    end
+
+    it_behaves_like 'a deletable'
+  end
+
+  context 'allow to delete images since registry 2.7' do
+    let(:current_params) do
+      { scopes: ["repository:#{project.full_path}:delete"] }
+    end
+
+    it_behaves_like 'a deletable since registry 2.7'
+  end
+end
+
 RSpec.shared_examples 'a container registry auth service' do
   include_context 'container registry auth service context'
 
@@ -544,38 +568,14 @@ RSpec.shared_examples 'a container registry auth service' do
   end
 
   context 'delete authorized as maintainer' do
-    let_it_be(:current_project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:current_user) { create(:user) }
 
-    let(:authentication_abilities) do
-      [:admin_container_image]
-    end
-
     before_all do
-      current_project.add_maintainer(current_user)
+      project.add_maintainer(current_user)
     end
 
-    it_behaves_like 'a valid token'
-
-    context 'allow to delete images' do
-      let(:current_params) do
-        { scopes: ["repository:#{current_project.full_path}:*"] }
-      end
-
-      it_behaves_like 'a deletable' do
-        let(:project) { current_project }
-      end
-    end
-
-    context 'allow to delete images since registry 2.7' do
-      let(:current_params) do
-        { scopes: ["repository:#{current_project.full_path}:delete"] }
-      end
-
-      it_behaves_like 'a deletable since registry 2.7' do
-        let(:project) { current_project }
-      end
-    end
+    it_behaves_like 'allowed to delete container repository images'
   end
 
   context 'build authorized as user' do

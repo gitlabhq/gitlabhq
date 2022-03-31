@@ -70,7 +70,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
         it 'updates merge request with assignee' do
           change_assignee(user.name)
 
-          expect(find('.issuable-meta a.author-link')[:title]).to eq "Attention requested from assignee #{user.name}, go to their profile."
+          expect(find('.issuable-meta a.author-link')[:title]).to eq "Attention requested from assignee #{user.name}"
         end
       end
     end

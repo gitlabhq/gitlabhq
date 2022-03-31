@@ -41,7 +41,13 @@ import adminRunnersCountQuery from '~/runner/graphql/list/admin_runners_count.qu
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
-import { runnersData, runnersCountData, runnersDataPaginated } from '../mock_data';
+import {
+  runnersData,
+  runnersCountData,
+  runnersDataPaginated,
+  onlineContactTimeoutSecs,
+  staleTimeoutSecs,
+} from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 const mockRunners = runnersData.data.runners.nodes;
@@ -94,6 +100,8 @@ describe('AdminRunnersApp', () => {
       },
       provide: {
         localMutations,
+        onlineContactTimeoutSecs,
+        staleTimeoutSecs,
         ...provide,
       },
       ...options,

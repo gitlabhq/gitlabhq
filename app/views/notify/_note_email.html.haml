@@ -27,7 +27,7 @@
     = content_for :head do
       = stylesheet_link_tag 'mailers/highlighted_diff_email'
 
-  %table.code
+  %table.code.gl-mb-5
     = render partial: "projects/diffs/email_line",
       collection: discussion.truncated_diff_lines(diff_limit: diff_limit),
       as: :line,

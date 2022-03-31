@@ -524,6 +524,10 @@ module Issuable
     labels.order('title ASC').pluck(:title)
   end
 
+  def labels_hook_attrs
+    labels.map(&:hook_attrs)
+  end
+
   # Convert this Issuable class name to a format usable by Ability definitions
   #
   # Examples:

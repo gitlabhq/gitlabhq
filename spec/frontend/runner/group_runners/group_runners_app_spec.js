@@ -38,7 +38,13 @@ import getGroupRunnersCountQuery from '~/runner/graphql/list/group_runners_count
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import { groupRunnersData, groupRunnersDataPaginated, groupRunnersCountData } from '../mock_data';
+import {
+  groupRunnersData,
+  groupRunnersDataPaginated,
+  groupRunnersCountData,
+  onlineContactTimeoutSecs,
+  staleTimeoutSecs,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
@@ -89,6 +95,10 @@ describe('GroupRunnersApp', () => {
         groupFullPath: mockGroupFullPath,
         groupRunnersLimitedCount: mockGroupRunnersLimitedCount,
         ...props,
+      },
+      provide: {
+        onlineContactTimeoutSecs,
+        staleTimeoutSecs,
       },
     });
   };

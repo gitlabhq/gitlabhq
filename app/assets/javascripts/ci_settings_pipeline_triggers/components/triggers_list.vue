@@ -1,10 +1,9 @@
 <script>
-import { GlTable, GlButton, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlTable, GlButton, GlBadge, GlTooltipDirective, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 export default {
   i18n: {
@@ -21,7 +20,8 @@ export default {
     GlBadge,
     ClipboardButton,
     TooltipOnTruncate,
-    UserAvatarLink,
+    GlAvatarLink,
+    GlAvatar,
     TimeAgoTooltip,
   },
   directives: {
@@ -102,13 +102,14 @@ export default {
       </template>
       <template #cell(owner)="{ item }">
         <span class="trigger-owner sr-only">{{ item.owner.name }}</span>
-        <user-avatar-link
+        <gl-avatar-link
           v-if="item.owner"
-          :link-href="item.owner.path"
-          :img-src="item.owner.avatarUrl"
-          :tooltip-text="item.owner.name"
-          :img-alt="item.owner.name"
-        />
+          v-gl-tooltip
+          :href="item.owner.path"
+          :title="item.owner.name"
+        >
+          <gl-avatar :size="24" :src="item.owner.avatarUrl" />
+        </gl-avatar-link>
       </template>
       <template #cell(lastUsed)="{ item }">
         <time-ago-tooltip v-if="item.lastUsed" :time="item.lastUsed" />
