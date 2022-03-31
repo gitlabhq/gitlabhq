@@ -359,6 +359,26 @@ RSpec.describe API::Users do
         end
       end
 
+      context 'without_project_bots param' do
+        let_it_be(:project_bot) { create(:user, :project_bot) }
+
+        it 'returns all users when it is not set' do
+          get api("/users?without_project_bots=false", user)
+
+          expect(response).to match_response_schema('public_api/v4/user/basics')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |u| u['id'] }).to include(project_bot.id)
+        end
+
+        it 'returns all non project_bot users when it is set' do
+          get api("/users?without_project_bots=true", user)
+
+          expect(response).to match_response_schema('public_api/v4/user/basics')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |u| u['id'] }).not_to include(project_bot.id)
+        end
+      end
+
       context 'admins param' do
         it 'returns all users' do
           get api("/users?admins=true", user)

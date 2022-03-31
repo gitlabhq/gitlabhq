@@ -29382,6 +29382,8 @@ CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON v
 
 CREATE INDEX index_vuln_reads_on_project_id_state_severity_and_vuln_id ON vulnerability_reads USING btree (project_id, state, severity, vulnerability_id DESC);
 
+CREATE INDEX index_vulnerabilites_common_finder_query ON vulnerabilities USING btree (project_id, state, report_type, severity, id);
+
 CREATE INDEX index_vulnerabilities_on_author_id ON vulnerabilities USING btree (author_id);
 
 CREATE INDEX index_vulnerabilities_on_confirmed_by_id ON vulnerabilities USING btree (confirmed_by_id);

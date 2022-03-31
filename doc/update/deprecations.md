@@ -75,17 +75,17 @@ In 15.0, support for daemon mode for GitLab Pages will be removed.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### GitLab self-monitoring
+### GitLab self-monitoring project
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 16.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-GitLab self-monitoring gives administrators of self-hosted GitLab instances the tools to monitor the health of their instances. This feature is deprecated in GitLab 14.9, and is scheduled for removal in 15.0.
+GitLab self-monitoring gives administrators of self-hosted GitLab instances the tools to monitor the health of their instances. This feature is deprecated in GitLab 14.9, and is scheduled for removal in 16.0.
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 16.0 (2023-05-22)**
 
 ### GraphQL permissions change for Package settings
 
@@ -994,7 +994,7 @@ The logging features in GitLab allow users to install the ELK stack (Elasticsear
 ### Monitor performance metrics through Prometheus
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 16.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
@@ -1002,7 +1002,7 @@ changes to your code, settings, or workflow.
 By displaying data stored in a Prometheus instance, GitLab allows users to view performance metrics. GitLab also displays visualizations of these metrics in dashboards. The user can connect to a previously-configured external Prometheus instance, or set up Prometheus as a GitLab Managed App.
 However, since certificate-based integration with Kubernetes clusters is deprecated in GitLab, the metrics functionality in GitLab that relies on Prometheus is also deprecated. This includes the metrics visualizations in dashboards. GitLab is working to develop a single user experience based on [Opstrace](https://about.gitlab.com/press/releases/2021-12-14-gitlab-acquires-opstrace-to-expand-its-devops-platform-with-open-source-observability-solution.html). An [issue exists](https://gitlab.com/groups/gitlab-org/-/epics/6976) for you to follow work on the Opstrace integration.
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 16.0 (2023-05-22)**
 
 ### Pseudonymizer
 

@@ -63,25 +63,6 @@ RSpec.describe 'Groups > Members > Manage members' do
     )
   end
 
-  it 'do not disclose email addresses', :js do
-    group.add_owner(user1)
-    create(:user, email: 'undisclosed_email@gitlab.com', name: "Jane 'invisible' Doe")
-
-    visit group_group_members_path(group)
-
-    click_on 'Invite members'
-    find('[data-testid="members-token-select-input"]').set('@gitlab.com')
-
-    wait_for_requests
-
-    expect(page).to have_content('No matches found')
-
-    find('[data-testid="members-token-select-input"]').set('undisclosed_email@gitlab.com')
-    wait_for_requests
-
-    expect(page).to have_content('Invite "undisclosed_email@gitlab.com" by email')
-  end
-
   it 'remove user from group', :js do
     group.add_owner(user1)
     group.add_developer(user2)
@@ -166,6 +147,59 @@ RSpec.describe 'Groups > Members > Manage members' do
 
         # Can not remove user2
         expect(page).not_to have_selector 'button[title="Remove member"]'
+      end
+    end
+  end
+
+  describe 'member search results', :js do
+    before do
+      group.add_owner(user1)
+    end
+
+    it 'does not disclose email addresses' do
+      create(:user, email: 'undisclosed_email@gitlab.com', name: "Jane 'invisible' Doe")
+
+      visit group_group_members_path(group)
+
+      click_on 'Invite members'
+      find(member_dropdown_selector).set('@gitlab.com')
+
+      wait_for_requests
+
+      expect(page).to have_content('No matches found')
+
+      find(member_dropdown_selector).set('undisclosed_email@gitlab.com')
+      wait_for_requests
+
+      expect(page).to have_content('Invite "undisclosed_email@gitlab.com" by email')
+    end
+
+    it 'does not show project_bots', :aggregate_failures do
+      internal_project_bot = create(:user, :project_bot, name: '_internal_project_bot_')
+      project = create(:project, group: group)
+      project.add_maintainer(internal_project_bot)
+
+      external_group = create(:group)
+      external_project_bot = create(:user, :project_bot, name: '_external_project_bot_')
+      external_project = create(:project, group: external_group)
+      external_project.add_maintainer(external_project_bot)
+      external_project.add_maintainer(user1)
+
+      visit group_group_members_path(group)
+
+      click_on 'Invite members'
+
+      page.within invite_modal_selector do
+        field = find(member_dropdown_selector)
+        field.native.send_keys :tab
+        field.click
+
+        wait_for_requests
+
+        expect(page).to have_content(user1.name)
+        expect(page).to have_content(user2.name)
+        expect(page).not_to have_content(internal_project_bot.name)
+        expect(page).not_to have_content(external_project_bot.name)
       end
     end
   end

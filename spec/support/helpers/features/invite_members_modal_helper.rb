@@ -8,8 +8,8 @@ module Spec
           def invite_member(name, role: 'Guest', expires_at: nil)
             click_on 'Invite members'
 
-            page.within '[data-testid="invite-modal"]' do
-              find('[data-testid="members-token-select-input"]').set(name)
+            page.within invite_modal_selector do
+              find(member_dropdown_selector).set(name)
 
               wait_for_requests
               click_button name
@@ -51,6 +51,14 @@ module Spec
 
           def group_dropdown_selector
             '[data-testid="group-select-dropdown"]'
+          end
+
+          def member_dropdown_selector
+            '[data-testid="members-token-select-input"]'
+          end
+
+          def invite_modal_selector
+            '[data-testid="invite-modal"]'
           end
 
           def expect_to_have_group(group)

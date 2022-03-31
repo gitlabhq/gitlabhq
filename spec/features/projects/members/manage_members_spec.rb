@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project members list', :js do
+RSpec.describe 'Projects > Members > Manage members', :js do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
   include Spec::Support::Helpers::ModalHelpers
@@ -122,6 +122,36 @@ RSpec.describe 'Project members list', :js do
       property: 'net_new_user',
       user: user1
     )
+  end
+
+  describe 'member search results' do
+    it 'does not show project_bots', :aggregate_failures do
+      internal_project_bot = create(:user, :project_bot, name: '_internal_project_bot_')
+      project.add_maintainer(internal_project_bot)
+
+      external_group = create(:group)
+      external_project_bot = create(:user, :project_bot, name: '_external_project_bot_')
+      external_project = create(:project, group: external_group)
+      external_project.add_maintainer(external_project_bot)
+      external_project.add_maintainer(user1)
+
+      visit_members_page
+
+      click_on 'Invite members'
+
+      page.within invite_modal_selector do
+        field = find(member_dropdown_selector)
+        field.native.send_keys :tab
+        field.click
+
+        wait_for_requests
+
+        expect(page).to have_content(user1.name)
+        expect(page).to have_content(user2.name)
+        expect(page).not_to have_content(internal_project_bot.name)
+        expect(page).not_to have_content(external_project_bot.name)
+      end
+    end
   end
 
   context 'as a signed out visitor viewing a public project' do

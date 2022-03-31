@@ -97,6 +97,14 @@ In addition, to exclude external users from the users' list, you can use the par
 GET /users?exclude_external=true
 ```
 
+To exclude [bot users for projects](../user/project/settings/project_access_tokens.md#bot-users-for-projects)
+and [bot users for groups](../user/group/settings/group_access_tokens.md#bot-users-for-groups), you can use the
+parameter `without_project_bots=true`.
+
+```plaintext
+GET /users?without_project_bots=true
+```
+
 ### For admins
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
