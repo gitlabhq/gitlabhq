@@ -37,7 +37,7 @@ module Gitlab
             def validate_content!
               return unless ensure_preconditions_satisfied!
 
-              errors.push("File `#{location}` is empty!") unless content.present?
+              errors.push("File `#{masked_location}` is empty!") unless content.present?
             end
 
             def ensure_preconditions_satisfied!

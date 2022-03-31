@@ -20,11 +20,13 @@ RSpec.describe Integrations::Asana do
     let(:gid) { "123456789ABCD" }
     let(:asana_task) { double(::Asana::Resources::Task) }
     let(:asana_integration) { described_class.new }
+    let(:ref) { 'main' }
+    let(:restrict_to_branch) { nil }
 
     let(:data) do
       {
         object_kind: 'push',
-        ref: 'master',
+        ref: ref,
         user_name: user.name,
         commits: [
           {
@@ -40,16 +42,44 @@ RSpec.describe Integrations::Asana do
         project: project,
         project_id: project.id,
         api_key: 'verySecret',
-        restrict_to_branch: 'master'
+        restrict_to_branch: restrict_to_branch
       )
     end
 
     subject(:execute_integration) { asana_integration.execute(data) }
 
+    context 'with restrict_to_branch' do
+      let(:restrict_to_branch) { 'feature-branch, main' }
+      let(:message) { 'fix #456789' }
+
+      context 'when ref is in scope of restriced branches' do
+        let(:ref) { 'main' }
+
+        it 'calls the Asana integration' do
+          expect(asana_task).to receive(:add_comment)
+          expect(asana_task).to receive(:update).with(completed: true)
+          expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, '456789').once.and_return(asana_task)
+
+          execute_integration
+        end
+      end
+
+      context 'when ref is not in scope of restricted branches' do
+        let(:ref) { 'mai' }
+
+        it 'does not call the Asana integration' do
+          expect(asana_task).not_to receive(:add_comment)
+          expect(::Asana::Resources::Task).not_to receive(:find_by_id)
+
+          execute_integration
+        end
+      end
+    end
+
     context 'when creating a story' do
       let(:message) { "Message from commit. related to ##{gid}" }
       let(:expected_message) do
-        "#{user.name} pushed to branch master of #{project.full_name} ( https://gitlab.com/ ): #{message}"
+        "#{user.name} pushed to branch main of #{project.full_name} ( https://gitlab.com/ ): #{message}"
       end
 
       it 'calls Asana integration to create a story' do

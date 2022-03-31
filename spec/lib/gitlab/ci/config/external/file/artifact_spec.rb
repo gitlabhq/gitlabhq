@@ -127,6 +127,12 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
                 let!(:metadata) { create(:ci_job_artifact, :metadata, job: generator_job) }
 
                 context 'when file is empty' do
+                  let(:params) { { artifact: 'secret_stuff/generated.yml', job: 'generator' } }
+                  let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_stuff', 'masked' => true }]) }
+                  let(:context) do
+                    Gitlab::Ci::Config::External::Context.new(parent_pipeline: parent_pipeline, variables: variables)
+                  end
+
                   before do
                     allow_next_instance_of(Gitlab::Ci::ArtifactFileReader) do |reader|
                       allow(reader).to receive(:read).and_return('')
@@ -134,7 +140,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
                   end
 
                   let(:expected_error) do
-                    'File `generated.yml` is empty!'
+                    'File `xxxxxxxxxxxx/generated.yml` is empty!'
                   end
 
                   it_behaves_like 'is invalid'

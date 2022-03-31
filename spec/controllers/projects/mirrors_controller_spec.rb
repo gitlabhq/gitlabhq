@@ -177,6 +177,7 @@ RSpec.describe Projects::MirrorsController do
         INVALID
         git@example.com:foo/bar.git
         ssh://git@example.com:foo/bar.git
+        ssh://127.0.0.1/foo/bar.git
       ].each do |url|
         it "returns an error with a 400 response for URL #{url.inspect}" do
           do_get(project, url)
