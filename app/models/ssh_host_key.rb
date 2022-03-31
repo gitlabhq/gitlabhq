@@ -46,11 +46,11 @@ class SshHostKey
       .select(&:valid?)
   end
 
-  attr_reader :project, :url, :compare_host_keys
+  attr_reader :project, :url, :ip, :compare_host_keys
 
   def initialize(project:, url:, compare_host_keys: nil)
     @project = project
-    @url = normalize_url(url)
+    @url, @ip = normalize_url(url)
     @compare_host_keys = compare_host_keys
   end
 
@@ -90,9 +90,11 @@ class SshHostKey
   end
 
   def calculate_reactive_cache
+    input = [ip, url.hostname].compact.join(' ')
+
     known_hosts, errors, status =
       Open3.popen3({}, *%W[ssh-keyscan -T 5 -p #{url.port} -f-]) do |stdin, stdout, stderr, wait_thr|
-        stdin.puts(url.host)
+        stdin.puts(input)
         stdin.close
 
         [
@@ -127,11 +129,31 @@ class SshHostKey
   end
 
   def normalize_url(url)
-    full_url = ::Addressable::URI.parse(url)
-    raise ArgumentError, "Invalid URL" unless full_url&.scheme == 'ssh'
+    url, real_hostname = Gitlab::UrlBlocker.validate!(
+      url,
+      schemes: %w[ssh],
+      allow_localhost: allow_local_requests?,
+      allow_local_network: allow_local_requests?,
+      dns_rebind_protection: Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
+    )
 
-    Addressable::URI.parse("ssh://#{full_url.host}:#{full_url.inferred_port}")
-  rescue Addressable::URI::InvalidURIError
+    # When DNS rebinding protection is required, the hostname is replaced by the
+    # resolved IP. However, `url` is used in `id`, so we can't change it. Track
+    # the resolved IP separately instead.
+    if real_hostname
+      ip = url.hostname
+      url.hostname = real_hostname
+    end
+
+    # Ensure ssh://foo and ssh://foo:22 share the same cache
+    url.port = url.inferred_port
+
+    [url, ip]
+  rescue Gitlab::UrlBlocker::BlockedUrlError
     raise ArgumentError, "Invalid URL"
+  end
+
+  def allow_local_requests?
+    Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
   end
 end

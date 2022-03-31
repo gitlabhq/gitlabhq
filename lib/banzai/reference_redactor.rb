@@ -65,16 +65,15 @@ module Banzai
     #
     def redacted_node_content(node)
       original_content = node.attr('data-original')
-      link_reference = node.attr('data-link-reference')
+      original_content = CGI.escape_html(original_content) if original_content
 
       # Build the raw <a> tag just with a link as href and content if
       # it's originally a link pattern. We shouldn't return a plain text href.
       original_link =
-        if link_reference == 'true'
+        if node.attr('data-link-reference') == 'true'
           href = node.attr('href')
-          content = original_content
 
-          %(<a href="#{href}">#{content}</a>)
+          %(<a href="#{href}">#{original_content}</a>)
         end
 
       # The reference should be replaced by the original link's content,
