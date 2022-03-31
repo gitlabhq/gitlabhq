@@ -5623,6 +5623,36 @@ RSpec.describe User do
     end
   end
 
+  describe '#valid_password?' do
+    subject { user.valid_password?(password) }
+
+    context 'user with password not in disallowed list' do
+      let(:user) { create(:user) }
+      let(:password) { user.password }
+
+      it { is_expected.to be_truthy }
+
+      context 'using a wrong password' do
+        let(:password) { 'WRONG PASSWORD' }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'user with disallowed password' do
+      let(:user) { create(:user, :disallowed_password) }
+      let(:password) { user.password }
+
+      it { is_expected.to be_falsey }
+
+      context 'using a wrong password' do
+        let(:password) { 'WRONG PASSWORD' }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
   describe '#password_expired?' do
     let(:user) { build(:user, password_expires_at: password_expires_at) }
 
