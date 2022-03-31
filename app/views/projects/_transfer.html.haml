@@ -9,6 +9,11 @@
     .form-group
       - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/index', anchor: 'transferring-an-existing-project-into-another-namespace') }
       %p= _("Transfer your project into another namespace. %{link_start}Learn more.%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+      %p= _('When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, pipeline minutes, and users, and start a trial or upgrade to a paid tier.')
+      %p
+        = _("Don't have a group?")
+        = link_to _('Create one'), new_group_path, target: '_blank'
+      = _('Things to be aware of before transferring:')
       %ul
         %li= _("Be careful. Changing the project's namespace can have unintended side effects.")
         %li= _('You can only transfer the project to namespaces you manage.')

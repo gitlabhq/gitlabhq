@@ -2104,8 +2104,8 @@ class User < ApplicationRecord
 
   def authorized_groups_without_shared_membership
     Group.from_union([
-      groups.select(Namespace.arel_table[Arel.star]),
-      authorized_projects.joins(:namespace).select(Namespace.arel_table[Arel.star])
+      groups.select(*Namespace.cached_column_list),
+      authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
     ])
   end
 

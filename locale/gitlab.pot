@@ -10538,6 +10538,9 @@ msgstr ""
 msgid "Create new project"
 msgstr ""
 
+msgid "Create one"
+msgstr ""
+
 msgid "Create or import your first project"
 msgstr ""
 
@@ -13269,6 +13272,9 @@ msgid "Domain"
 msgstr ""
 
 msgid "Domain Name"
+msgstr ""
+
+msgid "Don't have a group?"
 msgstr ""
 
 msgid "Don't have an account yet?"
@@ -32438,6 +32444,9 @@ msgstr ""
 msgid "Runners|Runner has never contacted this instance"
 msgstr ""
 
+msgid "Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects."
+msgstr ""
+
 msgid "Runners|Runner is offline; last contact was %{runner_contact} ago"
 msgstr ""
 
@@ -32528,7 +32537,7 @@ msgstr ""
 msgid "Runners|Use the runner for jobs without tags, in addition to tagged jobs."
 msgstr ""
 
-msgid "Runners|Use the runner for the currently assigned projects only."
+msgid "Runners|Use the runner for the currently assigned projects only. Only administrators can change the assigned projects."
 msgstr ""
 
 msgid "Runners|Use the runner on pipelines for protected branches only."
@@ -32553,9 +32562,6 @@ msgid "Runners|You are about to change this instance runner to a project runner.
 msgstr ""
 
 msgid "Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared runner."
-msgstr ""
-
-msgid "Runners|You cannot assign to other projects"
 msgstr ""
 
 msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."
@@ -38128,6 +38134,9 @@ msgstr ""
 msgid "These will be sent to %{email} in an attachment once finished."
 msgstr ""
 
+msgid "Things to be aware of before transferring:"
+msgstr ""
+
 msgid "Third Party Advisory Link"
 msgstr ""
 
@@ -42296,6 +42305,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{code_close} protocols, please provide the exact URL to the repository. HTTP redirects will not be followed."
+msgstr ""
+
+msgid "When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, pipeline minutes, and users, and start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "When:"

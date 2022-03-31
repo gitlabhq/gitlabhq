@@ -376,7 +376,7 @@ Explicit column list definition:
 
 ```ruby
 # Good, the SELECT columns are consistent
-columns = User.cached_column_names # The helper returns fully qualified (table.column) column names (Arel)
+columns = User.cached_column_list # The helper returns fully qualified (table.column) column names (Arel)
 scope1 = User.select(*columns).where(id: [1, 2, 3]) # selects the columns explicitly
 scope2 = User.select(*columns).where(id: [10, 11, 12]) # uses SELECT users.*
 

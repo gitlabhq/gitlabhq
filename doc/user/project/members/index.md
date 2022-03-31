@@ -145,7 +145,11 @@ In this example:
 - **Administrator** is the [Owner](../../permissions.md) and member of all groups.
   They have inherited their role from the **demo** group.
 
-If a user is a direct member of a project, the expiration date can be updated. If membership is inherited from a parent group, the expiration date can be updated only from the parent group itself.
+If a user is a:
+
+- Direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
+- Inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group.
+If a user is an `inherited member` from a parent group, the `Expiration` date and `Max role` can be updated only from the parent group itself.
 
 ## Remove a member from a project
 

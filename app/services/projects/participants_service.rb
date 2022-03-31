@@ -39,6 +39,7 @@ module Projects
       GroupMember
         .active_without_invites_and_requests
         .with_source_id(visible_groups.self_and_ancestors.pluck_primary_key)
+        .select(*GroupMember.cached_column_list)
     end
 
     def visible_groups
@@ -52,11 +53,12 @@ module Projects
     end
 
     def project_members_through_ancestral_groups
-      project.group.present? ? project.group.members_with_parents : Member.none
+      members = project.group.present? ? project.group.members_with_parents : Member.none
+      members.select(*GroupMember.cached_column_list)
     end
 
     def individual_project_members
-      project.project_members
+      project.project_members.select(*GroupMember.cached_column_list)
     end
 
     def project_owner?

@@ -65,10 +65,10 @@ class Member < ApplicationRecord
 
   scope :in_hierarchy, ->(source) do
     groups = source.root_ancestor.self_and_descendants
-    group_members = Member.default_scoped.where(source: groups)
+    group_members = Member.default_scoped.where(source: groups).select(*Member.cached_column_list)
 
     projects = source.root_ancestor.all_projects
-    project_members = Member.default_scoped.where(source: projects)
+    project_members = Member.default_scoped.where(source: projects).select(*Member.cached_column_list)
 
     Member.default_scoped.from_union([
       group_members,

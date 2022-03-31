@@ -55,7 +55,9 @@ export const I18N_DELETE_DISABLED_UNKNOWN_REASON = s__(
 );
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
-export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
+export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
+  'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
+);
 
 // Runner details
 
