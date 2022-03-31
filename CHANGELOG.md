@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.6.7 (2022-03-31)
+
+### Changed (1 change)
+
+- [Remove runners token prefix feature flags](gitlab-org/gitlab@70330bc3f8c34c4620d7e5c4a9943ec3574e5ee6) ([merge request](gitlab-org/gitlab!82122))
+
 ## 14.6.6 (2022-03-01)
 
 ### Fixed (3 changes)
