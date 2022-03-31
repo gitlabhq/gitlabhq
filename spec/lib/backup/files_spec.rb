@@ -118,14 +118,14 @@ RSpec.describe Backup::Files do
     end
 
     it 'raises no errors' do
-      expect { subject.dump('registry.tar.gz') }.not_to raise_error
+      expect { subject.dump('registry.tar.gz', 'backup_id') }.not_to raise_error
     end
 
     it 'excludes tmp dirs from archive' do
       expect(subject).to receive(:tar).and_return('blabla-tar')
 
       expect(subject).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found --exclude=./@pages.tmp -C /var/gitlab-pages -cf - .), 'gzip -c -1'], any_args)
-      subject.dump('registry.tar.gz')
+      subject.dump('registry.tar.gz', 'backup_id')
     end
 
     it 'raises an error on failure' do
@@ -133,7 +133,7 @@ RSpec.describe Backup::Files do
       expect(subject).to receive(:pipeline_succeeded?).and_return(false)
 
       expect do
-        subject.dump('registry.tar.gz')
+        subject.dump('registry.tar.gz', 'backup_id')
       end.to raise_error(/Failed to create compressed file/)
     end
 
@@ -149,7 +149,7 @@ RSpec.describe Backup::Files do
           .with(%w(rsync -a --delete --exclude=lost+found --exclude=/gitlab-pages/@pages.tmp /var/gitlab-pages /var/gitlab-backup))
           .and_return(['', 0])
 
-        subject.dump('registry.tar.gz')
+        subject.dump('registry.tar.gz', 'backup_id')
       end
 
       it 'retries if rsync fails due to vanishing files' do
@@ -158,7 +158,7 @@ RSpec.describe Backup::Files do
           .and_return(['rsync failed', 24], ['', 0])
 
         expect do
-          subject.dump('registry.tar.gz')
+          subject.dump('registry.tar.gz', 'backup_id')
         end.to output(/files vanished during rsync, retrying/).to_stdout
       end
 
@@ -168,7 +168,7 @@ RSpec.describe Backup::Files do
           .and_return(['rsync failed', 1])
 
         expect do
-          subject.dump('registry.tar.gz')
+          subject.dump('registry.tar.gz', 'backup_id')
         end.to output(/rsync failed/).to_stdout
            .and raise_error(/Failed to create compressed file/)
       end

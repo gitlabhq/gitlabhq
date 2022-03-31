@@ -96,14 +96,21 @@ export default {
       :key="user.id"
       :class="{ 'gl-mb-3': index !== users.length - 1 }"
       data-testid="reviewer"
+      class="gl-display-flex"
     >
       <attention-requested-toggle
         v-if="glFeatures.mrAttentionRequests"
         :user="user"
         type="reviewer"
+        class="gl-mr-2"
         @toggle-attention-requested="toggleAttentionRequested"
       />
-      <reviewer-avatar-link :user="user" :root-path="rootPath" :issuable-type="issuableType">
+      <reviewer-avatar-link
+        :user="user"
+        :root-path="rootPath"
+        :issuable-type="issuableType"
+        class="gl-word-break-word gl-mr-2"
+      >
         <div class="gl-ml-3 gl-line-height-normal gl-display-grid">
           <span>{{ user.name }}</span>
           <span>@{{ user.username }}</span>
@@ -115,7 +122,7 @@ export default {
         :size="16"
         :title="approvedByTooltipTitle(user)"
         name="status-success"
-        class="float-right gl-my-2 gl-ml-2 gl-text-green-500"
+        class="float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
         data-testid="re-approved"
       />
       <gl-icon

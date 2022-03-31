@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-properties, babel/camelcase,
+/* eslint-disable no-restricted-properties, camelcase,
 no-unused-expressions, default-case,
 consistent-return, no-param-reassign,
 no-shadow, no-useless-escape,

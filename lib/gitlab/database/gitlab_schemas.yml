@@ -240,6 +240,7 @@ group_deletion_schedules: :gitlab_main
 group_deploy_keys: :gitlab_main
 group_deploy_keys_groups: :gitlab_main
 group_deploy_tokens: :gitlab_main
+group_features: :gitlab_main
 group_group_links: :gitlab_main
 group_import_states: :gitlab_main
 group_merge_request_approval_settings: :gitlab_main

@@ -147,7 +147,8 @@ RSpec.describe Backup::Manager do
   describe '#create' do
     let(:incremental_env) { 'false' }
     let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz task2.tar.gz} }
-    let(:tar_file) { '1546300800_2019_01_01_12.3_gitlab_backup.tar' }
+    let(:backup_id) { '1546300800_2019_01_01_12.3' }
+    let(:tar_file) { "#{backup_id}_gitlab_backup.tar" }
     let(:tar_system_options) { { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
     let(:tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, tar_system_options] }
     let(:backup_information) do
@@ -176,8 +177,8 @@ RSpec.describe Backup::Manager do
         .and_return(backup_information)
 
       allow(subject).to receive(:backup_information).and_return(backup_information)
-      allow(task1).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'))
-      allow(task2).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'))
+      allow(task1).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'), backup_id)
+      allow(task2).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'), backup_id)
     end
 
     it 'executes tar' do
@@ -201,7 +202,7 @@ RSpec.describe Backup::Manager do
     end
 
     context 'when BACKUP is set' do
-      let(:tar_file) { 'custom_gitlab_backup.tar' }
+      let(:backup_id) { 'custom' }
 
       it 'uses the given value as tar file name' do
         stub_env('BACKUP', '/ignored/path/custom')
@@ -581,7 +582,8 @@ RSpec.describe Backup::Manager do
     context 'incremental' do
       let(:incremental_env) { 'true' }
       let(:gitlab_version) { Gitlab::VERSION }
-      let(:tar_file) { "1546300800_2019_01_01_#{gitlab_version}_gitlab_backup.tar" }
+      let(:backup_id) { "1546300800_2019_01_01_#{gitlab_version}" }
+      let(:tar_file) { "#{backup_id}_gitlab_backup.tar" }
       let(:backup_information) do
         {
           backup_created_at: Time.zone.parse('2019-01-01'),
@@ -645,6 +647,7 @@ RSpec.describe Backup::Manager do
       end
 
       context 'when BACKUP variable is set to a correct file' do
+        let(:backup_id) { '1451606400_2016_01_01_1.2.3' }
         let(:tar_cmdline) { %w{tar -xf 1451606400_2016_01_01_1.2.3_gitlab_backup.tar} }
 
         before do

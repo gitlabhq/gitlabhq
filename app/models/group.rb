@@ -96,6 +96,8 @@ class Group < Namespace
 
   has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
 
+  has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
+
   delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings
   delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
@@ -119,6 +121,8 @@ class Group < Namespace
                       message: Gitlab::Regex.group_name_regex_message },
             if: :name_changed?
 
+  validates :group_feature, presence: true
+
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required },
                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
@@ -127,6 +131,7 @@ class Group < Namespace
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
   after_update :path_changed_hook, if: :saved_change_to_path?
+  after_create -> { create_or_load_association(:group_feature) }
 
   scope :with_users, -> { includes(:users) }
 
@@ -794,6 +799,10 @@ class Group < Namespace
 
   def dependency_proxy_setting
     super || build_dependency_proxy_setting
+  end
+
+  def group_feature
+    super || build_group_feature
   end
 
   def crm_enabled?

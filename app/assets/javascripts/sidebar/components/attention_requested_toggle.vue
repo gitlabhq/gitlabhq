@@ -70,19 +70,21 @@ export default {
 </script>
 
 <template>
-  <span
-    v-gl-tooltip.left.viewport="tooltipTitle"
-    class="gl-display-inline-block js-attention-request-toggle"
-  >
-    <gl-button
-      :loading="loading"
-      :variant="user.attention_requested ? 'warning' : 'default'"
-      :icon="user.attention_requested ? 'attention-solid' : 'attention'"
-      :aria-label="tooltipTitle"
-      :class="{ 'gl-pointer-events-none': !user.can_update_merge_request }"
-      size="small"
-      category="tertiary"
-      @click="toggleAttentionRequired"
-    />
-  </span>
+  <div>
+    <span
+      v-gl-tooltip.left.viewport="tooltipTitle"
+      class="gl-display-inline-block js-attention-request-toggle"
+    >
+      <gl-button
+        :loading="loading"
+        :variant="user.attention_requested ? 'warning' : 'default'"
+        :icon="user.attention_requested ? 'attention-solid' : 'attention'"
+        :aria-label="tooltipTitle"
+        :class="{ 'gl-pointer-events-none': !user.can_update_merge_request }"
+        size="small"
+        category="tertiary"
+        @click="toggleAttentionRequired"
+      />
+    </span>
+  </div>
 </template>

@@ -19,6 +19,7 @@ export const toYmd = (date) => dateFormat(date, dateFormats.isoDate);
  * @returns {Object}
  */
 export const extractFilterQueryParameters = (url = '') => {
+  /* eslint-disable camelcase */
   const {
     source_branch_name = null,
     target_branch_name = null,
@@ -27,6 +28,7 @@ export const extractFilterQueryParameters = (url = '') => {
     assignee_username = [],
     label_name = [],
   } = urlQueryToFilter(url);
+  /* eslint-enable camelcase */
 
   return {
     selectedSourceBranch: source_branch_name,

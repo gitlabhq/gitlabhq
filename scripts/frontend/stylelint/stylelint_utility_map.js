@@ -4,13 +4,13 @@ const postcss = require('postcss');
 const prettier = require('prettier');
 const sass = require('sass');
 
-const utils = require('./stylelint-utils');
+const utils = require('./stylelint_utils');
 
 const ROOT_PATH = path.resolve(__dirname, '../../..');
-const hashMapPath = path.resolve(__dirname, './utility-classes-map.js');
+const hashMapPath = path.resolve(__dirname, './utility_classes_map.js');
 
 //
-// This creates a JS based hash map (saved in utility-classes-map.js) of the different values in the utility classes
+// This creates a JS based hash map (saved in utility_classes_map.js) of the different values in the utility classes
 //
 sass.render(
   {

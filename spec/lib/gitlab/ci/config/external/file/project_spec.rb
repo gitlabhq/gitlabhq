@@ -65,6 +65,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
   end
 
   describe '#valid?' do
+    subject(:valid?) do
+      project_file.validate!
+      project_file.valid?
+    end
+
     context 'when a valid path is used' do
       let(:params) do
         { project: project.full_path, file: '/file.yml' }
@@ -76,15 +81,13 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         stub_project_blob(root_ref_sha, '/file.yml') { 'image: ruby:2.7' }
       end
 
-      it 'returns true' do
-        expect(project_file).to be_valid
-      end
+      it { is_expected.to be_truthy }
 
       context 'when user does not have permission to access file' do
         let(:context_user) { create(:user) }
 
         it 'returns false' do
-          expect(project_file).not_to be_valid
+          expect(valid?).to be_falsy
           expect(project_file.error_message).to include("Project `#{project.full_path}` not found or access denied!")
         end
       end
@@ -101,9 +104,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         stub_project_blob(ref_sha, '/file.yml') { 'image: ruby:2.7' }
       end
 
-      it 'returns true' do
-        expect(project_file).to be_valid
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'when an empty file is used' do
@@ -118,7 +119,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'returns false' do
-        expect(project_file).not_to be_valid
+        expect(valid?).to be_falsy
         expect(project_file.error_message).to include("Project `#{project.full_path}` file `/file.yml` is empty!")
       end
     end
@@ -129,7 +130,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'returns false' do
-        expect(project_file).not_to be_valid
+        expect(valid?).to be_falsy
         expect(project_file.error_message).to include("Project `#{project.full_path}` reference `I-Do-Not-Exist` does not exist!")
       end
     end
@@ -140,7 +141,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'returns false' do
-        expect(project_file).not_to be_valid
+        expect(valid?).to be_falsy
         expect(project_file.error_message).to include("Project `#{project.full_path}` file `/invalid-file.yml` does not exist!")
       end
     end
@@ -151,7 +152,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'returns false' do
-        expect(project_file).not_to be_valid
+        expect(valid?).to be_falsy
         expect(project_file.error_message).to include('Included file `/invalid-file` does not have YAML extension!')
       end
     end

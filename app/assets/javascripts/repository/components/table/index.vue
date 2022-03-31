@@ -1,7 +1,7 @@
 <script>
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlButton } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { sprintf, __ } from '../../../locale';
+import { sprintf, __ } from '~/locale';
 import getRefMixin from '../../mixins/get_ref';
 import projectPathQuery from '../../queries/project_path.query.graphql';
 import TableHeader from './header.vue';

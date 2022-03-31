@@ -2,7 +2,7 @@ import dateFormat from 'dateformat';
 import { isString, mapValues, reduce, isDate, unescape } from 'lodash';
 import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { sanitize } from '~/lib/dompurify';
-import { s__, n__, __, sprintf } from '../../../locale';
+import { s__, n__, __, sprintf } from '~/locale';
 
 /**
  * Returns i18n month names array.

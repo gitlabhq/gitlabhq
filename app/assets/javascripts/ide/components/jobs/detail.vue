@@ -2,7 +2,7 @@
 import { GlTooltipDirective, GlButton, GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import { throttle } from 'lodash';
 import { mapActions, mapState } from 'vuex';
-import { __ } from '../../../locale';
+import { __ } from '~/locale';
 import JobDescription from './detail/description.vue';
 import ScrollButton from './detail/scroll_button.vue';
 

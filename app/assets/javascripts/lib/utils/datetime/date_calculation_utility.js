@@ -1,5 +1,5 @@
 import { isNumber } from 'lodash';
-import { __, n__ } from '../../../locale';
+import { __, n__ } from '~/locale';
 import { getDayName, parseSeconds } from './date_format_utility';
 
 const DAYS_IN_WEEK = 7;

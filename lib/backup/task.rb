@@ -12,7 +12,10 @@ module Backup
     end
 
     # dump task backup to `path`
-    def dump(path)
+    #
+    # @param [String] path fully qualified backup task destination
+    # @param [String] backup_id unique identifier for the backup
+    def dump(path, backup_id)
       raise NotImplementedError
     end
 

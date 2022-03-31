@@ -9,7 +9,7 @@ import {
 
 export const getFilePath = (file) => {
   const { old_path, new_path } = file;
-  // eslint-disable-next-line babel/camelcase
+  // eslint-disable-next-line camelcase
   return old_path === new_path ? new_path : `${old_path} → ${new_path}`;
 };
 
@@ -71,7 +71,7 @@ export const getLineForParallelView = (line, id, lineType, isHead) => {
     isHead: hasConflict && isHead,
     isOrigin: hasConflict && !isHead,
     hasMatch: lineType === 'match',
-    // eslint-disable-next-line babel/camelcase
+    // eslint-disable-next-line camelcase
     lineNumber: isHead ? new_line : old_line,
     section: isHead ? 'head' : 'origin',
     richText: rich_text,

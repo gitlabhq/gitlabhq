@@ -21,7 +21,7 @@ module Backup
 
     # Copy files from public/files to backup/files
     override :dump
-    def dump(backup_tarball)
+    def dump(backup_tarball, backup_id)
       FileUtils.mkdir_p(Gitlab.config.backup.path)
       FileUtils.rm_f(backup_tarball)
 

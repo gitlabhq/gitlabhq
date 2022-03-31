@@ -41,7 +41,7 @@
     "storybook:install": "yarn --cwd ./storybook install",
     "storybook:build": "yarn --cwd ./storybook build",
     "storybook:start": "./scripts/frontend/start_storybook.sh",
-    "stylelint-create-utility-map": "node scripts/frontend/stylelint/stylelint-utility-map.js",
+    "stylelint-create-utility-map": "node scripts/frontend/stylelint/stylelint_utility_map.js",
     "webpack": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.config.js",
     "webpack-vendor": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.vendor.config.js",
     "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js"
@@ -199,7 +199,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.10.1",
-    "@gitlab/eslint-plugin": "11.0.0",
+    "@gitlab/eslint-plugin": "12.0.1",
     "@gitlab/stylelint-config": "4.0.0",
     "@graphql-eslint/eslint-plugin": "3.0.0",
     "@testing-library/dom": "^7.16.2",

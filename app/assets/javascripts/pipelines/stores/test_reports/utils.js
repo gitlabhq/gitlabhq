@@ -1,4 +1,4 @@
-import { __, sprintf } from '../../../locale';
+import { __, sprintf } from '~/locale';
 import { TestStatus } from '../../constants';
 
 /**

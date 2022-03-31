@@ -1,5 +1,5 @@
-import Api from '../../../../api';
-import { __ } from '../../../../locale';
+import Api from '~/api';
+import { __ } from '~/locale';
 import { scopes } from './constants';
 import * as types from './mutation_types';
 

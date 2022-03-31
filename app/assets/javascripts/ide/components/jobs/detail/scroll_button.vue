@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '../../../../locale';
+import { __ } from '~/locale';
 
 const directions = {
   up: 'up',

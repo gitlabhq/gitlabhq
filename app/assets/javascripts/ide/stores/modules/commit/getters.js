@@ -1,4 +1,4 @@
-import { __ } from '../../../../locale';
+import { __ } from '~/locale';
 import { COMMIT_TO_NEW_BRANCH } from './constants';
 
 const BRANCH_SUFFIX_COUNT = 5;

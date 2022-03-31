@@ -30,8 +30,10 @@ namespace :dev do
   databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
   namespace :copy_db do
+    ALLOWED_DATABASES = %w[ci].freeze
+
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      next if name == 'main'
+      next unless ALLOWED_DATABASES.include?(name)
 
       desc "Copies the #{name} database from the main database"
       task name => :environment do

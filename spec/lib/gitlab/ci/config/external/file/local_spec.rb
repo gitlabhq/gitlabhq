@@ -54,6 +54,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
   end
 
   describe '#valid?' do
+    subject(:valid?) do
+      local_file.validate!
+      local_file.valid?
+    end
+
     context 'when is a valid local path' do
       let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
 
@@ -61,25 +66,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return("image: 'ruby2:2'")
       end
 
-      it 'returns true' do
-        expect(local_file.valid?).to be_truthy
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'when is not a valid local path' do
       let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
-      it 'returns false' do
-        expect(local_file.valid?).to be_falsy
-      end
+      it { is_expected.to be_falsy }
     end
 
     context 'when is not a yaml file' do
       let(:location) { '/config/application.rb' }
 
-      it 'returns false' do
-        expect(local_file.valid?).to be_falsy
-      end
+      it { is_expected.to be_falsy }
     end
 
     context 'when the given sha is not valid' do
@@ -87,7 +86,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
       let(:sha) { ':' }
 
       it 'returns false and adds an error message stating that included file does not exist' do
-        expect(local_file).not_to be_valid
+        expect(valid?).to be_falsy
         expect(local_file.errors).to include("Sha #{sha} is not valid!")
       end
     end
@@ -128,6 +127,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
   describe '#error_message' do
     let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
+    before do
+      local_file.validate!
+    end
+
     it 'returns an error message' do
       expect(local_file.error_message).to eq("Local file `#{location}` does not exist!")
     end
@@ -162,6 +165,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
 
         allow(project.repository).to receive(:blob_data_at).with(sha, another_location)
           .and_return(another_content)
+
+        local_file.validate!
       end
 
       it 'does expand hash to include the template' do

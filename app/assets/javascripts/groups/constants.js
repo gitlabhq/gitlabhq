@@ -1,4 +1,4 @@
-import { __, s__ } from '../locale';
+import { __, s__ } from '~/locale';
 
 export const MAX_CHILDREN_COUNT = 20;
 

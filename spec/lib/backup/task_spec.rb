@@ -15,7 +15,7 @@ RSpec.describe Backup::Task do
 
   describe '#dump' do
     it 'must be implemented by the subclass' do
-      expect { subject.dump('some/path') }.to raise_error(NotImplementedError)
+      expect { subject.dump('some/path', 'backup_id') }.to raise_error(NotImplementedError)
     end
   end
 

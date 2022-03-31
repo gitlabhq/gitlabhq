@@ -1,5 +1,5 @@
 import * as timeago from 'timeago.js';
-import { languageCode, s__, createDateTimeFormat } from '../../../locale';
+import { languageCode, s__, createDateTimeFormat } from '~/locale';
 import { formatDate } from './date_format_utility';
 
 /**

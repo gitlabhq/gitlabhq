@@ -31,7 +31,7 @@ module Gitlab
 
             def validate_content!
               if !can_access_local_content?
-                errors.push("Project `#{project_name}` not found or access denied!")
+                errors.push("Project `#{project_name}` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.")
               elsif sha.nil?
                 errors.push("Project `#{project_name}` reference `#{ref_name}` does not exist!")
               elsif content.nil?

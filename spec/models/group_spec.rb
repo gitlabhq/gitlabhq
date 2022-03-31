@@ -41,6 +41,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
     it { is_expected.to have_one(:crm_settings) }
+    it { is_expected.to have_one(:group_feature) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -294,6 +295,21 @@ RSpec.describe Group do
   end
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
+
+  context 'after initialized' do
+    it 'has a group_feature' do
+      expect(described_class.new.group_feature).to be_present
+    end
+  end
+
+  context 'when creating a new project' do
+    let_it_be(:group) { create(:group) }
+
+    it 'automatically creates the groups feature for the group' do
+      expect(group.group_feature).to be_an_instance_of(Groups::FeatureSetting)
+      expect(group.group_feature).to be_persisted
+    end
+  end
 
   context 'traversal_ids on create' do
     context 'default traversal_ids' do

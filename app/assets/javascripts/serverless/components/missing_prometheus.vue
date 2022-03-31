@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLink } from '@gitlab/ui';
 import { mapState } from 'vuex';
-import { s__ } from '../../locale';
+import { s__ } from '~/locale';
 
 export default {
   components: {

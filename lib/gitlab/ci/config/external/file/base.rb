@@ -16,8 +16,6 @@ module Gitlab
               @params = params
               @context = context
               @errors = []
-
-              validate!
             end
 
             def matching?
@@ -48,6 +46,15 @@ module Gitlab
               expanded_content_hash
             end
 
+            def validate!
+              context.logger.instrument(:config_file_validation) do
+                validate_execution_time!
+                validate_location!
+                validate_content! if errors.none?
+                validate_hash! if errors.none?
+              end
+            end
+
             protected
 
             def expanded_content_hash
@@ -64,13 +71,6 @@ module Gitlab
               end
             rescue Gitlab::Config::Loader::FormatError
               nil
-            end
-
-            def validate!
-              validate_execution_time!
-              validate_location!
-              validate_content! if errors.none?
-              validate_hash! if errors.none?
             end
 
             def validate_execution_time!

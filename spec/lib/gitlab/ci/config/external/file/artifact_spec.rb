@@ -29,14 +29,15 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
   end
 
   describe '#valid?' do
-    shared_examples 'is invalid' do
-      it 'is not valid' do
-        expect(external_file).not_to be_valid
-      end
+    subject(:valid?) do
+      external_file.validate!
+      external_file.valid?
+    end
 
+    shared_examples 'is invalid' do
       it 'sets the expected error' do
-        expect(external_file.errors)
-          .to contain_exactly(expected_error)
+        expect(valid?).to be_falsy
+        expect(external_file.errors).to contain_exactly(expected_error)
       end
     end
 
@@ -142,7 +143,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
 
                 context 'when file is not empty' do
                   it 'is valid' do
-                    expect(external_file).to be_valid
+                    expect(valid?).to be_truthy
                     expect(external_file.content).to be_present
                   end
 
@@ -154,6 +155,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
                       user: anything
                     }
                     expect(context).to receive(:mutate).with(expected_attrs).and_call_original
+                    external_file.validate!
                     external_file.content
                   end
                 end

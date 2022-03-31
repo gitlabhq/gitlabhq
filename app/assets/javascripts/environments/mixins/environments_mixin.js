@@ -4,11 +4,11 @@
 import { isEqual, isFunction, omitBy } from 'lodash';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
-import Poll from '../../lib/utils/poll';
-import { getParameterByName } from '../../lib/utils/url_utility';
-import { s__, __ } from '../../locale';
-import tabs from '../../vue_shared/components/navigation_tabs.vue';
-import tablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
+import Poll from '~/lib/utils/poll';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { s__, __ } from '~/locale';
+import tabs from '~/vue_shared/components/navigation_tabs.vue';
+import tablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import container from '../components/container.vue';
 import environmentTable from '../components/environments_table.vue';
 import eventHub from '../event_hub';

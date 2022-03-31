@@ -73,10 +73,10 @@ export default {
     v-gl-tooltip="tooltipOption"
     :href="reviewerUrl"
     :title="tooltipTitle"
-    class="d-inline-block"
+    class="gl-display-inline-block"
   >
     <!-- use d-flex so that slot can be appropriately styled -->
-    <span class="gl-display-flex gl-align-items-center">
+    <span class="gl-display-flex">
       <reviewer-avatar :user="user" :img-size="32" :issuable-type="issuableType" />
       <slot :user="user"></slot>
     </span>

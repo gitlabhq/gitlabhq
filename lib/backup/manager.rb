@@ -113,7 +113,7 @@ module Backup
       end
 
       puts_time "Dumping #{definition.task.human_name} ... ".color(:blue)
-      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path))
+      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
       puts_time "Dumping #{definition.task.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e

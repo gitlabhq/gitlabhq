@@ -1,11 +1,12 @@
 const stylelint = require('stylelint');
-const utils = require('./stylelint-utils');
+const utils = require('./stylelint_utils');
+const utilityClasses = require('./utility_classes_map');
 
-const ruleName = 'stylelint-gitlab/duplicate-selectors';
+const ruleName = 'stylelint-gitlab/utility-classes';
 
 const messages = stylelint.utils.ruleMessages(ruleName, {
   expected: (selector1, selector2) => {
-    return `"${selector1}" and "${selector2}" have the same properties.`;
+    return `"${selector1}" has the same properties as our BS4 utility class "${selector2}" so please use that instead.`;
   },
 });
 
@@ -16,8 +17,7 @@ module.exports = stylelint.createPlugin(ruleName, (enabled) => {
 
   // eslint-disable-next-line consistent-return
   return (root, result) => {
-    const selectorGroups = {};
-    utils.createPropertiesHashmap(root, result, ruleName, messages, selectorGroups, true);
+    utils.createPropertiesHashmap(root, result, ruleName, messages, utilityClasses, false);
   };
 });
 

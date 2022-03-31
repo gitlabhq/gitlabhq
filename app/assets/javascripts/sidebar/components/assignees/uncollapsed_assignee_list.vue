@@ -109,20 +109,23 @@ export default {
         :key="user.id"
         :class="{
           'user-item': !showVerticalList,
+          'gl-display-inline-block': !showVerticalList,
+          'gl-display-flex': showVerticalList,
           'gl-mb-3': index !== users.length - 1 && showVerticalList,
         }"
-        class="gl-display-inline-block"
       >
         <attention-requested-toggle
           v-if="showVerticalList"
           :user="user"
           type="assignee"
+          class="gl-mr-2"
           @toggle-attention-requested="toggleAttentionRequested"
         />
         <assignee-avatar-link
           :user="user"
           :issuable-type="issuableType"
           :tooltip-has-name="!showVerticalList"
+          class="gl-word-break-word"
         >
           <div
             v-if="showVerticalList"

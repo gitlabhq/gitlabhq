@@ -9,16 +9,14 @@ module Backup
     # @param [StringIO] progress IO interface to output progress
     # @param [Integer] max_parallelism max parallelism when running backups
     # @param [Integer] storage_parallelism max parallelism per storage (is affected by max_parallelism)
-    # @param [String] backup_id unique identifier for the backup
     def initialize(progress, max_parallelism: nil, storage_parallelism: nil, incremental: false, backup_id: nil)
       @progress = progress
       @max_parallelism = max_parallelism
       @storage_parallelism = storage_parallelism
       @incremental = incremental
-      @backup_id = backup_id
     end
 
-    def start(type, backup_repos_path)
+    def start(type, backup_repos_path, backup_id: nil)
       raise Error, 'already started' if started?
 
       command = case type
@@ -37,7 +35,7 @@ module Backup
         args += ['-layout', 'pointer']
         if type == :create
           args += ['-incremental'] if @incremental
-          args += ['-id', @backup_id] if @backup_id
+          args += ['-id', backup_id] if backup_id
         end
       end
 

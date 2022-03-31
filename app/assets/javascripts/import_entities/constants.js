@@ -1,4 +1,4 @@
-import { __ } from '../locale';
+import { __ } from '~/locale';
 
 // The `scheduling` status is only present on the client-side,
 // it is used as the status when we are requesting to start an import.

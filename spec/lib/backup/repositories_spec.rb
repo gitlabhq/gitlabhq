@@ -6,6 +6,7 @@ RSpec.describe Backup::Repositories do
   let(:progress) { spy(:stdout) }
   let(:strategy) { spy(:strategy) }
   let(:destination) { 'repositories' }
+  let(:backup_id) { 'backup_id' }
 
   subject do
     described_class.new(
@@ -22,9 +23,9 @@ RSpec.describe Backup::Repositories do
         project_snippet = create(:project_snippet, :repository, project: project)
         personal_snippet = create(:personal_snippet, :repository, author: project.first_owner)
 
-        subject.dump(destination)
+        subject.dump(destination, backup_id)
 
-        expect(strategy).to have_received(:start).with(:create, destination)
+        expect(strategy).to have_received(:start).with(:create, destination, backup_id: backup_id)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
@@ -50,25 +51,25 @@ RSpec.describe Backup::Repositories do
       it 'enqueue_project raises an error' do
         allow(strategy).to receive(:enqueue).with(anything, Gitlab::GlRepository::PROJECT).and_raise(IOError)
 
-        expect { subject.dump(destination) }.to raise_error(IOError)
+        expect { subject.dump(destination, backup_id) }.to raise_error(IOError)
       end
 
       it 'project query raises an error' do
         allow(Project).to receive_message_chain(:includes, :find_each).and_raise(ActiveRecord::StatementTimeout)
 
-        expect { subject.dump(destination) }.to raise_error(ActiveRecord::StatementTimeout)
+        expect { subject.dump(destination, backup_id) }.to raise_error(ActiveRecord::StatementTimeout)
       end
     end
 
     it 'avoids N+1 database queries' do
       control_count = ActiveRecord::QueryRecorder.new do
-        subject.dump(destination)
+        subject.dump(destination, backup_id)
       end.count
 
       create_list(:project, 2, :repository)
 
       expect do
-        subject.dump(destination)
+        subject.dump(destination, backup_id)
       end.not_to exceed_query_limit(control_count)
     end
   end

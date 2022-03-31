@@ -9,8 +9,8 @@
      "app/assets/stylesheets/lazy_bundles/cropper.css"
    ],
    "plugins":[
-      "./scripts/frontend/stylelint/stylelint-duplicate-selectors.js",
-      "./scripts/frontend/stylelint/stylelint-utility-classes.js",
+      "./scripts/frontend/stylelint/stylelint_duplicate_selectors.js",
+      "./scripts/frontend/stylelint/stylelint_utility_classes.js",
    ],
    "rules":{
       "stylelint-gitlab/utility-classes":[true,{ "severity": "warning" }],

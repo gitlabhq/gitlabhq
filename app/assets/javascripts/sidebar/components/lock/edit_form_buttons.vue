@@ -3,7 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapActions } from 'vuex';
 import createFlash from '~/flash';
-import { __, sprintf } from '../../../locale';
+import { __, sprintf } from '~/locale';
 import eventHub from '../../event_hub';
 
 export default {

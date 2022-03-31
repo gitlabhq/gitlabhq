@@ -40,33 +40,45 @@ RSpec.describe 'dev rake tasks' do
     end
   end
 
-  describe 'copy_db:ci' do
+  context 'multiple databases' do
     before do
       skip_if_multiple_databases_not_setup
-
-      configurations = instance_double(ActiveRecord::DatabaseConfigurations)
-      allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
-      allow(configurations).to receive(:configs_for).with(env_name: Rails.env, name: 'ci').and_return(ci_configuration)
     end
 
-    subject(:load_task) { run_rake_task('dev:setup_ci_db') }
+    context 'with a valid database' do
+      describe 'copy_db:ci' do
+        before do
+          configurations = instance_double(ActiveRecord::DatabaseConfigurations)
+          allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
+          allow(configurations).to receive(:configs_for).with(env_name: Rails.env, name: 'ci').and_return(ci_configuration)
+        end
 
-    let(:ci_configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'ci', database: '__test_db_ci') }
+        subject(:load_task) { run_rake_task('dev:setup_ci_db') }
 
-    it 'creates the database from main' do
-      expect(ApplicationRecord.connection).to receive(:create_database).with(
-        ci_configuration.database,
-        template: ApplicationRecord.connection_db_config.database
-      )
+        let(:ci_configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'ci', database: '__test_db_ci') }
 
-      run_rake_task('dev:copy_db:ci')
+        it 'creates the database from main' do
+          expect(ApplicationRecord.connection).to receive(:create_database).with(
+            ci_configuration.database,
+            template: ApplicationRecord.connection_db_config.database
+          )
+
+          run_rake_task('dev:copy_db:ci')
+        end
+
+        context 'when the database already exists' do
+          it 'prints out a warning' do
+            expect(ApplicationRecord.connection).to receive(:create_database).and_raise(ActiveRecord::DatabaseAlreadyExists)
+
+            expect { run_rake_task('dev:copy_db:ci') }.to output(/Database '#{ci_configuration.database}' already exists/).to_stderr
+          end
+        end
+      end
     end
 
-    context 'when the database already exists' do
-      it 'prints out a warning' do
-        expect(ApplicationRecord.connection).to receive(:create_database).and_raise(ActiveRecord::DatabaseAlreadyExists)
-
-        expect { run_rake_task('dev:copy_db:ci') }.to output(/Database '#{ci_configuration.database}' already exists/).to_stderr
+    context 'with an invalid database' do
+      it 'raises an error' do
+        expect { run_rake_task('dev:copy_db:foo') }.to raise_error(RuntimeError, /Don't know how to build task/)
       end
     end
   end

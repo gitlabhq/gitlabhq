@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/repository/permissions.query.graphql';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
-import { __ } from '../../locale';
+import { __ } from '~/locale';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import projectShortPathQuery from '../queries/project_short_path.query.graphql';

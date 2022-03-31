@@ -50,6 +50,7 @@ module Gitlab
               .map(&method(:expand_variables))
               .each(&method(:verify_duplicates!))
               .map(&method(:select_first_matching))
+              .each(&method(:verify!))
           end
 
           def normalize_location(location)
@@ -145,6 +146,10 @@ module Gitlab
             raise AmbigiousSpecificationError, "Include `#{location.to_json}` needs to match exactly one accessor!" unless matching.one?
 
             matching.first
+          end
+
+          def verify!(location_object)
+            location_object.validate!
           end
 
           def expand_variables(data)

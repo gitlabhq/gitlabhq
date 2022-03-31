@@ -8,8 +8,8 @@ import {
   GlTooltip,
 } from '@gitlab/ui';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { glEmojiTag } from '../../emoji';
-import { __, sprintf } from '../../locale';
+import { glEmojiTag } from '~/emoji';
+import { __, sprintf } from '~/locale';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 

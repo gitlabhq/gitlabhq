@@ -15679,6 +15679,13 @@ CREATE SEQUENCE group_deploy_tokens_id_seq
 
 ALTER SEQUENCE group_deploy_tokens_id_seq OWNED BY group_deploy_tokens.id;
 
+CREATE TABLE group_features (
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    wiki_access_level smallint DEFAULT 20 NOT NULL
+);
+
 CREATE TABLE group_group_links (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24529,6 +24536,9 @@ ALTER TABLE ONLY group_deploy_keys
 ALTER TABLE ONLY group_deploy_tokens
     ADD CONSTRAINT group_deploy_tokens_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY group_features
+    ADD CONSTRAINT group_features_pkey PRIMARY KEY (group_id);
+
 ALTER TABLE ONLY group_group_links
     ADD CONSTRAINT group_group_links_pkey PRIMARY KEY (id);
 
@@ -32198,6 +32208,9 @@ ALTER TABLE ONLY requirements
 
 ALTER TABLE ONLY metrics_dashboard_annotations
     ADD CONSTRAINT fk_rails_345ab51043 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY group_features
+    ADD CONSTRAINT fk_rails_356514082b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY wiki_page_slugs
     ADD CONSTRAINT fk_rails_358b46be14 FOREIGN KEY (wiki_page_meta_id) REFERENCES wiki_page_meta(id) ON DELETE CASCADE;
