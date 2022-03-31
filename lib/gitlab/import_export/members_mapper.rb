@@ -19,9 +19,8 @@ module Gitlab
             @exported_members.inject(missing_keys_tracking_hash) do |hash, member|
               if member['user']
                 old_user_id = member['user']['id']
-                old_user_email = member.dig('user', 'public_email') || member.dig('user', 'email')
-                existing_user = User.find_by(find_user_query(old_user_email)) if old_user_email
-                hash[old_user_id] = existing_user.id if existing_user && add_team_member(member, existing_user)
+                existing_user_id = existing_users_email_map[get_email(member)]
+                hash[old_user_id] = existing_user_id if existing_user_id && add_team_member(member, existing_user_id)
               else
                 add_team_member(member)
               end
@@ -72,11 +71,45 @@ module Gitlab
         member&.user == @user && member.access_level >= highest_access_level
       end
 
-      def add_team_member(member, existing_user = nil)
-        return true if existing_user && @importable.members.exists?(user_id: existing_user.id)
+      # Returns {email => user_id} hash where user_id is an ID at current instance
+      def existing_users_email_map
+        @existing_users_email_map ||= begin
+          emails = @exported_members.map { |member| get_email(member) }
 
-        member['user'] = existing_user
+          User.by_user_email(emails).pluck(:email, :id).to_h
+        end
+      end
+
+      # Returns {user_id => email} hash where user_id is an ID at source "old" instance
+      def exported_members_email_map
+        @exported_members_email_map ||= begin
+          result = {}
+          @exported_members.each do |member|
+            email = get_email(member)
+
+            next unless email
+
+            result[member.dig('user', 'id')] = email
+          end
+
+          result
+        end
+      end
+
+      def get_email(member_data)
+        return unless member_data['user']
+
+        member_data.dig('user', 'public_email') || member_data.dig('user', 'email')
+      end
+
+      def add_team_member(member, existing_user_id = nil)
+        return true if existing_user_id && @importable.members.exists?(user_id: existing_user_id)
+
         member_hash = member_hash(member)
+        if existing_user_id
+          member_hash.delete('user')
+          member_hash['user_id'] = existing_user_id
+        end
 
         member = relation_class.create(member_hash)
 
@@ -92,24 +125,24 @@ module Gitlab
       end
 
       def member_hash(member)
-        parsed_hash(member).merge(
+        result = parsed_hash(member).merge(
           'source_id' => @importable.id,
           'importing' => true,
           'access_level' => [member['access_level'], highest_access_level].min
         ).except('user_id')
+
+        if result['created_by_id']
+          created_by_email = exported_members_email_map[result['created_by_id']]
+
+          result['created_by_id'] = existing_users_email_map[created_by_email]
+        end
+
+        result
       end
 
       def parsed_hash(member)
         Gitlab::ImportExport::AttributeCleaner.clean(relation_hash:  member.deep_stringify_keys,
                                                      relation_class: relation_class)
-      end
-
-      def find_user_query(email)
-        user_arel[:email].eq(email)
-      end
-
-      def user_arel
-        @user_arel ||= User.arel_table
       end
 
       def relation_class
@@ -143,7 +176,7 @@ module Gitlab
 
       def base_log_params(member_hash)
         {
-          user_id: member_hash['user']&.id,
+          user_id: member_hash['user_id'],
           access_level: member_hash['access_level'],
           importable_type: @importable.class.to_s,
           importable_id: @importable.id,
