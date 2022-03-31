@@ -262,7 +262,7 @@ export default {
         'gl-py-2': list.collapsed && isSwimlanesHeader,
         'gl-flex-direction-column': list.collapsed,
       }"
-      class="board-title gl-m-0 gl-display-flex gl-align-items-center gl-font-base gl-px-3 js-board-handle"
+      class="board-title gl-m-0 gl-display-flex gl-align-items-center gl-font-base gl-px-3"
     >
       <gl-button
         v-gl-tooltip.hover
@@ -443,7 +443,7 @@ export default {
           ref="settingsBtn"
           v-gl-tooltip.hover
           :aria-label="$options.i18n.listSettings"
-          class="no-drag js-board-settings-button"
+          class="no-drag"
           :title="$options.i18n.listSettings"
           icon="settings"
           @click="openSidebarSettings"

@@ -287,7 +287,7 @@ export default {
       :data-board-type="list.listType"
       :class="{ 'bg-danger-100': boardItemsSizeExceedsMax }"
       draggable=".board-card"
-      class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-2 js-board-list"
+      class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-2"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"

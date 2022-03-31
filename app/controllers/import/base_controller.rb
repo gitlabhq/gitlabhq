@@ -70,7 +70,7 @@ class Import::BaseController < ApplicationController
   end
 
   def already_added_projects
-    @already_added_projects ||= filtered(find_already_added_projects(provider_name))
+    @already_added_projects ||= find_already_added_projects(provider_name)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -49,9 +49,16 @@ graph TD
 
 ## Create a subgroup
 
-Users with the at least the Maintainer role on a group can create subgroups immediately below the group, unless
-[configured otherwise](#change-who-can-create-subgroups). These users can create subgroups even if group creation is
-[disabled by an Administrator](../../admin_area/index.md#prevent-a-user-from-creating-groups) in the user's settings.
+Prerequisites:
+
+- You must either:
+  - Have at least the Maintainer role for a group to create subgroups for it.
+  - Have the [role determined by a setting](#change-who-can-create-subgroups). These users can create
+    subgroups even if group creation is
+    [disabled by an Administrator](../../admin_area/index.md#prevent-a-user-from-creating-groups) in the user's settings.
+
+NOTE:
+You cannot host a GitLab Pages subgroup website with a top-level domain name. For example, `subgroupname.example.io`.
 
 To create a subgroup:
 

@@ -2,14 +2,15 @@
 
 module IncidentManagement
   module IssuableEscalationStatuses
-    class CreateService < BaseService
+    class CreateService < ::BaseProjectService
       def initialize(issue)
         @issue = issue
-        @alert = issue.alert_management_alert
+
+        super(project: issue.project)
       end
 
       def execute
-        escalation_status = ::IncidentManagement::IssuableEscalationStatus.new(issue: issue, **alert_params)
+        escalation_status = BuildService.new(issue).execute
 
         if escalation_status.save
           ServiceResponse.success(payload: { escalation_status: escalation_status })
@@ -20,17 +21,7 @@ module IncidentManagement
 
       private
 
-      attr_reader :issue, :alert
-
-      def alert_params
-        return {} unless alert
-
-        {
-          status_event: alert.status_event_for(alert.status_name)
-        }
-      end
+      attr_reader :issue
     end
   end
 end
-
-IncidentManagement::IssuableEscalationStatuses::CreateService.prepend_mod

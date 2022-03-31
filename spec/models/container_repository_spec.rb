@@ -139,7 +139,8 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
           expect { subject }
             .to change { repository.reload.migration_state }.to('import_done')
-            .and change { repository.reload.migration_skipped_reason }.to('not_found')
+            .and change { repository.migration_skipped_reason }.to('not_found')
+            .and change { repository.migration_import_done_at }.from(nil)
         end
       end
     end

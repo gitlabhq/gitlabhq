@@ -143,6 +143,8 @@ Group runners process jobs by using a first in, first out ([FIFO](https://en.wik
 
 ### Create a group runner
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19819) in GitLab 14.10, path changed from **Settings > CI/CD > Runners**.
+
 You can create a group runner for your self-managed GitLab instance or for GitLab.com.
 You must have the Owner role for the group.
 
@@ -150,7 +152,7 @@ To create a group runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. Go to the group you want to make the runner work for.
-1. Go to **Settings > CI/CD** and expand the **Runners** section.
+1. On the left sidebar, select **CI/CD > Runners**.
 1. Note the URL and token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/).
 
@@ -163,7 +165,7 @@ You can do this for your self-managed GitLab instance or for GitLab.com.
 You must have the Owner role for the group.
 
 1. Go to the group where you want to view the runners.
-1. Go to **Settings > CI/CD** and expand the **Runners** section.
+1. On the left sidebar, select **CI/CD > Runners**.
 1. The following fields are displayed.
 
    | Attribute    | Description |
@@ -186,7 +188,7 @@ You can pause or remove a group runner for your self-managed GitLab instance or 
 You must have the Owner role for the group.
 
 1. Go to the group you want to remove or pause the runner for.
-1. Go to **Settings > CI/CD** and expand the **Runners** section.
+1. On the left sidebar, select **CI/CD > Runners**.
 1. Click **Pause** or **Remove runner**.
    - If you pause a group runner that is used by multiple projects, the runner pauses for all projects.
    - From the group view, you cannot remove a runner that is assigned to more than one project.

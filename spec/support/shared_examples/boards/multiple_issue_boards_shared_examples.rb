@@ -138,7 +138,7 @@ RSpec.shared_examples 'multiple issue boards' do
 
     wait_for_requests
 
-    dropdown_selector = '.js-boards-selector .dropdown-menu'
+    dropdown_selector = '[data-testid="boards-selector"] .dropdown-menu'
     page.within(dropdown_selector) do
       yield
     end

@@ -9678,9 +9678,6 @@ msgstr ""
 msgid "ContainerRegistry|Cleanup pending"
 msgstr ""
 
-msgid "ContainerRegistry|Cleanup policies are now available for this project. %{linkStart}Click here to get started.%{linkEnd}"
-msgstr ""
-
 msgid "ContainerRegistry|Cleanup policy for tags is disabled"
 msgstr ""
 
@@ -9738,7 +9735,7 @@ msgstr ""
 msgid "ContainerRegistry|Enable expiration policy"
 msgstr ""
 
-msgid "ContainerRegistry|Expiration policy is disabled"
+msgid "ContainerRegistry|Expiration policy is disabled."
 msgstr ""
 
 msgid "ContainerRegistry|Expiration policy will run in %{time}"
@@ -9831,6 +9828,9 @@ msgid "ContainerRegistry|Root image"
 msgstr ""
 
 msgid "ContainerRegistry|Run cleanup:"
+msgstr ""
+
+msgid "ContainerRegistry|Set up cleanup"
 msgstr ""
 
 msgid "ContainerRegistry|Some tags were not deleted"

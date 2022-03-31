@@ -258,7 +258,9 @@ RSpec.describe Import::GithubController do
 
         context 'when user input contains colons and spaces' do
           before do
-            allow(controller).to receive(:client_repos).and_return([])
+            allow_next_instance_of(Gitlab::GithubImport::Client) do |client|
+              allow(client).to receive(:search_repos_by_name).and_return(items: [])
+            end
           end
 
           it 'sanitizes user input' do

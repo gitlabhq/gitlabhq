@@ -240,7 +240,7 @@ export default {
       class="board-card-footer gl-display-flex gl-justify-content-space-between gl-align-items-flex-end"
     >
       <div
-        class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden js-board-card-number-container"
+        class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
         <gl-loading-icon v-if="item.isLoading" size="md" class="mt-3" />
         <span

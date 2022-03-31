@@ -65,11 +65,11 @@ RSpec.describe PackagesHelper do
     end
   end
 
-  describe '#show_cleanup_policy_on_alert' do
+  describe '#show_cleanup_policy_link' do
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:container_repository) { create(:container_repository) }
 
-    subject { helper.show_cleanup_policy_on_alert(project.reload) }
+    subject { helper.show_cleanup_policy_link(project.reload) }
 
     where(:com, :config_registry, :project_registry, :nil_policy, :container_repositories_exist, :expected_result) do
       false | false | false | false | false | false

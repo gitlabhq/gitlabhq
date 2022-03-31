@@ -29,7 +29,7 @@ describe('IssueCount', () => {
     });
 
     it('does not contains maxIssueCount in the template', () => {
-      expect(vm.find('.js-max-issue-size').exists()).toBe(false);
+      expect(vm.find('.max-issue-size').exists()).toBe(false);
     });
   });
 
@@ -50,7 +50,7 @@ describe('IssueCount', () => {
     });
 
     it('contains maxIssueCount in the template', () => {
-      expect(vm.find('.js-max-issue-size').text()).toEqual(String(maxIssueCount));
+      expect(vm.find('.max-issue-size').text()).toEqual(String(maxIssueCount));
     });
 
     it('does not have text-danger class when issueSize is less than maxIssueCount', () => {
@@ -75,7 +75,7 @@ describe('IssueCount', () => {
     });
 
     it('contains maxIssueCount in the template', () => {
-      expect(vm.find('.js-max-issue-size').text()).toEqual(String(maxIssueCount));
+      expect(vm.find('.max-issue-size').text()).toEqual(String(maxIssueCount));
     });
 
     it('has text-danger class', () => {

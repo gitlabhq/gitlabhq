@@ -1224,6 +1224,18 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         context 'without an escalation status record' do
+          it 'creates a new record' do
+            expect { update_issue(opts) }.to change(::IncidentManagement::IssuableEscalationStatus, :count).by(1)
+          end
+
+          it_behaves_like 'updates the escalation status record', :acknowledged
+        end
+
+        context 'with :incident_escalations feature flag disabled' do
+          before do
+            stub_feature_flags(incident_escalations: false)
+          end
+
           it_behaves_like 'does not change the status record'
         end
       end

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::ImportPullRequestWorker do
 
   describe '#import' do
     it 'imports a pull request' do
-      project = double(:project, full_path: 'foo/bar', id: 1)
+      project = double(:project, full_path: 'foo/bar', id: 1, import_state: nil)
       client = double(:client)
       importer = double(:importer)
       hash = {

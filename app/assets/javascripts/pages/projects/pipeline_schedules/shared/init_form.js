@@ -33,13 +33,7 @@ function initIntervalPatternInput() {
 }
 
 function getEnabledRefTypes() {
-  const refTypes = [REF_TYPE_BRANCHES];
-
-  if (gon.features.pipelineSchedulesWithTags) {
-    refTypes.push(REF_TYPE_TAGS);
-  }
-
-  return refTypes;
+  return [REF_TYPE_BRANCHES, REF_TYPE_TAGS];
 }
 
 function initTargetRefDropdown() {
@@ -61,9 +55,7 @@ function initTargetRefDropdown() {
           value: $refField.value,
           useSymbolicRefNames: true,
           translations: {
-            dropdownHeader: gon.features.pipelineSchedulesWithTags
-              ? __('Select target branch or tag')
-              : __('Select target branch'),
+            dropdownHeader: __('Select target branch or tag'),
           },
         },
         class: 'gl-w-full',

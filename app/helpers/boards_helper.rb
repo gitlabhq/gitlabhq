@@ -127,20 +127,6 @@ module BoardsHelper
     can?(current_user, :admin_issue, current_board_parent)
   end
 
-  def board_list_data
-    include_descendant_groups = @group&.present?
-
-    {
-      toggle: "dropdown",
-      list_labels_path: labels_filter_path_with_defaults(only_group_labels: true, include_ancestor_groups: true),
-      labels: labels_filter_path_with_defaults(only_group_labels: true, include_descendant_groups: include_descendant_groups),
-      labels_endpoint: @labels_endpoint,
-      namespace_path: @namespace_path,
-      project_path: @project&.path,
-      group_path: @group&.path
-    }
-  end
-
   def serializer
     CurrentBoardSerializer.new
   end

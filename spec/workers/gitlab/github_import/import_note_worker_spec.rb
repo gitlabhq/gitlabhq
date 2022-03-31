@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::ImportNoteWorker do
 
   describe '#import' do
     it 'imports a note' do
-      project = double(:project, full_path: 'foo/bar', id: 1)
+      project = double(:project, full_path: 'foo/bar', id: 1, import_state: nil)
       client = double(:client)
       importer = double(:importer)
       hash = {

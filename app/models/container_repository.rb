@@ -174,7 +174,7 @@ class ContainerRepository < ApplicationRecord
       end
     end
 
-    before_transition %i[importing import_aborted] => :import_done do |container_repository|
+    before_transition any => :import_done do |container_repository|
       container_repository.migration_import_done_at = Time.zone.now
     end
 

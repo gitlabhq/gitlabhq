@@ -198,7 +198,7 @@
   border-bottom: 1px solid var(--gray-100, $gray-100);
   height: 3rem;
 
-  .js-max-issue-size::before {
+  .max-issue-size::before {
     content: '/';
   }
 }

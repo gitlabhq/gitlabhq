@@ -13,7 +13,6 @@ import {
 } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { fullBoardId } from './boards_util';
-import initNewBoard from './new_board';
 import { gqlClient } from './graphql';
 
 Vue.use(VueApollo);
@@ -112,6 +111,4 @@ export default () => {
   });
 
   mountBoardApp($boardApp);
-
-  initNewBoard();
 };

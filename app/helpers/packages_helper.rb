@@ -46,7 +46,7 @@ module PackagesHelper
     ::Gitlab::Tracking.event(category, event_name.to_s, **args)
   end
 
-  def show_cleanup_policy_on_alert(project)
+  def show_cleanup_policy_link(project)
     Gitlab.com? &&
     Gitlab.config.registry.enabled &&
     project.feature_available?(:container_registry, current_user) &&

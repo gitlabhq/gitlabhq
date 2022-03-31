@@ -43,8 +43,6 @@ class Groups::BoardsController < Groups::ApplicationController
 
   def assign_endpoint_vars
     @boards_endpoint = group_boards_path(group)
-    @namespace_path = group.to_param
-    @labels_endpoint = group_labels_path(group)
   end
 
   def authorize_read_board!

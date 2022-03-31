@@ -9,7 +9,6 @@ import {
   UNAVAILABLE_ADMIN_FEATURE_TEXT,
 } from '~/packages_and_registries/settings/project/constants';
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
-import CleanupPolicyEnabledAlert from '~/packages_and_registries/shared/components/cleanup_policy_enabled_alert.vue';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 
 import SettingsForm from './settings_form.vue';
@@ -18,19 +17,11 @@ export default {
   components: {
     SettingsBlock,
     SettingsForm,
-    CleanupPolicyEnabledAlert,
     GlAlert,
     GlSprintf,
     GlLink,
   },
-  inject: [
-    'projectPath',
-    'isAdmin',
-    'adminSettingsPath',
-    'enableHistoricEntries',
-    'helpPagePath',
-    'showCleanupPolicyOnAlert',
-  ],
+  inject: ['projectPath', 'isAdmin', 'adminSettingsPath', 'enableHistoricEntries', 'helpPagePath'],
   i18n: {
     UNAVAILABLE_FEATURE_TITLE,
     UNAVAILABLE_FEATURE_INTRO_TEXT,
@@ -87,7 +78,6 @@ export default {
 
 <template>
   <section data-testid="registry-settings-app">
-    <cleanup-policy-enabled-alert v-if="showCleanupPolicyOnAlert" :project-path="projectPath" />
     <settings-block :collapsible="false">
       <template #title> {{ __('Clean up image tags') }}</template>
       <template #description>

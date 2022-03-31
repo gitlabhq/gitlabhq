@@ -101,6 +101,34 @@ RSpec.describe ProjectImportState, type: :model do
     end
   end
 
+  describe '#expire_etag_cache' do
+    context 'when project import type has realtime changes endpoint' do
+      before do
+        import_state.project.import_type = 'github'
+      end
+
+      it 'expires revelant etag cache' do
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+          expect(instance).to receive(:touch).with(Gitlab::Routing.url_helpers.realtime_changes_import_github_path(format: :json))
+        end
+
+        subject.expire_etag_cache
+      end
+    end
+
+    context 'when project import type does not have realtime changes endpoint' do
+      before do
+        import_state.project.import_type = 'jira'
+      end
+
+      it 'does not touch etag caches' do
+        expect(Gitlab::EtagCaching::Store).not_to receive(:new)
+
+        subject.expire_etag_cache
+      end
+    end
+  end
+
   describe 'import state transitions' do
     context 'state transition: [:started] => [:finished]' do
       let(:after_import_service) { spy(:after_import_service) }
@@ -175,6 +203,22 @@ RSpec.describe ProjectImportState, type: :model do
         import_state.finish!
 
         expect(import_state.jid).to be_nil
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    context 'after_commit :expire_etag_cache' do
+      before do
+        import_state.project.import_type = 'github'
+      end
+
+      it 'expires etag cache' do
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+          expect(instance).to receive(:touch).with(Gitlab::Routing.url_helpers.realtime_changes_import_github_path(format: :json))
+        end
+
+        subject.save!
       end
     end
   end

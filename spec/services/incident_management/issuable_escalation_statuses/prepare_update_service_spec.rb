@@ -71,7 +71,12 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateServ
   context 'when an IssuableEscalationStatus record for the issue does not exist' do
     let(:issue) { create(:incident) }
 
-    it_behaves_like 'availability error response'
+    it_behaves_like 'successful response', { status_event: :acknowledge }
+
+    it 'initializes an issuable escalation status record' do
+      expect { result }.not_to change(::IncidentManagement::IssuableEscalationStatus, :count)
+      expect(issue.escalation_status).to be_present
+    end
   end
 
   context 'when called without params' do
