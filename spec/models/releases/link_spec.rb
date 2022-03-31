@@ -113,6 +113,17 @@ RSpec.describe Releases::Link do
     end
   end
 
+  describe 'when filepath is greater than max length' do
+    let!(:invalid_link) { build(:release_link, filepath: 'x' * (Releases::Link::FILEPATH_MAX_LENGTH + 1), release: release) }
+
+    it 'will not execute regex' do
+      invalid_link.filepath_format_valid?
+
+      expect(invalid_link.errors[:filepath].size).to eq(1)
+      expect(invalid_link.errors[:filepath].first).to start_with("is too long")
+    end
+  end
+
   describe 'FILEPATH_REGEX with table' do
     using RSpec::Parameterized::TableSyntax
 
