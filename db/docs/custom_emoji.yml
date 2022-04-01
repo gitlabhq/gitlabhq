@@ -1,0 +1,7 @@
+---
+table_name: custom_emoji
+classes:
+- CustomEmoji
+feature_categories: 
+- team_planning
+description: 

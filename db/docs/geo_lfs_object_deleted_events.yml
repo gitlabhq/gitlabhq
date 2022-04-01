@@ -1,0 +1,6 @@
+---
+table_name: geo_lfs_object_deleted_events
+classes: []
+feature_categories: 
+- geo_replication
+description: 

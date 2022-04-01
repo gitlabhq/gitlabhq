@@ -1,0 +1,7 @@
+---
+table_name: group_import_states
+classes:
+- GroupImportState
+feature_categories: 
+- importers
+description: 

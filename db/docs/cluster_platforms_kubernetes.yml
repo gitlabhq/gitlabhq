@@ -1,0 +1,7 @@
+---
+table_name: cluster_platforms_kubernetes
+classes:
+- Clusters::Platforms::Kubernetes
+feature_categories:
+- kubernetes_management
+description: 

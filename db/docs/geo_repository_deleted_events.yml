@@ -1,0 +1,7 @@
+---
+table_name: geo_repository_deleted_events
+classes:
+- Geo::RepositoryDeletedEvent
+feature_categories: 
+- geo_replication
+description: 

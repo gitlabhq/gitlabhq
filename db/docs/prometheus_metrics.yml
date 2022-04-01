@@ -1,0 +1,7 @@
+---
+table_name: prometheus_metrics
+classes:
+- PrometheusMetric
+feature_categories:
+- metrics
+description: 

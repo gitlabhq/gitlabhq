@@ -1,0 +1,7 @@
+---
+table_name: jira_imports
+classes:
+- JiraImportState
+feature_categories: 
+- integrations
+description: 

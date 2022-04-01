@@ -1,0 +1,7 @@
+---
+table_name: incident_management_oncall_rotations
+classes:
+- IncidentManagement::OncallRotation
+feature_categories:
+- incident_management
+description: 

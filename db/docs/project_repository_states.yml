@@ -1,0 +1,7 @@
+---
+table_name: project_repository_states
+classes:
+- ProjectRepositoryState
+feature_categories: 
+- projects
+description: 

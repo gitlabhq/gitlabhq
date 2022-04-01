@@ -1,0 +1,7 @@
+---
+table_name: background_migration_jobs
+classes:
+- Gitlab::Database::BackgroundMigrationJob
+feature_categories:
+- database
+description: 

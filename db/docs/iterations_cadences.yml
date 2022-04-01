@@ -1,0 +1,7 @@
+---
+table_name: iterations_cadences
+classes:
+- Iterations::Cadence
+feature_categories:
+- team_planning
+description: 

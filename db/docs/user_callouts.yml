@@ -1,0 +1,7 @@
+---
+table_name: user_callouts
+classes:
+- Users::Callout
+feature_categories: 
+- users
+description: 

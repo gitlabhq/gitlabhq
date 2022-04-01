@@ -1,0 +1,7 @@
+---
+table_name: project_pages_metadata
+classes:
+- ProjectPagesMetadatum
+feature_categories: 
+- pages
+description: 

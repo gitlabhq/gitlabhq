@@ -1,0 +1,7 @@
+---
+table_name: saml_group_links
+classes:
+- SamlGroupLink
+feature_categories:
+- authentication_and_authorization
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: user_agent_details
+classes:
+- UserAgentDetail
+feature_categories:
+- snippets
+description: 

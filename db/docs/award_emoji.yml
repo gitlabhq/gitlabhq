@@ -1,0 +1,7 @@
+---
+table_name: award_emoji
+classes:
+- AwardEmoji
+feature_categories:
+- snippets
+description: 

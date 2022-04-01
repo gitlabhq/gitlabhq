@@ -1,0 +1,7 @@
+---
+table_name: status_page_published_incidents
+classes:
+- StatusPage::PublishedIncident
+feature_categories: 
+- incident_management
+description: 

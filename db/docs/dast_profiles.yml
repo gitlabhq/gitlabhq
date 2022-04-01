@@ -1,0 +1,7 @@
+---
+table_name: dast_profiles
+classes:
+- Dast::Profile
+feature_categories:
+- dynamic_application_security_testing
+description: 

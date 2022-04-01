@@ -1,0 +1,7 @@
+---
+table_name: gpg_keys
+classes:
+- GpgKey
+feature_categories:
+- source_code_management
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: notification_settings
+classes:
+- NotificationSetting
+feature_categories:
+- users
+description: 

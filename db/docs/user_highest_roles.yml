@@ -1,0 +1,7 @@
+---
+table_name: user_highest_roles
+classes:
+- UserHighestRole
+feature_categories:
+- utilization
+description: 

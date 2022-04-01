@@ -1,0 +1,7 @@
+---
+table_name: epic_issues
+classes:
+- EpicIssue
+feature_categories:
+- portfolio_management
+description: 

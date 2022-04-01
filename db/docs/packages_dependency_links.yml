@@ -1,0 +1,7 @@
+---
+table_name: packages_dependency_links
+classes:
+- Packages::DependencyLink
+feature_categories: 
+- package_registry
+description: 

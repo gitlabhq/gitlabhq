@@ -1,0 +1,7 @@
+---
+table_name: timelogs
+classes:
+- Timelog
+feature_categories: 
+- audit_events
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: milestones
+classes:
+- Milestone
+feature_categories:
+- team_planning
+description: 

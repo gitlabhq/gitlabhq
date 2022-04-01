@@ -1,0 +1,7 @@
+---
+table_name: deployments
+classes:
+- Deployment
+feature_categories:
+- continuous_delivery
+description: 

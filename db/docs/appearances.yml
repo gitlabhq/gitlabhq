@@ -1,0 +1,7 @@
+---
+table_name: appearances
+classes:
+- Appearance
+feature_categories:
+- navigation
+description: 

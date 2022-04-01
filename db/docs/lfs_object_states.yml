@@ -1,0 +1,7 @@
+---
+table_name: lfs_object_states
+classes:
+- Geo::LfsObjectState
+feature_categories: 
+- git_lfs
+description: 

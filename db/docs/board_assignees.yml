@@ -1,0 +1,7 @@
+---
+table_name: board_assignees
+classes:
+- BoardAssignee
+feature_categories: 
+- team_planning
+description: 

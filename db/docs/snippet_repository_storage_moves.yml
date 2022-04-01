@@ -1,0 +1,7 @@
+---
+table_name: snippet_repository_storage_moves
+classes:
+- Snippets::RepositoryStorageMove
+feature_categories:
+- gitaly
+description: 

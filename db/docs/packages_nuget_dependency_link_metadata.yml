@@ -1,0 +1,7 @@
+---
+table_name: packages_nuget_dependency_link_metadata
+classes:
+- Packages::Nuget::DependencyLinkMetadatum
+feature_categories: 
+- package_registry
+description: 

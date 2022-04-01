@@ -1,0 +1,7 @@
+---
+table_name: taggings
+classes:
+- ActsAsTaggableOn::Tagging
+feature_categories: 
+- runner
+description: 

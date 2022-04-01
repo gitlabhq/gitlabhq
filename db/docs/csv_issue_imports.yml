@@ -1,0 +1,7 @@
+---
+table_name: csv_issue_imports
+classes:
+- Issues::CsvImport
+feature_categories: 
+- importers
+description: 

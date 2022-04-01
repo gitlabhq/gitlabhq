@@ -1,0 +1,7 @@
+---
+table_name: resource_iteration_events
+classes:
+- ResourceIterationEvent
+feature_categories: 
+- users
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: users_ops_dashboard_projects
+classes:
+- UsersOpsDashboardProject
+feature_categories:
+- release_orchestration
+description: 

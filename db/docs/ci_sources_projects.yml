@@ -1,0 +1,7 @@
+---
+table_name: ci_sources_projects
+classes:
+- Ci::Sources::Project
+feature_categories: 
+- continuous_integration
+description: 

@@ -1,0 +1,8 @@
+---
+table_name: resource_state_events
+classes:
+- ResourceStateEvent
+feature_categories: 
+- source_code_management
+- team_planning
+description: 

@@ -1,0 +1,8 @@
+---
+table_name: spam_logs
+classes:
+- SpamLog
+feature_categories:
+feature_categories: 
+- authentication_and_authorization
+description: 

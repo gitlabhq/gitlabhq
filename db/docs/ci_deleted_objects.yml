@@ -1,0 +1,7 @@
+---
+table_name: ci_deleted_objects
+classes:
+- Ci::DeletedObject
+feature_categories: 
+- build_artifacts
+description: 

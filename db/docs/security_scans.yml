@@ -1,0 +1,7 @@
+---
+table_name: security_scans
+classes:
+- Security::Scan
+feature_categories:
+- vulnerability_management
+description: 

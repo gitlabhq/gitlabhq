@@ -1,0 +1,7 @@
+---
+table_name: ci_build_needs
+classes:
+- Ci::BuildNeed
+feature_categories: 
+- pipeline_authoring
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: clusters_integration_prometheus
+classes:
+- Clusters::Integrations::Prometheus
+feature_categories:
+- incident_management
+description: 

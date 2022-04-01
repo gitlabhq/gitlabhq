@@ -1,0 +1,6 @@
+---
+table_name: dast_site_profiles_pipelines
+classes: []
+feature_categories: 
+- dynamic_application_security_testing
+description: 

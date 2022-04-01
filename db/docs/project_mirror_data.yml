@@ -1,0 +1,7 @@
+---
+table_name: project_mirror_data
+classes:
+- ProjectImportState
+feature_categories:
+- importers
+description: 

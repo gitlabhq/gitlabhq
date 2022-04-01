@@ -1,0 +1,7 @@
+---
+table_name: trending_projects
+classes:
+- TrendingProject
+feature_categories:
+- source_code_management
+description: 

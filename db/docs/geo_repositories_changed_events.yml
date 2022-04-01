@@ -1,0 +1,7 @@
+---
+table_name: geo_repositories_changed_events
+classes:
+- Geo::RepositoriesChangedEvent
+feature_categories: 
+- geo_replication
+description: 

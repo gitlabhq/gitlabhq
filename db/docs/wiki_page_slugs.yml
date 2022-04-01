@@ -1,0 +1,7 @@
+---
+table_name: wiki_page_slugs
+classes:
+- WikiPage::Slug
+feature_categories: 
+- wiki
+description: 

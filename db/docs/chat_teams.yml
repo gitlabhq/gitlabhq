@@ -1,0 +1,7 @@
+---
+table_name: chat_teams
+classes:
+- ChatTeam
+feature_categories: 
+- users
+description: 

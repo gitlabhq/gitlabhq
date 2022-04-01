@@ -1,0 +1,7 @@
+---
+table_name: packages_tags
+classes:
+- Packages::Tag
+feature_categories: 
+- package_registry
+description: 

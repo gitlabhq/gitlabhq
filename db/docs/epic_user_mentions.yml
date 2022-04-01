@@ -1,0 +1,7 @@
+---
+table_name: epic_user_mentions
+classes:
+- EpicUserMention
+feature_categories: 
+- users
+description: 

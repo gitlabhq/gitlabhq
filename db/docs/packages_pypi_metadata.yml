@@ -1,0 +1,7 @@
+---
+table_name: packages_pypi_metadata
+classes:
+- Packages::Pypi::Metadatum
+feature_categories: 
+- package_registry
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: jira_connect_subscriptions
+classes:
+- JiraConnectSubscription
+feature_categories: 
+- integrations
+description: 

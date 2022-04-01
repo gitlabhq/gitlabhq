@@ -1,0 +1,8 @@
+---
+table_name: ci_job_artifacts
+classes:
+- Ci::JobArtifact
+- Gitlab::Ci::JobArtifact
+feature_categories:
+- build_artifacts
+description: 

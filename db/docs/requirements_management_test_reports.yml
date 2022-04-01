@@ -1,0 +1,7 @@
+---
+table_name: requirements_management_test_reports
+classes:
+- RequirementsManagement::TestReport
+feature_categories: 
+- requirements_management
+description: 

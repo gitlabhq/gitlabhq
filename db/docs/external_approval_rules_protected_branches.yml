@@ -1,0 +1,6 @@
+---
+table_name: external_approval_rules_protected_branches
+classes: []
+feature_categories: 
+- source_code_management
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: container_expiration_policies
+classes:
+- ContainerExpirationPolicy
+feature_categories:
+- container_registry
+description: 

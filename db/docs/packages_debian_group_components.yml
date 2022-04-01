@@ -1,0 +1,7 @@
+---
+table_name: packages_debian_group_components
+classes:
+- Packages::Debian::GroupComponent
+feature_categories: 
+- package_registry
+description: 

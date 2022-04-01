@@ -1,0 +1,7 @@
+---
+table_name: alert_management_http_integrations
+classes:
+- AlertManagement::HttpIntegration
+feature_categories:
+- incident_management
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: ci_instance_variables
+classes:
+- Ci::InstanceVariable
+feature_categories:
+- pipeline_authoring
+description: 

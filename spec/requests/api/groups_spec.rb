@@ -1164,17 +1164,47 @@ RSpec.describe API::Groups do
       end
 
       context 'when include_subgroups is true' do
-        it "returns projects including those in subgroups" do
+        before do
           subgroup = create(:group, parent: group1)
+          subgroup2 = create(:group, parent: subgroup)
+
           create(:project, group: subgroup)
           create(:project, group: subgroup)
+          create(:project, group: subgroup2)
+
+          group1.reload
+        end
+
+        it "only looks up root ancestor once and returns projects including those in subgroups" do
+          expect(Namespace).to receive(:find_by).with(id: group1.id.to_s).once.and_call_original # For the group sent in the API call
+          expect(Namespace).to receive(:find_by).with(id: group1.traversal_ids.first).once.and_call_original # root_ancestor direct lookup
+          expect(Namespace).to receive(:joins).with(start_with('INNER JOIN (SELECT id, traversal_ids[1]')).once.and_call_original # All-in-one root_ancestor query
 
           get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an(Array)
-          expect(json_response.length).to eq(5)
+          expect(json_response.length).to eq(6)
+        end
+
+        context 'when group_projects_api_preload_groups feature is disabled' do
+          before do
+            stub_feature_flags(group_projects_api_preload_groups: false)
+          end
+
+          it 'looks up the root ancestor multiple times' do
+            expect(Namespace).to receive(:find_by).with(id: group1.id.to_s).once.and_call_original
+            expect(Namespace).to receive(:find_by).with(id: group1.traversal_ids.first).at_least(:twice).and_call_original
+            expect(Namespace).not_to receive(:joins).with(start_with('INNER JOIN (SELECT id, traversal_ids[1]'))
+
+            get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(6)
+          end
         end
       end
 

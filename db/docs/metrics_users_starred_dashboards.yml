@@ -1,0 +1,7 @@
+---
+table_name: metrics_users_starred_dashboards
+classes:
+- Metrics::UsersStarredDashboard
+feature_categories:
+- metrics
+description: 

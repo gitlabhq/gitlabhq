@@ -1,0 +1,7 @@
+---
+table_name: push_rules
+classes:
+- PushRule
+feature_categories:
+- source_code_management
+description: 

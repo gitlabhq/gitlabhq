@@ -1,0 +1,7 @@
+---
+table_name: ci_refs
+classes:
+- Ci::Ref
+feature_categories: 
+- continuous_integration
+description: 

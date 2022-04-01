@@ -1,0 +1,7 @@
+---
+table_name: packages_composer_metadata
+classes:
+- Packages::Composer::Metadatum
+feature_categories: 
+- package_registry
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: analytics_usage_trends_measurements
+classes:
+- Analytics::UsageTrends::Measurement
+feature_categories:
+- devops_reports
+description: 

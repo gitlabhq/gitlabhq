@@ -1,0 +1,7 @@
+---
+table_name: postgres_async_indexes
+classes:
+- Gitlab::Database::AsyncIndexes::PostgresAsyncIndex
+feature_categories: 
+- database
+description: 

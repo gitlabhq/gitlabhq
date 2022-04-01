@@ -1,0 +1,7 @@
+---
+table_name: analytics_cycle_analytics_merge_request_stage_events
+classes:
+- Analytics::CycleAnalytics::MergeRequestStageEvent
+feature_categories:
+- value_stream_management
+description: 

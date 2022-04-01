@@ -1,0 +1,7 @@
+---
+table_name: group_deploy_keys
+classes:
+- GroupDeployKey
+feature_categories: 
+- secrets_management
+description: 

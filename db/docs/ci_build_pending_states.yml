@@ -1,0 +1,7 @@
+---
+table_name: ci_build_pending_states
+classes:
+- Ci::BuildPendingState
+feature_categories: 
+- continuous_integration
+description: 

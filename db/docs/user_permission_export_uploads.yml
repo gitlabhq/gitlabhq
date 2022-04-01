@@ -1,0 +1,7 @@
+---
+table_name: user_permission_export_uploads
+classes:
+- UserPermissionExportUpload
+feature_categories: 
+- authentication_and_authorization
+description: 

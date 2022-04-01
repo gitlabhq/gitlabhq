@@ -1,0 +1,7 @@
+---
+table_name: gpg_signatures
+classes:
+- CommitSignatures::GpgSignature
+feature_categories: 
+- source_code_management
+description: 

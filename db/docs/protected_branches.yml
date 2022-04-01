@@ -1,0 +1,8 @@
+---
+table_name: protected_branches
+classes:
+- ExportedProtectedBranch
+- ProtectedBranch
+feature_categories:
+- source_code_management
+description: 

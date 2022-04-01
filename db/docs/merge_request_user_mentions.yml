@@ -1,0 +1,8 @@
+---
+table_name: merge_request_user_mentions
+classes:
+- MergeRequestUserMention
+feature_categories: 
+- code_review
+- users
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: plans
+classes:
+- Plan
+feature_categories:
+- purchase
+description: 

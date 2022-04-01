@@ -1,0 +1,7 @@
+---
+table_name: projects_sync_events
+classes:
+- Projects::SyncEvent
+feature_categories:
+- sharding
+description: 

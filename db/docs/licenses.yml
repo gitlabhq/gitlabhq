@@ -1,0 +1,7 @@
+---
+table_name: licenses
+classes:
+- License
+feature_categories:
+- purchase
+description: 

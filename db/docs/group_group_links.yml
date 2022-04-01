@@ -1,0 +1,7 @@
+---
+table_name: group_group_links
+classes:
+- GroupGroupLink
+feature_categories:
+- authentication_and_authorization
+description: 

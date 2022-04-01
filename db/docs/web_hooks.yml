@@ -1,0 +1,11 @@
+---
+table_name: web_hooks
+classes:
+- GroupHook
+- ProjectHook
+- ServiceHook
+- SystemHook
+- WebHook
+feature_categories:
+- integrations
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: ci_build_trace_metadata
+classes:
+- Ci::BuildTraceMetadata
+feature_categories: 
+- continuous_integration
+description: 

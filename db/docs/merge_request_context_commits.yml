@@ -1,0 +1,7 @@
+---
+table_name: merge_request_context_commits
+classes:
+- MergeRequestContextCommit
+feature_categories:
+- code_review
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: onboarding_progresses
+classes:
+- OnboardingProgress
+feature_categories:
+- onboarding
+description: 

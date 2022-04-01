@@ -1,0 +1,7 @@
+---
+table_name: error_tracking_client_keys
+classes:
+- ErrorTracking::ClientKey
+feature_categories:
+- error_tracking
+description: 

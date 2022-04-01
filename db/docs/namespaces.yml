@@ -1,0 +1,10 @@
+---
+table_name: namespaces
+classes:
+- Group
+- Namespace
+- Namespaces::ProjectNamespace
+- Namespaces::UserNamespace
+feature_categories:
+- subgroups
+description: 

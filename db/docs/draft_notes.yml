@@ -1,0 +1,9 @@
+---
+table_name: draft_notes
+classes:
+- DraftNote
+feature_categories: 
+- projects
+- source_code_management
+- team_planning
+description: 

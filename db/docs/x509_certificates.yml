@@ -1,0 +1,7 @@
+---
+table_name: x509_certificates
+classes:
+- X509Certificate
+feature_categories:
+- source_code_management
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: project_ci_cd_settings
+classes:
+- ProjectCiCdSetting
+feature_categories: 
+- continuous_integration
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: batched_background_migration_job_transition_logs
+classes:
+- Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog
+feature_categories: 
+- database
+description: 

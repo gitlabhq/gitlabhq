@@ -1,0 +1,7 @@
+---
+table_name: analytics_devops_adoption_snapshots
+classes:
+- Analytics::DevopsAdoption::Snapshot
+feature_categories: 
+- devops_reports
+description: 

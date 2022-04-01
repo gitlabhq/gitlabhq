@@ -1,0 +1,7 @@
+---
+table_name: project_compliance_framework_settings
+classes:
+- ComplianceManagement::ComplianceFramework::ProjectSettings
+feature_categories: 
+- compliance_management
+description: 

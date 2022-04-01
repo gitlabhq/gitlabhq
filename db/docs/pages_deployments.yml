@@ -1,0 +1,7 @@
+---
+table_name: pages_deployments
+classes:
+- PagesDeployment
+feature_categories:
+- pages
+description: 

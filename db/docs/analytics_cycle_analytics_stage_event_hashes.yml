@@ -1,0 +1,7 @@
+---
+table_name: analytics_cycle_analytics_stage_event_hashes
+classes:
+- Analytics::CycleAnalytics::StageEventHash
+feature_categories: 
+- value_stream_management
+description: 

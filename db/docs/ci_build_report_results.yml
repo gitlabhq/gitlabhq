@@ -1,0 +1,7 @@
+---
+table_name: ci_build_report_results
+classes:
+- Ci::BuildReportResult
+feature_categories: 
+- continuous_integration
+description: 

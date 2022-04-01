@@ -1,0 +1,7 @@
+---
+table_name: ci_running_builds
+classes:
+- Ci::RunningBuild
+feature_categories: 
+- continuous_integration
+description: 

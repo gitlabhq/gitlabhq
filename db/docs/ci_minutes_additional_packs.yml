@@ -1,0 +1,7 @@
+---
+table_name: ci_minutes_additional_packs
+classes:
+- Ci::Minutes::AdditionalPack
+feature_categories:
+- utilization
+description: 

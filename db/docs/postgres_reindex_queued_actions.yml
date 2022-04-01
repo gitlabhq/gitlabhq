@@ -1,0 +1,7 @@
+---
+table_name: postgres_reindex_queued_actions
+classes:
+- Gitlab::Database::Reindexing::QueuedAction
+feature_categories: 
+- database
+description: 

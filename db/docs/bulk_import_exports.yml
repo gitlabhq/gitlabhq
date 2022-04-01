@@ -1,0 +1,7 @@
+---
+table_name: bulk_import_exports
+classes:
+- BulkImports::Export
+feature_categories:
+- importers
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: ldap_group_links
+classes:
+- LdapGroupLink
+feature_categories:
+- authentication_and_authorization
+description: 

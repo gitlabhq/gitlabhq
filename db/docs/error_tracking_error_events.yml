@@ -1,0 +1,7 @@
+---
+table_name: error_tracking_error_events
+classes:
+- ErrorTracking::ErrorEvent
+feature_categories: 
+- error_tracking
+description: 

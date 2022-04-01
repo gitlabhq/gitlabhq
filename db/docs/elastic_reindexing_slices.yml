@@ -1,0 +1,7 @@
+---
+table_name: elastic_reindexing_slices
+classes:
+- Elastic::ReindexingSlice
+feature_categories: 
+- memory
+description: 

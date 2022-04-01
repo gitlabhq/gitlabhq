@@ -1,0 +1,7 @@
+---
+table_name: project_daily_statistics
+classes:
+- ProjectDailyStatistic
+feature_categories:
+- source_code_management
+description: 

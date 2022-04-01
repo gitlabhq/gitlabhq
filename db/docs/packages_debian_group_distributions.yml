@@ -1,0 +1,7 @@
+---
+table_name: packages_debian_group_distributions
+classes:
+- Packages::Debian::GroupDistribution
+feature_categories:
+- package_registry
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: packages_nuget_metadata
+classes:
+- Packages::Nuget::Metadatum
+feature_categories: 
+- package_registry
+description: 

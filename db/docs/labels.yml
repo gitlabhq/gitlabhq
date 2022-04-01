@@ -1,0 +1,9 @@
+---
+table_name: labels
+classes:
+- GroupLabel
+- Label
+- ProjectLabel
+feature_categories:
+- team_planning
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: allowed_email_domains
+classes:
+- AllowedEmailDomain
+feature_categories: 
+- users
+description: 

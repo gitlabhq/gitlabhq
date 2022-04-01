@@ -1,0 +1,7 @@
+---
+table_name: smartcard_identities
+classes:
+- SmartcardIdentity
+feature_categories: 
+- authentication_and_authorization
+description: 

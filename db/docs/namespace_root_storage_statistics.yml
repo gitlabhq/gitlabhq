@@ -1,0 +1,7 @@
+---
+table_name: namespace_root_storage_statistics
+classes:
+- Namespace::RootStorageStatistics
+feature_categories: 
+- subgroups
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: push_event_payloads
+classes:
+- PushEventPayload
+feature_categories: 
+- gitaly
+description: 

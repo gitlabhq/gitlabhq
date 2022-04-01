@@ -1,0 +1,7 @@
+---
+table_name: experiment_subjects
+classes:
+- ExperimentSubject
+feature_categories: 
+- experimentation_expansion
+description: 

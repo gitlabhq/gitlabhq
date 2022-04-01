@@ -1,0 +1,7 @@
+---
+table_name: elastic_index_settings
+classes:
+- Elastic::IndexSetting
+feature_categories:
+- global_search
+description: 

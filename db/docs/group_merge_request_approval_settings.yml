@@ -1,0 +1,7 @@
+---
+table_name: group_merge_request_approval_settings
+classes:
+- GroupMergeRequestApprovalSetting
+feature_categories: 
+- source_code_management
+description: 

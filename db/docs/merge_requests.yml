@@ -1,0 +1,7 @@
+---
+table_name: merge_requests
+classes:
+- MergeRequest
+feature_categories:
+- code_review
+description: 

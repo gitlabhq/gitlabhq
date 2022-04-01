@@ -1,0 +1,7 @@
+---
+table_name: software_licenses
+classes:
+- SoftwareLicense
+feature_categories:
+- license_compliance
+description: 

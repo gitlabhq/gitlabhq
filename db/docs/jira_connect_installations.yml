@@ -1,0 +1,7 @@
+---
+table_name: jira_connect_installations
+classes:
+- JiraConnectInstallation
+feature_categories:
+- integrations
+description: 

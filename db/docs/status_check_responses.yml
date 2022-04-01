@@ -1,0 +1,7 @@
+---
+table_name: status_check_responses
+classes:
+- MergeRequests::StatusCheckResponse
+feature_categories:
+- compliance_management
+description: 

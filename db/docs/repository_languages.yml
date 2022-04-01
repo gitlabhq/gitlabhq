@@ -1,0 +1,7 @@
+---
+table_name: repository_languages
+classes:
+- RepositoryLanguage
+feature_categories:
+- source_code_management
+description: 

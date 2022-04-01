@@ -1,0 +1,7 @@
+---
+table_name: lfs_file_locks
+classes:
+- LfsFileLock
+feature_categories: 
+- git_lfs
+description: 

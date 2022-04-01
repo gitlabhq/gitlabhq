@@ -1,0 +1,7 @@
+---
+table_name: requirements
+classes:
+- RequirementsManagement::Requirement
+feature_categories:
+- requirements_management
+description: 

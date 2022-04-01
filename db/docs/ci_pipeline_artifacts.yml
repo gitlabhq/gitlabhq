@@ -1,0 +1,7 @@
+---
+table_name: ci_pipeline_artifacts
+classes:
+- Ci::PipelineArtifact
+feature_categories:
+- build_artifacts
+description: 

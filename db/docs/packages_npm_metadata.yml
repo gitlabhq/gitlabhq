@@ -1,0 +1,7 @@
+---
+table_name: packages_npm_metadata
+classes:
+- Packages::Npm::Metadatum
+feature_categories: 
+- package_registry
+description: 

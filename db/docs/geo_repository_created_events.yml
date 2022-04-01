@@ -1,0 +1,7 @@
+---
+table_name: geo_repository_created_events
+classes:
+- Geo::RepositoryCreatedEvent
+feature_categories: 
+- geo_replication
+description: 

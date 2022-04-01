@@ -1,0 +1,7 @@
+---
+table_name: sent_notifications
+classes:
+- SentNotification
+feature_categories:
+- users
+description: 

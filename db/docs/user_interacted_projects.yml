@@ -1,0 +1,7 @@
+---
+table_name: user_interacted_projects
+classes:
+- UserInteractedProject
+feature_categories: 
+- product_analytics
+description: 

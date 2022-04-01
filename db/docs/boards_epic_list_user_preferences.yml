@@ -1,0 +1,7 @@
+---
+table_name: boards_epic_list_user_preferences
+classes:
+- Boards::EpicListUserPreference
+feature_categories: 
+- team_planning
+description: 

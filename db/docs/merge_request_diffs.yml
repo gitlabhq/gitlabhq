@@ -1,0 +1,7 @@
+---
+table_name: merge_request_diffs
+classes:
+- MergeRequestDiff
+feature_categories:
+- code_review
+description: 

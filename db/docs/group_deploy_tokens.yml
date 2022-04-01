@@ -1,0 +1,7 @@
+---
+table_name: group_deploy_tokens
+classes:
+- GroupDeployToken
+feature_categories: 
+- secrets_management
+description: 

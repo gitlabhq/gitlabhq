@@ -1,0 +1,7 @@
+---
+table_name: user_statuses
+classes:
+- UserStatus
+feature_categories:
+- users
+description: 

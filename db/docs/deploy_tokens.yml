@@ -1,0 +1,7 @@
+---
+table_name: deploy_tokens
+classes:
+- DeployToken
+feature_categories:
+- continuous_delivery
+description: 

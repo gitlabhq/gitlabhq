@@ -1,0 +1,7 @@
+---
+table_name: project_topics
+classes:
+- Projects::ProjectTopic
+feature_categories: 
+- projects
+description: 

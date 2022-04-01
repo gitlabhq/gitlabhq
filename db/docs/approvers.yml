@@ -1,0 +1,7 @@
+---
+table_name: approvers
+classes:
+- Approver
+feature_categories:
+- security_orchestration
+description: 

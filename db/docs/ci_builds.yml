@@ -1,0 +1,11 @@
+---
+table_name: ci_builds
+classes:
+- Ci::Bridge
+- Ci::Build
+- Ci::Processable
+- CommitStatus
+- GenericCommitStatus
+feature_categories:
+- continuous_integration
+description: 

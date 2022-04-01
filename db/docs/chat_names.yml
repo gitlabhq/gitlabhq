@@ -1,0 +1,7 @@
+---
+table_name: chat_names
+classes:
+- ChatName
+feature_categories:
+- users
+description: 

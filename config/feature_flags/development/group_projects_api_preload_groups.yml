@@ -1,0 +1,8 @@
+---
+name: group_projects_api_preload_groups
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81838
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354372
+milestone: '14.9'
+type: development
+group: group::authentication and authorization
+default_enabled: false

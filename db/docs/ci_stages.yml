@@ -1,0 +1,7 @@
+---
+table_name: ci_stages
+classes:
+- Ci::Stage
+feature_categories: 
+- continuous_integration
+description: 

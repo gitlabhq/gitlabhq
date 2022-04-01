@@ -1,0 +1,7 @@
+---
+table_name: project_export_jobs
+classes:
+- ProjectExportJob
+feature_categories:
+- importers
+description: 

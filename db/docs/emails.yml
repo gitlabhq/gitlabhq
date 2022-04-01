@@ -1,0 +1,7 @@
+---
+table_name: emails
+classes:
+- Email
+feature_categories:
+- users
+description: 

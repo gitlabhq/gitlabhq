@@ -1,0 +1,7 @@
+---
+table_name: import_export_uploads
+classes:
+- ImportExportUpload
+feature_categories:
+- importers
+description: 

@@ -101,6 +101,8 @@ module Members
                 else
                   source.members.build(invite_email: user)
                 end
+
+      @member.blocking_refresh = args[:blocking_refresh]
     end
 
     # This method is used to find users that have been entered into the "Add members" field.

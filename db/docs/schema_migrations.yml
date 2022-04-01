@@ -1,0 +1,8 @@
+---
+table_name: schema_migrations
+classes:
+- ActiveRecord::SchemaMigration
+- Geo::TrackingBase::SchemaMigration
+feature_categories: 
+- database
+description: 

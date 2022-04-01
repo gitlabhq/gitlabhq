@@ -410,6 +410,9 @@ the queries themselves have no timing variance.
 
 ### Background jobs tracking
 
+NOTE:
+Background migrations with job tracking enabled must call `mark_all_as_succeeded` for its batch, even if no work is needed to be done.
+
 `queue_background_migration_jobs_by_range_at_intervals` can create records for each job that is scheduled to run.
 You can enable this behavior by passing `track_jobs: true`. Each record starts with a `pending` status. Make sure that your worker updates the job status to `succeeded` by calling `Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded` in the `perform` method of your background migration.
 

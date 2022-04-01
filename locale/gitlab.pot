@@ -22327,6 +22327,9 @@ msgstr ""
 msgid "Legacy burndown chart"
 msgstr ""
 
+msgid "Legacy license"
+msgstr ""
+
 msgid "Less Details"
 msgstr ""
 
@@ -36499,9 +36502,6 @@ msgstr ""
 msgid "SuperSonics|Buy subscription"
 msgstr ""
 
-msgid "SuperSonics|Cloud license"
-msgstr ""
-
 msgid "SuperSonics|Cloud licensing"
 msgstr ""
 
@@ -36535,7 +36535,10 @@ msgstr ""
 msgid "SuperSonics|Maximum users"
 msgstr ""
 
-msgid "SuperSonics|Offline cloud"
+msgid "SuperSonics|Offline license"
+msgstr ""
+
+msgid "SuperSonics|Online license"
 msgstr ""
 
 msgid "SuperSonics|Paste your activation code"

@@ -1,0 +1,7 @@
+---
+table_name: approval_merge_request_rule_sources
+classes:
+- ApprovalMergeRequestRuleSource
+feature_categories: 
+- source_code_management
+description: 

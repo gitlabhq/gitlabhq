@@ -1,0 +1,7 @@
+---
+table_name: analytics_language_trend_repository_languages
+classes:
+- Analytics::LanguageTrend::RepositoryLanguage
+feature_categories: 
+- devops_reports
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: project_repository_storage_moves
+classes:
+- Projects::RepositoryStorageMove
+feature_categories:
+- gitaly
+description: 

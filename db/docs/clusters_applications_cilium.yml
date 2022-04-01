@@ -1,0 +1,7 @@
+---
+table_name: clusters_applications_cilium
+classes:
+- Clusters::Applications::Cilium
+feature_categories: 
+- kubernetes_management
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: project_alerting_settings
+classes:
+- Alerting::ProjectAlertingSetting
+feature_categories: 
+- incident_management
+description: 

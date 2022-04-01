@@ -1,0 +1,7 @@
+---
+table_name: geo_hashed_storage_attachments_events
+classes:
+- Geo::HashedStorageAttachmentsEvent
+feature_categories: 
+- geo_replication
+description: 

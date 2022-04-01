@@ -1,0 +1,7 @@
+---
+table_name: operations_feature_flags_issues
+classes:
+- FeatureFlagIssue
+feature_categories:
+- feature_flags
+description: 

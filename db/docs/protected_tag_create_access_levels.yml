@@ -1,0 +1,7 @@
+---
+table_name: protected_tag_create_access_levels
+classes:
+- ProtectedTag::CreateAccessLevel
+feature_categories:
+- source_code_management
+description: 

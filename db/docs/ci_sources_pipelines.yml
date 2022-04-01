@@ -1,0 +1,7 @@
+---
+table_name: ci_sources_pipelines
+classes:
+- Ci::Sources::Pipeline
+feature_categories: 
+- continuous_integration
+description: 

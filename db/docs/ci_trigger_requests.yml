@@ -1,0 +1,7 @@
+---
+table_name: ci_trigger_requests
+classes:
+- Ci::TriggerRequest
+feature_categories: 
+- continuous_integration
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: agent_activity_events
+classes:
+- Clusters::Agents::ActivityEvent
+feature_categories: 
+- kubernetes_management
+description: 

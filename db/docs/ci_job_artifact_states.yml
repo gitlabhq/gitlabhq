@@ -1,0 +1,7 @@
+---
+table_name: ci_job_artifact_states
+classes:
+- Geo::JobArtifactState
+feature_categories: 
+- geo_replication
+description: 

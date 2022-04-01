@@ -1,0 +1,7 @@
+---
+table_name: ci_platform_metrics
+classes:
+- CiPlatformMetric
+feature_categories:
+- continuous_integration
+description: 

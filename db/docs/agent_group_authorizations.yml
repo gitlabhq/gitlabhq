@@ -1,0 +1,7 @@
+---
+table_name: agent_group_authorizations
+classes:
+- Clusters::Agents::GroupAuthorization
+feature_categories: 
+- kubernetes_management
+description: 

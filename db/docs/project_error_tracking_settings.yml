@@ -1,0 +1,7 @@
+---
+table_name: project_error_tracking_settings
+classes:
+- ErrorTracking::ProjectErrorTrackingSetting
+feature_categories: 
+- error_tracking
+description: 

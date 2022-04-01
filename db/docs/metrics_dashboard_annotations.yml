@@ -1,0 +1,7 @@
+---
+table_name: metrics_dashboard_annotations
+classes:
+- Metrics::Dashboard::Annotation
+feature_categories:
+- metrics
+description: 

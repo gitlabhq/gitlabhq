@@ -1,0 +1,7 @@
+---
+table_name: external_pull_requests
+classes:
+- ExternalPullRequest
+feature_categories:
+- continuous_integration
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: historical_data
+classes:
+- HistoricalData
+feature_categories:
+- utilization
+description: 

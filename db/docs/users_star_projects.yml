@@ -1,0 +1,7 @@
+---
+table_name: users_star_projects
+classes:
+- UsersStarProject
+feature_categories:
+- projects
+description: 

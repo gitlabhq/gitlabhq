@@ -1,0 +1,7 @@
+---
+table_name: packages_maven_metadata
+classes:
+- Packages::Maven::Metadatum
+feature_categories:
+- package_registry
+description: 

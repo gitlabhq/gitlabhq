@@ -1,0 +1,7 @@
+---
+table_name: jira_tracker_data
+classes:
+- Integrations::JiraTrackerData
+feature_categories: 
+- integrations
+description: 

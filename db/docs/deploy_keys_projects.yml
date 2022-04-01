@@ -1,0 +1,7 @@
+---
+table_name: deploy_keys_projects
+classes:
+- DeployKeysProject
+feature_categories:
+- continuous_delivery
+description: 

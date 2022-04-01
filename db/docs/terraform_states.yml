@@ -1,0 +1,7 @@
+---
+table_name: terraform_states
+classes:
+- Terraform::State
+feature_categories: 
+- infrastructure_as_code
+description: 

@@ -1,0 +1,10 @@
+---
+table_name: members
+classes:
+- GroupMember
+- Member
+- ProjectMember
+- ProjectNamespaceMember
+feature_categories:
+- authentication_and_authorization
+description: 

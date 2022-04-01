@@ -1,0 +1,7 @@
+---
+table_name: security_trainings
+classes:
+- Security::Training
+feature_categories: 
+- vulnerability_management
+description: 

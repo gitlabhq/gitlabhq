@@ -1,0 +1,7 @@
+---
+table_name: diff_note_positions
+classes:
+- DiffNotePosition
+feature_categories: 
+- source_code_management
+description: 

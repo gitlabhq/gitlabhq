@@ -1,0 +1,7 @@
+---
+table_name: merge_request_cleanup_schedules
+classes:
+- MergeRequest::CleanupSchedule
+feature_categories:
+- code_review
+description: 

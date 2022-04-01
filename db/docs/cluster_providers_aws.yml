@@ -1,0 +1,7 @@
+---
+table_name: cluster_providers_aws
+classes:
+- Clusters::Providers::Aws
+feature_categories: 
+- kubernetes_management
+description: 

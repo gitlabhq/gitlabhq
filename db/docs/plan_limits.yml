@@ -1,0 +1,7 @@
+---
+table_name: plan_limits
+classes:
+- PlanLimits
+feature_categories:
+- purchase
+description: 

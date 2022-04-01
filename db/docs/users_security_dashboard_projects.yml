@@ -1,0 +1,7 @@
+---
+table_name: users_security_dashboard_projects
+classes:
+- UsersSecurityDashboardProject
+feature_categories: 
+- vulnerability_management
+description: 

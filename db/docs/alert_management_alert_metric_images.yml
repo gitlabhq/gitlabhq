@@ -1,0 +1,7 @@
+---
+table_name: alert_management_alert_metric_images
+classes:
+- AlertManagement::MetricImage
+feature_categories:
+- incident_management
+description: 

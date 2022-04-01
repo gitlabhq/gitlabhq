@@ -1,0 +1,7 @@
+---
+table_name: commit_user_mentions
+classes:
+- CommitUserMention
+feature_categories: 
+- users
+description: 

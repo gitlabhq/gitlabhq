@@ -1,0 +1,7 @@
+---
+table_name: external_status_checks
+classes:
+- MergeRequests::ExternalStatusCheck
+feature_categories:
+- source_code_management
+description: 

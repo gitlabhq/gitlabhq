@@ -1,0 +1,7 @@
+---
+table_name: geo_cache_invalidation_events
+classes:
+- Geo::CacheInvalidationEvent
+feature_categories: 
+- geo_replication
+description: 

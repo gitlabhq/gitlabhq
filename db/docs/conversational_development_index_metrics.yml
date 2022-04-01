@@ -1,0 +1,7 @@
+---
+table_name: conversational_development_index_metrics
+classes:
+- DevOpsReport::Metric
+feature_categories:
+- devops_reports
+description: 

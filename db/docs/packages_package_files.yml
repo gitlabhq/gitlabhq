@@ -1,0 +1,7 @@
+---
+table_name: packages_package_files
+classes:
+- Packages::PackageFile
+feature_categories:
+- package_registry
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: u2f_registrations
+classes:
+- U2fRegistration
+feature_categories:
+- authentication_and_authorization
+description: 

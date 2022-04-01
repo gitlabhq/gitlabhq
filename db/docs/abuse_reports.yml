@@ -1,0 +1,7 @@
+---
+table_name: abuse_reports
+classes:
+- AbuseReport
+feature_categories:
+- users
+description: 

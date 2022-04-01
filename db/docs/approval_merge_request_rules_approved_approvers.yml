@@ -1,0 +1,6 @@
+---
+table_name: approval_merge_request_rules_approved_approvers
+classes: []
+feature_categories: 
+- source_code_management
+description: 

@@ -1,0 +1,8 @@
+---
+table_name: issue_user_mentions
+classes:
+- IssueUserMention
+feature_categories: 
+- users
+- team_planning
+description: 

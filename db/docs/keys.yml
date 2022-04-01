@@ -1,0 +1,9 @@
+---
+table_name: keys
+classes:
+- DeployKey
+- Key
+- LDAPKey
+feature_categories:
+- users
+description: 

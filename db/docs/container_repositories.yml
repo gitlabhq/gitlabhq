@@ -1,0 +1,7 @@
+---
+table_name: container_repositories
+classes:
+- ContainerRepository
+feature_categories:
+- container_registry
+description: 

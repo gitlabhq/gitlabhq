@@ -1,0 +1,7 @@
+---
+table_name: project_import_data
+classes:
+- ProjectImportData
+feature_categories: 
+- importers
+description: 

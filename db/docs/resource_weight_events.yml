@@ -1,0 +1,7 @@
+---
+table_name: resource_weight_events
+classes:
+- ResourceWeightEvent
+feature_categories:
+- team_planning
+description: 

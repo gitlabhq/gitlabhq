@@ -1,0 +1,7 @@
+---
+table_name: project_deploy_tokens
+classes:
+- ProjectDeployToken
+feature_categories: 
+- advanced_deployments
+description: 

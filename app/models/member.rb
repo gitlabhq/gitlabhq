@@ -22,6 +22,7 @@ class Member < ApplicationRecord
   STATE_AWAITING = 1
 
   attr_accessor :raw_invite_token
+  attr_writer :blocking_refresh
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
@@ -201,7 +202,7 @@ class Member < ApplicationRecord
   after_save :log_invitation_token_cleanup
 
   after_commit on: [:create, :update], unless: :importing? do
-    refresh_member_authorized_projects(blocking: true)
+    refresh_member_authorized_projects(blocking: blocking_refresh)
   end
 
   after_commit on: [:destroy], unless: :importing? do
@@ -512,6 +513,13 @@ class Member < ApplicationRecord
 
     error = StandardError.new("Invitation token is present but invite was already accepted!")
     Gitlab::ErrorTracking.track_exception(error, attributes.slice(%w["invite_accepted_at created_at source_type source_id user_id id"]))
+  end
+
+  def blocking_refresh
+    return true unless Feature.enabled?(:allow_non_blocking_member_refresh, default_enabled: :yaml)
+    return true if @blocking_refresh.nil?
+
+    @blocking_refresh
   end
 end
 

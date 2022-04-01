@@ -1,0 +1,7 @@
+---
+table_name: related_epic_links
+classes:
+- Epic::RelatedEpicLink
+feature_categories:
+- portfolio_management
+description: 

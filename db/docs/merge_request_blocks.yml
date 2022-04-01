@@ -1,0 +1,7 @@
+---
+table_name: merge_request_blocks
+classes:
+- MergeRequestBlock
+feature_categories: 
+- source_code_management
+description: 

@@ -1,0 +1,7 @@
+---
+table_name: application_setting_terms
+classes:
+- ApplicationSetting::Term
+feature_categories:
+- authentication_and_authorization
+description: 

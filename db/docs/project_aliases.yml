@@ -1,0 +1,7 @@
+---
+table_name: project_aliases
+classes:
+- ProjectAlias
+feature_categories:
+- source_code_management
+description: 

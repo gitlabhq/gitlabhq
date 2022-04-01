@@ -1,0 +1,7 @@
+---
+table_name: aws_roles
+classes:
+- Aws::Role
+feature_categories: 
+- kubernetes_management
+description: 

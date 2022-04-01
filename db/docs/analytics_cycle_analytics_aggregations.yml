@@ -1,0 +1,7 @@
+---
+table_name: analytics_cycle_analytics_aggregations
+classes:
+- Analytics::CycleAnalytics::Aggregation
+feature_categories:
+- value_stream_management
+description: 

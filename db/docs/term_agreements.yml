@@ -1,0 +1,7 @@
+---
+table_name: term_agreements
+classes:
+- TermAgreement
+feature_categories: 
+- authentication_and_authorization
+description: 

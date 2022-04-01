@@ -1,0 +1,9 @@
+---
+table_name: badges
+classes:
+- Badge
+- GroupBadge
+- ProjectBadge
+feature_categories:
+- projects
+description: 

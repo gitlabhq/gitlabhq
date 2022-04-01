@@ -1,0 +1,7 @@
+---
+table_name: prometheus_alerts
+classes:
+- PrometheusAlert
+feature_categories:
+- incident_management
+description: 

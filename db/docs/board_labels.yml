@@ -1,0 +1,7 @@
+---
+table_name: board_labels
+classes:
+- BoardLabel
+feature_categories: 
+- team_planning
+description: 

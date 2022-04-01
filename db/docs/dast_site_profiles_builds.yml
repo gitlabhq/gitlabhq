@@ -1,0 +1,7 @@
+---
+table_name: dast_site_profiles_builds
+classes:
+- Dast::SiteProfilesBuild
+feature_categories:
+- dynamic_application_security_testing
+description: 

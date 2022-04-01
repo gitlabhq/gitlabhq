@@ -1,0 +1,7 @@
+---
+table_name: operations_feature_flags_clients
+classes:
+- Operations::FeatureFlagsClient
+feature_categories:
+- feature_flags
+description: 

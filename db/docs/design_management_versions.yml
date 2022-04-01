@@ -1,0 +1,7 @@
+---
+table_name: design_management_versions
+classes:
+- DesignManagement::Version
+feature_categories:
+- design_management
+description: 

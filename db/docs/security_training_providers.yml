@@ -1,0 +1,7 @@
+---
+table_name: security_training_providers
+classes:
+- Security::TrainingProvider
+feature_categories: 
+- vulnerability_management
+description: 

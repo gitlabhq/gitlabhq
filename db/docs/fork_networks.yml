@@ -1,0 +1,7 @@
+---
+table_name: fork_networks
+classes:
+- ForkNetwork
+feature_categories:
+- devops_reports
+description: 

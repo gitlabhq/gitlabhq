@@ -843,11 +843,23 @@ RSpec.describe Group do
   describe '#add_user' do
     let(:user) { create(:user) }
 
-    before do
+    it 'adds the user with a blocking refresh by default' do
+      expect_next_instance_of(GroupMember) do |member|
+        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true)
+      end
+
       group.add_user(user, GroupMember::MAINTAINER)
+
+      expect(group.group_members.maintainers.map(&:user)).to include(user)
     end
 
-    it { expect(group.group_members.maintainers.map(&:user)).to include(user) }
+    it 'passes the blocking refresh value to member' do
+      expect_next_instance_of(GroupMember) do |member|
+        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: false)
+      end
+
+      group.add_user(user, GroupMember::MAINTAINER, blocking_refresh: false)
+    end
   end
 
   describe '#add_users' do

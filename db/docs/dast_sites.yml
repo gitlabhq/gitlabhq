@@ -1,0 +1,7 @@
+---
+table_name: dast_sites
+classes:
+- DastSite
+feature_categories: 
+- dynamic_application_security_testing
+description: 

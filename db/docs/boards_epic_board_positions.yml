@@ -1,0 +1,7 @@
+---
+table_name: boards_epic_board_positions
+classes:
+- Boards::EpicBoardPosition
+feature_categories: 
+- team_planning
+description: 

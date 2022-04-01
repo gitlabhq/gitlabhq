@@ -1,0 +1,7 @@
+---
+table_name: packages_debian_project_distributions
+classes:
+- Packages::Debian::ProjectDistribution
+feature_categories:
+- package_registry
+description: 

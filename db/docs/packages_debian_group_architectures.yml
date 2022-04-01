@@ -1,0 +1,7 @@
+---
+table_name: packages_debian_group_architectures
+classes:
+- Packages::Debian::GroupArchitecture
+feature_categories: 
+- package_registry
+description: 

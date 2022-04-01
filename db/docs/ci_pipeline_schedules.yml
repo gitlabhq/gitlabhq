@@ -1,0 +1,7 @@
+---
+table_name: ci_pipeline_schedules
+classes:
+- Ci::PipelineSchedule
+feature_categories:
+- continuous_integration
+description: 

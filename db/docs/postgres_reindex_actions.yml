@@ -1,0 +1,7 @@
+---
+table_name: postgres_reindex_actions
+classes:
+- Gitlab::Database::Reindexing::ReindexAction
+feature_categories: 
+- database
+description: 

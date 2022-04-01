@@ -1,0 +1,16 @@
+---
+table_name: notes
+classes:
+- DiffNote
+- DiscussionNote
+- IterationNote
+- LabelNote
+- LegacyDiffNote
+- MilestoneNote
+- Note
+- StateNote
+- SyntheticNote
+- WeightNote
+feature_categories:
+- team_planning
+description: 

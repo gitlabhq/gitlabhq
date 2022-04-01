@@ -1,0 +1,7 @@
+---
+table_name: alert_management_alert_user_mentions
+classes:
+- AlertManagement::AlertUserMention
+feature_categories: 
+- incident_management
+description: 

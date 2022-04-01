@@ -1,0 +1,7 @@
+---
+table_name: index_statuses
+classes:
+- IndexStatus
+feature_categories:
+- global_search
+description: 

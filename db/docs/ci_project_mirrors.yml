@@ -1,0 +1,7 @@
+---
+table_name: ci_project_mirrors
+classes:
+- Ci::ProjectMirror
+feature_categories:
+- sharding
+description: 

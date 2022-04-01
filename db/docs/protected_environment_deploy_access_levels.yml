@@ -1,0 +1,7 @@
+---
+table_name: protected_environment_deploy_access_levels
+classes:
+- ProtectedEnvironment::DeployAccessLevel
+feature_categories:
+- continuous_delivery
+description: 

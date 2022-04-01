@@ -1,0 +1,7 @@
+---
+table_name: service_desk_settings
+classes:
+- ServiceDeskSetting
+feature_categories:
+- service_desk
+description: 

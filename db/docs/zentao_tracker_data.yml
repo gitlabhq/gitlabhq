@@ -1,0 +1,7 @@
+---
+table_name: zentao_tracker_data
+classes:
+- Integrations::ZentaoTrackerData
+feature_categories: 
+- integrations
+description: 

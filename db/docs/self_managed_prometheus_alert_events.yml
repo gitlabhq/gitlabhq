@@ -1,0 +1,7 @@
+---
+table_name: self_managed_prometheus_alert_events
+classes:
+- SelfManagedPrometheusAlertEvent
+feature_categories: 
+- metrics
+description: 

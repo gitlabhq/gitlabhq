@@ -682,14 +682,46 @@ RSpec.describe Member do
       member.accept_invite!(user)
     end
 
-    it "refreshes user's authorized projects", :delete do
-      project = member.source
+    context 'authorized projects' do
+      let(:project) { member.source }
 
-      expect(user.authorized_projects).not_to include(project)
+      before do
+        expect(user.authorized_projects).not_to include(project)
+      end
 
-      member.accept_invite!(user)
+      it 'successfully completes a blocking refresh', :delete do
+        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true).and_call_original
 
-      expect(user.authorized_projects.reload).to include(project)
+        member.accept_invite!(user)
+
+        expect(user.authorized_projects.reload).to include(project)
+      end
+
+      it 'successfully completes a non-blocking refresh', :delete, :sidekiq_inline do
+        member.blocking_refresh = false
+
+        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: false).and_call_original
+
+        member.accept_invite!(user)
+
+        expect(user.authorized_projects.reload).to include(project)
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(allow_non_blocking_member_refresh: false)
+        end
+
+        it 'successfully completes a blocking refresh', :delete, :sidekiq_inline do
+          member.blocking_refresh = false
+
+          expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true).and_call_original
+
+          member.accept_invite!(user)
+
+          expect(user.authorized_projects.reload).to include(project)
+        end
+      end
     end
 
     it 'does not accept the invite if saving a new user fails' do

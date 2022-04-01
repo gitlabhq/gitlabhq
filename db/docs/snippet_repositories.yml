@@ -1,0 +1,7 @@
+---
+table_name: snippet_repositories
+classes:
+- SnippetRepository
+feature_categories:
+- snippets
+description: 

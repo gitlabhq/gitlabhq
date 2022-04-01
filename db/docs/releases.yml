@@ -1,0 +1,7 @@
+---
+table_name: releases
+classes:
+- Release
+feature_categories:
+- release_orchestration
+description: 

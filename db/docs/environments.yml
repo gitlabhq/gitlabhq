@@ -1,0 +1,7 @@
+---
+table_name: environments
+classes:
+- Environment
+feature_categories:
+- continuous_delivery
+description: 

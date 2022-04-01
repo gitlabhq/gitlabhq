@@ -1,0 +1,7 @@
+---
+table_name: geo_hashed_storage_migrated_events
+classes:
+- Geo::HashedStorageMigratedEvent
+feature_categories: 
+- geo_replication
+description: 

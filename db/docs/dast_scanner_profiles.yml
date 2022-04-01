@@ -1,0 +1,7 @@
+---
+table_name: dast_scanner_profiles
+classes:
+- DastScannerProfile
+feature_categories:
+- dynamic_application_security_testing
+description: 

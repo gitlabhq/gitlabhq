@@ -1,0 +1,7 @@
+---
+table_name: dast_site_tokens
+classes:
+- DastSiteToken
+feature_categories: 
+- dynamic_application_security_testing
+description: 

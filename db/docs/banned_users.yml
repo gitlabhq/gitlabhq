@@ -1,0 +1,7 @@
+---
+table_name: banned_users
+classes:
+- Users::BannedUser
+feature_categories: 
+- authentication_and_authorization
+description: 

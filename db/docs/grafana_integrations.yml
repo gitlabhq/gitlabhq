@@ -1,0 +1,7 @@
+---
+table_name: grafana_integrations
+classes:
+- GrafanaIntegration
+feature_categories: 
+- metrics
+description: 

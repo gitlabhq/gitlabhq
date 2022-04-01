@@ -1,0 +1,7 @@
+---
+table_name: broadcast_messages
+classes:
+- BroadcastMessage
+feature_categories:
+- navigation
+description: 

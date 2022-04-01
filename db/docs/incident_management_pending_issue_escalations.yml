@@ -1,0 +1,8 @@
+---
+table_name: incident_management_pending_issue_escalations
+classes:
+- IncidentManagement::PendingEscalations::Issue
+feature_categories:
+feature_categories: 
+- incident_management
+description: 

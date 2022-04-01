@@ -1,0 +1,7 @@
+---
+table_name: operations_user_lists
+classes:
+- Operations::FeatureFlags::UserList
+feature_categories: 
+- feature_flags
+description: 

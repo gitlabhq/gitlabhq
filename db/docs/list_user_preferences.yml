@@ -1,0 +1,7 @@
+---
+table_name: list_user_preferences
+classes:
+- ListUserPreference
+feature_categories: 
+- users
+description: 

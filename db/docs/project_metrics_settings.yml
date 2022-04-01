@@ -1,0 +1,7 @@
+---
+table_name: project_metrics_settings
+classes:
+- ProjectMetricsSetting
+feature_categories: 
+- metrics
+description: 

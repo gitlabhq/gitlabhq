@@ -1,0 +1,7 @@
+---
+table_name: ci_subscriptions_projects
+classes:
+- Ci::Subscriptions::Project
+feature_categories: 
+- continuous_integration
+description: 
