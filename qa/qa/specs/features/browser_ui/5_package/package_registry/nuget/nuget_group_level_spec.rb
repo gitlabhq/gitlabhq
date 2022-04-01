@@ -5,6 +5,7 @@ module QA
     describe 'NuGet group level endpoint' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
+      include Support::Helpers::MaskToken
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -61,6 +62,8 @@ module QA
       after do
         runner.remove_via_api!
         package.remove_via_api!
+        project.remove_via_api!
+        another_project.remove_via_api!
       end
 
       where(:case_name, :authentication_token_type, :token_name, :testcase) do
@@ -73,11 +76,13 @@ module QA
         let(:auth_token_password) do
           case authentication_token_type
           when :personal_access_token
-            "\"#{personal_access_token.token}\""
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token.token, project: project)
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token.token, project: another_project)
           when :ci_job_token
             '${CI_JOB_TOKEN}'
           when :group_deploy_token
-            "\"#{group_deploy_token.token}\""
+            use_ci_variable(name: 'GROUP_DEPLOY_TOKEN', value: group_deploy_token.token, project: project)
+            use_ci_variable(name: 'GROUP_DEPLOY_TOKEN', value: group_deploy_token.token, project: another_project)
           end
         end
 

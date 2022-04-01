@@ -84,9 +84,9 @@ the body generation is limited to these body types:
 - `application/json`
 - `application/xml`
 
-Follow these steps to configure DAST API in GitLab with an OpenAPI specification:
+To configure DAST API scanning with an OpenAPI specification:
 
-1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
+1. To use DAST API scanning, [include](../../../ci/yaml/index.md#includetemplate)
    the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
    that's provided as part of your GitLab installation. Add the following to your
    `.gitlab-ci.yml` file:
@@ -182,8 +182,7 @@ WARNING:
 HAR files may contain sensitive information such as authentication tokens, API keys, and session
 cookies. We recommend that you review the HAR file contents before adding them to a repository.
 
-Follow these steps to configure DAST API to use a HAR file that provides information about the
-target API to test:
+To configure DAST API scanning to use a HAR file:
 
 1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
    the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
@@ -282,8 +281,7 @@ Postman Collection files may contain sensitive information such as authenticatio
 and session cookies. We recommend that you review the Postman Collection file contents before adding
 them to a repository.
 
-Follow these steps to configure DAST API to use a Postman Collection file that provides
-information about the target API to test:
+To configure DAST API scanning to use a Postman Collection file:
 
 1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
    the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)

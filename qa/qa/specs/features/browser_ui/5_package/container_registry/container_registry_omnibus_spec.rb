@@ -3,6 +3,8 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :skip_live_env do
     describe 'Self-managed Container Registry' do
+      include Support::Helpers::MaskToken
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-registry'
@@ -110,9 +112,9 @@ module QA
           let(:auth_token) do
             case authentication_token_type
             when :personal_access_token
-              "\"#{personal_access_token}\""
+              use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: project)
             when :project_deploy_token
-              "\"#{project_deploy_token.token}\""
+              use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: project)
             when :ci_job_token
               '$CI_JOB_TOKEN'
             end

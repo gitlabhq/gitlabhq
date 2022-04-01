@@ -37,7 +37,7 @@ export default {
     anchor: 'update-the-agent-version',
   }),
   configHelpLink: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'create-an-agent-without-configuration-file',
+    anchor: 'create-an-agent-configuration-file',
   }),
   inject: ['gitlabVersion'],
   props: {

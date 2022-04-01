@@ -508,19 +508,18 @@ always take the latest dependency scanning artifact available.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/282533) in GitLab 14.1.
 > - [Feature flag sec_dependency_scanning_ui_enable removed](https://gitlab.com/gitlab-org/gitlab/-/issues/326005) in GitLab 14.2.
 
-To enable Dependency Scanning in a project, you can create a merge request
-from the Security Configuration page.
+To enable Dependency Scanning in a project, you can create a merge request:
 
-1. In the project where you want to enable Dependency Scanning, navigate to
-   **Security & Compliance > Configuration**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dependency Scanning** row, select **Configure with a merge request**.
+1. Review and merge the merge request to enable Dependency Scanning.
 
-This automatically creates a merge request with the changes necessary to enable Dependency Scanning
-that you can review and merge to complete the configuration.
+Pipelines now include a dependency scanning job.
 
 ### Customizing the dependency scanning settings
 
-The dependency scanning settings can be changed through [CI/CD variables](#available-cicd-variables) by using the
+The Dependency Scanning settings can be changed through [CI/CD variables](#available-cicd-variables) by using the
 [`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
 For example:
 

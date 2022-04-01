@@ -2,6 +2,7 @@
 import {
   GlCollapse,
   GlDropdown,
+  GlBadge,
   GlButton,
   GlLink,
   GlSprintf,
@@ -26,6 +27,7 @@ export default {
   components: {
     GlCollapse,
     GlDropdown,
+    GlBadge,
     GlButton,
     GlLink,
     GlSprintf,
@@ -74,6 +76,7 @@ export default {
       'Environments|There are no deployments for this environment yet. %{linkStart}Learn more about setting up deployments.%{linkEnd}',
     ),
     autoStopIn: s__('Environment|Auto stop %{time}'),
+    tierTooltip: s__('Environment|Deployment tier'),
   },
   data() {
     return { visible: false };
@@ -99,6 +102,9 @@ export default {
     },
     hasDeployment() {
       return Boolean(this.environment?.upcomingDeployment || this.environment?.lastDeployment);
+    },
+    tier() {
+      return this.lastDeployment?.tierInYaml;
     },
     hasOpenedAlert() {
       return this.environment?.hasOpenedAlert;
@@ -206,6 +212,13 @@ export default {
         >
           {{ displayName }}
         </gl-link>
+        <gl-badge
+          v-if="tier"
+          v-gl-tooltip
+          :title="$options.i18n.tierTooltip"
+          class="gl-ml-3 gl-font-monospace"
+          >{{ tier }}</gl-badge
+        >
       </div>
       <div class="gl-display-flex gl-align-items-center">
         <p v-if="canShowAutoStopDate" class="gl-font-sm gl-text-gray-700 gl-mr-5 gl-mb-0">

@@ -3,6 +3,8 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'NuGet project level endpoint' do
+      include Support::Helpers::MaskToken
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'nuget-package-project'
@@ -77,11 +79,11 @@ module QA
         let(:auth_token_password) do
           case authentication_token_type
           when :personal_access_token
-            "\"#{personal_access_token.token}\""
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token.token, project: project)
           when :ci_job_token
             '${CI_JOB_TOKEN}'
           when :project_deploy_token
-            "\"#{project_deploy_token.token}\""
+            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: project)
           end
         end
 

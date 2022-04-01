@@ -31,7 +31,7 @@ export default {
   EVENT_LABEL_MODAL,
   enableKasPath: helpPagePath('administration/clusters/kas'),
   registerAgentPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'register-an-agent-with-gitlab',
+    anchor: 'register-the-agent-with-gitlab',
   }),
   components: {
     AvailableAgentsDropdown,

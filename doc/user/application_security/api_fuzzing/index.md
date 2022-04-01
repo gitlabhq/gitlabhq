@@ -91,20 +91,25 @@ The API fuzzing configuration form helps you create or modify your project's API
 configuration. The form lets you choose values for the most common API fuzzing options and builds
 a YAML snippet that you can paste in your GitLab CI/CD configuration.
 
-#### Configure Web API fuzzing with the configuration form
+#### Configure Web API fuzzing in the UI
 
 To generate an API Fuzzing configuration snippet:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
-1. In the **API Fuzzing** row, select **Configure**.
-1. Complete the form as needed. Read below for more information on available configuration options.
+1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
+1. Complete the fields. For details see [Available CI/CD variables](#available-cicd-variables).
 1. Select **Generate code snippet**.
    A modal opens with the YAML snippet corresponding to the options you've selected in the form.
-1. Choose one of the following actions:
-   1. To copy the snippet to your clipboard and be redirected to your project's `.gitlab-ci.yml` file,
-      where you can paste the YAML configuration, select **Copy code and open `.gitlab-ci.yml` file**.
-   1. To copy the snippet to your clipboard and close the modal, select **Copy code only**.
+1. Do one of the following:
+   1. To copy the snippet to your clipboard, select **Copy code only**.
+   1. To add the snippet to your project's `.gitlab-ci.yml` file, select
+      **Copy code and open `.gitlab-ci.yml` file**. The Pipeline Editor opens.
+      1. Paste the snippet into the `.gitlab-ci.yml` file.
+      1. Select the **Lint** tab to confirm the edited `.gitlab-ci.yml` file is valid.
+      1. Select the **Edit** tab, then select **Commit changes**.
+
+When the snippet is committed to the `.gitlab-ci.yml` file, pipelines include an API Fuzzing job.
 
 ### OpenAPI Specification
 

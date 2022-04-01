@@ -41,6 +41,8 @@ module ContainerRegistry
         Gitlab::ErrorTracking.log_exception(e, next_aborted_repository_id: next_aborted_repository&.id)
 
         true
+      ensure
+        log_repository_migration_state(next_aborted_repository)
       end
 
       def handle_next_migration
@@ -59,6 +61,8 @@ module ContainerRegistry
         next_repository&.abort_import
 
         false
+      ensure
+        log_repository_migration_state(next_repository)
       end
 
       def tag_count_too_high?
@@ -149,6 +153,12 @@ module ContainerRegistry
       def log_repository(repository)
         log_extra_metadata_on_done(:container_repository_id, repository&.id)
         log_extra_metadata_on_done(:container_repository_path, repository&.path)
+      end
+
+      def log_repository_migration_state(repository)
+        return unless repository
+
+        log_extra_metadata_on_done(:container_repository_migration_state, repository.migration_state)
       end
 
       # used by ExclusiveLeaseGuard

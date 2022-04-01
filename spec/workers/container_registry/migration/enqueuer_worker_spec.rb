@@ -64,7 +64,8 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         expect_log_extra_metadata(
           import_type: 'next',
           container_repository_id: container_repository.id,
-          container_repository_path: container_repository.path
+          container_repository_path: container_repository.path,
+          container_repository_migration_state: 'pre_importing'
         )
 
         subject
@@ -135,7 +136,8 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         expect_log_extra_metadata(
           import_type: 'retry',
           container_repository_id: aborted_repository.id,
-          container_repository_path: aborted_repository.path
+          container_repository_path: aborted_repository.path,
+          container_repository_migration_state: 'importing'
         )
 
         subject
@@ -158,7 +160,8 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
           expect_log_extra_metadata(
             import_type: 'retry',
             container_repository_id: aborted_repository.id,
-            container_repository_path: aborted_repository.path
+            container_repository_path: aborted_repository.path,
+            container_repository_migration_state: 'import_aborted'
           )
 
           subject
@@ -189,6 +192,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
           import_type: 'next',
           container_repository_id: container_repository.id,
           container_repository_path: container_repository.path,
+          container_repository_migration_state: 'import_skipped',
           tags_count_too_high: true,
           max_tags_count_setting: 2
         )
@@ -212,7 +216,8 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         expect_log_extra_metadata(
           import_type: 'next',
           container_repository_id: container_repository.id,
-          container_repository_path: container_repository.path
+          container_repository_path: container_repository.path,
+          container_repository_migration_state: 'import_aborted'
         )
 
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(

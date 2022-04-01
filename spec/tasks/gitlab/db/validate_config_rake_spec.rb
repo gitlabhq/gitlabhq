@@ -53,6 +53,18 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
         expect { run_rake_task('gitlab:db:validate_config') }.not_to output(/Database config validation failure/).to_stderr
         expect { run_rake_task('gitlab:db:validate_config') }.not_to raise_error
       end
+
+      context 'when finding the initializer fails' do
+        where(:raised_error) { [ActiveRecord::NoDatabaseError, ActiveRecord::ConnectionNotEstablished, PG::ConnectionBad] }
+        with_them do
+          it "does not raise an error for #{params[:raised_error]}" do
+            allow(ActiveRecord::Base.connection).to receive(:select_one).and_raise(raised_error) # rubocop: disable Database/MultipleDatabases
+
+            expect { run_rake_task('gitlab:db:validate_config') }.not_to output(/Database config validation failure/).to_stderr
+            expect { run_rake_task('gitlab:db:validate_config') }.not_to raise_error
+          end
+        end
+      end
     end
 
     shared_examples 'raises an error' do |match|

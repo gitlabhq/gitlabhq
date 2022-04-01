@@ -53,7 +53,7 @@ namespace :gitlab do
         AND pid <> pg_backend_pid();
     SQL
 
-    Gitlab::Database::EachDatabase.each_database_connection do |connection|
+    Gitlab::Database::EachDatabase.each_database_connection(include_shared: false) do |connection|
       connection.execute(cmd)
     rescue ActiveRecord::NoDatabaseError
     end

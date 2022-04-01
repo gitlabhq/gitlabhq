@@ -380,6 +380,12 @@ class Deployment < ApplicationRecord
       status == params[:status]
   end
 
+  def tier_in_yaml
+    return unless deployable
+
+    deployable.environment_deployment_tier
+  end
+
   private
 
   def update_status!(status)

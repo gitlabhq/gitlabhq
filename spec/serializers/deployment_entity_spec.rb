@@ -9,7 +9,7 @@ RSpec.describe DeploymentEntity do
   let(:project) { create(:project, :repository) }
   let(:request) { double('request') }
   let(:deployment) { create(:deployment, deployable: build, project: project) }
-  let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+  let(:build) { create(:ci_build, :manual, :environment_with_deployment_tier, pipeline: pipeline) }
   let(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let(:entity) { described_class.new(deployment, request: request) }
 
@@ -44,6 +44,10 @@ RSpec.describe DeploymentEntity do
 
   it 'exposes last? as is_last' do
     expect(subject).to include(:is_last)
+  end
+
+  it 'exposes deployment tier in yaml' do
+    expect(subject).to include(:tier_in_yaml)
   end
 
   context 'when deployable is nil' do

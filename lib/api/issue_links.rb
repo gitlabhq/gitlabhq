@@ -67,14 +67,16 @@ module API
         requires :issue_link_id, type: Integer, desc: 'The ID of an issue link'
       end
       delete ':id/issues/:issue_iid/links/:issue_link_id' do
-        issue_link = IssueLink.find(declared_params[:issue_link_id])
+        issue = find_project_issue(params[:issue_iid])
+        issue_link = IssueLink
+          .for_source_or_target(issue)
+          .find(declared_params[:issue_link_id])
 
-        find_project_issue(params[:issue_iid])
         find_project_issue(issue_link.target.iid.to_s, issue_link.target.project_id.to_s)
 
         result = ::IssueLinks::DestroyService
-                   .new(issue_link, current_user)
-                   .execute
+          .new(issue_link, current_user)
+          .execute
 
         if result[:status] == :success
           present issue_link, with: Entities::IssueLink

@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { IssuableStatus } from '~/issues/constants';
 import {
   dateInWords,
   getTimeRemainingInWords,
@@ -41,7 +42,10 @@ export default {
       return this.issue.dueDate && dateInWords(newDateAsLocaleTime(this.issue.dueDate), true);
     },
     showDueDateInRed() {
-      return isInPast(newDateAsLocaleTime(this.issue.dueDate)) && !this.issue.closedAt;
+      return (
+        isInPast(newDateAsLocaleTime(this.issue.dueDate)) &&
+        this.issue.state !== IssuableStatus.Closed
+      );
     },
     timeEstimate() {
       return this.issue.humanTimeEstimate || this.issue.timeStats?.humanTimeEstimate;

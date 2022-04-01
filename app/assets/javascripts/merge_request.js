@@ -124,7 +124,7 @@ MergeRequest.prototype.submitNoteForm = function (form, $button) {
 
 MergeRequest.decreaseCounter = function (by = 1) {
   const $el = $('.js-merge-counter');
-  const count = Math.max(parseInt($el.text().replace(/[^\d]/, ''), 10) - by, 0);
+  const count = Math.max(parseInt($el.first().text().replace(/[^\d]/, ''), 10) - by, 0);
 
   $el.text(addDelimiter(count));
 };

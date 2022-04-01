@@ -112,20 +112,19 @@ always take the latest Secret Detection artifact available.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
 
-To enable Secret Detection in a project, you can create a merge request
-from the Security Configuration page.
-
-1. In the project where you want to enable Secret Detection, go to
-   **Security & Compliance > Configuration**.
-1. In the **Secret Detection** row, select **Configure with a merge request**.
-
-This automatically creates a merge request with the changes necessary to enable Secret Detection
-that you can review and merge to complete the configuration.
-
 NOTE:
-The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
-configuration file. If you have a complex GitLab configuration file it may not be parsed
-successfully, and an error may occur.
+This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
+file. If you have a complex GitLab configuration file it may not be parsed successfully, and an
+error may occur.
+
+To enable Secret Detection in a project, you can create a merge request:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. In the **Secret Detection** row, select **Configure with a merge request**.
+1. Review and merge the merge request to enable Secret Detection.
+
+Pipelines now include a Secret Detection job.
 
 ### Customizing settings
 

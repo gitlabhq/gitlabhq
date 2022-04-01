@@ -20,7 +20,7 @@ namespace :gitlab do
           begin
             ActiveRecord::Base.establish_connection(db_config) # rubocop: disable Database/EstablishConnection
             ActiveRecord::Base.connection.select_one("SELECT system_identifier, current_database() FROM pg_control_system()")
-          rescue ActiveRecord::NoDatabaseError, PG::ConnectionBad
+          rescue ActiveRecord::NoDatabaseError, ActiveRecord::ConnectionNotEstablished, PG::ConnectionBad
           end
 
         {

@@ -23,6 +23,7 @@ class DeploymentEntity < Grape::Entity
   expose :tag
   expose :last?
   expose :last?, as: :is_last
+  expose :tier_in_yaml
 
   expose :deployed_by, as: :user, using: UserEntity
 

@@ -1,6 +1,7 @@
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
+import { IssuableStatus } from '~/issues/constants';
 import IssueCardTimeInfo from '~/issues/list/components/issue_card_time_info.vue';
 
 describe('CE IssueCardTimeInfo component', () => {
@@ -24,7 +25,7 @@ describe('CE IssueCardTimeInfo component', () => {
   const findDueDate = () => wrapper.find('[data-testid="issuable-due-date"]');
 
   const mountComponent = ({
-    closedAt = null,
+    state = IssuableStatus.Open,
     dueDate = issue.dueDate,
     milestoneDueDate = issue.milestone.dueDate,
     milestoneStartDate = issue.milestone.startDate,
@@ -38,7 +39,7 @@ describe('CE IssueCardTimeInfo component', () => {
             dueDate: milestoneDueDate,
             startDate: milestoneStartDate,
           },
-          closedAt,
+          state,
           dueDate,
         },
       },
@@ -101,7 +102,7 @@ describe('CE IssueCardTimeInfo component', () => {
         it('does not render in red', () => {
           wrapper = mountComponent({
             dueDate: '2020-10-10',
-            closedAt: '2020-09-05T13:06:25Z',
+            state: IssuableStatus.Closed,
           });
 
           expect(findDueDate().classes()).not.toContain('gl-text-red-500');

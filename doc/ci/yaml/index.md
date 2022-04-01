@@ -2484,8 +2484,10 @@ Use `changes` in pipelines with the following refs:
 - Paths to files.
 - Wildcard paths for single directories, for example `path/to/directory/*`, or a directory
   and all its subdirectories, for example `path/to/directory/**/*`.
-- Wildcard ([glob](https://en.wikipedia.org/wiki/Glob_(programming))) paths for all
+- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all
   files with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
+  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  for the supported syntax list.
 - Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
   For example `"*.json"` or `"**/*.json"`.
 

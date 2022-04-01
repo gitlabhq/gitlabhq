@@ -22,7 +22,11 @@ RSpec.describe 'gitlab:setup namespace rake tasks', :silence_stdout do
     let(:server_service1) { double(:server_service) }
     let(:server_service2) { double(:server_service) }
 
-    let(:connections) { Gitlab::Database.database_base_models.values.map(&:connection) }
+    let(:connections) do
+      Gitlab::Database.database_base_models.values.filter_map do |model|
+        model.connection if Gitlab::Database.db_config_share_with(model.connection_db_config).nil?
+      end
+    end
 
     before do
       allow(Gitlab).to receive_message_chain('config.repositories.storages').and_return(storages)
@@ -119,6 +123,10 @@ RSpec.describe 'gitlab:setup namespace rake tasks', :silence_stdout do
     end
 
     def expect_connections_to_be_terminated
+      expect(Gitlab::Database::EachDatabase).to receive(:each_database_connection)
+        .with(include_shared: false)
+        .and_call_original
+
       expect(connections).to all(receive(:execute).with(/SELECT pg_terminate_backend/))
     end
 

@@ -1055,6 +1055,40 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '#tier_in_yaml' do
+    context 'when deployable is nil' do
+      before do
+        subject.deployable = nil
+      end
+
+      it 'returns nil' do
+        expect(subject.tier_in_yaml).to be_nil
+      end
+    end
+
+    context 'when deployable is present' do
+      context 'when tier is specified' do
+        let(:deployable) { create(:ci_build, :success, :environment_with_deployment_tier) }
+
+        before do
+          subject.deployable = deployable
+        end
+
+        it 'returns the tier' do
+          expect(subject.tier_in_yaml).to eq('testing')
+        end
+
+        context 'when tier is not specified' do
+          let(:deployable) { create(:ci_build, :success) }
+
+          it 'returns nil' do
+            expect(subject.tier_in_yaml).to be_nil
+          end
+        end
+      end
+    end
+  end
+
   describe '.fast_destroy_all' do
     it 'cleans path_refs for destroyed environments' do
       project = create(:project, :repository)

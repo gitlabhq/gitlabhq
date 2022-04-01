@@ -29,6 +29,8 @@ module IssuableLink
     validate :check_self_relation
     validate :check_opposite_relation
 
+    scope :for_source_or_target, ->(issuable) { where(source: issuable).or(where(target: issuable)) }
+
     enum link_type: { TYPE_RELATES_TO => 0, TYPE_BLOCKS => 1 }
 
     private

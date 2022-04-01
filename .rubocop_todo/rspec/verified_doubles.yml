@@ -878,7 +878,6 @@ RSpec/VerifiedDoubles:
     - spec/models/design_management/design_at_version_spec.rb
     - spec/models/diff_viewer/image_spec.rb
     - spec/models/environment_spec.rb
-    - spec/models/error_tracking/project_error_tracking_setting_spec.rb
     - spec/models/event_spec.rb
     - spec/models/external_issue_spec.rb
     - spec/models/hooks/web_hook_spec.rb

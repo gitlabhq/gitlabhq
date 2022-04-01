@@ -93,15 +93,14 @@ that you can download and analyze.
 
 ### Enable IaC Scanning via an automatic merge request
 
-To enable IaC Scanning in a project, you can create a merge request
-from the Security Configuration page:
+To enable IaC Scanning in a project, you can create a merge request:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure with a merge request**.
+1. Review and merge the merge request to enable IaC Scanning.
 
-This automatically creates a merge request with the changes necessary to enable IaC Scanning
-that you can review and merge to complete the configuration.
+Pipelines now include an IaC job.
 
 ## Reports JSON format
 

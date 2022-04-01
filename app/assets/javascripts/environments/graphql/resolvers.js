@@ -24,7 +24,7 @@ const mapNestedEnvironment = (env) => ({
   __typename: 'NestedLocalEnvironment',
 });
 const mapEnvironment = (env) => ({
-  ...convertObjectPropsToCamelCase(env),
+  ...convertObjectPropsToCamelCase(env, { deep: true }),
   __typename: 'LocalEnvironment',
 });
 

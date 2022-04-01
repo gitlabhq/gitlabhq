@@ -5,12 +5,10 @@ FactoryBot.define do
     skip_create
 
     initialize_with do
-      p = attributes[:params]
-      s = Packages::SemVer.parse(p.semver, prefixed: true)
+      s = Packages::SemVer.parse(semver, prefixed: true)
+      raise ArgumentError, "invalid sematic version: #{semver.inspect}" if !s && semver
 
-      raise ArgumentError, "invalid sematic version: '#{p.semver}'" if !s && p.semver
-
-      new(p.mod, p.type, p.commit, name: p.name, semver: s, ref: p.ref)
+      new(mod, type, commit, name: name, semver: s, ref: ref)
     end
 
     mod { association(:go_module) }
@@ -19,8 +17,6 @@ FactoryBot.define do
     name { nil }
     semver { nil }
     ref { nil }
-
-    params { OpenStruct.new(mod: mod, type: type, commit: commit, name: name, semver: semver, ref: ref) }
 
     trait :tagged do
       ref { mod.project.repository.find_tag(name) }
@@ -36,8 +32,8 @@ FactoryBot.define do
           .max_by(&:to_s)
           .to_s
       end
-
-      params { OpenStruct.new(mod: mod, type: :ref, commit: commit, semver: name, ref: ref) }
+      type { :ref }
+      semver { name }
     end
   end
 end

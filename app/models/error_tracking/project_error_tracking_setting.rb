@@ -135,7 +135,7 @@ module ErrorTracking
       end
     end
 
-    def update_issue(opts = {} )
+    def update_issue(opts = {})
       handle_exceptions do
         { updated: sentry_client.update_issue(opts) }
       end

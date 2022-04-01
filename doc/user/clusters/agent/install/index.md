@@ -69,6 +69,8 @@ Creating a file is optional but is needed if:
 - You use [a GitOps workflow](../gitops.md#gitops-configuration-reference) and you want a more advanced configuration.
 - You use a GitLab CI/CD workflow. In that workflow, you must [authorize the agent](../ci_cd_tunnel.md#authorize-the-agent).
 
+If you do not create an agent configuration file, you can use the CI/CD workflow in the project where the agent is registered only.
+
 To create an agent configuration file, go to the GitLab project. In the repository, create a file called `config.yaml` at this path:
 
 ```plaintext
