@@ -49,8 +49,8 @@
     - tmp/tests/gitaly/config.toml
     - tmp/tests/gitaly/gitaly2.config.toml
     - tmp/tests/gitaly/internal/
-    - tmp/tests/gitaly/internal_gitaly2/
-    - tmp/tests/gitaly/internal_sockets/
+    - tmp/tests/gitaly/run/
+    - tmp/tests/gitaly/run2/
     - tmp/tests/gitaly/Makefile
     - tmp/tests/gitaly/praefect.config.toml
     - tmp/tests/gitaly/ruby/

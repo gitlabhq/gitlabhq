@@ -1443,14 +1443,15 @@ RSpec.describe ProjectsController do
     end
 
     describe '#download_export', :clean_gitlab_redis_rate_limiting do
+      let(:project) { create(:project, :with_export, service_desk_enabled: false) }
       let(:action) { :download_export }
 
       context 'object storage enabled' do
         context 'when project export is enabled' do
-          it 'returns 302' do
+          it 'returns 200' do
             get action, params: { namespace_id: project.namespace, id: project }
 
-            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
@@ -1490,13 +1491,36 @@ RSpec.describe ProjectsController do
             expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
             expect(response).to have_gitlab_http_status(:too_many_requests)
           end
+        end
 
-          it 'applies correct scope when throttling' do
+        context 'applies correct scope when throttling', :clean_gitlab_redis_rate_limiting do
+          before do
+            stub_application_setting(project_download_export_limit: 1)
+          end
+
+          it 'applies throttle per namespace' do
             expect(Gitlab::ApplicationRateLimiter)
               .to receive(:throttled?)
-              .with(:project_download_export, scope: [user, project])
+              .with(:project_download_export, scope: [user, project.namespace])
 
             post action, params: { namespace_id: project.namespace, id: project }
+          end
+
+          it 'throttles downloads within same namespaces' do
+            # simulate prior request to the same namespace, which increments the rate limit counter for that scope
+            Gitlab::ApplicationRateLimiter.throttled?(:project_download_export, scope: [user, project.namespace])
+
+            get action, params: { namespace_id: project.namespace, id: project }
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+          end
+
+          it 'allows downloads from different namespaces' do
+            # simulate prior request to a different namespace, which increments the rate limit counter for that scope
+            Gitlab::ApplicationRateLimiter.throttled?(:project_download_export,
+              scope: [user, create(:project, :with_export).namespace])
+
+            get action, params: { namespace_id: project.namespace, id: project }
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end

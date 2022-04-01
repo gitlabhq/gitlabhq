@@ -1444,7 +1444,7 @@ class MergeRequest < ApplicationRecord
   # This method is for looking for active environments which created via pipelines for merge requests.
   # Since deployments run on a merge request ref (e.g. `refs/merge-requests/:iid/head`),
   # we cannot look up environments with source branch name.
-  def environments
+  def legacy_environments
     return Environment.none unless actual_head_pipeline&.merge_request?
 
     build_for_actual_head_pipeline = Ci::Build.latest.where(pipeline: actual_head_pipeline)
@@ -1456,6 +1456,14 @@ class MergeRequest < ApplicationRecord
                                                 .pluck(:expanded_environment_name)
 
     Environment.where(project: project, name: environments)
+  end
+
+  def environments_in_head_pipeline
+    if ::Feature.enabled?(:fix_related_environments_for_merge_requests, target_project, default_enabled: :yaml)
+      actual_head_pipeline&.environments_in_self_and_descendants || Environment.none
+    else
+      legacy_environments
+    end
   end
 
   def fetch_ref!

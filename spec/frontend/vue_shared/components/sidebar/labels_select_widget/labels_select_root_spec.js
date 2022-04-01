@@ -11,9 +11,15 @@ import DropdownValue from '~/vue_shared/components/sidebar/labels_select_widget/
 import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
+import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
 import updateEpicLabelsMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
 import LabelsSelectRoot from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
-import { mockConfig, issuableLabelsQueryResponse, updateLabelsMutationResponse } from './mock_data';
+import {
+  mockConfig,
+  issuableLabelsQueryResponse,
+  updateLabelsMutationResponse,
+  issuableLabelsSubscriptionResponse,
+} from './mock_data';
 
 jest.mock('~/flash');
 
@@ -21,6 +27,7 @@ Vue.use(VueApollo);
 
 const successfulQueryHandler = jest.fn().mockResolvedValue(issuableLabelsQueryResponse);
 const successfulMutationHandler = jest.fn().mockResolvedValue(updateLabelsMutationResponse);
+const subscriptionHandler = jest.fn().mockResolvedValue(issuableLabelsSubscriptionResponse);
 const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
 const updateLabelsMutation = {
@@ -42,10 +49,12 @@ describe('LabelsSelectRoot', () => {
     issuableType = IssuableType.Issue,
     queryHandler = successfulQueryHandler,
     mutationHandler = successfulMutationHandler,
+    isRealtimeEnabled = false,
   } = {}) => {
     const mockApollo = createMockApollo([
       [issueLabelsQuery, queryHandler],
       [updateLabelsMutation[issuableType], mutationHandler],
+      [issuableLabelsSubscription, subscriptionHandler],
     ]);
 
     wrapper = shallowMount(LabelsSelectRoot, {
@@ -65,6 +74,9 @@ describe('LabelsSelectRoot', () => {
         allowLabelEdit: true,
         allowLabelCreate: true,
         labelsManagePath: 'test',
+        glFeatures: {
+          realtimeLabels: isRealtimeEnabled,
+        },
       },
     });
   };
@@ -189,6 +201,27 @@ describe('LabelsSelectRoot', () => {
         error: expect.anything(),
         message: 'An error occurred while updating labels.',
       });
+    });
+
+    it('does not emit `updateSelectedLabels` event when the subscription is triggered and FF is disabled', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(wrapper.emitted('updateSelectedLabels')).toBeUndefined();
+    });
+
+    it('emits `updateSelectedLabels` event when the subscription is triggered and FF is enabled', async () => {
+      createComponent({ isRealtimeEnabled: true });
+      await waitForPromises();
+
+      expect(wrapper.emitted('updateSelectedLabels')).toEqual([
+        [
+          {
+            id: '1',
+            labels: issuableLabelsSubscriptionResponse.data.issuableLabelsUpdated.labels.nodes,
+          },
+        ],
+      ]);
     });
   });
 });

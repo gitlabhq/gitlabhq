@@ -31,4 +31,20 @@ RSpec.describe GraphqlTriggers do
       GraphqlTriggers.issuable_title_updated(work_item)
     end
   end
+
+  describe '.issuable_labels_updated' do
+    it 'triggers the issuableLabelsUpdated subscription' do
+      project = create(:project)
+      labels = create_list(:label, 3, project: project)
+      issue = create(:issue, labels: labels)
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        'issuableLabelsUpdated',
+        { issuable_id: issue.to_gid },
+        issue
+      )
+
+      GraphqlTriggers.issuable_labels_updated(issue)
+    end
+  end
 end

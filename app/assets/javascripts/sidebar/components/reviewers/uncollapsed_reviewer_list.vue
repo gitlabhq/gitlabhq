@@ -95,27 +95,27 @@ export default {
       v-for="(user, index) in users"
       :key="user.id"
       :class="{ 'gl-mb-3': index !== users.length - 1 }"
+      class="gl-display-grid gl-align-items-center reviewer-attention-grid"
       data-testid="reviewer"
-      class="gl-display-flex"
     >
-      <attention-requested-toggle
-        v-if="glFeatures.mrAttentionRequests"
-        :user="user"
-        type="reviewer"
-        class="gl-mr-2"
-        @toggle-attention-requested="toggleAttentionRequested"
-      />
       <reviewer-avatar-link
         :user="user"
         :root-path="rootPath"
         :issuable-type="issuableType"
-        class="gl-word-break-word gl-mr-2"
+        class="gl-grid-column-2 gl-grid-row-1 gl-word-break-word gl-mr-2"
       >
         <div class="gl-ml-3 gl-line-height-normal gl-display-grid">
           <span>{{ user.name }}</span>
           <span>@{{ user.username }}</span>
         </div>
       </reviewer-avatar-link>
+      <attention-requested-toggle
+        v-if="glFeatures.mrAttentionRequests"
+        :user="user"
+        type="reviewer"
+        class="gl-grid-column-1 gl-grid-row-1 gl-mr-2"
+        @toggle-attention-requested="toggleAttentionRequested"
+      />
       <gl-icon
         v-if="user.approved"
         v-gl-tooltip.left

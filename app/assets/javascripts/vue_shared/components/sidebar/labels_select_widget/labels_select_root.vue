@@ -1,8 +1,11 @@
 <script>
 import { debounce } from 'lodash';
+import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
 import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createFlash from '~/flash';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IssuableType } from '~/issues/constants';
+
 import { __ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { issuableLabelsQueries } from '~/sidebar/constants';
@@ -21,6 +24,7 @@ export default {
     DropdownContents,
     SidebarEditableItem,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     allowLabelEdit: {
       default: false,
@@ -106,7 +110,7 @@ export default {
   data() {
     return {
       contentIsOnViewport: true,
-      issuableLabels: [],
+      issuable: null,
       labelsSelectInProgress: false,
       oldIid: null,
       sidebarExpandedOnClick: false,
@@ -114,14 +118,23 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.labelsSelectInProgress || this.$apollo.queries.issuableLabels.loading;
+      return this.labelsSelectInProgress || this.$apollo.queries.issuable.loading;
     },
     issuableLabelIds() {
       return this.issuableLabels.map((label) => label.id);
     },
+    issuableLabels() {
+      return this.issuable?.labels.nodes || [];
+    },
+    issuableId() {
+      return this.issuable?.id;
+    },
+    isRealtimeEnabled() {
+      return this.glFeatures.realtimeLabels;
+    },
   },
   apollo: {
-    issuableLabels: {
+    issuable: {
       query() {
         return issuableLabelsQueries[this.issuableType].issuableQuery;
       },
@@ -135,10 +148,39 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable?.labels.nodes || [];
+        return data.workspace?.issuable;
       },
       error() {
         createFlash({ message: __('Error fetching labels.') });
+      },
+      subscribeToMore: {
+        document() {
+          return issuableLabelsSubscription;
+        },
+        variables() {
+          return {
+            issuableId: this.issuableId,
+          };
+        },
+        skip() {
+          return !this.issuableId || !this.isDropdownVariantSidebar || !this.isRealtimeEnabled;
+        },
+        updateQuery(
+          _,
+          {
+            subscriptionData: {
+              data: { issuableLabelsUpdated },
+            },
+          },
+        ) {
+          if (issuableLabelsUpdated) {
+            const {
+              id,
+              labels: { nodes },
+            } = issuableLabelsUpdated;
+            this.$emit('updateSelectedLabels', { id, labels: nodes });
+          }
+        },
       },
     },
   },

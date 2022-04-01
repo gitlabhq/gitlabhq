@@ -206,8 +206,8 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/gitaly/config.toml
       - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/internal/
-      - ${TMP_TEST_FOLDER}/gitaly/internal_gitaly2/
-      - ${TMP_TEST_FOLDER}/gitaly/internal_sockets/
+      - ${TMP_TEST_FOLDER}/gitaly/run/
+      - ${TMP_TEST_FOLDER}/gitaly/run2/
       - ${TMP_TEST_FOLDER}/gitaly/Makefile
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/ruby/

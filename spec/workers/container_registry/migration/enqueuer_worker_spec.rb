@@ -6,6 +6,8 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
   include ExclusiveLeaseHelpers
 
   let_it_be_with_reload(:container_repository) { create(:container_repository, created_at: 2.days.ago) }
+  let_it_be(:importing_repository) { create(:container_repository, :importing) }
+  let_it_be(:pre_importing_repository) { create(:container_repository, :pre_importing) }
 
   let(:worker) { described_class.new }
 
@@ -26,10 +28,10 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
       end
     end
 
-    shared_examples 're-enqueuing based on capacity' do
+    shared_examples 're-enqueuing based on capacity' do |capacity_limit: 4|
       context 'below capacity' do
         before do
-          allow(ContainerRegistry::Migration).to receive(:capacity).and_return(9999)
+          allow(ContainerRegistry::Migration).to receive(:capacity).and_return(capacity_limit)
         end
 
         it 're-enqueues the worker' do
@@ -53,14 +55,16 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
     end
 
     context 'with qualified repository' do
-      it 'starts the pre-import for the next qualified repository' do
+      before do
         method = worker.method(:next_repository)
         allow(worker).to receive(:next_repository) do
           next_qualified_repository = method.call
           allow(next_qualified_repository).to receive(:migration_pre_import).and_return(:ok)
           next_qualified_repository
         end
+      end
 
+      it 'starts the pre-import for the next qualified repository' do
         expect_log_extra_metadata(
           import_type: 'next',
           container_repository_id: container_repository.id,
@@ -71,6 +75,24 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         subject
 
         expect(container_repository.reload).to be_pre_importing
+      end
+
+      context 'when the new pre-import maxes out the capacity' do
+        before do
+          # set capacity to 10
+          stub_feature_flags(
+            container_registry_migration_phase2_capacity_25: false
+          )
+
+          # Plus 2 created above gives 9 importing repositories
+          create_list(:container_repository, 7, :importing)
+        end
+
+        it 'does not re-enqueue the worker' do
+          expect(described_class).not_to receive(:perform_async)
+
+          subject
+        end
       end
 
       it_behaves_like 're-enqueuing based on capacity'
@@ -124,29 +146,33 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
     context 'when an aborted import is available' do
       let_it_be(:aborted_repository) { create(:container_repository, :import_aborted) }
 
-      it 'retries the import for the aborted repository' do
-        method = worker.method(:next_aborted_repository)
-        allow(worker).to receive(:next_aborted_repository) do
-          next_aborted_repository = method.call
-          allow(next_aborted_repository).to receive(:migration_import).and_return(:ok)
-          allow(next_aborted_repository.gitlab_api_client).to receive(:import_status).and_return('import_failed')
-          next_aborted_repository
+      context 'with a successful registry request' do
+        before do
+          method = worker.method(:next_aborted_repository)
+          allow(worker).to receive(:next_aborted_repository) do
+            next_aborted_repository = method.call
+            allow(next_aborted_repository).to receive(:migration_import).and_return(:ok)
+            allow(next_aborted_repository.gitlab_api_client).to receive(:import_status).and_return('import_failed')
+            next_aborted_repository
+          end
         end
 
-        expect_log_extra_metadata(
-          import_type: 'retry',
-          container_repository_id: aborted_repository.id,
-          container_repository_path: aborted_repository.path,
-          container_repository_migration_state: 'importing'
-        )
+        it 'retries the import for the aborted repository' do
+          expect_log_extra_metadata(
+            import_type: 'retry',
+            container_repository_id: aborted_repository.id,
+            container_repository_path: aborted_repository.path,
+            container_repository_migration_state: 'importing'
+          )
 
-        subject
+          subject
 
-        expect(aborted_repository.reload).to be_importing
-        expect(container_repository.reload).to be_default
+          expect(aborted_repository.reload).to be_importing
+          expect(container_repository.reload).to be_default
+        end
+
+        it_behaves_like 're-enqueuing based on capacity'
       end
-
-      it_behaves_like 're-enqueuing based on capacity'
 
       context 'when an error occurs' do
         it 'does not abort that migration' do
@@ -204,7 +230,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         expect(container_repository.migration_skipped_at).not_to be_nil
       end
 
-      it_behaves_like 're-enqueuing based on capacity'
+      it_behaves_like 're-enqueuing based on capacity', capacity_limit: 3
     end
 
     context 'when an error occurs' do

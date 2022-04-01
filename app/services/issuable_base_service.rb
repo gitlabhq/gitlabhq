@@ -525,10 +525,21 @@ class IssuableBaseService < ::BaseProjectService
     attrs_changed || labels_changed || assignees_changed || reviewers_changed
   end
 
+  def has_label_changes?(issuable, old_labels)
+    Set.new(issuable.labels) != Set.new(old_labels)
+  end
+
   def invalidate_cache_counts(issuable, users: [])
     users.each do |user|
       user.public_send("invalidate_#{issuable.noteable_target_type_name}_cache_counts") # rubocop:disable GitlabSecurity/PublicSend
     end
+  end
+
+  # override if needed
+  def handle_label_changes(issuable, old_labels)
+    return unless has_label_changes?(issuable, old_labels)
+
+    GraphqlTriggers.issuable_labels_updated(issuable)
   end
 
   # override if needed

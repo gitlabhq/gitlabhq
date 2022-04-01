@@ -11,6 +11,9 @@ const LINK_TAG_PATTERN = '[{text}](url)';
 // followed by one or more whitespace characters
 const LIST_LINE_HEAD_PATTERN = /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl>\d+\.))( \[([xX ])\])?\s)(?<content>.)?/;
 
+// detect a horizontal rule that might be mistaken for a list item (not full pattern for an <hr>)
+const HR_PATTERN = /^((\s{0,3}-+\s*-+\s*-+\s*[\s-]*)|(\s{0,3}\*+\s*\*+\s*\*+\s*[\s*]*))$/;
+
 function selectedText(text, textarea) {
   return text.substring(textarea.selectionStart, textarea.selectionEnd);
 }
@@ -381,13 +384,15 @@ function handleContinueList(e, textArea) {
 
     let itemToInsert;
 
+    // Behaviors specific to either `ol` or `ul`
     if (isOl) {
       const nextLine = lineAfter(textArea.value, textArea, false);
       const nextLineResult = nextLine.match(LIST_LINE_HEAD_PATTERN);
 
       itemToInsert = continueOlText(result, nextLineResult);
     } else {
-      // isUl
+      if (currentLine.match(HR_PATTERN)) return;
+
       itemToInsert = `${indent}${leader}`;
     }
 

@@ -226,3 +226,23 @@
 .edit-link {
   margin-right: -$gl-spacing-scale-2;
 }
+
+.reviewer-attention-grid,
+.assignee-attention-grid {
+  grid-template-columns: min-content 1fr min-content;
+}
+
+/* TODO: These are non-standardized classes, and should be moved into gitlab-ui
+         Please see: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1780
+*/
+.gl-grid-column-1 {
+  grid-column: 1;
+}
+
+.gl-grid-row-1 {
+  grid-row: 1;
+}
+
+.gl-grid-column-2 {
+  grid-column: 2;
+}

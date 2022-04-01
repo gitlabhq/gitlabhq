@@ -1192,5 +1192,15 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       let(:existing_merge_request) { create(:merge_request, source_project: project) }
       let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_merge_request) }
     end
+
+    it_behaves_like 'broadcasting issuable labels updates' do
+      let(:label_a) { label }
+      let(:label_b) { create(:label, project: project) }
+      let(:issuable) { merge_request }
+
+      def update_issuable(update_params)
+        update_merge_request(update_params)
+      end
+    end
   end
 end

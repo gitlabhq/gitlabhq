@@ -178,10 +178,18 @@ describe('init markdown', () => {
         it.each`
           text                           | expected
           ${'- item'}                    | ${'- item\n- '}
+          ${'* item'}                    | ${'* item\n* '}
+          ${'+ item'}                    | ${'+ item\n+ '}
           ${'- [ ] item'}                | ${'- [ ] item\n- [ ] '}
           ${'- [x] item'}                | ${'- [x] item\n- [ ] '}
           ${'- [X] item'}                | ${'- [X] item\n- [ ] '}
           ${'- item\n  - second'}        | ${'- item\n  - second\n  - '}
+          ${'- - -'}                     | ${'- - -'}
+          ${'- --'}                      | ${'- --'}
+          ${'* **'}                      | ${'* **'}
+          ${' **  * ** * ** * **'}       | ${' **  * ** * ** * **'}
+          ${'- - -x'}                    | ${'- - -x\n- '}
+          ${'+ ++'}                      | ${'+ ++\n+ '}
           ${'1. item'}                   | ${'1. item\n2. '}
           ${'1. [ ] item'}               | ${'1. [ ] item\n2. [ ] '}
           ${'1. [x] item'}               | ${'1. [x] item\n2. [ ] '}

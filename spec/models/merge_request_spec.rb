@@ -3538,8 +3538,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe "#environments" do
-    subject { merge_request.environments }
+  describe "#legacy_environments" do
+    subject { merge_request.legacy_environments }
 
     let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
     let(:project) { merge_request.project }

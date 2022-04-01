@@ -76,7 +76,7 @@ module ContainerRegistry
       end
 
       def below_capacity?
-        current_capacity <= maximum_capacity
+        current_capacity < maximum_capacity
       end
 
       def waiting_time_passed?
@@ -111,11 +111,9 @@ module ContainerRegistry
       end
 
       def current_capacity
-        strong_memoize(:current_capacity) do
-          ContainerRepository.with_migration_states(
-            %w[pre_importing pre_import_done importing]
-          ).count
-        end
+        ContainerRepository.with_migration_states(
+          %w[pre_importing pre_import_done importing]
+        ).count
       end
 
       def maximum_capacity
@@ -145,7 +143,7 @@ module ContainerRegistry
       end
 
       def re_enqueue_if_capacity
-        return unless current_capacity < maximum_capacity
+        return unless below_capacity?
 
         self.class.perform_async
       end

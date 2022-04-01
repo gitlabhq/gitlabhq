@@ -175,6 +175,44 @@ FactoryBot.define do
       end
     end
 
+    trait :prepare_staging do
+      name { 'prepare staging' }
+      environment { 'staging' }
+
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'staging', action: 'prepare' }
+        }
+      end
+
+      set_expanded_environment_name
+    end
+
+    trait :stop_staging do
+      name { 'stop staging' }
+      environment { 'staging' }
+
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'staging', action: 'stop' }
+        }
+      end
+
+      set_expanded_environment_name
+    end
+
+    trait :set_expanded_environment_name do
+      after(:build) do |build, evaluator|
+        build.assign_attributes(
+          metadata_attributes: {
+            expanded_environment_name: build.expanded_environment_name
+          }
+        )
+      end
+    end
+
     trait :allowed_to_fail do
       allow_failure { true }
     end
