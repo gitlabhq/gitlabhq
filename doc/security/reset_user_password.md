@@ -74,11 +74,13 @@ If you know the username, user ID, or email address, you can use the Rails conso
      user = User.find_by(email: 'user@example.com')
      ```
 
-1. Reset the password:
+1. Reset the password by setting a value for `user.password` and `user.password_confirmation`. For example, to set a new random
+   password:
 
    ```ruby
-   user.password = 'secret_pass'
-   user.password_confirmation = 'secret_pass'
+   new_password = ::User.random_password
+   user.password = new_password
+   user.password_confirmation = new_password
     ```
 
 1. Optional. Notify the user that an administrator changed their password:

@@ -65,7 +65,7 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'skipped')
+        Flow::Pipeline.visit_latest_pipeline(status: 'skipped')
       end
 
       after do

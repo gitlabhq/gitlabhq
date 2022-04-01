@@ -135,7 +135,7 @@ module QA
       def go_to_pipeline_job(user)
         Flow::Login.sign_in(as: user)
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'completed')
+        Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |pipeline|
           pipeline.click_job('job')

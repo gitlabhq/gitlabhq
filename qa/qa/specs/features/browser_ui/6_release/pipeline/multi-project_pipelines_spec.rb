@@ -35,7 +35,7 @@ module QA
 
         Flow::Login.sign_in
         upstream_project.visit!
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'succeeded')
+        Flow::Pipeline.visit_latest_pipeline(status: 'passed')
       end
 
       after do

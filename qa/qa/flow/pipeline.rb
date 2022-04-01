@@ -5,17 +5,24 @@ module QA
     module Pipeline
       module_function
 
-      # In some cases we don't need to wait for anything, blocked, running or pending is acceptable
-      # Some cases only we do need pipeline to finish with expected condition (completed, succeeded or replicated)
-      def visit_latest_pipeline(pipeline_condition: nil)
+      # Acceptable statuses:
+      # canceled, created, failed, manual, passed
+      # pending, running, skipped
+      def visit_latest_pipeline(status: nil, wait: nil, skip_wait: true)
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:"wait_for_latest_pipeline_#{pipeline_condition}") if pipeline_condition
-        Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
+        Page::Project::Pipeline::Index.perform do |index|
+          index.has_any_pipeline?(wait: wait)
+          index.wait_for_latest_pipeline(status: status, wait: wait) if status || !skip_wait
+          index.click_on_latest_pipeline
+        end
       end
 
-      def wait_for_latest_pipeline(pipeline_condition:)
+      def wait_for_latest_pipeline(status: nil, wait: nil)
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:"wait_for_latest_pipeline_#{pipeline_condition}")
+        Page::Project::Pipeline::Index.perform do |index|
+          index.has_any_pipeline?(wait: wait)
+          index.wait_for_latest_pipeline(status: status, wait: wait)
+        end
       end
     end
   end

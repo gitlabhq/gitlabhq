@@ -27,21 +27,21 @@ module QA
 
       it 'parent pipelines passes if child passes', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348092' do
         add_ci_files(success_child_ci_file)
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'completed')
+        Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           expect(parent_pipeline).to have_child_pipeline
-          expect(parent_pipeline).to have_passed
+          expect { parent_pipeline.has_passed? }.to eventually_be_truthy
         end
       end
 
       it 'parent pipeline fails if child fails', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348091' do
         add_ci_files(fail_child_ci_file)
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'completed')
+        Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           expect(parent_pipeline).to have_child_pipeline
-          expect(parent_pipeline).to have_failed
+          expect { parent_pipeline.has_failed? }.to eventually_be_truthy
         end
       end
 

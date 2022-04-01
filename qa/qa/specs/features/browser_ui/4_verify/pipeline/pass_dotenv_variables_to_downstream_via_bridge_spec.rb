@@ -34,7 +34,7 @@ module QA
         add_ci_file(downstream_project, downstream_ci_file)
         add_ci_file(upstream_project, upstream_ci_file)
         upstream_project.visit!
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'succeeded')
+        Flow::Pipeline.visit_latest_pipeline(status: 'passed')
       end
 
       after do

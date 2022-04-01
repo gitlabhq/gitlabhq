@@ -42,7 +42,7 @@ module QA
 
         it 'can trigger pipeline', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348011' do
           Page::Project::Pipeline::Index.perform do |index|
-            expect(index).not_to have_pipeline # should not auto trigger pipeline
+            expect(index).to have_no_pipeline # should not auto trigger pipeline
             index.click_run_pipeline_button
           end
 
