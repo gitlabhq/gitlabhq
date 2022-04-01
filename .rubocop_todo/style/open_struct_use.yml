@@ -7,9 +7,6 @@ Style/OpenStructUse:
   - ee/spec/helpers/ee/blob_helper_spec.rb
   - ee/spec/lib/gitlab/auth/group_saml/failure_handler_spec.rb
   - ee/spec/lib/gitlab/legacy_github_import/project_creator_spec.rb
-  - lib/api/wikis.rb
-  - lib/gitlab/git/diff_collection.rb
-  - lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb
   - lib/gitlab/testing/request_inspector_middleware.rb
   - spec/factories/go_module_versions.rb
   - spec/factories/wiki_pages.rb

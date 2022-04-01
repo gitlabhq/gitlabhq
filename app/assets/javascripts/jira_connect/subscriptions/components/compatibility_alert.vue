@@ -46,16 +46,13 @@ export default {
   >
     <gl-alert
       v-if="shouldShowAlert"
-      class="gl-mb-7"
       variant="info"
       :title="$options.i18n.title"
       @dismiss="dismissAlert"
     >
       <gl-sprintf :message="$options.i18n.body">
         <template #link="{ content }">
-          <gl-link :href="$options.DOCS_LINK_URL" target="_blank" rel="noopener noreferrer">{{
-            content
-          }}</gl-link>
+          <gl-link :href="$options.DOCS_LINK_URL" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </gl-alert>

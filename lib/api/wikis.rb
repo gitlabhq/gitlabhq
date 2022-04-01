@@ -136,7 +136,7 @@ module API
 
           if result[:status] == :success
             status(201)
-            present OpenStruct.new(result[:result]), with: Entities::WikiAttachment
+            present result[:result], with: Entities::WikiAttachment
           else
             render_api_error!(result[:message], 400)
           end

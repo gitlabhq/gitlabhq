@@ -20390,10 +20390,16 @@ msgstr ""
 msgid "Integrations|You must have owner or maintainer permissions to link namespaces."
 msgstr ""
 
+msgid "Integrations|You must use a %{linkStart}supported browser%{linkEnd} to use the GitLab for Jira app."
+msgstr ""
+
 msgid "Integrations|You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "Integrations|You've activated every integration 🎉"
+msgstr ""
+
+msgid "Integrations|Your browser is not supported"
 msgstr ""
 
 msgid "Integrations|ZenTao issues display here when you create issues in your project in ZenTao."

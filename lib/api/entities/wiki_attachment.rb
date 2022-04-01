@@ -16,11 +16,11 @@ module API
       end
 
       def filename
-        object.file_name
+        object[:file_name]
       end
 
       def secure_url
-        object.file_path
+        object[:file_path]
       end
     end
   end
