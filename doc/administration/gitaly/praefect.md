@@ -231,6 +231,16 @@ instructions only work on Omnibus-provided PostgreSQL:
 
 The database used by Praefect is now configured.
 
+You can now configure Praefect to use the database:
+
+```ruby
+praefect['database_host'] = POSTGRESQL_HOST
+praefect['database_port'] = 5432
+praefect['database_user'] = 'praefect'
+praefect['database_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_dbname'] = 'praefect_production'
+```
+
 If you see Praefect database errors after configuring PostgreSQL, see
 [troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
 

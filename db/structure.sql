@@ -11235,7 +11235,6 @@ CREATE TABLE application_settings (
     max_ssh_key_lifetime integer,
     static_objects_external_storage_auth_token_encrypted text,
     future_subscriptions jsonb DEFAULT '[]'::jsonb NOT NULL,
-    user_email_lookup_limit integer DEFAULT 60 NOT NULL,
     packages_cleanup_package_file_worker_capacity smallint DEFAULT 2 NOT NULL,
     container_registry_import_max_tags_count integer DEFAULT 100 NOT NULL,
     container_registry_import_max_retries integer DEFAULT 3 NOT NULL,

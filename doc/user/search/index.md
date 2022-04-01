@@ -152,6 +152,10 @@ you can type (or select from the dropdown list) the following:
 - Deployed-before
 - Deployed-after
 
+NOTE:
+Projects using a [fast-forward merge method](../project/merge_requests/fast_forward_merge.md)
+do not return results, as this method does not create a merge commit.
+
 When filtering by an environment, a dropdown list presents all environments that
 you can choose from:
 

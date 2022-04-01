@@ -193,6 +193,8 @@ That's all of the required database changes.
     include ::Geo::ReplicableModel
     include ::Geo::VerifiableModel
 
+    delegate(*::Geo::VerificationState::VERIFICATION_METHODS, to: :cool_widget_state)
+
     with_replicator Geo::CoolWidgetReplicator
 
     mount_uploader :file, CoolWidgetUploader
@@ -200,16 +202,6 @@ That's all of the required database changes.
     has_one :cool_widget_state, autosave: false, inverse_of: :cool_widget, class_name: 'Geo::CoolWidgetState'
 
     after_save :save_verification_details
-
-    delegate :verification_retry_at, :verification_retry_at=,
-             :verified_at, :verified_at=,
-             :verification_checksum, :verification_checksum=,
-             :verification_failure, :verification_failure=,
-             :verification_retry_count, :verification_retry_count=,
-             :verification_state=, :verification_state,
-             :verification_started_at=, :verification_started_at,
-             to: :cool_widget_state
-    ...
 
     scope :with_verification_state, ->(state) { joins(:cool_widget_state).where(cool_widget_states: { verification_state: verification_state_value(state) }) }
     scope :checksummed, -> { joins(:cool_widget_state).where.not(cool_widget_states: { verification_checksum: nil } ) }
@@ -487,6 +479,7 @@ That's all of the required database changes.
   module Geo
     class CoolWidgetState < ApplicationRecord
       include EachBatch
+      include ::Geo::VerificationStateDefinition
 
       self.primary_key = :cool_widget_id
 

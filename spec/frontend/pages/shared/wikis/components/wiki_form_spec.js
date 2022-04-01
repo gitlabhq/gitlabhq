@@ -411,10 +411,6 @@ describe('WikiForm', () => {
         await waitForPromises();
       });
 
-      it('shows a tip to send feedback', () => {
-        expect(wrapper.text()).toContain('Tell us your experiences with the new Markdown editor');
-      });
-
       it('shows the rich text editor when loading finishes', async () => {
         expect(findContentEditor().exists()).toBe(true);
       });

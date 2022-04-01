@@ -1905,6 +1905,12 @@ See https://about.gitlab.com/releases/2022/02/03/security-release-gitlab-14-7-1-
 - [Fix Gitlab/DelegatePredicateMethods offenses](gitlab-org/gitlab@518700a11025b0000ff3ce011638417a882612b0) by @edith007 ([merge request](gitlab-org/gitlab!76001))
 - [Fix Rails/SaveBang offenses](gitlab-org/gitlab@513b0e1dbdf95ea595e7548ff26929e0be30ce29) by @edith007 ([merge request](gitlab-org/gitlab!75894)) **GitLab Enterprise Edition**
 
+## 14.6.7 (2022-03-31)
+
+### Changed (1 change)
+
+- [Remove runners token prefix feature flags](gitlab-org/gitlab@70330bc3f8c34c4620d7e5c4a9943ec3574e5ee6) ([merge request](gitlab-org/gitlab!82122))
+
 ## 14.6.6 (2022-03-01)
 
 ### Fixed (3 changes)

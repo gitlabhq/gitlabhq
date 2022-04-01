@@ -18,7 +18,9 @@ select a limited role, and provide an expiry date.
 Use a project access token to authenticate:
 
 - With the [GitLab API](../../../api/index.md#personalprojectgroup-access-tokens).
-- With Git, when using HTTP Basic Authentication. You can use any non-blank value for a password.
+- With Git, when using HTTP Basic Authentication, use:
+  - Any non-blank value as a username.
+  - The project access token as the password.
 
 Project access tokens are similar to [group access tokens](../../group/settings/group_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md).

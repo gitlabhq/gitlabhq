@@ -3,7 +3,7 @@ import { GlForm, GlIcon, GlLink, GlButton, GlSprintf, GlAlert } from '@gitlab/ui
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import {
@@ -54,9 +54,6 @@ export default {
         ),
         primaryAction: s__('WikiPage|Retry'),
       },
-      feedbackTip: __(
-        'Tell us your experiences with the new Markdown editor %{linkStart}in this feedback issue%{linkEnd}.',
-      ),
     },
     linksHelpText: s__(
       'WikiPage|To link to a (new) page, simply type %{linkExample}. More examples are in the %{linkStart}documentation%{linkEnd}.',
@@ -403,20 +400,6 @@ export default {
           </template>
         </markdown-field>
         <div v-if="isContentEditorActive">
-          <gl-alert class="gl-mb-6" variant="tip" :dismissible="false">
-            <gl-sprintf :message="$options.i18n.contentEditor.feedbackTip">
-              <template
-                #link="// eslint-disable-next-line vue/no-template-shadow
-                { content }"
-                ><gl-link
-                  :href="$options.contentEditorFeedbackIssue"
-                  target="_blank"
-                  data-testid="wiki-markdown-help-link"
-                  >{{ content }}</gl-link
-                ></template
-              >
-            </gl-sprintf>
-          </gl-alert>
           <content-editor
             :render-markdown="renderMarkdown"
             :uploads-path="pageInfo.uploadsPath"

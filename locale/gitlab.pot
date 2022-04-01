@@ -36906,9 +36906,6 @@ msgstr ""
 msgid "Telephone number"
 msgstr ""
 
-msgid "Tell us your experiences with the new Markdown editor %{linkStart}in this feedback issue%{linkEnd}."
-msgstr ""
-
 msgid "Template"
 msgstr ""
 

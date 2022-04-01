@@ -12,6 +12,7 @@ RSpec.describe API::Ci::SecureFiles do
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:anonymous) { create(:user) }
+  let_it_be(:unconfirmed) { create(:user, :unconfirmed) }
   let_it_be(:project) { create(:project, creator_id: maintainer.id) }
   let_it_be(:secure_file) { create(:ci_secure_file, project: project) }
 
@@ -73,6 +74,14 @@ RSpec.describe API::Ci::SecureFiles do
       end
     end
 
+    context 'unconfirmed user' do
+      it 'does not return project secure files' do
+        get api("/projects/#{project.id}/secure_files", unconfirmed)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'unauthenticated user' do
       it 'does not return project secure files' do
         get api("/projects/#{project.id}/secure_files")
@@ -112,6 +121,14 @@ RSpec.describe API::Ci::SecureFiles do
     context 'authenticated user with no permissions' do
       it 'does not return project secure file details' do
         get api("/projects/#{project.id}/secure_files/#{secure_file.id}", anonymous)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'unconfirmed user' do
+      it 'does not return project secure file details' do
+        get api("/projects/#{project.id}/secure_files/#{secure_file.id}", unconfirmed)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -162,6 +179,14 @@ RSpec.describe API::Ci::SecureFiles do
     context 'authenticated user with no permissions' do
       it 'does not return project secure file details' do
         get api("/projects/#{project.id}/secure_files/#{secure_file.id}/download", anonymous)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'unconfirmed user' do
+      it 'does not return project secure file details' do
+        get api("/projects/#{project.id}/secure_files/#{secure_file.id}/download", unconfirmed)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -372,6 +397,16 @@ RSpec.describe API::Ci::SecureFiles do
       end
     end
 
+    context 'unconfirmed user' do
+      it 'does not create a secure file' do
+        expect do
+          post api("/projects/#{project.id}/secure_files", unconfirmed)
+        end.not_to change { project.secure_files.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'unauthenticated user' do
       it 'does not create a secure file' do
         expect do
@@ -416,6 +451,16 @@ RSpec.describe API::Ci::SecureFiles do
       it 'does not delete the secure_file' do
         expect do
           delete api("/projects/#{project.id}/secure_files/#{secure_file.id}", anonymous)
+        end.not_to change { project.secure_files.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'unconfirmed user' do
+      it 'does not delete the secure_file' do
+        expect do
+          delete api("/projects/#{project.id}/secure_files#{secure_file.id}", unconfirmed)
         end.not_to change { project.secure_files.count }
 
         expect(response).to have_gitlab_http_status(:not_found)
