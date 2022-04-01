@@ -349,17 +349,15 @@ Follow these guidelines for punctuation:
 
 <!-- vale gitlab.Repetition = NO -->
 
-| Rule                                                             | Example                                                |
-|------------------------------------------------------------------|--------------------------------------------------------|
-| Avoid semicolons. Use two sentences instead.                     | That's the way that the world goes 'round. You're up one day and the next you're down.
-| Always end full sentences with a period.                         | For a complete overview, read through this document. |
-| Always add a space after a period when beginning a new sentence. | For a complete overview, check this doc. For other references, check out this guide. |
-| Do not use double spaces. (Tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).) | --- |
-| Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key. | --- |
-| Use serial commas (Oxford commas) before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | You can create new issues, merge requests, and milestones. |
-| Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | You should try this - or not. |
-| When a colon is part of a sentence, always use lowercase after the colon. | Linked issues: a way to create a relationship between issues. |
-| Do not use typographer's quotes. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).) | "It's the questions we can't answer that teach us the most"---Patrick Rothfuss |
+- End full sentences with a period.
+- Use one space between sentences.
+- Do not use semicolons. Use two sentences instead.
+- Do not use double spaces. (Tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).)
+- Do not use non-breaking spaces. Use standard spaces instead. (Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
+- Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key.
+- Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).)
+- Avoid dashes. Use separate sentences, or commas, instead.
+- Do not use typographer's ("curly") quotes. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).)
 
 <!-- vale gitlab.Repetition = YES -->
 
@@ -403,17 +401,6 @@ Backticks are more precise than quotes. For example, in this string:
 
 It's not clear whether the user should include the period in the string.
 
-### Spaces between words
-
-Use only standard spaces between words. The search engine for the documentation
-website doesn't split words separated with
-[non-breaking spaces](https://en.wikipedia.org/wiki/Non-breaking_space) when
-indexing, and fails to create expected individual search terms. Tests that search
-for certain words separated by regular spaces can't find words separated by
-non-breaking spaces.
-
-Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).
-
 ## Lists
 
 - Always start list items with a capital letter, unless they're parameters or
@@ -421,29 +408,29 @@ Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scr
 - Always leave a blank line before and after a list.
 - Begin a line with spaces (not tabs) to denote a [nested sub-item](#nesting-inside-a-list-item).
 
-### Ordered vs. unordered lists
+### Choose between an ordered or unordered list
 
-Only use ordered lists when their items describe a sequence of steps to follow.
-
-Do:
+Use ordered lists for a sequence of steps. For example:
 
 ```markdown
-These are the steps to do something:
+Follow these steps to do something.
 
 1. First, do the first step.
 1. Then, do the next step.
 1. Finally, do the last step.
 ```
 
-Don't:
+Use an unordered lists when the steps do not need to be completed in order. For example:
 
 ```markdown
-This is a list of available features:
+These things are imported:
 
-1. Feature 1
-1. Feature 2
-1. Feature 3
+- Thing 1
+- Thing 2
+- Thing 3
 ```
+
+You can choose to introduce either list with a colon, but you do not have to.
 
 ### Markup
 
@@ -454,12 +441,8 @@ This is a list of available features:
 ### Punctuation
 
 - Don't add commas (`,`) or semicolons (`;`) to the ends of list items.
-- Only add periods to the end of a list item if the item consists of a complete
-  sentence (with a subject and a verb).
-- Be consistent throughout the list: if the majority of the items do not end in
-  a period, do not end any of the items in a period, even if they consist of a
-  complete sentence. The opposite is also valid: if the majority of the items
-  end with a period, end all with a period.
+- If a list item is a complete sentence (with a subject and a verb), add a period at the end.
+- Majority rules. If the majority of items do not end in a period, do not end any of the items in a period.
 - Separate list items from explanatory text with a colon (`:`). For example:
 
   ```markdown
@@ -468,32 +451,6 @@ This is a list of available features:
   - First item: this explains the first item.
   - Second item: this explains the second item.
   ```
-
-**Examples:**
-
-Do:
-
-- First list item
-- Second list item
-- Third list item
-
-Don't:
-
-- First list item
-- Second list item
-- Third list item.
-
-Do:
-
-- Let's say this is a complete sentence.
-- Let's say this is also a complete sentence.
-- Not a complete sentence.
-
-Don't (vary use of periods; majority rules):
-
-- Let's say this is a complete sentence.
-- Let's say this is also a complete sentence.
-- Not a complete sentence
 
 ### Nesting inside a list item
 
