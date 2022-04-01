@@ -20,6 +20,7 @@ They may then set up a test configuration of the desired identity provider. We i
 This section includes relevant screenshots of the following example configurations of [Group SAML](../../user/group/saml_sso/index.md) and [Group SCIM](../../user/group/saml_sso/scim_setup.md):
 
 - [Azure Active Directory](#azure-active-directory)
+- [Google Workspace](#google-workspace)
 - [Okta](#okta)
 - [OneLogin](#onelogin)
 
@@ -46,6 +47,20 @@ SCIM mapping:
 Group Sync:
 
 ![Azure Group Claims](img/azure_configure_group_claim.png)
+
+## Google Workspace
+
+Basic SAML app configuration:
+
+![Google Workspace basic SAML](img/GoogleWorkspace-basic-SAML_v14_10.png)
+
+User claims and attributes:
+
+![Google Workspace user claims](img/GoogleWorkspace-claims_v14_10.png)
+
+IdP links and certificate:
+
+![Google Workspace Links and Certificate](img/GoogleWorkspace-linkscert_v14_10.png)
 
 ## Okta
 
