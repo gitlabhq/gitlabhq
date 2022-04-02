@@ -106,6 +106,45 @@ module.exports = (path, options = {}) => {
     return '<rootDir>/coverage-frontend/';
   };
 
+  const gfmParserDependencies = [
+    'rehype-.*',
+    'remark-.*',
+    'hast*',
+    'unist.*',
+    'mdast-util-.*',
+    'micromark.*',
+    'vfile.*',
+    'bail',
+    'trough',
+    'unified',
+    'is-plain-obj',
+    'decode-named-character-reference',
+    'character-entities*',
+    'property-information',
+    'space-separated-tokens',
+    'comma-separated-tokens',
+    'web-namespaces',
+    'zwitch',
+    'html-void-elements',
+    'ccount',
+    'escape-string-regexp',
+  ];
+
+  const transformIgnoreNodeModules = [
+    '@gitlab/ui',
+    '@gitlab/favicon-overlay',
+    'bootstrap-vue',
+    'three',
+    'monaco-editor',
+    'monaco-yaml',
+    'fast-mersenne-twister',
+    'prosemirror-markdown',
+    'fault',
+    'dateformat',
+    'lowlight',
+    ...gfmParserDependencies,
+  ];
+
   return {
     clearMocks: true,
     testMatch,
@@ -130,9 +169,7 @@ module.exports = (path, options = {}) => {
       '^.+\\.yml$': './spec/frontend/__helpers__/yaml_transformer.js',
       '^.+\\.(md|zip|png)$': 'jest-raw-loader',
     },
-    transformIgnorePatterns: [
-      'node_modules/(?!(@gitlab/ui|@gitlab/favicon-overlay|bootstrap-vue|three|monaco-editor|monaco-yaml|fast-mersenne-twister|prosemirror-markdown|dateformat|lowlight|fault)/)',
-    ],
+    transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
     timers: 'fake',
     testEnvironment: '<rootDir>/spec/frontend/environment.js',
     testEnvironmentOptions: {

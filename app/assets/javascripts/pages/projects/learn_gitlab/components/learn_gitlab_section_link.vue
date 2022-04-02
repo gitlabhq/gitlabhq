@@ -104,6 +104,7 @@ export default {
             data-track-action="click_video_link"
             :data-track-label="linkTitle"
             data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+            data-track-experiment="video_tutorials_continuous_onboarding"
           />
         </template>
       </gitlab-experiment>

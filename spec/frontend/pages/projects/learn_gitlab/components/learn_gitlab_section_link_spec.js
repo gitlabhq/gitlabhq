@@ -166,6 +166,13 @@ describe('Learn GitLab Section Link', () => {
         expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_video_link', {
           label: 'Add code owners',
           property: 'Growth::Conversion::Experiment::LearnGitLab',
+          context: {
+            data: {
+              experiment: 'video_tutorials_continuous_onboarding',
+              variant: 'candidate',
+            },
+            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
+          },
         });
 
         unmockTracking();
