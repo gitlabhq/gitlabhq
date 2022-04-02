@@ -42107,7 +42107,7 @@ msgstr ""
 msgid "Webhooks|A comment is added to a confidential issue."
 msgstr ""
 
-msgid "Webhooks|A comment is added to an issue."
+msgid "Webhooks|A comment is added to an issue or merge request."
 msgstr ""
 
 msgid "Webhooks|A confidential issue is created, updated, closed, or reopened."

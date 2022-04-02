@@ -21,6 +21,8 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher do
         )
     end
 
+    expect(context.portable).to receive(:try).with(:after_import)
+
     expect { subject.run }
       .to change(entity, :status_name).to(:finished)
   end
