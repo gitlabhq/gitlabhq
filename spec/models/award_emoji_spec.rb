@@ -58,6 +58,19 @@ RSpec.describe AwardEmoji do
         end
       end
     end
+
+    it 'accepts custom emoji' do
+      user  = create(:user)
+      group = create(:group)
+      group.add_maintainer(user)
+
+      project = create(:project, namespace: group)
+      issue = create(:issue, project: project)
+      emoji = create(:custom_emoji, name: 'partyparrot', namespace: group)
+      new_award = build(:award_emoji, user: user, awardable: issue, name: emoji.name)
+
+      expect(new_award).to be_valid
+    end
   end
 
   describe 'scopes' do

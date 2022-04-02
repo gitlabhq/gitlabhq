@@ -60,6 +60,10 @@ class AwardEmoji < ApplicationRecord
     self.name == UPVOTE_NAME
   end
 
+  def url
+    awardable.try(:namespace)&.custom_emoji&.by_name(name)&.first&.url
+  end
+
   def expire_cache
     awardable.try(:bump_updated_at)
     awardable.try(:expire_etag_cache)

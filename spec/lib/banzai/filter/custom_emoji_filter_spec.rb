@@ -18,31 +18,30 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter do
     doc = filter('<p>:tanuki:</p>', project: project)
 
     expect(doc.css('gl-emoji').first.attributes['title'].value).to eq('tanuki')
-    expect(doc.css('gl-emoji img').size).to eq 1
   end
 
   it 'correctly uses the custom emoji URL' do
     doc = filter('<p>:tanuki:</p>')
 
-    expect(doc.css('img').first.attributes['src'].value).to eq(custom_emoji.file)
+    expect(doc.css('gl-emoji').first.attributes['data-fallback-src'].value).to eq(custom_emoji.file)
   end
 
   it 'matches multiple same custom emoji' do
     doc = filter(':tanuki: :tanuki:')
 
-    expect(doc.css('img').size).to eq 2
+    expect(doc.css('gl-emoji').size).to eq 2
   end
 
   it 'matches multiple custom emoji' do
     doc = filter(':tanuki: (:happy_tanuki:)')
 
-    expect(doc.css('img').size).to eq 2
+    expect(doc.css('gl-emoji').size).to eq 2
   end
 
   it 'does not match enclosed colons' do
     doc = filter('tanuki:tanuki:')
 
-    expect(doc.css('img').size).to be 0
+    expect(doc.css('gl-emoji').size).to be 0
   end
 
   it 'does not do N+1 query' do
