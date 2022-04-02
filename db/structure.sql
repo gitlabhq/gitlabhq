@@ -11715,6 +11715,7 @@ CREATE TABLE batched_background_migrations (
     total_tuple_count bigint,
     pause_ms integer DEFAULT 100 NOT NULL,
     max_batch_size integer,
+    started_at timestamp with time zone,
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),
     CONSTRAINT check_batch_size_in_range CHECK ((batch_size >= sub_batch_size)),

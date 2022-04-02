@@ -340,7 +340,7 @@ namespace :gitlab do
 
     desc 'Run all pending batched migrations'
     task execute_batched_migrations: :environment do
-      Gitlab::Database::BackgroundMigration::BatchedMigration.active.queue_order.each do |migration|
+      Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:active).queue_order.each do |migration|
         Gitlab::AppLogger.info("Executing batched migration #{migration.id} inline")
         Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new.run_entire_migration(migration)
       end

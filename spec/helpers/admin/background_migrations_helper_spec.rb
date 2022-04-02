@@ -6,7 +6,7 @@ RSpec.describe Admin::BackgroundMigrationsHelper do
   describe '#batched_migration_status_badge_variant' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:status, :variant) do
+    where(:status_name, :variant) do
       :active   | :info
       :paused   | :warning
       :failed   | :danger
@@ -16,7 +16,7 @@ RSpec.describe Admin::BackgroundMigrationsHelper do
     subject { helper.batched_migration_status_badge_variant(migration) }
 
     with_them do
-      let(:migration) { build(:batched_background_migration, status: status) }
+      let(:migration) { build(:batched_background_migration, status_name) }
 
       it { is_expected.to eq(variant) }
     end
@@ -25,7 +25,7 @@ RSpec.describe Admin::BackgroundMigrationsHelper do
   describe '#batched_migration_progress' do
     subject { helper.batched_migration_progress(migration, completed_rows) }
 
-    let(:migration) { build(:batched_background_migration, status: :active, total_tuple_count: 100) }
+    let(:migration) { build(:batched_background_migration, :active, total_tuple_count: 100) }
     let(:completed_rows) { 25 }
 
     it 'returns completion percentage' do
@@ -33,7 +33,7 @@ RSpec.describe Admin::BackgroundMigrationsHelper do
     end
 
     context 'when migration is finished' do
-      let(:migration) { build(:batched_background_migration, status: :finished, total_tuple_count: nil) }
+      let(:migration) { build(:batched_background_migration, :finished, total_tuple_count: nil) }
 
       it 'returns 100 percent' do
         expect(subject).to eq(100)
@@ -41,7 +41,7 @@ RSpec.describe Admin::BackgroundMigrationsHelper do
     end
 
     context 'when total_tuple_count is nil' do
-      let(:migration) { build(:batched_background_migration, status: :active, total_tuple_count: nil) }
+      let(:migration) { build(:batched_background_migration, :active, total_tuple_count: nil) }
 
       it 'returns nil' do
         expect(subject).to eq(nil)

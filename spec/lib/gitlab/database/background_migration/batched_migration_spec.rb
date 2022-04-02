@@ -27,25 +27,43 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     it { is_expected.to validate_uniqueness_of(:job_arguments).scoped_to(:job_class_name, :table_name, :column_name) }
 
     context 'when there are failed jobs' do
-      let(:batched_migration) { create(:batched_background_migration, status: :active, total_tuple_count: 100) }
+      let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100) }
       let!(:batched_job) { create(:batched_background_migration_job, :failed, batched_migration: batched_migration) }
 
       it 'raises an exception' do
-        expect { batched_migration.finished! }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { batched_migration.finish! }.to raise_error(StateMachines::InvalidTransition)
 
-        expect(batched_migration.reload.status).to eql 'active'
+        expect(batched_migration.reload.status_name).to be :active
       end
     end
 
     context 'when the jobs are completed' do
-      let(:batched_migration) { create(:batched_background_migration, status: :active, total_tuple_count: 100) }
+      let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100) }
       let!(:batched_job) { create(:batched_background_migration_job, :succeeded, batched_migration: batched_migration) }
 
       it 'finishes the migration' do
-        batched_migration.finished!
+        batched_migration.finish!
 
-        expect(batched_migration.status).to eql 'finished'
+        expect(batched_migration.status_name).to be :finished
       end
+    end
+  end
+
+  describe 'state machine' do
+    context 'when a migration is executed' do
+      let!(:batched_migration) { create(:batched_background_migration) }
+
+      it 'updates the started_at' do
+        expect { batched_migration.execute! }.to change(batched_migration, :started_at).from(nil).to(Time)
+      end
+    end
+  end
+
+  describe '.valid_status' do
+    valid_status = [:paused, :active, :finished, :failed, :finalizing]
+
+    it 'returns valid status' do
+      expect(described_class.valid_status).to eq(valid_status)
     end
   end
 
@@ -287,7 +305,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       it 'moves the status of the migration to active' do
         retry_failed_jobs
 
-        expect(batched_migration.status).to eql 'active'
+        expect(batched_migration.status_name).to be :active
       end
 
       it 'changes the number of attempts to 0' do
@@ -301,8 +319,59 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       it 'moves the status of the migration to active' do
         retry_failed_jobs
 
-        expect(batched_migration.status).to eql 'active'
+        expect(batched_migration.status_name).to be :active
       end
+    end
+  end
+
+  describe '#should_stop?' do
+    subject(:should_stop?) { batched_migration.should_stop? }
+
+    let(:batched_migration) { create(:batched_background_migration, started_at: started_at) }
+
+    before do
+      stub_const('Gitlab::Database::BackgroundMigration::BatchedMigration::MINIMUM_JOBS', 1)
+    end
+
+    context 'when the started_at is nil' do
+      let(:started_at) { nil }
+
+      it { expect(should_stop?).to be_falsey }
+    end
+
+    context 'when the number of jobs is lesser than the MINIMUM_JOBS' do
+      let(:started_at) { Time.zone.now - 6.days }
+
+      before do
+        stub_const('Gitlab::Database::BackgroundMigration::BatchedMigration::MINIMUM_JOBS', 10)
+        stub_const('Gitlab::Database::BackgroundMigration::BatchedMigration::MAXIMUM_FAILED_RATIO', 0.70)
+        create_list(:batched_background_migration_job, 1, :succeeded, batched_migration: batched_migration)
+        create_list(:batched_background_migration_job, 3, :failed, batched_migration: batched_migration)
+      end
+
+      it { expect(should_stop?).to be_falsey }
+    end
+
+    context 'when the calculated value is greater than the threshold' do
+      let(:started_at) { Time.zone.now - 6.days }
+
+      before do
+        stub_const('Gitlab::Database::BackgroundMigration::BatchedMigration::MAXIMUM_FAILED_RATIO', 0.70)
+        create_list(:batched_background_migration_job, 1, :succeeded, batched_migration: batched_migration)
+        create_list(:batched_background_migration_job, 3, :failed, batched_migration: batched_migration)
+      end
+
+      it { expect(should_stop?).to be_truthy }
+    end
+
+    context 'when the calculated value is lesser than the threshold' do
+      let(:started_at) { Time.zone.now - 6.days }
+
+      before do
+        create_list(:batched_background_migration_job, 2, :succeeded, batched_migration: batched_migration)
+      end
+
+      it { expect(should_stop?).to be_falsey }
     end
   end
 

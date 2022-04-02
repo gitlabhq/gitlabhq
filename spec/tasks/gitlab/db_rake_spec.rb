@@ -710,7 +710,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   describe '#execute_batched_migrations' do
     subject { run_rake_task('gitlab:db:execute_batched_migrations') }
 
-    let(:migrations) { create_list(:batched_background_migration, 2) }
+    let(:migrations) { create_list(:batched_background_migration, 2, :active) }
     let(:runner) { instance_double('Gitlab::Database::BackgroundMigration::BatchedMigrationRunner') }
 
     before do

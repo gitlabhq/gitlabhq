@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe "Admin > Admin sees background migrations" do
   let_it_be(:admin) { create(:admin) }
 
-  let_it_be(:active_migration) { create(:batched_background_migration, table_name: 'active', status: :active) }
-  let_it_be(:failed_migration) { create(:batched_background_migration, table_name: 'failed', status: :failed, total_tuple_count: 100) }
-  let_it_be(:finished_migration) { create(:batched_background_migration, table_name: 'finished', status: :finished) }
+  let_it_be(:active_migration) { create(:batched_background_migration, :active, table_name: 'active') }
+  let_it_be(:failed_migration) { create(:batched_background_migration, :failed, table_name: 'failed', total_tuple_count: 100) }
+  let_it_be(:finished_migration) { create(:batched_background_migration, :finished, table_name: 'finished') }
 
   before_all do
     create(:batched_background_migration_job, :failed, batched_migration: failed_migration, batch_size: 10, min_value: 6, max_value: 15, attempts: 3)
@@ -81,7 +81,7 @@ RSpec.describe "Admin > Admin sees background migrations" do
         expect(page).to have_content(failed_migration.job_class_name)
         expect(page).to have_content(failed_migration.table_name)
         expect(page).to have_content('0.00%')
-        expect(page).to have_content(failed_migration.status.humanize)
+        expect(page).to have_content(failed_migration.status_name.to_s)
 
         click_button('Retry')
         expect(page).not_to have_content(failed_migration.job_class_name)
@@ -106,7 +106,7 @@ RSpec.describe "Admin > Admin sees background migrations" do
       expect(page).to have_content(finished_migration.job_class_name)
       expect(page).to have_content(finished_migration.table_name)
       expect(page).to have_content('100.00%')
-      expect(page).to have_content(finished_migration.status.humanize)
+      expect(page).to have_content(finished_migration.status_name.to_s)
     end
   end
 end

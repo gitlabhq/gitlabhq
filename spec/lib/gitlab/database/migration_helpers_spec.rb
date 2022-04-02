@@ -2096,7 +2096,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         end
       end
 
-      let(:migration_relation) { Gitlab::Database::BackgroundMigration::BatchedMigration.active }
+      let(:migration_relation) { Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:active) }
 
       before do
         model.initialize_conversion_of_integer_to_bigint(table, columns)
@@ -2218,7 +2218,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     subject(:ensure_batched_background_migration_is_finished) { model.ensure_batched_background_migration_is_finished(**configuration) }
 
     it 'raises an error when migration exists and is not marked as finished' do
-      create(:batched_background_migration, configuration.merge(status: :active))
+      create(:batched_background_migration, :active, configuration)
 
       expect { ensure_batched_background_migration_is_finished }
         .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':" \
@@ -2234,7 +2234,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
 
     it 'does not raise error when migration exists and is marked as finished' do
-      create(:batched_background_migration, configuration.merge(status: :finished))
+      create(:batched_background_migration, :finished, configuration)
 
       expect { ensure_batched_background_migration_is_finished }
         .not_to raise_error

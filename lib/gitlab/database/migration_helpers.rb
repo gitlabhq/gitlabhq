@@ -956,7 +956,7 @@ module Gitlab
           Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}"
         elsif !migration.finished?
           raise "Expected batched background migration for the given configuration to be marked as 'finished', " \
-            "but it is '#{migration.status}':" \
+            "but it is '#{migration.status_name}':" \
             "\t#{configuration}" \
             "\n\n" \
             "Finalize it manualy by running" \

@@ -130,13 +130,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
   describe 'scopes' do
     let_it_be(:fixed_time) { Time.new(2021, 04, 27, 10, 00, 00, 00) }
 
-    let_it_be(:pending_job) { create(:batched_background_migration_job, :pending, updated_at: fixed_time) }
-    let_it_be(:running_job) { create(:batched_background_migration_job, :running, updated_at: fixed_time) }
-    let_it_be(:stuck_job) { create(:batched_background_migration_job, :pending, updated_at: fixed_time - described_class::STUCK_JOBS_TIMEOUT) }
-    let_it_be(:failed_job) { create(:batched_background_migration_job, :failed, attempts: 1) }
-
-    let!(:max_attempts_failed_job) { create(:batched_background_migration_job, :failed, attempts: described_class::MAX_ATTEMPTS) }
-    let!(:succeeded_job) { create(:batched_background_migration_job, :succeeded) }
+    let_it_be(:pending_job) { create(:batched_background_migration_job, :pending, created_at: fixed_time - 2.days, updated_at: fixed_time) }
+    let_it_be(:running_job) { create(:batched_background_migration_job, :running, created_at: fixed_time - 2.days, updated_at: fixed_time) }
+    let_it_be(:stuck_job) { create(:batched_background_migration_job, :pending, created_at: fixed_time, updated_at: fixed_time - described_class::STUCK_JOBS_TIMEOUT) }
+    let_it_be(:failed_job) { create(:batched_background_migration_job, :failed, created_at: fixed_time, attempts: 1) }
+    let_it_be(:max_attempts_failed_job) { create(:batched_background_migration_job, :failed, created_at: fixed_time, attempts: described_class::MAX_ATTEMPTS) }
 
     before do
       travel_to fixed_time
@@ -163,6 +161,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     describe '.retriable' do
       it 'returns retriable jobs' do
         expect(described_class.retriable).to contain_exactly(failed_job, stuck_job)
+      end
+    end
+
+    describe '.created_since' do
+      it 'returns jobs since a given time' do
+        expect(described_class.created_since(fixed_time)).to contain_exactly(stuck_job, failed_job, max_attempts_failed_job)
       end
     end
   end

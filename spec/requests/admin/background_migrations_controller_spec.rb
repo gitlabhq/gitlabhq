@@ -10,7 +10,7 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode do
   end
 
   describe 'POST #retry' do
-    let(:migration) { create(:batched_background_migration, status: 'failed') }
+    let(:migration) { create(:batched_background_migration, :failed) }
 
     before do
       create(:batched_background_migration_job, :failed, batched_migration: migration, batch_size: 10, min_value: 6, max_value: 15, attempts: 3)
@@ -37,11 +37,11 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode do
     it 'retries the migration' do
       retry_migration
 
-      expect(migration.reload.status).to eql 'active'
+      expect(migration.reload.status_name).to be :active
     end
 
     context 'when the migration is not failed' do
-      let(:migration) { create(:batched_background_migration, status: 'paused') }
+      let(:migration) { create(:batched_background_migration, :paused) }
 
       it 'keeps the same migration status' do
         expect { retry_migration }.not_to change { migration.reload.status }

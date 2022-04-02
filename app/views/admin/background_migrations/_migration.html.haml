@@ -7,7 +7,7 @@
     - else
       = _('Unknown')
   %td{ role: 'cell', data: { label: _('Status') } }
-    = gl_badge_tag migration.status.humanize, { size: :sm, variant: batched_migration_status_badge_variant(migration) }
+    = gl_badge_tag migration.status_name.to_s.humanize, { size: :sm, variant: batched_migration_status_badge_variant(migration) }
   %td{ role: 'cell', data: { label: _('Action') } }
     - if migration.active?
       = button_to pause_admin_background_migration_path(migration),
