@@ -841,11 +841,11 @@ module Gitlab
         end
       end
 
-      def import_repository(url)
+      def import_repository(url, http_authorization_header: '', mirror: false)
         raise ArgumentError, "don't use disk paths with import_repository: #{url.inspect}" if url.start_with?('.', '/')
 
         wrapped_gitaly_errors do
-          gitaly_repository_client.import_repository(url)
+          gitaly_repository_client.import_repository(url, http_authorization_header: http_authorization_header, mirror: mirror)
         end
       end
 

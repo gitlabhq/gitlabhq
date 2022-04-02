@@ -2448,7 +2448,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
     it 'delegates to Gitaly' do
       expect_next_instance_of(Gitlab::GitalyClient::RepositoryService) do |svc|
-        expect(svc).to receive(:import_repository).with(url).and_return(nil)
+        expect(svc).to receive(:import_repository).with(url, http_authorization_header: '', mirror: false).and_return(nil)
       end
 
       repository.import_repository(url)
