@@ -35,7 +35,8 @@ format:
 compile:
   stage: build
   script:
-    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/mybinary
+    - mkdir -p mybinaries
+    - go build -o mybinaries ./...
   artifacts:
     paths:
-      - mybinary
+      - mybinaries
