@@ -9,7 +9,6 @@ RSpec.describe 'devise/sessions/new' do
     before do
       stub_devise
       disable_captcha
-      allow(view).to receive(:arkose_labs_enabled?).and_return(false)
       allow(Gitlab).to receive(:com?).and_return(true)
     end
 

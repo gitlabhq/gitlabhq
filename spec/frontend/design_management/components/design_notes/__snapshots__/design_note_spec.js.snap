@@ -5,16 +5,19 @@ exports[`Design note component should match the snapshot 1`] = `
   class="design-note note-form"
   id="note_123"
 >
-  <user-avatar-link-stub
-    imgalt="foo-bar"
-    imgcssclasses=""
-    imgsize="40"
-    imgsrc=""
-    linkhref=""
-    tooltipplacement="top"
-    tooltiptext=""
-    username=""
-  />
+  <gl-avatar-link-stub
+    class="gl-float-left gl-mr-3"
+    href="https://gitlab.com/user"
+  >
+    <gl-avatar-stub
+      alt="avatar"
+      entityid="0"
+      entityname="foo-bar"
+      shape="circle"
+      size="32"
+      src="https://gitlab.com/avatar"
+    />
+  </gl-avatar-link-stub>
    
   <div
     class="gl-display-flex gl-justify-content-space-between"
@@ -22,8 +25,10 @@ exports[`Design note component should match the snapshot 1`] = `
     <div>
       <gl-link-stub
         class="js-user-link"
+        data-testid="user-link"
         data-user-id="1"
         data-username="foo-bar"
+        href="https://gitlab.com/user"
       >
         <span
           class="note-header-author-name gl-font-weight-bold"
@@ -69,8 +74,9 @@ exports[`Design note component should match the snapshot 1`] = `
   </div>
    
   <div
-    class="note-text js-note-text md"
+    class="note-text md"
     data-qa-selector="note_content"
+    data-testid="note-text"
   />
    
 </timeline-entry-item-stub>

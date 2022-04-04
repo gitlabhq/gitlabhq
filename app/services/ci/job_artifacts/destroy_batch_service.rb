@@ -127,7 +127,9 @@ module Ci
       def wrongly_expired?(artifact)
         return false unless artifact.expire_at.present?
 
-        match_date?(artifact.expire_at) && match_time?(artifact.expire_at)
+        # Although traces should never have expiration dates that don't match time & date here.
+        # we can explicitly exclude them by type since they should never be destroyed.
+        artifact.trace? || (match_date?(artifact.expire_at) && match_time?(artifact.expire_at))
       end
 
       def match_date?(expire_at)

@@ -53,10 +53,14 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag do
         it_behaves_like 'runs with given feature flag metadata', { name: 'no_scope_ff' }
 
         it 'is skipped if quarantine tag is also applied' do
-          group = describe_successfully 'Feature flag with no scope', feature_flag: { name: 'quarantine_with_ff' }, quarantine: {
-            issue: 'https://gitlab.com/test-group/test/-/issues/123',
-            type: 'bug'
-          } do
+          group = describe_successfully(
+            'Feature flag with no scope',
+            feature_flag: { name: 'quarantine_with_ff' },
+            quarantine: {
+              issue: 'https://gitlab.com/test-group/test/-/issues/123',
+              type: 'bug'
+            }
+          ) do
             it('is skipped') {}
           end
 
@@ -74,7 +78,11 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag do
         end
 
         it 'is skipped for that job' do
-          group = describe_successfully 'Test should be skipped', feature_flag: { name: 'skip_job_ff' }, except: { job: 'job-to-skip' } do
+          group = describe_successfully(
+            'Test should be skipped',
+            feature_flag: { name: 'skip_job_ff' },
+            except: { job: 'job-to-skip' }
+          ) do
             it('does not run on staging in specified job') {}
           end
 
@@ -88,7 +96,11 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag do
         end
 
         it 'is run for that job' do
-          group = describe_successfully 'Test should run', feature_flag: { name: 'run_job_ff' }, only: { job: 'job-to-run' } do
+          group = describe_successfully(
+            'Test should run',
+            feature_flag: { name: 'run_job_ff' },
+            only: { job: 'job-to-run' }
+          ) do
             it('runs on staging in specified job') {}
           end
 
@@ -96,7 +108,11 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag do
         end
 
         it 'skips if test is set to only run in a job different from current CI job' do
-          group = describe_successfully 'Test should be skipped', feature_flag: { name: 'skip_job_ff' }, only: { job: 'other-job' } do
+          group = describe_successfully(
+            'Test should be skipped',
+            feature_flag: { name: 'skip_job_ff' },
+            only: { job: 'other-job' }
+          ) do
             it('does not run on staging in specified job') {}
           end
 

@@ -329,6 +329,10 @@ RSpec.configure do |config|
       stub_feature_flags(disable_anonymous_search: false)
       stub_feature_flags(disable_anonymous_project_search: false)
 
+      # Specs should not get a CAPTCHA challenge by default, this makes the sign-in flow simpler in
+      # most cases. We do test the CAPTCHA flow in the appropriate specs.
+      stub_feature_flags(arkose_labs_login_challenge: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

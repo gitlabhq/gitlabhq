@@ -16,6 +16,7 @@ deploy:
 install:
   stage: install
   script:
+    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=<%= auth_token %>">.npmrc
     - "npm config set @<%= registry_scope %>:registry <%= gitlab_address_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
     - "npm install <%= package.name %>"
   cache:

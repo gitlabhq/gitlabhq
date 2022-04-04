@@ -9,6 +9,7 @@ module QA
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pypi-package-project'
+          project.visibility = :private
         end
       end
 

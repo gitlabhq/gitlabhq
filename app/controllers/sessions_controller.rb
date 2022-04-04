@@ -39,7 +39,7 @@ class SessionsController < Devise::SessionsController
   after_action :log_failed_login, if: :action_new_and_failed_login?
   after_action :verify_known_sign_in, only: [:create]
 
-  helper_method :captcha_enabled?, :captcha_on_login_required?, :arkose_labs_enabled?
+  helper_method :captcha_enabled?, :captcha_on_login_required?
 
   # protect_from_forgery is already prepended in ApplicationController but
   # authenticate_with_two_factor which signs in the user is prepended before
@@ -109,10 +109,6 @@ class SessionsController < Devise::SessionsController
 
   def captcha_on_login_required?
     Gitlab::Recaptcha.enabled_on_login? && unverified_anonymous_user?
-  end
-
-  def arkose_labs_enabled?
-    false
   end
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Use-Recaptcha-with-Devise#devisepasswordscontroller

@@ -41,7 +41,7 @@ describe('Shortcuts', () => {
       ).toHaveBeenCalled();
     });
 
-    it('focues preview button inside edit comment form', () => {
+    it('focuses preview button inside edit comment form', () => {
       document.querySelector('.js-note-edit').click();
 
       Shortcuts.toggleMarkdownPreview(

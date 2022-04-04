@@ -11,7 +11,6 @@ RSpec.describe 'devise/shared/_signin_box' do
       allow(view).to receive(:captcha_enabled?).and_return(false)
       allow(view).to receive(:captcha_on_login_required?).and_return(false)
       allow(view).to receive(:experiment_enabled?).and_return(false)
-      allow(view).to receive(:arkose_labs_enabled?).and_return(false)
     end
 
     it 'is shown when Crowd is enabled' do

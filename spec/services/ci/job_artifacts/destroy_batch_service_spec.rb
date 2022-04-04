@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::DestroyBatchService do
-  let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id]) }
+  let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id, trace_artifact.id]) }
   let(:service) { described_class.new(artifacts, pick_up_at: Time.current) }
 
   let_it_be(:artifact_with_file, refind: true) do
@@ -16,6 +16,10 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
 
   let_it_be(:undeleted_artifact, refind: true) do
     create(:ci_job_artifact)
+  end
+
+  let_it_be(:trace_artifact, refind: true) do
+    create(:ci_job_artifact, :trace, :expired)
   end
 
   describe '.execute' do
@@ -40,6 +44,12 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
       end
 
       execute
+    end
+
+    it 'preserves trace artifacts and removes any timestamp' do
+      expect { subject }
+        .to change { trace_artifact.reload.expire_at }.from(trace_artifact.expire_at).to(nil)
+        .and not_change { Ci::JobArtifact.exists?(trace_artifact.id) }
     end
 
     context 'ProjectStatistics' do
