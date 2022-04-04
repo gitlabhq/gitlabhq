@@ -474,6 +474,7 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
 - [Compliance framework pipelines](../project/settings/#compliance-pipeline-configuration)
   are recommended when:
 
+  - Scan execution enforcement is required for SAST or Secret Detection scans that use custom rulesets.
   - Scan execution enforcement is required for SAST IaC, Dependency Scanning,
     License Compliance, API Fuzzing, or Coverage-guided Fuzzing.
   - Scan execution enforcement is required for scanners external to GitLab.
@@ -482,8 +483,17 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
 - [Scan execution policies](policies/scan-execution-policies.md)
   are recommended when:
 
-  - Scan execution enforcement is required for DAST, SAST, Secret Detection, or Container Scanning.
+  - Scan execution enforcement is required for DAST.
+  - Scan execution enforcement is required for Container Scanning with project-specific variable
+    customizations. To accomplish this, users must create a separate security policy per project.
   - Scans are required to run on a regular, scheduled cadence.
+
+- Either solution can be used equally well when:
+
+  - Scan execution enforcement is required for SAST or Secret Detection when custom rulesets are not
+    used.
+  - Scan execution enforcement is required for Container Scanning with no project-specific variable
+    customizations.
 
 Additional details about the differences between the two solutions are outlined below:
 
