@@ -83,23 +83,25 @@ to describe the GitLab release that introduced the API call.
 Use the following table headers to describe the methods. Attributes should
 always be in code blocks using backticks (`` ` ``).
 
-Sort the attributes in the table: first, required, then alphabetically.
+Sort the table by required attributes first, then alphabetically.
 
 ```markdown
 | Attribute                    | Type          | Required               | Description                                          |
 |:-----------------------------|:--------------|:-----------------------|:-----------------------------------------------------|
-| `user`                       | string        | **{check-circle}** Yes | The GitLab username.                                 |
-| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | The IDs of the users to assign the issue to.         |
-| `confidential`               | boolean       | **{dotted-circle}** No | Set an issue to be confidential. Default is `false`. |
+| `title`                      | string        | **{check-circle}** Yes | Title of the issue.                                 |
+| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | IDs of the users to assign the issue to.         |
+| `confidential`               | boolean       | **{dotted-circle}** No | Sets the issue to confidential. Default is `false`. |
 ```
 
 Rendered example:
 
 | Attribute                    | Type          | Required               | Description                                          |
 |:-----------------------------|:--------------|:-----------------------|:-----------------------------------------------------|
-| `user`                       | string        | **{check-circle}** Yes | The GitLab username.                                 |
-| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | The IDs of the users to assign the issue to.         |
-| `confidential`               | boolean       | **{dotted-circle}** No | Set an issue to be confidential. Default is `false`. |
+| `title`                      | string        | **{check-circle}** Yes | Title of the issue.                                 |
+| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | IDs of the users to assign the issue to.         |
+| `confidential`               | boolean       | **{dotted-circle}** No | Sets the issue to confidential. Default is `false`. |
+
+For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
 
 ## cURL commands
 

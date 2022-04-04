@@ -126,31 +126,6 @@ Cloud licensing manages licenses for self-managed GitLab subscription plans. Clo
 - Activation: Unlock plan features and activate your self-managed instance by using an activation code.
 - License sync: Sync subscription data between your self-managed instance and GitLab.
 
-### What cloud licensing includes
-
-#### Auto-renewals
-
-For renewals that occur on or after 2021-08-01, your subscriptions will auto-renew.
-You have the option to manually cancel in the Customers Portal any time until thirty (30) days before renewal.
-
-#### Cloud licensing
-
-You can activate and manage your GitLab licenses by using the Customers Portal.
-This feature was formerly known as Seat Link.
-
-#### Operational data
-
-Service data helps GitLab improve the product experience and provide proactive support.
-Most data is categorized as optional and can be disabled. Data that is categorized as
-operational, like number of issues, pipelines, merge requests, and version, is not configurable.
-
-See our [service usage privacy page](https://about.gitlab.com/handbook/legal/privacy/services-usage-data/)
-for details about what information is collected.
-
-#### Quarterly subscription reconciliation
-
-See the [quarterly subscription reconciliation section](../quarterly_reconciliation.md) for more information.
-
 ### How cloud licensing works
 
 #### Add your license

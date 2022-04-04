@@ -16,9 +16,10 @@ You can use a group access token to authenticate:
 
 - With the [GitLab API](../../../api/index.md#personalprojectgroup-access-tokens).
 - In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate with Git over HTTPS.
+  Use:
 
-After you configure a group access token, you don't need a password when you authenticate.
-Instead, you can enter any non-blank value.
+  - Any non-blank value as a username.
+  - The group access token as the password.
 
 Group access tokens are similar to [project access tokens](../../project/settings/project_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are

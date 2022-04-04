@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/aws/aws-sdk-go/aws/session"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -70,7 +71,23 @@ func setupS3Session(s3Credentials config.S3Credentials, s3Config config.S3Config
 	}
 
 	if s3Config.Endpoint != "" {
-		cfg.Endpoint = aws.String(s3Config.Endpoint)
+		// The administrator has configured an S3 endpoint override,
+		// e.g. to make use of S3 IPv6 support or S3 FIPS mode. We
+		// need to configure a custom resolver to make sure that
+		// the custom endpoint is only used for S3 API calls, and not
+		// for STS API calls.
+		s3CustomResolver := func(service, region string, optFns ...func(*endpoints.Options)) (endpoints.ResolvedEndpoint, error) {
+			if service == endpoints.S3ServiceID {
+				return endpoints.ResolvedEndpoint{
+					URL:           s3Config.Endpoint,
+					SigningRegion: region,
+				}, nil
+			}
+
+			return endpoints.DefaultResolver().EndpointFor(service, region, optFns...)
+		}
+
+		cfg.EndpointResolver = endpoints.ResolverFunc(s3CustomResolver)
 	}
 
 	sess, err := session.NewSession(cfg)
