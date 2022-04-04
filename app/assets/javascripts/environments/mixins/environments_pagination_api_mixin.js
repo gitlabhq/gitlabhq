@@ -4,7 +4,7 @@
  * Components need to have `scope`, `page` and `requestData`
  */
 import { validateParams } from '~/pipelines/utils';
-import { historyPushState, buildUrlWithCurrentLocation } from '../../lib/utils/common_utils';
+import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 
 export default {
   methods: {

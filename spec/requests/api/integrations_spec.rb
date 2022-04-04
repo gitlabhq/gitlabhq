@@ -378,15 +378,15 @@ RSpec.describe API::Integrations do
 
     def assert_correct_response_fields(response_keys, integration)
       assert_fields_match_integration(response_keys, integration)
-      assert_password_fields_filtered(response_keys, integration)
+      assert_secret_fields_filtered(response_keys, integration)
     end
 
     def assert_fields_match_integration(response_keys, integration)
       expect(response_keys).to match_array(integration.api_field_names)
     end
 
-    def assert_password_fields_filtered(response_keys, integration)
-      expect(response_keys).not_to include(*integration.password_fields)
+    def assert_secret_fields_filtered(response_keys, integration)
+      expect(response_keys).not_to include(*integration.secret_fields)
     end
   end
 end

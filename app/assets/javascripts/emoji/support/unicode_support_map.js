@@ -1,4 +1,4 @@
-import AccessorUtilities from '../../lib/utils/accessor';
+import AccessorUtilities from '~/lib/utils/accessor';
 
 const GL_EMOJI_VERSION = '0.2.0';
 

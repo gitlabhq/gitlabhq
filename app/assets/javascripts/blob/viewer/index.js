@@ -11,9 +11,9 @@ import {
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { fixTitle } from '~/tooltips';
-import axios from '../../lib/utils/axios_utils';
-import { handleLocationHash } from '../../lib/utils/common_utils';
-import eventHub from '../../notes/event_hub';
+import axios from '~/lib/utils/axios_utils';
+import { handleLocationHash } from '~/lib/utils/common_utils';
+import eventHub from '~/notes/event_hub';
 
 const loadRichBlobViewer = (type) => {
   switch (type) {

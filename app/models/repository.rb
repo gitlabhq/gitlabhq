@@ -789,6 +789,12 @@ class Repository
   def create_file(user, path, content, **options)
     options[:actions] = [{ action: :create, file_path: path, content: content }]
 
+    execute_filemode = options.delete(:execute_filemode)
+
+    unless execute_filemode.nil?
+      options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
+    end
+
     multi_action(user, **options)
   end
 
@@ -797,6 +803,12 @@ class Repository
     action = previous_path && previous_path != path ? :move : :update
 
     options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
+
+    execute_filemode = options.delete(:execute_filemode)
+
+    unless execute_filemode.nil?
+      options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
+    end
 
     multi_action(user, **options)
   end

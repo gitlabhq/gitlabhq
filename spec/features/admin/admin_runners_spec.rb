@@ -154,35 +154,69 @@ RSpec.describe "Admin Runners" do
         end
       end
 
+      describe 'filter by paused' do
+        before do
+          create(:ci_runner, :instance, description: 'runner-active')
+          create(:ci_runner, :instance, description: 'runner-paused', active: false)
+
+          visit admin_runners_path
+        end
+
+        it 'shows all runners' do
+          expect(page).to have_link('All 2')
+
+          expect(page).to have_content 'runner-active'
+          expect(page).to have_content 'runner-paused'
+        end
+
+        it 'shows paused runners' do
+          input_filtered_search_filter_is_only('Paused', 'Yes')
+
+          expect(page).to have_link('All 1')
+
+          expect(page).not_to have_content 'runner-active'
+          expect(page).to have_content 'runner-paused'
+        end
+
+        it 'shows active runners' do
+          input_filtered_search_filter_is_only('Paused', 'No')
+
+          expect(page).to have_link('All 1')
+
+          expect(page).to have_content 'runner-active'
+          expect(page).not_to have_content 'runner-paused'
+        end
+      end
+
       describe 'filter by status' do
         let!(:never_contacted) { create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil) }
 
         before do
           create(:ci_runner, :instance, description: 'runner-1', contacted_at: Time.zone.now)
           create(:ci_runner, :instance, description: 'runner-2', contacted_at: Time.zone.now)
-          create(:ci_runner, :instance, description: 'runner-paused', active: false, contacted_at: Time.zone.now)
+          create(:ci_runner, :instance, description: 'runner-offline', contacted_at: 1.week.ago)
 
           visit admin_runners_path
         end
 
         it 'shows all runners' do
+          expect(page).to have_link('All 4')
+
           expect(page).to have_content 'runner-1'
           expect(page).to have_content 'runner-2'
-          expect(page).to have_content 'runner-paused'
+          expect(page).to have_content 'runner-offline'
           expect(page).to have_content 'runner-never-contacted'
-
-          expect(page).to have_link('All 4')
         end
 
         it 'shows correct runner when status matches' do
-          input_filtered_search_filter_is_only('Status', 'Active')
+          input_filtered_search_filter_is_only('Status', 'Online')
 
-          expect(page).to have_link('All 3')
+          expect(page).to have_link('All 2')
 
           expect(page).to have_content 'runner-1'
           expect(page).to have_content 'runner-2'
-          expect(page).to have_content 'runner-never-contacted'
-          expect(page).not_to have_content 'runner-paused'
+          expect(page).not_to have_content 'runner-offline'
+          expect(page).not_to have_content 'runner-never-contacted'
         end
 
         it 'shows no runner when status does not match' do
@@ -194,15 +228,15 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'shows correct runner when status is selected and search term is entered' do
-          input_filtered_search_filter_is_only('Status', 'Active')
+          input_filtered_search_filter_is_only('Status', 'Online')
           input_filtered_search_keys('runner-1')
 
           expect(page).to have_link('All 1')
 
           expect(page).to have_content 'runner-1'
           expect(page).not_to have_content 'runner-2'
+          expect(page).not_to have_content 'runner-offline'
           expect(page).not_to have_content 'runner-never-contacted'
-          expect(page).not_to have_content 'runner-paused'
         end
 
         it 'shows correct runner when status filter is entered' do
@@ -308,7 +342,7 @@ RSpec.describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_filter_is_only('Status', 'Active')
+          input_filtered_search_filter_is_only('Paused', 'No')
 
           expect(page).to have_content 'runner-project'
           expect(page).to have_content 'runner-group'
@@ -426,6 +460,18 @@ RSpec.describe "Admin Runners" do
         visit admin_runners_path('status[]': 'NOT_CONNECTED')
 
         expect(page).to have_current_path(admin_runners_path('status[]': 'NEVER_CONTACTED') )
+      end
+
+      it 'updates ACTIVE runner status to paused=false' do
+        visit admin_runners_path('status[]': 'ACTIVE')
+
+        expect(page).to have_current_path(admin_runners_path('paused[]': 'false') )
+      end
+
+      it 'updates PAUSED runner status to paused=true' do
+        visit admin_runners_path('status[]': 'PAUSED')
+
+        expect(page).to have_current_path(admin_runners_path('paused[]': 'true') )
       end
     end
 

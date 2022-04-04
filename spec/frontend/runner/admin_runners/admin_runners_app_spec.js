@@ -31,9 +31,10 @@ import {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PROJECT_TYPE,
+  PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
-  STATUS_ACTIVE,
+  STATUS_ONLINE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import adminRunnersQuery from '~/runner/graphql/list/admin_runners.query.graphql';
@@ -243,6 +244,10 @@ describe('AdminRunnersApp', () => {
 
     expect(findFilteredSearch().props('tokens')).toEqual([
       expect.objectContaining({
+        type: PARAM_KEY_PAUSED,
+        options: expect.any(Array),
+      }),
+      expect.objectContaining({
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
       }),
@@ -297,7 +302,7 @@ describe('AdminRunnersApp', () => {
 
   describe('when a filter is preselected', () => {
     beforeEach(async () => {
-      setWindowLocation(`?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}&tag[]=tag1`);
+      setWindowLocation(`?status[]=${STATUS_ONLINE}&runner_type[]=${INSTANCE_TYPE}&tag[]=tag1`);
 
       createComponent();
       await waitForPromises();
@@ -307,7 +312,7 @@ describe('AdminRunnersApp', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
         runnerType: INSTANCE_TYPE,
         filters: [
-          { type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } },
+          { type: 'status', value: { data: STATUS_ONLINE, operator: '=' } },
           { type: 'tag', value: { data: 'tag1', operator: '=' } },
         ],
         sort: 'CREATED_DESC',
@@ -317,7 +322,7 @@ describe('AdminRunnersApp', () => {
 
     it('requests the runners with filter parameters', () => {
       expect(mockRunnersQuery).toHaveBeenLastCalledWith({
-        status: STATUS_ACTIVE,
+        status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
         tagList: ['tag1'],
         sort: DEFAULT_SORT,
@@ -330,7 +335,7 @@ describe('AdminRunnersApp', () => {
     beforeEach(() => {
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
-        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } }],
+        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: CREATED_ASC,
       });
     });
@@ -338,13 +343,13 @@ describe('AdminRunnersApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: 'http://test.host/admin/runners?status[]=ACTIVE&sort=CREATED_ASC',
+        url: 'http://test.host/admin/runners?status[]=ONLINE&sort=CREATED_ASC',
       });
     });
 
     it('requests the runners with filters', () => {
       expect(mockRunnersQuery).toHaveBeenLastCalledWith({
-        status: STATUS_ACTIVE,
+        status: STATUS_ONLINE,
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
       });

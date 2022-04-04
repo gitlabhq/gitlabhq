@@ -437,7 +437,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/error_tracking/collector/dsn_spec.rb
     - spec/lib/error_tracking/collector/sentry_auth_parser_spec.rb
     - spec/lib/error_tracking/collector/sentry_request_parser_spec.rb
-    - spec/lib/error_tracking/sentry_client/issue_spec.rb
     - spec/lib/extracts_path_spec.rb
     - spec/lib/feature_spec.rb
     - spec/lib/gitaly/server_spec.rb

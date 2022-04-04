@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { isInMRPage } from '../../lib/utils/common_utils';
+import { isInMRPage } from '~/lib/utils/common_utils';
 import * as constants from '../constants';
 import * as types from './mutation_types';
 import * as utils from './utils';

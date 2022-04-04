@@ -1,4 +1,4 @@
-import { formatDate, getTimeago } from '../../lib/utils/datetime_utility';
+import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 
 /**
  * Mixin with time ago methods used in some vue components

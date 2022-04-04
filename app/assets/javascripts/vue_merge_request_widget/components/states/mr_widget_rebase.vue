@@ -3,7 +3,7 @@ import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import simplePoll from '../../../lib/utils/simple_poll';
+import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import rebaseQuery from '../../queries/states/rebase.query.graphql';

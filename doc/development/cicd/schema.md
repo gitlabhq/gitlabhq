@@ -5,26 +5,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, howto
 ---
 
-# Contribute to the CI Schema **(FREE)**
+# Contribute to the CI/CD Schema **(FREE)**
 
-The [pipeline editor](../../ci/pipeline_editor/index.md) uses a CI schema to enhance
-the authoring experience of our CI configuration files. With the CI schema, the editor can:
+The [pipeline editor](../../ci/pipeline_editor/index.md) uses a CI/CD schema to enhance
+the authoring experience of our CI/CD configuration files. With the CI/CD schema, the editor can:
 
-- Validate the content of the CI configuration file as it is being written in the editor.
+- Validate the content of the CI/CD configuration file as it is being written in the editor.
 - Provide autocomplete functionality and suggest available keywords.
 - Provide definitions of keywords through annotations.
 
-As the rules and keywords for configuring our CI configuration files change, so too
-should our CI schema.
+As the rules and keywords for configuring our CI/CD configuration files change, so too
+should our CI/CD schema.
 
 This feature is behind the [`schema_linting`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_flags/development/schema_linting.yml)
 feature flag for self-managed instances, and is enabled for GitLab.com.
 
 ## JSON Schemas
 
-The CI schema follows the [JSON Schema Draft-07](https://json-schema.org/draft-07/json-schema-release-notes.html)
-specification. Although the CI configuration file is written in YAML, it is converted
-into JSON by using `monaco-yaml` before it is validated by the CI schema.
+The CI/CD schema follows the [JSON Schema Draft-07](https://json-schema.org/draft-07/json-schema-release-notes.html)
+specification. Although the CI/CD configuration file is written in YAML, it is converted
+into JSON by using `monaco-yaml` before it is validated by the CI/CD schema.
 
 If you're new to JSON schemas, consider checking out
 [this guide](https://json-schema.org/learn/getting-started-step-by-step) for
@@ -32,8 +32,8 @@ a step-by-step introduction on how to work with JSON schemas.
 
 ## Update Keywords
 
-The CI schema is at [`app/assets/javascripts/editor/schema/ci.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json).
-It contains all the keywords available for authoring CI configuration files.
+The CI/CD schema is at [`app/assets/javascripts/editor/schema/ci.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json).
+It contains all the keywords available for authoring CI/CD configuration files.
 Check the [keyword reference](../../ci/yaml/index.md) for a comprehensive list of
 all available keywords.
 
@@ -138,7 +138,7 @@ under the topmost **properties** key.
 
 ## Test the schema
 
-For now, the CI schema can only be tested manually. To verify the behavior is correct:
+For now, the CI/CD schema can only be tested manually. To verify the behavior is correct:
 
 1. Enable the `schema_linting` feature flag.
 1. Go to **CI/CD** > **Editor**.

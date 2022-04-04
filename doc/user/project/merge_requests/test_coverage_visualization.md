@@ -156,7 +156,9 @@ test:
     - npx nyc --reporter cobertura mocha
   artifacts:
     reports:
-      cobertura: coverage/cobertura-coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
 ```
 
 ### Java and Kotlin examples

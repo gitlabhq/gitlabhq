@@ -2,7 +2,7 @@
 import { GlTooltipDirective } from '@gitlab/ui';
 
 import timeagoMixin from '../mixins/timeago';
-import '../../lib/utils/datetime_utility';
+import '~/lib/utils/datetime_utility';
 
 /**
  * Port of ruby helper time_ago_with_tooltip

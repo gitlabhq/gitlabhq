@@ -9,12 +9,19 @@ RSpec.describe API::Files do
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { "files%2Fruby%2Fpopen%2Erb" }
+  let(:executable_file_path) { "files%2Fexecutables%2Fls" }
   let(:rouge_file_path) { "%2e%2e%2f" }
   let(:absolute_path) { "%2Fetc%2Fpasswd.rb" }
   let(:invalid_file_message) { 'file_path should be a valid file path' }
   let(:params) do
     {
       ref: 'master'
+    }
+  end
+
+  let(:executable_ref_params) do
+    {
+      ref: 'with-executables'
     }
   end
 
@@ -219,7 +226,24 @@ RSpec.describe API::Files do
         expect(json_response['file_name']).to eq('popen.rb')
         expect(json_response['last_commit_id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
         expect(json_response['content_sha256']).to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
+        expect(json_response['execute_filemode']).to eq(false)
         expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
+      end
+
+      context 'for executable file' do
+        it 'returns file attributes as json' do
+          get api(route(executable_file_path), api_user, **options), params: executable_ref_params
+
+          aggregate_failures 'testing response' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['file_path']).to eq(CGI.unescape(executable_file_path))
+            expect(json_response['file_name']).to eq('ls')
+            expect(json_response['last_commit_id']).to eq('6b8dc4a827797aa025ff6b8f425e583858a10d4f')
+            expect(json_response['content_sha256']).to eq('2c74b1181ef780dfb692c030d3a0df6e0b624135c38a9344e56b9f80007b6191')
+            expect(json_response['execute_filemode']).to eq(true)
+            expect(Base64.decode64(json_response['content']).lines.first).to eq("#!/bin/sh\n")
+          end
+        end
       end
 
       it 'returns json when file has txt extension' do
@@ -386,6 +410,23 @@ RSpec.describe API::Files do
         expect(response.headers['X-Gitlab-Last-Commit-Id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
         expect(response.headers['X-Gitlab-Content-Sha256'])
           .to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
+        expect(response.headers['X-Gitlab-Execute-Filemode']).to eq("false")
+      end
+
+      context 'for executable file' do
+        it 'returns file attributes in headers' do
+          head api(route(executable_file_path) + '/blame', current_user), params: executable_ref_params
+
+          aggregate_failures 'testing response' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers['X-Gitlab-File-Path']).to eq(CGI.unescape(executable_file_path))
+            expect(response.headers['X-Gitlab-File-Name']).to eq('ls')
+            expect(response.headers['X-Gitlab-Last-Commit-Id']).to eq('6b8dc4a827797aa025ff6b8f425e583858a10d4f')
+            expect(response.headers['X-Gitlab-Content-Sha256'])
+              .to eq('2c74b1181ef780dfb692c030d3a0df6e0b624135c38a9344e56b9f80007b6191')
+            expect(response.headers['X-Gitlab-Execute-Filemode']).to eq("true")
+          end
+        end
       end
 
       it 'returns 400 when file path is invalid' do
@@ -642,6 +683,15 @@ RSpec.describe API::Files do
       }
     end
 
+    let(:executable_params) do
+      {
+        branch: "master",
+        content: "puts 8",
+        commit_message: "Added newfile",
+        execute_filemode: true
+      }
+    end
+
     it 'returns 400 when file path is invalid' do
       post api(route(rouge_file_path), user), params: params
 
@@ -661,6 +711,18 @@ RSpec.describe API::Files do
       last_commit = project.repository.commit.raw
       expect(last_commit.author_email).to eq(user.email)
       expect(last_commit.author_name).to eq(user.name)
+      expect(project.repository.blob_at_branch(params[:branch], CGI.unescape(file_path)).executable?).to eq(false)
+    end
+
+    it "creates a new executable file in project repo" do
+      post api(route(file_path), user), params: executable_params
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response["file_path"]).to eq(CGI.unescape(file_path))
+      last_commit = project.repository.commit.raw
+      expect(last_commit.author_email).to eq(user.email)
+      expect(last_commit.author_name).to eq(user.name)
+      expect(project.repository.blob_at_branch(params[:branch], CGI.unescape(file_path)).executable?).to eq(true)
     end
 
     it "returns a 400 bad request if no mandatory params given" do
@@ -818,6 +880,44 @@ RSpec.describe API::Files do
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
+      end
+    end
+
+    context 'when specifying the execute_filemode' do
+      let(:executable_params) do
+        {
+          branch: 'master',
+          content: 'puts 8',
+          commit_message: 'Changed file',
+          execute_filemode: true
+        }
+      end
+
+      let(:non_executable_params) do
+        {
+          branch: 'with-executables',
+          content: 'puts 8',
+          commit_message: 'Changed file',
+          execute_filemode: false
+        }
+      end
+
+      it 'updates to executable file mode' do
+        put api(route(file_path), user), params: executable_params
+
+        aggregate_failures 'testing response' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(project.repository.blob_at_branch(executable_params[:branch], CGI.unescape(file_path)).executable?).to eq(true)
+        end
+      end
+
+      it 'updates to non-executable file mode' do
+        put api(route(executable_file_path), user), params: non_executable_params
+
+        aggregate_failures 'testing response' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(project.repository.blob_at_branch(non_executable_params[:branch], CGI.unescape(executable_file_path)).executable?).to eq(false)
+        end
       end
     end
   end

@@ -720,7 +720,7 @@ RSpec.describe Integration do
 
   describe '#api_field_names' do
     shared_examples 'api field names' do
-      it 'filters out sensitive fields' do
+      it 'filters out secret fields' do
         safe_fields = %w[some_safe_field safe_field url trojan_gift]
 
         expect(fake_integration.new).to have_attributes(
@@ -857,7 +857,7 @@ RSpec.describe Integration do
     end
   end
 
-  describe '#password_fields' do
+  describe '#secret_fields' do
     it 'returns all fields with type `password`' do
       allow(subject).to receive(:fields).and_return([
         { name: 'password', type: 'password' },
@@ -865,11 +865,11 @@ RSpec.describe Integration do
         { name: 'public', type: 'text' }
       ])
 
-      expect(subject.password_fields).to match_array(%w[password secret])
+      expect(subject.secret_fields).to match_array(%w[password secret])
     end
 
-    it 'returns an empty array if no password fields exist' do
-      expect(subject.password_fields).to eq([])
+    it 'returns an empty array if no secret fields exist' do
+      expect(subject.secret_fields).to eq([])
     end
   end
 

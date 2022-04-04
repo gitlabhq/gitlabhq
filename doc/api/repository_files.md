@@ -23,6 +23,8 @@ in the following table.
 
 ## Get file from repository
 
+> The `execute_filemode` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83499) in GitLab 14.10.
+
 Allows you to receive information about file in repository like name, size,
 content. File content is Base64 encoded. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
@@ -54,7 +56,8 @@ Example response:
   "ref": "master",
   "blob_id": "79f7bbd25901e8334750839545a9bd021f0e4c83",
   "commit_id": "d5a3ff139356ce33e37e73add446f16869741b50",
-  "last_commit_id": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d"
+  "last_commit_id": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
+  "execute_filemode": false
 }
 ```
 
@@ -85,6 +88,7 @@ X-Gitlab-File-Path: app/models/key.rb
 X-Gitlab-Last-Commit-Id: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 X-Gitlab-Ref: master
 X-Gitlab-Size: 1476
+X-Gitlab-Execute-Filemode: false
 ...
 ```
 
@@ -155,6 +159,7 @@ X-Gitlab-File-Path: path/to/file.rb
 X-Gitlab-Last-Commit-Id: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 X-Gitlab-Ref: master
 X-Gitlab-Size: 1476
+X-Gitlab-Execute-Filemode: false
 ...
 ```
 
@@ -179,6 +184,8 @@ Like [Get file from repository](repository_files.md#get-file-from-repository) yo
 
 ## Create new file in repository
 
+> The `execute_filemode` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83499) in GitLab 14.10.
+
 This allows you to create a single file. For creating multiple files with a single request see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```plaintext
@@ -196,6 +203,7 @@ POST /projects/:id/repository/files/:file_path
 | `author_name`    | string         | no       | The commit author's name. |
 | `content`        | string         | yes      | The file's content. |
 | `commit_message` | string         | yes      | The commit message. |
+| `execute_filemode` | boolean      | no       | Enables or disables the `execute` flag on the file. Can be `true` or `false`. |
 
 ```shell
 curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' \
@@ -216,6 +224,8 @@ Example response:
 
 ## Update existing file in repository
 
+> The `execute_filemode` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83499) in GitLab 14.10.
+
 This allows you to update a single file. For updating multiple files with a single request see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```plaintext
@@ -234,6 +244,7 @@ PUT /projects/:id/repository/files/:file_path
 | `content`        | string         | yes      | The file's content. |
 | `commit_message` | string         | yes      | The commit message. |
 | `last_commit_id` | string         | no       | Last known file commit ID. |
+| `execute_filemode` | boolean      | no       | Enables or disables the `execute` flag on the file. Can be `true` or `false`. |
 
 ```shell
 curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' \

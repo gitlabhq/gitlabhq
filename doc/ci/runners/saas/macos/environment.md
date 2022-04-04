@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# VM instances and images for SaaS runners on macOS **(FREE SAAS)**
+# VM instances and images for SaaS runners on macOS **(PREMIUM SAAS)**
 
 When you use SaaS runners on macOS:
 

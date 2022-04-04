@@ -84,17 +84,17 @@ RSpec.describe ::Integrations::Field do
     end
   end
 
-  describe '#sensitive' do
+  describe '#secret?' do
     context 'when empty' do
-      it { is_expected.not_to be_sensitive }
+      it { is_expected.not_to be_secret }
     end
 
-    context 'when a password field' do
+    context 'when a secret field' do
       before do
         attrs[:type] = 'password'
       end
 
-      it { is_expected.to be_sensitive }
+      it { is_expected.to be_secret }
     end
 
     %w[token api_token api_key secret_key secret_sauce password passphrase].each do |name|
@@ -103,7 +103,7 @@ RSpec.describe ::Integrations::Field do
           attrs[:name] = name
         end
 
-        it { is_expected.to be_sensitive }
+        it { is_expected.to be_secret }
       end
     end
 
@@ -112,7 +112,7 @@ RSpec.describe ::Integrations::Field do
         attrs[:name] = :url
       end
 
-      it { is_expected.not_to be_sensitive }
+      it { is_expected.not_to be_secret }
     end
   end
 end

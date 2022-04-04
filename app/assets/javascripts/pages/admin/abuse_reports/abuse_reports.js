@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { truncate } from '../../../lib/utils/text_utility';
+import { truncate } from '~/lib/utils/text_utility';
 
 const MAX_MESSAGE_LENGTH = 500;
 const MESSAGE_CELL_SELECTOR = '.abuse-reports .message';

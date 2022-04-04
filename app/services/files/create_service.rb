@@ -22,7 +22,8 @@ module Files
         author_email: @author_email,
         author_name: @author_name,
         start_project: @start_project,
-        start_branch_name: @start_branch)
+        start_branch_name: @start_branch,
+        execute_filemode: @execute_filemode)
     end
   end
 end

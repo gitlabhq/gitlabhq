@@ -1,25 +1,17 @@
 import { __, s__ } from '~/locale';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
-import {
-  STATUS_ONLINE,
-  STATUS_OFFLINE,
-  STATUS_NEVER_CONTACTED,
-  STATUS_STALE,
-  PARAM_KEY_STATUS,
-} from '../../constants';
+import { PARAM_KEY_PAUSED } from '../../constants';
 
 const options = [
-  { value: STATUS_ONLINE, title: s__('Runners|Online') },
-  { value: STATUS_OFFLINE, title: s__('Runners|Offline') },
-  { value: STATUS_NEVER_CONTACTED, title: s__('Runners|Never contacted') },
-  { value: STATUS_STALE, title: s__('Runners|Stale') },
+  { value: 'true', title: __('Yes') },
+  { value: 'false', title: __('No') },
 ];
 
-export const statusTokenConfig = {
-  icon: 'status',
-  title: __('Status'),
-  type: PARAM_KEY_STATUS,
+export const pausedTokenConfig = {
+  icon: 'pause',
+  title: s__('Runners|Paused'),
+  type: PARAM_KEY_PAUSED,
   token: BaseToken,
   unique: true,
   options: options.map(({ value, title }) => ({

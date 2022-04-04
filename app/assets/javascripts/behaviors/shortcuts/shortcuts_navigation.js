@@ -1,6 +1,6 @@
 import Mousetrap from 'mousetrap';
 import { visitUrl, constructWebIDEPath } from '~/lib/utils/url_utility';
-import findAndFollowLink from '../../lib/utils/navigation_utility';
+import findAndFollowLink from '~/lib/utils/navigation_utility';
 import {
   keysFor,
   GO_TO_PROJECT_OVERVIEW,

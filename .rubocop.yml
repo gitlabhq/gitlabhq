@@ -135,6 +135,7 @@ Naming/FileName:
     - 'qa/qa/specs/**/*'
     - 'qa/tasks/**/*.rake'
     - '**/*.ru'
+    - 'app/graphql/types/issue_connection.rb'
 
   IgnoreExecutableScripts: true
   AllowedAcronyms:

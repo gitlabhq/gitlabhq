@@ -1,10 +1,11 @@
 query getRunnersCount(
+  $paused: Boolean
   $status: CiRunnerStatus
   $type: CiRunnerType
   $tagList: [String!]
   $search: String
 ) {
-  runners(status: $status, type: $type, tagList: $tagList, search: $search) {
+  runners(paused: $paused, status: $status, type: $type, tagList: $tagList, search: $search) {
     count
   }
 }

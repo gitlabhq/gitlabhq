@@ -24,7 +24,8 @@ module API
           file_content_encoding: attrs[:encoding],
           author_email: attrs[:author_email],
           author_name: attrs[:author_name],
-          last_commit_sha: attrs[:last_commit_id]
+          last_commit_sha: attrs[:last_commit_id],
+          execute_filemode: attrs[:execute_filemode]
         }
       end
 
@@ -65,7 +66,8 @@ module API
           ref: params[:ref],
           blob_id: @blob.id,
           commit_id: @commit.id,
-          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, params[:file_path], literal_pathspec: true)
+          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, params[:file_path], literal_pathspec: true),
+          execute_filemode: @blob.executable?
         }
       end
 
@@ -83,6 +85,7 @@ module API
         requires :content, type: String, desc: 'File content'
         optional :encoding, type: String, values: %w[base64], desc: 'File encoding'
         optional :last_commit_id, type: String, desc: 'Last known commit id for this file'
+        optional :execute_filemode, type: Boolean, desc: 'Enable / Disable the executable flag on the file path'
       end
     end
 

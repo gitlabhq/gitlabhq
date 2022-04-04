@@ -256,7 +256,6 @@ Layout/FirstHashElementIndentation:
     - 'lib/banzai/filter/commit_trailers_filter.rb'
     - 'lib/banzai/filter/playable_link_filter.rb'
     - 'lib/banzai/reference_parser/user_parser.rb'
-    - 'lib/error_tracking/sentry_client/issue.rb'
     - 'lib/gitlab/analytics/cycle_analytics/aggregated/records_fetcher.rb'
     - 'lib/gitlab/analytics/cycle_analytics/records_fetcher.rb'
     - 'lib/gitlab/asciidoc.rb'

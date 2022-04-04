@@ -15,14 +15,14 @@ module ErrorTracking
         stack_trace = parse_stack_trace(event)
 
         Gitlab::ErrorTracking::ErrorEvent.new(
-          issue_id: event.dig('groupID'),
-          date_received: event.dig('dateReceived'),
+          issue_id: event['groupID'],
+          date_received: event['dateReceived'],
           stack_trace_entries: stack_trace
         )
       end
 
       def parse_stack_trace(event)
-        exception_entry = event.dig('entries')&.detect { |h| h['type'] == 'exception' }
+        exception_entry = event['entries']&.detect { |h| h['type'] == 'exception' }
         return [] unless exception_entry
 
         exception_values = exception_entry.dig('data', 'values')

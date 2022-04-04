@@ -97,9 +97,8 @@ a given group, request an engineering review from one of the group's members.
 After the engineering review is complete, assign the MR to the
 [Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
 in the modified documentation page's metadata.
-
-If you have questions or need further input, request a review from the
-Technical Writer assigned to the [Development Guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines).
+If the page is not assigned to a specific group, follow the
+[Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines).
 
 #### Broader changes
 
@@ -139,12 +138,13 @@ In these cases, use the following workflow:
    and approval from the VP of Development, the DRI for Development Guidelines,
    @clefelhocz1.
 
-1. After all approvals are complete, review the page's metadata to
-   [find a Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
-   who can help you merge the changes.
-   for final content review and merge. The Technical Writer may ask for
-   additional approvals as previously suggested before merging the MR.
-
+1. After all approvals are complete, assign the MR to the
+   [Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+   in the modified documentation page's metadata.
+   If the page is not assigned to a specific group, follow the
+   [Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines).
+   The Technical Writer may ask for additional approvals as previously suggested before merging the MR.
+   
 ### Reviewer values
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57293) in GitLab 14.1.

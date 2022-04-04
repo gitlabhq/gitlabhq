@@ -5,7 +5,9 @@ import {
   urlQueryToFilter,
   prepareTokens,
 } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import {
+  PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_RUNNER_TYPE,
   PARAM_KEY_TAG,
@@ -83,6 +85,19 @@ const getPaginationFromParams = (params) => {
 
 // Outdated URL parameters
 const STATUS_NOT_CONNECTED = 'NOT_CONNECTED';
+const STATUS_ACTIVE = 'ACTIVE';
+const STATUS_PAUSED = 'PAUSED';
+
+/**
+ * Replaces params into a URL
+ *
+ * @param {String} url - Original URL
+ * @param {Object} params - Query parameters to update
+ * @returns Updated URL
+ */
+const updateUrlParams = (url, params = {}) => {
+  return setUrlParams(params, url, false, true, true);
+};
 
 /**
  * Returns an updated URL for old (or deprecated) admin runner URLs.
@@ -98,14 +113,26 @@ export const updateOutdatedUrl = (url = window.location.href) => {
 
   const params = queryToObject(query, { gatherArrays: true });
 
-  const runnerType = params[PARAM_KEY_STATUS]?.[0] || null;
-  if (runnerType === STATUS_NOT_CONNECTED) {
-    const updatedParams = {
-      [PARAM_KEY_STATUS]: [STATUS_NEVER_CONTACTED],
-    };
-    return setUrlParams(updatedParams, url, false, true, true);
+  const status = params[PARAM_KEY_STATUS]?.[0] || null;
+
+  switch (status) {
+    case STATUS_NOT_CONNECTED:
+      return updateUrlParams(url, {
+        [PARAM_KEY_STATUS]: [STATUS_NEVER_CONTACTED],
+      });
+    case STATUS_ACTIVE:
+      return updateUrlParams(url, {
+        [PARAM_KEY_PAUSED]: ['false'],
+        [PARAM_KEY_STATUS]: [], // Important! clear PARAM_KEY_STATUS to avoid a redirection loop!
+      });
+    case STATUS_PAUSED:
+      return updateUrlParams(url, {
+        [PARAM_KEY_PAUSED]: ['true'],
+        [PARAM_KEY_STATUS]: [], // Important! clear PARAM_KEY_STATUS to avoid a redirection loop!
+      });
+    default:
+      return null;
   }
-  return null;
 };
 
 /**
@@ -121,7 +148,7 @@ export const fromUrlQueryToSearch = (query = window.location.search) => {
     runnerType,
     filters: prepareTokens(
       urlQueryToFilter(query, {
-        filterNamesAllowList: [PARAM_KEY_STATUS, PARAM_KEY_TAG],
+        filterNamesAllowList: [PARAM_KEY_PAUSED, PARAM_KEY_STATUS, PARAM_KEY_TAG],
         filteredSearchTermKey: PARAM_KEY_SEARCH,
       }),
     ),
@@ -194,6 +221,12 @@ export const fromSearchToVariables = ({
   [filterVariables.status] = queryObj[PARAM_KEY_STATUS] || [];
   filterVariables.search = queryObj[PARAM_KEY_SEARCH];
   filterVariables.tagList = queryObj[PARAM_KEY_TAG];
+
+  if (queryObj[PARAM_KEY_PAUSED]) {
+    filterVariables.paused = parseBoolean(queryObj[PARAM_KEY_PAUSED]);
+  } else {
+    filterVariables.paused = undefined;
+  }
 
   if (runnerType) {
     filterVariables.type = runnerType;

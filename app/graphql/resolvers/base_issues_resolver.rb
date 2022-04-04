@@ -12,7 +12,8 @@ module Resolvers
               required: false,
               description: 'Current state of this issue.'
 
-    type Types::IssueType.connection_type, null: true
+    # see app/graphql/types/issue_connection.rb
+    type 'Types::IssueConnection', null: true
 
     NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
                                  popularity_asc popularity_desc

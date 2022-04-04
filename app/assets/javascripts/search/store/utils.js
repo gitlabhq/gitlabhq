@@ -1,4 +1,4 @@
-import AccessorUtilities from '../../lib/utils/accessor';
+import AccessorUtilities from '~/lib/utils/accessor';
 import { MAX_FREQUENT_ITEMS, MAX_FREQUENCY, SIDEBAR_PARAMS } from './constants';
 
 function extractKeys(object, keyList) {

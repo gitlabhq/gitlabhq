@@ -7,6 +7,7 @@ query getGroupRunners(
   $after: String
   $first: Int
   $last: Int
+  $paused: Boolean
   $status: CiRunnerStatus
   $type: CiRunnerType
   $search: String
@@ -20,6 +21,7 @@ query getGroupRunners(
       after: $after
       first: $first
       last: $last
+      paused: $paused
       status: $status
       type: $type
       search: $search

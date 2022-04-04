@@ -14,6 +14,7 @@ import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
 
+import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import {
   GROUP_FILTERED_SEARCH_NAMESPACE,
@@ -189,7 +190,7 @@ export default {
       return !this.runnersLoading && !this.runners.items.length;
     },
     searchTokens() {
-      return [statusTokenConfig];
+      return [pausedTokenConfig, statusTokenConfig];
     },
     filteredSearchNamespace() {
       return `${GROUP_FILTERED_SEARCH_NAMESPACE}/${this.groupFullPath}`;

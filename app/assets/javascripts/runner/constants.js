@@ -95,6 +95,7 @@ export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 // - GlFilteredSearch tokens type
 
 export const PARAM_KEY_STATUS = 'status';
+export const PARAM_KEY_PAUSED = 'paused';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';
 export const PARAM_KEY_TAG = 'tag';
 export const PARAM_KEY_SEARCH = 'search';
@@ -111,9 +112,6 @@ export const GROUP_TYPE = 'GROUP_TYPE';
 export const PROJECT_TYPE = 'PROJECT_TYPE';
 
 // CiRunnerStatus
-
-export const STATUS_ACTIVE = 'ACTIVE';
-export const STATUS_PAUSED = 'PAUSED';
 
 export const STATUS_ONLINE = 'ONLINE';
 export const STATUS_NEVER_CONTACTED = 'NEVER_CONTACTED';

@@ -1,6 +1,6 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { scrollToElementWithContext, scrollToElement } from '~/lib/utils/common_utils';
-import { updateHistory } from '../../lib/utils/url_utility';
+import { updateHistory } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
 
 /**

@@ -428,7 +428,9 @@ class Integration < ApplicationRecord
     []
   end
 
-  def password_fields
+  # TODO: Once all integrations use `Integrations::Field` we can
+  # use `#secret?` here.
+  def secret_fields
     fields.select { |f| f[:type] == 'password' }.pluck(:name)
   end
 

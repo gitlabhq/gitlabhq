@@ -54,9 +54,7 @@ module ErrorTracking
       end
 
       def list_issue_sentry_query(issue_status:, limit:, sort: nil, search_term: '', cursor: nil)
-        unless SENTRY_API_SORT_VALUE_MAP.key?(sort)
-          raise BadRequestError, 'Invalid value for sort param'
-        end
+        raise BadRequestError, 'Invalid value for sort param' unless SENTRY_API_SORT_VALUE_MAP.key?(sort)
 
         {
           query: "is:#{issue_status} #{search_term}".strip,
@@ -69,7 +67,8 @@ module ErrorTracking
       def validate_size(issues)
         return if Gitlab::Utils::DeepSize.new(issues).valid?
 
-        raise ResponseInvalidSizeError, "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."
+        message = "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."
+        raise ResponseInvalidSizeError, message
       end
 
       def get_issue(issue_id:)
@@ -117,7 +116,7 @@ module ErrorTracking
       end
 
       def map_to_errors(issues)
-        issues.map(&method(:map_to_error))
+        issues.map { map_to_error(_1) }
       end
 
       def map_to_error(issue)
@@ -142,7 +141,7 @@ module ErrorTracking
       end
 
       def map_to_detailed_error(issue)
-        Gitlab::ErrorTracking::DetailedError.new({
+        Gitlab::ErrorTracking::DetailedError.new(
           id: issue.fetch('id'),
           first_seen: issue.fetch('firstSeen', nil),
           last_seen: issue.fetch('lastSeen', nil),
@@ -169,7 +168,7 @@ module ErrorTracking
           last_release_short_version: issue.dig('lastRelease', 'shortVersion'),
           last_release_version: issue.dig('lastRelease', 'version'),
           integrated: false
-        })
+        )
       end
 
       def extract_tags(issue)

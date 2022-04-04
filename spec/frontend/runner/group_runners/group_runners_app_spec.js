@@ -28,8 +28,9 @@ import {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PROJECT_TYPE,
+  PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
-  STATUS_ACTIVE,
+  STATUS_ONLINE,
   RUNNER_PAGE_SIZE,
   I18N_EDIT,
 } from '~/runner/constants';
@@ -188,13 +189,16 @@ describe('GroupRunnersApp', () => {
 
     const tokens = findFilteredSearch().props('tokens');
 
-    expect(tokens).toHaveLength(1);
-    expect(tokens[0]).toEqual(
+    expect(tokens).toEqual([
+      expect.objectContaining({
+        type: PARAM_KEY_PAUSED,
+        options: expect.any(Array),
+      }),
       expect.objectContaining({
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
       }),
-    );
+    ]);
   });
 
   describe('Single runner row', () => {
@@ -253,7 +257,7 @@ describe('GroupRunnersApp', () => {
 
   describe('when a filter is preselected', () => {
     beforeEach(async () => {
-      setWindowLocation(`?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}`);
+      setWindowLocation(`?status[]=${STATUS_ONLINE}&runner_type[]=${INSTANCE_TYPE}`);
 
       createComponent();
       await waitForPromises();
@@ -262,7 +266,7 @@ describe('GroupRunnersApp', () => {
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
         runnerType: INSTANCE_TYPE,
-        filters: [{ type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } }],
+        filters: [{ type: 'status', value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: 'CREATED_DESC',
         pagination: { page: 1 },
       });
@@ -271,7 +275,7 @@ describe('GroupRunnersApp', () => {
     it('requests the runners with filter parameters', () => {
       expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
-        status: STATUS_ACTIVE,
+        status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
         sort: DEFAULT_SORT,
         first: RUNNER_PAGE_SIZE,
@@ -283,7 +287,7 @@ describe('GroupRunnersApp', () => {
     beforeEach(async () => {
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
-        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } }],
+        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: CREATED_ASC,
       });
 
@@ -293,14 +297,14 @@ describe('GroupRunnersApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: 'http://test.host/groups/group1/-/runners?status[]=ACTIVE&sort=CREATED_ASC',
+        url: 'http://test.host/groups/group1/-/runners?status[]=ONLINE&sort=CREATED_ASC',
       });
     });
 
     it('requests the runners with filters', () => {
       expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
-        status: STATUS_ACTIVE,
+        status: STATUS_ONLINE,
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
       });

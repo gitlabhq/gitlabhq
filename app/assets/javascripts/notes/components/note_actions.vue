@@ -9,7 +9,7 @@ import { __, sprintf } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { splitCamelCase } from '../../lib/utils/text_utility';
+import { splitCamelCase } from '~/lib/utils/text_utility';
 import ReplyButton from './note_actions/reply_button.vue';
 
 export default {

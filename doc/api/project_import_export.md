@@ -248,10 +248,11 @@ The `Content-Type` header must be `application/gzip`.
 
 ## Import a file from AWS S3
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.10.
 
 FLAG:
-On self-managed GitLab and GitLab.com, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. This feature is not ready for production use.
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. On GitLab.com, this feature is available.
 
 ```plaintext
 POST /projects/remote-import-s3
@@ -261,6 +262,7 @@ POST /projects/remote-import-s3
 | ------------------- | -------------- | -------- | ---------------------------------------- |
 | `namespace`         | integer/string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
 | `name`              | string         | no       | The name of the project to import. If not provided, defaults to the path of the project. |
+| `path`              | string         | yes      | The full path of the new project. |
 | `region`            | string         | yes      | [AWS S3 region name where the file is stored.](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) |
 | `bucket_name`       | string         | yes      | [AWS S3 bucket name where the file is stored.](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) |
 | `file_key`          | string         | yes      | [AWS S3 file key to identify the file.](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingObjects.html) |
@@ -271,7 +273,7 @@ The passed override parameters take precedence over all values defined in the ex
 
 ```shell
 curl --request POST \
-  --url "http://localhost:3000/api/v4/projects/remote-import-s3" \
+  --url "https://gitlab.example.com/api/v4/projects/remote-import-s3" \
   --header "PRIVATE-TOKEN: <your gitlab access key>" \
   --header 'Content-Type: application/json' \
   --data '{
