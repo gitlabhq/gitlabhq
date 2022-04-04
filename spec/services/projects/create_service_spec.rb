@@ -376,6 +376,18 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       imported_project
     end
+
+    describe 'import scheduling' do
+      context 'when project import type is gitlab project migration' do
+        it 'does not schedule project import' do
+          opts[:import_type] = 'gitlab_project_migration'
+
+          project = create_project(user, opts)
+
+          expect(project.import_state.status).to eq('none')
+        end
+      end
+    end
   end
 
   context 'builds_enabled global setting' do

@@ -45,20 +45,6 @@ have a start or due date, a visual
 
 ![Child epics roadmap](img/epic_view_roadmap_v12_9.png)
 
-## Permissions
-
-If you have access to view an epic and an issue added to that epic, you can view the issue in the
-epic's issue list.
-
-If you have access to edit an epic and an issue added to that epic, you can add the issue to or
-remove it from the epic.
-
-For a given group, the visibility of all projects must be the same as
-the group, or less restrictive. That means if you have access to a group's epic,
-then you already have access to its projects' issues.
-
-You can also consult the [group permissions table](../../permissions.md#group-members-permissions).
-
 ## Related topics
 
 - [Manage epics](manage_epics.md) and multi-level child epics.

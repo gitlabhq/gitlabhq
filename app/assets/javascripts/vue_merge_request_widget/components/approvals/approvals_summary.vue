@@ -102,7 +102,11 @@ export default {
     <template v-if="hasApprovers">
       <span v-if="approvalLeftMessage">{{ message }}</span>
       <strong v-else>{{ message }}</strong>
-      <user-avatar-list class="d-inline-block align-middle" :items="approvers" />
+      <user-avatar-list
+        class="gl-display-inline-block gl-vertical-align-middle"
+        :img-size="24"
+        :items="approvers"
+      />
     </template>
   </div>
 </template>

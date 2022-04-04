@@ -1,21 +1,26 @@
 import { Document, parseDocument } from 'yaml';
 import { GlProgressBar } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineWizardWrapper, { i18n } from '~/pipeline_wizard/components/wrapper.vue';
 import WizardStep from '~/pipeline_wizard/components/step.vue';
 import CommitStep from '~/pipeline_wizard/components/commit.vue';
 import YamlEditor from '~/pipeline_wizard/components/editor.vue';
 import { sprintf } from '~/locale';
-import { steps as stepsYaml } from '../mock/yaml';
+import {
+  steps as stepsYaml,
+  compiledScenario1,
+  compiledScenario2,
+  compiledScenario3,
+} from '../mock/yaml';
 
 describe('Pipeline Wizard - wrapper.vue', () => {
   let wrapper;
   const steps = parseDocument(stepsYaml).toJS();
 
   const getAsYamlNode = (value) => new Document(value).contents;
-  const createComponent = (props = {}) => {
-    wrapper = shallowMountExtended(PipelineWizardWrapper, {
+  const createComponent = (props = {}, mountFn = shallowMountExtended) => {
+    wrapper = mountFn(PipelineWizardWrapper, {
       propsData: {
         projectPath: '/user/repo',
         defaultBranch: 'main',
@@ -23,13 +28,21 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         steps: getAsYamlNode(steps),
         ...props,
       },
+      stubs: {
+        CommitStep: true,
+      },
     });
   };
   const getEditorContent = () => {
-    return wrapper.getComponent(YamlEditor).attributes().doc.toString();
+    return wrapper.getComponent(YamlEditor).props().doc.toString();
   };
-  const getStepWrapper = () => wrapper.getComponent(WizardStep);
+  const getStepWrapper = () =>
+    wrapper.findAllComponents(WizardStep).wrappers.find((w) => w.isVisible());
   const getGlProgressBarWrapper = () => wrapper.getComponent(GlProgressBar);
+  const findFirstVisibleStep = () =>
+    wrapper.findAllComponents('[data-testid="step"]').wrappers.find((w) => w.isVisible());
+  const findFirstInputFieldForTarget = (target) =>
+    wrapper.find(`[data-input-target="${target}"]`).find('input');
 
   describe('display', () => {
     afterEach(() => {
@@ -118,8 +131,9 @@ describe('Pipeline Wizard - wrapper.vue', () => {
       }) => {
         beforeAll(async () => {
           createComponent();
+
           for (const emittedValue of navigationEventChain) {
-            wrapper.findComponent({ ref: 'step' }).vm.$emit(emittedValue);
+            findFirstVisibleStep().vm.$emit(emittedValue);
             // We have to wait for the next step to be mounted
             // before we can emit the next event, so we have to await
             // inside the loop.
@@ -134,11 +148,11 @@ describe('Pipeline Wizard - wrapper.vue', () => {
 
         if (expectCommitStepShown) {
           it('does not show the step wrapper', async () => {
-            expect(wrapper.findComponent(WizardStep).exists()).toBe(false);
+            expect(wrapper.findComponent(WizardStep).isVisible()).toBe(false);
           });
 
           it('shows the commit step page', () => {
-            expect(wrapper.findComponent(CommitStep).exists()).toBe(true);
+            expect(wrapper.findComponent(CommitStep).isVisible()).toBe(true);
           });
         } else {
           it('passes the correct step config to the step component', async () => {
@@ -146,7 +160,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
           });
 
           it('does not show the commit step page', () => {
-            expect(wrapper.findComponent(CommitStep).exists()).toBe(false);
+            expect(wrapper.findComponent(CommitStep).isVisible()).toBe(false);
           });
         }
 
@@ -245,6 +259,56 @@ describe('Pipeline Wizard - wrapper.vue', () => {
       );
 
       expect(wrapper.getComponent(YamlEditor).props('highlight')).toBe(null);
+    });
+  });
+
+  describe('integration test', () => {
+    beforeAll(async () => {
+      createComponent({}, mountExtended);
+    });
+
+    it('updates the editor content after input on step 1', async () => {
+      findFirstInputFieldForTarget('$FOO').setValue('fooVal');
+      await nextTick();
+
+      expect(getEditorContent()).toBe(compiledScenario1);
+    });
+
+    it('updates the editor content after input on step 2', async () => {
+      findFirstVisibleStep().vm.$emit('next');
+      await nextTick();
+
+      findFirstInputFieldForTarget('$BAR').setValue('barVal');
+      await nextTick();
+
+      expect(getEditorContent()).toBe(compiledScenario2);
+    });
+
+    describe('navigating back', () => {
+      let inputField;
+
+      beforeAll(async () => {
+        findFirstVisibleStep().vm.$emit('back');
+        await nextTick();
+
+        inputField = findFirstInputFieldForTarget('$FOO');
+      });
+
+      afterAll(() => {
+        wrapper.destroy();
+        inputField = undefined;
+      });
+
+      it('still shows the input values from the former visit', () => {
+        expect(inputField.element.value).toBe('fooVal');
+      });
+
+      it('updates the editor content without modifying input that came from a later step', async () => {
+        inputField.setValue('newFooVal');
+        await nextTick();
+
+        expect(getEditorContent()).toBe(compiledScenario3);
+      });
     });
   });
 });

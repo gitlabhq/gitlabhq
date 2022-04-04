@@ -1,6 +1,7 @@
 <script>
 import { GlProgressBar } from '@gitlab/ui';
 import { Document } from 'yaml';
+import { uniqueId } from 'lodash';
 import { merge } from '~/lib/utils/yaml';
 import { __ } from '~/locale';
 import { isValidStepSeq } from '~/pipeline_wizard/validators';
@@ -57,15 +58,6 @@ export default {
     };
   },
   computed: {
-    currentStepConfig() {
-      return this.steps.get(this.currentStepIndex);
-    },
-    currentStepInputs() {
-      return this.currentStepConfig.get('inputs').toJSON();
-    },
-    currentStepTemplate() {
-      return this.currentStepConfig.get('template', true);
-    },
     currentStep() {
       return this.currentStepIndex + 1;
     },
@@ -78,6 +70,13 @@ export default {
     isLastStep() {
       return this.currentStep === this.stepCount;
     },
+    stepList() {
+      return this.steps.items.map((_, i) => ({
+        id: uniqueId(),
+        inputs: this.steps.get(i).get('inputs').toJSON(),
+        template: this.steps.get(i).get('template', true),
+      }));
+    },
   },
   watch: {
     isLastStep(value) {
@@ -85,6 +84,9 @@ export default {
     },
   },
   methods: {
+    getStep(index) {
+      return this.steps.get(index);
+    },
     resetHighlight() {
       this.highlightPath = null;
     },
@@ -119,8 +121,8 @@ export default {
       </header>
       <section class="gl-mb-4">
         <commit-step
-          v-if="isLastStep"
-          ref="step"
+          v-show="isLastStep"
+          data-testid="step"
           :default-branch="defaultBranch"
           :file-content="pipelineBlob"
           :filename="filename"
@@ -128,15 +130,16 @@ export default {
           @back="currentStepIndex--"
         />
         <wizard-step
-          v-else
-          :key="currentStepIndex"
-          ref="step"
+          v-for="(step, i) in stepList"
+          v-show="i === currentStepIndex"
+          :key="step.id"
+          data-testid="step"
           :compiled.sync="compiled"
-          :has-next-step="currentStepIndex < steps.items.length"
-          :has-previous-step="currentStepIndex > 0"
+          :has-next-step="i < steps.items.length"
+          :has-previous-step="i > 0"
           :highlight.sync="highlightPath"
-          :inputs="currentStepInputs"
-          :template="currentStepTemplate"
+          :inputs="step.inputs"
+          :template="step.template"
           @back="currentStepIndex--"
           @next="currentStepIndex++"
           @update:compiled="onUpdate"

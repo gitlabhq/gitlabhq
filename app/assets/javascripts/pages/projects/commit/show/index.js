@@ -27,8 +27,34 @@ initCommitBoxInfo();
 
 initDeprecatedNotes();
 
+const loadDiffStats = () => {
+  const diffStatsElements = document.querySelectorAll('#js-diff-stats');
+
+  if (diffStatsElements.length) {
+    diffStatsElements.forEach((diffStatsEl) => {
+      const { addedLines, removedLines, oldSize, newSize, viewerName } = diffStatsEl.dataset;
+
+      new Vue({
+        el: diffStatsEl,
+        render(createElement) {
+          return createElement(DiffStats, {
+            props: {
+              diffFile: {
+                old_size: oldSize,
+                new_size: newSize,
+                viewer: { name: viewerName },
+              },
+              addedLines: Number(addedLines),
+              removedLines: Number(removedLines),
+            },
+          });
+        },
+      });
+    });
+  }
+};
+
 const filesContainer = $('.js-diffs-batch');
-const diffStatsElements = document.querySelectorAll('#js-diff-stats');
 
 if (filesContainer.length) {
   const batchPath = filesContainer.data('diffFilesPath');
@@ -40,35 +66,14 @@ if (filesContainer.length) {
       syntaxHighlight(filesContainer);
       handleLocationHash();
       new Diff();
+      loadDiffStats();
     })
     .catch(() => {
       createFlash({ message: __('An error occurred while retrieving diff files') });
     });
 } else {
   new Diff();
-}
-
-if (diffStatsElements.length) {
-  diffStatsElements.forEach((diffStatsEl) => {
-    const { addedLines, removedLines, oldSize, newSize, viewerName } = diffStatsEl.dataset;
-
-    new Vue({
-      el: diffStatsEl,
-      render(createElement) {
-        return createElement(DiffStats, {
-          props: {
-            diffFile: {
-              old_size: oldSize,
-              new_size: newSize,
-              viewer: { name: viewerName },
-            },
-            addedLines: Number(addedLines),
-            removedLines: Number(removedLines),
-          },
-        });
-      },
-    });
-  });
+  loadDiffStats();
 }
 
 loadAwardsHandler();

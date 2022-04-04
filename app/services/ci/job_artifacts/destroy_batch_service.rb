@@ -117,7 +117,7 @@ module Ci
 
         wrongly_expired_artifacts, @job_artifacts = @job_artifacts.partition { |artifact| wrongly_expired?(artifact) }
 
-        remove_expire_at(wrongly_expired_artifacts)
+        remove_expire_at(wrongly_expired_artifacts) if wrongly_expired_artifacts.any?
       end
 
       def fix_expire_at?

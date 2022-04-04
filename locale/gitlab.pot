@@ -21125,10 +21125,16 @@ msgstr ""
 msgid "Iterations|Cadence name"
 msgstr ""
 
+msgid "Iterations|Cancel"
+msgstr ""
+
 msgid "Iterations|Couldn't find iteration cadence"
 msgstr ""
 
 msgid "Iterations|Create cadence"
+msgstr ""
+
+msgid "Iterations|Create iteration"
 msgstr ""
 
 msgid "Iterations|Delete cadence"
@@ -21140,7 +21146,13 @@ msgstr ""
 msgid "Iterations|Delete iteration?"
 msgstr ""
 
+msgid "Iterations|Description"
+msgstr ""
+
 msgid "Iterations|Done"
+msgstr ""
+
+msgid "Iterations|Due date"
 msgstr ""
 
 msgid "Iterations|Duration"
@@ -22506,10 +22518,7 @@ msgstr ""
 msgid "Licenses|Detected in Project"
 msgstr ""
 
-msgid "Licenses|Detected licenses that are out-of-compliance with the project's assigned policies"
-msgstr ""
-
-msgid "Licenses|Displays licenses detected in the project, based on the %{linkStart}latest successful%{linkEnd} scan"
+msgid "Licenses|Displays licenses detected in the project that are out of compliance with the project's policies, based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
 msgid "Licenses|Drag your license file here or %{linkStart}click to upload%{linkEnd}."
@@ -39130,10 +39139,10 @@ msgstr ""
 msgid "Timeago|right now"
 msgstr ""
 
-msgid "Timeline|Turn timeline view off"
+msgid "Timeline|Turn recent updates view off"
 msgstr ""
 
-msgid "Timeline|Turn timeline view on"
+msgid "Timeline|Turn recent updates view on"
 msgstr ""
 
 msgid "Timeout"
@@ -40275,9 +40284,6 @@ msgid "Update failed"
 msgstr ""
 
 msgid "Update it"
-msgstr ""
-
-msgid "Update iteration"
 msgstr ""
 
 msgid "Update milestone"

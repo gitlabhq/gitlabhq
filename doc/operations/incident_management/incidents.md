@@ -169,7 +169,7 @@ Beneath the highlight bar, GitLab displays a summary that includes the following
 - Monitoring tool
 
 Comments are displayed in threads, but can be displayed chronologically
-[in a timeline view](#timeline-view).
+[by toggling on the recent updates view](#recent-updates-view).
 
 ### Metrics **(PREMIUM)**
 
@@ -195,15 +195,15 @@ field populated.
 
 ![Incident alert details](img/incident_alert_details_v13_4.png)
 
-### Timeline view **(PREMIUM)**
+### Recent updates view **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227836) in GitLab 13.5.
 
 To quickly see the latest updates on an incident, click
-**{comments}** **Turn timeline view on** in the comment bar to display comments
+**{history}** **Turn recent updates view on** in the comment bar to display comments
 un-threaded and ordered chronologically, newest to oldest:
 
-![Timeline view toggle](img/timeline_view_toggle_v13_5.png)
+![Recent updates view toggle](img/timeline_view_toggle_v14_10.png)
 
 ### Service Level Agreement countdown timer **(PREMIUM)**
 

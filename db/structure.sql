@@ -29012,6 +29012,8 @@ CREATE INDEX index_security_findings_on_project_fingerprint ON security_findings
 
 CREATE INDEX index_security_findings_on_scan_id_and_deduplicated ON security_findings USING btree (scan_id, deduplicated);
 
+CREATE INDEX index_security_findings_on_scan_id_and_id ON security_findings USING btree (scan_id, id);
+
 CREATE INDEX index_security_findings_on_scanner_id ON security_findings USING btree (scanner_id);
 
 CREATE INDEX index_security_findings_on_severity ON security_findings USING btree (severity);
