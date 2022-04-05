@@ -5,7 +5,7 @@
 .sub-section
   %h4= s_('GroupSettings|Export group')
   %p= _('Export this group with all related data.')
-  = render 'shared/global_alert', variant: :warning, dismissible: false, alert_class: 'gl-mb-4' do
+  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_class: 'gl-mb-4') do
     .gl-alert-body
       - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
       - docs_link_end = '</a>'.html_safe
@@ -14,7 +14,7 @@
     - export_information = _('After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance.') % { strong_text_start: '<strong>'.html_safe, strong_text_end: '</strong>'.html_safe}
     = export_information.html_safe
     = link_to _('Learn more.'), help_page_path('user/group/settings/import_export.md'), target: '_blank', rel: 'noopener noreferrer'
-  = render 'shared/global_alert', dismissible: false, alert_class: 'gl-mb-5' do
+  = render Pajamas::AlertComponent.new(dismissible: false, alert_class: 'gl-mb-5') do
     .gl-alert-body
       %p.gl-mb-0
         %p= _('The following items will be exported:')

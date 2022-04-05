@@ -1,5 +1,5 @@
 - if domain_presenter.errors.any?
-  = render 'shared/global_alert', variant: :danger, dismissible: false do
+  = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do
     - domain_presenter.errors.full_messages.each do |msg|
       = msg
 

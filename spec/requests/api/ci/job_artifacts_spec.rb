@@ -224,6 +224,8 @@ RSpec.describe API::Ci::JobArtifacts do
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          expect(response.headers.to_h)
+            .not_to include('Gitlab-Workhorse-Detect-Content-Type' => 'true')
           expect(response.parsed_body).to be_empty
         end
 
@@ -556,7 +558,18 @@ RSpec.describe API::Ci::JobArtifacts do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.headers.to_h)
               .to include('Content-Type' => 'application/json',
-                          'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+                          'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
+                          'Gitlab-Workhorse-Detect-Content-Type' => 'true')
+          end
+
+          context 'when ci_safe_artifact_content_type is disabled' do
+            before do
+              stub_feature_flags(ci_safe_artifact_content_type: false)
+            end
+
+            it 'does not let workhorse set content type' do
+              expect(response.headers).not_to include('Gitlab-Workhorse-Detect-Content-Type')
+            end
           end
         end
 
@@ -626,7 +639,8 @@ RSpec.describe API::Ci::JobArtifacts do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
-                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
+                        'Gitlab-Workhorse-Detect-Content-Type' => 'true')
           expect(response.parsed_body).to be_empty
         end
       end
@@ -644,7 +658,8 @@ RSpec.describe API::Ci::JobArtifacts do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
-                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
+                        'Gitlab-Workhorse-Detect-Content-Type' => 'true')
         end
       end
 

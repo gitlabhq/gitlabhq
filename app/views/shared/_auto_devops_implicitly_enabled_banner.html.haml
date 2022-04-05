@@ -1,9 +1,7 @@
 - if show_auto_devops_implicitly_enabled_banner?(project, current_user)
-  = render 'shared/global_alert',
-    variant: :info,
-    alert_class: 'qa-auto-devops-banner auto-devops-implicitly-enabled-banner',
+  = render Pajamas::AlertComponent.new(alert_class: 'qa-auto-devops-banner auto-devops-implicitly-enabled-banner',
     close_button_class: 'hide-auto-devops-implicitly-enabled-banner',
-    close_button_data: { project_id: project.id } do
+    close_button_data: { project_id: project.id }) do
     .gl-alert-body
       = s_("AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found.")
       - unless Gitlab.config.registry.enabled

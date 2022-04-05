@@ -1,9 +1,8 @@
 - event = last_push_event
 - if event && show_last_push_widget?(event)
-  = render 'shared/global_alert',
-    variant: :success,
+  = render Pajamas::AlertComponent.new(variant: :success,
     alert_class: 'gl-mt-3',
-    close_button_class: 'js-close-banner' do
+    close_button_class: 'js-close-banner') do
     .gl-alert-body
       %span= s_("LastPushEvent|You pushed to")
       %strong.gl-display-inline-flex.gl-max-w-50p{ data: { toggle: 'tooltip' }, title: event.ref_name }

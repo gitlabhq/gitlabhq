@@ -1,10 +1,9 @@
 - page_title _("Fork project")
 - if @forked_project && !@forked_project.saved?
-  = render 'shared/global_alert',
-    title: _('Fork Error!'),
+  = render Pajamas::AlertComponent.new(title: _('Fork Error!'),
     variant: :danger,
     alert_class: 'gl-mt-5',
-    dismissible: false do
+    dismissible: false) do
     .gl-alert-body
       %p
         = _("You tried to fork %{link_to_the_project} but it failed for the following reason:").html_safe % { link_to_the_project: link_to_project(@project) }

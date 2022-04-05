@@ -35,9 +35,8 @@
 
 - if hidden > 0
   %li
-    = render 'shared/global_alert',
-      variant: :warning,
-      dismissible: false do
+    = render Pajamas::AlertComponent.new(variant: :warning,
+      dismissible: false) do
       .gl-alert-body
         = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 

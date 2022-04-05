@@ -2211,7 +2211,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
         table_name: :events,
         column_name: :id,
-        job_arguments: [["id"], ["id_convert_to_bigint"]]
+        job_arguments: [["id"], ["id_convert_to_bigint"], nil]
       }
     end
 
@@ -2226,7 +2226,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             "\n\n" \
             "Finalize it manualy by running" \
             "\n\n" \
-            "\tsudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"id\"]\\, [\"id_convert_to_bigint\"]]']" \
+            "\tsudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"id\"]\\,[\"id_convert_to_bigint\"]\\,null]']" \
             "\n\n" \
             "For more information, check the documentation" \
             "\n\n" \

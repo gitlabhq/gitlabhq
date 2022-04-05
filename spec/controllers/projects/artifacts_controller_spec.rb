@@ -323,6 +323,7 @@ RSpec.describe Projects::ArtifactsController do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Gitlab-Workhorse-Detect-Content-Type']).to eq('true')
           expect(send_data).to start_with('artifacts-entry:')
 
           expect(params.keys).to eq(%w(Archive Entry))
@@ -379,6 +380,18 @@ RSpec.describe Projects::ArtifactsController do
           it_behaves_like 'a valid file' do
             let(:store) { ObjectStorage::Store::LOCAL }
             let(:archive_path) { JobArtifactUploader.root }
+          end
+
+          context 'when ci_safe_artifact_content_type is disabled' do
+            before do
+              stub_feature_flags(ci_safe_artifact_content_type: false)
+            end
+
+            it 'does not let workhorse set content type' do
+              subject
+
+              expect(response.headers).not_to include('Gitlab-Workhorse-Detect-Content-Type')
+            end
           end
         end
 

@@ -256,7 +256,7 @@
     "stylelint": "^14.3.0",
     "timezone-mock": "^1.0.8",
     "vue-jest": "4.0.1",
-    "webpack-dev-server": "4.7.4",
+    "webpack-dev-server": "4.8.0",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
     "yarn-deduplicate": "^4.0.0"

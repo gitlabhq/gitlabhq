@@ -705,8 +705,16 @@ module API
       body ''
     end
 
+    # Deprecated. Use `send_artifacts_entry` instead.
+    def legacy_send_artifacts_entry(file, entry)
+      header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
+
+      body ''
+    end
+
     def send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
+      header(*Gitlab::Workhorse.detect_content_type)
 
       body ''
     end

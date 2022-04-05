@@ -10,10 +10,9 @@
 %hr
 
 - if hook_log.internal_error_message.present?
-  = render 'shared/global_alert',
-    title: _('Internal error occurred while delivering this webhook.'),
+  = render Pajamas::AlertComponent.new(title: _('Internal error occurred while delivering this webhook.'),
     variant: :danger,
-    dismissible: false do
+    dismissible: false) do
     .gl-alert-body
       = _('Error: %{error}') % { error: hook_log.internal_error_message }
 

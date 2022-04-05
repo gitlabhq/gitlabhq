@@ -4,14 +4,11 @@ module BulkImports
   class PipelineWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    NDJSON_PIPELINE_PERFORM_DELAY = 10.seconds
+
     data_consistency :always
-
-    NDJSON_PIPELINE_PERFORM_DELAY = 1.minute
-
     feature_category :importers
-
     sidekiq_options retry: false, dead: false
-
     worker_has_external_dependencies!
 
     def perform(pipeline_tracker_id, stage, entity_id)

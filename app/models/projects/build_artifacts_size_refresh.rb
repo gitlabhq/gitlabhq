@@ -4,7 +4,7 @@ module Projects
   class BuildArtifactsSizeRefresh < ApplicationRecord
     include BulkInsertSafe
 
-    STALE_WINDOW = 3.days
+    STALE_WINDOW = 2.hours
 
     self.table_name = 'project_build_artifacts_size_refreshes'
 

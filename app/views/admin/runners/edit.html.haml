@@ -25,10 +25,9 @@
           - if project
             %tr
               %td
-                = render 'shared/global_alert',
-                  variant: :danger,
+                = render Pajamas::AlertComponent.new(variant: :danger,
                   dismissible: false,
-                  title: project.full_name do
+                  title: project.full_name) do
                   .gl-alert-actions
                     = link_to _('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
 

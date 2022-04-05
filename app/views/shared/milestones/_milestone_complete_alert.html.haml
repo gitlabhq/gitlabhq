@@ -1,9 +1,8 @@
 - milestone = local_assigns[:milestone]
 
 - if milestone.complete? && milestone.active?
-  = render 'shared/global_alert',
-    variant: :success,
+  = render Pajamas::AlertComponent.new(variant: :success,
     alert_data: { testid: 'all-issues-closed-alert' },
-    dismissible: false do
+    dismissible: false) do
     .gl-alert-body
     = yield

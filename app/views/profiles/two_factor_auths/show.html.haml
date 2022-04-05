@@ -40,7 +40,9 @@
                 = _('Time based: Yes')
         = form_tag profile_two_factor_auth_path, method: :post do |f|
           - if @error
-            = render 'shared/global_alert', title: @error[:message], variant: :danger, dismissible: false do
+            = render Pajamas::AlertComponent.new(title: @error[:message],
+              variant: :danger,
+              dismissible: false) do
               .gl-alert-body
                 = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
 

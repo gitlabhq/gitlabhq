@@ -72,13 +72,14 @@ The following items are exported:
 
 The following items are **not** exported:
 
+- [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Build traces and artifacts
 - Container registry images
 - CI/CD variables
 - Pipeline triggers
 - Webhooks
 - Any encrypted tokens
-- Merge Request Approvers
+- Merge Request Approvers and [the number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Repository size limits
 - Deploy keys allowed to push to protected branches
 

@@ -69,7 +69,7 @@ export default {
   <gl-popover :target="target" :delay="200" boundary="viewport" placement="top">
     <div class="gl-p-3 gl-line-height-normal gl-display-flex" data-testid="user-popover">
       <div class="gl-p-2 flex-shrink-1">
-        <user-avatar-image :img-src="user.avatarUrl" :size="60" css-classes="gl-mr-3!" />
+        <user-avatar-image :img-src="user.avatarUrl" :size="64" css-classes="gl-mr-3!" />
       </div>
       <div class="gl-p-2 gl-w-full gl-min-w-0">
         <template v-if="userIsLoading">

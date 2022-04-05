@@ -9,9 +9,8 @@
   = render "projects/merge_requests/mr_title"
   = render "projects/merge_requests/mr_box"
 
-  = render 'shared/global_alert',
-    variant: :danger,
-    dismissible: false do
+  = render Pajamas::AlertComponent.new(variant: :danger,
+    dismissible: false) do
     .gl-alert-body
       - if @merge_request.for_fork? && !@merge_request.source_project
         = err_fork_project_removed

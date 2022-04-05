@@ -448,6 +448,14 @@ RSpec.describe Gitlab::Workhorse do
     end
   end
 
+  describe '.detect_content_type' do
+    subject { described_class.detect_content_type }
+
+    it 'returns array setting detect content type in workhorse' do
+      expect(subject).to eq(%w[Gitlab-Workhorse-Detect-Content-Type true])
+    end
+  end
+
   describe '.send_git_blob' do
     include FakeBlobHelpers
 

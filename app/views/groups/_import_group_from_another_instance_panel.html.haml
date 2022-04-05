@@ -4,9 +4,8 @@
       %h4.gl-display-flex
         = s_('GroupsNew|Import groups from another instance of GitLab')
       = link_to _('History'), history_import_bulk_imports_path, class: 'gl-link gl-ml-auto'
-    = render 'shared/global_alert',
-      dismissible: false,
-      variant: :warning do
+    = render Pajamas::AlertComponent.new(dismissible: false,
+      variant: :warning) do
       .gl-alert-body
         - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
         - docs_link_end = '</a>'.html_safe

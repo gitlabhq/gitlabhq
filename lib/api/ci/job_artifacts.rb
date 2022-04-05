@@ -60,7 +60,11 @@ module API
 
             bad_request! unless path.valid?
 
-            send_artifacts_entry(build.artifacts_file, path)
+            if ::Feature.enabled?(:ci_safe_artifact_content_type, build&.project, default_enabled: :yaml)
+              send_artifacts_entry(build.artifacts_file, path)
+            else
+              legacy_send_artifacts_entry(build.artifacts_file, path)
+            end
           end
 
         desc 'Download the artifacts archive from a job' do
@@ -100,7 +104,11 @@ module API
 
           bad_request! unless path.valid?
 
-          send_artifacts_entry(build.artifacts_file, path)
+          # This endpoint is being used for Artifact Browser feature that renders the content via pages.
+          # Since Content-Type is controlled by Rails and Workhorse, if a wrong
+          # content-type is sent, it could cause a regression on pages rendering.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/357078 for more information.
+          legacy_send_artifacts_entry(build.artifacts_file, path)
         end
 
         desc 'Keep the artifacts to prevent them from being deleted' do

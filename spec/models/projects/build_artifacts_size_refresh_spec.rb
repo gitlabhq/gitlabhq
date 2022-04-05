@@ -14,13 +14,13 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
   end
 
   describe 'scopes' do
-    let_it_be(:refresh_1) { create(:project_build_artifacts_size_refresh, :running, updated_at: 4.days.ago) }
-    let_it_be(:refresh_2) { create(:project_build_artifacts_size_refresh, :running, updated_at: 2.days.ago) }
+    let_it_be(:refresh_1) { create(:project_build_artifacts_size_refresh, :running, updated_at: (described_class::STALE_WINDOW + 1.second).ago) }
+    let_it_be(:refresh_2) { create(:project_build_artifacts_size_refresh, :running, updated_at: 1.hour.ago) }
     let_it_be(:refresh_3) { create(:project_build_artifacts_size_refresh, :pending) }
     let_it_be(:refresh_4) { create(:project_build_artifacts_size_refresh, :created) }
 
     describe 'stale' do
-      it 'returns records in running state and has not been updated for more than 3 days' do
+      it 'returns records in running state and has not been updated for more than 2 hours' do
         expect(described_class.stale).to eq([refresh_1])
       end
     end
