@@ -8790,6 +8790,9 @@ msgstr ""
 msgid "ClusterIntegration|This option will allow you to install applications on RBAC clusters."
 msgstr ""
 
+msgid "ClusterIntegration|This process is %{issue_link_start}deprecated%{issue_link_end}. Use the %{docs_link_start}the GitLab agent for Kubernetes%{docs_link_end} instead."
+msgstr ""
+
 msgid "ClusterIntegration|This project does not have billing enabled. To create a cluster, %{linkToBillingStart}enable billing%{linkToBillingEnd} and try again."
 msgstr ""
 
@@ -43866,6 +43869,9 @@ msgid "can contain only letters of the Base64 alphabet (RFC4648) with the additi
 msgstr ""
 
 msgid "can contain only lowercase letters, digits, and '_'."
+msgstr ""
+
+msgid "can not be changed for existing notes"
 msgstr ""
 
 msgid "can only be changed by a group admin."

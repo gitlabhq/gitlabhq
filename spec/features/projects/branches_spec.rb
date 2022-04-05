@@ -36,6 +36,8 @@ RSpec.describe 'Branches' do
           expect(page).to have_content(sorted_branches(repository, count: 5, sort_by: :updated_desc, state: 'active'))
           expect(page).to have_content(sorted_branches(repository, count: 4, sort_by: :updated_asc, state: 'stale'))
 
+          expect(page).to have_button('Copy branch name')
+
           expect(page).to have_link('Show more active branches', href: project_branches_filtered_path(project, state: 'active'))
           expect(page).not_to have_content('Show more stale branches')
         end

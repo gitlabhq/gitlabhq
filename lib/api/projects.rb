@@ -631,7 +631,7 @@ module API
       desc 'Workhorse authorize the file upload' do
         detail 'This feature was introduced in GitLab 13.11'
       end
-      post ':id/uploads/authorize', feature_category: :not_owned do
+      post ':id/uploads/authorize', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
         require_gitlab_workhorse!
 
         status 200
@@ -643,7 +643,7 @@ module API
       params do
         requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
       end
-      post ":id/uploads", feature_category: :not_owned do
+      post ":id/uploads", feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
         log_if_upload_exceed_max_size(user_project, params[:file])
 
         service = UploadService.new(user_project, params[:file])

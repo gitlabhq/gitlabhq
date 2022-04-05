@@ -5,7 +5,7 @@ class Admin::DashboardController < Admin::ApplicationController
 
   COUNTED_ITEMS = [Project, User, Group].freeze
 
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index

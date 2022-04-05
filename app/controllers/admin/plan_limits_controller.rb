@@ -5,7 +5,7 @@ class Admin::PlanLimitsController < Admin::ApplicationController
 
   before_action :set_plan_limits
 
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   def create
     redirect_path = referer_path(request) || general_admin_application_settings_path

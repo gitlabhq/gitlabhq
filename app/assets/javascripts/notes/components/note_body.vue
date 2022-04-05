@@ -174,7 +174,6 @@ export default {
     <note-form
       v-if="isEditing"
       ref="noteForm"
-      :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"
       :line="line"

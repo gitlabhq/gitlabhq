@@ -104,7 +104,7 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       expect(subject).to receive(:build_qr_code).and_return(code)
 
       get :show
-      expect(assigns[:qr_code]).to eq code
+      expect(assigns[:qr_code]).to eq(code)
     end
 
     it 'generates a unique otp_secret every time the page is loaded' do
@@ -183,7 +183,12 @@ RSpec.describe Profiles::TwoFactorAuthsController do
         expect(subject).to receive(:build_qr_code).and_return(code)
 
         go
-        expect(assigns[:qr_code]).to eq code
+        expect(assigns[:qr_code]).to eq(code)
+      end
+
+      it 'assigns account_string' do
+        go
+        expect(assigns[:account_string]).to eq("#{Gitlab.config.gitlab.host}:#{user.email}")
       end
 
       it 'renders show' do

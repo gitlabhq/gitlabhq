@@ -14,6 +14,7 @@ describe('Description field component', () => {
       propsData: {
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
+        quickActionsDocsPath: '/',
         formState: {
           description,
         },

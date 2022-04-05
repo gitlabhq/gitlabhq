@@ -1,5 +1,6 @@
 <script>
 import markdownField from '~/vue_shared/components/markdown/field.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import updateMixin from '../../mixins/update';
 
 export default {
@@ -31,6 +32,11 @@ export default {
       default: true,
     },
   },
+  computed: {
+    quickActionsDocsPath() {
+      return helpPagePath('user/project/quick_actions');
+    },
+  },
   mounted() {
     this.$refs.textarea.focus();
   },
@@ -43,6 +49,7 @@ export default {
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
+      :quick-actions-docs-path="quickActionsDocsPath"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
       :textarea-value="formState.description"

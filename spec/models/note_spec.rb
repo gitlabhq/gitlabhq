@@ -105,6 +105,36 @@ RSpec.describe Note do
         it { is_expected.to be_valid }
       end
     end
+
+    describe 'confidentiality' do
+      context 'for existing public note' do
+        let_it_be(:existing_note) { create(:note) }
+
+        it 'is not possible to change the note to confidential' do
+          existing_note.confidential = true
+
+          expect(existing_note).not_to be_valid
+          expect(existing_note.errors[:confidential]).to include('can not be changed for existing notes')
+        end
+
+        it 'is possible to change confidentiality from nil to false' do
+          existing_note.confidential = false
+
+          expect(existing_note).to be_valid
+        end
+      end
+
+      context 'for existing confidential note' do
+        let_it_be(:existing_note) { create(:note, confidential: true) }
+
+        it 'is not possible to change the note to public' do
+          existing_note.confidential = false
+
+          expect(existing_note).not_to be_valid
+          expect(existing_note.errors[:confidential]).to include('can not be changed for existing notes')
+        end
+      end
+    end
   end
 
   describe 'callbacks' do

@@ -183,6 +183,7 @@ describe('init markdown', () => {
           ${'- [ ] item'}                | ${'- [ ] item\n- [ ] '}
           ${'- [x] item'}                | ${'- [x] item\n- [ ] '}
           ${'- [X] item'}                | ${'- [X] item\n- [ ] '}
+          ${'- [ ] nbsp (U+00A0)'}       | ${'- [ ] nbsp (U+00A0)\n- [ ] '}
           ${'- item\n  - second'}        | ${'- item\n  - second\n  - '}
           ${'- - -'}                     | ${'- - -'}
           ${'- --'}                      | ${'- --'}

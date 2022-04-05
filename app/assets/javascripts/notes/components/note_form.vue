@@ -41,10 +41,6 @@ export default {
       required: false,
       default: () => ({}),
     },
-    isEditing: {
-      type: Boolean,
-      required: true,
-    },
     lineCode: {
       type: String,
       required: false,
@@ -184,7 +180,7 @@ export default {
       return this.getNotesDataByProp('markdownDocsPath');
     },
     quickActionsDocsPath() {
-      return !this.isEditing ? this.getNotesDataByProp('quickActionsDocsPath') : undefined;
+      return this.getNotesDataByProp('quickActionsDocsPath');
     },
     currentUserId() {
       return this.getUserDataByProp('id');
@@ -348,7 +344,7 @@ export default {
               ref="textarea"
               v-model="updatedNoteBody"
               :disabled="isSubmitting"
-              :data-supports-quick-actions="!isEditing"
+              data-supports-quick-actions="true"
               name="note[note]"
               class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form"
               data-qa-selector="reply_field"

@@ -16,6 +16,8 @@ RSpec.describe TaskListToggleService do
       - [ ] loose list
 
         with an embedded paragraph
+
+      + [ ] No-break space (U+00A0)
     EOT
   end
 
@@ -40,10 +42,15 @@ RSpec.describe TaskListToggleService do
           </ul>
         </li>
       </ol>
-      <ul data-sourcepos="9:1-11:28" class="task-list" dir="auto">
-        <li data-sourcepos="9:1-11:28" class="task-list-item">
+      <ul data-sourcepos="9:1-12:0" class="task-list" dir="auto">
+        <li data-sourcepos="9:1-12:0" class="task-list-item">
           <p data-sourcepos="9:3-9:16"><input type="checkbox" class="task-list-item-checkbox" disabled=""> loose list</p>
           <p data-sourcepos="11:3-11:28">with an embedded paragraph</p>
+        </li>
+      </ul>
+      <ul data-sourcepos="13:1-13:21" class="task-list" dir="auto">
+        <li data-sourcepos="13:1-13:21" class="task-list-item">
+          <input type="checkbox" class="task-list-item-checkbox" disabled=""> No-break space (U+00A0)
         </li>
       </ul>
     EOT
@@ -77,6 +84,16 @@ RSpec.describe TaskListToggleService do
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[8]).to eq "- [x] loose list\n"
     expect(toggler.updated_markdown_html).to include('disabled checked> loose list')
+  end
+
+  it 'checks task with no-break space' do
+    toggler = described_class.new(markdown, markdown_html,
+                                  toggle_as_checked: true,
+                                  line_source: '+ [ ] No-break space (U+00A0)', line_number: 13)
+
+    expect(toggler.execute).to be_truthy
+    expect(toggler.updated_markdown.lines[12]).to eq "+ [x] No-break space (U+00A0)"
+    expect(toggler.updated_markdown_html).to include('disabled checked> No-break space (U+00A0)')
   end
 
   it 'returns false if line_source does not match the text' do

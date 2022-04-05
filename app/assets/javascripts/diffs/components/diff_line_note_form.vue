@@ -221,7 +221,6 @@ export default {
     </div>
     <note-form
       ref="noteForm"
-      :is-editing="false"
       :line-code="line.line_code"
       :line="line"
       :lines="commentLines"

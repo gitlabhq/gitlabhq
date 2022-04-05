@@ -29,7 +29,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Server do
         "NotOwnedWorker"
       end
 
-      feature_category_not_owned!
+      feature_category :not_owned
     end
   end
 

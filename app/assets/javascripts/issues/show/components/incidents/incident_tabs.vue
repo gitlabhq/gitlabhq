@@ -63,13 +63,32 @@ export default {
       const { category, action } = trackIncidentDetailsViewsOptions;
       Tracking.event(category, action);
     },
+    handleTabChange(tabIndex) {
+      const parent = document.querySelector('.js-issue-details');
+
+      if (parent !== null) {
+        const itemsToHide = parent.querySelectorAll('.js-issue-widgets');
+        const lineSeparator = parent.querySelector('.js-detail-page-description');
+
+        lineSeparator.classList.toggle('gl-border-b-0', tabIndex > 0);
+
+        itemsToHide.forEach(function hide(item) {
+          item.classList.toggle('gl-display-none', tabIndex > 0);
+        });
+      }
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <gl-tabs content-class="gl-reset-line-height" class="gl-mt-n3" data-testid="incident-tabs">
+    <gl-tabs
+      content-class="gl-reset-line-height"
+      class="gl-mt-n3"
+      data-testid="incident-tabs"
+      @input="handleTabChange"
+    >
       <gl-tab :title="s__('Incident|Summary')">
         <highlight-bar :alert="alert" />
         <description-component v-bind="$attrs" />

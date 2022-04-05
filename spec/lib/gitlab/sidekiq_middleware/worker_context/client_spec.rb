@@ -28,7 +28,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
         'TestNotOwnedWithContextWorker'
       end
 
-      feature_category_not_owned!
+      feature_category :not_owned
     end
   end
 

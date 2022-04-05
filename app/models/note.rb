@@ -97,6 +97,8 @@ class Note < ApplicationRecord
   validates :author, presence: true
   validates :discussion_id, presence: true, format: { with: /\A\h{40}\z/ }
 
+  validate :ensure_confidentiality_not_changed, on: :update
+
   validate unless: [:for_commit?, :importing?, :skip_project_check?] do |note|
     unless note.noteable.try(:project) == note.project
       errors.add(:project, 'does not match noteable project')
@@ -717,6 +719,13 @@ class Note < ApplicationRecord
 
   def noteable_label_url_method
     for_merge_request? ? :project_merge_requests_url : :project_issues_url
+  end
+
+  def ensure_confidentiality_not_changed
+    return unless will_save_change_to_attribute?(:confidential)
+    return unless attribute_change_to_be_saved(:confidential).include?(true)
+
+    errors.add(:confidential, _('can not be changed for existing notes'))
   end
 end
 

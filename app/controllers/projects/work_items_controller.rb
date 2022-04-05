@@ -5,7 +5,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
   end
 
-  feature_category :not_owned
+  feature_category :team_planning
 
   def index
     render_404 unless project&.work_items_feature_flag_enabled?

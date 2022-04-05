@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable RSpec/VariableDefinition
 
 require 'fast_spec_helper'
 
@@ -205,3 +206,4 @@ RSpec.describe 'Mail quoted-printable transfer encoding patch and Unicode charac
     end
   end
 end
+# rubocop:enable RSpec/VariableDefinition

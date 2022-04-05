@@ -2,7 +2,7 @@
 
 module API
   class Markdown < ::API::Base
-    feature_category :not_owned
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
     params do
       requires :text, type: String, desc: "The markdown text to render"

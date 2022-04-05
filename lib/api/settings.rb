@@ -4,7 +4,7 @@ module API
   class Settings < ::API::Base
     before { authenticated_as_admin! }
 
-    feature_category :not_owned
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
     helpers Helpers::SettingsHelpers
 

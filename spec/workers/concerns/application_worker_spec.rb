@@ -49,7 +49,7 @@ RSpec.describe ApplicationWorker do
         worker.feature_category :pages
         expect(worker.sidekiq_options['queue']).to eq('queue_2')
 
-        worker.feature_category_not_owned!
+        worker.feature_category :not_owned
         expect(worker.sidekiq_options['queue']).to eq('queue_3')
 
         worker.urgency :high

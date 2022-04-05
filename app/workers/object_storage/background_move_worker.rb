@@ -8,7 +8,7 @@ module ObjectStorage
     include ObjectStorageQueue
 
     sidekiq_options retry: 5
-    feature_category_not_owned!
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
     loggable_arguments 0, 1, 2, 3
 
     def perform(uploader_class_name, subject_class_name, file_field, subject_id)

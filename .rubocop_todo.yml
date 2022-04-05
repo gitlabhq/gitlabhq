@@ -213,13 +213,6 @@ RSpec/ReturnFromStub:
 RSpec/ScatteredLet:
   Enabled: false
 
-# Offense count: 10
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: symbols, strings
-RSpec/VariableDefinition:
-  Exclude:
-    - 'spec/initializers/mail_encoding_patch_spec.rb'
-
 # Offense count: 24
 # Configuration parameters: EnforcedStyle, IgnoredPatterns.
 # SupportedStyles: snake_case, camelCase

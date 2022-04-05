@@ -6,7 +6,7 @@ module API
   class SidekiqMetrics < ::API::Base
     before { authenticated_as_admin! }
 
-    feature_category :not_owned
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
     helpers do
       def queue_metrics

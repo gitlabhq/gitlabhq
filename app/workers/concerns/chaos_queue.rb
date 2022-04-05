@@ -5,6 +5,6 @@ module ChaosQueue
 
   included do
     queue_namespace :chaos
-    feature_category_not_owned!
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
   end
 end

@@ -4,6 +4,8 @@
 - page_title _('Create a Kubernetes cluster')
 - provider = params[:provider]
 
+= render 'deprecation_alert'
+
 = render_gcp_signup_offer
 
 .gl-md-display-flex.gl-mt-3

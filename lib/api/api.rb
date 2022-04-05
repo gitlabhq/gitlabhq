@@ -321,7 +321,7 @@ module API
       end
     end
 
-    route :any, '*path', feature_category: :not_owned do
+    route :any, '*path', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
       error!('404 Not Found', 404)
     end
   end

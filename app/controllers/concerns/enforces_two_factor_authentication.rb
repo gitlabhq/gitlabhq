@@ -24,7 +24,12 @@ module EnforcesTwoFactorAuthentication
     return unless respond_to?(:current_user)
 
     if two_factor_authentication_required? && current_user_requires_two_factor?
-      redirect_to profile_two_factor_auth_path
+      case self
+      when GraphqlController
+        render_error("2FA required", status: :unauthorized)
+      else
+        redirect_to profile_two_factor_auth_path
+      end
     end
   end
 

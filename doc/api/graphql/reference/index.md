@@ -1808,8 +1808,9 @@ Input type: `DastScannerProfileCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdastscannerprofilecreatedastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Created scanner profile. |
 | <a id="mutationdastscannerprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastscannerprofilecreateid"></a>`id` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile. |
+| <a id="mutationdastscannerprofilecreateid"></a>`id` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in 14.10. |
 
 ### `Mutation.dastScannerProfileDelete`
 
@@ -1853,8 +1854,9 @@ Input type: `DastScannerProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdastscannerprofileupdatedastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Updated scanner profile. |
 | <a id="mutationdastscannerprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastscannerprofileupdateid"></a>`id` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile. |
+| <a id="mutationdastscannerprofileupdateid"></a>`id` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in 14.10. |
 
 ### `Mutation.dastSiteProfileCreate`
 

@@ -307,7 +307,6 @@ export default {
                     v-if="isReplying"
                     ref="noteForm"
                     :discussion="discussion"
-                    :is-editing="false"
                     :line="diffLine"
                     save-button-title="Comment"
                     :autosave-key="autosaveKey"

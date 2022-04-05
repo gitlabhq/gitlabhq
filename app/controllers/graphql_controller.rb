@@ -44,7 +44,7 @@ class GraphqlController < ApplicationController
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
 
   # The default feature category is overridden to read from request
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   # We don't know what the query is going to be, so we can't set a high urgency
   # See https://gitlab.com/groups/gitlab-org/-/epics/5841 for the work that will

@@ -68,6 +68,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     else
       @error = { message: _('Invalid pin code.') }
       @qr_code = build_qr_code
+      @account_string = account_string
 
       if Feature.enabled?(:webauthn, default_enabled: :yaml)
         setup_webauthn_registration

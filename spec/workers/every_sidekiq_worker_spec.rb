@@ -54,7 +54,7 @@ RSpec.describe 'Every Sidekiq worker' do
     # All Sidekiq worker classes should declare a valid `feature_category`
     # or explicitly be excluded with the `feature_category_not_owned!` annotation.
     # Please see doc/development/sidekiq_style_guide.md#feature-categorization for more details.
-    it 'has a feature_category or feature_category_not_owned! attribute', :aggregate_failures do
+    it 'has a feature_category attribute', :aggregate_failures do
       workers_without_defaults.each do |worker|
         expect(worker.get_feature_category).to be_a(Symbol), "expected #{worker.inspect} to declare a feature_category or feature_category_not_owned!"
       end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::SystemInfoController < Admin::ApplicationController
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   EXCLUDED_MOUNT_OPTIONS = %w[
     nobrowse

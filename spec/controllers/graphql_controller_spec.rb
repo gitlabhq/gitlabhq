@@ -152,6 +152,26 @@ RSpec.describe GraphqlController do
       end
     end
 
+    context 'when 2FA is required for the user' do
+      let(:user) { create(:user, last_activity_on: Date.yesterday) }
+
+      before do
+        group = create(:group, require_two_factor_authentication: true)
+        group.add_developer(user)
+
+        sign_in(user)
+      end
+
+      it 'does not redirect if 2FA is enabled' do
+        expect(controller).not_to receive(:redirect_to)
+
+        post :execute
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(json_response).to eq({ 'errors' => [{ 'message' => '2FA required' }] })
+      end
+    end
+
     context 'when user uses an API token' do
       let(:user) { create(:user, last_activity_on: Date.yesterday) }
       let(:token) { create(:personal_access_token, user: user, scopes: [:api]) }

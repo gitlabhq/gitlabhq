@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::HealthCheckController < Admin::ApplicationController
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   def show
     @errors = HealthCheck::Utils.process_checks(checks)

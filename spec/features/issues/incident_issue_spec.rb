@@ -56,5 +56,37 @@ RSpec.describe 'Incident Detail', :js do
         end
       end
     end
+
+    context 'when on summary tab' do
+      before do
+        click_link 'Summary'
+      end
+
+      it 'shows the summary tab with all components' do
+        page.within('.issuable-details') do
+          hidden_items = find_all('.js-issue-widgets')
+
+          # Linked Issues/MRs and comment box
+          expect(hidden_items.count).to eq(2)
+
+          expect(hidden_items).to all(be_visible)
+        end
+      end
+    end
+
+    context 'when on alert details tab' do
+      before do
+        click_link 'Alert details'
+      end
+
+      it 'does not show the linked issues and notes/comment components' do
+        page.within('.issuable-details') do
+          hidden_items = find_all('.js-issue-widgets')
+
+          # Linked Issues/MRs and comment box are hidden on page
+          expect(hidden_items.count).to eq(0)
+        end
+      end
+    end
   end
 end

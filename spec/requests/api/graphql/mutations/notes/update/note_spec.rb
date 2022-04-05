@@ -8,7 +8,7 @@ RSpec.describe 'Updating a Note' do
   let!(:note) { create(:note, note: original_body) }
   let(:original_body) { 'Initial body text' }
   let(:updated_body) { 'Updated body text' }
-  let(:params) { { body: updated_body, confidential: true } }
+  let(:params) { { body: updated_body } }
   let(:mutation) do
     variables = params.merge(id: GitlabSchema.id_from_object(note).to_s)
 
@@ -28,7 +28,6 @@ RSpec.describe 'Updating a Note' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(note.reload.note).to eq(original_body)
-      expect(note.confidential).to be_falsey
     end
   end
 
@@ -41,46 +40,19 @@ RSpec.describe 'Updating a Note' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(note.reload.note).to eq(updated_body)
-      expect(note.confidential).to be_truthy
     end
 
     it 'returns the updated Note' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(mutation_response['note']['body']).to eq(updated_body)
-      expect(mutation_response['note']['confidential']).to be_truthy
-    end
-
-    context 'when only confidential param is present' do
-      let(:params) { { confidential: true } }
-
-      it 'updates only the note confidentiality' do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        expect(note.reload.note).to eq(original_body)
-        expect(note.confidential).to be_truthy
-      end
-    end
-
-    context 'when only body param is present' do
-      let(:params) { { body: updated_body } }
-
-      before do
-        note.update_column(:confidential, true)
-      end
-
-      it 'updates only the note body' do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        expect(note.reload.note).to eq(updated_body)
-        expect(note.confidential).to be_truthy
-      end
     end
 
     context 'when there are ActiveRecord validation errors' do
-      let(:updated_body) { '' }
+      let(:params) { { body: '', confidential: true } }
 
-      it_behaves_like 'a mutation that returns errors in the response', errors: ["Note can't be blank"]
+      it_behaves_like 'a mutation that returns errors in the response',
+        errors: ["Note can't be blank", 'Confidential can not be changed for existing notes']
 
       it 'does not update the Note' do
         post_graphql_mutation(mutation, current_user: current_user)
