@@ -26,6 +26,16 @@ export default {
       required: false,
       default: 'confirm',
     },
+    secondaryText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    secondaryVariant: {
+      type: String,
+      required: false,
+      default: 'confirm',
+    },
     modalHtmlMessage: {
       type: String,
       required: false,
@@ -44,6 +54,18 @@ export default {
         attributes: {
           variant: this.primaryVariant,
           'data-qa-selector': 'confirm_ok_button',
+        },
+      };
+    },
+    secondaryAction() {
+      if (!this.secondaryText) {
+        return null;
+      }
+
+      return {
+        text: this.secondaryText,
+        attributes: {
+          variant: this.secondaryVariant,
         },
       };
     },
@@ -69,6 +91,7 @@ export default {
     :title="title"
     :action-primary="primaryAction"
     :action-cancel="cancelAction"
+    :action-secondary="secondaryAction"
     :hide-header="!shouldShowHeader"
     @primary="$emit('confirmed')"
     @hidden="$emit('closed')"

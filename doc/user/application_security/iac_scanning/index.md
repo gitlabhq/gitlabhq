@@ -44,7 +44,7 @@ GitLab IaC scanning supports a variety of IaC configuration files. Our IaC secur
 | Terraform <sup>2</sup>                   | [KICS](https://kics.io/)         | 14.5                          |
 
 1. IaC scanning can analyze Azure Resource Manager templates in JSON format. If you write templates in the [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) language, you must use [the bicep CLI](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to convert your Bicep files into JSON before GitLab IaC scanning can analyze them.
-1. Terraform modules in a custom registry are not scanned for vulnerabilities. You can follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/357004) for the proposed feature. 
+1. Terraform modules in a custom registry are not scanned for vulnerabilities. You can follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/357004) for the proposed feature.
 
 ### Making IaC analyzers available to all GitLab tiers
 
@@ -55,13 +55,13 @@ All open source (OSS) analyzers are available with the GitLab Free tier. Future 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                             | In Free             | In Ultimate        |
-|:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure IaC Scanners](#configuration)                                               | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in merge request                                           | **{dotted-circle}** | **{check-circle}** |
-| [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
+| Capability                                                      | In Free & Premium   | In Ultimate        |
+|:----------------------------------------------------------------|:--------------------|:-------------------|
+| [Configure IaC scanner](#configuration)                         | **{check-circle}**  | **{check-circle}** |
+| Download [JSON Report](#reports-json-format)                    | **{check-circle}**  | **{check-circle}** |
+| See new findings in merge request widget                        | **{dotted-circle}** | **{check-circle}** |
+| [Manage vulnerabilities](../vulnerabilities/index.md)           | **{dotted-circle}** | **{check-circle}** |
+| [Access the Security Dashboard](../security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 

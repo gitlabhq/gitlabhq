@@ -76,10 +76,34 @@ RSpec.describe Gitlab::Diff::File do
   end
 
   describe '#rendered' do
-    let(:commit) { project.commit("532c837") }
+    context 'when not ipynb' do
+      it 'is nil' do
+        expect(diff_file.rendered).to be_nil
+      end
+    end
 
-    it 'creates a NotebookDiffFile for rendering' do
-      expect(diff_file.rendered).to be_kind_of(Gitlab::Diff::Rendered::Notebook::DiffFile)
+    context 'when ipynb' do
+      let(:commit) { project.commit("532c837") }
+
+      it 'creates a NotebookDiffFile for rendering' do
+        expect(diff_file.rendered).to be_kind_of(Gitlab::Diff::Rendered::Notebook::DiffFile)
+      end
+
+      context 'when too large' do
+        it 'is nil' do
+          expect(diff).to receive(:too_large?).and_return(true)
+
+          expect(diff_file.rendered).to be_nil
+        end
+      end
+
+      context 'when not modified' do
+        it 'is nil' do
+          expect(diff_file).to receive(:modified_file?).and_return(false)
+
+          expect(diff_file.rendered).to be_nil
+        end
+      end
     end
   end
 

@@ -60,13 +60,14 @@ as shown in the following table:
 
 | Capability                                                      | In Free & Premium   | In Ultimate        |
 |:----------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure Secret Detection Scanners](#configuration)           | **{check-circle}**  | **{check-circle}** |
-| [Customize Secret Detection Settings](#customizing-settings)    | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](../sast/index.md#reports-json-format)        | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in merge request                    | **{dotted-circle}** | **{check-circle}** |
+| [Configure Secret Detection scanner](#configuration)            | **{check-circle}**  | **{check-circle}** |
+| [Customize Secret Detection settings](#customizing-settings)    | **{check-circle}**  | **{check-circle}** |
+| Download [JSON Report](../sast/index.md#reports-json-format)    | **{check-circle}**  | **{check-circle}** |
+| See new findings in the merge request widget                    | **{dotted-circle}** | **{check-circle}** |
 | View identified secrets in the pipelines' **Security** tab      | **{dotted-circle}** | **{check-circle}** |
-| [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** | **{check-circle}** |
+| [Manage vulnerabilities](../vulnerabilities/index.md)           | **{dotted-circle}** | **{check-circle}** |
+| [Access the Security Dashboard](../security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
+| [Customize Secret Detection rulesets](#custom-rulesets)         | **{dotted-circle}** | **{check-circle}** |
 
 ## Configuration
 

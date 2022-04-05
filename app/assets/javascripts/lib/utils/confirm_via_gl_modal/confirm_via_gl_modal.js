@@ -2,7 +2,15 @@ import Vue from 'vue';
 
 export function confirmAction(
   message,
-  { primaryBtnVariant, primaryBtnText, modalHtmlMessage, title, hideCancel } = {},
+  {
+    primaryBtnVariant,
+    primaryBtnText,
+    secondaryBtnVariant,
+    secondaryBtnText,
+    modalHtmlMessage,
+    title,
+    hideCancel,
+  } = {},
 ) {
   return new Promise((resolve) => {
     let confirmed = false;
@@ -16,6 +24,8 @@ export function confirmAction(
           'confirm-modal',
           {
             props: {
+              secondaryText: secondaryBtnText,
+              secondaryVariant: secondaryBtnVariant,
               primaryVariant: primaryBtnVariant,
               primaryText: primaryBtnText,
               title,

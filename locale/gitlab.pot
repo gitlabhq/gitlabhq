@@ -22773,9 +22773,6 @@ msgstr ""
 msgid "Locked the discussion."
 msgstr ""
 
-msgid "Locked to current projects"
-msgstr ""
-
 msgid "Locks give the ability to lock specific file or folder."
 msgstr ""
 

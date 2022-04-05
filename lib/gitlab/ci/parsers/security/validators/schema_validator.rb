@@ -26,19 +26,19 @@ module Gitlab
                                    8.0.0-rc1 8.0.1-rc1 8.1.0-rc1 9.0.0-rc1].freeze
 
             # These come from https://app.periscopedata.com/app/gitlab/895813/Secure-Scan-metrics?widget=12248944&udv=1385516
-            KNOWN_VERSIONS_TO_DEPRECATE = %w[0.1 1.0 1.0.0 1.2 1.3 10.0.0 12.1.0 13.1.0 2.0 2.1 2.1.0 2.3 2.3.0 2.4 3.0 3.0.0 3.0.6 3.13.2 V2.7.0].freeze
+            KNOWN_VERSIONS_TO_REMOVE = %w[0.1 1.0 1.0.0 1.2 1.3 10.0.0 12.1.0 13.1.0 2.0 2.1 2.1.0 2.3 2.3.0 2.4 3.0 3.0.0 3.0.6 3.13.2 V2.7.0].freeze
 
-            VERSIONS_TO_DEPRECATE_IN_15_0 = (PREVIOUS_RELEASES + KNOWN_VERSIONS_TO_DEPRECATE).freeze
+            VERSIONS_TO_REMOVE_IN_15_0 = (PREVIOUS_RELEASES + KNOWN_VERSIONS_TO_REMOVE).freeze
 
             DEPRECATED_VERSIONS = {
-              cluster_image_scanning: VERSIONS_TO_DEPRECATE_IN_15_0,
-              container_scanning: VERSIONS_TO_DEPRECATE_IN_15_0,
-              coverage_fuzzing: VERSIONS_TO_DEPRECATE_IN_15_0,
-              dast: VERSIONS_TO_DEPRECATE_IN_15_0,
-              api_fuzzing: VERSIONS_TO_DEPRECATE_IN_15_0,
-              dependency_scanning: VERSIONS_TO_DEPRECATE_IN_15_0,
-              sast: VERSIONS_TO_DEPRECATE_IN_15_0,
-              secret_detection: VERSIONS_TO_DEPRECATE_IN_15_0
+              cluster_image_scanning: VERSIONS_TO_REMOVE_IN_15_0,
+              container_scanning: VERSIONS_TO_REMOVE_IN_15_0,
+              coverage_fuzzing: VERSIONS_TO_REMOVE_IN_15_0,
+              dast: VERSIONS_TO_REMOVE_IN_15_0,
+              api_fuzzing: VERSIONS_TO_REMOVE_IN_15_0,
+              dependency_scanning: VERSIONS_TO_REMOVE_IN_15_0,
+              sast: VERSIONS_TO_REMOVE_IN_15_0,
+              secret_detection: VERSIONS_TO_REMOVE_IN_15_0
             }.freeze
 
             class Schema
@@ -86,15 +86,18 @@ module Gitlab
               end
             end
 
-            def initialize(report_type, report_data, report_version = nil)
+            def initialize(report_type, report_data, report_version = nil, project: nil)
               @report_type = report_type&.to_sym
               @report_data = report_data
               @report_version = report_version
+              @project = project
               @errors = []
               @warnings = []
+              @deprecation_warnings = []
 
               populate_errors
               populate_warnings
+              populate_deprecation_warnings
             end
 
             def valid?
@@ -102,25 +105,46 @@ module Gitlab
             end
 
             def populate_errors
-              if Feature.enabled?(:enforce_security_report_validation)
-                @errors += schema.validate(report_data).map { |error| JSONSchemer::Errors.pretty(error) }
+              schema_validation_errors = schema.validate(report_data).map { |error| JSONSchemer::Errors.pretty(error) }
+
+              log_warnings(problem_type: 'schema_validation_fails') unless schema_validation_errors.empty?
+
+              if Feature.enabled?(:enforce_security_report_validation, @project)
+                @errors += schema_validation_errors
               else
-                @warnings += schema.validate(report_data).map { |error| JSONSchemer::Errors.pretty(error) }
+                @warnings += schema_validation_errors
               end
             end
 
             def populate_warnings
-              add_deprecated_report_version_message if report_uses_deprecated_schema_version?
               add_unsupported_report_version_message if !report_uses_supported_schema_version? && !report_uses_deprecated_schema_version?
             end
 
+            def populate_deprecation_warnings
+              add_deprecated_report_version_message if report_uses_deprecated_schema_version?
+            end
+
             def add_deprecated_report_version_message
+              log_warnings(problem_type: 'using_deprecated_schema_version')
+
               message = "Version #{report_version} for report type #{report_type} has been deprecated, supported versions for this report type are: #{supported_schema_versions}"
-              add_message_as(level: :warning, message: message)
+              add_message_as(level: :deprecation_warning, message: message)
+            end
+
+            def log_warnings(problem_type:)
+              Gitlab::AppLogger.info(
+                message: 'security report schema validation problem',
+                security_report_type: report_type,
+                security_report_version: report_version,
+                project_id: @project.id,
+                security_report_failure: problem_type
+              )
             end
 
             def add_unsupported_report_version_message
-              if Feature.enabled?(:enforce_security_report_validation)
+              log_warnings(problem_type: 'using_unsupported_schema_version')
+
+              if Feature.enabled?(:enforce_security_report_validation, @project)
                 handle_unsupported_report_version(treat_as: :error)
               else
                 handle_unsupported_report_version(treat_as: :warning)
@@ -152,6 +176,8 @@ module Gitlab
 
             def add_message_as(level:, message:)
               case level
+              when :deprecation_warning
+                @deprecation_warnings << message
               when :error
                 @errors << message
               when :warning
@@ -159,7 +185,7 @@ module Gitlab
               end
             end
 
-            attr_reader :errors, :warnings
+            attr_reader :errors, :warnings, :deprecation_warnings
 
             private
 

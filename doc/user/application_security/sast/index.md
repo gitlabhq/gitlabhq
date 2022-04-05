@@ -141,17 +141,17 @@ All open source (OSS) analyzers have been moved to the GitLab Free tier as of Gi
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                             | In Free             | In Ultimate        |
-|:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure SAST Scanners](#configuration)                                              | **{check-circle}**  | **{check-circle}** |
-| [Customize SAST Settings](#available-cicd-variables)                                   | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                                           | **{dotted-circle}** | **{check-circle}** |
-| [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
-| [Configure SAST in the UI](#configure-sast-in-the-ui)                                  | **{dotted-circle}** | **{check-circle}** |
-| [Customize SAST Rulesets](#customize-rulesets)                                         | **{dotted-circle}** | **{check-circle}** |
-| [False Positive Detection](#false-positive-detection)                                  | **{dotted-circle}** | **{check-circle}** |
+| Capability                                                      | In Free & Premium   | In Ultimate        |
+|:----------------------------------------------------------------|:--------------------|:-------------------|
+| [Configure SAST scanners](#configuration)                       | **{check-circle}**  | **{check-circle}** |
+| [Customize SAST settings](#available-cicd-variables)            | **{check-circle}**  | **{check-circle}** |
+| Download [JSON Report](#reports-json-format)                    | **{check-circle}**  | **{check-circle}** |
+| See new findings in merge request widget                        | **{dotted-circle}** | **{check-circle}** |
+| [Manage vulnerabilities](../vulnerabilities/index.md)           | **{dotted-circle}** | **{check-circle}** |
+| [Access the Security Dashboard](../security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
+| [Configure SAST in the UI](#configure-sast-in-the-ui)           | **{dotted-circle}** | **{check-circle}** |
+| [Customize SAST rulesets](#customize-rulesets)                  | **{dotted-circle}** | **{check-circle}** |
+| [Detect False Positives](#false-positive-detection)             | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -524,7 +524,7 @@ Several passthrouh types generate a configuration for the target analyzer:
     the configuration.
   - If there is a filename collision between files in both repositories, files
     from the `sast` repository overwrite files from the `myrules` repository,
-    as `sast-rules` has higher precedence.  
+    as `sast-rules` has higher precedence.
 - The `raw` entry creates a file named `insecure.yml` under `/sgrules`. The
   full path is `/sgrules/insecure.yml`.
 - The `url` entry fetches a configuration made available through a URL and
@@ -991,7 +991,7 @@ Support for custom certificate authorities was introduced in the following versi
 | `phpcs-security-audit` | [v2.8.2](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit/-/releases/v2.8.2) |
 | `pmd-apex`             | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0)             |
 | `security-code-scan`   | [v2.7.3](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v2.7.3)   |
-| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)   |
+| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)              |
 | `sobelow`              | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0)              |
 | `spotbugs`             | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1)             |
 

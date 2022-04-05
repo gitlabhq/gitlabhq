@@ -184,6 +184,22 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report do
     end
   end
 
+  describe 'warnings?' do
+    subject { report.warnings? }
+
+    context 'when the report does not have any errors' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the report has warnings' do
+      before do
+        report.add_warning('foo', 'bar')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '#primary_scanner_order_to' do
     let(:scanner_1) { build(:ci_reports_security_scanner) }
     let(:scanner_2) { build(:ci_reports_security_scanner) }

@@ -14,6 +14,7 @@ module Gitlab
           def initialize(json_data, report, vulnerability_finding_signatures_enabled = false, validate: false)
             @json_data = json_data
             @report = report
+            @project = report.project
             @validate = validate
             @vulnerability_finding_signatures_enabled = vulnerability_finding_signatures_enabled
           end
@@ -51,22 +52,27 @@ module Gitlab
             #
             # After 15.0 we will enforce schema validation by default
             # See: https://gitlab.com/groups/gitlab-org/-/epics/6968
-            schema_validation_passed = schema_validator.valid?
+            schema_validator.deprecation_warnings.each { |deprecation_warning| report.add_warning('Schema', deprecation_warning) }
 
             if validate
-              schema_validator.errors.each { |error| report.add_error('Schema', error) } unless schema_validation_passed
+              schema_validation_passed = schema_validator.valid?
+
+              # Validation warnings are errors
+              schema_validator.errors.each { |error| report.add_error('Schema', error) }
+              schema_validator.warnings.each { |warning| report.add_error('Schema', warning) }
 
               schema_validation_passed
             else
-              # We treat all schema validation errors as warnings
+              # Validation warnings are warnings
               schema_validator.errors.each { |error| report.add_warning('Schema', error) }
+              schema_validator.warnings.each { |warning| report.add_warning('Schema', warning) }
 
               true
             end
           end
 
           def schema_validator
-            @schema_validator ||= ::Gitlab::Ci::Parsers::Security::Validators::SchemaValidator.new(report.type, report_data, report.version)
+            @schema_validator ||= ::Gitlab::Ci::Parsers::Security::Validators::SchemaValidator.new(report.type, report_data, report.version, project: @project)
           end
 
           def report_data
@@ -136,7 +142,7 @@ module Gitlab
                 metadata_version: report_version,
                 details: data['details'] || {},
                 signatures: signatures,
-                project_id: report.project_id,
+                project_id: @project.id,
                 vulnerability_finding_signatures_enabled: @vulnerability_finding_signatures_enabled))
           end
 
@@ -279,7 +285,7 @@ module Gitlab
               report_type: report.type,
               primary_identifier_fingerprint: primary_identifier&.fingerprint,
               location_fingerprint: location_fingerprint,
-              project_id: report.project_id
+              project_id: @project.id
             }
 
             if uuid_v5_name_components.values.any?(&:nil?)

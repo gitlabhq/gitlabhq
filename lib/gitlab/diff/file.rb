@@ -375,7 +375,7 @@ module Gitlab
       end
 
       def rendered
-        return unless use_renderable_diff? && ipynb?
+        return unless use_renderable_diff? && ipynb? && modified_file? && !too_large?
 
         strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
       end
@@ -410,7 +410,7 @@ module Gitlab
       end
 
       def ipynb?
-        modified_file? && file_path.ends_with?('.ipynb')
+        file_path.ends_with?('.ipynb')
       end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but

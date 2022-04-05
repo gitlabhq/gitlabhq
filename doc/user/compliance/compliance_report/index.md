@@ -9,17 +9,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in GitLab 12.8 as Compliance Dashboard.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/299360) to compliance report in GitLab 14.2.
+> - [Replaced](https://gitlab.com/groups/gitlab-org/-/epics/5237) by merge request violations in GitLab 14.6 [with a flag](../../../administration/feature_flags.md) named `compliance_violations_report`. Disabled by default.
+> - GraphQL API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7222) in GitLab 14.9.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/5237) in GitLab 14.10. [Feature flag `compliance_violations_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/346266) removed.
 
 Compliance report gives you the ability to see a group's merge request activity. It provides a
 high-level view for all projects in the group. For example, code approved for merging into
 production.
 
-You can use the report to:
+You can use the report to get:
 
-- Get an overview of the latest merge request for each project.
-- See if merge requests were approved and by whom.
-- See merge request authors.
-- See the latest [CI/CD pipeline](../../../ci/pipelines/index.md) result for each merge request.
+- A list of compliance violations from all merged merge requests within the group.
+- The reason and severity of each compliance violation.
+- A link to the merge request that caused each compliance violation.
 
 ## View the compliance report for a group
 
@@ -32,8 +34,36 @@ To view the compliance report:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Compliance report**.
 
-NOTE:
-The compliance report shows only the latest merge request on each project.
+### Severity levels scale
+
+The following is a list of available violation severity levels, ranked from most to least severe:
+
+| Icon                                          | Severity level |
+|:----------------------------------------------|:---------------|
+| **{severity-critical, 18, gl-fill-red-800}**  | Critical       |
+| **{severity-high, 18, gl-fill-red-600}**      | High           |
+| **{severity-medium, 18, gl-fill-orange-400}** | Medium         |
+| **{severity-low, 18, gl-fill-orange-300}**    | Low            |
+| **{severity-info, 18, gl-fill-blue-400}**     | Info           |
+
+### Violation types
+
+The following is a list of violations that are either:
+
+- Already available.
+- Aren't available, but which we are tracking in issues.
+
+| Violation                            | Severity level  | Category                                                                               | Description                                                                                                                                                                                      | Availability                                                                    |
+|:-------------------------------------|:----------------|:---------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|
+| Author approved merge request        | High            | [Separation of duties](#separation-of-duties)                                          | The author of the merge request approved their own merge request. [Learn more](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).                                   | [Available in GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870)  |
+| Committers approved merge request    | High            | [Separation of duties](#separation-of-duties)                                          | The committers of the merge request approved the merge request they contributed to. [Learn more](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits). | [Available in GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870)  |
+| Fewer than two approvals             | High            | [Separation of duties](#separation-of-duties)                                          | The merge request was merged with fewer than two approvals. [Learn more](../../project/merge_requests/approvals/rules.md).                                                                       | [Available in GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870) |
+| Pipeline failed                      | Medium          | [Pipeline results](../../../ci/pipelines/index.md)                                     | The merge requests pipeline failed and was merged.                                                                                                                                               | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
+| Pipeline passed with warnings        | Info            | [Pipeline results](../../../ci/pipelines/index.md)                                     | The merge request pipeline passed with warnings and was merged.                                                                                                                                  | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
+| Code coverage down more than 10%     | High            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | The code coverage report for the merge request indicates a reduction in coverage of more than 10%.                                                                                               | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
+| Code coverage down between 5% to 10% | Medium          | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | The code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%.                                                                                           | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
+| Code coverage down between 1% to 5%  | Low             | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | The code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.                                                                                            | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
+| Code coverage down less than 1%      | Info            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | The code coverage report for the merge request indicates a reduction in coverage of less than 1%.                                                                                                | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
 
 ## Merge request drawer
 
@@ -51,29 +81,14 @@ request:
 - A list of users that approved the merge request.
 - The user that merged the merge request.
 
-## Approval status and separation of duties
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217939) in GitLab 13.3.
+## Separation of duties
 
 We support a separation of duties policy between users who create and approve merge requests.
-The approval status column can help you identify violations of this policy.
 Our criteria for the separation of duties is as follows:
 
 - [A merge request author is **not** allowed to approve their merge request](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author)
 - [A merge request committer is **not** allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits)
 - [The minimum number of approvals required to merge a merge request is **at least** two](../../project/merge_requests/approvals/rules.md)
-
-The **Approval status** column shows you at a glance whether a merge request is complying with the above.
-This column has four states:
-
-| State | Description |
-|:------|:------------|
-| Empty | The merge request approval status is unknown |
-| ![Failed](img/failed_icon_v13_3.png) | The merge request **does not** comply with any of the above criteria |
-| ![Warning](img/warning_icon_v13_3.png) | The merge request complies with **some** of the above criteria |
-| ![Success](img/success_icon_v13_3.png) | The merge request complies with **all** of the above criteria |
-
-If you see a non-success state, review the criteria for the merge request's project to ensure it complies with the separation of duties.
 
 ## Chain of Custody report
 
@@ -105,64 +120,3 @@ You can generate a commit-specific Chain of Custody report for a given commit SH
 NOTE:
 The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.
 The remaining records are truncated when this limit is reached.
-
-## Merge request violations
-
-> - Introduced in GitLab 14.6. [Deployed behind the `compliance_violations_report` flag](../../../administration/feature_flags.md). Disabled by default.
-> - GraphQL API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7222) in GitLab 14.9.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `compliance_violations_report`.
-On GitLab.com, this feature is not available. This feature is not ready for production use.
-
-Merge request violations provide a view of all the [separation of duties](#approval-status-and-separation-of-duties) compliance violations
-that exist in projects in a specific group. For each separation of duties compliance violation, you can see:
-
-- A list of compliance violations.
-- The severity of each compliance violation.
-- Reason for the compliance violation.
-- A link to the merge request that caused the compliance violation.
-
-Merge request violations can be accessed:
-
-- In the GitLab UI.
-- Using the [GraphQL API](../../../api/graphql/reference/index.md#complianceviolation) (GitLab 14.9 and later).
-
-### View merge request violations
-
-To view merge request violations:
-
-1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Compliance report**.
-
-### Severity levels scale
-
-The following is a list of available violation severity levels, ranked from most to least severe:
-
-| Icon                                          | Severity level |
-|:----------------------------------------------|:---------------|
-| **{severity-critical, 18, gl-fill-red-800}**  | Critical       |
-| **{severity-high, 18, gl-fill-red-600}**      | High           |
-| **{severity-medium, 18, gl-fill-orange-400}** | Medium         |
-| **{severity-low, 18, gl-fill-orange-300}**    | Low            |
-| **{severity-info, 18, gl-fill-blue-400}**     | Info           |
-
-### Violation types
-
-The following is a list of violations that are either:
-
-- Already available.
-- Aren't available, but which we are tracking in issues.
-
-| Violation                            | Severity level  | Category                                                                                | Description                                                                                                                                                                                      | Availability                                                        |
-|:-------------------------------------|:----------------|:----------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------|
-| Author approved merge request        | High            | [Separation of duties](#approval-status-and-separation-of-duties)                       | The author of the merge request approved their own merge request. [Learn more](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).                                   | [Unavailable](https://gitlab.com/groups/gitlab-org/-/epics/6870)    |
-| Committers approved merge request    | High            | [Separation of duties](#approval-status-and-separation-of-duties)                       | The committers of the merge request approved the merge request they contributed to. [Learn more](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits). | [Unavailable](https://gitlab.com/groups/gitlab-org/-/epics/6870)    |
-| Fewer than two approvals             | High            | [Separation of duties](#approval-status-and-separation-of-duties)                       | The merge request was merged with fewer than two approvals. [Learn more](../../project/merge_requests/approvals/rules.md).                                                                       | [Unavailable](https://gitlab.com/groups/gitlab-org/-/epics/6870)    |
-| Pipeline failed                      | Medium          | [Pipeline results](../../../ci/pipelines/index.md)                                      | The merge requests pipeline failed and was merged.                                                                                                                                               | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011) |
-| Pipeline passed with warnings        | Info            | [Pipeline results](../../../ci/pipelines/index.md)                                      | The merge request pipeline passed with warnings and was merged.                                                                                                                                  | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011) |
-| Code coverage down more than 10%     | High            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results)  | The code coverage report for the merge request indicates a reduction in coverage of more than 10%.                                                                                               | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011) |
-| Code coverage down between 5% to 10% | Medium          | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results)  | The code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%.                                                                                           | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011) |
-| Code coverage down between 1% to 5%  | Low             | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results)  | The code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.                                                                                            | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011) |
-| Code coverage down less than 1%      | Info            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results)  | The code coverage report for the merge request indicates a reduction in coverage of less than 1%.                                                                                                | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011) |

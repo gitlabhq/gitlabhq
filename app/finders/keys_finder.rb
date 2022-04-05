@@ -52,11 +52,11 @@ class KeysFinder
   end
 
   def valid_fingerprint_param?
-    if fingerprint_type == "sha256"
-      Base64.decode64(fingerprint).length == 32
-    else
-      fingerprint =~ /^(\h{2}:){15}\h{2}/
-    end
+    return Base64.decode64(fingerprint).length == 32 if fingerprint_type == "sha256"
+
+    return false if Gitlab::FIPS.enabled?
+
+    fingerprint =~ /^(\h{2}:){15}\h{2}/
   end
 
   def fingerprint_query

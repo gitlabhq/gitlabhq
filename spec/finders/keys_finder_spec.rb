@@ -5,23 +5,22 @@ require 'spec_helper'
 RSpec.describe KeysFinder do
   subject { described_class.new(params).execute }
 
-  let(:user) { create(:user) }
-  let(:params) { {} }
-
-  let!(:key_1) do
-    create(:personal_key,
+  let_it_be(:user) { create(:user) }
+  let_it_be(:key_1) do
+    create(:rsa_key_4096,
       last_used_at: 7.days.ago,
       user: user,
-      key: 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1016k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=',
-      fingerprint: 'ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1',
-      fingerprint_sha256: 'nUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo/lCg')
+      fingerprint: 'df:73:db:29:3c:a5:32:cf:09:17:7e:8e:9d:de:d7:f7',
+      fingerprint_sha256: 'ByDU7hQ1JB95l6p53rHrffc4eXvEtqGUtQhS+Dhyy7g')
   end
 
-  let!(:key_2) { create(:personal_key, last_used_at: nil, user: user) }
-  let!(:key_3) { create(:personal_key, last_used_at: 2.days.ago) }
+  let_it_be(:key_2) { create(:personal_key_4096, last_used_at: nil, user: user) }
+  let_it_be(:key_3) { create(:personal_key_4096, last_used_at: 2.days.ago) }
+
+  let(:params) { {} }
 
   context 'key_type' do
-    let!(:deploy_key) { create(:deploy_key) }
+    let_it_be(:deploy_key) { create(:deploy_key) }
 
     context 'when `key_type` is `ssh`' do
       before do
@@ -64,34 +63,40 @@ RSpec.describe KeysFinder do
     end
 
     context 'with valid fingerprints' do
-      let!(:deploy_key) do
-        create(:deploy_key,
-          user: user,
-          key: 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1017k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=',
-          fingerprint: '8a:4a:12:92:0b:50:47:02:d4:5a:8e:a9:44:4e:08:b4',
-          fingerprint_sha256: '4DPHOVNh53i9dHb5PpY2vjfyf5qniTx1/pBFPoZLDdk')
-      end
+      let_it_be(:deploy_key) { create(:rsa_deploy_key_5120, user: user) }
 
       context 'personal key with valid MD5 params' do
         context 'with an existent fingerprint' do
           before do
-            params[:fingerprint] = 'ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1'
+            params[:fingerprint] = 'df:73:db:29:3c:a5:32:cf:09:17:7e:8e:9d:de:d7:f7'
           end
 
           it 'returns the key' do
             expect(subject).to eq(key_1)
             expect(subject.user).to eq(user)
           end
+
+          context 'with FIPS mode', :fips_mode do
+            it 'raises InvalidFingerprint' do
+              expect { subject }.to raise_error(KeysFinder::InvalidFingerprint)
+            end
+          end
         end
 
         context 'deploy key with an existent fingerprint' do
           before do
-            params[:fingerprint] = '8a:4a:12:92:0b:50:47:02:d4:5a:8e:a9:44:4e:08:b4'
+            params[:fingerprint] = 'fe:fa:3a:4d:7d:51:ec:bf:c7:64:0c:96:d0:17:8a:d0'
           end
 
           it 'returns the key' do
             expect(subject).to eq(deploy_key)
             expect(subject.user).to eq(user)
+          end
+
+          context 'with FIPS mode', :fips_mode do
+            it 'raises InvalidFingerprint' do
+              expect { subject }.to raise_error(KeysFinder::InvalidFingerprint)
+            end
           end
         end
 
@@ -103,13 +108,19 @@ RSpec.describe KeysFinder do
           it 'returns nil' do
             expect(subject).to be_nil
           end
+
+          context 'with FIPS mode', :fips_mode do
+            it 'raises InvalidFingerprint' do
+              expect { subject }.to raise_error(KeysFinder::InvalidFingerprint)
+            end
+          end
         end
       end
 
       context 'personal key with valid SHA256 params' do
         context 'with an existent fingerprint' do
           before do
-            params[:fingerprint] = 'SHA256:nUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo/lCg'
+            params[:fingerprint] = 'SHA256:ByDU7hQ1JB95l6p53rHrffc4eXvEtqGUtQhS+Dhyy7g'
           end
 
           it 'returns key' do
@@ -120,7 +131,7 @@ RSpec.describe KeysFinder do
 
         context 'deploy key with an existent fingerprint' do
           before do
-            params[:fingerprint] = 'SHA256:4DPHOVNh53i9dHb5PpY2vjfyf5qniTx1/pBFPoZLDdk'
+            params[:fingerprint] = 'SHA256:PCCupLbFHScm4AbEufbGDvhBU27IM0MVAor715qKQK8'
           end
 
           it 'returns key' do

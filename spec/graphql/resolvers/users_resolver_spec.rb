@@ -74,7 +74,9 @@ RSpec.describe Resolvers::UsersResolver do
       let_it_be(:current_user) { nil }
 
       it 'prohibits search without usernames passed' do
-        expect { resolve_users }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_users
+        end
       end
 
       it 'allows to search by username' do
