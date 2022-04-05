@@ -42637,10 +42637,16 @@ msgstr ""
 msgid "Work in progress Limit"
 msgstr ""
 
+msgid "WorkItem|Are you sure you want to delete the work item? This action cannot be reversed."
+msgstr ""
+
 msgid "WorkItem|Convert to work item"
 msgstr ""
 
 msgid "WorkItem|Create work item"
+msgstr ""
+
+msgid "WorkItem|Delete work item"
 msgstr ""
 
 msgid "WorkItem|New Task"
@@ -42650,6 +42656,9 @@ msgid "WorkItem|Select type"
 msgstr ""
 
 msgid "WorkItem|Something went wrong when creating a work item. Please try again"
+msgstr ""
+
+msgid "WorkItem|Something went wrong when deleting the work item. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching the work item. Please try again."
@@ -42665,6 +42674,9 @@ msgid "WorkItem|Type"
 msgstr ""
 
 msgid "WorkItem|Work Items"
+msgstr ""
+
+msgid "WorkItem|Work item deleted"
 msgstr ""
 
 msgid "Would you like to create a new branch?"

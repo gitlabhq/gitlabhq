@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '#perform' do
-  subject { described_class.new(metrics: metrics_tracker).perform(job_record) }
+  subject { described_class.new(connection: connection, metrics: metrics_tracker).perform(job_record) }
 
+  let(:connection) { Gitlab::Database.database_base_models[:main].connection }
   let(:metrics_tracker) { instance_double('::Gitlab::Database::BackgroundMigration::PrometheusMetrics', track: nil) }
   let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
@@ -19,6 +20,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   let(:job_instance) { double('job instance', batch_metrics: {}) }
+
+  around do |example|
+    Gitlab::Database::SharedModel.using_connection(connection) do
+      example.run
+    end
+  end
 
   before do
     allow(job_class).to receive(:new).and_return(job_instance)
@@ -138,7 +145,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       stub_const('Gitlab::BackgroundMigration::Foo', migration_class)
     end
 
-    let(:connection) { double(:connection) }
     let(:active_migration) { create(:batched_background_migration, :active, job_class_name: 'Foo') }
     let!(:job_record) { create(:batched_background_migration_job, batched_migration: active_migration) }
 
@@ -147,12 +153,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
       expect(job_instance).to receive(:perform)
 
-      described_class.new(connection: connection).perform(job_record)
+      subject
     end
   end
 
   context 'when the batched background migration inherits from BaseJob' do
-    let(:connection) { double(:connection) }
     let(:active_migration) { create(:batched_background_migration, :active, job_class_name: 'Foo') }
     let!(:job_record) { create(:batched_background_migration_job, batched_migration: active_migration) }
 
@@ -167,7 +172,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
       expect(job_instance).to receive(:perform)
 
-      described_class.new(connection: connection).perform(job_record)
+      subject
     end
   end
 end

@@ -77,6 +77,22 @@ export const createWorkItemFromTaskMutationResponse = {
   },
 };
 
+export const deleteWorkItemResponse = {
+  data: { workItemDelete: { errors: [], __typename: 'WorkItemDeletePayload' } },
+};
+
+export const deleteWorkItemFailureResponse = {
+  data: { workItemDelete: null },
+  errors: [
+    {
+      message:
+        "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
+      locations: [{ line: 2, column: 3 }],
+      path: ['workItemDelete'],
+    },
+  ],
+};
+
 export const workItemTitleSubscriptionResponse = {
   data: {
     issuableTitleUpdated: {

@@ -27408,6 +27408,8 @@ CREATE UNIQUE INDEX index_deployment_clusters_on_cluster_id_and_deployment_id ON
 
 CREATE INDEX index_deployment_merge_requests_on_merge_request_id ON deployment_merge_requests USING btree (merge_request_id);
 
+CREATE INDEX index_deployments_for_visible_scope ON deployments USING btree (environment_id, finished_at DESC) WHERE (status = ANY (ARRAY[1, 2, 3, 4, 6]));
+
 CREATE INDEX index_deployments_on_archived_project_id_iid ON deployments USING btree (archived, project_id, iid);
 
 CREATE INDEX index_deployments_on_cluster_id_and_status ON deployments USING btree (cluster_id, status);

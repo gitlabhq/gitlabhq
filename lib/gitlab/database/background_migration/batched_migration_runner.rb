@@ -6,13 +6,13 @@ module Gitlab
       class BatchedMigrationRunner
         FailedToFinalize = Class.new(RuntimeError)
 
-        def self.finalize(job_class_name, table_name, column_name, job_arguments, connection: ApplicationRecord.connection)
+        def self.finalize(job_class_name, table_name, column_name, job_arguments, connection:)
           new(connection: connection).finalize(job_class_name, table_name, column_name, job_arguments)
         end
 
-        def initialize(migration_wrapper = BatchedMigrationWrapper.new, connection: ApplicationRecord.connection)
-          @migration_wrapper = migration_wrapper
+        def initialize(connection:, migration_wrapper: BatchedMigrationWrapper.new(connection: connection))
           @connection = connection
+          @migration_wrapper = migration_wrapper
         end
 
         # Runs the next batched_job for a batched_background_migration.
@@ -79,7 +79,7 @@ module Gitlab
 
         private
 
-        attr_reader :migration_wrapper, :connection
+        attr_reader :connection, :migration_wrapper
 
         def find_or_create_next_batched_job(active_migration)
           if next_batch_range = find_next_batch_range(active_migration)

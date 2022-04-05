@@ -1,0 +1,5 @@
+mutation deleteWorkItem($input: WorkItemDeleteInput!) {
+  workItemDelete(input: $input) {
+    errors
+  }
+}

@@ -3,8 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
+  let(:connection) { Gitlab::Database.database_base_models[:main].connection }
   let(:migration_wrapper) { double('test wrapper') }
-  let(:runner) { described_class.new(migration_wrapper) }
+
+  let(:runner) { described_class.new(connection: connection, migration_wrapper: migration_wrapper) }
+
+  around do |example|
+    Gitlab::Database::SharedModel.using_connection(connection) do
+      example.run
+    end
+  end
 
   describe '#run_migration_job' do
     shared_examples_for 'it has completed the migration' do
@@ -295,7 +303,9 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
   end
 
   describe '#finalize' do
-    let(:migration_wrapper) { Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper.new }
+    let(:migration_wrapper) do
+      Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper.new(connection: connection)
+    end
 
     let(:migration_helpers) { ActiveRecord::Migration.new }
     let(:table_name) { :_test_batched_migrations_test_table }
@@ -443,8 +453,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
 
   describe '.finalize' do
     context 'when the connection is passed' do
-      let(:connection) { double('connection') }
-
       let(:table_name) { :_test_batched_migrations_test_table }
       let(:column_name) { :some_id }
       let(:job_arguments) { [:some, :other, :arguments] }

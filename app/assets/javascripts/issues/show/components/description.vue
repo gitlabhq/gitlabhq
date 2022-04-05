@@ -1,6 +1,13 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlModal, GlTooltip, GlModalDirective } from '@gitlab/ui';
+import {
+  GlSafeHtmlDirective as SafeHtml,
+  GlModal,
+  GlToast,
+  GlTooltip,
+  GlModalDirective,
+} from '@gitlab/ui';
 import $ from 'jquery';
+import Vue from 'vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';
@@ -13,6 +20,8 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import animateMixin from '../mixins/animate';
+
+Vue.use(GlToast);
 
 export default {
   directives: {
@@ -246,6 +255,9 @@ export default {
       this.$emit('updateDescription', description);
       this.closeCreateTaskModal();
     },
+    handleDeleteTask() {
+      this.$toast.show(s__('WorkItem|Work item deleted'));
+    },
     updateWorkItemIdUrlQuery(workItemId) {
       updateHistory({
         url: setUrlParams({ work_item_id: workItemId }),
@@ -306,8 +318,10 @@ export default {
       />
     </gl-modal>
     <work-item-detail-modal
+      :can-update="canUpdate"
       :visible="showWorkItemDetailModal"
       :work-item-id="workItemId"
+      @workItemDeleted="handleDeleteTask"
       @close="closeWorkItemDetailModal"
     />
     <template v-if="workItemsEnabled">

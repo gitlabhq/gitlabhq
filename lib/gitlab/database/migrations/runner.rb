@@ -6,7 +6,7 @@ module Gitlab
       class Runner
         BASE_RESULT_DIR = Rails.root.join('tmp', 'migration-testing').freeze
         METADATA_FILENAME = 'metadata.json'
-        SCHEMA_VERSION = 2 # Version of the output format produced by the runner
+        SCHEMA_VERSION = 3 # Version of the output format produced by the runner
 
         class << self
           def up
@@ -80,13 +80,8 @@ module Gitlab
             end
           end
         ensure
-          if instrumentation
-            stats_filename = File.join(result_dir, Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME)
-            File.write(stats_filename, instrumentation.observations.to_json)
-
-            metadata_filename = File.join(result_dir, METADATA_FILENAME)
-            File.write(metadata_filename, { version: SCHEMA_VERSION }.to_json)
-          end
+          metadata_filename = File.join(result_dir, METADATA_FILENAME)
+          File.write(metadata_filename, { version: SCHEMA_VERSION }.to_json)
 
           # We clear the cache here to mirror the cache clearing that happens at the end of `db:migrate` tasks
           # This clearing makes subsequent rake tasks in the same execution pick up database schema changes caused by

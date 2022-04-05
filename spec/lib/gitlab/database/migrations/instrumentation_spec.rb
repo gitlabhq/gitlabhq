@@ -11,6 +11,10 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
   describe '#observe' do
     subject { described_class.new(result_dir: result_dir) }
 
+    def load_observation(result_dir, migration_name)
+      Gitlab::Json.parse(File.read(File.join(result_dir, migration_name, described_class::STATS_FILENAME)))
+    end
+
     let(:migration_name) { 'test' }
     let(:migration_version) { '12345' }
 
@@ -87,7 +91,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
         end
 
         context 'retrieving observations' do
-          subject { instance.observations.first }
+          subject { load_observation(result_dir, migration_name) }
 
           before do
             observe
@@ -98,10 +102,10 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
           end
 
           it 'records a valid observation', :aggregate_failures do
-            expect(subject.walltime).not_to be_nil
-            expect(subject.success).to be_falsey
-            expect(subject.version).to eq(migration_version)
-            expect(subject.name).to eq(migration_name)
+            expect(subject['walltime']).not_to be_nil
+            expect(subject['success']).to be_falsey
+            expect(subject['version']).to eq(migration_version)
+            expect(subject['name']).to eq(migration_name)
           end
         end
       end
@@ -113,11 +117,18 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       let(:migration1) { double('migration1', call: nil) }
       let(:migration2) { double('migration2', call: nil) }
 
+      let(:migration_name_2) { 'other_migration' }
+      let(:migration_version_2) { '98765' }
+
       it 'records observations for all migrations' do
         subject.observe(version: migration_version, name: migration_name, connection: connection) {}
-        subject.observe(version: migration_version, name: migration_name, connection: connection) { raise 'something went wrong' } rescue nil
+        subject.observe(version: migration_version_2, name: migration_name_2, connection: connection) { raise 'something went wrong' } rescue nil
 
-        expect(subject.observations.size).to eq(2)
+        expect { load_observation(result_dir, migration_name) }.not_to raise_error
+        expect { load_observation(result_dir, migration_name_2) }.not_to raise_error
+
+        # Each observation is a subdirectory of the result_dir, so here we check that we didn't record an extra one
+        expect(Pathname(result_dir).children.map { |d| d.basename.to_s }).to contain_exactly(migration_name, migration_name_2)
       end
     end
   end

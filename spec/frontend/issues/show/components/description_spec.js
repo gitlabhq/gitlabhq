@@ -27,6 +27,9 @@ jest.mock('~/task_list');
 
 const showModal = jest.fn();
 const hideModal = jest.fn();
+const $toast = {
+  show: jest.fn(),
+};
 
 describe('Description component', () => {
   let wrapper;
@@ -49,6 +52,9 @@ describe('Description component', () => {
         ...props,
       },
       provide,
+      mocks: {
+        $toast,
+      },
       stubs: {
         GlModal: stubComponent(GlModal, {
           methods: {
@@ -287,6 +293,12 @@ describe('Description component', () => {
         findCreateWorkItem().vm.$emit('onCreate', newDescription);
         expect(hideModal).toHaveBeenCalled();
         expect(wrapper.emitted('updateDescription')).toEqual([[newDescription]]);
+      });
+
+      it('shows toast after delete success', async () => {
+        findWorkItemDetailModal().vm.$emit('workItemDeleted');
+
+        expect($toast.show).toHaveBeenCalledWith('Work item deleted');
       });
     });
 

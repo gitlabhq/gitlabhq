@@ -6,11 +6,8 @@ module Gitlab
       class Instrumentation
         STATS_FILENAME = 'migration-stats.json'
 
-        attr_reader :observations
-
         def initialize(result_dir:, observer_classes: ::Gitlab::Database::Migrations::Observers.all_observers)
           @observer_classes = observer_classes
-          @observations = []
           @result_dir = result_dir
         end
 
@@ -38,15 +35,16 @@ module Gitlab
           on_each_observer(observers) { |observer| observer.after }
           on_each_observer(observers) { |observer| observer.record }
 
-          record_observation(observation)
+          record_observation(observation, destination_dir: per_migration_result_dir)
         end
 
         private
 
         attr_reader :observer_classes
 
-        def record_observation(observation)
-          @observations << observation
+        def record_observation(observation, destination_dir:)
+          stats_file_location = File.join(destination_dir, STATS_FILENAME)
+          File.write(stats_file_location, observation.to_json)
         end
 
         def on_each_observer(observers, &block)

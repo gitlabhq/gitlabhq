@@ -708,22 +708,51 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   end
 
   describe '#execute_batched_migrations' do
-    subject { run_rake_task('gitlab:db:execute_batched_migrations') }
+    subject(:execute_batched_migrations) { run_rake_task('gitlab:db:execute_batched_migrations') }
 
-    let(:migrations) { create_list(:batched_background_migration, 2, :active) }
-    let(:runner) { instance_double('Gitlab::Database::BackgroundMigration::BatchedMigrationRunner') }
+    let(:connections) do
+      {
+        main: instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter),
+        ci: instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+      }
+    end
+
+    let(:runners) do
+      {
+        main: instance_double('Gitlab::Database::BackgroundMigration::BatchedMigrationRunner'),
+        ci: instance_double('Gitlab::Database::BackgroundMigration::BatchedMigrationRunner')
+      }
+    end
+
+    let(:migrations) do
+      {
+        main: build_list(:batched_background_migration, 1),
+        ci: build_list(:batched_background_migration, 1)
+      }
+    end
 
     before do
-      allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive_message_chain(:active, :queue_order).and_return(migrations)
-      allow(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner).to receive(:new).and_return(runner)
+      each_database = class_double('Gitlab::Database::EachDatabase').as_stubbed_const
+
+      allow(each_database).to receive(:each_database_connection)
+        .and_yield(connections[:main], 'main')
+        .and_yield(connections[:ci], 'ci')
+
+      keys = migrations.keys
+      allow(Gitlab::Database::BackgroundMigration::BatchedMigration)
+        .to receive_message_chain(:with_status, :queue_order) { migrations[keys.shift] }
     end
 
     it 'executes all migrations' do
-      migrations.each do |migration|
-        expect(runner).to receive(:run_entire_migration).with(migration)
+      [:main, :ci].each do |name|
+        expect(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner).to receive(:new)
+          .with(connection: connections[name])
+          .and_return(runners[name])
+
+        expect(runners[name]).to receive(:run_entire_migration).with(migrations[name].first)
       end
 
-      subject
+      execute_batched_migrations
     end
   end
 

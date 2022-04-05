@@ -46,7 +46,7 @@ class Deployment < ApplicationRecord
   scope :for_project, -> (project_id) { where(project_id: project_id) }
   scope :for_projects, -> (projects) { where(project: projects) }
 
-  scope :visible, -> { where(status: %i[running success failed canceled blocked]) }
+  scope :visible, -> { where(status: VISIBLE_STATUSES) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
   scope :upcoming, -> { where(status: %i[blocked running]) }
@@ -58,6 +58,7 @@ class Deployment < ApplicationRecord
 
   scope :ordered, -> { order(finished_at: :desc) }
 
+  VISIBLE_STATUSES = %i[running success failed canceled blocked].freeze
   FINISHED_STATUSES = %i[success failed canceled].freeze
 
   state_machine :status, initial: :created do

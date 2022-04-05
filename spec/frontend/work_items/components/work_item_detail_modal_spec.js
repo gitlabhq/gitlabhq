@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 
 describe('WorkItemDetailModal component', () => {
   let wrapper;
@@ -11,11 +12,15 @@ describe('WorkItemDetailModal component', () => {
   Vue.use(VueApollo);
 
   const findModal = () => wrapper.findComponent(GlModal);
+  const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemDetail = () => wrapper.findComponent(WorkItemDetail);
 
-  const createComponent = ({ visible = true, workItemId = '1' } = {}) => {
+  const createComponent = ({ visible = true, workItemId = '1', canUpdate = false } = {}) => {
     wrapper = shallowMount(WorkItemDetailModal, {
-      propsData: { visible, workItemId },
+      propsData: { visible, workItemId, canUpdate },
+      stubs: {
+        GlModal,
+      },
     });
   };
 
@@ -35,5 +40,13 @@ describe('WorkItemDetailModal component', () => {
     createComponent();
 
     expect(findWorkItemDetail().props()).toEqual({ workItemId: '1' });
+  });
+
+  it('shows work item actions', () => {
+    createComponent({
+      canUpdate: true,
+    });
+
+    expect(findWorkItemActions().exists()).toBe(true);
   });
 });

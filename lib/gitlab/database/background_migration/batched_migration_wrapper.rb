@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module BackgroundMigration
       class BatchedMigrationWrapper
-        def initialize(connection: ApplicationRecord.connection, metrics: PrometheusMetrics.new)
+        def initialize(connection:, metrics: PrometheusMetrics.new)
           @connection = connection
           @metrics = metrics
         end
