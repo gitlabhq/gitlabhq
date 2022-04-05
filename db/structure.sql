@@ -28376,13 +28376,13 @@ CREATE INDEX index_on_issues_closed_incidents_by_project_id_and_closed_at ON iss
 
 CREATE INDEX index_on_label_links_all_columns ON label_links USING btree (target_id, label_id, target_type);
 
-CREATE INDEX index_on_merge_request_assignees_state ON merge_request_assignees USING btree (state) WHERE (state = 2);
-
 CREATE INDEX index_on_merge_request_assignees_updated_state_by_user_id ON merge_request_assignees USING btree (updated_state_by_user_id);
 
-CREATE INDEX index_on_merge_request_reviewers_state ON merge_request_reviewers USING btree (state) WHERE (state = 2);
+CREATE INDEX index_on_merge_request_assignees_user_id_and_state ON merge_request_assignees USING btree (user_id, state) WHERE (state = 2);
 
 CREATE INDEX index_on_merge_request_reviewers_updated_state_by_user_id ON merge_request_reviewers USING btree (updated_state_by_user_id);
+
+CREATE INDEX index_on_merge_request_reviewers_user_id_and_state ON merge_request_reviewers USING btree (user_id, state) WHERE (state = 2);
 
 CREATE INDEX index_on_merge_requests_for_latest_diffs ON merge_requests USING btree (target_project_id) INCLUDE (id, latest_merge_request_diff_id);
 
