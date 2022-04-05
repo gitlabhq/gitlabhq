@@ -6,6 +6,7 @@ module API
       expose :user, merge: true, using: UserBasic
       expose :access_level
       expose :created_at
+      expose :created_by, with: UserBasic, expose_nil: false
       expose :expires_at
     end
   end

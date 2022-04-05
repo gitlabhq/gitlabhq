@@ -700,10 +700,6 @@ RSpec.describe Ci::JobArtifact do
     MSG
   end
 
-  it_behaves_like 'it has loose foreign keys' do
-    let(:factory_name) { :ci_job_artifact }
-  end
-
   context 'loose foreign key on ci_job_artifacts.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }

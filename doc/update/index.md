@@ -398,6 +398,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 14.8.0
 
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.8.2 or later will reset runner registration tokens for your groups and projects.
 - The agent server for Kubernetes [is enabled by default](https://about.gitlab.com/releases/2022/02/22/gitlab-14-8-released/#the-agent-server-for-kubernetes-is-enabled-by-default)
   on Omnibus installations. If you run GitLab at scale,
   such as [the reference architectures](../administration/reference_architectures/index.md),
@@ -421,11 +423,15 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 ### 14.7.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.7.4 or later will reset runner registration tokens for your groups and projects.
 
 ### 14.6.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
-
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.6.5 or later will reset runner registration tokens for your groups and projects.
+  
 ### 14.5.0
 
 - When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you

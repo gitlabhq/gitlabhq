@@ -155,6 +155,56 @@ RSpec.describe 'Query.project.pipeline' do
     end
   end
 
+  describe '.jobs.kind' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              stages {
+                nodes {
+                  groups{
+                    nodes {
+                      jobs {
+                        nodes {
+                          kind
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    context 'when the job is a build' do
+      it 'returns BUILD' do
+        create(:ci_build, pipeline: pipeline)
+
+        post_graphql(query, current_user: user)
+
+        job_data = graphql_data_at(:project, :pipeline, :stages, :nodes, :groups, :nodes, :jobs, :nodes).first
+        expect(job_data['kind']).to eq 'BUILD'
+      end
+    end
+
+    context 'when the job is a bridge' do
+      it 'returns BRIDGE' do
+        create(:ci_bridge, pipeline: pipeline)
+
+        post_graphql(query, current_user: user)
+
+        job_data = graphql_data_at(:project, :pipeline, :stages, :nodes, :groups, :nodes, :jobs, :nodes).first
+        expect(job_data['kind']).to eq 'BRIDGE'
+      end
+    end
+  end
+
   describe '.jobs.artifacts' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 

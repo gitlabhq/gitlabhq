@@ -59,5 +59,17 @@ Other settings you might want to include when creating the issue.
 # /epic &
 -->
 
+## Verification steps
+<!--
+Add verification steps to help GitLab team members test the implementation. This is particularly useful
+during the MR review and the ~"workflow::verification" step. You may not know exactly what the
+verification steps should be during issue refinement, so you can always come back later to add
+them.
+
+1. Check-out the corresponding branch
+1. ...
+1. Profit!
+-->
+
 /label ~"workflow::refinement"
 /milestone %Backlog

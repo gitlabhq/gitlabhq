@@ -2181,17 +2181,45 @@ RSpec.describe Notify do
     context 'when diff note' do
       let!(:notes) { create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request) }
 
-      it 'links to notes' do
+      it 'links to notes and discussions', :aggregate_failures do
+        reply_note = create(:diff_note_on_merge_request, review: review, project: project, author: review.author, noteable: merge_request, in_reply_to: notes.first)
+
         review.notes.each do |note|
           # Text part
           expect(subject.text_part.body.raw_source).to include(
             project_merge_request_url(project, merge_request, anchor: "note_#{note.id}")
           )
+
+          if note == reply_note
+            expect(subject.text_part.body.raw_source).to include("commented on a discussion on #{note.discussion.file_path}")
+          else
+            expect(subject.text_part.body.raw_source).to include("started a new discussion on #{note.discussion.file_path}")
+          end
         end
       end
 
       it 'includes only one link to the highlighted_diff_email' do
         expect(subject.html_part.body.raw_source).to include('assets/mailers/highlighted_diff_email').once
+      end
+
+      it 'avoids N+1 cached queries when rendering html', :use_sql_query_cache, :request_store do
+        control_count = ActiveRecord::QueryRecorder.new(query_recorder_debug: true, skip_cached: false) do
+          subject.html_part
+        end
+
+        create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request)
+
+        expect { described_class.new_review_email(recipient.id, review.id).html_part }.not_to exceed_all_query_limit(control_count)
+      end
+
+      it 'avoids N+1 cached queries when rendering text', :use_sql_query_cache, :request_store do
+        control_count = ActiveRecord::QueryRecorder.new(query_recorder_debug: true, skip_cached: false) do
+          subject.text_part
+        end
+
+        create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request)
+
+        expect { described_class.new_review_email(recipient.id, review.id).text_part }.not_to exceed_all_query_limit(control_count)
       end
     end
 

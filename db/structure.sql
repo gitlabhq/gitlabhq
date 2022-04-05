@@ -19278,7 +19278,6 @@ ALTER SEQUENCE project_mirror_data_id_seq OWNED BY project_mirror_data.id;
 CREATE TABLE project_pages_metadata (
     project_id bigint NOT NULL,
     deployed boolean DEFAULT false NOT NULL,
-    artifacts_archive_id bigint,
     pages_deployment_id bigint
 );
 
@@ -28666,8 +28665,6 @@ CREATE UNIQUE INDEX index_project_mirror_data_on_project_id ON project_mirror_da
 
 CREATE INDEX index_project_mirror_data_on_status ON project_mirror_data USING btree (status);
 
-CREATE INDEX index_project_pages_metadata_on_artifacts_archive_id ON project_pages_metadata USING btree (artifacts_archive_id);
-
 CREATE INDEX index_project_pages_metadata_on_pages_deployment_id ON project_pages_metadata USING btree (pages_deployment_id);
 
 CREATE INDEX index_project_pages_metadata_on_project_id_and_deployed_is_true ON project_pages_metadata USING btree (project_id) WHERE (deployed = true);
@@ -30967,8 +30964,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER ci_builds_loose_fk_trigger AFTER DELETE ON ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
-
-CREATE TRIGGER ci_job_artifacts_loose_fk_trigger AFTER DELETE ON ci_job_artifacts REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER ci_pipelines_loose_fk_trigger AFTER DELETE ON ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 

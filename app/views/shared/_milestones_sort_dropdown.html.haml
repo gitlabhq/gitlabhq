@@ -1,22 +1,4 @@
-.dropdown.inline.gl-ml-3
-  %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
-    %span.light
-    - if @sort.present?
-      = milestone_sort_options_hash[@sort]
-    - else
-      = sort_title_due_date_soon
-    = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
-  %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-sort
-    %li
-      = link_to page_filter_path(sort: sort_value_due_date_soon) do
-        = sort_title_due_date_soon
-      = link_to page_filter_path(sort: sort_value_due_date_later) do
-        = sort_title_due_date_later
-      = link_to page_filter_path(sort: sort_value_start_date_soon) do
-        = sort_title_start_date_soon
-      = link_to page_filter_path(sort: sort_value_start_date_later) do
-        = sort_title_start_date_later
-      = link_to page_filter_path(sort: sort_value_name) do
-        = sort_title_name_asc
-      = link_to page_filter_path(sort: sort_value_name_desc) do
-        = sort_title_name_desc
+- milestones_sort_options = milestones_sort_options_hash.map { |value, text| { value: value, text: text, href: page_filter_path(sort: value) } }
+
+%div{ data: {testid: 'milestone_sort_by_dropdown'} }
+  = gl_redirect_listbox_tag milestones_sort_options, @sort, class: 'gl-ml-3'

@@ -282,7 +282,8 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
         "web_url": "http://localhost:3000/project_6_bot"
       },
       "status": "approved",
-      "created_at": "2022-02-24T20:22:30.097Z"
+      "created_at": "2022-02-24T20:22:30.097Z",
+      "comment": "Looks good to me"
     }
   ],
   ...
@@ -342,20 +343,7 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
 {
   "status": "created",
   "pending_approval_count": 0,
-  "approvals": [
-    {
-      "user": {
-        "id": 49,
-        "username": "project_6_bot",
-        "name": "****",
-        "state": "active",
-        "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
-        "web_url": "http://localhost:3000/project_6_bot"
-      },
-      "status": "approved",
-      "created_at": "2022-02-24T20:22:30.097Z"
-    }
-  ],
+  "approvals": [],
   ...
 }
 ```
@@ -420,7 +408,8 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
         "web_url": "http://localhost:3000/project_6_bot"
       },
       "status": "approved",
-      "created_at": "2022-02-24T20:22:30.097Z"
+      "created_at": "2022-02-24T20:22:30.097Z",
+      "comment": "Looks good to me"
     }
   ],
   ...

@@ -9353,6 +9353,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobduration"></a>`duration` | [`Int`](#int) | Duration of the job in seconds. |
 | <a id="cijobfinishedat"></a>`finishedAt` | [`Time`](#time) | When a job has finished running. |
 | <a id="cijobid"></a>`id` | [`JobID`](#jobid) | ID of the job. |
+| <a id="cijobkind"></a>`kind` | [`CiJobKind!`](#cijobkind) | Indicates the type of job. |
 | <a id="cijobmanualjob"></a>`manualJob` | [`Boolean`](#boolean) | Whether the job has a manual action. |
 | <a id="cijobname"></a>`name` | [`String`](#string) | Name of the job. |
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
@@ -17771,6 +17772,13 @@ Values for YAML processor result.
 | ----- | ----------- |
 | <a id="ciconfigstatusinvalid"></a>`INVALID` | Configuration file is not valid. |
 | <a id="ciconfigstatusvalid"></a>`VALID` | Configuration file is valid. |
+
+### `CiJobKind`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobkindbridge"></a>`BRIDGE` | Bridge CI job connecting a parent and child pipeline. |
+| <a id="cijobkindbuild"></a>`BUILD` | Standard CI job. |
 
 ### `CiJobStatus`
 
