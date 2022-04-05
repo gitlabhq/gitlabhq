@@ -6288,6 +6288,10 @@ RSpec.describe Project, factory_default: :keep do
       expect(subject.find_or_initialize_integration('prometheus')).to be_nil
     end
 
+    it 'returns nil if integration does not exist' do
+      expect(subject.find_or_initialize_integration('non-existing')).to be_nil
+    end
+
     context 'with an existing integration' do
       subject { create(:project) }
 

@@ -1484,7 +1484,7 @@ class Project < ApplicationRecord
   end
 
   def find_or_initialize_integration(name)
-    return if disabled_integrations.include?(name)
+    return if disabled_integrations.include?(name) || Integration.available_integration_names.exclude?(name)
 
     find_integration(integrations, name) || build_from_instance(name) || build_integration(name)
   end

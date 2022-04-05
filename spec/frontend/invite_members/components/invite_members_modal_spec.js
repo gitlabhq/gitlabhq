@@ -85,12 +85,13 @@ describe('InviteMembersModal', () => {
     mock.restore();
   });
 
+  const findModal = () => wrapper.findComponent(GlModal);
   const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findInviteButton = () => wrapper.findByTestId('invite-button');
-  const clickInviteButton = () => findInviteButton().vm.$emit('click');
-  const clickCancelButton = () => findCancelButton().vm.$emit('click');
+  const emitEventFromModal = (eventName) => () =>
+    findModal().vm.$emit(eventName, { preventDefault: jest.fn() });
+  const clickInviteButton = emitEventFromModal('primary');
+  const clickCancelButton = emitEventFromModal('cancel');
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () =>
     findMembersFormGroup().attributes('invalid-feedback');
@@ -276,7 +277,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('renders the modal with the correct title', () => {
-          expect(wrapper.findComponent(GlModal).props('title')).toBe(MEMBERS_MODAL_CELEBRATE_TITLE);
+          expect(findModal().props('title')).toBe(MEMBERS_MODAL_CELEBRATE_TITLE);
         });
 
         it('includes the correct celebration text and emoji', () => {
@@ -337,7 +338,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('sets isLoading on the Invite button when it is clicked', () => {
-            expect(findInviteButton().props('loading')).toBe(true);
+            expect(findModal().props('actionPrimary').attributes.loading).toBe(true);
           });
 
           it('calls Api addGroupMembersByUserId with the correct params', () => {
@@ -380,7 +381,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe('Member already exists');
           expect(findMembersSelect().props('validationState')).toBe(false);
-          expect(findInviteButton().props('loading')).toBe(false);
+          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
         });
 
         describe('clearing the invalid state and message', () => {
@@ -414,7 +415,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('clears the error when the modal is hidden', async () => {
-            wrapper.findComponent(GlModal).vm.$emit('hide');
+            findModal().vm.$emit('hidden');
 
             await nextTick();
 
@@ -432,7 +433,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe('Member already exists');
           expect(findMembersSelect().props('validationState')).toBe(false);
-          expect(findInviteButton().props('loading')).toBe(false);
+          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
 
           findMembersSelect().vm.$emit('clear');
 
@@ -440,7 +441,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe('');
           expect(findMembersSelect().props('validationState')).toBe(null);
-          expect(findInviteButton().props('loading')).toBe(false);
+          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
         });
 
         it('displays the generic error for http server error', async () => {
@@ -542,7 +543,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
           expect(findMembersSelect().props('validationState')).toBe(false);
-          expect(findInviteButton().props('loading')).toBe(false);
+          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
         });
 
         it('displays the restricted email error when restricted email is invited', async () => {
@@ -554,7 +555,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toContain(expectedEmailRestrictedError);
           expect(findMembersSelect().props('validationState')).toBe(false);
-          expect(findInviteButton().props('loading')).toBe(false);
+          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
         });
 
         it('displays the successful toast message when email has already been invited', async () => {

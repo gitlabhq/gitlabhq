@@ -763,6 +763,12 @@ Gitlab.ee do
   Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
+  Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker']['cron'] ||= '*/4 * * * *'
+  Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker']['job_class'] = 'Database::CiNamespaceMirrorsConsistencyCheckWorker'
+  Settings.cron_jobs['ci_project_mirrors_consistency_check_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['ci_project_mirrors_consistency_check_worker']['cron'] ||= '2-58/4 * * * *'
+  Settings.cron_jobs['ci_project_mirrors_consistency_check_worker']['job_class'] = 'Database::CiProjectMirrorsConsistencyCheckWorker'
 end
 
 #

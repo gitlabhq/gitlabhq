@@ -93,6 +93,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
   before do
     allow(InfluxDB2::Client).to receive(:new).with(url, token, **influx_client_args) { influx_client }
     allow(QA::Tools::TestResourceDataProcessor).to receive(:resources) { fabrication_resources }
+    allow_any_instance_of(RSpec::Core::Example::ExecutionResult).to receive(:run_time).and_return(0) # rubocop:disable RSpec/AnyInstanceOf
   end
 
   context "without influxdb variables configured" do

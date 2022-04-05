@@ -167,6 +167,7 @@ options:
   - p_ci_templates_implicit_security_cluster_image_scanning
   - p_ci_templates_kaniko
   - p_ci_templates_qualys_iac_security
+  - p_ci_templates_database_liquibase
 distribution:
 - ce
 - ee

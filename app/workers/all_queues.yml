@@ -327,6 +327,24 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:database_ci_namespace_mirrors_consistency_check
+  :worker_name: Database::CiNamespaceMirrorsConsistencyCheckWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:database_ci_project_mirrors_consistency_check
+  :worker_name: Database::CiProjectMirrorsConsistencyCheckWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_drop_detached_partitions
   :worker_name: Database::DropDetachedPartitionsWorker
   :feature_category: :database

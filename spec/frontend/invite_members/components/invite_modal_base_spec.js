@@ -49,8 +49,6 @@ describe('InviteModalBase', () => {
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
   const findLink = () => wrapper.findComponent(GlLink);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findInviteButton = () => wrapper.findByTestId('invite-button');
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
 
   describe('rendering the modal', () => {
@@ -67,15 +65,21 @@ describe('InviteModalBase', () => {
     });
 
     it('renders the Cancel button text correctly', () => {
-      expect(findCancelButton().text()).toBe(CANCEL_BUTTON_TEXT);
+      expect(wrapper.findComponent(GlModal).props('actionCancel')).toMatchObject({
+        text: CANCEL_BUTTON_TEXT,
+      });
     });
 
-    it('renders the Invite button text correctly', () => {
-      expect(findInviteButton().text()).toBe(INVITE_BUTTON_TEXT);
-    });
-
-    it('renders the Invite button modal without isLoading', () => {
-      expect(findInviteButton().props('loading')).toBe(false);
+    it('renders the Invite button correctly', () => {
+      expect(wrapper.findComponent(GlModal).props('actionPrimary')).toMatchObject({
+        text: INVITE_BUTTON_TEXT,
+        attributes: {
+          variant: 'confirm',
+          disabled: false,
+          loading: false,
+          'data-qa-selector': 'invite_button',
+        },
+      });
     });
 
     describe('rendering the access levels dropdown', () => {
@@ -114,7 +118,7 @@ describe('InviteModalBase', () => {
       isLoading: true,
     });
 
-    expect(findInviteButton().props('loading')).toBe(true);
+    expect(wrapper.findComponent(GlModal).props('actionPrimary').attributes.loading).toBe(true);
   });
 
   it('with invalidFeedbackMessage, set members form group validation state', () => {
