@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-  <local-storage-sync :storage-key="storageKey" :value="selected" @input="setSelected">
+  <local-storage-sync :storage-key="storageKey" :value="selected" as-string @input="setSelected">
     <gl-dropdown :text="dropdownText" lazy>
       <gl-dropdown-item
         v-for="option in parsedOptions"

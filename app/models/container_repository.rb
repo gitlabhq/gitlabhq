@@ -16,8 +16,6 @@ class ContainerRepository < ApplicationRecord
   ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
   SKIPPABLE_MIGRATION_STATES = (ABORTABLE_MIGRATION_STATES + %w[import_aborted]).freeze
 
-  IRRECONCILABLE_MIGRATIONS_STATUSES = %w[import_in_progress pre_import_in_progress pre_import_canceled import_canceled].freeze
-
   MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
 
   TooManyImportsError = Class.new(StandardError)
@@ -113,7 +111,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :start_pre_import do
-      transition default: :pre_importing
+      transition %i[default pre_importing importing import_aborted] => :pre_importing
     end
 
     event :finish_pre_import do
@@ -153,7 +151,10 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_pre_import_done_at = nil
     end
 
-    after_transition any => :pre_importing do |container_repository|
+    after_transition any => :pre_importing do |container_repository, transition|
+      forced = transition.args.first.try(:[], :forced)
+      next if forced
+
       container_repository.try_import do
         container_repository.migration_pre_import
       end
@@ -168,7 +169,10 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_import_done_at = nil
     end
 
-    after_transition any => :importing do |container_repository|
+    after_transition any => :importing do |container_repository, transition|
+      forced = transition.args.first.try(:[], :forced)
+      next if forced
+
       container_repository.try_import do
         container_repository.migration_import
       end
@@ -259,10 +263,10 @@ class ContainerRepository < ApplicationRecord
     super
   end
 
-  def start_pre_import
+  def start_pre_import(*args)
     return false unless ContainerRegistry::Migration.enabled?
 
-    super
+    super(*args)
   end
 
   def retry_pre_import
@@ -295,8 +299,18 @@ class ContainerRepository < ApplicationRecord
     case status
     when 'native'
       finish_import_as(:native_import)
-    when *IRRECONCILABLE_MIGRATIONS_STATUSES
-      nil
+    when 'pre_import_in_progress'
+      return if pre_importing?
+
+      start_pre_import(forced: true)
+    when 'import_in_progress'
+      return if importing?
+
+      start_import(forced: true)
+    when 'import_canceled', 'pre_import_canceled'
+      return if import_skipped?
+
+      skip_import(reason: :migration_canceled)
     when 'import_complete'
       finish_import
     when 'import_failed'

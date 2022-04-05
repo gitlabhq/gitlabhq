@@ -698,9 +698,28 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       context 'when there is a deployment record with success status' do
         let!(:deployment) { create(:deployment, :success, environment: environment) }
+        let!(:old_deployment) { create(:deployment, :success, environment: environment, finished_at: 2.days.ago) }
 
         it 'returns the latest successful deployment' do
           is_expected.to eq(deployment)
+        end
+
+        context 'env_last_deployment_by_finished_at feature flag' do
+          it 'when enabled it returns the deployment with the latest finished_at' do
+            stub_feature_flags(env_last_deployment_by_finished_at: true)
+
+            expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
+
+            is_expected.to eq(deployment)
+          end
+
+          it 'when disabled it returns the deployment with the highest id' do
+            stub_feature_flags(env_last_deployment_by_finished_at: false)
+
+            expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
+
+            is_expected.to eq(old_deployment)
+          end
         end
       end
     end

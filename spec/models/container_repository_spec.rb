@@ -224,7 +224,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         end
       end
 
-      it_behaves_like 'transitioning from allowed states', %w[default]
+      it_behaves_like 'transitioning from allowed states', %w[default pre_importing importing import_aborted]
       it_behaves_like 'transitioning to pre_importing'
     end
 

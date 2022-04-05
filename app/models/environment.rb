@@ -26,7 +26,7 @@ class Environment < ApplicationRecord
   has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
-  has_one :last_deployment, -> { success.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
+  has_one :last_deployment, -> { Feature.enabled?(:env_last_deployment_by_finished_at) ? success.ordered : success.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
   has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus', disable_joins: true
   has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline', disable_joins: true

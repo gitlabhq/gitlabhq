@@ -17,7 +17,11 @@ You can then connect to this session by using the [pry-shell](https://github.com
 You can watch [this video](https://www.youtube.com/watch?v=Lzs_PL_BySo), for more information about
 how to use the `pry-shell`.
 
-## `byebug` vs `binding.pry`
+WARNING:
+`binding.pry` can occasionally experience autoloading issues and fail during name resolution.
+If needed, `binding.irb` can be used instead with a more limited feature set.
+
+## `byebug` vs `binding.pry` vs `binding.irb`
 
 `byebug` has a very similar interface as `gdb`, but `byebug` does not
 use the powerful Pry REPL.
@@ -40,6 +44,12 @@ this document, so for the full documentation head over to the [Pry wiki](https:/
 
 Below are a few features definitely worth checking out, also run
 `help` in a pry session to see what else you can do.
+
+## `binding.irb`
+
+As of Ruby 2.7, IRB ships with a simple interactive debugger.
+
+Check out [the docs](https://ruby-doc.org/stdlib-2.7.0/libdoc/irb/rdoc/Binding.html) for more.
 
 ### State navigation
 

@@ -33855,7 +33855,7 @@ msgstr ""
 msgid "SecurityReports|Take survey"
 msgstr ""
 
-msgid "SecurityReports|The Vulnerability Report shows the results of the latest successful pipeline on your project's default branch, as well as vulnerabilities from your latest container scan. %{linkStart}Learn more.%{linkEnd}"
+msgid "SecurityReports|The Vulnerability Report shows results of successful scans on your project's default branch, manually added vulnerability records, and vulnerabilities found from scanning operational environments. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."

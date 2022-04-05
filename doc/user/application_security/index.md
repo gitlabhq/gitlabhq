@@ -381,6 +381,12 @@ Learn more on overriding security jobs:
 
 All the security scanning tools define their stage, so this error can occur with all of them.
 
+## Self managed installation options
+
+For self managed installations, you can choose to run most of the GitLab security scanners even when [not connected to the internet](offline_deployments/index.md).
+
+Self managed installations can also run the security scanners on a GitLab Runner [running inside OpenShift](../../install/openshift_and_gitlab/index.md).
+
 ## Security report validation
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.

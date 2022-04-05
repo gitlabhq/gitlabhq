@@ -23,6 +23,7 @@ export default function initSignupRestrictions(elementSelector = '#js-signup-for
 
   return new Vue({
     el,
+    name: 'SignupRestrictions',
     provide: {
       ...parsedDataset,
     },

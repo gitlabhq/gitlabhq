@@ -144,7 +144,6 @@ export default {
     <local-storage-sync
       v-model="autoDevopsEnabledAlertDismissedProjects"
       :storage-key="$options.autoDevopsEnabledAlertStorageKey"
-      as-json
     />
 
     <user-callout-dismisser

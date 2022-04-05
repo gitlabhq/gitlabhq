@@ -1,31 +1,29 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+
+const STORAGE_KEY = 'key';
 
 describe('Local Storage Sync', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, slots = {} } = {}) => {
+  const createComponent = ({ value, asString = false, slots = {} } = {}) => {
     wrapper = shallowMount(LocalStorageSync, {
-      propsData: props,
+      propsData: { storageKey: STORAGE_KEY, value, asString },
       slots,
     });
   };
 
+  const setStorageValue = (value) => localStorage.setItem(STORAGE_KEY, value);
+  const getStorageValue = (value) => localStorage.getItem(STORAGE_KEY, value);
+
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-    wrapper = null;
+    wrapper.destroy();
     localStorage.clear();
   });
 
   it('is a renderless component', () => {
     const html = '<div class="test-slot"></div>';
     createComponent({
-      props: {
-        storageKey: 'key',
-      },
       slots: {
         default: html,
       },
@@ -35,233 +33,136 @@ describe('Local Storage Sync', () => {
   });
 
   describe('localStorage empty', () => {
-    const storageKey = 'issue_list_order';
-
     it('does not emit input event', () => {
-      createComponent({
-        props: {
-          storageKey,
-          value: 'ascending',
-        },
-      });
+      createComponent({ value: 'ascending' });
 
-      expect(wrapper.emitted('input')).toBeFalsy();
+      expect(wrapper.emitted('input')).toBeUndefined();
     });
 
-    it.each('foo', 3, true, ['foo', 'bar'], { foo: 'bar' })(
-      'saves updated value to localStorage',
-      async (newValue) => {
-        createComponent({
-          props: {
-            storageKey,
-            value: 'initial',
-          },
-        });
+    it('does not save initial value if it did not change', () => {
+      createComponent({ value: 'ascending' });
 
-        wrapper.setProps({ value: newValue });
-
-        await nextTick();
-        expect(localStorage.getItem(storageKey)).toBe(String(newValue));
-      },
-    );
-
-    it('does not save default value', () => {
-      const value = 'ascending';
-
-      createComponent({
-        props: {
-          storageKey,
-          value,
-        },
-      });
-
-      expect(localStorage.getItem(storageKey)).toBe(null);
+      expect(getStorageValue()).toBeNull();
     });
   });
 
   describe('localStorage has saved value', () => {
-    const storageKey = 'issue_list_order_by';
     const savedValue = 'last_updated';
 
     beforeEach(() => {
-      localStorage.setItem(storageKey, savedValue);
+      setStorageValue(savedValue);
+      createComponent({ asString: true });
     });
 
     it('emits input event with saved value', () => {
-      createComponent({
-        props: {
-          storageKey,
-          value: 'ascending',
-        },
-      });
-
       expect(wrapper.emitted('input')[0][0]).toBe(savedValue);
     });
 
-    it('does not overwrite localStorage with prop value', () => {
-      createComponent({
-        props: {
-          storageKey,
-          value: 'created',
-        },
-      });
-
-      expect(localStorage.getItem(storageKey)).toBe(savedValue);
+    it('does not overwrite localStorage with initial prop value', () => {
+      expect(getStorageValue()).toBe(savedValue);
     });
 
     it('updating the value updates localStorage', async () => {
-      createComponent({
-        props: {
-          storageKey,
-          value: 'created',
-        },
-      });
-
       const newValue = 'last_updated';
-      wrapper.setProps({
-        value: newValue,
-      });
+      await wrapper.setProps({ value: newValue });
 
-      await nextTick();
-      expect(localStorage.getItem(storageKey)).toBe(newValue);
-    });
-
-    it('persists the value by default', async () => {
-      const persistedValue = 'persisted';
-
-      createComponent({
-        props: {
-          storageKey,
-        },
-      });
-
-      wrapper.setProps({ value: persistedValue });
-      await nextTick();
-      expect(localStorage.getItem(storageKey)).toBe(persistedValue);
-    });
-
-    it('does not save a value if persist is set to false', async () => {
-      const notPersistedValue = 'notPersisted';
-
-      createComponent({
-        props: {
-          storageKey,
-        },
-      });
-
-      wrapper.setProps({ persist: false, value: notPersistedValue });
-      await nextTick();
-      expect(localStorage.getItem(storageKey)).not.toBe(notPersistedValue);
+      expect(getStorageValue()).toBe(newValue);
     });
   });
 
-  describe('with "asJson" prop set to "true"', () => {
-    const storageKey = 'testStorageKey';
+  describe('persist prop', () => {
+    it('persists the value by default', async () => {
+      const persistedValue = 'persisted';
+      createComponent({ asString: true });
+      // Sanity check to make sure we start with nothing saved.
+      expect(getStorageValue()).toBeNull();
 
-    describe.each`
-      value             | serializedValue
-      ${null}           | ${'null'}
-      ${''}             | ${'""'}
-      ${true}           | ${'true'}
-      ${false}          | ${'false'}
-      ${42}             | ${'42'}
-      ${'42'}           | ${'"42"'}
-      ${'{ foo: '}      | ${'"{ foo: "'}
-      ${['test']}       | ${'["test"]'}
-      ${{ foo: 'bar' }} | ${'{"foo":"bar"}'}
-    `('given $value', ({ value, serializedValue }) => {
-      describe('is a new value', () => {
-        beforeEach(async () => {
-          createComponent({
-            props: {
-              storageKey,
-              value: 'initial',
-              asJson: true,
-            },
-          });
+      await wrapper.setProps({ value: persistedValue });
 
-          wrapper.setProps({ value });
-
-          await nextTick();
-        });
-
-        it('serializes the value correctly to localStorage', () => {
-          expect(localStorage.getItem(storageKey)).toBe(serializedValue);
-        });
-      });
-
-      describe('is already stored', () => {
-        beforeEach(() => {
-          localStorage.setItem(storageKey, serializedValue);
-
-          createComponent({
-            props: {
-              storageKey,
-              value: 'initial',
-              asJson: true,
-            },
-          });
-        });
-
-        it('emits an input event with the deserialized value', () => {
-          expect(wrapper.emitted('input')).toEqual([[value]]);
-        });
-      });
+      expect(getStorageValue()).toBe(persistedValue);
     });
 
-    describe('with bad JSON in storage', () => {
-      const badJSON = '{ badJSON';
+    it('does not save a value if persist is set to false', async () => {
+      const value = 'saved';
+      const notPersistedValue = 'notPersisted';
+      createComponent({ asString: true });
+      // Save some value so we can test that it's not overwritten.
+      await wrapper.setProps({ value });
 
-      beforeEach(() => {
-        jest.spyOn(console, 'warn').mockImplementation();
-        localStorage.setItem(storageKey, badJSON);
+      expect(getStorageValue()).toBe(value);
 
-        createComponent({
-          props: {
-            storageKey,
-            value: 'initial',
-            asJson: true,
-          },
-        });
-      });
+      await wrapper.setProps({ persist: false, value: notPersistedValue });
 
-      it('should console warn', () => {
-        // eslint-disable-next-line no-console
-        expect(console.warn).toHaveBeenCalledWith(
-          `[gitlab] Failed to deserialize value from localStorage (key=${storageKey})`,
-          badJSON,
-        );
-      });
+      expect(getStorageValue()).toBe(value);
+    });
+  });
 
-      it('should not emit an input event', () => {
-        expect(wrapper.emitted('input')).toBeUndefined();
-      });
+  describe('saving and restoring', () => {
+    it.each`
+      value             | asString
+      ${'foo'}          | ${true}
+      ${'foo'}          | ${false}
+      ${'{ a: 1 }'}     | ${true}
+      ${'{ a: 1 }'}     | ${false}
+      ${3}              | ${false}
+      ${['foo', 'bar']} | ${false}
+      ${{ foo: 'bar' }} | ${false}
+      ${null}           | ${false}
+      ${' '}            | ${false}
+      ${true}           | ${false}
+      ${false}          | ${false}
+      ${42}             | ${false}
+      ${'42'}           | ${false}
+      ${'{ foo: '}      | ${false}
+    `('saves and restores the same value', async ({ value, asString }) => {
+      // Create an initial component to save the value.
+      createComponent({ asString });
+      await wrapper.setProps({ value });
+      wrapper.destroy();
+      // Create a second component to restore the value. Restore is only done once, when the
+      // component is first mounted.
+      createComponent({ asString });
+
+      expect(wrapper.emitted('input')[0][0]).toEqual(value);
+    });
+
+    it('shows a warning when trying to save a non-string value when asString prop is true', async () => {
+      const spy = jest.spyOn(console, 'warn').mockImplementation();
+      createComponent({ asString: true });
+      await wrapper.setProps({ value: [] });
+
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('with bad JSON in storage', () => {
+    const badJSON = '{ badJSON';
+    let spy;
+
+    beforeEach(() => {
+      spy = jest.spyOn(console, 'warn').mockImplementation();
+      setStorageValue(badJSON);
+      createComponent();
+    });
+
+    it('should console warn', () => {
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not emit an input event', () => {
+      expect(wrapper.emitted('input')).toBeUndefined();
     });
   });
 
   it('clears localStorage when clear property is true', async () => {
-    const storageKey = 'key';
     const value = 'initial';
+    createComponent({ asString: true });
+    await wrapper.setProps({ value });
 
-    createComponent({
-      props: {
-        storageKey,
-      },
-    });
-    wrapper.setProps({
-      value,
-    });
+    expect(getStorageValue()).toBe(value);
 
-    await nextTick();
+    await wrapper.setProps({ clear: true });
 
-    expect(localStorage.getItem(storageKey)).toBe(value);
-
-    wrapper.setProps({
-      clear: true,
-    });
-
-    await nextTick();
-
-    expect(localStorage.getItem(storageKey)).toBe(null);
+    expect(getStorageValue()).toBeNull();
   });
 });

@@ -94,15 +94,19 @@ export default {
     <div
       v-for="(user, index) in users"
       :key="user.id"
-      :class="{ 'gl-mb-3': index !== users.length - 1 }"
-      class="gl-display-grid gl-align-items-center reviewer-attention-grid"
+      :class="{
+        'gl-mb-3': index !== users.length - 1,
+        'attention-requests': glFeatures.mrAttentionRequests,
+      }"
+      class="gl-display-grid gl-align-items-center reviewer-grid"
       data-testid="reviewer"
     >
       <reviewer-avatar-link
         :user="user"
         :root-path="rootPath"
         :issuable-type="issuableType"
-        class="gl-grid-column-2 gl-grid-row-1 gl-word-break-word gl-mr-2"
+        class="gl-word-break-word gl-mr-2"
+        data-css-area="user"
       >
         <div class="gl-ml-3 gl-line-height-normal gl-display-grid">
           <span>{{ user.name }}</span>
@@ -113,7 +117,8 @@ export default {
         v-if="glFeatures.mrAttentionRequests"
         :user="user"
         type="reviewer"
-        class="gl-grid-column-1 gl-grid-row-1 gl-mr-2"
+        class="gl-mr-2"
+        data-css-area="attention"
         @toggle-attention-requested="toggleAttentionRequested"
       />
       <gl-icon

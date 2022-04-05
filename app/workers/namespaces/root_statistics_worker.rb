@@ -20,8 +20,17 @@ module Namespaces
       Namespaces::StatisticsRefresherService.new.execute(namespace)
 
       namespace.aggregation_schedule.destroy
+
+      notify_storage_usage(namespace)
     rescue ::Namespaces::StatisticsRefresherService::RefresherError, ActiveRecord::RecordNotFound => ex
       Gitlab::ErrorTracking.track_exception(ex, namespace_id: namespace_id, namespace: namespace&.full_path)
     end
+
+    private
+
+    def notify_storage_usage(namespace)
+    end
   end
 end
+
+Namespaces::RootStatisticsWorker.prepend_mod_with('Namespaces::RootStatisticsWorker')

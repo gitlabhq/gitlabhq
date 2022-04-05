@@ -273,6 +273,7 @@ export default {
     <local-storage-sync
       :storage-key="$options.viewTypeKey"
       :value="currentViewType"
+      as-string
       @input="updateViewType"
     >
       <graph-view-selector

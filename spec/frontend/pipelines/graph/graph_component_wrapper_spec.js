@@ -30,6 +30,7 @@ import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_header_data.query.graphql';
 import * as sentryUtils from '~/pipelines/utils';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { mockRunningPipelineHeaderData } from '../mock_data';
 import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
 
@@ -55,6 +56,7 @@ describe('Pipeline graph wrapper', () => {
     wrapper.find(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
   const getViewSelector = () => wrapper.find(GraphViewSelector);
   const getViewSelectorTrip = () => getViewSelector().findComponent(GlAlert);
+  const getLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   const createComponent = ({
     apolloProvider,
@@ -374,6 +376,10 @@ describe('Pipeline graph wrapper', () => {
 
       afterEach(() => {
         localStorage.clear();
+      });
+
+      it('sets the asString prop on the LocalStorageSync component', () => {
+        expect(getLocalStorageSync().props('asString')).toBe(true);
       });
 
       it('reads the view type from localStorage when available', () => {

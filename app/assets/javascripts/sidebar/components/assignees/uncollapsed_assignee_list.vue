@@ -113,13 +113,14 @@ export default {
           'gl-display-grid gl-align-items-center': showVerticalList,
           'gl-mb-3': index !== users.length - 1 && showVerticalList,
         }"
-        class="assignee-attention-grid"
+        class="assignee-grid"
       >
         <assignee-avatar-link
           :user="user"
           :issuable-type="issuableType"
           :tooltip-has-name="!showVerticalList"
-          class="gl-grid-column-2 gl-grid-row-1 gl-word-break-word"
+          class="gl-word-break-word"
+          data-css-area="user"
         >
           <div
             v-if="showVerticalList"
@@ -134,7 +135,8 @@ export default {
           v-if="showVerticalList"
           :user="user"
           type="assignee"
-          class="gl-grid-column-1 gl-grid-row-1 gl-mr-2"
+          class="gl-mr-2"
+          data-css-area="attention"
           @toggle-attention-requested="toggleAttentionRequested"
         />
       </div>

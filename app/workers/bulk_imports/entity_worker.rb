@@ -4,16 +4,12 @@ module BulkImports
   class EntityWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
-    data_consistency :always
-
-    feature_category :importers
-
-    sidekiq_options retry: false, dead: false
-
-    worker_has_external_dependencies!
-
     idempotent!
-    deduplicate :until_executed, including_scheduled: true
+    deduplicate :until_executing
+    data_consistency :always
+    feature_category :importers
+    sidekiq_options retry: false, dead: false
+    worker_has_external_dependencies!
 
     def perform(entity_id, current_stage = nil)
       return if stage_running?(entity_id, current_stage)

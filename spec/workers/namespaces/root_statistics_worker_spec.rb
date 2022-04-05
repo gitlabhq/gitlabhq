@@ -10,7 +10,7 @@ RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
   context 'with a namespace' do
     it 'executes refresher service' do
       expect_any_instance_of(Namespaces::StatisticsRefresherService)
-        .to receive(:execute)
+        .to receive(:execute).and_call_original
 
       worker.perform(group.id)
     end

@@ -227,22 +227,28 @@
   margin-right: -$gl-spacing-scale-2;
 }
 
-.reviewer-attention-grid,
-.assignee-attention-grid {
-  grid-template-columns: min-content 1fr min-content;
+.assignee-grid {
+  grid-template-areas: ' attention   user';
+  grid-template-columns: min-content 1fr;
 }
 
-/* TODO: These are non-standardized classes, and should be moved into gitlab-ui
-         Please see: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1780
-*/
-.gl-grid-column-1 {
-  grid-column: 1;
+.reviewer-grid {
+  grid-template-areas: ' user approval    rerequest';
+  grid-template-columns: 1fr  min-content min-content;
+
+  &.attention-requests {
+    grid-template-areas: ' attention   user approval';
+    grid-template-columns: min-content 1fr  min-content;
+  }
 }
 
-.gl-grid-row-1 {
-  grid-row: 1;
-}
+.assignee-grid,
+.reviewer-grid {
+  [data-css-area='attention'] {
+    grid-area: attention;
+  }
 
-.gl-grid-column-2 {
-  grid-column: 2;
+  [data-css-area='user'] {
+    grid-area: user;
+  }
 }

@@ -261,7 +261,10 @@ describe('Web IDE link component', () => {
     });
 
     it('should update local storage when selection changes', async () => {
-      expect(findLocalStorageSync().props('value')).toBe(ACTION_WEB_IDE.key);
+      expect(findLocalStorageSync().props()).toMatchObject({
+        asString: true,
+        value: ACTION_WEB_IDE.key,
+      });
 
       findActionsButton().vm.$emit('select', ACTION_GITPOD.key);
 

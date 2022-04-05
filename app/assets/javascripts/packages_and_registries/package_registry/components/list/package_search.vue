@@ -99,7 +99,6 @@ export default {
   <local-storage-sync
     storage-key="package_registry_list_sorting"
     :value="sorting"
-    as-json
     @input="updateSorting"
   >
     <url-sync>

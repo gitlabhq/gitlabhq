@@ -431,7 +431,7 @@ export default {
 
     clearFlash() {
       if (this.flashContainer) {
-        this.flashContainer.style.display = 'none';
+        this.flashContainer.close();
         this.flashContainer = null;
       }
     },

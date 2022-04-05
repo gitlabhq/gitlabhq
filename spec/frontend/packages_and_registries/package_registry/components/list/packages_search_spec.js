@@ -73,7 +73,6 @@ describe('Package Search', () => {
     mountComponent();
 
     expect(findLocalStorageSync().props()).toMatchObject({
-      asJson: true,
       storageKey: 'package_registry_list_sorting',
       value: {
         orderBy: LIST_KEY_CREATED_AT,

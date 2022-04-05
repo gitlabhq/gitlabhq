@@ -1881,8 +1881,9 @@ Input type: `DastSiteProfileCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdastsiteprofilecreatedastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Site Profile object. |
 | <a id="mutationdastsiteprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastsiteprofilecreateid"></a>`id` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile. |
+| <a id="mutationdastsiteprofilecreateid"></a>`id` **{warning-solid}** | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in 14.10. |
 
 ### `Mutation.dastSiteProfileDelete`
 
@@ -1927,8 +1928,9 @@ Input type: `DastSiteProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdastsiteprofileupdatedastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Site profile object. |
 | <a id="mutationdastsiteprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile. |
+| <a id="mutationdastsiteprofileupdateid"></a>`id` **{warning-solid}** | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in 14.10. |
 
 ### `Mutation.dastSiteTokenCreate`
 
