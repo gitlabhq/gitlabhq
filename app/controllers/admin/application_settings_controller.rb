@@ -53,6 +53,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def service_usage_data
+    @service_ping_data_present = Rails.cache.exist?('usage_data')
   end
 
   def update

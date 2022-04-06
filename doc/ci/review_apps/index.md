@@ -192,9 +192,12 @@ After you have the route mapping set up, it takes effect in the following locati
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
 > - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), `anonymous_visual_review_feedback`, disabled by default.
 > - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-visual-reviews). **(PREMIUM SELF)**
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `anonymous_visual_review_feedback`.
 
 With Visual Reviews, members of any team (Product, Design, Quality, and so on) can provide feedback comments through a form in your review apps. The comments are added to the merge request that triggered the review app.
 
@@ -284,30 +287,12 @@ can supply the ID by either:
 - Dynamically adding the `data-merge-request-id` value during the build of the app.
 - Supplying it manually through the visual review form in the app.
 
-### Enable or disable Visual Reviews **(PREMIUM SELF)**
-
-Visual Reviews is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:anonymous_visual_review_feedback)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:anonymous_visual_review_feedback)
-```
-
 ### Authentication for Visual Reviews
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42750#note_317271120) in GitLab 12.10.
 
 To enable visual reviews for private and internal projects, set the
-[`data-require-auth` variable](#enable-or-disable-visual-reviews) to `true`. When enabled,
+[`data-require-auth` variable](#configure-review-apps-for-visual-reviews) to `true`. When enabled,
 the user must enter a [personal access token](../../user/profile/personal_access_tokens.md)
 with `api` scope before submitting feedback.
 

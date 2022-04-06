@@ -262,6 +262,7 @@ More details about the permissions for some project-level features follow.
 | View pipelines page                                                                                                       | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
 | View pipelines tab in MR                                                                                                  | ✓ (*3*)    | ✓ (*3*) | ✓        | ✓         | ✓          | ✓     |
 | [View vulnerabilities in a pipeline](application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline) |            | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
+| View and download project-level [Secure Files](../api/secure_files.md)                                                    |            |         |          | ✓         | ✓          | ✓     |
 | Cancel and retry jobs                                                                                                     |            |         |          | ✓         | ✓          | ✓     |
 | Create new [environments](../ci/environments/index.md)                                                                    |            |         |          | ✓         | ✓          | ✓     |
 | Delete job logs or job artifacts                                                                                          |            |         |          | ✓ (*4*)   | ✓          | ✓     |
@@ -276,6 +277,7 @@ More details about the permissions for some project-level features follow.
 | Manage CI/CD settings                                                                                                     |            |         |          |           | ✓          | ✓     |
 | Manage job triggers                                                                                                       |            |         |          |           | ✓          | ✓     |
 | Manage project-level CI/CD variables                                                                                      |            |         |          |           | ✓          | ✓     |
+| Manage project-level [Secure Files](../api/secure_files.md)                                                               |            |         |          |           | ✓          | ✓     |
 | Use [environment terminals](../ci/environments/index.md#web-terminals-deprecated)                                         |            |         |          |           | ✓          | ✓     |
 | Delete pipelines                                                                                                          |            |         |          |           |            | ✓     |
 

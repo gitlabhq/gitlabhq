@@ -854,31 +854,45 @@ RSpec.describe 'Admin updates settings' do
       before do
         stub_usage_data_connections
         stub_database_flavor_check
-
-        visit service_usage_data_admin_application_settings_path
       end
 
-      it 'loads usage ping payload on click', :js do
-        expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
+      context 'when service data cached', :clean_gitlab_redis_cache do
+        before do
+          allow(Rails.cache).to receive(:exist?).with('usage_data').and_return(true)
 
-        expect(page).not_to have_content expected_payload_content
-
-        click_button('Preview payload')
-
-        wait_for_requests
-
-        expect(page).to have_button 'Hide payload'
-        expect(page).to have_content expected_payload_content
-      end
-
-      it 'generates usage ping payload on button click', :js do
-        expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
-          expect(instance).to receive(:usage_data).and_call_original
+          visit service_usage_data_admin_application_settings_path
         end
 
-        click_button('Download payload')
+        it 'loads usage ping payload on click', :js do
+          expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
 
-        wait_for_requests
+          expect(page).not_to have_content expected_payload_content
+
+          click_button('Preview payload')
+
+          wait_for_requests
+
+          expect(page).to have_button 'Hide payload'
+          expect(page).to have_content expected_payload_content
+        end
+
+        it 'generates usage ping payload on button click', :js do
+          expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
+            expect(instance).to receive(:usage_data).and_call_original
+          end
+
+          click_button('Download payload')
+
+          wait_for_requests
+        end
+      end
+
+      context 'when service data not cached' do
+        it 'renders missing cache information' do
+          visit service_usage_data_admin_application_settings_path
+
+          expect(page).to have_text('Service Ping payload not found in the application cache')
+        end
       end
     end
   end

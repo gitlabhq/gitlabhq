@@ -652,6 +652,9 @@ msgstr ""
 msgid "%{emailPrefix}@company.com"
 msgstr ""
 
+msgid "%{enable_service_ping_link_start}Enable%{link_end} or %{generate_manually_link_start}generate%{link_end} Service Ping to preview and download service usage data payload."
+msgstr ""
+
 msgid "%{extra} more downstream pipelines"
 msgstr ""
 
@@ -38008,10 +38011,16 @@ msgstr ""
 msgid "There was a problem fetching the keep latest artifacts setting."
 msgstr ""
 
+msgid "There was a problem fetching the pipeline stages."
+msgstr ""
+
 msgid "There was a problem fetching the projects"
 msgstr ""
 
 msgid "There was a problem fetching users."
+msgstr ""
+
+msgid "There was a problem handling the pipeline data."
 msgstr ""
 
 msgid "There was a problem sending the confirmation email"
