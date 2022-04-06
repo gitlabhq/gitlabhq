@@ -14054,8 +14054,10 @@ CREATE TABLE dast_site_profiles (
     auth_username text,
     target_type smallint DEFAULT 0 NOT NULL,
     scan_method smallint DEFAULT 0 NOT NULL,
+    auth_submit_field text,
     CONSTRAINT check_5203110fee CHECK ((char_length(auth_username_field) <= 255)),
     CONSTRAINT check_6cfab17b48 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_af44f54c96 CHECK ((char_length(auth_submit_field) <= 255)),
     CONSTRAINT check_c329dffdba CHECK ((char_length(auth_password_field) <= 255)),
     CONSTRAINT check_d446f7047b CHECK ((char_length(auth_url) <= 1024)),
     CONSTRAINT check_f22f18002a CHECK ((char_length(auth_username) <= 255))

@@ -1,12 +1,4 @@
 .clusters-container {
-  .empty-state .svg-content {
-    @include gl-pb-0;
-
-    img {
-      width: 100px;
-    }
-  }
-
   @include media-breakpoint-down(xs) {
     .nav-controls {
       @include gl-w-full;

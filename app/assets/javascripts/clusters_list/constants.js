@@ -119,7 +119,7 @@ export const I18N_AGENT_MODAL = {
   enableKasText: s__(
     "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
   ),
-  altText: s__('ClusterAgents|GitLab Agent for Kubernetes'),
+  altText: s__('ClusterAgents|GitLab agent for Kubernetes'),
   learnMoreLink: s__('ClusterAgents|How do I register an agent?'),
   registrationErrorTitle: s__('ClusterAgents|Failed to register an agent'),
   unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
@@ -169,16 +169,14 @@ export const AGENT_STATUSES = {
 
 export const I18N_AGENTS_EMPTY_STATE = {
   introText: s__(
-    'ClusterIntegration|Use the %{linkStart}GitLab Agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more.',
+    'ClusterIntegration|Use the %{linkStart}GitLab agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more.',
   ),
-  buttonText: s__('ClusterAgents|Connect with the GitLab Agent'),
 };
 
 export const I18N_CLUSTERS_EMPTY_STATE = {
   introText: s__(
     'ClusterIntegration|Connect your cluster to GitLab through %{linkStart}cluster certificates%{linkEnd}.',
   ),
-  buttonText: s__('ClusterIntegration|Connect with a certificate'),
   alertText: s__(
     'ClusterIntegration|The certificate-based method to connect clusters to GitLab was %{linkStart}deprecated%{linkEnd} in GitLab 14.5.',
   ),
@@ -190,19 +188,15 @@ export const AGENT_CARD_INFO = {
   emptyTitle: s__('ClusterAgents|No agents'),
   tooltip: {
     label: s__('ClusterAgents|Recommended'),
-    title: s__('ClusterAgents|GitLab Agent'),
+    title: s__('ClusterAgents|GitLab agent'),
     text: sprintf(
       s__(
-        'ClusterAgents|The GitLab Agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab Agent.%{linkEnd}',
+        'ClusterAgents|The GitLab agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab agent.%{linkEnd}',
       ),
     ),
     link: helpPagePath('user/clusters/agent/index'),
   },
-  actionText: s__('ClusterAgents|Install a new agent'),
   footerText: sprintf(s__('ClusterAgents|View all %{number} agents')),
-  installAgentDisabledHint: s__(
-    'ClusterAgents|Requires a Maintainer or greater role to install new agents',
-  ),
 };
 
 export const CERTIFICATE_BASED_CARD_INFO = {
@@ -211,12 +205,8 @@ export const CERTIFICATE_BASED_CARD_INFO = {
     s__('ClusterAgents|%{number} of %{total} clusters connected through cluster certificates'),
   ),
   emptyTitle: s__('ClusterAgents|No clusters connected through cluster certificates'),
-  actionText: s__('ClusterAgents|Connect existing cluster'),
   footerText: sprintf(s__('ClusterAgents|View all %{number} clusters')),
   badgeText: s__('ClusterAgents|Deprecated'),
-  connectExistingClusterDisabledHint: s__(
-    'ClusterAgents|Requires a maintainer or greater role to connect existing clusters',
-  ),
 };
 
 export const MAX_CLUSTERS_LIST = 6;

@@ -154,7 +154,6 @@ RSpec.describe 'Gcp Cluster', :js do
 
         it 'user sees creation form with the successful message' do
           expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
-          expect(page).to have_link('Connect with a certificate')
         end
       end
     end

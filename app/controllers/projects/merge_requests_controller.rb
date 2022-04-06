@@ -47,7 +47,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Usage data feature flags
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
-    push_frontend_feature_flag(:usage_data_diff_searches, project, default_enabled: :yaml)
   end
 
   before_action do

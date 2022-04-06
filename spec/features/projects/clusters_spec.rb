@@ -20,7 +20,6 @@ RSpec.describe 'Clusters', :js do
     end
 
     it 'sees empty state' do
-      expect(page).to have_link('Connect with a certificate')
       expect(page).to have_selector('.empty-state')
     end
   end

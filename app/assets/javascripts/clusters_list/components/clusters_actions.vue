@@ -57,6 +57,7 @@ export default {
     <gl-dropdown
       ref="dropdown"
       v-gl-modal-directive="shouldTriggerModal && $options.INSTALL_AGENT_MODAL_ID"
+      data-qa-selector="clusters_actions_button"
       category="primary"
       variant="confirm"
       :text="defaultActionText"

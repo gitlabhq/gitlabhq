@@ -858,7 +858,7 @@ See the [documentation about Snippets settings](snippets/index.md).
 
 ## Design Management limits
 
-See the [Design Management Limitations](../user/project/issues/design_management.md#limitations) section.
+See the limits in the [Add a design to an issue](../user/project/issues/design_management.md#add-a-design-to-an-issue) section.
 
 ## Push Event Limits
 
@@ -963,6 +963,6 @@ retarget merge requests pointing to the now-merged branch. To learn more, read
 
 In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are [not public](https://about.gitlab.com/handbook/communication/#not-public) because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.
 
-## Container Repository tag deletion limit 
+## Container Repository tag deletion limit
 
-Container repository tags are in the Container Registry and, as such, each tag deletion will trigger network requests to the Container Registry. Because of this, we limit the number of tags that a single API call can delete to 20. 
+Container repository tags are in the Container Registry and, as such, each tag deletion will trigger network requests to the Container Registry. Because of this, we limit the number of tags that a single API call can delete to 20.

@@ -6,7 +6,7 @@ import {
   GlFormSelect,
   GlLabel,
   GlSearchBoxByType,
-  GlTable,
+  GlTableLite,
 } from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
@@ -34,19 +34,19 @@ describe('JiraImportForm', () => {
 
   const currentUsername = 'mrgitlab';
 
-  const getAlert = () => wrapper.find(GlAlert);
+  const getAlert = () => wrapper.findComponent(GlAlert);
 
-  const getSelectDropdown = () => wrapper.find(GlFormSelect);
+  const getSelectDropdown = () => wrapper.findComponent(GlFormSelect);
 
-  const getContinueButton = () => wrapper.find(GlButton);
+  const getContinueButton = () => wrapper.findComponent(GlButton);
 
-  const getCancelButton = () => wrapper.findAll(GlButton).at(1);
+  const getCancelButton = () => wrapper.findAllComponents(GlButton).at(1);
 
-  const getLabel = () => wrapper.find(GlLabel);
+  const getLabel = () => wrapper.findComponent(GlLabel);
 
-  const getTable = () => wrapper.find(GlTable);
+  const getTable = () => wrapper.findComponent(GlTableLite);
 
-  const getUserDropdown = () => getTable().find(GlDropdown);
+  const getUserDropdown = () => getTable().findComponent(GlDropdown);
 
   const getHeader = (name) => getByRole(wrapper.element, 'columnheader', { name });
 
@@ -107,14 +107,13 @@ describe('JiraImportForm', () => {
     mutateSpy.mockRestore();
     querySpy.mockRestore();
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('select dropdown project selection', () => {
     it('is shown', () => {
       wrapper = mountComponent();
 
-      expect(wrapper.find(GlFormSelect).exists()).toBe(true);
+      expect(getSelectDropdown().exists()).toBe(true);
     });
 
     it('contains a list of Jira projects to select from', () => {
@@ -273,7 +272,7 @@ describe('JiraImportForm', () => {
 
         wrapper = mountComponent({ mountFunction: mount });
 
-        wrapper.find(GlSearchBoxByType).vm.$emit('input', 'fred');
+        wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'fred');
       });
 
       it('makes a GraphQL call', () => {

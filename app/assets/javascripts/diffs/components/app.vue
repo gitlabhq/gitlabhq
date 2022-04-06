@@ -534,10 +534,8 @@ export default {
           if (delta >= 0 && delta < 1000) {
             this.disableVirtualScroller();
 
-            if (window.gon?.features?.usageDataDiffSearches) {
-              api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
-              api.trackRedisCounterEvent('diff_searches');
-            }
+            api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
+            api.trackRedisCounterEvent('diff_searches');
           }
         }
       });

@@ -969,9 +969,6 @@ msgstr[1] ""
 msgid "%{service_ping_link_start}What information is shared with GitLab Inc.?%{service_ping_link_end}"
 msgstr ""
 
-msgid "%{size} %{unit}"
-msgstr ""
-
 msgid "%{size} GiB"
 msgstr ""
 
@@ -7885,10 +7882,10 @@ msgstr ""
 msgid "ClusterAgents|All"
 msgstr ""
 
-msgid "ClusterAgents|An error occurred while loading your Agents"
+msgid "ClusterAgents|An error occurred while loading your agent"
 msgstr ""
 
-msgid "ClusterAgents|An error occurred while loading your agent"
+msgid "ClusterAgents|An error occurred while loading your agents"
 msgstr ""
 
 msgid "ClusterAgents|An error occurred while retrieving GitLab Agent activity. Reload the page to try again."
@@ -7919,12 +7916,6 @@ msgid "ClusterAgents|Connect a cluster (certificate - deprecated)"
 msgstr ""
 
 msgid "ClusterAgents|Connect a cluster (deprecated)"
-msgstr ""
-
-msgid "ClusterAgents|Connect existing cluster"
-msgstr ""
-
-msgid "ClusterAgents|Connect with the GitLab Agent"
 msgstr ""
 
 msgid "ClusterAgents|Connected"
@@ -7993,10 +7984,10 @@ msgstr ""
 msgid "ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included."
 msgstr ""
 
-msgid "ClusterAgents|GitLab Agent"
+msgid "ClusterAgents|GitLab agent"
 msgstr ""
 
-msgid "ClusterAgents|GitLab Agent for Kubernetes"
+msgid "ClusterAgents|GitLab agent for Kubernetes"
 msgstr ""
 
 msgid "ClusterAgents|Give feedback"
@@ -8006,9 +7997,6 @@ msgid "ClusterAgents|How do I register an agent?"
 msgstr ""
 
 msgid "ClusterAgents|How to update an agent?"
-msgstr ""
-
-msgid "ClusterAgents|Install a new agent"
 msgstr ""
 
 msgid "ClusterAgents|Last connected %{timeAgo}."
@@ -8056,13 +8044,7 @@ msgstr ""
 msgid "ClusterAgents|Requires a Maintainer or greater role to delete agents"
 msgstr ""
 
-msgid "ClusterAgents|Requires a Maintainer or greater role to install new agents"
-msgstr ""
-
 msgid "ClusterAgents|Requires a Maintainer or greater role to perform these actions"
-msgstr ""
-
-msgid "ClusterAgents|Requires a maintainer or greater role to connect existing clusters"
 msgstr ""
 
 msgid "ClusterAgents|Security"
@@ -8077,7 +8059,7 @@ msgstr ""
 msgid "ClusterAgents|Tell us what you think"
 msgstr ""
 
-msgid "ClusterAgents|The GitLab Agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab Agent.%{linkEnd}"
+msgid "ClusterAgents|The GitLab agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab agent.%{linkEnd}"
 msgstr ""
 
 msgid "ClusterAgents|The agent has not been connected in a long time. There might be a connectivity issue. Last contact was %{timeAgo}."
@@ -8275,9 +8257,6 @@ msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancesto
 msgstr ""
 
 msgid "ClusterIntegration|Connect a Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Connect with a certificate"
 msgstr ""
 
 msgid "ClusterIntegration|Connect your cluster to GitLab through %{linkStart}cluster certificates%{linkEnd}."
@@ -8829,7 +8808,7 @@ msgstr ""
 msgid "ClusterIntegration|Use GitLab to deploy to your cluster, run jobs, use review apps, and more."
 msgstr ""
 
-msgid "ClusterIntegration|Use the %{linkStart}GitLab Agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more."
+msgid "ClusterIntegration|Use the %{linkStart}GitLab agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more."
 msgstr ""
 
 msgid "ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster."
@@ -40445,6 +40424,9 @@ msgstr ""
 msgid "UsageQuota|Buy additional minutes"
 msgstr ""
 
+msgid "UsageQuota|Buy storage"
+msgstr ""
+
 msgid "UsageQuota|CI minutes usage by month"
 msgstr ""
 
@@ -40475,10 +40457,10 @@ msgstr ""
 msgid "UsageQuota|LFS storage"
 msgstr ""
 
-msgid "UsageQuota|Learn more about excess storage usage"
+msgid "UsageQuota|Learn more about usage quotas."
 msgstr ""
 
-msgid "UsageQuota|Learn more about usage quotas"
+msgid "UsageQuota|Namespace storage used"
 msgstr ""
 
 msgid "UsageQuota|No CI minutes usage data available."
@@ -40499,7 +40481,10 @@ msgstr ""
 msgid "UsageQuota|Purchase more storage"
 msgstr ""
 
-msgid "UsageQuota|Purchased storage available"
+msgid "UsageQuota|Purchased storage"
+msgstr ""
+
+msgid "UsageQuota|Purchased storage used"
 msgstr ""
 
 msgid "UsageQuota|Repository"
@@ -40526,22 +40511,10 @@ msgstr ""
 msgid "UsageQuota|Storage used"
 msgstr ""
 
-msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."
-msgstr ""
-
-msgid "UsageQuota|This is the total amount of storage used by projects above the free %{actualRepositorySizeLimit} storage limit."
-msgstr ""
-
 msgid "UsageQuota|This namespace contains locked projects"
 msgstr ""
 
 msgid "UsageQuota|This namespace has no projects which use shared runners"
-msgstr ""
-
-msgid "UsageQuota|Total excess storage used"
-msgstr ""
-
-msgid "UsageQuota|Total namespace storage used"
 msgstr ""
 
 msgid "UsageQuota|Unlimited"

@@ -25,8 +25,8 @@ RSpec.describe 'User Cluster', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Certificate'
-      click_link 'Connect with a certificate'
+      click_button(class: 'dropdown-toggle-split')
+      click_link 'Connect a cluster (certificate - deprecated)'
     end
 
     context 'when user filled form with valid parameters' do
@@ -108,7 +108,6 @@ RSpec.describe 'User Cluster', :js do
 
       it 'user sees creation form with the successful message' do
         expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
-        expect(page).to have_link('Connect with a certificate')
       end
     end
   end
