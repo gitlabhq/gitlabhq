@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTable } from '@gitlab/ui';
+import { GlButton, GlTableLite } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const DEFAULT_TD_CLASSES = 'gl-w-half gl-font-sm! gl-border-gray-200!';
@@ -25,7 +25,7 @@ export default {
   ],
   components: {
     GlButton,
-    GlTable,
+    GlTableLite,
   },
   props: {
     trigger: {
@@ -84,7 +84,7 @@ export default {
         >
       </p>
 
-      <gl-table :items="trigger.variables" :fields="$options.fields" small bordered fixed>
+      <gl-table-lite :items="trigger.variables" :fields="$options.fields" small bordered fixed>
         <template #cell(key)="{ item }">
           <span class="gl-overflow-break-word">{{ item.key }}</span>
         </template>
@@ -92,7 +92,7 @@ export default {
         <template #cell(value)="data">
           <span class="gl-overflow-break-word">{{ getDisplayValue(data.value) }}</span>
         </template>
-      </gl-table>
+      </gl-table-lite>
     </template>
   </div>
 </template>

@@ -46,5 +46,24 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
 
       expect(data[:deployable_url]).to be_nil
     end
+
+    context 'when commit does not exist in the repository' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:deployment) { create(:deployment, project: project) }
+
+      subject(:data) { described_class.build(deployment, Time.current) }
+
+      before(:all) do
+        project.repository.remove
+      end
+
+      it 'does not include commit_url' do
+        expect(data[:commit_url]).to be_nil
+      end
+
+      it 'does not include commit_title' do
+        expect(data[:commit_title]).to be_nil
+      end
+    end
   end
 end

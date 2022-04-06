@@ -1,0 +1,125 @@
+.code.highlight {
+  .hljs-comment {
+    color: var(--color-hljs-comment);
+  }
+
+  .hljs-link {
+    color: var(--color-hljs-link);
+  }
+
+  .hljs-meta {
+    color: var(--color-hljs-meta);
+  }
+
+  .hljs-keyword {
+    color: var(--color-hljs-keyword);
+  }
+
+  .hljs-type {
+    color: var(--color-hljs-type);
+  }
+
+  .hljs-attr,
+  .hljs-property {
+    color: var(--color-hljs-attr);
+  }
+
+  .hljs-built_in {
+    color: var(--color-hljs-builtin);
+  }
+
+  .hljs-literal {
+    color: var(--color-hljs-literal);
+  }
+
+  .hljs-title {
+    color: var(--color-hljs-title);
+
+    &.class_ {
+      color: var(--color-hljs-class);
+    }
+
+    &.function_ {
+      color: var(--color-hljs-function);
+    }
+  }
+
+  .hljs-tag ,
+  .hljs-name {
+    color: var(--color-hljs-tag);
+  }
+
+  .hljs-number {
+    color: var(--color-hljs-number);
+  }
+
+  .hljs-subst {
+    color: var(--color-hljs-subst);
+  }
+
+  .hljs-string,
+  .hljs-section,
+  .hljs-bullet {
+    color: var(--color-hljs-string);
+  }
+
+  .hljs-symbol {
+    color: var(--color-hljs-symbol);
+  }
+
+  .hljs-variable {
+    color: var(--color-hljs-variable);
+
+    &.language_ {
+      color: var(--color-hljs-language);
+    }
+
+    &.constant_ {
+      color: var(--color-hljs-constant);
+    }
+  }
+
+  .hljs-attribute {
+    color: var(--color-hljs-attribute);
+  }
+
+  .hljs-operator {
+    color: var(--color-hljs-operator);
+  }
+
+  .hljs-punctuation {
+    color: var(--color-hljs-punctuation);
+  }
+
+  .hljs-regexp {
+    color: var(--color-hljs-regexp);
+  }
+
+  .hljs-params {
+    color: var(--color-hljs-params);
+  }
+
+  .hljs-doctag {
+    color: var(--color-hljs-doctag);
+  }
+
+  .hljs-selector-tag {
+    color: var(--color-hljs-selector-tag);
+  }
+
+  .hljs-selector-class {
+    color: var(--color-hljs-selector-class);
+  }
+
+  .hljs-selector-id {
+    color: var(--color-hljs-selector-id);
+  }
+
+  .hljs-selector-attr {
+    color: var(--color-hljs-selector-attr);
+  }
+
+  .hljs-selector-pseudo {
+    color: var(--color-hljs-selector-pseudo);
+  }
+}

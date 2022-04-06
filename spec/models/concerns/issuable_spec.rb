@@ -993,6 +993,33 @@ RSpec.describe Issuable do
     end
   end
 
+  describe '#sync_escalation_attributes_from_alert?' do
+    where(:issuable_type, :args, :sync_escalation_attributes_from_alert) do
+      :issue         | {}               | false
+      :issue         | ref(:alert_args) | false
+      :incident      | {}               | false
+      :incident      | ref(:alert_args) | true
+      :merge_request | {}               | false
+    end
+
+    with_them do
+      let(:alert_args) { { alert_management_alert: build_stubbed(:alert_management_alert) } }
+      let(:issuable) { build_stubbed(issuable_type, **args) }
+
+      subject { issuable.sync_escalation_attributes_from_alert? }
+
+      it { is_expected.to eq(false) }
+
+      context 'with feature disabled' do
+        before do
+          stub_feature_flags(incident_escalations: false)
+        end
+
+        it { is_expected.to eq(sync_escalation_attributes_from_alert) }
+      end
+    end
+  end
+
   describe '#incident?' do
     where(:issuable_type, :incident) do
       :issue         | false

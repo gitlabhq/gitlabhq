@@ -32,7 +32,7 @@ No matter how you use GitLab, we have documentation for you.
 | Essential documentation | Essential documentation |
 |:------------------------|:------------------------|
 | [**User documentation**](user/index.md)<br>Discover features and concepts for GitLab users.                          | [**Administrator documentation**](administration/index.md)<br/>Everything GitLab self-managed administrators need to know. |
-| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                        | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have the resources to get you started. |
+| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                        | [**New to Git and GitLab?**](tutorials/index.md)<br/>We have the resources to get you started. |
 | [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Consult our integration documentation. | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Consult our guides. |
 | [**Install GitLab**](https://about.gitlab.com/install/)<br/>Installation options for different platforms.            | [**Customers**](subscriptions/index.md)<br/>Information for new and existing customers. |
 | [**Update GitLab**](update/index.md)<br/>Update your GitLab self-managed instance to the latest version.            | [**Reference Architectures**](administration/reference_architectures/index.md)<br/>GitLab reference architectures. |
@@ -64,20 +64,6 @@ GitLab makes the software lifecycle faster and radically improves the speed of b
 
 GitLab provides solutions for [each of the stages of the DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/).
 
-## New to Git and GitLab?
-
-Working with new systems can be daunting.
-
-We have the following documentation to rapidly uplift your GitLab knowledge:
-
-| Topic                                                                                             | Description |
-|:--------------------------------------------------------------------------------------------------|:------------|
-| [GitLab basics guides](gitlab-basics/index.md)                                                   | Start working on the command line and with GitLab. |
-| [What is GitLab Flow?](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/) | Enhance your workflow with the best of GitLab Flow. |
-| [Get started with GitLab CI/CD](ci/quick_start/index.md)                                         | Quickly implement GitLab CI/CD. |
-| [Auto DevOps](topics/autodevops/index.md)                                                         | Learn more about Auto DevOps in GitLab. |
-| [GitLab Markdown](user/markdown.md)                                                               | Advanced formatting system (GitLab Flavored Markdown). |
-
 ### User account
 
 Learn more about GitLab account management:
@@ -88,16 +74,6 @@ Learn more about GitLab account management:
 | [Authentication](topics/authentication/index.md)           | Account security with two-factor authentication, set up your SSH keys, and deploy keys for secure access to your projects. |
 | [User settings](user/profile/index.md#access-your-user-settings) | Manage your user settings, two factor authentication, and more. |
 | [User permissions](user/permissions.md)                    | Learn what each role in a project can do. |
-
-### Git and GitLab
-
-Learn more about using Git, and using Git with GitLab:
-
-| Topic                                                                        | Description |
-|:-----------------------------------------------------------------------------|:------------|
-| [Git](topics/git/index.md)                                                   | Getting started with Git, branching strategies, Git LFS, and advanced use. |
-| [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF describing the most used Git operations. |
-| [GitLab Flow](topics/gitlab_flow.md)                                         | Explore the best of Git with the GitLab Flow strategy. |
 
 ## Coming to GitLab from another platform
 

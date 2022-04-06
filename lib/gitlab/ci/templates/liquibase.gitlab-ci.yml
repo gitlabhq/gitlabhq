@@ -5,13 +5,13 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 # This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Database/liquibase.gitlab-ci.yml
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/liquibase.gitlab-ci.yml
 
 # This template must be configured with CI/CD variables before it will work.
 # See https://www.liquibase.com/blog/secure-database-developer-flow-using-gitlab-pipelines
 # to learn how to configure the Liquibase template by using variables.
 # Be sure to add the variables before running pipelines with this template.
-# You may not want to run all the jobs in this template.  You can comment out or delete the jobs you don't wish to use.
+# You may not want to run all the jobs in this template. You can comment out or delete the jobs you don't wish to use.
 
 # List of stages for jobs and their order of execution.
 stages:
@@ -132,7 +132,7 @@ TEST->PROD:
     expire_in: 1 week
 
 
-# This job creates a snapshot of prod database.  You can use the snapshot file to run comparisons with the production database to investigate for any potential issues. https://www.liquibase.com/devsecops
+# This job creates a snapshot of prod database. You can use the snapshot file to run comparisons with the production database to investigate for any potential issues. https://www.liquibase.com/devsecops
 snapshot PROD:
   image: liquibase/liquibase:latest      # Using the Liquibase Docker Image
   stage: .post

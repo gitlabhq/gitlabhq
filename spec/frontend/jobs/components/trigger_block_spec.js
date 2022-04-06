@@ -1,12 +1,12 @@
-import { GlButton, GlTable } from '@gitlab/ui';
+import { GlButton, GlTableLite } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import TriggerBlock from '~/jobs/components/trigger_block.vue';
 
 describe('Trigger block', () => {
   let wrapper;
 
-  const findRevealButton = () => wrapper.find(GlButton);
-  const findVariableTable = () => wrapper.find(GlTable);
+  const findRevealButton = () => wrapper.findComponent(GlButton);
+  const findVariableTable = () => wrapper.findComponent(GlTableLite);
   const findShortToken = () => wrapper.find('[data-testid="trigger-short-token"]');
   const findVariableValue = (index) =>
     wrapper.findAll('[data-testid="trigger-build-value"]').at(index);
@@ -22,7 +22,6 @@ describe('Trigger block', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('with short token and no variables', () => {

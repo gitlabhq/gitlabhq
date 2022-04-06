@@ -151,14 +151,25 @@ module AlertManagement
               status_change_reason: " by changing the status of #{alert.to_reference(project)}"
             }
           }
-        ).execute(alert.issue)
+        ).execute(issue)
+      end
+
+      def issue
+        strong_memoize(:issue) { alert.issue }
       end
 
       def should_sync_to_incident?
-        alert.issue &&
-          alert.issue.supports_escalation? &&
-          alert.issue.escalation_status &&
-          alert.issue.escalation_status.status != alert.status
+        return false unless sync_available?
+
+        issue.escalation_status&.status != alert.status
+      end
+
+      def sync_available?
+        return false unless issue.present?
+
+        # Remove sync check with https://gitlab.com/gitlab-org/gitlab/-/issues/345769
+        issue.supports_escalation? ||
+          issue.sync_escalation_attributes_from_alert?
       end
 
       def filter_duplicate

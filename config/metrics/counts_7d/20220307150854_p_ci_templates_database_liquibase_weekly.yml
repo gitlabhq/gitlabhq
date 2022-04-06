@@ -1,5 +1,5 @@
 ---
-key_path: redis_hll_counters.ci_templates.p_ci_templates_database_liquibase_weekly
+key_path: redis_hll_counters.ci_templates.p_ci_templates_liquibase_weekly
 description: ""
 product_section: ""
 product_stage: ""
@@ -22,4 +22,4 @@ tier:
 - ultimate
 options:
   events:
-    - p_ci_templates_database_liquibase
+    - p_ci_templates_liquibase

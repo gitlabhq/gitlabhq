@@ -1,5 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
 import { I18N_AVAILABLE_AGENTS_DROPDOWN } from '~/clusters_list/constants';
 
@@ -18,6 +19,7 @@ describe('AvailableAgentsDropdown', () => {
       propsData,
       stubs: { GlDropdown },
     });
+    wrapper.vm.$refs.dropdown.hide = jest.fn();
   };
 
   afterEach(() => {
@@ -94,6 +96,25 @@ describe('AvailableAgentsDropdown', () => {
 
       it('marks the clicked item as selected', () => {
         expect(findDropdown().props('text')).toBe('new-agent');
+      });
+    });
+
+    describe('click enter to register new agent without configuration', () => {
+      beforeEach(async () => {
+        await findSearchInput().vm.$emit('input', 'new-agent');
+        await findSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+      });
+
+      it('emits agentSelected with the name of the clicked agent', () => {
+        expect(wrapper.emitted('agentSelected')).toEqual([['new-agent']]);
+      });
+
+      it('marks the clicked item as selected', () => {
+        expect(findDropdown().props('text')).toBe('new-agent');
+      });
+
+      it('closes the dropdown', () => {
+        expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalledTimes(1);
       });
     });
   });

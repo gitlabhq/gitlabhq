@@ -3,6 +3,7 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownDivider,
+  GlDropdownText,
   GlSearchBoxByType,
   GlSprintf,
 } from '@gitlab/ui';
@@ -15,6 +16,7 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
+    GlDropdownText,
     GlSearchBoxByType,
     GlSprintf,
   },
@@ -73,13 +75,24 @@ export default {
       this.clearSearch();
       this.focusSearch();
     },
+    onKeyEnter() {
+      if (!this.searchTerm?.length) {
+        return;
+      }
+      this.$refs.dropdown.hide();
+      this.selectAgent(this.searchTerm);
+    },
   },
 };
 </script>
 <template>
-  <gl-dropdown :text="dropdownText" :loading="isRegistering" @shown="handleShow">
+  <gl-dropdown ref="dropdown" :text="dropdownText" :loading="isRegistering" @shown="handleShow">
     <template #header>
-      <gl-search-box-by-type ref="searchInput" v-model.trim="searchTerm" />
+      <gl-search-box-by-type
+        ref="searchInput"
+        v-model.trim="searchTerm"
+        @keydown.enter.stop.prevent="onKeyEnter"
+      />
     </template>
     <gl-dropdown-item
       v-for="agent in filteredResults"
@@ -90,9 +103,9 @@ export default {
     >
       {{ agent }}
     </gl-dropdown-item>
-    <gl-dropdown-item v-if="!filteredResults.length" ref="noMatchingResults">{{
+    <gl-dropdown-text v-if="!filteredResults.length" ref="noMatchingResults">{{
       $options.i18n.noResults
-    }}</gl-dropdown-item>
+    }}</gl-dropdown-text>
     <template v-if="shouldRenderCreateButton">
       <gl-dropdown-divider />
       <gl-dropdown-item data-testid="create-config-button" @click="selectAgent(searchTerm)">
