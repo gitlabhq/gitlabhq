@@ -1605,11 +1605,7 @@ RSpec.describe API::MergeRequests do
       expect(json_response['overflow']).to be_falsy
     end
 
-    context 'when using DB-backed diffs via feature flag' do
-      before do
-        stub_feature_flags(mrc_api_use_raw_diffs_from_gitaly: false)
-      end
-
+    context 'when using DB-backed diffs' do
       it_behaves_like 'find an existing merge request'
 
       it 'accesses diffs via DB-backed diffs.diffs' do

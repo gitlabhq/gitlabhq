@@ -539,6 +539,9 @@ class IssuableBaseService < ::BaseProjectService
   def handle_label_changes(issuable, old_labels)
     return unless has_label_changes?(issuable, old_labels)
 
+    # reset to preserve the label sort order (title ASC)
+    issuable.labels.reset
+
     GraphqlTriggers.issuable_labels_updated(issuable)
   end
 

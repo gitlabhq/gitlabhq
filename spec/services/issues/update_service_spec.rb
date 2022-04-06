@@ -9,8 +9,8 @@ RSpec.describe Issues::UpdateService, :mailer do
   let_it_be(:guest) { create(:user) }
   let_it_be(:group) { create(:group, :public, :crm_enabled) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
-  let_it_be(:label) { create(:label, project: project) }
-  let_it_be(:label2) { create(:label, project: project) }
+  let_it_be(:label) { create(:label, title: 'a', project: project) }
+  let_it_be(:label2) { create(:label, title: 'b', project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:issue) do
@@ -1361,10 +1361,13 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
     end
 
-    it_behaves_like 'broadcasting issuable labels updates' do
+    context 'labels are updated' do
       let(:label_a) { label }
       let(:label_b) { label2 }
       let(:issuable) { issue }
+
+      it_behaves_like 'keeps issuable labels sorted after update'
+      it_behaves_like 'broadcasting issuable labels updates'
 
       def update_issuable(update_params)
         update_issue(update_params)

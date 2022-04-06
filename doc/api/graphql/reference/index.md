@@ -4962,11 +4962,11 @@ Input type: `UpdateIterationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateiterationdescription"></a>`description` | [`String`](#string) | Description of the iteration. |
-| <a id="mutationupdateiterationduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
+| <a id="mutationupdateiterationduedate"></a>`dueDate` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
 | <a id="mutationupdateiterationgrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the iteration. |
 | <a id="mutationupdateiterationid"></a>`id` | [`ID!`](#id) | Global ID of the iteration. |
-| <a id="mutationupdateiterationstartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
-| <a id="mutationupdateiterationtitle"></a>`title` | [`String`](#string) | Title of the iteration. |
+| <a id="mutationupdateiterationstartdate"></a>`startDate` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
+| <a id="mutationupdateiterationtitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
 
 #### Fields
 

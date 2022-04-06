@@ -24,7 +24,7 @@ module API
       end
 
       def expose_raw_diffs?
-        options[:access_raw_diffs] || ::Feature.enabled?(:mrc_api_use_raw_diffs_from_gitaly, options[:project])
+        options[:access_raw_diffs]
       end
     end
   end

@@ -49,11 +49,11 @@ Example response:
     "title": "Replace sanitize with escape once",
     "author_name": "Example User",
     "author_email": "user@example.com",
-    "authored_date": "2012-09-20T11:50:22+03:00",
+    "authored_date": "2021-09-20T11:50:22.001+00:00",
     "committer_name": "Administrator",
     "committer_email": "admin@example.com",
-    "committed_date": "2012-09-20T11:50:22+03:00",
-    "created_at": "2012-09-20T11:50:22+03:00",
+    "committed_date": "2021-09-20T11:50:22.001+00:00",
+    "created_at": "2021-09-20T11:50:22.001+00:00",
     "message": "Replace sanitize with escape once",
     "parent_ids": [
       "6104942438c14ec7bd21c6cd5bd995272b3faff6"
@@ -68,7 +68,7 @@ Example response:
     "author_email": "user@example.com",
     "committer_name": "ExampleName",
     "committer_email": "user@example.com",
-    "created_at": "2012-09-20T09:06:12+03:00",
+    "created_at": "2021-09-20T09:06:12.201+00:00",
     "message": "Sanitize for network graph",
     "parent_ids": [
       "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
@@ -234,10 +234,10 @@ Example response:
   "author_email": "user@example.com",
   "committer_name": "Dmitriy",
   "committer_email": "user@example.com",
-  "created_at": "2012-09-20T09:06:12+03:00",
+  "created_at": "2021-09-20T09:06:12.300+03:00",
   "message": "Sanitize for network graph",
-  "committed_date": "2012-09-20T09:06:12+03:00",
-  "authored_date": "2012-09-20T09:06:12+03:00",
+  "committed_date": "2021-09-20T09:06:12.300+03:00",
+  "authored_date": "2021-09-20T09:06:12.420+03:00",
   "parent_ids": [
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],

@@ -33,6 +33,10 @@
     text-align: left;
   }
 
+  .file-holder {
+    margin: 0;
+  }
+
   .file-content.code {
     border: $border-style;
     border-radius: 0 0 $border-radius-default $border-radius-default;

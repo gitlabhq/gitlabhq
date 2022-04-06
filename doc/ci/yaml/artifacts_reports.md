@@ -87,7 +87,7 @@ GitLab can display the results of one or more reports in:
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) for use in GitLab
-14.8 and replaced with `artifacts:reports:coverage_report`.
+14.9 and replaced with `artifacts:reports:coverage_report` in 14.10.
 
 The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
 The collected Cobertura coverage reports upload to GitLab as an artifact.

@@ -8,8 +8,8 @@ RSpec.describe 'Update of an existing issue' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:label1) { create(:label, project: project) }
-  let_it_be(:label2) { create(:label, project: project) }
+  let_it_be(:label1) { create(:label, title: "a", project: project) }
+  let_it_be(:label2) { create(:label, title: "b", project: project) }
 
   let(:input) do
     {
@@ -124,12 +124,28 @@ RSpec.describe 'Update of an existing issue' do
       context 'add and remove labels' do
         let(:input_params) { input.merge(extra_params).merge({ addLabelIds: [label1.id], removeLabelIds: [label2.id] }) }
 
-        it 'returns error for mutually exclusive arguments' do
+        it 'returns correct labels' do
           post_graphql_mutation(mutation, current_user: current_user)
 
           expect(response).to have_gitlab_http_status(:success)
           expect(json_response['errors']).to be_nil
           expect(mutation_response['issue']['labels']).to include({ "nodes" => [{ "id" => label1.to_global_id.to_s }] })
+        end
+      end
+
+      context 'add labels' do
+        let(:input_params) { input.merge(extra_params).merge({ addLabelIds: [label1.id] }) }
+
+        before do
+          issue.update!({ labels: [label2] })
+        end
+
+        it 'adds labels and keeps the title ordering' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['errors']).to be_nil
+          expect(mutation_response['issue']['labels']['nodes']).to eq([{ "id" => label1.to_global_id.to_s }, { "id" => label2.to_global_id.to_s }])
         end
       end
     end

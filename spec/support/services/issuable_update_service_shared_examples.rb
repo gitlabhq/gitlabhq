@@ -24,6 +24,20 @@ RSpec.shared_examples 'issuable update service' do
   end
 end
 
+RSpec.shared_examples 'keeps issuable labels sorted after update' do
+  before do
+    update_issuable(label_ids: [label_b.id])
+  end
+
+  context 'when label is changed' do
+    it 'keeps the labels sorted by title ASC' do
+      update_issuable({ add_label_ids: [label_a.id] })
+
+      expect(issuable.labels).to eq([label_a, label_b])
+    end
+  end
+end
+
 RSpec.shared_examples 'broadcasting issuable labels updates' do
   before do
     update_issuable(label_ids: [label_a.id])
