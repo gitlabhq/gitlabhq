@@ -13016,6 +13016,9 @@ msgstr ""
 msgid "Diff limits"
 msgstr ""
 
+msgid "Diff notes"
+msgstr ""
+
 msgid "Difference between start date and now"
 msgstr ""
 
@@ -17083,6 +17086,15 @@ msgid "Gitea Host URL"
 msgstr ""
 
 msgid "Gitea Import"
+msgstr ""
+
+msgid "GithubImporter|PR mergers"
+msgstr ""
+
+msgid "GithubImporter|PR reviews"
+msgstr ""
+
+msgid "GithubImporter|Pull requests"
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
@@ -25642,6 +25654,9 @@ msgstr ""
 msgid "NoteForm|Note"
 msgstr ""
 
+msgid "Notes"
+msgstr ""
+
 msgid "Notes rate limit"
 msgstr ""
 
@@ -27008,6 +27023,9 @@ msgid "Parsing error for param :embed_json. %{message}"
 msgstr ""
 
 msgid "Part of merge request changes"
+msgstr ""
+
+msgid "Partial import"
 msgstr ""
 
 msgid "Participants"
@@ -33126,9 +33144,6 @@ msgid "Secure Code Warrior"
 msgstr ""
 
 msgid "Secure Files"
-msgstr ""
-
-msgid "Secure Files|File did not match the provided checksum"
 msgstr ""
 
 msgid "Secure token that identifies an external storage request."

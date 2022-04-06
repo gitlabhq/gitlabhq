@@ -10,6 +10,11 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.htm
 You can _mirror_ a repository to and from external sources. You can select which repository
 serves as the source. Branches, tags, and commits can be mirrored.
 
+NOTE:
+SCP-style URLs are **not** supported. However, the work for implementing SCP-style URLs is tracked
+in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18993).
+Subscribe to the issue to follow its progress.
+
 Several mirroring methods exist:
 
 - [Push](push.md): for mirroring a GitLab repository to another location.

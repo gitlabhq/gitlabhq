@@ -1537,6 +1537,26 @@ On each node:
    # Recommended to be enabled for improved performance but can notably increase disk I/O
    # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
    gitaly['pack_objects_cache_enabled'] = true
+
+   # Configure the Consul agent
+   consul['enable'] = true
+   ## Enable service discovery for Prometheus
+   consul['monitoring_service_discovery'] = true
+
+   # START user configuration
+   # Please set the real values as explained in Required Information section
+   #
+   ## The IPs of the Consul server nodes
+   ## You can also use FQDNs and intermix them with IPs
+   consul['configuration'] = {
+      retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13),
+   }
+
+   # Set the network addresses that the exporters will listen on for monitoring
+   node_exporter['listen_address'] = '0.0.0.0:9100'
+   gitaly['prometheus_listen_addr'] = '0.0.0.0:9236'
+   #
+   # END user configuration
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective server:
@@ -2099,6 +2119,30 @@ To configure the Monitoring node:
    consul['configuration'] = {
       retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
    }
+
+   # Configure Prometheus to scrape services not covered by discovery
+   prometheus['scrape_configs'] = [
+      {
+         'job_name': 'pgbouncer',
+         'static_configs' => [
+            'targets' => [
+            "10.6.0.31:9188",
+            "10.6.0.32:9188",
+            "10.6.0.33:9188",
+            ],
+         ],
+      },
+      {
+         'job_name': 'praefect',
+         'static_configs' => [
+            'targets' => [
+            "10.6.0.131:9652",
+            "10.6.0.132:9652",
+            "10.6.0.133:9652",
+            ],
+         ],
+      },
+   ]
 
    # Nginx - For Grafana access
    nginx['enable'] = true

@@ -257,22 +257,6 @@ RSpec.describe API::Ci::SecureFiles do
         expect(Base64.encode64(response.body)).to eq(Base64.encode64(fixture_file_upload('spec/fixtures/ci_secure_files/upload-keystore.jks').read))
       end
 
-      it 'uploads and validates a secure file with a provided checksum' do
-        params = {
-          file: fixture_file_upload('spec/fixtures/ci_secure_files/upload-keystore.jks'),
-          name: 'upload-keystore.jks',
-          permissions: 'execute',
-          file_checksum: Digest::SHA256.hexdigest(File.read(fixture_file_upload('spec/fixtures/ci_secure_files/upload-keystore.jks')))
-        }
-
-        expect do
-          post api("/projects/#{project.id}/secure_files", maintainer), params: params
-        end.to change {project.secure_files.count}.by(1)
-
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['name']).to eq('upload-keystore.jks')
-      end
-
       it 'returns an error when the file checksum fails to validate' do
         secure_file.update!(checksum: 'foo')
 
@@ -281,22 +265,6 @@ RSpec.describe API::Ci::SecureFiles do
         end.not_to change { project.secure_files.count }
 
         expect(response.code).to eq("500")
-      end
-
-      it 'returns an error when the user provided file checksum fails to validate' do
-        post_params = {
-          file: fixture_file_upload('spec/fixtures/ci_secure_files/upload-keystore.jks'),
-          name: 'upload-keystore.jks',
-          permissions: 'read_write',
-          file_checksum: 'foo'
-        }
-
-        expect do
-          post api("/projects/#{project.id}/secure_files", maintainer), params: post_params
-        end.not_to change { project.secure_files.count }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['file_checksum']).to include(_("Secure Files|File did not match the provided checksum"))
       end
 
       it 'returns an error when no file is uploaded' do

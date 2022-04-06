@@ -55,7 +55,8 @@ class UsersFinder
   private
 
   def base_scope
-    User.all.order_id_desc
+    scope = current_user&.admin? ? User.all : User.without_forbidden_states
+    scope.order_id_desc
   end
 
   def by_username(users)

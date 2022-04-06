@@ -94,6 +94,7 @@ export default {
       v-if="shouldShowAlert"
       :variant="alert.variant"
       :title="alert.title"
+      class="gl-mb-5"
       data-testid="jira-connect-persisted-alert"
       @dismiss="setAlert"
     >

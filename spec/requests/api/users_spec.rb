@@ -338,12 +338,14 @@ RSpec.describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.first.keys).not_to include 'is_admin'
       end
+    end
 
+    context "when admin" do
       context 'exclude_internal param' do
         let_it_be(:internal_user) { User.alert_bot }
 
         it 'returns all users when it is not set' do
-          get api("/users?exclude_internal=false", user)
+          get api("/users?exclude_internal=false", admin)
 
           expect(response).to match_response_schema('public_api/v4/user/basics')
           expect(response).to include_pagination_headers

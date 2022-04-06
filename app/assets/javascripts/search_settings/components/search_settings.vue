@@ -1,6 +1,6 @@
 <script>
 import { GlSearchBoxByType } from '@gitlab/ui';
-import { uniq, escapeRegExp } from 'lodash';
+import { escapeRegExp } from 'lodash';
 import {
   EXCLUDED_NODES,
   HIDE_CLASS,
@@ -60,41 +60,42 @@ const hideSectionsExcept = (sectionSelector, visibleSections) => {
     });
 };
 
-const transformMatchElement = (element, searchTerm) => {
-  const textStr = element.textContent;
+const highlightTextNode = (textNode, searchTerm) => {
   const escapedSearchTerm = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
+  const textList = textNode.data.split(escapedSearchTerm);
 
-  const textList = textStr.split(escapedSearchTerm);
-  const replaceFragment = document.createDocumentFragment();
-  textList.forEach((text) => {
-    let addElement = document.createTextNode(text);
+  return textList.reduce((documentFragment, text) => {
+    let addElement;
+
     if (escapedSearchTerm.test(text)) {
       addElement = document.createElement('mark');
       addElement.className = `${HIGHLIGHT_CLASS} ${NONE_PADDING_CLASS}`;
       addElement.textContent = text;
       escapedSearchTerm.lastIndex = 0;
+    } else {
+      addElement = document.createTextNode(text);
     }
-    replaceFragment.appendChild(addElement);
-  });
 
-  return replaceFragment;
+    documentFragment.appendChild(addElement);
+    return documentFragment;
+  }, document.createDocumentFragment());
 };
 
-const highlightElements = (elements = [], searchTerm) => {
-  elements.forEach((element) => {
-    const replaceFragment = transformMatchElement(element, searchTerm);
-    element.innerHTML = '';
-    element.appendChild(replaceFragment);
+const highlightText = (textNodes = [], searchTerm) => {
+  textNodes.forEach((textNode) => {
+    const fragmentWithHighlights = highlightTextNode(textNode, searchTerm);
+    textNode.parentElement.replaceChild(fragmentWithHighlights, textNode);
   });
 };
 
-const displayResults = ({ sectionSelector, expandSection, searchTerm }, matches) => {
-  const elements = matches.map((match) => match.parentElement);
-  const sections = uniq(elements.map((element) => findSettingsSection(sectionSelector, element)));
+const displayResults = ({ sectionSelector, expandSection, searchTerm }, matchingTextNodes) => {
+  const sections = Array.from(
+    new Set(matchingTextNodes.map((node) => findSettingsSection(sectionSelector, node))),
+  );
 
   hideSectionsExcept(sectionSelector, sections);
   sections.forEach(expandSection);
-  highlightElements(elements, searchTerm);
+  highlightText(matchingTextNodes, searchTerm);
 };
 
 const clearResults = (params) => {
@@ -114,13 +115,13 @@ const search = (root, searchTerm) => {
         : NodeFilter.FILTER_REJECT;
     },
   });
-  const results = [];
+  const textNodes = [];
 
   for (let currentNode = iterator.nextNode(); currentNode; currentNode = iterator.nextNode()) {
-    results.push(currentNode);
+    textNodes.push(currentNode);
   }
 
-  return results;
+  return textNodes;
 };
 
 export default {

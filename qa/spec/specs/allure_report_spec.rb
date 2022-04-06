@@ -66,7 +66,7 @@ describe QA::Runtime::AllureReport do
       described_class.configure!
     end
 
-    it 'configures Allure options' do
+    it 'configures Allure options', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/357816' do
       aggregate_failures do
         expect(allure_config.results_directory).to eq('tmp/allure-results')
         expect(allure_config.clean_results_directory).to eq(true)

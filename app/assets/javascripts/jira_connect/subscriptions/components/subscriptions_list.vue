@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTable } from '@gitlab/ui';
+import { GlButton, GlTableLite } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { mapMutations } from 'vuex';
 import { removeSubscription } from '~/jira_connect/subscriptions/api';
@@ -12,7 +12,7 @@ import GroupItemName from './group_item_name.vue';
 export default {
   components: {
     GlButton,
-    GlTable,
+    GlTableLite,
     GroupItemName,
     TimeagoTooltip,
   },
@@ -78,7 +78,7 @@ export default {
 </script>
 
 <template>
-  <gl-table :items="subscriptions" :fields="$options.fields">
+  <gl-table-lite :items="subscriptions" :fields="$options.fields">
     <template #cell(name)="{ item }">
       <group-item-name :group="item.group" />
     </template>
@@ -95,5 +95,5 @@ export default {
         >{{ __('Unlink') }}</gl-button
       >
     </template>
-  </gl-table>
+  </gl-table-lite>
 </template>

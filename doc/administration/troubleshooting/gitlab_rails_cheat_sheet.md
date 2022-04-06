@@ -257,6 +257,13 @@ ProjectDestroyWorker.perform_async(project.id, user.id, {})
 # or Projects::DestroyService.new(project, user).execute
 ```
 
+If this fails, display why it doesn't work with:
+
+```ruby
+project = Project.find_by_full_path('<project_path>')
+project.delete_error
+```
+
 ### Remove fork relationship manually
 
 ```ruby

@@ -6642,6 +6642,23 @@ RSpec.describe User do
     end
   end
 
+  describe '.without_forbidden_states' do
+    let_it_be(:normal_user) { create(:user, username: 'johndoe') }
+    let_it_be(:admin_user) { create(:user, :admin, username: 'iamadmin') }
+    let_it_be(:blocked_user) { create(:user, :blocked, username: 'notsorandom') }
+    let_it_be(:banned_user) { create(:user, :banned, username: 'iambanned') }
+    let_it_be(:external_user) { create(:user, :external) }
+    let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
+    let_it_be(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
+    let_it_be(:internal_user) { User.alert_bot.tap { |u| u.confirm } }
+
+    it 'does not return blocked, banned or unconfirmed users' do
+      expect(described_class.without_forbidden_states).to match_array([
+        normal_user, admin_user, external_user, omniauth_user, internal_user
+      ])
+    end
+  end
+
   describe 'user_project' do
     it 'returns users project matched by username and public visibility' do
       user = create(:user)

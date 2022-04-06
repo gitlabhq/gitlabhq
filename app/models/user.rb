@@ -46,6 +46,8 @@ class User < ApplicationRecord
     :public_email
   ].freeze
 
+  FORBIDDEN_SEARCH_STATES = %w(blocked banned ldap_blocked).freeze
+
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
   add_authentication_token_field :static_object_token, encrypted: :optional
@@ -469,6 +471,7 @@ class User < ApplicationRecord
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
+  scope :without_forbidden_states, -> { confirmed.where.not(state: FORBIDDEN_SEARCH_STATES) }
 
   strip_attributes! :name
 

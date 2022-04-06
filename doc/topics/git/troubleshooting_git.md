@@ -232,3 +232,38 @@ too small, the error persists.
 
 Modifying the server is not always an option, and introduces more potential risk.
 Attempt local changes first.
+
+## Password expired error on Git fetch via SSH for LDAP user
+
+If `git fetch` returns this `HTTP 403 Forbidden` error on a self-managed instance of
+GitLab, the password expiration date (`users.password_expires_at`) for this user in the
+GitLab database is a date in the past:
+
+```plaintext
+Your password expired. Please access GitLab from a web browser to update your password.
+```
+
+Requests made with a SSO account and where `password_expires_at` is not `null`
+return this error:
+
+```plaintext
+"403 Forbidden - Your password expired. Please access GitLab from a web browser to update your password."
+```
+
+To resolve this issue, you can update the password expiration by either:
+
+- Using the `gitlab-rails console`:
+
+  ```ruby
+  gitlab-rails console
+  user.update!(password_expires_at: nil)
+  ```
+
+- Using `gitlab-psql`:
+
+   ```sql
+   # gitlab-psql
+   UPDATE users SET password_expires_at = null WHERE username='<USERNAME>';
+   ```
+
+The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332455).
