@@ -383,7 +383,7 @@ class Project < ApplicationRecord
   has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
 
   has_many :import_failures, inverse_of: :project
-  has_many :jira_imports, -> { order 'jira_imports.created_at' }, class_name: 'JiraImportState', inverse_of: :project
+  has_many :jira_imports, -> { order(JiraImportState.arel_table[:created_at].asc) }, class_name: 'JiraImportState', inverse_of: :project
 
   has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult'
   has_many :ci_feature_usages, class_name: 'Projects::CiFeatureUsage'

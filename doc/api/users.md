@@ -1850,7 +1850,7 @@ POST /users/:user_id/personal_access_tokens
 | `user_id`    | integer | yes      | The ID of the user                                                                                                       |
 | `name`       | string  | yes      | The name of the personal access token                                                                                    |
 | `expires_at` | date    | no       | The expiration date of the personal access token in ISO format (`YYYY-MM-DD`)                                            |
-| `scopes`     | array   | yes      | The array of scopes of the personal access token (`api`, `read_user`, `read_api`, `read_repository`, `write_repository`) |
+| `scopes`     | array   | yes      | The array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" \

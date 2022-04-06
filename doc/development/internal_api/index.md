@@ -621,7 +621,7 @@ Example response:
     "name":"premium",
     "trial":false,
     "auto_renew":null,
-    "upgradable":false
+    "upgradable":false,
   },
   "usage": {
     "seats_in_subscription":10,
@@ -672,7 +672,7 @@ Example response:
     "name":"premium",
     "trial":false,
     "auto_renew":null,
-    "upgradable":false
+    "upgradable":false,
   },
   "usage": {
     "seats_in_subscription":80,
@@ -711,7 +711,8 @@ Example response:
     "name":"premium",
     "trial":false,
     "auto_renew":null,
-    "upgradable":false
+    "upgradable":false,
+    "exclude_guests":false,
   },
   "usage": {
     "seats_in_subscription":80,

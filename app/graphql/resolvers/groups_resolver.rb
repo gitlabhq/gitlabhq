@@ -30,7 +30,7 @@ module Resolvers
       GroupsFinder
         .new(context[:current_user], args.merge(parent: parent))
         .execute
-        .reorder('name ASC')
+        .reorder(name: :asc)
     end
     # rubocop: enable CodeReuse/ActiveRecord
   end
