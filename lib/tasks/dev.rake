@@ -27,6 +27,32 @@ namespace :dev do
     Rails.application.eager_load!
   end
 
+  # If there are any clients connected to the DB, PostgreSQL won't let
+  # you drop the database. It's possible that Sidekiq, Puma, or
+  # some other client will be hanging onto a connection, preventing
+  # the DROP DATABASE from working. To workaround this problem, this
+  # method terminates all the connections so that a subsequent DROP
+  # will work.
+  desc "Used to drop all connections in development"
+  task :terminate_all_connections do
+    # In production, we might want to prevent ourselves from shooting
+    # ourselves in the foot, so let's only do this in a test or
+    # development environment.
+    unless Rails.env.production?
+      cmd = <<~SQL
+      SELECT pg_terminate_backend(pg_stat_activity.pid)
+      FROM pg_stat_activity
+      WHERE datname = current_database()
+        AND pid <> pg_backend_pid();
+      SQL
+
+      Gitlab::Database::EachDatabase.each_database_connection(include_shared: false) do |connection|
+        connection.execute(cmd)
+      rescue ActiveRecord::NoDatabaseError
+      end
+    end
+  end
+
   databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
   namespace :copy_db do
@@ -37,6 +63,8 @@ namespace :dev do
 
       desc "Copies the #{name} database from the main database"
       task name => :environment do
+        Rake::Task["dev:terminate_all_connections"].invoke
+
         db_config = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: name)
 
         ApplicationRecord.connection.create_database(db_config.database, template: ApplicationRecord.connection_db_config.database)

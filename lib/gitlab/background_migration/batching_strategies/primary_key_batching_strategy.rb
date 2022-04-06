@@ -23,7 +23,7 @@ module Gitlab
 
           quoted_column_name = model_class.connection.quote_column_name(column_name)
           relation = model_class.where("#{quoted_column_name} >= ?", batch_min_value)
-          relation = apply_additional_filters(relation)
+          relation = apply_additional_filters(relation, job_arguments: job_arguments)
           next_batch_bounds = nil
 
           relation.each_batch(of: batch_size, column: column_name) do |batch| # rubocop:disable Lint/UnreachableLoop
@@ -40,12 +40,14 @@ module Gitlab
         #
         # Example:
         #
-        #   class TypeIsNotNull < PrimaryKeyBatchingStrategy
-        #     def apply_additional_filters(relation)
-        #       relation.where.not(type: nil)
+        #   class MatchingType < PrimaryKeyBatchingStrategy
+        #     def apply_additional_filters(relation, job_arguments:)
+        #       type = job_arguments.first
+        #
+        #       relation.where(type: type)
         #     end
         #   end
-        def apply_additional_filters(relation)
+        def apply_additional_filters(relation, job_arguments: [])
           relation
         end
       end

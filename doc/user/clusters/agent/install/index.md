@@ -105,6 +105,10 @@ The one-liner installation is the simplest process, but you need
 Docker installed locally. If you don't have it, you can either install
 it or opt to the [advanced installation method](#advanced-installation).
 
+Use the one-liner process for simple use cases or to get started with the agent for Kubernetes.
+For production use, opt for the [advanced installation method](#advanced-installation)
+as it gives you more customization options and access to all settings.
+
 To install the agent on your cluster using the one-liner installation:
 
 1. In your computer, open a terminal and [connect to your cluster](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/).

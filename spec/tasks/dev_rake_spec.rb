@@ -40,6 +40,58 @@ RSpec.describe 'dev rake tasks' do
     end
   end
 
+  describe 'terminate_all_connections' do
+    let(:connections) do
+      Gitlab::Database.database_base_models.values.filter_map do |model|
+        model.connection if Gitlab::Database.db_config_share_with(model.connection_db_config).nil?
+      end
+    end
+
+    def expect_connections_to_be_terminated
+      expect(Gitlab::Database::EachDatabase).to receive(:each_database_connection)
+        .with(include_shared: false)
+        .and_call_original
+
+      expect(connections).to all(receive(:execute).with(/SELECT pg_terminate_backend/))
+    end
+
+    def expect_connections_not_to_be_terminated
+      connections.each do |connection|
+        expect(connection).not_to receive(:execute)
+      end
+    end
+
+    subject(:terminate_task) { run_rake_task('dev:terminate_all_connections') }
+
+    it 'terminates all connections' do
+      expect_connections_to_be_terminated
+
+      terminate_task
+    end
+
+    context 'when in the production environment' do
+      it 'does not terminate connections' do
+        expect(Rails.env).to receive(:production?).and_return(true)
+        expect_connections_not_to_be_terminated
+
+        terminate_task
+      end
+    end
+
+    context 'when a database is not found' do
+      before do
+        skip_if_multiple_databases_not_setup
+      end
+
+      it 'continues to next connection' do
+        expect(connections.first).to receive(:execute).and_raise(ActiveRecord::NoDatabaseError)
+        expect(connections.second).to receive(:execute).with(/SELECT pg_terminate_backend/)
+
+        terminate_task
+      end
+    end
+  end
+
   context 'multiple databases' do
     before do
       skip_if_multiple_databases_not_setup
@@ -48,6 +100,8 @@ RSpec.describe 'dev rake tasks' do
     context 'with a valid database' do
       describe 'copy_db:ci' do
         before do
+          allow(Rake::Task['dev:terminate_all_connections']).to receive(:invoke)
+
           configurations = instance_double(ActiveRecord::DatabaseConfigurations)
           allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
           allow(configurations).to receive(:configs_for).with(env_name: Rails.env, name: 'ci').and_return(ci_configuration)
@@ -62,6 +116,8 @@ RSpec.describe 'dev rake tasks' do
             ci_configuration.database,
             template: ApplicationRecord.connection_db_config.database
           )
+
+          expect(Rake::Task['dev:terminate_all_connections']).to receive(:invoke)
 
           run_rake_task('dev:copy_db:ci')
         end

@@ -57,6 +57,14 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, op
 		previousDirector := p.reverseProxy.Director
 		p.reverseProxy.Director = func(request *http.Request) {
 			previousDirector(request)
+
+			// send original host along for the upstream
+			// to know it's being proxied under a different Host
+			// (for redirects and other stuff that depends on this)
+			request.Header.Set("X-Forwarded-Host", request.Host)
+			request.Header.Set("Forwarded", fmt.Sprintf("host=%s", request.Host))
+
+			// override the Host with the target
 			request.Host = request.URL.Host
 		}
 	}

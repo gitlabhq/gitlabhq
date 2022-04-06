@@ -23,6 +23,13 @@ module Projects
         cleanup
       end
 
+      def exporters
+        [
+          version_saver, avatar_saver, project_tree_saver, uploads_saver,
+          repo_saver, wiki_repo_saver, lfs_saver, snippets_repo_saver, design_repo_saver
+        ]
+      end
+
       protected
 
       def extra_attributes_for_measurement
@@ -59,30 +66,23 @@ module Projects
       end
 
       def save_export_archive
-        Gitlab::ImportExport::Saver.save(exportable: project, shared: shared)
-      end
-
-      def exporters
-        [
-          version_saver, avatar_saver, project_tree_saver, uploads_saver,
-          repo_saver, wiki_repo_saver, lfs_saver, snippets_repo_saver, design_repo_saver
-        ]
+        @export_saver ||= Gitlab::ImportExport::Saver.save(exportable: project, shared: shared)
       end
 
       def version_saver
-        Gitlab::ImportExport::VersionSaver.new(shared: shared)
+        @version_saver ||= Gitlab::ImportExport::VersionSaver.new(shared: shared)
       end
 
       def avatar_saver
-        Gitlab::ImportExport::AvatarSaver.new(project: project, shared: shared)
+        @avatar_saver ||= Gitlab::ImportExport::AvatarSaver.new(project: project, shared: shared)
       end
 
       def project_tree_saver
-        tree_saver_class.new(project: project,
-                             current_user: current_user,
-                             shared: shared,
-                             params: params,
-                             logger: logger)
+        @project_tree_saver ||= tree_saver_class.new(project: project,
+                                  current_user: current_user,
+                                  shared: shared,
+                                  params: params,
+                                  logger: logger)
       end
 
       def tree_saver_class
@@ -90,27 +90,31 @@ module Projects
       end
 
       def uploads_saver
-        Gitlab::ImportExport::UploadsSaver.new(project: project, shared: shared)
+        @uploads_saver ||= Gitlab::ImportExport::UploadsSaver.new(project: project, shared: shared)
       end
 
       def repo_saver
-        Gitlab::ImportExport::RepoSaver.new(exportable: project, shared: shared)
+        @repo_saver ||= Gitlab::ImportExport::RepoSaver.new(exportable: project, shared: shared)
       end
 
       def wiki_repo_saver
-        Gitlab::ImportExport::WikiRepoSaver.new(exportable: project, shared: shared)
+        @wiki_repo_saver ||= Gitlab::ImportExport::WikiRepoSaver.new(exportable: project, shared: shared)
       end
 
       def lfs_saver
-        Gitlab::ImportExport::LfsSaver.new(project: project, shared: shared)
+        @lfs_saver ||= Gitlab::ImportExport::LfsSaver.new(project: project, shared: shared)
       end
 
       def snippets_repo_saver
-        Gitlab::ImportExport::SnippetsRepoSaver.new(current_user: current_user, project: project, shared: shared)
+        @snippets_repo_saver ||= Gitlab::ImportExport::SnippetsRepoSaver.new(
+          current_user: current_user,
+          project: project,
+          shared: shared
+        )
       end
 
       def design_repo_saver
-        Gitlab::ImportExport::DesignRepoSaver.new(exportable: project, shared: shared)
+        @design_repo_saver ||= Gitlab::ImportExport::DesignRepoSaver.new(exportable: project, shared: shared)
       end
 
       def cleanup

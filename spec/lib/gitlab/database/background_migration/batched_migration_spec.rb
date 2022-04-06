@@ -79,12 +79,23 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
   describe '.active_migration' do
     let!(:migration1) { create(:batched_background_migration, :finished) }
-    let!(:migration2) { create(:batched_background_migration, :active) }
-    let!(:migration3) { create(:batched_background_migration, :active) }
 
-    it 'returns the first active migration according to queue order' do
-      expect(described_class.active_migration).to eq(migration2)
-      create(:batched_background_migration_job, :succeeded, batched_migration: migration1, batch_size: 1000)
+    context 'without migrations on hold' do
+      let!(:migration2) { create(:batched_background_migration, :active) }
+      let!(:migration3) { create(:batched_background_migration, :active) }
+
+      it 'returns the first active migration according to queue order' do
+        expect(described_class.active_migration).to eq(migration2)
+      end
+    end
+
+    context 'with migrations are on hold' do
+      let!(:migration2) { create(:batched_background_migration, :active, on_hold_until: 10.minutes.from_now) }
+      let!(:migration3) { create(:batched_background_migration, :active, on_hold_until: 2.minutes.ago) }
+
+      it 'returns the first active migration that is not on hold according to queue order' do
+        expect(described_class.active_migration).to eq(migration3)
+      end
     end
   end
 
@@ -515,6 +526,20 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       expect(optimizer).to receive(:optimize!)
 
       subject
+    end
+  end
+
+  describe '#hold!', :freeze_time do
+    subject { create(:batched_background_migration) }
+
+    let(:time) { 5.minutes.from_now }
+
+    it 'updates on_hold_until property' do
+      expect { subject.hold!(until_time: time) }.to change { subject.on_hold_until }.from(nil).to(time)
+    end
+
+    it 'defaults to 10 minutes' do
+      expect { subject.hold! }.to change { subject.on_hold_until }.from(nil).to(10.minutes.from_now)
     end
   end
 

@@ -24,6 +24,10 @@ module Gitlab
 
         scope :queue_order, -> { order(id: :asc) }
         scope :queued, -> { with_statuses(:active, :paused) }
+
+        # on_hold_until is a temporary runtime status which puts execution "on hold"
+        scope :executable, -> { with_status(:active).where('on_hold_until IS NULL OR on_hold_until < NOW()') }
+
         scope :for_configuration, ->(job_class_name, table_name, column_name, job_arguments) do
           where(job_class_name: job_class_name, table_name: table_name, column_name: column_name)
             .where("job_arguments = ?", job_arguments.to_json) # rubocop:disable Rails/WhereEquals
@@ -72,7 +76,7 @@ module Gitlab
         end
 
         def self.active_migration
-          with_status(:active).queue_order.first
+          executable.queue_order.first
         end
 
         def self.successful_rows_counts(migrations)
@@ -176,6 +180,10 @@ module Gitlab
 
         def optimize!
           BatchOptimizer.new(self).optimize!
+        end
+
+        def hold!(until_time: 10.minutes.from_now)
+          update!(on_hold_until: until_time)
         end
 
         private

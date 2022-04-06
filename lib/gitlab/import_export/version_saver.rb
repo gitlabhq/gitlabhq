@@ -4,17 +4,20 @@ module Gitlab
   module ImportExport
     class VersionSaver
       include Gitlab::ImportExport::CommandLineUtil
+      include DurationMeasuring
 
       def initialize(shared:)
         @shared = shared
       end
 
       def save
-        mkdir_p(@shared.export_path)
+        with_duration_measuring do
+          mkdir_p(@shared.export_path)
 
-        File.write(version_file, Gitlab::ImportExport.version, mode: 'w')
-        File.write(gitlab_version_file, Gitlab::VERSION, mode: 'w')
-        File.write(gitlab_revision_file, Gitlab.revision, mode: 'w')
+          File.write(version_file, Gitlab::ImportExport.version, mode: 'w')
+          File.write(gitlab_version_file, Gitlab::VERSION, mode: 'w')
+          File.write(gitlab_revision_file, Gitlab.revision, mode: 'w')
+        end
       rescue StandardError => e
         @shared.error(e)
         false

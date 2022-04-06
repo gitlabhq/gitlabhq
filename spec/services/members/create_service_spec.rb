@@ -6,6 +6,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   let_it_be(:source, reload: true) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:member) { create(:user) }
+  let_it_be(:user_invited_by_id) { create(:user) }
   let_it_be(:user_ids) { member.id.to_s }
   let_it_be(:access_level) { Gitlab::Access::GUEST }
 
@@ -47,6 +48,36 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       expect(execute_service[:status]).to eq(:success)
       expect(source.users).to include member
       expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(true)
+    end
+
+    context 'when user_id is passed as an integer' do
+      let(:user_ids) { member.id }
+
+      it 'successfully creates member' do
+        expect(execute_service[:status]).to eq(:success)
+        expect(source.users).to include member
+        expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(true)
+      end
+    end
+
+    context 'with user_ids as an array of integers' do
+      let(:user_ids) { [member.id, user_invited_by_id.id] }
+
+      it 'successfully creates members' do
+        expect(execute_service[:status]).to eq(:success)
+        expect(source.users).to include(member, user_invited_by_id)
+        expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(true)
+      end
+    end
+
+    context 'with user_ids as an array of strings' do
+      let(:user_ids) { [member.id.to_s, user_invited_by_id.id.to_s] }
+
+      it 'successfully creates members' do
+        expect(execute_service[:status]).to eq(:success)
+        expect(source.users).to include(member, user_invited_by_id)
+        expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(true)
+      end
     end
 
     context 'when executing on a group' do
@@ -189,6 +220,15 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
         project: source,
         author: user
       )
+    end
+
+    context 'when it is an invite by email passed to user_ids' do
+      let(:user_ids) { 'email@example.org' }
+
+      it 'does not create task issues' do
+        expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
+        execute_service
+      end
     end
 
     context 'when passing many user ids' do

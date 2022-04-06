@@ -1,3 +1,8 @@
+include:
+  - project: gitlab-org/modelops/applied-ml/review-recommender/ci-templates
+    ref: v0.2.1
+    file: recommender/Reviewers.gitlab-ci.yml
+
 review-cleanup:
   extends:
     - .default-retry
@@ -65,3 +70,10 @@ danger-review-local:
     - .review:rules:danger-local
   script:
     - run_timed_command danger_as_local
+
+reviewers-recommender:
+  extends:
+    - .default-retry
+    - .review:rules:reviewers-recommender
+  stage: test
+  needs: []

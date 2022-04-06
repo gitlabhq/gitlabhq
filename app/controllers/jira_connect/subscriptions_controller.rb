@@ -21,7 +21,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   end
 
   before_action :allow_rendering_in_iframe, only: :index
-  before_action :verify_qsh_claim!
+  before_action :verify_qsh_claim!, only: :index
   before_action :authenticate_user!, only: :create
 
   def index

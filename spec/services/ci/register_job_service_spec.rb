@@ -785,6 +785,25 @@ module Ci
 
           include_examples 'handles runner assignment'
         end
+
+        context 'when a conflicting data is stored in denormalized table' do
+          let!(:specific_runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[conflict]) }
+          let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, tag_list: %w[conflict]) }
+
+          before do
+            pending_job.update_column(:status, :running)
+          end
+
+          it 'removes queuing entry upon build assignment attempt' do
+            expect(pending_job.reload).to be_running
+            expect(pending_job.queuing_entry).to be_present
+
+            result = described_class.new(specific_runner).execute
+
+            expect(result).not_to be_valid
+            expect(pending_job.reload.queuing_entry).not_to be_present
+          end
+        end
       end
 
       context 'when not using pending builds table' do

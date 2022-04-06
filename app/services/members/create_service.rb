@@ -14,7 +14,7 @@ module Members
       super
 
       @errors = []
-      @invites = invites_from_params&.split(',')&.uniq&.flatten
+      @invites = invites_from_params
       @source = params[:source]
     end
 
@@ -43,7 +43,9 @@ module Members
     attr_reader :source, :errors, :invites, :member_created_namespace_id, :members
 
     def invites_from_params
-      params[:user_ids]
+      return params[:user_ids] if params[:user_ids].is_a?(Array)
+
+      params[:user_ids]&.to_s&.split(',')&.uniq&.flatten || []
     end
 
     def validate_invite_source!
@@ -87,6 +89,7 @@ module Members
       end
     end
 
+    # overridden
     def add_error_for_member(member)
       prefix = "#{member.user.username}: " if member.user.present?
 
@@ -117,7 +120,8 @@ module Members
     def create_tasks_to_be_done
       return if params[:tasks_to_be_done].blank? || params[:tasks_project_id].blank?
 
-      valid_members = members.select { |member| member.valid? && member.member_task.valid? }
+      # Only create task issues for existing users. Tasks for new users are created when they signup.
+      valid_members = members.select { |member| member.valid? && member.member_task.valid? && member.user.present? }
       return unless valid_members.present?
 
       # We can take the first `member_task` here, since all tasks will have the same attributes needed

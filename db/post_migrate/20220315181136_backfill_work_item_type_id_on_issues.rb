@@ -2,6 +2,7 @@
 
 class BackfillWorkItemTypeIdOnIssues < Gitlab::Database::Migration[1.0]
   MIGRATION = 'BackfillWorkItemTypeIdForIssues'
+  BATCH_CLASS_NAME = 'BackfillIssueWorkItemTypeBatchingStrategy'
   BATCH_SIZE = 10_000
   MAX_BATCH_SIZE = 30_000
   SUB_BATCH_SIZE = 100
@@ -27,7 +28,8 @@ class BackfillWorkItemTypeIdOnIssues < Gitlab::Database::Migration[1.0]
         job_interval: INTERVAL,
         batch_size: BATCH_SIZE,
         max_batch_size: MAX_BATCH_SIZE,
-        sub_batch_size: SUB_BATCH_SIZE
+        sub_batch_size: SUB_BATCH_SIZE,
+        batch_class_name: BATCH_CLASS_NAME
       )
     end
   end

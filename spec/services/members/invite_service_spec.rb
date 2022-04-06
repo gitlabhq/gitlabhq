@@ -6,6 +6,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:project_user) { create(:user) }
+  let_it_be(:user_invited_by_id) { create(:user) }
   let_it_be(:namespace) { project.namespace }
 
   let(:params) { {} }
@@ -41,148 +42,422 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
   end
 
-  context 'when email is not a valid email' do
-    let(:params) { { email: '_bogus_' } }
+  context 'when invites are passed as array' do
+    context 'with emails' do
+      let(:params) { { email: %w[email@example.org email2@example.org] } }
 
-    it 'returns an error' do
-      expect_not_to_create_members
-      expect(result[:message]['_bogus_']).to eq("Invite email is invalid")
-    end
-
-    it_behaves_like 'does not record an onboarding progress action'
-  end
-
-  context 'when emails are passed as an array' do
-    let(:params) { { email: %w[email@example.org email2@example.org] } }
-
-    it 'successfully creates members' do
-      expect_to_create_members(count: 2)
-      expect(result[:status]).to eq(:success)
-    end
-  end
-
-  context 'when emails are passed as an empty string' do
-    let(:params) { { email: '' } }
-
-    it 'returns an error' do
-      expect_not_to_create_members
-      expect(result[:message]).to eq('Emails cannot be blank')
-    end
-  end
-
-  context 'when email param is not included' do
-    it 'returns an error' do
-      expect_not_to_create_members
-      expect(result[:message]).to eq('Emails cannot be blank')
-    end
-  end
-
-  context 'when email is not a valid email format' do
-    let(:params) { { email: '_bogus_' } }
-
-    it 'returns an error' do
-      expect { result }.not_to change(ProjectMember, :count)
-      expect(result[:status]).to eq(:error)
-      expect(result[:message][params[:email]]).to eq("Invite email is invalid")
-    end
-  end
-
-  context 'when duplicate email addresses are passed' do
-    let(:params) { { email: 'email@example.org,email@example.org' } }
-
-    it 'only creates one member per unique address' do
-      expect_to_create_members(count: 1)
-      expect(result[:status]).to eq(:success)
-    end
-  end
-
-  context 'when observing email limits' do
-    let_it_be(:emails) { Array(1..101).map { |n| "email#{n}@example.com" } }
-
-    context 'when over the allowed default limit of emails' do
-      let(:params) { { email: emails } }
-
-      it 'limits the number of emails to 100' do
-        expect_not_to_create_members
-        expect(result[:message]).to eq('Too many users specified (limit is 100)')
+      it 'successfully creates members' do
+        expect_to_create_members(count: 2)
+        expect(result[:status]).to eq(:success)
       end
     end
 
-    context 'when over the allowed custom limit of emails' do
-      let(:params) { { email: 'email@example.org,email2@example.org', limit: 1 } }
+    context 'with user_ids as integers' do
+      let(:params) { { user_ids: [project_user.id, user_invited_by_id.id] } }
 
-      it 'limits the number of emails to the limit supplied' do
-        expect_not_to_create_members
-        expect(result[:message]).to eq('Too many users specified (limit is 1)')
+      it 'successfully creates members' do
+        expect_to_create_members(count: 2)
+        expect(result[:status]).to eq(:success)
       end
     end
 
-    context 'when limit allowed is disabled via limit param' do
-      let(:params) { { email: emails, limit: -1 } }
+    context 'with user_ids as strings' do
+      let(:params) { { user_ids: [project_user.id.to_s, user_invited_by_id.id.to_s] } }
 
-      it 'does not limit number of emails' do
-        expect_to_create_members(count: 101)
+      it 'successfully creates members' do
+        expect_to_create_members(count: 2)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'with a mixture of emails and user_ids' do
+      let(:params) do
+        { user_ids: [project_user.id, user_invited_by_id.id], email: %w[email@example.org email2@example.org] }
+      end
+
+      it 'successfully creates members' do
+        expect_to_create_members(count: 4)
         expect(result[:status]).to eq(:success)
       end
     end
   end
 
-  context 'when email belongs to an existing user' do
-    let(:params) { { email: project_user.email } }
+  context 'with multiple invites passed as strings' do
+    context 'with emails' do
+      let(:params) { { email: 'email@example.org,email2@example.org' } }
 
-    it 'adds an existing user to members' do
-      expect_to_create_members(count: 1)
-      expect(result[:status]).to eq(:success)
-      expect(project.users).to include project_user
+      it 'successfully creates members' do
+        expect_to_create_members(count: 2)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'with user_ids' do
+      let(:params) { { user_ids: "#{project_user.id},#{user_invited_by_id.id}" } }
+
+      it 'successfully creates members' do
+        expect_to_create_members(count: 2)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'with a mixture of emails and user_ids' do
+      let(:params) do
+        { user_ids: "#{project_user.id},#{user_invited_by_id.id}", email: 'email@example.org,email2@example.org' }
+      end
+
+      it 'successfully creates members' do
+        expect_to_create_members(count: 4)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+  end
+
+  context 'when invites formats are mixed' do
+    context 'when user_ids is an array and emails is a string' do
+      let(:params) do
+        { user_ids: [project_user.id, user_invited_by_id.id], email: 'email@example.org,email2@example.org' }
+      end
+
+      it 'successfully creates members' do
+        expect_to_create_members(count: 4)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'when user_ids is a string and emails is an array' do
+      let(:params) do
+        { user_ids: "#{project_user.id},#{user_invited_by_id.id}", email: %w[email@example.org email2@example.org] }
+      end
+
+      it 'successfully creates members' do
+        expect_to_create_members(count: 4)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+  end
+
+  context 'when invites are passed in different formats' do
+    context 'when emails are passed as an empty string' do
+      let(:params) { { email: '' } }
+
+      it 'returns an error' do
+        expect_not_to_create_members
+        expect(result[:message]).to eq('Invites cannot be blank')
+      end
+    end
+
+    context 'when user_ids are passed as an empty string' do
+      let(:params) { { user_ids: '' } }
+
+      it 'returns an error' do
+        expect_not_to_create_members
+        expect(result[:message]).to eq('Invites cannot be blank')
+      end
+    end
+
+    context 'when user_ids and emails are both passed as empty strings' do
+      let(:params) { { user_ids: '', email: '' } }
+
+      it 'returns an error' do
+        expect_not_to_create_members
+        expect(result[:message]).to eq('Invites cannot be blank')
+      end
+    end
+
+    context 'when user_id is passed as an integer' do
+      let(:params) { { user_ids: project_user.id } }
+
+      it 'successfully creates member' do
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'when invite params are not included' do
+      it 'returns an error' do
+        expect_not_to_create_members
+        expect(result[:message]).to eq('Invites cannot be blank')
+      end
+    end
+  end
+
+  context 'when email is not a valid email format' do
+    context 'with singular email' do
+      let(:params) { { email: '_bogus_' } }
+
+      it 'returns an error' do
+        expect_not_to_create_members
+        expect(result[:status]).to eq(:error)
+        expect(result[:message][params[:email]]).to eq("Invite email is invalid")
+      end
+
+      it_behaves_like 'does not record an onboarding progress action'
+    end
+
+    context 'with user_id and singular invalid email' do
+      let(:params) { { user_ids: project_user.id, email: '_bogus_' } }
+
+      it 'has partial success' do
+        expect_to_create_members(count: 1)
+        expect(project.users).to include project_user
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message][params[:email]]).to eq("Invite email is invalid")
+      end
+    end
+  end
+
+  context 'with duplicate invites' do
+    context 'with duplicate emails' do
+      let(:params) { { email: 'email@example.org,email@example.org' } }
+
+      it 'only creates one member per unique invite' do
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'with duplicate user ids' do
+      let(:params) { { user_ids: "#{project_user.id},#{project_user.id}" } }
+
+      it 'only creates one member per unique invite' do
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'with duplicate member by adding as user id and email' do
+      let(:params) { { user_ids: project_user.id, email: project_user.email } }
+
+      it 'only creates one member per unique invite' do
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+  end
+
+  context 'when observing invite limits' do
+    context 'with emails and in general' do
+      let_it_be(:emails) { Array(1..101).map { |n| "email#{n}@example.com" } }
+
+      context 'when over the allowed default limit of emails' do
+        let(:params) { { email: emails } }
+
+        it 'limits the number of emails to 100' do
+          expect_not_to_create_members
+          expect(result[:message]).to eq('Too many users specified (limit is 100)')
+        end
+      end
+
+      context 'when over the allowed custom limit of emails' do
+        let(:params) { { email: 'email@example.org,email2@example.org', limit: 1 } }
+
+        it 'limits the number of emails to the limit supplied' do
+          expect_not_to_create_members
+          expect(result[:message]).to eq('Too many users specified (limit is 1)')
+        end
+      end
+
+      context 'when limit allowed is disabled via limit param' do
+        let(:params) { { email: emails, limit: -1 } }
+
+        it 'does not limit number of emails' do
+          expect_to_create_members(count: 101)
+          expect(result[:status]).to eq(:success)
+        end
+      end
+    end
+
+    context 'with user_ids' do
+      let(:user_ids) { 1.upto(101).to_a.join(',') }
+      let(:params) { { user_ids: user_ids } }
+
+      it 'limits the number of users to 100' do
+        expect_not_to_create_members
+        expect(result[:message]).to eq('Too many users specified (limit is 100)')
+      end
+    end
+  end
+
+  context 'with an existing user' do
+    context 'with email' do
+      let(:params) { { email: project_user.email } }
+
+      it 'adds an existing user to members' do
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:success)
+        expect(project.users).to include project_user
+      end
+    end
+
+    context 'with user_id' do
+      let(:params) { { user_ids: project_user.id } }
+
+      it_behaves_like 'records an onboarding progress action', :user_added
+
+      it 'adds an existing user to members' do
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:success)
+        expect(project.users).to include project_user
+      end
+
+      context 'when assigning tasks to be done' do
+        let(:params) do
+          { user_ids: project_user.id, tasks_to_be_done: %w(ci code), tasks_project_id: project.id }
+        end
+
+        it 'creates 2 task issues', :aggregate_failures do
+          expect(TasksToBeDone::CreateWorker)
+            .to receive(:perform_async)
+                  .with(anything, user.id, [project_user.id])
+                  .once
+                  .and_call_original
+          expect { result }.to change { project.issues.count }.by(2)
+
+          expect(project.issues).to all have_attributes(project: project, author: user)
+        end
+      end
     end
   end
 
   context 'when access level is not valid' do
-    let(:params) { { email: project_user.email, access_level: -1 } }
+    context 'with email' do
+      let(:params) { { email: project_user.email, access_level: -1 } }
 
-    it 'returns an error' do
-      expect_not_to_create_members
-      expect(result[:message][project_user.email])
-        .to eq("Access level is not included in the list")
+      it 'returns an error' do
+        expect_not_to_create_members
+        expect(result[:message][project_user.email]).to eq("Access level is not included in the list")
+      end
+    end
+
+    context 'with user_id' do
+      let(:params) { { user_ids: user_invited_by_id.id, access_level: -1 } }
+
+      it 'returns an error' do
+        expect_not_to_create_members
+        expect(result[:message][user_invited_by_id.username]).to eq("Access level is not included in the list")
+      end
+    end
+
+    context 'with a mix of user_id and email' do
+      let(:params) { { user_ids: user_invited_by_id.id, email: project_user.email, access_level: -1 } }
+
+      it 'returns errors' do
+        expect_not_to_create_members
+        expect(result[:message][project_user.email]).to eq("Access level is not included in the list")
+        expect(result[:message][user_invited_by_id.username]).to eq("Access level is not included in the list")
+      end
     end
   end
 
-  context 'when invite already exists for an included email' do
-    let!(:invited_member) { create(:project_member, :invited, project: project) }
-    let(:params) { { email: "#{invited_member.invite_email},#{project_user.email}" } }
+  context 'when member already exists' do
+    context 'with email' do
+      let!(:invited_member) { create(:project_member, :invited, project: project) }
+      let(:params) { { email: "#{invited_member.invite_email},#{project_user.email}" } }
 
-    it 'adds new email and returns an error for the already invited email' do
-      expect_to_create_members(count: 1)
-      expect(result[:status]).to eq(:error)
-      expect(result[:message][invited_member.invite_email])
-        .to eq("The member's email address has already been taken")
-      expect(project.users).to include project_user
+      it 'adds new email and returns an error for the already invited email' do
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:error)
+        expect(result[:message][invited_member.invite_email])
+          .to eq("The member's email address has already been taken")
+        expect(project.users).to include project_user
+      end
     end
-  end
 
-  context 'when access request already exists for an included email' do
-    let!(:requested_member) { create(:project_member, :access_request, project: project) }
-    let(:params) { { email: "#{requested_member.user.email},#{project_user.email}" } }
+    context 'when email is already a member with a user on the project' do
+      let!(:existing_member) { create(:project_member, :guest, project: project) }
+      let(:params) { { email: "#{existing_member.user.email}" } }
 
-    it 'adds new email and returns an error for the already invited email' do
-      expect_to_create_members(count: 1)
-      expect(result[:status]).to eq(:error)
-      expect(result[:message][requested_member.user.email])
-        .to eq("User already exists in source")
-      expect(project.users).to include project_user
+      it 'returns an error for the already invited email' do
+        expect_not_to_create_members
+        expect(result[:message][existing_member.user.email]).to eq("User already exists in source")
+      end
+
+      context 'when email belongs to an existing user as a secondary email' do
+        let(:secondary_email) { create(:email, email: 'secondary@example.com', user: existing_member.user) }
+        let(:params) { { email: "#{secondary_email.email}" } }
+
+        it 'returns an error for the already invited email' do
+          expect_not_to_create_members
+          expect(result[:message][secondary_email.email]).to eq("User already exists in source")
+        end
+      end
     end
-  end
 
-  context 'when email is already a member on the project' do
-    let!(:existing_member) { create(:project_member, :guest, project: project) }
-    let(:params) { { email: "#{existing_member.user.email},#{project_user.email}" } }
+    context 'with user_id that already exists' do
+      let!(:existing_member) { create(:project_member, project: project, user: project_user) }
+      let(:params) { { user_ids: existing_member.user_id } }
 
-    it 'adds new email and returns an error for the already invited email' do
-      expect_to_create_members(count: 1)
-      expect(result[:status]).to eq(:error)
-      expect(result[:message][existing_member.user.email])
-        .to eq("User already exists in source")
-      expect(project.users).to include project_user
+      it 'does not add the member again and is successful' do
+        expect_to_create_members(count: 0)
+        expect(project.users).to include project_user
+      end
+    end
+
+    context 'with user_id that already exists with a lower access_level' do
+      let!(:existing_member) { create(:project_member, :developer, project: project, user: project_user) }
+      let(:params) { { user_ids: existing_member.user_id, access_level: ProjectMember::MAINTAINER } }
+
+      it 'does not add the member again and updates the access_level' do
+        expect_to_create_members(count: 0)
+        expect(project.users).to include project_user
+        expect(existing_member.reset.access_level).to eq ProjectMember::MAINTAINER
+      end
+    end
+
+    context 'with user_id that already exists with a higher access_level' do
+      let!(:existing_member) { create(:project_member, :developer, project: project, user: project_user) }
+      let(:params) { { user_ids: existing_member.user_id, access_level: ProjectMember::GUEST } }
+
+      it 'does not add the member again and updates the access_level' do
+        expect_to_create_members(count: 0)
+        expect(project.users).to include project_user
+        expect(existing_member.reset.access_level).to eq ProjectMember::GUEST
+      end
+    end
+
+    context 'with user_id that already exists in a parent group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_member) { create(:group_member, :developer, source: group, user: project_user) }
+      let_it_be(:project, reload: true) { create(:project, group: group) }
+      let_it_be(:user) { project.creator }
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      context 'when access_level is lower than inheriting member' do
+        let(:params) { { user_ids: group_member.user_id, access_level: ProjectMember::GUEST }}
+
+        it 'does not add the member and returns an error' do
+          msg = "Access level should be greater than or equal " \
+                "to Developer inherited membership from group #{group.name}"
+
+          expect_not_to_create_members
+          expect(result[:message][project_user.username]).to eq msg
+        end
+      end
+
+      context 'when access_level is the same as the inheriting member' do
+        let(:params) { { user_ids: group_member.user_id, access_level: ProjectMember::DEVELOPER }}
+
+        it 'adds the member with correct access_level' do
+          expect_to_create_members(count: 1)
+          expect(project.users).to include project_user
+          expect(project.project_members.last.access_level).to eq ProjectMember::DEVELOPER
+        end
+      end
+
+      context 'when access_level is greater than the inheriting member' do
+        let(:params) { { user_ids: group_member.user_id, access_level: ProjectMember::MAINTAINER }}
+
+        it 'adds the member with correct access_level' do
+          expect_to_create_members(count: 1)
+          expect(project.users).to include project_user
+          expect(project.project_members.last.access_level).to eq ProjectMember::MAINTAINER
+        end
+      end
     end
   end
 

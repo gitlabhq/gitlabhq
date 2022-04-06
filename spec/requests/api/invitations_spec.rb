@@ -240,7 +240,7 @@ RSpec.describe API::Invitations do
              params: { email: '', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['message']).to eq('Emails cannot be blank')
+        expect(json_response['message']).to eq('Invites cannot be blank')
       end
 
       it 'returns 404 when the email list is not a valid format' do

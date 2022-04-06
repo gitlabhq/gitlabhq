@@ -2334,13 +2334,13 @@ msgstr ""
 msgid "AddContextCommits|Add/remove"
 msgstr ""
 
-msgid "AddMember|Emails cannot be blank"
-msgstr ""
-
 msgid "AddMember|Invite email is invalid"
 msgstr ""
 
 msgid "AddMember|Invite limit of %{daily_invites} per day exceeded"
+msgstr ""
+
+msgid "AddMember|Invites cannot be blank"
 msgstr ""
 
 msgid "AddMember|No invite source provided."

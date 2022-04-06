@@ -11716,6 +11716,7 @@ CREATE TABLE batched_background_migrations (
     pause_ms integer DEFAULT 100 NOT NULL,
     max_batch_size integer,
     started_at timestamp with time zone,
+    on_hold_until timestamp with time zone,
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),
     CONSTRAINT check_batch_size_in_range CHECK ((batch_size >= sub_batch_size)),
@@ -11725,6 +11726,8 @@ CREATE TABLE batched_background_migrations (
     CONSTRAINT check_positive_min_value CHECK ((min_value > 0)),
     CONSTRAINT check_positive_sub_batch_size CHECK ((sub_batch_size > 0))
 );
+
+COMMENT ON COLUMN batched_background_migrations.on_hold_until IS 'execution of this migration is on hold until this time';
 
 CREATE SEQUENCE batched_background_migrations_id_seq
     START WITH 1

@@ -32,7 +32,8 @@ RSpec.describe BackfillWorkItemTypeIdOnIssues, :migration do
               interval: interval,
               batch_size: described_class::BATCH_SIZE,
               max_batch_size: described_class::MAX_BATCH_SIZE,
-              sub_batch_size: described_class::SUB_BATCH_SIZE
+              sub_batch_size: described_class::SUB_BATCH_SIZE,
+              batch_class_name: described_class::BATCH_CLASS_NAME
             )
           end
         end

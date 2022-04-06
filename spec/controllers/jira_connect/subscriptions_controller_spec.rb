@@ -75,18 +75,6 @@ RSpec.describe JiraConnect::SubscriptionsController do
             expect(json_response).to include('login_path' => nil)
           end
         end
-
-        context 'with context qsh' do
-          # The JSON endpoint will be requested by frontend using a JWT that Atlassian provides via Javascript.
-          # This JWT will likely use a context-qsh because Atlassian don't know for which endpoint it will be used.
-          # Read more about context JWT here: https://developer.atlassian.com/cloud/jira/platform/understanding-jwt-for-connect-apps/
-
-          let(:qsh) { 'context-qsh' }
-
-          specify do
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
       end
     end
   end
@@ -114,7 +102,7 @@ RSpec.describe JiraConnect::SubscriptionsController do
     end
 
     context 'with valid JWT' do
-      let(:claims) { { iss: installation.client_key, sub: 1234, qsh: 'context-qsh' } }
+      let(:claims) { { iss: installation.client_key, sub: 1234 } }
       let(:jwt) { Atlassian::Jwt.encode(claims, installation.shared_secret) }
       let(:jira_user) { { 'groups' => { 'items' => [{ 'name' => jira_group_name }] } } }
       let(:jira_group_name) { 'site-admins' }
@@ -170,7 +158,7 @@ RSpec.describe JiraConnect::SubscriptionsController do
         .stub_request(:get, "#{installation.base_url}/rest/api/3/user?accountId=1234&expand=groups")
         .to_return(body: jira_user.to_json, status: 200, headers: { 'Content-Type' => 'application/json' })
 
-      delete :destroy, params: { jwt: jwt, id: subscription.id, format: :json }
+      delete :destroy, params: { jwt: jwt, id: subscription.id }
     end
 
     context 'without JWT' do
@@ -182,7 +170,7 @@ RSpec.describe JiraConnect::SubscriptionsController do
     end
 
     context 'with valid JWT' do
-      let(:claims) { { iss: installation.client_key, sub: 1234, qsh: 'context-qsh' } }
+      let(:claims) { { iss: installation.client_key, sub: 1234 } }
       let(:jwt) { Atlassian::Jwt.encode(claims, installation.shared_secret) }
 
       it 'deletes the subscription' do

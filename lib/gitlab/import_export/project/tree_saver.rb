@@ -4,6 +4,8 @@ module Gitlab
   module ImportExport
     module Project
       class TreeSaver
+        include DurationMeasuring
+
         attr_reader :full_path
 
         def initialize(project:, current_user:, shared:, params: {}, logger: Gitlab::Import::Logger)
@@ -15,9 +17,11 @@ module Gitlab
         end
 
         def save
-          stream_export
+          with_duration_measuring do
+            stream_export
 
-          true
+            true
+          end
         rescue StandardError => e
           @shared.error(e)
           false

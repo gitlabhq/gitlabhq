@@ -4,6 +4,7 @@ module Gitlab
   module ImportExport
     class LfsSaver
       include Gitlab::ImportExport::CommandLineUtil
+      include DurationMeasuring
 
       attr_accessor :lfs_json, :project, :shared
 
@@ -16,17 +17,19 @@ module Gitlab
       end
 
       def save
-        project.lfs_objects.find_in_batches(batch_size: BATCH_SIZE) do |batch|
-          batch.each do |lfs_object|
-            save_lfs_object(lfs_object)
+        with_duration_measuring do
+          project.lfs_objects.find_in_batches(batch_size: BATCH_SIZE) do |batch|
+            batch.each do |lfs_object|
+              save_lfs_object(lfs_object)
+            end
+
+            append_lfs_json_for_batch(batch)
           end
 
-          append_lfs_json_for_batch(batch)
+          write_lfs_json
+
+          true
         end
-
-        write_lfs_json
-
-        true
       rescue StandardError => e
         shared.error(e)
 

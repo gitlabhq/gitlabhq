@@ -131,7 +131,7 @@ export default {
     >
       <div class="folder-toggle-wrap gl-mr-2 d-flex align-items-center">
         <item-caret :is-group-open="group.isOpen" />
-        <item-type-icon :item-type="group.type" :is-group-open="group.isOpen" />
+        <item-type-icon :item-type="group.type" />
       </div>
       <gl-loading-icon
         v-if="group.isChildrenLoading"
