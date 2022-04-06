@@ -1,0 +1,14 @@
+query getLatestPipelineStatus($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      detailedStatus {
+        id
+        detailsPath
+        icon
+        group
+      }
+    }
+  }
+}

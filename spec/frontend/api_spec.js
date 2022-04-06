@@ -1671,6 +1671,18 @@ describe('Api', () => {
     });
   });
 
+  describe('dependency proxy cache', () => {
+    it('schedules the cache list for deletion', async () => {
+      const groupId = 1;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/dependency_proxy/cache`;
+
+      mock.onDelete(expectedUrl).reply(httpStatus.ACCEPTED);
+      const { status } = await Api.deleteDependencyProxyCacheList(groupId, {});
+
+      expect(status).toBe(httpStatus.ACCEPTED);
+    });
+  });
+
   describe('Feature Flag User List', () => {
     let expectedUrl;
     let projectId;

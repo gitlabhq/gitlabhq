@@ -43,6 +43,18 @@ Clicking an individual job shows you its job log, and allows you to:
 - Retry the job.
 - Erase the job log.
 
+### View all jobs in a project
+
+> - An improved view was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293862) in GitLab 14.10, [with a flag](../../administration/feature_flags.md) named `jobs_table_vue`. Disabled by default.
+> - The job status filter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82539) in GitLab 14.10, [with a flag](../../administration/feature_flags.md) named `jobs_table_vue_search`. Disabled by default.
+
+To view the full list of jobs that ran in a project:
+
+1. On the top bar, select **Menu > Projects** and find the project.
+1. On the left sidebar, select **CI/CD > Jobs**.
+
+You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline).
+
 ## See why a job failed
 
 When a pipeline fails or is allowed to fail, there are several places where you
@@ -63,9 +75,9 @@ You can also see the reason it failed on the Job detail page.
 The order of jobs in a pipeline depends on the type of pipeline graph.
 
 - For [full pipeline graphs](../pipelines/index.md#view-full-pipeline-graph), jobs are sorted by name.
-- For [pipeline mini graphs](../pipelines/index.md#pipeline-mini-graphs), jobs are sorted by severity and then by name.
+- For [pipeline mini graphs](../pipelines/index.md#pipeline-mini-graphs), jobs are sorted by status, and then by name.
 
-The order of severity is:
+The job status order is:
 
 - failed
 - warning

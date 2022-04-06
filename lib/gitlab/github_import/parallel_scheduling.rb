@@ -209,7 +209,11 @@ module Gitlab
       # Default batch settings for parallel import (can be redefined in Importer classes)
       # Example: { size: 100, delay: 1.minute }
       def parallel_import_batch
-        {}
+        if Feature.enabled?(:distribute_github_parallel_import, default_enabled: :yaml)
+          { size: 1000, delay: 1.minute }
+        else
+          {}
+        end
       end
 
       def abort_on_failure

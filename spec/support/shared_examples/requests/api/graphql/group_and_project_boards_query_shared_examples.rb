@@ -54,11 +54,13 @@ RSpec.shared_examples 'group and project boards query' do
       end
 
       context 'when using default sorting' do
+        # rubocop:disable RSpec/VariableName
         let!(:board_B) { create(:board, resource_parent: board_parent, name: 'B') }
         let!(:board_C) { create(:board, resource_parent: board_parent, name: 'C') }
         let!(:board_a) { create(:board, resource_parent: board_parent, name: 'a') }
         let!(:board_A) { create(:board, resource_parent: board_parent, name: 'A') }
         let(:boards)   { [board_a, board_A, board_B, board_C] }
+        # rubocop:enable RSpec/VariableName
 
         context 'when ascending' do
           it_behaves_like 'sorted paginated query' do

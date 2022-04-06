@@ -166,7 +166,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(described_class.usage_activity_by_stage_create({})).to include(
         deploy_keys: 2,
         keys: 2,
-        merge_requests: 2,
         projects_with_disable_overriding_approvers_per_merge_request: 2,
         projects_without_disable_overriding_approvers_per_merge_request: 6,
         remote_mirrors: 2,
@@ -175,7 +174,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(described_class.usage_activity_by_stage_create(described_class.monthly_time_range_db_params)).to include(
         deploy_keys: 1,
         keys: 1,
-        merge_requests: 1,
         projects_with_disable_overriding_approvers_per_merge_request: 1,
         projects_without_disable_overriding_approvers_per_merge_request: 3,
         remote_mirrors: 1,

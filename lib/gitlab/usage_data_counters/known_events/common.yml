@@ -339,22 +339,18 @@
   redis_slot: secure
   category: secure
   aggregation: weekly
-  feature_flag: users_expanding_widgets_usage_data
 - name: users_expanding_testing_code_quality_report
   redis_slot: testing
   category: testing
   aggregation: weekly
-  feature_flag: users_expanding_widgets_usage_data
 - name: users_expanding_testing_accessibility_report
   redis_slot: testing
   category: testing
   aggregation: weekly
-  feature_flag: users_expanding_widgets_usage_data
 - name: users_expanding_testing_license_compliance_report
   redis_slot: testing
   category: testing
   aggregation: weekly
-  feature_flag: users_expanding_widgets_usage_data
 - name: users_visiting_testing_license_compliance_full_report
   redis_slot: testing
   category: testing

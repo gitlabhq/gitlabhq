@@ -1637,10 +1637,6 @@
     - <<: *if-merge-request
       changes: *danger-patterns
 
-.review:rules:reviewers-recommender:
-  rules:
-    - <<: *if-merge-request
-
 ###############
 # Setup rules #
 ###############

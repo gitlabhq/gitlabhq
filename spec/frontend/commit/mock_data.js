@@ -141,3 +141,23 @@ export const mockPipelineStagesQueryResponse = {
     },
   },
 };
+
+export const mockPipelineStatusResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/20',
+      pipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/320',
+        detailedStatus: {
+          id: 'pending-320-320',
+          detailsPath: '/root/ci-project/-/pipelines/320',
+          icon: 'status_pending',
+          group: 'pending',
+          __typename: 'DetailedStatus',
+        },
+        __typename: 'Pipeline',
+      },
+      __typename: 'Project',
+    },
+  },
+};

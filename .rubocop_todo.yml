@@ -194,19 +194,6 @@ RSpec/ReturnFromStub:
 RSpec/ScatteredLet:
   Enabled: false
 
-# Offense count: 24
-# Configuration parameters: EnforcedStyle, IgnoredPatterns.
-# SupportedStyles: snake_case, camelCase
-RSpec/VariableName:
-  Exclude:
-    - 'spec/features/projects/import_export/import_file_spec.rb'
-    - 'spec/features/task_lists_spec.rb'
-    - 'spec/initializers/mail_encoding_patch_spec.rb'
-    - 'spec/models/board_spec.rb'
-    - 'spec/support/shared_contexts/url_shared_context.rb'
-    - 'spec/support/shared_examples/requests/api/graphql/group_and_project_boards_query_shared_examples.rb'
-    - 'spec/support/shared_examples/services/boards/boards_list_service_shared_examples.rb'
-
 # Offense count: 26
 # Cop supports --auto-correct.
 # Configuration parameters: Include.
@@ -342,13 +329,6 @@ Style/AccessorGrouping:
 # SupportedStyles: percent_q, bare_percent
 Style/BarePercentLiterals:
   Enabled: false
-
-# Offense count: 6
-# Cop supports --auto-correct.
-Style/BisectedAttrAccessor:
-  Exclude:
-    - 'lib/system_check/base_check.rb'
-    - 'qa/qa/resource/api_fabricator.rb'
 
 # Offense count: 42
 # Cop supports --auto-correct.

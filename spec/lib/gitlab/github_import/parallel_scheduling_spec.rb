@@ -22,10 +22,6 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
       def collection_method
         :issues
       end
-
-      def parallel_import_batch
-        { size: 10, delay: 1.minute }
-      end
     end
   end
 
@@ -261,7 +257,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
     let(:repr_class) { double(:representation) }
     let(:worker_class) { double(:worker) }
     let(:object) { double(:object) }
-    let(:batch_size) { 200 }
+    let(:batch_size) { 1000 }
     let(:batch_delay) { 1.minute }
 
     before do
@@ -281,7 +277,6 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
 
     context 'with multiple objects' do
       before do
-        allow(importer).to receive(:parallel_import_batch) { { size: batch_size, delay: batch_delay } }
         expect(importer).to receive(:each_object_to_import).and_yield(object).and_yield(object).and_yield(object)
       end
 
@@ -293,6 +288,25 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         ], batch_size: batch_size, batch_delay: batch_delay)
 
         importer.parallel_import
+      end
+    end
+
+    context 'when distribute_github_parallel_import feature flag is disabled' do
+      before do
+        stub_feature_flags(distribute_github_parallel_import: false)
+      end
+
+      it 'imports data in parallel' do
+        expect(importer)
+          .to receive(:each_object_to_import)
+          .and_yield(object)
+
+        expect(worker_class)
+          .to receive(:perform_async)
+          .with(project.id, { title: 'Foo' }, an_instance_of(String))
+
+        expect(importer.parallel_import)
+          .to be_an_instance_of(Gitlab::JobWaiter)
       end
     end
   end

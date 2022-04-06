@@ -22,7 +22,7 @@ RSpec.describe 'Task Lists', :js do
     MARKDOWN
   end
 
-  let(:singleIncompleteMarkdown) do
+  let(:single_incomplete_markdown) do
     <<-MARKDOWN.strip_heredoc
     This is a task list:
 
@@ -30,7 +30,7 @@ RSpec.describe 'Task Lists', :js do
     MARKDOWN
   end
 
-  let(:singleCompleteMarkdown) do
+  let(:single_complete_markdown) do
     <<-MARKDOWN.strip_heredoc
     This is a task list:
 
@@ -94,7 +94,7 @@ RSpec.describe 'Task Lists', :js do
     end
 
     describe 'single incomplete task' do
-      let!(:issue) { create(:issue, description: singleIncompleteMarkdown, author: user, project: project) }
+      let!(:issue) { create(:issue, description: single_incomplete_markdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
@@ -113,7 +113,7 @@ RSpec.describe 'Task Lists', :js do
     end
 
     describe 'single complete task' do
-      let!(:issue) { create(:issue, description: singleCompleteMarkdown, author: user, project: project) }
+      let!(:issue) { create(:issue, description: single_complete_markdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
@@ -171,7 +171,7 @@ RSpec.describe 'Task Lists', :js do
 
     describe 'single incomplete task' do
       let!(:note) do
-        create(:note, note: singleIncompleteMarkdown, noteable: issue,
+        create(:note, note: single_incomplete_markdown, noteable: issue,
                       project: project, author: user)
       end
 
@@ -186,7 +186,7 @@ RSpec.describe 'Task Lists', :js do
 
     describe 'single complete task' do
       let!(:note) do
-        create(:note, note: singleCompleteMarkdown, noteable: issue,
+        create(:note, note: single_complete_markdown, noteable: issue,
                       project: project, author: user)
       end
 
@@ -264,7 +264,7 @@ RSpec.describe 'Task Lists', :js do
     end
 
     describe 'single incomplete task' do
-      let!(:merge) { create(:merge_request, :simple, description: singleIncompleteMarkdown, author: user, source_project: project) }
+      let!(:merge) { create(:merge_request, :simple, description: single_incomplete_markdown, author: user, source_project: project) }
 
       it 'renders for description' do
         visit_merge_request(project, merge)
@@ -283,7 +283,7 @@ RSpec.describe 'Task Lists', :js do
     end
 
     describe 'single complete task' do
-      let!(:merge) { create(:merge_request, :simple, description: singleCompleteMarkdown, author: user, source_project: project) }
+      let!(:merge) { create(:merge_request, :simple, description: single_complete_markdown, author: user, source_project: project) }
 
       it 'renders for description' do
         visit_merge_request(project, merge)

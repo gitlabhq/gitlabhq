@@ -536,7 +536,7 @@ RSpec.describe Project, factory_default: :keep do
         project = build(:project)
 
         aggregate_failures do
-          urls_with_CRLF.each do |url|
+          urls_with_crlf.each do |url|
             project.import_url = url
 
             expect(project).not_to be_valid
@@ -549,7 +549,7 @@ RSpec.describe Project, factory_default: :keep do
         project = build(:project)
 
         aggregate_failures do
-          valid_urls_with_CRLF.each do |url|
+          valid_urls_with_crlf.each do |url|
             project.import_url = url
 
             expect(project).to be_valid

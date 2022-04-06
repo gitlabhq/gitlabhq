@@ -2,6 +2,7 @@ import { fetchCommitMergeRequests } from '~/commit_merge_requests';
 import { initCommitPipelineMiniGraph } from './init_commit_pipeline_mini_graph';
 import { initDetailsButton } from './init_details_button';
 import { loadBranches } from './load_branches';
+import initCommitPipelineStatus from './init_commit_pipeline_status';
 
 export const initCommitBoxInfo = () => {
   // Display commit related branches
@@ -14,4 +15,6 @@ export const initCommitBoxInfo = () => {
   initCommitPipelineMiniGraph();
 
   initDetailsButton();
+
+  initCommitPipelineStatus();
 };

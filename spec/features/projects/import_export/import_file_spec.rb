@@ -24,9 +24,9 @@ RSpec.describe 'Import/Export - project import integration test', :js do
   context 'when selecting the namespace' do
     let(:user) { create(:admin) }
     let!(:namespace) { user.namespace }
-    let(:randomHex) { SecureRandom.hex }
-    let(:project_name) { 'Test Project Name' + randomHex }
-    let(:project_path) { 'test-project-name' + randomHex }
+    let(:random_hex) { SecureRandom.hex }
+    let(:project_name) { 'Test Project Name' + random_hex }
+    let(:project_path) { 'test-project-name' + random_hex }
 
     it 'user imports an exported project successfully', :sidekiq_might_not_need_inline do
       visit new_project_path

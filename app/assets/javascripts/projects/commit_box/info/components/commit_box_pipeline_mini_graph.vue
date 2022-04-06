@@ -10,7 +10,7 @@ import {
 import { formatStages } from '../utils';
 import getLinkedPipelinesQuery from '../graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from '../graphql/queries/get_pipeline_stages.query.graphql';
-import { PIPELINE_STAGES_POLL_INTERVAL } from '../constants';
+import { COMMIT_BOX_POLL_INTERVAL } from '../constants';
 
 export default {
   i18n: {
@@ -65,7 +65,7 @@ export default {
         return getQueryHeaders(this.graphqlResourceEtag);
       },
       query: getPipelineStagesQuery,
-      pollInterval: PIPELINE_STAGES_POLL_INTERVAL,
+      pollInterval: COMMIT_BOX_POLL_INTERVAL,
       variables() {
         return {
           fullPath: this.fullPath,

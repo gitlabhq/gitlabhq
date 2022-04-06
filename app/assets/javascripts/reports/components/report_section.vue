@@ -172,7 +172,7 @@ export default {
   },
   methods: {
     toggleCollapsed() {
-      if (this.trackAction && this.glFeatures.usersExpandingWidgetsUsageData) {
+      if (this.trackAction) {
         api.trackRedisHllUserEvent(this.trackAction);
       }
 

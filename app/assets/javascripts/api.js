@@ -93,6 +93,7 @@ const Api = {
   notificationSettingsPath: '/api/:version/notification_settings',
   deployKeysPath: '/api/:version/deploy_keys',
   secureFilesPath: '/api/:version/projects/:project_id/secure_files',
+  dependencyProxyPath: '/api/:version/groups/:id/dependency_proxy/cache',
 
   group(groupId, callback = () => {}) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -998,6 +999,12 @@ const Api = {
     const result = await axios.get(url);
 
     return result;
+  },
+
+  deleteDependencyProxyCacheList(groupId, options = {}) {
+    const url = Api.buildUrl(this.dependencyProxyPath).replace(':id', groupId);
+
+    return axios.delete(url, { params: { ...options } });
   },
 };
 
