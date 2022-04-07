@@ -36,6 +36,8 @@ You can use group access tokens:
   - Consider [disabling group access tokens](#enable-or-disable-group-access-token-creation) to
     lower potential abuse.
 
+You cannot use group access tokens to create other access tokens.
+
 Group access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
 

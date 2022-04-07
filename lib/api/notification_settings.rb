@@ -5,7 +5,7 @@ module API
   class NotificationSettings < ::API::Base
     before { authenticate! }
 
-    feature_category :users
+    feature_category :team_planning
 
     helpers ::API::Helpers::MembersHelpers
 

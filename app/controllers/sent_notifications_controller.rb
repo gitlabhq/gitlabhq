@@ -3,7 +3,7 @@
 class SentNotificationsController < ApplicationController
   skip_before_action :authenticate_user!
 
-  feature_category :users
+  feature_category :team_planning
 
   def unsubscribe
     @sent_notification = SentNotification.for(params[:id])
