@@ -1,6 +1,7 @@
 <script>
 import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { isEqual } from 'lodash';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
   name: 'TitleArea',
@@ -53,6 +54,7 @@ export default {
       }
     },
   },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
@@ -64,7 +66,7 @@ export default {
           <gl-avatar
             v-if="avatar"
             :src="avatar"
-            shape="rect"
+            :shape="$options.AVATAR_SHAPE_OPTION_RECT"
             class="gl-align-self-center gl-mr-4"
           />
 

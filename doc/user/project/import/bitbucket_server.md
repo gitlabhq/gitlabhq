@@ -24,11 +24,10 @@ created as private in GitLab as well.
 
 ## Import your Bitbucket repositories
 
-Prerequisites:
+Prerequisite:
 
 - An administrator must have enabled the **Bitbucket Server** in
   **Admin > Settings > General > Visibility and access controls > Import sources**.
-- Review the importer's [limitations](#limitations).
 
 To import your Bitbucket repositories:
 
@@ -41,23 +40,26 @@ To import your Bitbucket repositories:
 1. Select the projects to import, or import all projects. You can filter projects by name and select
    the namespace for which to import each project.
 
-## Limitations
+### Items that are not imported
 
-- GitLab doesn't allow comments on arbitrary lines of code. Any out-of-bounds Bitbucket comments are
-  inserted as comments in the merge request.
-- Bitbucket Server allows multiple threading levels. The importer collapses this into one thread and
-  quotes part of the original comment.
-- Declined pull requests have unreachable commits. This prevents the importer from generating a
-  proper diff. These pull requests show up as empty changes.
-- Project filtering doesn't support fuzzy search. Only starts with or full match strings are
-  supported.
-
-The following aren't imported:
+The following items aren't imported:
 
 - Pull request approvals
 - Attachments in Markdown
 - Task lists
 - Emoji reactions
+
+### Items that are imported but changed
+
+The following items are changed when they are imported:
+
+- GitLab doesn't allow comments on arbitrary lines of code. Any out-of-bounds Bitbucket comments are
+  inserted as comments in the merge request.
+- Multiple threading levels are collapsed into one thread and
+  quotes are added as part of the original comment.
+- Declined pull requests have unreachable commits. These pull requests show up as empty changes.
+- Project filtering doesn't support fuzzy search. Only **starts with** or **full match** strings are
+  supported.
 
 ## User assignment
 

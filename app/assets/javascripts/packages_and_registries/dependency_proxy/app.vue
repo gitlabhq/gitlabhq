@@ -55,6 +55,7 @@ export default {
     deleteCacheAlertMessageSuccess: s__(
       'DependencyProxy|All items in the cache are scheduled for removal.',
     ),
+    clearCache: s__('DependencyProxy|Clear cache'),
   },
   confirmClearCacheModal: 'confirm-clear-cache-modal',
   modalButtons: {

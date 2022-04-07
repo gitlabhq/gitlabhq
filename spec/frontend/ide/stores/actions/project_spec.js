@@ -146,22 +146,16 @@ describe('IDE store project actions', () => {
       });
     });
 
-    it('calls the service', (done) => {
-      store
-        .dispatch('refreshLastCommitData', {
-          projectId: store.state.currentProjectId,
-          branchId: store.state.currentBranchId,
-        })
-        .then(() => {
-          expect(service.getBranchData).toHaveBeenCalledWith('abc/def', 'main');
-
-          done();
-        })
-        .catch(done.fail);
+    it('calls the service', async () => {
+      await store.dispatch('refreshLastCommitData', {
+        projectId: store.state.currentProjectId,
+        branchId: store.state.currentBranchId,
+      });
+      expect(service.getBranchData).toHaveBeenCalledWith('abc/def', 'main');
     });
 
-    it('commits getBranchData', (done) => {
-      testAction(
+    it('commits getBranchData', () => {
+      return testAction(
         refreshLastCommitData,
         {
           projectId: store.state.currentProjectId,
@@ -181,14 +175,13 @@ describe('IDE store project actions', () => {
         ],
         // action
         [],
-        done,
       );
     });
   });
 
   describe('showBranchNotFoundError', () => {
-    it('dispatches setErrorMessage', (done) => {
-      testAction(
+    it('dispatches setErrorMessage', () => {
+      return testAction(
         showBranchNotFoundError,
         'main',
         null,
@@ -204,7 +197,6 @@ describe('IDE store project actions', () => {
             },
           },
         ],
-        done,
       );
     });
   });
@@ -216,8 +208,8 @@ describe('IDE store project actions', () => {
       jest.spyOn(api, 'createBranch').mockResolvedValue();
     });
 
-    it('calls API', (done) => {
-      createNewBranchFromDefault(
+    it('calls API', async () => {
+      await createNewBranchFromDefault(
         {
           state: {
             currentProjectId: 'project-path',
@@ -230,21 +222,17 @@ describe('IDE store project actions', () => {
           dispatch() {},
         },
         'new-branch-name',
-      )
-        .then(() => {
-          expect(api.createBranch).toHaveBeenCalledWith('project-path', {
-            ref: 'main',
-            branch: 'new-branch-name',
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      );
+      expect(api.createBranch).toHaveBeenCalledWith('project-path', {
+        ref: 'main',
+        branch: 'new-branch-name',
+      });
     });
 
-    it('clears error message', (done) => {
+    it('clears error message', async () => {
       const dispatchSpy = jest.fn().mockName('dispatch');
 
-      createNewBranchFromDefault(
+      await createNewBranchFromDefault(
         {
           state: {
             currentProjectId: 'project-path',
@@ -257,16 +245,12 @@ describe('IDE store project actions', () => {
           dispatch: dispatchSpy,
         },
         'new-branch-name',
-      )
-        .then(() => {
-          expect(dispatchSpy).toHaveBeenCalledWith('setErrorMessage', null);
-        })
-        .then(done)
-        .catch(done.fail);
+      );
+      expect(dispatchSpy).toHaveBeenCalledWith('setErrorMessage', null);
     });
 
-    it('reloads window', (done) => {
-      createNewBranchFromDefault(
+    it('reloads window', async () => {
+      await createNewBranchFromDefault(
         {
           state: {
             currentProjectId: 'project-path',
@@ -279,18 +263,14 @@ describe('IDE store project actions', () => {
           dispatch() {},
         },
         'new-branch-name',
-      )
-        .then(() => {
-          expect(window.location.reload).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      );
+      expect(window.location.reload).toHaveBeenCalled();
     });
   });
 
   describe('loadEmptyBranch', () => {
-    it('creates a blank tree and sets loading state to false', (done) => {
-      testAction(
+    it('creates a blank tree and sets loading state to false', () => {
+      return testAction(
         loadEmptyBranch,
         { projectId: TEST_PROJECT_ID, branchId: 'main' },
         store.state,
@@ -302,20 +282,18 @@ describe('IDE store project actions', () => {
           },
         ],
         expect.any(Object),
-        done,
       );
     });
 
-    it('does nothing, if tree already exists', (done) => {
+    it('does nothing, if tree already exists', () => {
       const trees = { [`${TEST_PROJECT_ID}/main`]: [] };
 
-      testAction(
+      return testAction(
         loadEmptyBranch,
         { projectId: TEST_PROJECT_ID, branchId: 'main' },
         { trees },
         [],
         [],
-        done,
       );
     });
   });
@@ -372,56 +350,48 @@ describe('IDE store project actions', () => {
     const branchId = '123-lorem';
     const ref = 'abcd2322';
 
-    it('when empty repo, loads empty branch', (done) => {
+    it('when empty repo, loads empty branch', () => {
       const mockGetters = { emptyRepo: true };
 
-      testAction(
+      return testAction(
         loadBranch,
         { projectId, branchId },
         { ...store.state, ...mockGetters },
         [],
         [{ type: 'loadEmptyBranch', payload: { projectId, branchId } }],
-        done,
       );
     });
 
-    it('when branch already exists, does nothing', (done) => {
+    it('when branch already exists, does nothing', () => {
       store.state.projects[projectId].branches[branchId] = {};
 
-      testAction(loadBranch, { projectId, branchId }, store.state, [], [], done);
+      return testAction(loadBranch, { projectId, branchId }, store.state, [], []);
     });
 
-    it('fetches branch data', (done) => {
+    it('fetches branch data', async () => {
       const mockGetters = { findBranch: () => ({ commit: { id: ref } }) };
       jest.spyOn(store, 'dispatch').mockResolvedValue();
 
-      loadBranch(
+      await loadBranch(
         { getters: mockGetters, state: store.state, dispatch: store.dispatch },
         { projectId, branchId },
-      )
-        .then(() => {
-          expect(store.dispatch.mock.calls).toEqual([
-            ['getBranchData', { projectId, branchId }],
-            ['getMergeRequestsForBranch', { projectId, branchId }],
-            ['getFiles', { projectId, branchId, ref }],
-          ]);
-        })
-        .then(done)
-        .catch(done.fail);
+      );
+      expect(store.dispatch.mock.calls).toEqual([
+        ['getBranchData', { projectId, branchId }],
+        ['getMergeRequestsForBranch', { projectId, branchId }],
+        ['getFiles', { projectId, branchId, ref }],
+      ]);
     });
 
-    it('shows an error if branch can not be fetched', (done) => {
+    it('shows an error if branch can not be fetched', async () => {
       jest.spyOn(store, 'dispatch').mockReturnValue(Promise.reject());
 
-      loadBranch(store, { projectId, branchId })
-        .then(done.fail)
-        .catch(() => {
-          expect(store.dispatch.mock.calls).toEqual([
-            ['getBranchData', { projectId, branchId }],
-            ['showBranchNotFoundError', branchId],
-          ]);
-          done();
-        });
+      await expect(loadBranch(store, { projectId, branchId })).rejects.toBeUndefined();
+
+      expect(store.dispatch.mock.calls).toEqual([
+        ['getBranchData', { projectId, branchId }],
+        ['showBranchNotFoundError', branchId],
+      ]);
     });
   });
 
@@ -449,17 +419,13 @@ describe('IDE store project actions', () => {
         jest.spyOn(store, 'dispatch').mockResolvedValue();
       });
 
-      it('dispatches branch actions', (done) => {
-        openBranch(store, branch)
-          .then(() => {
-            expect(store.dispatch.mock.calls).toEqual([
-              ['setCurrentBranchId', branchId],
-              ['loadBranch', { projectId, branchId }],
-              ['loadFile', { basePath: undefined }],
-            ]);
-          })
-          .then(done)
-          .catch(done.fail);
+      it('dispatches branch actions', async () => {
+        await openBranch(store, branch);
+        expect(store.dispatch.mock.calls).toEqual([
+          ['setCurrentBranchId', branchId],
+          ['loadBranch', { projectId, branchId }],
+          ['loadFile', { basePath: undefined }],
+        ]);
       });
     });
 
@@ -468,22 +434,18 @@ describe('IDE store project actions', () => {
         jest.spyOn(store, 'dispatch').mockReturnValue(Promise.reject());
       });
 
-      it('dispatches correct branch actions', (done) => {
-        openBranch(store, branch)
-          .then((val) => {
-            expect(store.dispatch.mock.calls).toEqual([
-              ['setCurrentBranchId', branchId],
-              ['loadBranch', { projectId, branchId }],
-            ]);
+      it('dispatches correct branch actions', async () => {
+        const val = await openBranch(store, branch);
+        expect(store.dispatch.mock.calls).toEqual([
+          ['setCurrentBranchId', branchId],
+          ['loadBranch', { projectId, branchId }],
+        ]);
 
-            expect(val).toEqual(
-              new Error(
-                `An error occurred while getting files for - <strong>${projectId}/${branchId}</strong>`,
-              ),
-            );
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(val).toEqual(
+          new Error(
+            `An error occurred while getting files for - <strong>${projectId}/${branchId}</strong>`,
+          ),
+        );
       });
     });
   });

@@ -17,12 +17,13 @@ export default {
     GlTab,
     GlTabs,
     HighlightBar,
-    MetricsTab: () => import('ee_component/issues/show/components/incidents/metrics_tab.vue'),
     TimelineTab: () =>
       import('ee_component/issues/show/components/incidents/timeline_events_tab.vue'),
+    IncidentMetricTab: () =>
+      import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['fullPath', 'iid', 'uploadMetricsFeatureAvailable'],
+  inject: ['fullPath', 'iid'],
   apollo: {
     alert: {
       query: getAlert,
@@ -93,7 +94,7 @@ export default {
         <highlight-bar :alert="alert" />
         <description-component v-bind="$attrs" />
       </gl-tab>
-      <metrics-tab v-if="uploadMetricsFeatureAvailable" data-testid="metrics-tab" />
+      <incident-metric-tab />
       <gl-tab
         v-if="alert"
         class="alert-management-details"

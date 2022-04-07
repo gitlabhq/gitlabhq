@@ -26,15 +26,13 @@ describe('IDE store module clientside actions', () => {
   });
 
   describe('pingUsage', () => {
-    it('posts to usage endpoint', (done) => {
+    it('posts to usage endpoint', async () => {
       const usageSpy = jest.fn(() => [200]);
 
       mock.onPost(TEST_USAGE_URL).reply(() => usageSpy());
 
-      testAction(actions.pingUsage, PING_USAGE_PREVIEW_KEY, rootGetters, [], [], () => {
-        expect(usageSpy).toHaveBeenCalled();
-        done();
-      });
+      await testAction(actions.pingUsage, PING_USAGE_PREVIEW_KEY, rootGetters, [], []);
+      expect(usageSpy).toHaveBeenCalled();
     });
   });
 });

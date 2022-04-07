@@ -180,18 +180,16 @@ RSpec.describe 'Database schema' do
     'PrometheusAlert' => %w[operator]
   }.freeze
 
-  context 'for enums' do
-    ApplicationRecord.descendants.each do |model|
-      # skip model if it is an abstract class as it would not have an associated DB table
-      next if model.abstract_class?
+  context 'for enums', :eager_load do
+    # skip model if it is an abstract class as it would not have an associated DB table
+    let(:models) { ApplicationRecord.descendants.reject(&:abstract_class?) }
 
-      describe model do
-        let(:ignored_enums) { ignored_limit_enums(model.name) }
-        let(:enums) { model.defined_enums.keys - ignored_enums }
+    it 'uses smallint for enums in all models', :aggregate_failures do
+      models.each do |model|
+        ignored_enums = ignored_limit_enums(model.name)
+        enums = model.defined_enums.keys - ignored_enums
 
-        it 'uses smallint for enums' do
-          expect(model).to use_smallint_for_enums(enums)
-        end
+        expect(model).to use_smallint_for_enums(enums)
       end
     end
   end

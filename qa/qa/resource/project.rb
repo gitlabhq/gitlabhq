@@ -343,14 +343,15 @@ module QA
         parse_body(response)
       end
 
-      def pipelines
-        response = get(request_url(api_pipelines_path))
-        parse_body(response)
-      end
-
       def pipeline_schedules
         response = get(request_url(api_pipeline_schedules_path))
         parse_body(response)
+      end
+
+      def pipelines(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_pipelines_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_pipelines_path, per_page: '100'), attempts: attempts)
       end
 
       def issues(auto_paginate: false, attempts: 0)
@@ -387,9 +388,7 @@ module QA
           api_resource[:import_status] == "finished"
         end
 
-        unless mirror_succeeded
-          raise "Mirroring failed with error: #{api_resource[:import_error]}"
-        end
+        raise "Mirroring failed with error: #{api_resource[:import_error]}" unless mirror_succeeded
       end
 
       def remove_via_api!

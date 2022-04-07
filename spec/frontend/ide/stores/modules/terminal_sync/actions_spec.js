@@ -22,43 +22,37 @@ describe('ide/stores/modules/terminal_sync/actions', () => {
   });
 
   describe('upload', () => {
-    it('uploads to mirror and sets success', (done) => {
+    it('uploads to mirror and sets success', async () => {
       mirror.upload.mockReturnValue(Promise.resolve());
 
-      testAction(
+      await testAction(
         actions.upload,
         null,
         rootState,
         [{ type: types.START_LOADING }, { type: types.SET_SUCCESS }],
         [],
-        () => {
-          expect(mirror.upload).toHaveBeenCalledWith(rootState);
-          done();
-        },
       );
+      expect(mirror.upload).toHaveBeenCalledWith(rootState);
     });
 
-    it('sets error when failed', (done) => {
+    it('sets error when failed', () => {
       const err = { message: 'it failed!' };
       mirror.upload.mockReturnValue(Promise.reject(err));
 
-      testAction(
+      return testAction(
         actions.upload,
         null,
         rootState,
         [{ type: types.START_LOADING }, { type: types.SET_ERROR, payload: err }],
         [],
-        done,
       );
     });
   });
 
   describe('stop', () => {
-    it('disconnects from mirror', (done) => {
-      testAction(actions.stop, null, rootState, [{ type: types.STOP }], [], () => {
-        expect(mirror.disconnect).toHaveBeenCalled();
-        done();
-      });
+    it('disconnects from mirror', async () => {
+      await testAction(actions.stop, null, rootState, [{ type: types.STOP }], []);
+      expect(mirror.disconnect).toHaveBeenCalled();
     });
   });
 
@@ -83,20 +77,17 @@ describe('ide/stores/modules/terminal_sync/actions', () => {
         };
       });
 
-      it('connects to mirror and sets success', (done) => {
+      it('connects to mirror and sets success', async () => {
         mirror.connect.mockReturnValue(Promise.resolve());
 
-        testAction(
+        await testAction(
           actions.start,
           null,
           rootState,
           [{ type: types.START_LOADING }, { type: types.SET_SUCCESS }],
           [],
-          () => {
-            expect(mirror.connect).toHaveBeenCalledWith(TEST_SESSION.proxyWebsocketPath);
-            done();
-          },
         );
+        expect(mirror.connect).toHaveBeenCalledWith(TEST_SESSION.proxyWebsocketPath);
       });
 
       it('sets error if connection fails', () => {

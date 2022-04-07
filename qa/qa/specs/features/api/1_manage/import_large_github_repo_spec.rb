@@ -111,7 +111,7 @@ module QA
         user.remove_via_api! unless example.exception
         next unless defined?(@import_time)
 
-        # save data for comparison after run finished
+        # save data for comparison notification creation
         save_json(
           "data",
           {
@@ -121,26 +121,30 @@ module QA
             source: {
               name: "GitHub",
               project_name: github_repo,
-              branches: gh_branches.length,
-              commits: gh_commits.length,
-              labels: gh_labels.length,
-              milestones: gh_milestones.length,
-              mrs: gh_prs.length,
-              mr_comments: gh_prs.sum { |_k, v| v[:comments].length },
-              issues: gh_issues.length,
-              issue_comments: gh_issues.sum { |_k, v| v[:comments].length }
+              data: {
+                branches: gh_branches.length,
+                commits: gh_commits.length,
+                labels: gh_labels.length,
+                milestones: gh_milestones.length,
+                mrs: gh_prs.length,
+                mr_comments: gh_prs.sum { |_k, v| v[:comments].length },
+                issues: gh_issues.length,
+                issue_comments: gh_issues.sum { |_k, v| v[:comments].length }
+              }
             },
             target: {
               name: "GitLab",
               project_name: imported_project.path_with_namespace,
-              branches: gl_branches.length,
-              commits: gl_commits.length,
-              labels: gl_labels.length,
-              milestones: gl_milestones.length,
-              mrs: mrs.length,
-              mr_comments: mrs.sum { |_k, v| v[:comments].length },
-              issues: gl_issues.length,
-              issue_comments: gl_issues.sum { |_k, v| v[:comments].length }
+              data: {
+                branches: gl_branches.length,
+                commits: gl_commits.length,
+                labels: gl_labels.length,
+                milestones: gl_milestones.length,
+                mrs: mrs.length,
+                mr_comments: mrs.sum { |_k, v| v[:comments].length },
+                issues: gl_issues.length,
+                issue_comments: gl_issues.sum { |_k, v| v[:comments].length }
+              }
             },
             not_imported: {
               mrs: @mr_diff,
@@ -158,7 +162,7 @@ module QA
         start = Time.now
 
         # import the project and log gitlab path
-        Runtime::Logger.info("== Importing project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
+        logger.info("== Importing project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
         # fetch all objects right after import has started
         fetch_github_objects
 

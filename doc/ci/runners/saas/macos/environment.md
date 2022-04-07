@@ -35,6 +35,7 @@ Each image is running a specific version of macOS and Xcode.
 | macos-10.14-xcode-10      | <https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/macstadium/orka/-/blob/main/toolchain/mojave.yml>       |
 | macos-10.15-xcode-11      | <https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/macstadium/orka/-/blob/main/toolchain/catalina.yml>     |
 | macos-11-xcode-12         | <https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/macstadium/orka/-/blob/main/toolchain/big-sur.yml>      |
+| macos-11-xcode-13         | <https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/macstadium/orka/-/blob/main/toolchain/monterey.yml> 
 
 ### Image update policy
 

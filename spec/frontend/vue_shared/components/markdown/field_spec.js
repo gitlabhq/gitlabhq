@@ -85,7 +85,7 @@ describe('Markdown field component', () => {
   describe('mounted', () => {
     const previewHTML = `
     <p>markdown preview</p>
-    <video src="${FIXTURES_PATH}/static/mock-video.mp4" muted="muted"></video>
+    <video src="${FIXTURES_PATH}/static/mock-video.mp4"></video>
   `;
     let previewLink;
     let writeLink;

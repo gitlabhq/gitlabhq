@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Metrics upload item render the metrics image component 1`] = `
+<gl-card-stub
+  bodyclass="gl-border-1,gl-border-t-solid,gl-border-gray-100,[object Object]"
+  class="collapsible-card border gl-p-0 gl-mb-5"
+  footerclass=""
+  headerclass="gl-display-flex gl-align-items-center gl-border-b-0 gl-py-3"
+>
+  <gl-modal-stub
+    actioncancel="[object Object]"
+    actionprimary="[object Object]"
+    body-class="gl-pb-0! gl-min-h-6!"
+    dismisslabel="Close"
+    modalclass=""
+    modalid="delete-metric-modal"
+    size="sm"
+    titletag="h4"
+  >
+     
+    <p>
+      Are you sure you wish to delete this image?
+    </p>
+  </gl-modal-stub>
+   
+  <gl-modal-stub
+    actioncancel="[object Object]"
+    actionprimary="[object Object]"
+    data-testid="metric-image-edit-modal"
+    dismisslabel="Close"
+    modalclass=""
+    modalid="edit-metric-modal"
+    size="sm"
+    titletag="h4"
+  >
+     
+    <gl-form-group-stub
+      label="Text (optional)"
+      label-for="upload-text-input"
+      labeldescription=""
+      optionaltext="(optional)"
+    >
+      <gl-form-input-stub
+        data-testid="metric-image-text-field"
+        id="upload-text-input"
+      />
+    </gl-form-group-stub>
+     
+    <gl-form-group-stub
+      description="Must start with http or https"
+      label="Link (optional)"
+      label-for="upload-url-input"
+      labeldescription=""
+      optionaltext="(optional)"
+    >
+      <gl-form-input-stub
+        data-testid="metric-image-url-field"
+        id="upload-url-input"
+      />
+    </gl-form-group-stub>
+  </gl-modal-stub>
+    
+  <div
+    class="gl-display-flex gl-flex-direction-column"
+    data-testid="metric-image-body"
+  >
+    <img
+      class="gl-max-w-full gl-align-self-center"
+      src="test_file_path"
+    />
+  </div>
+</gl-card-stub>
+`;

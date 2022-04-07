@@ -43,15 +43,9 @@ describe('Multi-file store actions', () => {
   });
 
   describe('redirectToUrl', () => {
-    it('calls visitUrl', (done) => {
-      store
-        .dispatch('redirectToUrl', 'test')
-        .then(() => {
-          expect(visitUrl).toHaveBeenCalledWith('test');
-
-          done();
-        })
-        .catch(done.fail);
+    it('calls visitUrl', async () => {
+      await store.dispatch('redirectToUrl', 'test');
+      expect(visitUrl).toHaveBeenCalledWith('test');
     });
   });
 
@@ -89,15 +83,10 @@ describe('Multi-file store actions', () => {
       expect(store.dispatch.mock.calls).toEqual(expect.arrayContaining(expectedCalls));
     });
 
-    it('removes all files from changedFiles state', (done) => {
-      store
-        .dispatch('discardAllChanges')
-        .then(() => {
-          expect(store.state.changedFiles.length).toBe(0);
-          expect(store.state.openFiles.length).toBe(2);
-        })
-        .then(done)
-        .catch(done.fail);
+    it('removes all files from changedFiles state', async () => {
+      await store.dispatch('discardAllChanges');
+      expect(store.state.changedFiles.length).toBe(0);
+      expect(store.state.openFiles.length).toBe(2);
     });
   });
 
@@ -121,24 +110,18 @@ describe('Multi-file store actions', () => {
     });
 
     describe('tree', () => {
-      it('creates temp tree', (done) => {
-        store
-          .dispatch('createTempEntry', {
-            name: 'test',
-            type: 'tree',
-          })
-          .then(() => {
-            const entry = store.state.entries.test;
+      it('creates temp tree', async () => {
+        await store.dispatch('createTempEntry', {
+          name: 'test',
+          type: 'tree',
+        });
+        const entry = store.state.entries.test;
 
-            expect(entry).not.toBeNull();
-            expect(entry.type).toBe('tree');
-
-            done();
-          })
-          .catch(done.fail);
+        expect(entry).not.toBeNull();
+        expect(entry.type).toBe('tree');
       });
 
-      it('creates new folder inside another tree', (done) => {
+      it('creates new folder inside another tree', async () => {
         const tree = {
           type: 'tree',
           name: 'testing',
@@ -148,22 +131,16 @@ describe('Multi-file store actions', () => {
 
         store.state.entries[tree.path] = tree;
 
-        store
-          .dispatch('createTempEntry', {
-            name: 'testing/test',
-            type: 'tree',
-          })
-          .then(() => {
-            expect(tree.tree[0].tempFile).toBeTruthy();
-            expect(tree.tree[0].name).toBe('test');
-            expect(tree.tree[0].type).toBe('tree');
-
-            done();
-          })
-          .catch(done.fail);
+        await store.dispatch('createTempEntry', {
+          name: 'testing/test',
+          type: 'tree',
+        });
+        expect(tree.tree[0].tempFile).toBeTruthy();
+        expect(tree.tree[0].name).toBe('test');
+        expect(tree.tree[0].type).toBe('tree');
       });
 
-      it('does not create new tree if already exists', (done) => {
+      it('does not create new tree if already exists', async () => {
         const tree = {
           type: 'tree',
           path: 'testing',
@@ -173,76 +150,52 @@ describe('Multi-file store actions', () => {
 
         store.state.entries[tree.path] = tree;
 
-        store
-          .dispatch('createTempEntry', {
-            name: 'testing',
-            type: 'tree',
-          })
-          .then(() => {
-            expect(store.state.entries[tree.path].tempFile).toEqual(false);
-            expect(document.querySelector('.flash-alert')).not.toBeNull();
-
-            done();
-          })
-          .catch(done.fail);
+        await store.dispatch('createTempEntry', {
+          name: 'testing',
+          type: 'tree',
+        });
+        expect(store.state.entries[tree.path].tempFile).toEqual(false);
+        expect(document.querySelector('.flash-alert')).not.toBeNull();
       });
     });
 
     describe('blob', () => {
-      it('creates temp file', (done) => {
+      it('creates temp file', async () => {
         const name = 'test';
 
-        store
-          .dispatch('createTempEntry', {
-            name,
-            type: 'blob',
-            mimeType: 'test/mime',
-          })
-          .then(() => {
-            const f = store.state.entries[name];
+        await store.dispatch('createTempEntry', {
+          name,
+          type: 'blob',
+          mimeType: 'test/mime',
+        });
+        const f = store.state.entries[name];
 
-            expect(f.tempFile).toBeTruthy();
-            expect(f.mimeType).toBe('test/mime');
-            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
-
-            done();
-          })
-          .catch(done.fail);
+        expect(f.tempFile).toBeTruthy();
+        expect(f.mimeType).toBe('test/mime');
+        expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
       });
 
-      it('adds tmp file to open files', (done) => {
+      it('adds tmp file to open files', async () => {
         const name = 'test';
 
-        store
-          .dispatch('createTempEntry', {
-            name,
-            type: 'blob',
-          })
-          .then(() => {
-            const f = store.state.entries[name];
+        await store.dispatch('createTempEntry', {
+          name,
+          type: 'blob',
+        });
+        const f = store.state.entries[name];
 
-            expect(store.state.openFiles.length).toBe(1);
-            expect(store.state.openFiles[0].name).toBe(f.name);
-
-            done();
-          })
-          .catch(done.fail);
+        expect(store.state.openFiles.length).toBe(1);
+        expect(store.state.openFiles[0].name).toBe(f.name);
       });
 
-      it('adds tmp file to staged files', (done) => {
+      it('adds tmp file to staged files', async () => {
         const name = 'test';
 
-        store
-          .dispatch('createTempEntry', {
-            name,
-            type: 'blob',
-          })
-          .then(() => {
-            expect(store.state.stagedFiles).toEqual([expect.objectContaining({ name })]);
-
-            done();
-          })
-          .catch(done.fail);
+        await store.dispatch('createTempEntry', {
+          name,
+          type: 'blob',
+        });
+        expect(store.state.stagedFiles).toEqual([expect.objectContaining({ name })]);
       });
 
       it('sets tmp file as active', () => {
@@ -251,24 +204,18 @@ describe('Multi-file store actions', () => {
         expect(store.dispatch).toHaveBeenCalledWith('setFileActive', 'test');
       });
 
-      it('creates flash message if file already exists', (done) => {
+      it('creates flash message if file already exists', async () => {
         const f = file('test', '1', 'blob');
         store.state.trees['abcproject/mybranch'].tree = [f];
         store.state.entries[f.path] = f;
 
-        store
-          .dispatch('createTempEntry', {
-            name: 'test',
-            type: 'blob',
-          })
-          .then(() => {
-            expect(document.querySelector('.flash-alert')?.textContent.trim()).toEqual(
-              `The name "${f.name}" is already taken in this directory.`,
-            );
-
-            done();
-          })
-          .catch(done.fail);
+        await store.dispatch('createTempEntry', {
+          name: 'test',
+          type: 'blob',
+        });
+        expect(document.querySelector('.flash-alert')?.textContent.trim()).toEqual(
+          `The name "${f.name}" is already taken in this directory.`,
+        );
       });
     });
   });
@@ -372,45 +319,38 @@ describe('Multi-file store actions', () => {
   });
 
   describe('updateViewer', () => {
-    it('updates viewer state', (done) => {
-      store
-        .dispatch('updateViewer', 'diff')
-        .then(() => {
-          expect(store.state.viewer).toBe('diff');
-        })
-        .then(done)
-        .catch(done.fail);
+    it('updates viewer state', async () => {
+      await store.dispatch('updateViewer', 'diff');
+      expect(store.state.viewer).toBe('diff');
     });
   });
 
   describe('updateActivityBarView', () => {
-    it('commits UPDATE_ACTIVITY_BAR_VIEW', (done) => {
-      testAction(
+    it('commits UPDATE_ACTIVITY_BAR_VIEW', () => {
+      return testAction(
         updateActivityBarView,
         'test',
         {},
         [{ type: 'UPDATE_ACTIVITY_BAR_VIEW', payload: 'test' }],
         [],
-        done,
       );
     });
   });
 
   describe('setEmptyStateSvgs', () => {
-    it('commits setEmptyStateSvgs', (done) => {
-      testAction(
+    it('commits setEmptyStateSvgs', () => {
+      return testAction(
         setEmptyStateSvgs,
         'svg',
         {},
         [{ type: 'SET_EMPTY_STATE_SVGS', payload: 'svg' }],
         [],
-        done,
       );
     });
   });
 
   describe('updateTempFlagForEntry', () => {
-    it('commits UPDATE_TEMP_FLAG', (done) => {
+    it('commits UPDATE_TEMP_FLAG', () => {
       const f = {
         ...file(),
         path: 'test',
@@ -418,17 +358,16 @@ describe('Multi-file store actions', () => {
       };
       store.state.entries[f.path] = f;
 
-      testAction(
+      return testAction(
         updateTempFlagForEntry,
         { file: f, tempFile: false },
         store.state,
         [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
         [],
-        done,
       );
     });
 
-    it('commits UPDATE_TEMP_FLAG and dispatches for parent', (done) => {
+    it('commits UPDATE_TEMP_FLAG and dispatches for parent', () => {
       const parent = {
         ...file(),
         path: 'testing',
@@ -441,17 +380,16 @@ describe('Multi-file store actions', () => {
       store.state.entries[parent.path] = parent;
       store.state.entries[f.path] = f;
 
-      testAction(
+      return testAction(
         updateTempFlagForEntry,
         { file: f, tempFile: false },
         store.state,
         [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
         [{ type: 'updateTempFlagForEntry', payload: { file: parent, tempFile: false } }],
-        done,
       );
     });
 
-    it('does not dispatch for parent, if parent does not exist', (done) => {
+    it('does not dispatch for parent, if parent does not exist', () => {
       const f = {
         ...file(),
         path: 'test',
@@ -459,71 +397,66 @@ describe('Multi-file store actions', () => {
       };
       store.state.entries[f.path] = f;
 
-      testAction(
+      return testAction(
         updateTempFlagForEntry,
         { file: f, tempFile: false },
         store.state,
         [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
         [],
-        done,
       );
     });
   });
 
   describe('setCurrentBranchId', () => {
-    it('commits setCurrentBranchId', (done) => {
-      testAction(
+    it('commits setCurrentBranchId', () => {
+      return testAction(
         setCurrentBranchId,
         'branchId',
         {},
         [{ type: 'SET_CURRENT_BRANCH', payload: 'branchId' }],
         [],
-        done,
       );
     });
   });
 
   describe('toggleFileFinder', () => {
-    it('commits TOGGLE_FILE_FINDER', (done) => {
-      testAction(
+    it('commits TOGGLE_FILE_FINDER', () => {
+      return testAction(
         toggleFileFinder,
         true,
         null,
         [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
         [],
-        done,
       );
     });
   });
 
   describe('setErrorMessage', () => {
-    it('commis error messsage', (done) => {
-      testAction(
+    it('commis error messsage', () => {
+      return testAction(
         setErrorMessage,
         'error',
         null,
         [{ type: types.SET_ERROR_MESSAGE, payload: 'error' }],
         [],
-        done,
       );
     });
   });
 
   describe('deleteEntry', () => {
-    it('commits entry deletion', (done) => {
+    it('commits entry deletion', () => {
       store.state.entries.path = 'testing';
 
-      testAction(
+      return testAction(
         deleteEntry,
         'path',
         store.state,
         [{ type: types.DELETE_ENTRY, payload: 'path' }],
         [{ type: 'stageChange', payload: 'path' }, createTriggerChangeAction()],
-        done,
       );
     });
 
-    it('does not delete a folder after it is emptied', (done) => {
+    it('does not delete a folder after it is emptied', () => {
       const testFolder = {
         type: 'tree',
         tree: [],
@@ -540,7 +473,7 @@ describe('Multi-file store actions', () => {
         'testFolder/entry-to-delete': testEntry,
       };
 
-      testAction(
+      return testAction(
         deleteEntry,
         'testFolder/entry-to-delete',
         store.state,
@@ -549,7 +482,6 @@ describe('Multi-file store actions', () => {
           { type: 'stageChange', payload: 'testFolder/entry-to-delete' },
           createTriggerChangeAction(),
         ],
-        done,
       );
     });
 
@@ -569,8 +501,8 @@ describe('Multi-file store actions', () => {
       });
 
       describe('and previous does not exist', () => {
-        it('reverts the rename before deleting', (done) => {
-          testAction(
+        it('reverts the rename before deleting', () => {
+          return testAction(
             deleteEntry,
             testEntry.path,
             store.state,
@@ -589,7 +521,6 @@ describe('Multi-file store actions', () => {
                 payload: testEntry.prevPath,
               },
             ],
-            done,
           );
         });
       });
@@ -604,21 +535,20 @@ describe('Multi-file store actions', () => {
           store.state.entries[oldEntry.path] = oldEntry;
         });
 
-        it('does not revert rename before deleting', (done) => {
-          testAction(
+        it('does not revert rename before deleting', () => {
+          return testAction(
             deleteEntry,
             testEntry.path,
             store.state,
             [{ type: types.DELETE_ENTRY, payload: testEntry.path }],
             [{ type: 'stageChange', payload: testEntry.path }, createTriggerChangeAction()],
-            done,
           );
         });
 
-        it('when previous is deleted, it reverts rename before deleting', (done) => {
+        it('when previous is deleted, it reverts rename before deleting', () => {
           store.state.entries[testEntry.prevPath].deleted = true;
 
-          testAction(
+          return testAction(
             deleteEntry,
             testEntry.path,
             store.state,
@@ -637,7 +567,6 @@ describe('Multi-file store actions', () => {
                 payload: testEntry.prevPath,
               },
             ],
-            done,
           );
         });
       });
@@ -650,7 +579,7 @@ describe('Multi-file store actions', () => {
         jest.spyOn(eventHub, '$emit').mockImplementation();
       });
 
-      it('does not purge model cache for temporary entries that got renamed', (done) => {
+      it('does not purge model cache for temporary entries that got renamed', async () => {
         Object.assign(store.state.entries, {
           test: {
             ...file('test'),
@@ -660,19 +589,14 @@ describe('Multi-file store actions', () => {
           },
         });
 
-        store
-          .dispatch('renameEntry', {
-            path: 'test',
-            name: 'new',
-          })
-          .then(() => {
-            expect(eventHub.$emit.mock.calls).not.toContain('editor.update.model.dispose.foo-bar');
-          })
-          .then(done)
-          .catch(done.fail);
+        await store.dispatch('renameEntry', {
+          path: 'test',
+          name: 'new',
+        });
+        expect(eventHub.$emit.mock.calls).not.toContain('editor.update.model.dispose.foo-bar');
       });
 
-      it('purges model cache for renamed entry', (done) => {
+      it('purges model cache for renamed entry', async () => {
         Object.assign(store.state.entries, {
           test: {
             ...file('test'),
@@ -682,17 +606,12 @@ describe('Multi-file store actions', () => {
           },
         });
 
-        store
-          .dispatch('renameEntry', {
-            path: 'test',
-            name: 'new',
-          })
-          .then(() => {
-            expect(eventHub.$emit).toHaveBeenCalled();
-            expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.dispose.foo-key`);
-          })
-          .then(done)
-          .catch(done.fail);
+        await store.dispatch('renameEntry', {
+          path: 'test',
+          name: 'new',
+        });
+        expect(eventHub.$emit).toHaveBeenCalled();
+        expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.dispose.foo-key`);
       });
     });
 
@@ -731,8 +650,8 @@ describe('Multi-file store actions', () => {
         ]);
       });
 
-      it('if not changed, completely unstages and discards entry if renamed to original', (done) => {
-        testAction(
+      it('if not changed, completely unstages and discards entry if renamed to original', () => {
+        return testAction(
           renameEntry,
           { path: 'renamed', name: 'orig' },
           store.state,
@@ -751,24 +670,22 @@ describe('Multi-file store actions', () => {
             },
           ],
           [createTriggerRenameAction('renamed', 'orig')],
-          done,
         );
       });
 
-      it('if already in changed, does not add to change', (done) => {
+      it('if already in changed, does not add to change', () => {
         store.state.changedFiles.push(renamedEntry);
 
-        testAction(
+        return testAction(
           renameEntry,
           { path: 'orig', name: 'renamed' },
           store.state,
           [expect.objectContaining({ type: types.RENAME_ENTRY })],
           [createTriggerRenameAction('orig', 'renamed')],
-          done,
         );
       });
 
-      it('routes to the renamed file if the original file has been opened', (done) => {
+      it('routes to the renamed file if the original file has been opened', async () => {
         store.state.currentProjectId = 'test/test';
         store.state.currentBranchId = 'main';
 
@@ -776,17 +693,12 @@ describe('Multi-file store actions', () => {
           opened: true,
         });
 
-        store
-          .dispatch('renameEntry', {
-            path: 'orig',
-            name: 'renamed',
-          })
-          .then(() => {
-            expect(router.push.mock.calls).toHaveLength(1);
-            expect(router.push).toHaveBeenCalledWith(`/project/test/test/tree/main/-/renamed/`);
-          })
-          .then(done)
-          .catch(done.fail);
+        await store.dispatch('renameEntry', {
+          path: 'orig',
+          name: 'renamed',
+        });
+        expect(router.push.mock.calls).toHaveLength(1);
+        expect(router.push).toHaveBeenCalledWith(`/project/test/test/tree/main/-/renamed/`);
       });
     });
 
@@ -809,25 +721,20 @@ describe('Multi-file store actions', () => {
         });
       });
 
-      it('updates entries in a folder correctly, when folder is renamed', (done) => {
-        store
-          .dispatch('renameEntry', {
-            path: 'folder',
-            name: 'new-folder',
-          })
-          .then(() => {
-            const keys = Object.keys(store.state.entries);
+      it('updates entries in a folder correctly, when folder is renamed', async () => {
+        await store.dispatch('renameEntry', {
+          path: 'folder',
+          name: 'new-folder',
+        });
+        const keys = Object.keys(store.state.entries);
 
-            expect(keys.length).toBe(3);
-            expect(keys.indexOf('new-folder')).toBe(0);
-            expect(keys.indexOf('new-folder/file-1')).toBe(1);
-            expect(keys.indexOf('new-folder/file-2')).toBe(2);
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(keys.length).toBe(3);
+        expect(keys.indexOf('new-folder')).toBe(0);
+        expect(keys.indexOf('new-folder/file-1')).toBe(1);
+        expect(keys.indexOf('new-folder/file-2')).toBe(2);
       });
 
-      it('discards renaming of an entry if the root folder is renamed back to a previous name', (done) => {
+      it('discards renaming of an entry if the root folder is renamed back to a previous name', async () => {
         const rootFolder = file('old-folder', 'old-folder', 'tree');
         const testEntry = file('test', 'test', 'blob', rootFolder);
 
@@ -841,53 +748,45 @@ describe('Multi-file store actions', () => {
           },
         });
 
-        store
-          .dispatch('renameEntry', {
-            path: 'old-folder',
-            name: 'new-folder',
-          })
-          .then(() => {
-            const { entries } = store.state;
+        await store.dispatch('renameEntry', {
+          path: 'old-folder',
+          name: 'new-folder',
+        });
+        const { entries } = store.state;
 
-            expect(Object.keys(entries).length).toBe(2);
-            expect(entries['old-folder']).toBeUndefined();
-            expect(entries['old-folder/test']).toBeUndefined();
+        expect(Object.keys(entries).length).toBe(2);
+        expect(entries['old-folder']).toBeUndefined();
+        expect(entries['old-folder/test']).toBeUndefined();
 
-            expect(entries['new-folder']).toBeDefined();
-            expect(entries['new-folder/test']).toEqual(
-              expect.objectContaining({
-                path: 'new-folder/test',
-                name: 'test',
-                prevPath: 'old-folder/test',
-                prevName: 'test',
-              }),
-            );
-          })
-          .then(() =>
-            store.dispatch('renameEntry', {
-              path: 'new-folder',
-              name: 'old-folder',
-            }),
-          )
-          .then(() => {
-            const { entries } = store.state;
+        expect(entries['new-folder']).toBeDefined();
+        expect(entries['new-folder/test']).toEqual(
+          expect.objectContaining({
+            path: 'new-folder/test',
+            name: 'test',
+            prevPath: 'old-folder/test',
+            prevName: 'test',
+          }),
+        );
 
-            expect(Object.keys(entries).length).toBe(2);
-            expect(entries['new-folder']).toBeUndefined();
-            expect(entries['new-folder/test']).toBeUndefined();
+        await store.dispatch('renameEntry', {
+          path: 'new-folder',
+          name: 'old-folder',
+        });
+        const { entries: newEntries } = store.state;
 
-            expect(entries['old-folder']).toBeDefined();
-            expect(entries['old-folder/test']).toEqual(
-              expect.objectContaining({
-                path: 'old-folder/test',
-                name: 'test',
-                prevPath: undefined,
-                prevName: undefined,
-              }),
-            );
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(Object.keys(newEntries).length).toBe(2);
+        expect(newEntries['new-folder']).toBeUndefined();
+        expect(newEntries['new-folder/test']).toBeUndefined();
+
+        expect(newEntries['old-folder']).toBeDefined();
+        expect(newEntries['old-folder/test']).toEqual(
+          expect.objectContaining({
+            path: 'old-folder/test',
+            name: 'test',
+            prevPath: undefined,
+            prevName: undefined,
+          }),
+        );
       });
 
       describe('with file in directory', () => {
@@ -919,24 +818,21 @@ describe('Multi-file store actions', () => {
           });
         });
 
-        it('creates new directory', (done) => {
+        it('creates new directory', async () => {
           expect(store.state.entries[newParentPath]).toBeUndefined();
 
-          store
-            .dispatch('renameEntry', { path: filePath, name: fileName, parentPath: newParentPath })
-            .then(() => {
-              expect(store.state.entries[newParentPath]).toEqual(
-                expect.objectContaining({
-                  path: newParentPath,
-                  type: 'tree',
-                  tree: expect.arrayContaining([
-                    store.state.entries[`${newParentPath}/${fileName}`],
-                  ]),
-                }),
-              );
-            })
-            .then(done)
-            .catch(done.fail);
+          await store.dispatch('renameEntry', {
+            path: filePath,
+            name: fileName,
+            parentPath: newParentPath,
+          });
+          expect(store.state.entries[newParentPath]).toEqual(
+            expect.objectContaining({
+              path: newParentPath,
+              type: 'tree',
+              tree: expect.arrayContaining([store.state.entries[`${newParentPath}/${fileName}`]]),
+            }),
+          );
         });
 
         describe('when new directory exists', () => {
@@ -949,40 +845,30 @@ describe('Multi-file store actions', () => {
             rootDir.tree.push(newDir);
           });
 
-          it('inserts in new directory', (done) => {
+          it('inserts in new directory', async () => {
             expect(newDir.tree).toEqual([]);
 
-            store
-              .dispatch('renameEntry', {
-                path: filePath,
-                name: fileName,
-                parentPath: newParentPath,
-              })
-              .then(() => {
-                expect(newDir.tree).toEqual([store.state.entries[`${newParentPath}/${fileName}`]]);
-              })
-              .then(done)
-              .catch(done.fail);
+            await store.dispatch('renameEntry', {
+              path: filePath,
+              name: fileName,
+              parentPath: newParentPath,
+            });
+            expect(newDir.tree).toEqual([store.state.entries[`${newParentPath}/${fileName}`]]);
           });
 
-          it('when new directory is deleted, it undeletes it', (done) => {
-            store.dispatch('deleteEntry', newParentPath);
+          it('when new directory is deleted, it undeletes it', async () => {
+            await store.dispatch('deleteEntry', newParentPath);
 
             expect(store.state.entries[newParentPath].deleted).toBe(true);
             expect(rootDir.tree.some((x) => x.path === newParentPath)).toBe(false);
 
-            store
-              .dispatch('renameEntry', {
-                path: filePath,
-                name: fileName,
-                parentPath: newParentPath,
-              })
-              .then(() => {
-                expect(store.state.entries[newParentPath].deleted).toBe(false);
-                expect(rootDir.tree.some((x) => x.path === newParentPath)).toBe(true);
-              })
-              .then(done)
-              .catch(done.fail);
+            await store.dispatch('renameEntry', {
+              path: filePath,
+              name: fileName,
+              parentPath: newParentPath,
+            });
+            expect(store.state.entries[newParentPath].deleted).toBe(false);
+            expect(rootDir.tree.some((x) => x.path === newParentPath)).toBe(true);
           });
         });
       });
@@ -1023,30 +909,25 @@ describe('Multi-file store actions', () => {
         document.querySelector('.flash-container').remove();
       });
 
-      it('passes the error further unchanged without dispatching any action when response is 404', (done) => {
+      it('passes the error further unchanged without dispatching any action when response is 404', async () => {
         mock.onGet(/(.*)/).replyOnce(404);
 
-        getBranchData(...callParams)
-          .then(done.fail)
-          .catch((e) => {
-            expect(dispatch.mock.calls).toHaveLength(0);
-            expect(e.response.status).toEqual(404);
-            expect(document.querySelector('.flash-alert')).toBeNull();
-            done();
-          });
+        await expect(getBranchData(...callParams)).rejects.toEqual(
+          new Error('Request failed with status code 404'),
+        );
+        expect(dispatch.mock.calls).toHaveLength(0);
+        expect(document.querySelector('.flash-alert')).toBeNull();
       });
 
-      it('does not pass the error further and flashes an alert if error is not 404', (done) => {
+      it('does not pass the error further and flashes an alert if error is not 404', async () => {
         mock.onGet(/(.*)/).replyOnce(418);
 
-        getBranchData(...callParams)
-          .then(done.fail)
-          .catch((e) => {
-            expect(dispatch.mock.calls).toHaveLength(0);
-            expect(e.response).toBeUndefined();
-            expect(document.querySelector('.flash-alert')).not.toBeNull();
-            done();
-          });
+        await expect(getBranchData(...callParams)).rejects.toEqual(
+          new Error('Branch not loaded - <strong>abc/def/main-testing</strong>'),
+        );
+
+        expect(dispatch.mock.calls).toHaveLength(0);
+        expect(document.querySelector('.flash-alert')).not.toBeNull();
       });
     });
   });

@@ -11,6 +11,7 @@ import {
 import { mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import highlight from '~/lib/utils/highlight';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { GROUPS_CATEGORY, PROJECTS_CATEGORY, LARGE_AVATAR_PX, SMALL_AVATAR_PX } from '../constants';
 
 export default {
@@ -66,6 +67,7 @@ export default {
       return this.currentFocusedOption?.html_id === data.html_id;
     },
   },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
@@ -93,7 +95,7 @@ export default {
               :entity-id="data.id"
               :entity-name="data.label"
               :size="avatarSize(data)"
-              shape="square"
+              :shape="$options.AVATAR_SHAPE_OPTION_RECT"
             />
             <span v-safe-html="highlightedName(data.label)"></span>
           </div>

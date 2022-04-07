@@ -69,25 +69,21 @@ describe('new dropdown upload', () => {
       jest.spyOn(FileReader.prototype, 'readAsText');
     });
 
-    it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', (done) => {
+    it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', async () => {
       const waitForCreate = new Promise((resolve) => vm.$on('create', resolve));
 
       vm.createFile(textTarget, textFile);
 
       expect(FileReader.prototype.readAsText).toHaveBeenCalledWith(textFile);
 
-      waitForCreate
-        .then(() => {
-          expect(vm.$emit).toHaveBeenCalledWith('create', {
-            name: textFile.name,
-            type: 'blob',
-            content: 'plain text',
-            rawPath: '',
-            mimeType: 'test/mime-text',
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      await waitForCreate;
+      expect(vm.$emit).toHaveBeenCalledWith('create', {
+        name: textFile.name,
+        type: 'blob',
+        content: 'plain text',
+        rawPath: '',
+        mimeType: 'test/mime-text',
+      });
     });
 
     it('creates a blob URL for the content if binary', () => {

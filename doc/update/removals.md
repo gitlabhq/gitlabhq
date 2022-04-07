@@ -30,16 +30,6 @@ For removal reviewers (Technical Writers only):
 
 ## 15.0
 
-### Removed feature flag PUSH_RULES_SUPERSEDE_CODE_OWNERS
-
-WARNING:
-This feature was changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` has been removed in GitLab 15.0. From now on, push rules will supersede CODEOWNERS. The CODEOWNERS feature is no longer available for access control.
-
 ### Request a new review
 
 The ability to [request a new review](https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#request-a-new-review) has been removed in GitLab 15.0. This feature is replaced with [requesting attention](https://docs.gitlab.com/ee/user/project/merge_requests/#request-attention-to-a-merge-request) to a merge request.

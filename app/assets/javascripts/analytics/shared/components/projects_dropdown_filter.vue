@@ -11,6 +11,7 @@ import {
 import { debounce } from 'lodash';
 import { filterBySearchTerm } from '~/analytics/shared/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { n__, s__, __ } from '~/locale';
 import getProjects from '../graphql/projects.query.graphql';
@@ -204,6 +205,7 @@ export default {
       return getIdFromGraphQLId(project.id);
     },
   },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 <template>
@@ -227,7 +229,7 @@ export default {
           :entity-id="getEntityId(selectedProjects[0])"
           :entity-name="selectedProjects[0].name"
           :size="16"
-          shape="rect"
+          :shape="$options.AVATAR_SHAPE_OPTION_RECT"
           :alt="selectedProjects[0].name"
           class="gl-display-inline-flex gl-vertical-align-middle gl-mr-2"
         />
@@ -255,7 +257,7 @@ export default {
             :entity-id="getEntityId(project)"
             :entity-name="project.name"
             :src="project.avatarUrl"
-            shape="rect"
+            :shape="$options.AVATAR_SHAPE_OPTION_RECT"
           />
           <div>
             <div data-testid="project-name">{{ project.name }}</div>
@@ -279,7 +281,7 @@ export default {
           :entity-id="getEntityId(project)"
           :entity-name="project.name"
           :src="project.avatarUrl"
-          shape="rect"
+          :shape="$options.AVATAR_SHAPE_OPTION_RECT"
         />
         <div>
           <div data-testid="project-name">{{ project.name }}</div>

@@ -2,6 +2,7 @@
 import { GlAvatar, GlButton, GlCard, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import {
   STARTER_TEMPLATE_NAME,
   RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME,
@@ -33,6 +34,7 @@ export default {
   RUNNERS_DOCUMENTATION_LINK_CLICKED_EVENT,
   RUNNERS_SETTINGS_BUTTON_CLICKED_EVENT,
   I18N,
+  AVATAR_SHAPE_OPTION_RECT,
   inject: ['pipelineEditorPath', 'suggestedCiTemplates'],
   props: {
     ciRunnerSettingsPath: {
@@ -187,7 +189,7 @@ export default {
                 :src="template.logo"
                 :size="48"
                 class="gl-mr-5 gl-bg-white dark-mode-override"
-                shape="rect"
+                :shape="$options.AVATAR_SHAPE_OPTION_RECT"
                 :alt="template.name"
                 data-testid="template-logo"
               />

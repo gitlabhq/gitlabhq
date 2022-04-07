@@ -259,6 +259,12 @@ describe('DependencyProxyApp', () => {
 
             it('shows the clear cache dropdown list', () => {
               expect(findClearCacheDropdownList().exists()).toBe(true);
+
+              const clearCacheDropdownItem = findClearCacheDropdownList().findComponent(
+                GlDropdownItem,
+              );
+
+              expect(clearCacheDropdownItem.text()).toBe('Clear cache');
             });
 
             it('shows the clear cache confirmation modal', () => {

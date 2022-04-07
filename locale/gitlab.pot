@@ -969,6 +969,9 @@ msgstr[1] ""
 msgid "%{service_ping_link_start}What information is shared with GitLab Inc.?%{service_ping_link_end}"
 msgstr ""
 
+msgid "%{size} %{unit}"
+msgstr ""
+
 msgid "%{size} GiB"
 msgstr ""
 
@@ -19913,18 +19916,6 @@ msgstr ""
 msgid "Incidents|Must start with http or https"
 msgstr ""
 
-msgid "Incidents|There was an issue deleting the image."
-msgstr ""
-
-msgid "Incidents|There was an issue loading metric images."
-msgstr ""
-
-msgid "Incidents|There was an issue updating your image."
-msgstr ""
-
-msgid "Incidents|There was an issue uploading your image."
-msgstr ""
-
 msgid "Incident|Add new timeline event"
 msgstr ""
 
@@ -23869,6 +23860,18 @@ msgid "MetricChart|There is no data available. Please change your selection."
 msgstr ""
 
 msgid "MetricChart|There is too much data to calculate. Please change your selection."
+msgstr ""
+
+msgid "MetricImages|There was an issue deleting the image."
+msgstr ""
+
+msgid "MetricImages|There was an issue loading metric images."
+msgstr ""
+
+msgid "MetricImages|There was an issue updating your image."
+msgstr ""
+
+msgid "MetricImages|There was an issue uploading your image."
 msgstr ""
 
 msgid "Metrics"
@@ -40507,9 +40510,6 @@ msgstr ""
 msgid "UsageQuota|Buy additional minutes"
 msgstr ""
 
-msgid "UsageQuota|Buy storage"
-msgstr ""
-
 msgid "UsageQuota|CI minutes usage by month"
 msgstr ""
 
@@ -40540,10 +40540,10 @@ msgstr ""
 msgid "UsageQuota|LFS storage"
 msgstr ""
 
-msgid "UsageQuota|Learn more about usage quotas."
+msgid "UsageQuota|Learn more about excess storage usage"
 msgstr ""
 
-msgid "UsageQuota|Namespace storage used"
+msgid "UsageQuota|Learn more about usage quotas"
 msgstr ""
 
 msgid "UsageQuota|No CI minutes usage data available."
@@ -40564,10 +40564,7 @@ msgstr ""
 msgid "UsageQuota|Purchase more storage"
 msgstr ""
 
-msgid "UsageQuota|Purchased storage"
-msgstr ""
-
-msgid "UsageQuota|Purchased storage used"
+msgid "UsageQuota|Purchased storage available"
 msgstr ""
 
 msgid "UsageQuota|Repository"
@@ -40594,10 +40591,22 @@ msgstr ""
 msgid "UsageQuota|Storage used"
 msgstr ""
 
+msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."
+msgstr ""
+
+msgid "UsageQuota|This is the total amount of storage used by projects above the free %{actualRepositorySizeLimit} storage limit."
+msgstr ""
+
 msgid "UsageQuota|This namespace contains locked projects"
 msgstr ""
 
 msgid "UsageQuota|This namespace has no projects which use shared runners"
+msgstr ""
+
+msgid "UsageQuota|Total excess storage used"
+msgstr ""
+
+msgid "UsageQuota|Total namespace storage used"
 msgstr ""
 
 msgid "UsageQuota|Unlimited"

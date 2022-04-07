@@ -7,8 +7,12 @@ module QA
                  :destination_group,
                  :import_id
 
-      attribute :access_token do
+      attribute :import_access_token do
         api_client.personal_access_token
+      end
+
+      attribute :gitlab_address do
+        QA::Runtime::Scenario.gitlab_address
       end
 
       # In most cases we will want to set path the same as source group
@@ -19,18 +23,16 @@ module QA
       # Can't define path as attribue since @path is set in base class initializer
       alias_method :path, :destination_group_path
 
-      delegate :gitlab_address, to: 'QA::Runtime::Scenario'
-
-      def fabricate_via_browser_ui!
+      def fabricate!
         Page::Main::Menu.perform(&:go_to_create_group)
 
         Page::Group::New.perform do |group|
           group.switch_to_import_tab
-          group.connect_gitlab_instance(gitlab_address, api_client.personal_access_token)
+          group.connect_gitlab_instance(gitlab_address, import_access_token)
         end
 
         Page::Group::BulkImport.perform do |import_page|
-          import_page.import_group(path, sandbox.path)
+          import_page.import_group(destination_group_path, sandbox.full_path)
         end
 
         reload!
@@ -49,7 +51,7 @@ module QA
         {
           configuration: {
             url: gitlab_address,
-            access_token: access_token
+            access_token: import_access_token
           },
           entities: [
             {
