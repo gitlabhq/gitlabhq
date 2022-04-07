@@ -364,6 +364,17 @@ RSpec.describe "Admin Runners" do
           create(:ci_runner, :instance, description: 'runner-red', tag_list: ['red'])
         end
 
+        it 'shows tags suggestions' do
+          visit admin_runners_path
+
+          open_filtered_search_suggestions('Tags')
+
+          page.within(search_bar_selector) do
+            expect(page).to have_content 'blue'
+            expect(page).to have_content 'red'
+          end
+        end
+
         it 'shows correct runner when tag matches' do
           visit admin_runners_path
 
@@ -704,6 +715,16 @@ RSpec.describe "Admin Runners" do
     page.within(search_bar_selector) do
       page.find('input').send_keys(search_term)
       click_on 'Search'
+    end
+
+    wait_for_requests
+  end
+
+  def open_filtered_search_suggestions(filter)
+    focus_filtered_search
+
+    page.within(search_bar_selector) do
+      click_on filter
     end
 
     wait_for_requests

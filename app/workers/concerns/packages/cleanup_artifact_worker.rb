@@ -14,7 +14,7 @@ module Packages
 
         artifact.destroy!
       rescue StandardError
-        artifact&.error!
+        artifact&.update_column(:status, :error)
       end
 
       after_destroy
@@ -48,7 +48,7 @@ module Packages
           to_delete = next_item
 
           if to_delete
-            to_delete.processing!
+            to_delete.update_column(:status, :processing)
             log_cleanup_item(to_delete)
           end
 

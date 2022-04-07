@@ -29,9 +29,12 @@
 
     - else
       .nothing-here-block
-        = s_('TagsPage|Repository has no tags yet.')
-        %br
-        %small
-          = s_('TagsPage|Use git tag command to add a new one:')
+        - if @search.present?
+          = s_('TagsPage|Sorry, your filter produced no results.')
+        - else
+          = s_('TagsPage|Repository has no tags yet.')
           %br
-          %span.monospace git tag -a v1.4 -m 'version 1.4'
+          %small
+            = s_('TagsPage|Use git tag command to add a new one:')
+            %br
+            %span.monospace git tag -a v1.4 -m 'version 1.4'

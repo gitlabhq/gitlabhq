@@ -34,7 +34,7 @@ class Packages::PackageFile < ApplicationRecord
   validates :file, presence: true
   validates :file_name, presence: true
 
-  validates :file_name, uniqueness: { scope: :package }, if: -> { package&.pypi? }
+  validates :file_name, uniqueness: { scope: :package }, if: -> { !pending_destruction? && package&.pypi? }
 
   scope :recent, -> { order(id: :desc) }
   scope :limit_recent, ->(limit) { recent.limit(limit) }

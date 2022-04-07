@@ -24,7 +24,9 @@ This guide describes how to develop Service Ping metrics using metrics instrumen
 
 A metric definition has the [`instrumentation_class`](metrics_dictionary.md) field, which can be set to a class.
 
-The defined instrumentation class should have one of the existing metric classes: `DatabaseMetric`, `RedisMetric`, `RedisHLLMetric`, or `GenericMetric`.
+The defined instrumentation class should inherit one of the existing metric classes: `DatabaseMetric`, `RedisMetric`, `RedisHLLMetric`, or `GenericMetric`.
+
+The current convention is that a single instrumentation class corresponds to a single metric. On a rare occasions, there are exceptions to that convention like [Redis metrics](#redis-metrics). To use a single instrumentation class for more than one metric, please reach out to one of the `@gitlab-org/growth/product-intelligence/engineers` members to consult about your case. 
 
 Using the instrumentation classes ensures that metrics can fail safe individually, without breaking the entire
  process of Service Ping generation.
@@ -186,3 +188,30 @@ rails generate gitlab:usage_metric CountIssues --type database
         create lib/gitlab/usage/metrics/instrumentations/count_issues_metric.rb
         create spec/lib/gitlab/usage/metrics/instrumentations/count_issues_metric_spec.rb
 ```
+
+## Migrate Service Ping metrics to instrumentation classes
+
+This guide describes how to migrate a Service Ping metric from [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) or [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb) to instrumentation classes.
+
+1. Choose the metric type:
+
+- [Database metric](#database-metrics)
+- [Redis HyperLogLog metrics](#redis-hyperloglog-metrics)
+- [Redis metric](#redis-metrics)
+- [Generic metric](#generic-metrics)
+
+1. Determine the location of instrumentation class: either under `ee` or outside `ee`.
+
+1. [Generate the instrumentation class file](#create-a-new-metric-instrumentation-class).
+
+1. Fill the instrumentation class body:
+
+   - Add code logic for the metric. This might be similar to the metric implementation in `usage_data.rb`.
+   - Add tests for the individual metric [`spec/lib/gitlab/usage/metrics/instrumentations/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/usage/metrics/instrumentations).
+   - Add tests for Service Ping.
+
+1. [Generate the metric definition file](metrics_dictionary.md#create-a-new-metric-definition).
+
+1. Remove the code from [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) or [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
+
+1. Remove the tests from [`spec/lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/usage_data_spec.rb) or [`ee/spec/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/lib/ee/gitlab/usage_data_spec.rb).

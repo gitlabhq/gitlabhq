@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::CleanupPackageFileWorker do
-  let_it_be(:package) { create(:package) }
+  let_it_be_with_reload(:package) { create(:package) }
 
   let(:worker) { described_class.new }
 
@@ -23,7 +23,23 @@ RSpec.describe Packages::CleanupPackageFileWorker do
         expect(worker).to receive(:log_extra_metadata_on_done).twice
 
         expect { subject }.to change { Packages::PackageFile.count }.by(-1)
-          .and not_change { Packages::Package.count }
+                                .and not_change { Packages::Package.count }
+        expect { package_file2.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      context 'with a duplicated PyPI package file' do
+        let_it_be_with_reload(:duplicated_package_file) { create(:package_file, package: package) }
+
+        before do
+          package.update!(package_type: :pypi, version: '1.2.3')
+          duplicated_package_file.update_column(:file_name, package_file2.file_name)
+        end
+
+        it 'deletes one of the duplicates' do
+          expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+                                  .and not_change { Packages::Package.count }
+          expect { package_file2.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
       end
     end
 

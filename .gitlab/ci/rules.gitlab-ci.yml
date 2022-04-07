@@ -73,6 +73,9 @@
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
+.if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
+  if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -1681,6 +1684,13 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns
+
+.setup:rules:jh-contribution:
+  rules:
+    - <<: *if-jh
+      when: never
+    - <<: *if-merge-request-labels-jh-contribution
+
 
 .setup:rules:generate-frontend-fixtures-mapping:
   rules:

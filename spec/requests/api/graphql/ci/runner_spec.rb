@@ -27,27 +27,14 @@ RSpec.describe 'Query.runner(id)' do
 
   let_it_be(:active_project_runner) { create(:ci_runner, :project) }
 
-  def get_runner(id)
-    case id
-    when :active_instance_runner
-      active_instance_runner
-    when :inactive_instance_runner
-      inactive_instance_runner
-    when :active_group_runner
-      active_group_runner
-    when :active_project_runner
-      active_project_runner
-    end
-  end
-
-  shared_examples 'runner details fetch' do |runner_id|
+  shared_examples 'runner details fetch' do
     let(:query) do
       wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
     end
 
     let(:query_path) do
       [
-        [:runner, { id: get_runner(runner_id).to_global_id.to_s }]
+        [:runner, { id: runner.to_global_id.to_s }]
       ]
     end
 
@@ -57,7 +44,6 @@ RSpec.describe 'Query.runner(id)' do
       runner_data = graphql_data_at(:runner)
       expect(runner_data).not_to be_nil
 
-      runner = get_runner(runner_id)
       expect(runner_data).to match a_hash_including(
         'id' => runner.to_global_id.to_s,
         'description' => runner.description,
@@ -90,14 +76,14 @@ RSpec.describe 'Query.runner(id)' do
     end
   end
 
-  shared_examples 'retrieval with no admin url' do |runner_id|
+  shared_examples 'retrieval with no admin url' do
     let(:query) do
       wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
     end
 
     let(:query_path) do
       [
-        [:runner, { id: get_runner(runner_id).to_global_id.to_s }]
+        [:runner, { id: runner.to_global_id.to_s }]
       ]
     end
 
@@ -107,7 +93,6 @@ RSpec.describe 'Query.runner(id)' do
       runner_data = graphql_data_at(:runner)
       expect(runner_data).not_to be_nil
 
-      runner = get_runner(runner_id)
       expect(runner_data).to match a_hash_including(
         'id' => runner.to_global_id.to_s,
         'adminUrl' => nil
@@ -116,14 +101,14 @@ RSpec.describe 'Query.runner(id)' do
     end
   end
 
-  shared_examples 'retrieval by unauthorized user' do |runner_id|
+  shared_examples 'retrieval by unauthorized user' do
     let(:query) do
       wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
     end
 
     let(:query_path) do
       [
-        [:runner, { id: get_runner(runner_id).to_global_id.to_s }]
+        [:runner, { id: runner.to_global_id.to_s }]
       ]
     end
 
@@ -135,7 +120,9 @@ RSpec.describe 'Query.runner(id)' do
   end
 
   describe 'for active runner' do
-    it_behaves_like 'runner details fetch', :active_instance_runner
+    let(:runner) { active_instance_runner }
+
+    it_behaves_like 'runner details fetch'
 
     context 'when tagList is not requested' do
       let(:query) do
@@ -144,7 +131,7 @@ RSpec.describe 'Query.runner(id)' do
 
       let(:query_path) do
         [
-          [:runner, { id: active_instance_runner.to_global_id.to_s }]
+          [:runner, { id: runner.to_global_id.to_s }]
         ]
       end
 
@@ -193,7 +180,9 @@ RSpec.describe 'Query.runner(id)' do
   end
 
   describe 'for inactive runner' do
-    it_behaves_like 'runner details fetch', :inactive_instance_runner
+    let(:runner) { inactive_instance_runner }
+
+    it_behaves_like 'runner details fetch'
   end
 
   describe 'for group runner request' do
@@ -369,15 +358,21 @@ RSpec.describe 'Query.runner(id)' do
     let(:user) { create(:user) }
 
     context 'on instance runner' do
-      it_behaves_like 'retrieval by unauthorized user', :active_instance_runner
+      let(:runner) { active_instance_runner }
+
+      it_behaves_like 'retrieval by unauthorized user'
     end
 
     context 'on group runner' do
-      it_behaves_like 'retrieval by unauthorized user', :active_group_runner
+      let(:runner) { active_group_runner }
+
+      it_behaves_like 'retrieval by unauthorized user'
     end
 
     context 'on project runner' do
-      it_behaves_like 'retrieval by unauthorized user', :active_project_runner
+      let(:runner) { active_project_runner }
+
+      it_behaves_like 'retrieval by unauthorized user'
     end
   end
 
@@ -388,13 +383,17 @@ RSpec.describe 'Query.runner(id)' do
       group.add_user(user, Gitlab::Access::OWNER)
     end
 
-    it_behaves_like 'retrieval with no admin url', :active_group_runner
+    it_behaves_like 'retrieval with no admin url' do
+      let(:runner) { active_group_runner }
+    end
   end
 
   describe 'by unauthenticated user' do
     let(:user) { nil }
 
-    it_behaves_like 'retrieval by unauthorized user', :active_instance_runner
+    it_behaves_like 'retrieval by unauthorized user' do
+      let(:runner) { active_instance_runner }
+    end
   end
 
   describe 'Query limits' do

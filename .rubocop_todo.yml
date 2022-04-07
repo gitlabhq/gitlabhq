@@ -18,11 +18,6 @@ Gitlab/PolicyRuleBoolean:
 Layout/MultilineOperationIndentation:
   Enabled: false
 
-# Offense count: 53
-# Cop supports --auto-correct.
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: false
-
 # Offense count: 754
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -72,11 +67,6 @@ Lint/EmptyFile:
   Exclude:
     - 'db/seeds.rb'
     - 'ee/db/geo/seeds.rb'
-
-# Offense count: 208
-# Configuration parameters: MaximumRangeSize.
-Lint/MissingCopEnableDirective:
-  Enabled: false
 
 # Offense count: 13
 Lint/MixedRegexpCaptureTypes:

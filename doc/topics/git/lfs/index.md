@@ -62,7 +62,7 @@ Git as usual without redoing the command to track a file with the same extension
 cp ~/tmp/debian.iso ./                # copy a large file into the current directory
 git add .                             # add the large file to the project
 git commit -am "Added Debian iso"     # commit the file meta data
-git push origin master                # sync the git repo and large file to the GitLab server
+git push origin main                # sync the git repo and large file to the GitLab server
 ```
 
 **Make sure** that `.gitattributes` is tracked by Git. Otherwise Git
@@ -85,7 +85,7 @@ If you already cloned the repository and you want to get the latest LFS object
 that are on the remote repository, such as for a branch from origin:
 
 ```shell
-git lfs fetch origin master
+git lfs fetch origin main
 ```
 
 Make sure your files aren't listed in `.gitignore`, otherwise, they are ignored by Git

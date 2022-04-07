@@ -218,6 +218,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Troubleshooting Elasticsearch](troubleshooting/elasticsearch.md)
 - [Navigating GitLab via Rails console](troubleshooting/navigating_gitlab_via_rails_console.md)
 - [GitLab application limits](instance_limits.md)
+- [Responding to security incidents](../security/responding_to_security_incidents.md)
 
 ### Support Team Docs
 

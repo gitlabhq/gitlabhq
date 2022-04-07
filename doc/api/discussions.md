@@ -994,7 +994,11 @@ curl --request POST --header "PRIVATE-TOKEN: [ACCESS_TOKEN]"\
 
 ### Resolve a merge request thread
 
-Resolve/unresolve whole thread of a merge request.
+Resolve or unresolve a thread of discussion in a merge request.
+
+Prerequisite:
+
+- You must have at least the Developer role, or be the author of the change being reviewed.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id

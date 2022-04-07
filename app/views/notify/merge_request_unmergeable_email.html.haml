@@ -1,2 +1,2 @@
 %p
-  Merge request #{merge_request_reference_link(@merge_request)} can no longer be merged due to conflict.
+  = sprintf(s_('Notify|Merge request %{merge_request} can no longer be merged due to conflict.'), { merge_request: merge_request_reference_link(@merge_request) }).html_safe

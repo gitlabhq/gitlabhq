@@ -23,6 +23,28 @@ RSpec.describe Packages::PackageFile, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:package) }
+
+    context 'with pypi package' do
+      let_it_be(:package) { create(:pypi_package) }
+
+      let(:package_file) { package.package_files.first }
+      let(:status) { :default }
+      let(:file) { fixture_file_upload('spec/fixtures/dk.png') }
+
+      subject { package.package_files.create!(file: file, file_name: package_file.file_name, status: status) }
+
+      it 'can not save a duplicated file' do
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File name has already been taken")
+      end
+
+      context 'with a pending destruction package duplicated file' do
+        let(:status) { :pending_destruction }
+
+        it 'can save it' do
+          expect { subject }.to change { package.package_files.count }.from(1).to(2)
+        end
+      end
+    end
   end
 
   context 'with package filenames' do

@@ -24,3 +24,5 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [598.3](598.3.md) | Use of GET request method with sensitive query strings (Authorization header details) | Medium | Passive |
 | [614.1](614.1.md) | Sensitive cookie without Secure attribute | Low | Passive |
 | [693.1](693.1.md) | Missing X-Content-Type-Options: nosniff | Low | Passive |
+| [829.1](829.1.md) | Inclusion of Functionality from Untrusted Control Sphere | Low | Passive |
+| [829.2](829.2.md) | Invalid Sub-Resource Integrity values detected | Medium | Passive |

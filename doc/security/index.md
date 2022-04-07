@@ -26,6 +26,7 @@ type: index
 - [CI/CD variables](../ci/variables/index.md#cicd-variable-security)
 - [Token overview](token_overview.md)
 - [Project Import decompressed archive size limits](project_import_decompressed_archive_size_limits.md)
+- [Responding to security incidents](responding_to_security_incidents.md)
 
 ## Securing your GitLab installation
 

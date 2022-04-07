@@ -27004,6 +27004,8 @@ CREATE INDEX index_ci_job_artifacts_id_for_terraform_reports ON ci_job_artifacts
 
 CREATE INDEX index_ci_job_artifacts_on_expire_at_and_job_id ON ci_job_artifacts USING btree (expire_at, job_id);
 
+CREATE INDEX index_ci_job_artifacts_on_expire_at_for_removal ON ci_job_artifacts USING btree (expire_at) WHERE ((locked = 0) AND (expire_at IS NOT NULL));
+
 CREATE INDEX index_ci_job_artifacts_on_file_store ON ci_job_artifacts USING btree (file_store);
 
 CREATE INDEX index_ci_job_artifacts_on_file_type_for_devops_adoption ON ci_job_artifacts USING btree (file_type, project_id, created_at) WHERE (file_type = ANY (ARRAY[5, 6, 8, 23]));
