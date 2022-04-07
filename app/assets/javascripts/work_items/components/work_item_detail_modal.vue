@@ -53,6 +53,7 @@ export default {
   <gl-modal hide-footer modal-id="work-item-detail-modal" :visible="visible" @hide="closeModal">
     <template #modal-header>
       <div class="gl-w-full gl-display-flex gl-align-items-center gl-justify-content-end">
+        <h2 class="modal-title gl-mr-auto">{{ s__('WorkItem|Work Item') }}</h2>
         <work-item-actions
           :work-item-id="workItemId"
           :can-update="canUpdate"
@@ -72,7 +73,7 @@ export default {
 
 <style>
 /* hide the existing close button until we can do it
- * with https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2710 
+ * with https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2710
  */
 #work-item-detail-modal .modal-header > .gl-button {
   display: none;

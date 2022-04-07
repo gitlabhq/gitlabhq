@@ -149,6 +149,22 @@ RSpec.describe Packages::GroupPackagesFinder do
         it { is_expected.to match_array([package1, package2]) }
       end
 
+      context 'preload_pipelines' do
+        it 'preloads pipelines by default' do
+          expect(Packages::Package).to receive(:preload_pipelines).and_call_original
+          expect(subject).to match_array([package1, package2])
+        end
+
+        context 'set to false' do
+          let(:params) { { preload_pipelines: false } }
+
+          it 'does not preload pipelines' do
+            expect(Packages::Package).not_to receive(:preload_pipelines)
+            expect(subject).to match_array([package1, package2])
+          end
+        end
+      end
+
       context 'with package_name' do
         let_it_be(:named_package) { create(:maven_package, project: project, name: 'maven') }
 

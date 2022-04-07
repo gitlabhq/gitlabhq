@@ -8,7 +8,7 @@ module ContainerRegistry
       include Gitlab::Utils::StrongMemoize
       include ExclusiveLeaseGuard
 
-      DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
+      DEFAULT_LEASE_TIMEOUT = 30.minutes.to_i.freeze
 
       data_consistency :always
       feature_category :container_registry

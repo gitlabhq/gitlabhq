@@ -37,13 +37,13 @@ module Gitlab
           allow_webpack_dev_server(directives)
           allow_letter_opener(directives)
           allow_snowplow_micro(directives) if Gitlab::Tracking.snowplow_micro_enabled?
-          allow_customersdot(directives) if ENV['CUSTOMER_PORTAL_URL'].present?
         end
 
         allow_websocket_connections(directives)
         allow_cdn(directives, Settings.gitlab.cdn_host) if Settings.gitlab.cdn_host.present?
         allow_sentry(directives) if Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
         allow_framed_gitlab_paths(directives)
+        allow_customersdot(directives) if ENV['CUSTOMER_PORTAL_URL'].present?
 
         # The follow section contains workarounds to patch Safari's lack of support for CSP Level 3
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/343579

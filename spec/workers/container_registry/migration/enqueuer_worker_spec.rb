@@ -261,7 +261,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
       let(:lease_key) { worker.send(:lease_key) }
 
       before do
-        stub_exclusive_lease_taken(lease_key, timeout: 1.hour)
+        stub_exclusive_lease_taken(lease_key, timeout: 30.minutes)
       end
 
       it 'does not perform' do

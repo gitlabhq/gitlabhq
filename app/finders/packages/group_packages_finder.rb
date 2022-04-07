@@ -22,11 +22,11 @@ module Packages
 
     def packages_for_group_projects(installable_only: false)
       packages = ::Packages::Package
-        .preload_pipelines
         .including_project_route
         .including_tags
         .for_projects(group_projects_visible_to_current_user.select(:id))
         .sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")
+      packages = packages.preload_pipelines if preload_pipelines
 
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
@@ -58,6 +58,10 @@ module Packages
 
     def exclude_subgroups?
       params[:exclude_subgroups]
+    end
+
+    def preload_pipelines
+      params.fetch(:preload_pipelines, true)
     end
   end
 end

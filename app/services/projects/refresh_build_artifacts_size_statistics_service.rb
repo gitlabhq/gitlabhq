@@ -12,7 +12,7 @@ module Projects
 
       if batch.any?
         # We are doing the sum in ruby because the query takes too long when done in SQL
-        total_artifacts_size = batch.sum(&:size)
+        total_artifacts_size = batch.sum { |artifact| artifact.size.to_i }
 
         Projects::BuildArtifactsSizeRefresh.transaction do
           # Mark the refresh ready for another worker to pick up and process the next batch

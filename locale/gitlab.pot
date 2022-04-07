@@ -24714,19 +24714,19 @@ msgstr ""
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""
 
-msgid "NamespaceStorage|%{name_with_link} namespace has %{percent} or less namespace storage space remaining."
+msgid "NamespaceStorage|%{name_with_link} namespace has approximately %{percent} namespace storage space remaining."
 msgstr ""
 
 msgid "NamespaceStorage|%{name_with_link} namespace has exceeded its namespace storage limit."
 msgstr ""
 
-msgid "NamespaceStorage|%{name}(%{url}) namespace has %{percent} or less namespace storage space remaining."
+msgid "NamespaceStorage|%{name}(%{url}) namespace has approximately %{percent} namespace storage space remaining."
 msgstr ""
 
 msgid "NamespaceStorage|%{name}(%{url}) namespace has exceeded its namespace storage limit."
 msgstr ""
 
-msgid "NamespaceStorage|Action required: Less than %{percentage_of_available_storage}%% of namespace storage remains for %{namespace_name}"
+msgid "NamespaceStorage|Action required: Approximately %{percentage_of_available_storage}%% of namespace storage remains for %{namespace_name}"
 msgstr ""
 
 msgid "NamespaceStorage|Action required: Storage has been exceeded for %{namespace_name}"
@@ -42694,6 +42694,9 @@ msgid "WorkItem|Something went wrong while updating the work item. Please try ag
 msgstr ""
 
 msgid "WorkItem|Type"
+msgstr ""
+
+msgid "WorkItem|Work Item"
 msgstr ""
 
 msgid "WorkItem|Work Items"

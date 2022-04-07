@@ -36,6 +36,12 @@ describe('WorkItemDetailModal component', () => {
     });
   });
 
+  it('renders heading', () => {
+    createComponent();
+
+    expect(wrapper.find('h2').text()).toBe('Work Item');
+  });
+
   it('renders WorkItemDetail', () => {
     createComponent();
 

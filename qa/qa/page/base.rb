@@ -247,6 +247,8 @@ module QA
           else
             find_element(name, **original_kwargs).disabled? == disabled
           end
+        rescue Capybara::ElementNotFound
+          false
         end
 
         # Check for the element before waiting for requests, just in case unrelated requests are in progress.

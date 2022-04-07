@@ -1801,8 +1801,8 @@ def ready?(**args)
 end
 ```
 
-In the future this may be able to be done using `InputUnions` if
-[this RFC](https://github.com/graphql/graphql-spec/blob/master/rfcs/InputUnion.md)
+In the future this may be able to be done using `OneOf Input Objects` if
+[this RFC](https://github.com/graphql/graphql-spec/pull/825)
 is merged.
 
 ## GitLab custom scalars

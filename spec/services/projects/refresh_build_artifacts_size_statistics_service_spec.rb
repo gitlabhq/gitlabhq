@@ -10,7 +10,8 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
 
     let_it_be(:artifact_1) { create(:ci_job_artifact, project: project, size: 1, created_at: 14.days.ago) }
     let_it_be(:artifact_2) { create(:ci_job_artifact, project: project, size: 2, created_at: 13.days.ago) }
-    let_it_be(:artifact_3) { create(:ci_job_artifact, project: project, size: 5, created_at: 12.days.ago) }
+    let_it_be(:artifact_3) { create(:ci_job_artifact, project: project, size: nil, created_at: 13.days.ago) }
+    let_it_be(:artifact_4) { create(:ci_job_artifact, project: project, size: 5, created_at: 12.days.ago) }
 
     # This should not be included in the recalculation as it is created later than the refresh start time
     let_it_be(:future_artifact) { create(:ci_job_artifact, project: project, size: 8, created_at: 2.days.from_now) }
@@ -33,7 +34,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
     end
 
     before do
-      stub_const("#{described_class}::BATCH_SIZE", 2)
+      stub_const("#{described_class}::BATCH_SIZE", 3)
 
       stats = create(:project_statistics, project: project, build_artifacts_size: 120)
       stats.increment_counter(:build_artifacts_size, 30)
@@ -48,7 +49,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
     end
 
     it 'updates the last_job_artifact_id to the ID of the last artifact from the batch' do
-      expect { service.execute }.to change { refresh.reload.last_job_artifact_id.to_i }.to(artifact_2.id)
+      expect { service.execute }.to change { refresh.reload.last_job_artifact_id.to_i }.to(artifact_3.id)
     end
 
     it 'requeues the refresh job' do
@@ -62,7 +63,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
           :project_build_artifacts_size_refresh,
           :pending,
           project: project,
-          last_job_artifact_id: artifact_2.id
+          last_job_artifact_id: artifact_3.id
         )
       end
 
@@ -73,7 +74,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
       end
 
       it 'keeps the last_job_artifact_id unchanged' do
-        expect(refresh.reload.last_job_artifact_id).to eq(artifact_2.id)
+        expect(refresh.reload.last_job_artifact_id).to eq(artifact_3.id)
       end
 
       it 'keeps the state of the refresh record at running' do
@@ -89,7 +90,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
           project: project,
           updated_at: 2.days.ago,
           refresh_started_at: now,
-          last_job_artifact_id: artifact_3.id
+          last_job_artifact_id: artifact_4.id
         )
       end
 
