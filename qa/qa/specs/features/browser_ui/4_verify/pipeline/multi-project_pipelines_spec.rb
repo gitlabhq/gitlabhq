@@ -43,7 +43,10 @@ module QA
         [upstream_project, downstream_project].each(&:remove_via_api!)
       end
 
-      it 'creates a multi-project pipeline', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348032' do
+      it(
+        'creates a multi-project pipeline',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358064'
+      ) do
         Page::Project::Pipeline::Show.perform do |show|
           expect(show).to have_passed
           expect(show).not_to have_job(downstream_job_name)

@@ -42,6 +42,38 @@ Each deprecation has a **planned removal milestone** and indicates whether it is
 
 Most of the deprecations are **planned for removal in 15.0**, and many of them are **breaking changes**.
 
+## 14.10
+
+### Manual iteration management
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Manual iteration management is deprecated and only automatic iteration cadences will be supported in the future.
+
+Creating and deleting iterations will be fully removed in 16.0. Updating all iteration fields except for
+`description` will also be removed.
+
+On the GraphQL API the following mutations will be removed:
+
+  1. `iterationCreate`
+  1. `iterationDelete`
+
+The update `updateIteration` mutation will only allow updating the iteration's `description`. The following
+arguments will be removed:
+
+  1. `title`
+  1. `dueDate`
+  1. `startDate`
+
+For more information about iteration cadences, you can refer to
+[the documentation of the feature](https://docs.gitlab.com/ee/user/group/iterations/#iteration-cadences).
+
+**Planned removal milestone: 16.0 (2023-04-22)**
+
 ## 14.9
 
 ### Background upload for object storage

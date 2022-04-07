@@ -288,7 +288,7 @@ RSpec.describe IssuablesHelper do
         canUpdate: true,
         canDestroy: true,
         issuableRef: "##{issue.iid}",
-        markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
+        markdownPreviewPath: "/#{@project.full_path}/preview_markdown?target_id=#{issue.iid}&target_type=Issue",
         markdownDocsPath: '/help/user/markdown',
         lockVersion: issue.lock_version,
         projectPath: @project.path,

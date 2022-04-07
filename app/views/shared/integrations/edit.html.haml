@@ -3,7 +3,7 @@
 - page_title @integration.title, _('Integrations')
 - @content_class = 'limit-container-width' unless fluid_layout
 
-%h3.page-title
+%h2.gl-mb-4
   = @integration.title
 
 = render 'shared/integrations/tabs', integration: @integration, active_tab: 'edit' do

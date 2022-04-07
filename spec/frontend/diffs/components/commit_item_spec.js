@@ -80,7 +80,7 @@ describe('diffs/components/commit_item', () => {
       const imgElement = avatarElement.find('img');
 
       expect(avatarElement.attributes('href')).toBe(commit.author.web_url);
-      expect(imgElement.classes()).toContain('s40');
+      expect(imgElement.classes()).toContain('s32');
       expect(imgElement.attributes('alt')).toBe(commit.author.name);
       expect(imgElement.attributes('src')).toBe(commit.author.avatar_url);
     });

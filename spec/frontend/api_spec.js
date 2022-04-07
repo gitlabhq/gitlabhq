@@ -158,33 +158,32 @@ describe('Api', () => {
   });
 
   describe('group', () => {
-    it('fetches a group', (done) => {
+    it('fetches a group', () => {
       const groupId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}`;
       mock.onGet(expectedUrl).reply(httpStatus.OK, {
         name: 'test',
       });
 
-      Api.group(groupId, (response) => {
-        expect(response.name).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.group(groupId, (response) => {
+          expect(response.name).toBe('test');
+          resolve();
+        });
       });
     });
   });
 
   describe('groupMembers', () => {
-    it('fetches group members', (done) => {
+    it('fetches group members', () => {
       const groupId = '54321';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/members`;
       const expectedData = [{ id: 7 }];
       mock.onGet(expectedUrl).reply(httpStatus.OK, expectedData);
 
-      Api.groupMembers(groupId)
-        .then(({ data }) => {
-          expect(data).toEqual(expectedData);
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.groupMembers(groupId).then(({ data }) => {
+        expect(data).toEqual(expectedData);
+      });
     });
   });
 
@@ -233,7 +232,7 @@ describe('Api', () => {
   });
 
   describe('groupMilestones', () => {
-    it('fetches group milestones', (done) => {
+    it('fetches group milestones', () => {
       const groupId = '16';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/milestones`;
       const expectedData = [
@@ -253,17 +252,14 @@ describe('Api', () => {
       ];
       mock.onGet(expectedUrl).reply(httpStatus.OK, expectedData);
 
-      Api.groupMilestones(groupId)
-        .then(({ data }) => {
-          expect(data).toEqual(expectedData);
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.groupMilestones(groupId).then(({ data }) => {
+        expect(data).toEqual(expectedData);
+      });
     });
   });
 
   describe('groups', () => {
-    it('fetches groups', (done) => {
+    it('fetches groups', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups.json`;
@@ -273,16 +269,18 @@ describe('Api', () => {
         },
       ]);
 
-      Api.groups(query, options, (response) => {
-        expect(response.length).toBe(1);
-        expect(response[0].name).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.groups(query, options, (response) => {
+          expect(response.length).toBe(1);
+          expect(response[0].name).toBe('test');
+          resolve();
+        });
       });
     });
   });
 
   describe('groupLabels', () => {
-    it('fetches group labels', (done) => {
+    it('fetches group labels', () => {
       const options = { params: { search: 'foo' } };
       const expectedGroup = 'gitlab-org';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${expectedGroup}/labels`;
@@ -293,18 +291,15 @@ describe('Api', () => {
         },
       ]);
 
-      Api.groupLabels(expectedGroup, options)
-        .then((res) => {
-          expect(res.length).toBe(1);
-          expect(res[0].name).toBe('Foo Label');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.groupLabels(expectedGroup, options).then((res) => {
+        expect(res.length).toBe(1);
+        expect(res[0].name).toBe('Foo Label');
+      });
     });
   });
 
   describe('namespaces', () => {
-    it('fetches namespaces', (done) => {
+    it('fetches namespaces', () => {
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/namespaces.json`;
       mock.onGet(expectedUrl).reply(httpStatus.OK, [
@@ -313,16 +308,18 @@ describe('Api', () => {
         },
       ]);
 
-      Api.namespaces(query, (response) => {
-        expect(response.length).toBe(1);
-        expect(response[0].name).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.namespaces(query, (response) => {
+          expect(response.length).toBe(1);
+          expect(response[0].name).toBe('test');
+          resolve();
+        });
       });
     });
   });
 
   describe('projects', () => {
-    it('fetches projects with membership when logged in', (done) => {
+    it('fetches projects with membership when logged in', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json`;
@@ -333,14 +330,16 @@ describe('Api', () => {
         },
       ]);
 
-      Api.projects(query, options, (response) => {
-        expect(response.length).toBe(1);
-        expect(response[0].name).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.projects(query, options, (response) => {
+          expect(response.length).toBe(1);
+          expect(response[0].name).toBe('test');
+          resolve();
+        });
       });
     });
 
-    it('fetches projects without membership when not logged in', (done) => {
+    it('fetches projects without membership when not logged in', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json`;
@@ -350,31 +349,30 @@ describe('Api', () => {
         },
       ]);
 
-      Api.projects(query, options, (response) => {
-        expect(response.length).toBe(1);
-        expect(response[0].name).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.projects(query, options, (response) => {
+          expect(response.length).toBe(1);
+          expect(response[0].name).toBe('test');
+          resolve();
+        });
       });
     });
   });
 
   describe('updateProject', () => {
-    it('update a project with the given payload', (done) => {
+    it('update a project with the given payload', () => {
       const projectPath = 'foo';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}`;
       mock.onPut(expectedUrl).reply(httpStatus.OK, { foo: 'bar' });
 
-      Api.updateProject(projectPath, { foo: 'bar' })
-        .then(({ data }) => {
-          expect(data.foo).toBe('bar');
-          done();
-        })
-        .catch(done.fail);
+      return Api.updateProject(projectPath, { foo: 'bar' }).then(({ data }) => {
+        expect(data.foo).toBe('bar');
+      });
     });
   });
 
   describe('projectUsers', () => {
-    it('fetches all users of a particular project', (done) => {
+    it('fetches all users of a particular project', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const projectPath = 'gitlab-org%2Fgitlab-ce';
@@ -385,13 +383,10 @@ describe('Api', () => {
         },
       ]);
 
-      Api.projectUsers('gitlab-org/gitlab-ce', query, options)
-        .then((response) => {
-          expect(response.length).toBe(1);
-          expect(response[0].name).toBe('test');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectUsers('gitlab-org/gitlab-ce', query, options).then((response) => {
+        expect(response.length).toBe(1);
+        expect(response[0].name).toBe('test');
+      });
     });
   });
 
@@ -399,38 +394,32 @@ describe('Api', () => {
     const projectPath = 'abc';
     const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests`;
 
-    it('fetches all merge requests for a project', (done) => {
+    it('fetches all merge requests for a project', () => {
       const mockData = [{ source_branch: 'foo' }, { source_branch: 'bar' }];
       mock.onGet(expectedUrl).reply(httpStatus.OK, mockData);
-      Api.projectMergeRequests(projectPath)
-        .then(({ data }) => {
-          expect(data.length).toEqual(2);
-          expect(data[0].source_branch).toBe('foo');
-          expect(data[1].source_branch).toBe('bar');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectMergeRequests(projectPath).then(({ data }) => {
+        expect(data.length).toEqual(2);
+        expect(data[0].source_branch).toBe('foo');
+        expect(data[1].source_branch).toBe('bar');
+      });
     });
 
-    it('fetches merge requests filtered with passed params', (done) => {
+    it('fetches merge requests filtered with passed params', () => {
       const params = {
         source_branch: 'bar',
       };
       const mockData = [{ source_branch: 'bar' }];
       mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, mockData);
 
-      Api.projectMergeRequests(projectPath, params)
-        .then(({ data }) => {
-          expect(data.length).toEqual(1);
-          expect(data[0].source_branch).toBe('bar');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectMergeRequests(projectPath, params).then(({ data }) => {
+        expect(data.length).toEqual(1);
+        expect(data[0].source_branch).toBe('bar');
+      });
     });
   });
 
   describe('projectMergeRequest', () => {
-    it('fetches a merge request', (done) => {
+    it('fetches a merge request', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}`;
@@ -438,17 +427,14 @@ describe('Api', () => {
         title: 'test',
       });
 
-      Api.projectMergeRequest(projectPath, mergeRequestId)
-        .then(({ data }) => {
-          expect(data.title).toBe('test');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectMergeRequest(projectPath, mergeRequestId).then(({ data }) => {
+        expect(data.title).toBe('test');
+      });
     });
   });
 
   describe('projectMergeRequestChanges', () => {
-    it('fetches the changes of a merge request', (done) => {
+    it('fetches the changes of a merge request', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/changes`;
@@ -456,17 +442,14 @@ describe('Api', () => {
         title: 'test',
       });
 
-      Api.projectMergeRequestChanges(projectPath, mergeRequestId)
-        .then(({ data }) => {
-          expect(data.title).toBe('test');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectMergeRequestChanges(projectPath, mergeRequestId).then(({ data }) => {
+        expect(data.title).toBe('test');
+      });
     });
   });
 
   describe('projectMergeRequestVersions', () => {
-    it('fetches the versions of a merge request', (done) => {
+    it('fetches the versions of a merge request', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/versions`;
@@ -476,30 +459,24 @@ describe('Api', () => {
         },
       ]);
 
-      Api.projectMergeRequestVersions(projectPath, mergeRequestId)
-        .then(({ data }) => {
-          expect(data.length).toBe(1);
-          expect(data[0].id).toBe(123);
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectMergeRequestVersions(projectPath, mergeRequestId).then(({ data }) => {
+        expect(data.length).toBe(1);
+        expect(data[0].id).toBe(123);
+      });
     });
   });
 
   describe('projectRunners', () => {
-    it('fetches the runners of a project', (done) => {
+    it('fetches the runners of a project', () => {
       const projectPath = 7;
       const params = { scope: 'active' };
       const mockData = [{ id: 4 }];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/runners`;
       mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, mockData);
 
-      Api.projectRunners(projectPath, { params })
-        .then(({ data }) => {
-          expect(data).toEqual(mockData);
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectRunners(projectPath, { params }).then(({ data }) => {
+        expect(data).toEqual(mockData);
+      });
     });
   });
 
@@ -528,7 +505,7 @@ describe('Api', () => {
   });
 
   describe('projectMilestones', () => {
-    it('fetches project milestones', (done) => {
+    it('fetches project milestones', () => {
       const projectId = 1;
       const options = { state: 'active' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/1/milestones`;
@@ -540,13 +517,10 @@ describe('Api', () => {
         },
       ]);
 
-      Api.projectMilestones(projectId, options)
-        .then(({ data }) => {
-          expect(data.length).toBe(1);
-          expect(data[0].title).toBe('milestone1');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectMilestones(projectId, options).then(({ data }) => {
+        expect(data.length).toBe(1);
+        expect(data[0].title).toBe('milestone1');
+      });
     });
   });
 
@@ -614,7 +588,7 @@ describe('Api', () => {
   });
 
   describe('newLabel', () => {
-    it('creates a new project label', (done) => {
+    it('creates a new project label', () => {
       const namespace = 'some namespace';
       const project = 'some project';
       const labelData = { some: 'data' };
@@ -633,13 +607,15 @@ describe('Api', () => {
         ];
       });
 
-      Api.newLabel(namespace, project, labelData, (response) => {
-        expect(response.name).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.newLabel(namespace, project, labelData, (response) => {
+          expect(response.name).toBe('test');
+          resolve();
+        });
       });
     });
 
-    it('creates a new group label', (done) => {
+    it('creates a new group label', () => {
       const namespace = 'group/subgroup';
       const labelData = { name: 'Foo', color: '#000000' };
       const expectedUrl = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
@@ -654,15 +630,17 @@ describe('Api', () => {
         ];
       });
 
-      Api.newLabel(namespace, undefined, labelData, (response) => {
-        expect(response.name).toBe('Foo');
-        done();
+      return new Promise((resolve) => {
+        Api.newLabel(namespace, undefined, labelData, (response) => {
+          expect(response.name).toBe('Foo');
+          resolve();
+        });
       });
     });
   });
 
   describe('groupProjects', () => {
-    it('fetches group projects', (done) => {
+    it('fetches group projects', () => {
       const groupId = '123456';
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
@@ -672,10 +650,12 @@ describe('Api', () => {
         },
       ]);
 
-      Api.groupProjects(groupId, query, {}, (response) => {
-        expect(response.length).toBe(1);
-        expect(response[0].name).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.groupProjects(groupId, query, {}, (response) => {
+          expect(response.length).toBe(1);
+          expect(response[0].name).toBe('test');
+          resolve();
+        });
       });
     });
 
@@ -764,12 +744,14 @@ describe('Api', () => {
       templateKey,
     )}`;
 
-    it('fetches an issue template', (done) => {
+    it('fetches an issue template', () => {
       mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
 
-      Api.issueTemplate(namespace, project, templateKey, templateType, (error, response) => {
-        expect(response).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.issueTemplate(namespace, project, templateKey, templateType, (_, response) => {
+          expect(response).toBe('test');
+          resolve();
+        });
       });
     });
 
@@ -777,8 +759,11 @@ describe('Api', () => {
       it('rejects the Promise', () => {
         mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
 
-        Api.issueTemplate(namespace, project, templateKey, templateType, () => {
-          expect(mock.history.get).toHaveLength(1);
+        return new Promise((resolve) => {
+          Api.issueTemplate(namespace, project, templateKey, templateType, () => {
+            expect(mock.history.get).toHaveLength(1);
+            resolve();
+          });
         });
       });
     });
@@ -790,19 +775,21 @@ describe('Api', () => {
     const templateType = 'template type';
     const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/templates/${templateType}`;
 
-    it('fetches all templates by type', (done) => {
+    it('fetches all templates by type', () => {
       const expectedData = [
         { key: 'Template1', name: 'Template 1', content: 'This is template 1!' },
       ];
       mock.onGet(expectedUrl).reply(httpStatus.OK, expectedData);
 
-      Api.issueTemplates(namespace, project, templateType, (error, response) => {
-        expect(response.length).toBe(1);
-        const { key, name, content } = response[0];
-        expect(key).toBe('Template1');
-        expect(name).toBe('Template 1');
-        expect(content).toBe('This is template 1!');
-        done();
+      return new Promise((resolve) => {
+        Api.issueTemplates(namespace, project, templateType, (_, response) => {
+          expect(response.length).toBe(1);
+          const { key, name, content } = response[0];
+          expect(key).toBe('Template1');
+          expect(name).toBe('Template 1');
+          expect(content).toBe('This is template 1!');
+          resolve();
+        });
       });
     });
 
@@ -818,34 +805,44 @@ describe('Api', () => {
   });
 
   describe('projectTemplates', () => {
-    it('fetches a list of templates', (done) => {
+    it('fetches a list of templates', () => {
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/gitlab-org%2Fgitlab-ce/templates/licenses`;
 
       mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
 
-      Api.projectTemplates('gitlab-org/gitlab-ce', 'licenses', {}, (response) => {
-        expect(response).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.projectTemplates('gitlab-org/gitlab-ce', 'licenses', {}, (response) => {
+          expect(response).toBe('test');
+          resolve();
+        });
       });
     });
   });
 
   describe('projectTemplate', () => {
-    it('fetches a single template', (done) => {
+    it('fetches a single template', () => {
       const data = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/gitlab-org%2Fgitlab-ce/templates/licenses/test%20license`;
 
       mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
 
-      Api.projectTemplate('gitlab-org/gitlab-ce', 'licenses', 'test license', data, (response) => {
-        expect(response).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.projectTemplate(
+          'gitlab-org/gitlab-ce',
+          'licenses',
+          'test license',
+          data,
+          (response) => {
+            expect(response).toBe('test');
+            resolve();
+          },
+        );
       });
     });
   });
 
   describe('users', () => {
-    it('fetches users', (done) => {
+    it('fetches users', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users.json`;
@@ -855,68 +852,56 @@ describe('Api', () => {
         },
       ]);
 
-      Api.users(query, options)
-        .then(({ data }) => {
-          expect(data.length).toBe(1);
-          expect(data[0].name).toBe('test');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.users(query, options).then(({ data }) => {
+        expect(data.length).toBe(1);
+        expect(data[0].name).toBe('test');
+      });
     });
   });
 
   describe('user', () => {
-    it('fetches single user', (done) => {
+    it('fetches single user', () => {
       const userId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}`;
       mock.onGet(expectedUrl).reply(httpStatus.OK, {
         name: 'testuser',
       });
 
-      Api.user(userId)
-        .then(({ data }) => {
-          expect(data.name).toBe('testuser');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.user(userId).then(({ data }) => {
+        expect(data.name).toBe('testuser');
+      });
     });
   });
 
   describe('user counts', () => {
-    it('fetches single user counts', (done) => {
+    it('fetches single user counts', () => {
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/user_counts`;
       mock.onGet(expectedUrl).reply(httpStatus.OK, {
         merge_requests: 4,
       });
 
-      Api.userCounts()
-        .then(({ data }) => {
-          expect(data.merge_requests).toBe(4);
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.userCounts().then(({ data }) => {
+        expect(data.merge_requests).toBe(4);
+      });
     });
   });
 
   describe('user status', () => {
-    it('fetches single user status', (done) => {
+    it('fetches single user status', () => {
       const userId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}/status`;
       mock.onGet(expectedUrl).reply(httpStatus.OK, {
         message: 'testmessage',
       });
 
-      Api.userStatus(userId)
-        .then(({ data }) => {
-          expect(data.message).toBe('testmessage');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.userStatus(userId).then(({ data }) => {
+        expect(data.message).toBe('testmessage');
+      });
     });
   });
 
   describe('user projects', () => {
-    it('fetches all projects that belong to a particular user', (done) => {
+    it('fetches all projects that belong to a particular user', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const userId = '123456';
@@ -927,16 +912,18 @@ describe('Api', () => {
         },
       ]);
 
-      Api.userProjects(userId, query, options, (response) => {
-        expect(response.length).toBe(1);
-        expect(response[0].name).toBe('test');
-        done();
+      return new Promise((resolve) => {
+        Api.userProjects(userId, query, options, (response) => {
+          expect(response.length).toBe(1);
+          expect(response[0].name).toBe('test');
+          resolve();
+        });
       });
     });
   });
 
   describe('commitPipelines', () => {
-    it('fetches pipelines for a given commit', (done) => {
+    it('fetches pipelines for a given commit', () => {
       const projectId = 'example/foobar';
       const commitSha = 'abc123def';
       const expectedUrl = `${dummyUrlRoot}/${projectId}/commit/${commitSha}/pipelines`;
@@ -946,13 +933,10 @@ describe('Api', () => {
         },
       ]);
 
-      Api.commitPipelines(projectId, commitSha)
-        .then(({ data }) => {
-          expect(data.length).toBe(1);
-          expect(data[0].name).toBe('test');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.commitPipelines(projectId, commitSha).then(({ data }) => {
+        expect(data.length).toBe(1);
+        expect(data[0].name).toBe('test');
+      });
     });
   });
 
@@ -977,7 +961,7 @@ describe('Api', () => {
   });
 
   describe('createBranch', () => {
-    it('creates new branch', (done) => {
+    it('creates new branch', () => {
       const ref = 'main';
       const branch = 'new-branch-name';
       const dummyProjectPath = 'gitlab-org/gitlab-ce';
@@ -991,18 +975,15 @@ describe('Api', () => {
         name: branch,
       });
 
-      Api.createBranch(dummyProjectPath, { ref, branch })
-        .then(({ data }) => {
-          expect(data.name).toBe(branch);
-          expect(axios.post).toHaveBeenCalledWith(expectedUrl, { ref, branch });
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.createBranch(dummyProjectPath, { ref, branch }).then(({ data }) => {
+        expect(data.name).toBe(branch);
+        expect(axios.post).toHaveBeenCalledWith(expectedUrl, { ref, branch });
+      });
     });
   });
 
   describe('projectForks', () => {
-    it('gets forked projects', (done) => {
+    it('gets forked projects', () => {
       const dummyProjectPath = 'gitlab-org/gitlab-ce';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
         dummyProjectPath,
@@ -1012,20 +993,17 @@ describe('Api', () => {
 
       mock.onGet(expectedUrl).replyOnce(httpStatus.OK, ['fork']);
 
-      Api.projectForks(dummyProjectPath, { visibility: 'private' })
-        .then(({ data }) => {
-          expect(data).toEqual(['fork']);
-          expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
-            params: { visibility: 'private' },
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.projectForks(dummyProjectPath, { visibility: 'private' }).then(({ data }) => {
+        expect(data).toEqual(['fork']);
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
+          params: { visibility: 'private' },
+        });
+      });
     });
   });
 
   describe('createContextCommits', () => {
-    it('creates a new context commit', (done) => {
+    it('creates a new context commit', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const commitsData = ['abcdefg'];
@@ -1044,17 +1022,16 @@ describe('Api', () => {
         },
       ]);
 
-      Api.createContextCommits(projectPath, mergeRequestId, expectedData)
-        .then(({ data }) => {
+      return Api.createContextCommits(projectPath, mergeRequestId, expectedData).then(
+        ({ data }) => {
           expect(data[0].title).toBe('Dummy commit');
-        })
-        .then(done)
-        .catch(done.fail);
+        },
+      );
     });
   });
 
   describe('allContextCommits', () => {
-    it('gets all context commits', (done) => {
+    it('gets all context commits', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/context_commits`;
@@ -1065,17 +1042,14 @@ describe('Api', () => {
         .onGet(expectedUrl)
         .replyOnce(200, [{ id: 'abcdef', short_id: 'abcdefghi', title: 'Dummy commit title' }]);
 
-      Api.allContextCommits(projectPath, mergeRequestId)
-        .then(({ data }) => {
-          expect(data[0].title).toBe('Dummy commit title');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.allContextCommits(projectPath, mergeRequestId).then(({ data }) => {
+        expect(data[0].title).toBe('Dummy commit title');
+      });
     });
   });
 
   describe('removeContextCommits', () => {
-    it('removes context commits', (done) => {
+    it('removes context commits', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const commitsData = ['abcdefg'];
@@ -1088,12 +1062,9 @@ describe('Api', () => {
 
       mock.onDelete(expectedUrl).replyOnce(204);
 
-      Api.removeContextCommits(projectPath, mergeRequestId, expectedData)
-        .then(() => {
-          expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { data: expectedData });
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.removeContextCommits(projectPath, mergeRequestId, expectedData).then(() => {
+        expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { data: expectedData });
+      });
     });
   });
 
@@ -1336,41 +1307,37 @@ describe('Api', () => {
   });
 
   describe('updateIssue', () => {
-    it('update an issue with the given payload', (done) => {
+    it('update an issue with the given payload', () => {
       const projectId = 8;
       const issue = 1;
       const expectedArray = [1, 2, 3];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/issues/${issue}`;
       mock.onPut(expectedUrl).reply(httpStatus.OK, { assigneeIds: expectedArray });
 
-      Api.updateIssue(projectId, issue, { assigneeIds: expectedArray })
-        .then(({ data }) => {
-          expect(data.assigneeIds).toEqual(expectedArray);
-          done();
-        })
-        .catch(done.fail);
+      return Api.updateIssue(projectId, issue, { assigneeIds: expectedArray }).then(({ data }) => {
+        expect(data.assigneeIds).toEqual(expectedArray);
+      });
     });
   });
 
   describe('updateMergeRequest', () => {
-    it('update an issue with the given payload', (done) => {
+    it('update an issue with the given payload', () => {
       const projectId = 8;
       const mergeRequest = 1;
       const expectedArray = [1, 2, 3];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/merge_requests/${mergeRequest}`;
       mock.onPut(expectedUrl).reply(httpStatus.OK, { assigneeIds: expectedArray });
 
-      Api.updateMergeRequest(projectId, mergeRequest, { assigneeIds: expectedArray })
-        .then(({ data }) => {
+      return Api.updateMergeRequest(projectId, mergeRequest, { assigneeIds: expectedArray }).then(
+        ({ data }) => {
           expect(data.assigneeIds).toEqual(expectedArray);
-          done();
-        })
-        .catch(done.fail);
+        },
+      );
     });
   });
 
   describe('tags', () => {
-    it('fetches all tags of a particular project', (done) => {
+    it('fetches all tags of a particular project', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const projectId = 8;
@@ -1381,13 +1348,10 @@ describe('Api', () => {
         },
       ]);
 
-      Api.tags(projectId, query, options)
-        .then(({ data }) => {
-          expect(data.length).toBe(1);
-          expect(data[0].name).toBe('test');
-        })
-        .then(done)
-        .catch(done.fail);
+      return Api.tags(projectId, query, options).then(({ data }) => {
+        expect(data.length).toBe(1);
+        expect(data[0].name).toBe('test');
+      });
     });
   });
 

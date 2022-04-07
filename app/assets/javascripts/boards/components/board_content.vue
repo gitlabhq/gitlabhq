@@ -4,7 +4,7 @@ import { sortBy } from 'lodash';
 import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
-import defaultSortableConfig from '~/sortable/sortable_config';
+import { defaultSortableOptions } from '~/sortable/constants';
 import { DraggableItemTypes } from '../constants';
 import BoardColumn from './board_column.vue';
 
@@ -43,7 +43,7 @@ export default {
     },
     draggableOptions() {
       const options = {
-        ...defaultSortableConfig,
+        ...defaultSortableOptions,
         disabled: this.disabled,
         draggable: '.is-draggable',
         fallbackOnBody: false,

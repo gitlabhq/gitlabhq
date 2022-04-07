@@ -88,6 +88,18 @@ RSpec.describe BulkImports::RelationExportService do
 
         subject.execute
       end
+
+      context 'when export is recently finished' do
+        it 'returns recently finished export instead of re-exporting' do
+          updated_at = 5.seconds.ago
+          export.update!(status: 1, updated_at: updated_at)
+
+          expect { subject.execute }.not_to change { export.updated_at }
+
+          expect(export.status).to eq(1)
+          expect(export.updated_at).to eq(updated_at)
+        end
+      end
     end
 
     context 'when exception occurs during export' do

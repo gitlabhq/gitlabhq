@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlFormCheckbox, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { s__, __ } from '~/locale';
 import JiraUpgradeCta from './jira_upgrade_cta.vue';
@@ -10,8 +10,6 @@ export default {
     GlFormGroup,
     GlFormCheckbox,
     GlFormInput,
-    GlSprintf,
-    GlLink,
     JiraUpgradeCta,
     JiraIssueCreationVulnerabilities: () =>
       import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
@@ -47,17 +45,7 @@ export default {
       required: false,
       default: null,
     },
-    gitlabIssuesEnabled: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     upgradePlanPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    editProjectPath: {
       type: String,
       required: false,
       default: '',
@@ -91,9 +79,6 @@ export default {
     projectKeyLabel: s__('JiraService|Jira project key'),
     projectKeyPlaceholder: s__('JiraService|For example, AB'),
     requiredFieldFeedback: __('This field is required.'),
-    issueTrackerConflictWarning: s__(
-      'JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used.',
-    ),
   },
 };
 </script>
@@ -112,12 +97,34 @@ export default {
           {{ $options.i18n.enableCheckboxHelp }}
         </template>
       </gl-form-checkbox>
-      <template v-if="enableJiraIssues">
+
+      <div v-if="enableJiraIssues" class="gl-pl-6 gl-mt-3">
+        <gl-form-group
+          :label="$options.i18n.projectKeyLabel"
+          label-for="service_project_key"
+          :invalid-feedback="$options.i18n.requiredFieldFeedback"
+          :state="validProjectKey"
+          class="gl-max-w-26"
+          data-testid="project-key-form-group"
+        >
+          <gl-form-input
+            id="service_project_key"
+            v-model="projectKey"
+            name="service[project_key]"
+            data-qa-selector="service_jira_project_key_field"
+            :placeholder="$options.i18n.projectKeyPlaceholder"
+            :required="enableJiraIssues"
+            :state="validProjectKey"
+            :readonly="isInheriting"
+          />
+        </gl-form-group>
+
         <jira-issue-creation-vulnerabilities
           :project-key="projectKey"
           :initial-is-enabled="initialEnableJiraVulnerabilities"
           :initial-issue-type-id="initialVulnerabilitiesIssuetype"
           :show-full-feature="showJiraVulnerabilitiesIntegration"
+          class="gl-mt-6"
           data-testid="jira-for-vulnerabilities"
           @request-jira-issue-types="$emit('request-jira-issue-types')"
         />
@@ -128,43 +135,14 @@ export default {
           show-ultimate-message
           :upgrade-plan-path="upgradePlanPath"
         />
-      </template>
+      </div>
     </template>
+
     <jira-upgrade-cta
       v-else
-      class="gl-mt-2"
       data-testid="premium-upgrade-cta"
       show-premium-message
       :upgrade-plan-path="upgradePlanPath"
     />
-
-    <template v-if="showJiraIssuesIntegration">
-      <gl-form-group
-        :label="$options.i18n.projectKeyLabel"
-        label-for="service_project_key"
-        :invalid-feedback="$options.i18n.requiredFieldFeedback"
-        :state="validProjectKey"
-        data-testid="project-key-form-group"
-      >
-        <gl-form-input
-          id="service_project_key"
-          v-model="projectKey"
-          name="service[project_key]"
-          data-qa-selector="service_jira_project_key_field"
-          :placeholder="$options.i18n.projectKeyPlaceholder"
-          :required="enableJiraIssues"
-          :state="validProjectKey"
-          :disabled="!enableJiraIssues"
-          :readonly="isInheriting"
-        />
-      </gl-form-group>
-      <p v-if="gitlabIssuesEnabled" data-testid="conflict-warning-text">
-        <gl-sprintf :message="$options.i18n.issueTrackerConflictWarning">
-          <template #link="{ content }">
-            <gl-link :href="editProjectPath" target="_blank">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
-    </template>
   </div>
 </template>

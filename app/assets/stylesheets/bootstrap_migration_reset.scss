@@ -1,0 +1,94 @@
+// ---
+// Scss to help with bootstrap 3 to 4 migration of core elements
+// ---
+body {
+  // Override default font size used in non-csslab UI
+  // Use rem to keep default font-size at 14px on body so 1rem still
+  // fits 8px grid, but also allow users to change browser font size
+  font-size: 0.875rem;
+}
+
+legend {
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 20px;
+}
+
+button,
+html [type='button'],
+[type='reset'],
+[type='submit'],
+[role='button'] {
+  // Override bootstrap reboot
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-appearance: inherit;
+  cursor: pointer;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h5,
+.h5 {
+  font-size: $gl-font-size;
+}
+
+b,
+strong {
+  font-weight: bold;
+}
+
+a {
+  color: $blue-600;
+}
+
+hr {
+  overflow: hidden;
+}
+
+code {
+  padding: 2px 4px;
+  color: $code-color;
+  background-color: $gray-50;
+  border-radius: $border-radius-default;
+
+  .code > &,
+  .build-log & {
+    background-color: inherit;
+    padding: unset;
+  }
+}
+
+table {
+  // Remove any table border lines
+  border-spacing: 0;
+}
+
+pre code {
+  white-space: pre-wrap;
+}
+
+/*
+ Bootstrap 4.1.2 introduced a new default vertical alignment which breaks our icons,
+ so we need to reset the vertical alignment to the default value. See:
+ - https://gitlab.com/gitlab-org/gitlab-foss/issues/51362
+ */
+svg {
+  vertical-align: baseline;
+}

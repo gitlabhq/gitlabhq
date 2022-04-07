@@ -167,6 +167,9 @@ export default {
       this.integrationActive = integrationActive;
     },
   },
+  descriptionHtmlConfig: {
+    ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
+  },
   helpHtmlConfig: {
     ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
     ADD_TAGS: ['use'], // to support icon SVGs
@@ -212,7 +215,7 @@ export default {
         <div class="row">
           <div class="col-lg-4">
             <h4 class="gl-mt-0">{{ section.title }}</h4>
-            <p v-safe-html="section.description"></p>
+            <p v-safe-html:[$options.descriptionHtmlConfig]="section.description"></p>
           </div>
 
           <div class="col-lg-8">

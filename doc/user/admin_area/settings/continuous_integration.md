@@ -28,7 +28,18 @@ From now on, every existing project and newly created ones that don't have a
 If you want to disable it for a specific project, you can do so in
 [its settings](../../../topics/autodevops/index.md#enable-or-disable-auto-devops).
 
-## Shared runner details
+## Enable shared runners for new projects
+
+You can set all new projects to have the instance's shared runners available by default.
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Select the **Enable shared runners for new projects** checkbox.
+
+Any time a new project is created, the shared runners are available.
+
+## Add a message for shared runners
 
 To display details about the instance's shared runners in all projects'
 runner settings:
@@ -36,16 +47,17 @@ runner settings:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-1. Enter your shared runner details in the **Shared runner details** field.
+1. Enter text, including Markdown if you want, in the **Shared runner details** field. For example:
 
-You can use [Markdown](../../markdown.md) for improved formatting. To see the rendered
-details:
+   ![Shared runner details input](img/continuous_integration_shared_runner_details_input_v14_10.png)
+
+To view the rendered details:
 
 1. On the top bar, select **Menu > Project** and select any group or project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 
-![Shared runner details example](img/continuous_integration_shared_runner_details_v14_0.png)
+![Shared runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
 
 ## Maximum artifacts size
 

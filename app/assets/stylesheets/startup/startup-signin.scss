@@ -369,8 +369,7 @@ fieldset:disabled a.btn {
   outline: none;
   background-color: #0b5cad;
 }
-body,
-.form-control {
+body {
   font-size: 0.875rem;
 }
 [type="submit"] {
@@ -387,15 +386,18 @@ a {
 hr {
   overflow: hidden;
 }
+svg {
+  vertical-align: baseline;
+}
+.form-control {
+  font-size: 0.875rem;
+}
 .hidden {
   display: none !important;
   visibility: hidden !important;
 }
 .hide {
   display: none;
-}
-svg {
-  vertical-align: baseline;
 }
 html {
   overflow-y: scroll;

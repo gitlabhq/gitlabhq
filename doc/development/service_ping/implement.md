@@ -760,7 +760,7 @@ To set up Service Ping locally, you must:
 1. Clone and start [Versions Application](https://gitlab.com/gitlab-services/version-gitlab-com).
    Make sure you run `docker-compose up` to start a PostgreSQL and Redis instance.
 1. Point GitLab to the Versions Application endpoint instead of the default endpoint:
-   1. Open [service_ping/submit_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L5) in your local and modified `PRODUCTION_URL`.
+   1. Open [service_ping/submit_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L5) locally and modify `STAGING_BASE_URL`.
    1. Set it to the local Versions Application URL: `http://localhost:3000/usage_data`.
 
 ### Test local setup

@@ -448,7 +448,7 @@ Example response:
 
 ## List project's runners
 
-List all runners available in the project, including from ancestor groups and [any allowed shared runners](../ci/runners/runners_scope.md#enable-shared-runners).
+List all runners available in the project, including from ancestor groups and [any allowed shared runners](../ci/runners/runners_scope.md#enable-shared-runners-for-a-project).
 
 ```plaintext
 GET /projects/:id/runners
@@ -566,7 +566,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## List group's runners
 
-List all runners available in the group as well as its ancestor groups, including [any allowed shared runners](../ci/runners/runners_scope.md#enable-shared-runners).
+List all runners available in the group as well as its ancestor groups, including [any allowed shared runners](../ci/runners/runners_scope.md#enable-shared-runners-for-a-group).
 
 ```plaintext
 GET /groups/:id/runners

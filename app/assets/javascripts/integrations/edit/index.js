@@ -22,7 +22,6 @@ function parseDatasetToProps(data) {
     commentDetail,
     projectKey,
     upgradePlanPath,
-    editProjectPath,
     learnMorePath,
     triggerEvents,
     sections,
@@ -52,7 +51,6 @@ function parseDatasetToProps(data) {
     showJiraVulnerabilitiesIntegration,
     enableJiraIssues,
     enableJiraVulnerabilities,
-    gitlabIssuesEnabled,
   } = parseBooleanInData(booleanAttributes);
 
   return {
@@ -81,9 +79,7 @@ function parseDatasetToProps(data) {
       initialEnableJiraVulnerabilities: enableJiraVulnerabilities,
       initialVulnerabilitiesIssuetype: vulnerabilitiesIssuetype,
       initialProjectKey: projectKey,
-      gitlabIssuesEnabled,
       upgradePlanPath,
-      editProjectPath,
     },
     learnMorePath,
     triggerEvents: JSON.parse(triggerEvents),

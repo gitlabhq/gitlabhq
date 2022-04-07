@@ -19,8 +19,29 @@ must be documented. For context, see the
 
 When you document feature flags, you must:
 
-- [Add a note at the start of the topic](#use-a-note-to-describe-the-state-of-the-feature-flag).
 - [Add version history text](#add-version-history-text).
+- [Add a note at the start of the topic](#use-a-note-to-describe-the-state-of-the-feature-flag).
+
+## Add version history text
+
+When the state of a flag changes (for example, disabled by default to enabled by default), add the change to the version history.
+
+Possible version history entries are:
+
+```markdown
+> - [Introduced](issue-link) in GitLab X.X [with a flag](../../administration/feature_flags.md) named <flag name>. Disabled by default.
+> - [Enabled on GitLab.com](issue-link) in GitLab X.X.
+> - [Enabled on GitLab.com](issue-link) in GitLab X.X. Available to GitLab.com administrators only.
+> - [Enabled on self-managed](issue-link) in GitLab X.X.
+> - [Generally available](issue-link) in GitLab X.Y. [Feature flag <flag name>](issue-link) removed.
+```
+
+You can combine entries if they happened in the same release:
+
+```markdown
+> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
+```
 
 ## Use a note to describe the state of the feature flag
 
@@ -30,7 +51,8 @@ The note has three parts, and follows this structure:
 
 ```markdown
 FLAG:
-<Self-managed GitLab availability information.> <GitLab.com availability information.>
+<Self-managed GitLab availability information.>
+<GitLab.com availability information.>
 <This feature is not ready for production use.>
 ```
 
@@ -60,27 +82,6 @@ FLAG:
 If needed, you can add this sentence:
 
 `The feature is not ready for production use.`
-
-## Add version history text
-
-When the state of a flag changes (for example, disabled by default to enabled by default), add the change to the version history.
-
-Possible version history entries are:
-
-```markdown
-> - [Introduced](issue-link) in GitLab X.X [with a flag](../../administration/feature_flags.md) named <flag name>. Disabled by default.
-> - [Enabled on GitLab.com](issue-link) in GitLab X.X.
-> - [Enabled on GitLab.com](issue-link) in GitLab X.X. Available to GitLab.com administrators only.
-> - [Enabled on self-managed](issue-link) in GitLab X.X.
-> - [Generally available](issue-link) in GitLab X.Y. [Feature flag <flag name>](issue-link) removed.
-```
-
-You can combine entries if they happened in the same release:
-
-```markdown
-> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
-```
 
 ## Feature flag documentation examples
 

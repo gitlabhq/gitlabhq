@@ -79,7 +79,11 @@ RSpec.configure do |config|
     # If any tests failed, leave the resources behind to help troubleshoot, otherwise remove them.
     # Do not remove the shared resource on live environments
     begin
-      QA::Resource::ReusableCollection.remove_all_via_api! if !suite.reporter.failed_examples.present? && !QA::Runtime::Env.running_on_dot_com?
+      next if suite.reporter.failed_examples.present?
+      next unless QA::Runtime::Scenario.attributes.include?(:gitlab_address)
+      next if QA::Runtime::Env.running_on_dot_com?
+
+      QA::Resource::ReusableCollection.remove_all_via_api!
     rescue QA::Resource::Errors::InternalServerError => e
       # Temporarily prevent this error from failing jobs while the cause is investigated
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/354387

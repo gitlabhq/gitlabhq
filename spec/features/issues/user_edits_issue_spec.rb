@@ -35,6 +35,12 @@ RSpec.describe "Issues > User edits issue", :js do
         end
 
         expect(form).to have_button("Write")
+
+        click_button("Write")
+        fill_in("Description", with: "/confidential")
+        click_button("Preview")
+
+        expect(form).to have_content('Makes this issue confidential.')
       end
 
       it 'allows user to select unassigned' do

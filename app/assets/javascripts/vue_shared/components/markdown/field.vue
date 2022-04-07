@@ -376,6 +376,7 @@ export default {
     <div
       v-if="referencedCommands && previewMarkdown && !markdownPreviewLoading"
       class="referenced-commands"
+      data-testid="referenced-commands"
       v-html="referencedCommands /* eslint-disable-line vue/no-v-html */"
     ></div>
     <div v-if="shouldShowReferencedUsers" class="referenced-users">

@@ -25,7 +25,10 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'parent pipelines passes if child passes', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348092' do
+      it(
+        'parent pipelines passes if child passes',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358062'
+      ) do
         add_ci_files(success_child_ci_file)
         Flow::Pipeline.visit_latest_pipeline
 
@@ -35,7 +38,10 @@ module QA
         end
       end
 
-      it 'parent pipeline fails if child fails', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348091' do
+      it(
+        'parent pipeline fails if child fails',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358063'
+      ) do
         add_ci_files(fail_child_ci_file)
         Flow::Pipeline.visit_latest_pipeline
 

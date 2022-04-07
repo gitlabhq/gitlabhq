@@ -101,6 +101,12 @@ These shortcuts are available when viewing issues and [merge requests](project/m
 | <kbd>b</kbd>                 | Copy source branch name (merge requests only). |
 | <kbd>.</kbd>                 | Open the [Web IDE](project/web_ide/index.md). |
 
+Merge requests additionally support the following shortcuts:
+
+| macOS shortcut                  | Windows shortcut    | Description |
+|---------------------------------|---------------------|-------------|
+| <kbd>Command</kbd> + <kbd>p</kbd>     | <kbd>Control</kbd> + <kbd>p</kbd> | Search for, and then jump to a file for review. |
+
 ### Project files
 
 These shortcuts are available when browsing the files in a project (go to

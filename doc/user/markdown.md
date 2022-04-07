@@ -525,6 +525,7 @@ GitLab Flavored Markdown recognizes the following:
 | merge request                                                               | `!123`                        | `namespace/project!123`                 | `project!123`                  |
 | snippet                                                                     | `$123`                        | `namespace/project$123`                 | `project$123`                  |
 | [epic](group/epics/index.md)                                                | `&123`                        | `group1/subgroup&123`                   |                                |
+| [iteration](group/iterations/index.md)                                      | `*iteration:"iteration title"`|                                         |                                |
 | [vulnerability](application_security/vulnerabilities/index.md) <sup>1</sup> | `[vulnerability:123]`         | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
 | feature flag                                                                | `[feature_flag:123]`          | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`   |
 | label by ID                                                                 | `~123`                        | `namespace/project~123`                 | `project~123`                  |

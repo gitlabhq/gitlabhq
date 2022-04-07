@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe "Admin Runners" do
   include StubENV
-  include Spec::Support::Helpers::ModalHelpers
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -15,7 +14,7 @@ RSpec.describe "Admin Runners" do
     wait_for_requests
   end
 
-  describe "Runners page", :js do
+  describe "Admin Runners page", :js do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:namespace) { create(:namespace) }
@@ -486,63 +485,14 @@ RSpec.describe "Admin Runners" do
       end
     end
 
-    describe 'runners registration' do
-      let!(:token) { Gitlab::CurrentSettings.runners_registration_token }
-
+    describe "runners registration" do
       before do
         visit admin_runners_path
-
-        click_on 'Register an instance runner'
       end
 
-      describe 'show registration instructions' do
-        before do
-          click_on 'Show runner installation and registration instructions'
-
-          wait_for_requests
-        end
-
-        it 'opens runner installation modal' do
-          expect(page).to have_text "Install a runner"
-
-          expect(page).to have_text "Environment"
-          expect(page).to have_text "Architecture"
-          expect(page).to have_text "Download and install binary"
-        end
-
-        it 'dismisses runner installation modal' do
-          within_modal do
-            click_button('Close', match: :first)
-          end
-
-          expect(page).not_to have_text "Install a runner"
-        end
-      end
-
-      it 'has a registration token' do
-        click_on 'Click to reveal'
-        expect(page.find('[data-testid="token-value"]')).to have_content(token)
-      end
-
-      describe 'reset registration token' do
-        let(:page_token) { find('[data-testid="token-value"]').text }
-
-        before do
-          click_on 'Reset registration token'
-
-          within_modal do
-            click_button('Reset token', match: :first)
-          end
-
-          wait_for_requests
-        end
-
-        it 'changes registration token' do
-          click_on 'Register an instance runner'
-
-          click_on 'Click to reveal'
-          expect(page_token).not_to eq token
-        end
+      it_behaves_like "shows and resets runner registration token" do
+        let(:dropdown_text) { 'Register an instance runner' }
+        let(:registration_token) { Gitlab::CurrentSettings.runners_registration_token }
       end
     end
   end

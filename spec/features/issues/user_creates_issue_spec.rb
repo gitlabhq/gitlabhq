@@ -71,6 +71,12 @@ RSpec.describe "User creates issue" do
 
           expect(preview).to have_css("gl-emoji")
           expect(textarea).not_to be_visible
+
+          click_button("Write")
+          fill_in("Description", with: "/confidential")
+          click_button("Preview")
+
+          expect(form).to have_content('Makes this issue confidential.')
         end
       end
     end

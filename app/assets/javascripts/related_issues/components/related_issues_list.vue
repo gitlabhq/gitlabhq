@@ -1,8 +1,8 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import Sortable from 'sortablejs';
-import sortableConfig from '~/sortable/sortable_config';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
+import { defaultSortableOptions } from '~/sortable/constants';
 
 export default {
   name: 'RelatedIssuesList',
@@ -53,7 +53,7 @@ export default {
   mounted() {
     if (this.canReorder) {
       this.sortable = Sortable.create(this.$refs.list, {
-        ...sortableConfig,
+        ...defaultSortableOptions,
         onStart: this.addDraggingCursor,
         onEnd: this.reordered,
       });

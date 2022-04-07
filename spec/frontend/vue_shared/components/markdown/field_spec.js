@@ -101,6 +101,21 @@ describe('Markdown field component', () => {
       expect(subject.find('.zen-backdrop textarea').element).not.toBeNull();
     });
 
+    it('renders referenced commands on markdown preview', async () => {
+      axiosMock
+        .onPost(markdownPreviewPath)
+        .reply(200, { references: { users: [], commands: 'test command' } });
+
+      previewLink = getPreviewLink();
+      previewLink.vm.$emit('click', { target: {} });
+
+      await axios.waitFor(markdownPreviewPath);
+      const referencedCommands = subject.find('[data-testid="referenced-commands"]');
+
+      expect(referencedCommands.exists()).toBe(true);
+      expect(referencedCommands.text()).toContain('test command');
+    });
+
     describe('markdown preview', () => {
       beforeEach(() => {
         axiosMock.onPost(markdownPreviewPath).reply(200, { body: previewHTML });

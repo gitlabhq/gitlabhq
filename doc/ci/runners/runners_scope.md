@@ -37,22 +37,31 @@ If you are using GitLab.com:
 - The shared runners consume the [CI/CD minutes](../pipelines/cicd_minutes.md)
   included with your account.
 
-### Enable shared runners
+### Enable shared runners for a project
 
 On GitLab.com, [shared runners](index.md) are enabled in all projects by
 default.
 
-On self-managed instances of GitLab, an administrator must [install](https://docs.gitlab.com/runner/install/index.html)
-and [register](https://docs.gitlab.com/runner/register/index.html) them.
+On self-managed instances of GitLab, an administrator can
+[enable them for all new projects](../../user/admin_area/settings/continuous_integration.md#enable-shared-runners-for-new-projects).
 
-You can also enable shared runners for individual projects.
+For existing projects, an administrator must
+[install](https://docs.gitlab.com/runner/install/index.html) and
+[register](https://docs.gitlab.com/runner/register/index.html) them.
 
-To enable shared runners:
+To enable shared runners for a project:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Select **Enable shared runners for this project**.
 
-### Disable shared runners
+### Enable shared runners for a group
+
+To enable shared runners for a group:
+
+1. Go to the group's **Settings > CI/CD** and expand the **Runners** section.
+1. Select **Enable shared runners for this group**.
+
+### Disable shared runners for a project
 
 You can disable shared runners for individual projects or for groups.
 You must have the Owner role for the project
@@ -68,6 +77,8 @@ Shared runners are automatically disabled for a project:
 - If the shared runners setting for the parent group is disabled, and
 - If overriding this setting is not permitted at the project level.
 
+### Disable shared runners for a group
+
 To disable shared runners for a group:
 
 1. Go to the group's **Settings > CI/CD** and expand the **Runners** section.
@@ -78,7 +89,7 @@ To disable shared runners for a group:
 NOTE:
 To re-enable the shared runners for a group, turn on the
 **Enable shared runners for this group** toggle.
-Then, an owner or maintainer must explicitly change this setting
+Then, a user with the Owner or Maintainer role must explicitly change this setting
 for each project subgroup or project.
 
 ### How shared runners pick jobs

@@ -529,9 +529,7 @@ a.gl-badge.badge-warning:active {
   padding-right: 2rem;
   padding-left: 1.75rem;
 }
-body,
-.form-control,
-.search form {
+body {
   font-size: 0.875rem;
 }
 button,
@@ -548,6 +546,13 @@ strong {
 }
 a {
   color: #1068bf;
+}
+svg {
+  vertical-align: baseline;
+}
+.form-control,
+.search form {
+  font-size: 0.875rem;
 }
 .hidden {
   display: none !important;
@@ -572,9 +577,6 @@ a {
 .toggle-sidebar-button .collapse-text,
 .toggle-sidebar-button .icon-chevron-double-lg-left {
   color: #666;
-}
-svg {
-  vertical-align: baseline;
 }
 html {
   overflow-y: scroll;

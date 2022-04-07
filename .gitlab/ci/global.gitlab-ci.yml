@@ -44,16 +44,16 @@
       - lib/gitlab/setup_helper.rb
     prefix: "gitaly-binaries-${DEBIAN-VERSION}"
   paths:
-    - tmp/tests/gitaly/_build/bin/
-    - tmp/tests/gitaly/_build/deps/git/install/
-    - tmp/tests/gitaly/config.toml
-    - tmp/tests/gitaly/gitaly2.config.toml
-    - tmp/tests/gitaly/internal/
-    - tmp/tests/gitaly/run/
-    - tmp/tests/gitaly/run2/
-    - tmp/tests/gitaly/Makefile
-    - tmp/tests/gitaly/praefect.config.toml
-    - tmp/tests/gitaly/ruby/
+    - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
+    - ${TMP_TEST_FOLDER}/gitaly/_build/deps/git/install/
+    - ${TMP_TEST_FOLDER}/gitaly/config.toml
+    - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml
+    - ${TMP_TEST_FOLDER}/gitaly/internal/
+    - ${TMP_TEST_FOLDER}/gitaly/run/
+    - ${TMP_TEST_FOLDER}/gitaly/run2/
+    - ${TMP_TEST_FOLDER}/gitaly/Makefile
+    - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
+    - ${TMP_TEST_FOLDER}/gitaly/ruby/
   policy: pull
 
 .go-pkg-cache: &go-pkg-cache
@@ -214,34 +214,33 @@
     - *storybook-node-modules-cache-push
 
 .use-pg11:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:5.0-alpine
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "11"
 
 .use-pg12:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-12-graphicsmagick-1.3.36
   services:
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "12"
 
 .use-pg13:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-13-graphicsmagick-1.3.36
   services:
     - name: postgres:13
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:5.0-alpine
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "13"
 
 .use-pg11-ee:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -250,9 +249,9 @@
       command: ["elasticsearch", "-E", "discovery.type=single-node"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "11"
 
 .use-pg12-ee:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-12-graphicsmagick-1.3.36
   services:
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -261,9 +260,9 @@
       command: ["elasticsearch", "-E", "discovery.type=single-node"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "12"
 
 .use-pg13-ee:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-13-graphicsmagick-1.3.36
   services:
     - name: postgres:13
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -272,6 +271,7 @@
       command: ["elasticsearch", "-E", "discovery.type=single-node"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "13"
 
 .use-kaniko:
   image:

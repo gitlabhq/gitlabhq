@@ -130,7 +130,7 @@ export default {
             :link-href="authorUrl"
             :img-src="authorAvatar"
             :img-alt="authorName"
-            :img-size="40"
+            :img-size="32"
             class="avatar-cell d-none d-sm-block"
           />
         </div>
