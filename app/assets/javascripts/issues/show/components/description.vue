@@ -288,17 +288,17 @@ export default {
       }"
       class="md"
     ></div>
-    <!-- eslint-disable vue/no-mutating-props -->
+
     <textarea
       v-if="descriptionText"
-      v-model="descriptionText"
+      :value="descriptionText"
       :data-update-url="updateUrl"
       class="hidden js-task-list-field"
       dir="auto"
       data-testid="textarea"
     >
     </textarea>
-    <!-- eslint-enable vue/no-mutating-props -->
+
     <gl-modal
       ref="modal"
       modal-id="create-task-modal"

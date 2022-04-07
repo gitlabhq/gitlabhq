@@ -107,10 +107,4 @@ RSpec.shared_examples 'model with wiki policies' do
       expect_disallowed(*disallowed_permissions)
     end
   end
-
-  # TODO: Remove this helper once we implement group features
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/208412
-  def set_access_level(access_level)
-    raise NotImplementedError
-  end
 end

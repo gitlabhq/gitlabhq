@@ -12,9 +12,7 @@ describe('Title field component', () => {
 
     wrapper = shallowMount(TitleField, {
       propsData: {
-        formState: {
-          title: 'test',
-        },
+        value: 'test',
       },
     });
   });

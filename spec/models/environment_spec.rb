@@ -586,6 +586,31 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
             expect(subject.user).to eq(user)
           end
         end
+
+        context 'close action does not raise ActiveRecord::StaleObjectError' do
+          let!(:close_action) do
+            create(:ci_build, :manual, pipeline: pipeline, name: 'close_app')
+          end
+
+          before do
+            # preload the build
+            environment.stop_action
+
+            # Update record as the other process. This makes `environment.stop_action` stale.
+            close_action.drop!
+          end
+
+          it 'successfully plays the build even if the build was a stale object' do
+            # Since build is droped.
+            expect(close_action.processed).to be_falsey
+
+            # it encounters the StaleObjectError at first, but reloads the object and runs `build.play`
+            expect { subject }.not_to raise_error(ActiveRecord::StaleObjectError)
+
+            # Now the build should be processed.
+            expect(close_action.reload.processed).to be_truthy
+          end
+        end
       end
     end
   end

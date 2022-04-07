@@ -106,6 +106,7 @@ class Group < Namespace
   has_one :crm_settings, class_name: 'Group::CrmSettings', inverse_of: :group
 
   accepts_nested_attributes_for :variables, allow_destroy: true
+  accepts_nested_attributes_for :group_feature, update_only: true
 
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
@@ -832,6 +833,17 @@ class Group < Namespace
 
     actors.any? do |actor|
       Feature.enabled?(:work_items, actor, default_enabled: :yaml)
+    end
+  end
+
+  # Check for enabled features, similar to `Project#feature_available?`
+  # NOTE: We still want to keep this after removing `Namespace#feature_available?`.
+  override :feature_available?
+  def feature_available?(feature, user = nil)
+    if ::Groups::FeatureSetting.available_features.include?(feature)
+      group_feature.feature_available?(feature, user) # rubocop:disable Gitlab/FeatureAvailableUsage
+    else
+      super
     end
   end
 

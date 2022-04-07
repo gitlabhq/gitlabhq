@@ -327,9 +327,12 @@ export default {
         });
     },
 
+    updateFormState(state) {
+      this.store.setFormState(state);
+    },
+
     updateAndShowForm(templates = {}) {
       if (!this.showForm) {
-        this.showForm = true;
         this.store.setFormState({
           title: this.state.titleText,
           description: this.state.descriptionText,
@@ -338,6 +341,7 @@ export default {
           updateLoading: false,
           issuableTemplates: templates,
         });
+        this.showForm = true;
       }
     },
 
@@ -369,6 +373,10 @@ export default {
     },
 
     updateIssuable() {
+      this.store.setFormState({
+        updateLoading: true,
+      });
+
       const {
         store: { formState },
         issueState,
@@ -376,7 +384,9 @@ export default {
       const issuablePayload = issueState.isDirty
         ? { ...formState, issue_type: issueState.issueType }
         : formState;
+
       this.clearFlash();
+
       return this.service
         .updateIssuable(issuablePayload)
         .then((res) => res.data)
@@ -473,6 +483,7 @@ export default {
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"
+        @updateForm="updateFormState"
       />
     </div>
     <div v-else>

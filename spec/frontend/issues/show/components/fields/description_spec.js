@@ -15,9 +15,7 @@ describe('Description field component', () => {
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
         quickActionsDocsPath: '/',
-        formState: {
-          description,
-        },
+        value: description,
       },
       stubs: {
         MarkdownField,

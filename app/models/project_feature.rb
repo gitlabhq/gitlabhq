@@ -3,6 +3,7 @@
 class ProjectFeature < ApplicationRecord
   include Featurable
   extend Gitlab::ConfigHelper
+  extend ::Gitlab::Utils::Override
 
   # When updating this array, make sure to update rubocop/cop/gitlab/feature_available_usage.rb as well.
   FEATURES = %i[
@@ -155,30 +156,13 @@ class ProjectFeature < ApplicationRecord
     %i(merge_requests_access_level builds_access_level).each(&validator)
   end
 
-  def get_permission(user, feature)
-    case access_level(feature)
-    when DISABLED
-      false
-    when PRIVATE
-      team_access?(user, feature)
-    when ENABLED
-      true
-    when PUBLIC
-      true
-    else
-      true
-    end
-  end
-
-  def team_access?(user, feature)
-    return unless user
-    return true if user.can_read_all_resources?
-
-    project.team.member?(user, ProjectFeature.required_minimum_access_level(feature))
-  end
-
   def feature_validation_exclusion
     %i(pages)
+  end
+
+  override :resource_member?
+  def resource_member?(user, feature)
+    project.team.member?(user, ProjectFeature.required_minimum_access_level(feature))
   end
 end
 

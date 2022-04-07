@@ -8,8 +8,8 @@ export default {
     GlIcon,
   },
   props: {
-    formState: {
-      type: Object,
+    value: {
+      type: String,
       required: true,
     },
     issuableTemplates: {
@@ -39,10 +39,9 @@ export default {
     // Create the editor for the template
     const editor = document.querySelector('.detail-page-description .note-textarea') || {};
     editor.setValue = (val) => {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.formState.description = val;
+      this.$emit('input', val);
     };
-    editor.getValue = () => this.formState.description;
+    editor.getValue = () => this.value;
 
     this.issuableTemplate = new IssuableTemplateSelectors({
       $dropdowns: $(this.$refs.toggle),

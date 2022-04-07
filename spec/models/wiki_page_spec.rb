@@ -473,6 +473,21 @@ RSpec.describe WikiPage do
       end
     end
 
+    describe 'in subdir' do
+      it 'keeps the page in the same dir when the content is updated' do
+        title = 'foo/Existing Page'
+        page = create_wiki_page(title: title)
+
+        expect(page.slug).to eq 'foo/Existing-Page'
+        expect(page.update(title: title, content: 'new_content')).to be_truthy
+
+        page = wiki.find_page(title)
+
+        expect(page.slug).to eq 'foo/Existing-Page'
+        expect(page.content).to eq 'new_content'
+      end
+    end
+
     context 'when renaming a page' do
       it 'raises an error if the page already exists' do
         existing_page = create_wiki_page

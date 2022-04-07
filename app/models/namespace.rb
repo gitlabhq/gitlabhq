@@ -373,7 +373,7 @@ class Namespace < ApplicationRecord
   end
 
   # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.
-  def feature_available?(feature)
+  def feature_available?(feature, _user = nil)
     licensed_feature_available?(feature)
   end
 

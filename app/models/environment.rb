@@ -273,7 +273,15 @@ class Environment < ApplicationRecord
     return unless available?
 
     stop!
-    stop_action&.play(current_user)
+
+    return unless stop_action
+
+    Gitlab::OptimisticLocking.retry_lock(
+      stop_action,
+      name: 'environment_stop_with_action'
+    ) do |build|
+      build&.play(current_user)
+    end
   end
 
   def reset_auto_stop
