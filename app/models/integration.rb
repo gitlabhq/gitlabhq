@@ -353,16 +353,17 @@ class Integration < ApplicationRecord
   end
   private_class_method :instance_level_integration
 
-  def self.create_from_active_default_integrations(scope, association)
-    group_ids = sorted_ancestors(scope).select(:id)
+  # Returns the number of successfully saved integrations
+  # Duplicate integrations are excluded from this count by their validations.
+  def self.create_from_active_default_integrations(owner, association)
+    group_ids = sorted_ancestors(owner).select(:id)
     array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
+    order = Arel.sql("type_new ASC, array_position(#{array}::bigint[], #{table_name}.group_id), instance DESC")
 
-    from_union([
-      active.where(instance: true),
-      active.where(group_id: group_ids, inherit_from_id: nil)
-    ]).order(Arel.sql("type_new ASC, array_position(#{array}::bigint[], #{table_name}.group_id), instance DESC")).group_by(&:type).each do |type, records|
-      build_from_integration(records.first, association => scope.id).save
-    end
+    from_union([active.where(instance: true), active.where(group_id: group_ids, inherit_from_id: nil)])
+      .order(order)
+      .group_by(&:type)
+      .count { |type, parents| build_from_integration(parents.first, association => owner.id).save }
   end
 
   def self.inherited_descendants_from_self_or_ancestors_from(integration)

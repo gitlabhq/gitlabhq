@@ -111,9 +111,10 @@ You can't use these keywords as job names:
 - `false`
 - `nil`
 
-Job names must be 255 characters or less. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342800)
-in GitLab 14.5, [with a feature flag](../../administration/feature_flags.md) named `ci_validate_job_length`.
-Enabled by default. To disable it, ask an administrator to [disable the feature flag](../../administration/feature_flags.md).
+Job names must be 255 characters or less.
+
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/342800) in GitLab 14.5.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/344665) in GitLab 14.10.[Feature flag <ci_validate_job_length>](https://gitlab.com/gitlab-org/gitlab/-/issues/344665) removed.
 
 Use unique names for your jobs. If multiple jobs have the same name,
 only one is added to the pipeline, and it's difficult to predict which one is chosen.

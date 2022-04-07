@@ -839,7 +839,15 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
 
           expect(page).to have_current_path(profile_two_factor_auth_path, ignore_query: true)
 
-          fill_in 'pin_code', with: user.reload.current_otp
+          # Use the secret shown on the page to generate the OTP that will be entered.
+          # This detects issues wherein a new secret gets generated after the
+          # page is shown.
+          wait_for_requests
+
+          otp_secret = page.find('.two-factor-secret').text.gsub('Key:', '').delete(' ')
+          current_otp = ROTP::TOTP.new(otp_secret).now
+
+          fill_in 'pin_code', with: current_otp
           fill_in 'current_password', with: user.password
 
           click_button 'Register with two-factor app'

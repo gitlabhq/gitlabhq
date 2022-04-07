@@ -289,9 +289,10 @@ module Gitlab
         ObjectStoreSettings::SUPPORTED_TYPES.collect do |type|
           section_setting = config.try(type)
 
-          next unless section_setting
+          next unless section_setting && section_setting['enabled']
 
-          object_store_setting = section_setting['object_store']
+          # Use #to_h to avoid Settingslogic bug: https://gitlab.com/gitlab-org/gitlab/-/issues/286873
+          object_store_setting = section_setting['object_store']&.to_h
 
           next unless object_store_setting && object_store_setting['enabled']
 

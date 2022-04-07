@@ -473,6 +473,18 @@ RSpec.describe Integration do
           expect(project.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
         end
 
+        context 'there are multiple inheritable integrations, and a duplicate' do
+          let!(:group_integration_2) { create(:jenkins_integration, :group, group: group) }
+          let!(:group_integration_3) { create(:datadog_integration, :instance) }
+          let!(:duplicate) { create(:jenkins_integration, project: project) }
+
+          it 'returns the number of successfully created integrations' do
+            expect(described_class.create_from_active_default_integrations(project, :project_id)).to eq 2
+
+            expect(project.reload.integrations.size).to eq(3)
+          end
+        end
+
         context 'passing a group' do
           let!(:subgroup) { create(:group, parent: group) }
 
