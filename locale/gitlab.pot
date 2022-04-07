@@ -4256,6 +4256,9 @@ msgstr ""
 msgid "Another issue tracker is already in use. Only one issue tracker service can be active at a time"
 msgstr ""
 
+msgid "Another third-party wiki is already in use. Only one third-party wiki integration can be active at a time"
+msgstr ""
+
 msgid "Anti-spam verification"
 msgstr ""
 
@@ -21583,6 +21586,9 @@ msgstr ""
 msgid "Jobs older than the configured time are considered expired and are archived. Archived jobs can no longer be retried. Leave empty to never archive jobs automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day."
 msgstr ""
 
+msgid "Jobs|All"
+msgstr ""
+
 msgid "Jobs|Are you sure you want to proceed?"
 msgstr ""
 
@@ -21593,6 +21599,9 @@ msgid "Jobs|Create CI/CD configuration file"
 msgstr ""
 
 msgid "Jobs|Filter jobs"
+msgstr ""
+
+msgid "Jobs|Finished"
 msgstr ""
 
 msgid "Jobs|Job is stuck. Check runners."
@@ -22830,6 +22839,9 @@ msgid "Logs"
 msgstr ""
 
 msgid "Logs|To see the logs, deploy your code to an environment."
+msgstr ""
+
+msgid "Looks like you've reached your %{free_limit} member limit for %{strong_start}%{namespace_name}%{strong_end}"
 msgstr ""
 
 msgid "Low vulnerabilities present"
@@ -29686,7 +29698,7 @@ msgstr ""
 msgid "ProjectSettings|Users can copy the repository to a new project."
 msgstr ""
 
-msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
+msgid "ProjectSettings|Users can only push commits to this repository if the committer email is one of their own verified emails."
 msgstr ""
 
 msgid "ProjectSettings|Users can request access"
@@ -43023,6 +43035,9 @@ msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
 msgstr ""
 
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
+msgstr ""
+
+msgid "You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members. To get more members an owner of this namespace can start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "You cannot %{action} %{state} users."

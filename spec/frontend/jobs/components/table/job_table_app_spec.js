@@ -88,7 +88,7 @@ describe('Job table app', () => {
     });
 
     it('when switching tabs only the skeleton loader should show', () => {
-      findTabs().vm.$emit('fetchJobsByStatus', 'PENDING');
+      findTabs().vm.$emit('fetchJobsByStatus', null);
 
       expect(findSkeletonLoader().exists()).toBe(true);
       expect(findLoadingSpinner().exists()).toBe(false);
@@ -184,13 +184,13 @@ describe('Job table app', () => {
     it.each`
       scope                                | shouldDisplay
       ${null}                              | ${true}
-      ${'PENDING'}                         | ${false}
-      ${'RUNNING'}                         | ${false}
       ${['FAILED', 'SUCCESS', 'CANCELED']} | ${false}
     `(
       'with tab scope $scope the filtered search displays $shouldDisplay',
       async ({ scope, shouldDisplay }) => {
         createComponent();
+
+        await waitForPromises();
 
         await findTabs().vm.$emit('fetchJobsByStatus', scope);
 

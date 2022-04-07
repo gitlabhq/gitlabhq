@@ -17,16 +17,40 @@ RSpec.describe Sidebars::Projects::Panel do
     subject { described_class.new(context).instance_variable_get(:@menus) }
 
     context 'when integration is present and active' do
-      let_it_be(:confluence) { create(:confluence_integration, active: true) }
+      context 'confluence only' do
+        let_it_be(:confluence) { create(:confluence_integration, active: true) }
 
-      let(:project) { confluence.project }
+        let(:project) { confluence.project }
 
-      it 'contains Confluence menu item' do
-        expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ConfluenceMenu) }).not_to be_nil
+        it 'contains Confluence menu item' do
+          expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ConfluenceMenu) }).not_to be_nil
+        end
+
+        it 'does not contain Wiki menu item' do
+          expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::WikiMenu) }).to be_nil
+        end
       end
 
-      it 'does not contain Wiki menu item' do
-        expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::WikiMenu) }).to be_nil
+      context 'shimo only' do
+        let_it_be(:shimo) { create(:shimo_integration, active: true) }
+
+        let(:project) { shimo.project }
+
+        it 'contains Shimo menu item' do
+          expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ShimoMenu) }).not_to be_nil
+        end
+      end
+
+      context 'confluence & shimo' do
+        let_it_be(:confluence) { create(:confluence_integration, active: true) }
+        let_it_be(:shimo) { create(:shimo_integration, active: true) }
+
+        let(:project) { confluence.project }
+
+        it 'contains Confluence menu item, not Shimo' do
+          expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ConfluenceMenu) }).not_to be_nil
+          expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ShimoMenu) }).to be_nil
+        end
       end
     end
 

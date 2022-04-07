@@ -1,3 +1,4 @@
+import { GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -7,16 +8,31 @@ describe('Jobs Table Tabs', () => {
   let wrapper;
 
   const defaultProps = {
-    jobCounts: { all: 848, pending: 0, running: 0, finished: 704 },
+    allJobsCount: 286,
+    loading: false,
   };
 
-  const findTab = (testId) => wrapper.findByTestId(testId);
+  const statuses = {
+    success: 'SUCCESS',
+    failed: 'FAILED',
+    canceled: 'CANCELED',
+  };
 
-  const createComponent = () => {
+  const findAllTab = () => wrapper.findByTestId('jobs-all-tab');
+  const findFinishedTab = () => wrapper.findByTestId('jobs-finished-tab');
+
+  const triggerTabChange = (index) => wrapper.findAllComponents(GlTab).at(index).vm.$emit('click');
+
+  const createComponent = (props = defaultProps) => {
     wrapper = extendedWrapper(
       mount(JobsTableTabs, {
         provide: {
-          ...defaultProps,
+          jobStatuses: {
+            ...statuses,
+          },
+        },
+        propsData: {
+          ...props,
         },
       }),
     );
@@ -30,13 +46,21 @@ describe('Jobs Table Tabs', () => {
     wrapper.destroy();
   });
 
+  it('displays All tab with count', () => {
+    expect(trimText(findAllTab().text())).toBe(`All ${defaultProps.allJobsCount}`);
+  });
+
+  it('displays Finished tab with no count', () => {
+    expect(findFinishedTab().text()).toBe('Finished');
+  });
+
   it.each`
-    tabId                  | text          | count
-    ${'jobs-all-tab'}      | ${'All'}      | ${defaultProps.jobCounts.all}
-    ${'jobs-pending-tab'}  | ${'Pending'}  | ${defaultProps.jobCounts.pending}
-    ${'jobs-running-tab'}  | ${'Running'}  | ${defaultProps.jobCounts.running}
-    ${'jobs-finished-tab'} | ${'Finished'} | ${defaultProps.jobCounts.finished}
-  `('displays the right tab text and badge count', ({ tabId, text, count }) => {
-    expect(trimText(findTab(tabId).text())).toBe(`${text} ${count}`);
+    tabIndex | expectedScope
+    ${0}     | ${null}
+    ${1}     | ${[statuses.success, statuses.failed, statuses.canceled]}
+  `('emits fetchJobsByStatus with $expectedScope on tab change', ({ tabIndex, expectedScope }) => {
+    triggerTabChange(tabIndex);
+
+    expect(wrapper.emitted()).toEqual({ fetchJobsByStatus: [[expectedScope]] });
   });
 });

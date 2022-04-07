@@ -26806,6 +26806,8 @@ CREATE INDEX index_badges_on_group_id ON badges USING btree (group_id);
 
 CREATE INDEX index_badges_on_project_id ON badges USING btree (project_id);
 
+CREATE INDEX index_batched_background_migrations_on_status ON batched_background_migrations USING btree (status);
+
 CREATE UNIQUE INDEX index_batched_background_migrations_on_unique_configuration ON batched_background_migrations USING btree (job_class_name, table_name, column_name, job_arguments);
 
 CREATE INDEX index_batched_jobs_by_batched_migration_id_and_id ON batched_background_migration_jobs USING btree (batched_background_migration_id, id);
@@ -28103,6 +28105,8 @@ CREATE INDEX index_members_on_invite_email ON members USING btree (invite_email)
 CREATE UNIQUE INDEX index_members_on_invite_token ON members USING btree (invite_token);
 
 CREATE INDEX index_members_on_member_namespace_id ON members USING btree (member_namespace_id);
+
+CREATE INDEX index_members_on_non_requested_non_invited_and_state_awaiting ON members USING btree (source_id) WHERE ((requested_at IS NULL) AND (invite_token IS NULL) AND (access_level > 5) AND (state = 1));
 
 CREATE INDEX index_members_on_requested_at ON members USING btree (requested_at);
 

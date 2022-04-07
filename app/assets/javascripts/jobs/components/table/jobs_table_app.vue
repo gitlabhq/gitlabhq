@@ -43,10 +43,11 @@ export default {
         };
       },
       update(data) {
-        const { jobs: { nodes: list = [], pageInfo = {} } = {} } = data.project || {};
+        const { jobs: { nodes: list = [], pageInfo = {}, count } = {} } = data.project || {};
         return {
           list,
           pageInfo,
+          count,
         };
       },
       error() {
@@ -64,6 +65,7 @@ export default {
       scope: null,
       infiniteScrollingTriggered: false,
       filterSearchTriggered: false,
+      count: 0,
     };
   },
   computed: {
@@ -92,6 +94,20 @@ export default {
     },
     showFilteredSearch() {
       return this.glFeatures?.jobsTableVueSearch && !this.scope;
+    },
+    jobsCount() {
+      return this.jobs.count;
+    },
+  },
+  watch: {
+    // this watcher ensures that the count on the all tab
+    //  is not updated when switching to the finished tab
+    jobsCount(newCount, oldCount) {
+      if (this.scope) {
+        this.count = oldCount;
+      } else {
+        this.count = newCount;
+      }
     },
   },
   mounted() {
@@ -161,7 +177,11 @@ export default {
       {{ $options.i18n.errorMsg }}
     </gl-alert>
 
-    <jobs-table-tabs @fetchJobsByStatus="fetchJobsByStatus" />
+    <jobs-table-tabs
+      :all-jobs-count="count"
+      :loading="loading"
+      @fetchJobsByStatus="fetchJobsByStatus"
+    />
 
     <jobs-filtered-search
       v-if="showFilteredSearch"

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Confluence < Integration
+  class Confluence < BaseThirdPartyWiki
     VALID_SCHEME_MATCH = %r{\Ahttps?\Z}.freeze
     VALID_HOST_MATCH = %r{\A.+\.atlassian\.net\Z}.freeze
     VALID_PATH_MATCH = %r{\A/wiki(/|\Z)}.freeze
@@ -11,14 +11,8 @@ module Integrations
     validates :confluence_url, presence: true, if: :activated?
     validate :validate_confluence_url_is_cloud, if: :activated?
 
-    after_commit :cache_project_has_confluence
-
     def self.to_param
       'confluence'
-    end
-
-    def self.supported_events
-      %w()
     end
 
     def title
@@ -79,13 +73,6 @@ module Integrations
 
     rescue URI::InvalidURIError
       false
-    end
-
-    def cache_project_has_confluence
-      return unless project && !project.destroyed?
-
-      project.project_setting.save! unless project.project_setting.persisted?
-      project.project_setting.update_column(:has_confluence, active?)
     end
   end
 end

@@ -1481,6 +1481,7 @@ export const mockJobsQueryResponse = {
     project: {
       id: '1',
       jobs: {
+        count: 1,
         pageInfo: {
           endCursor: 'eyJpZCI6IjIzMTcifQ',
           hasNextPage: true,

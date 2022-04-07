@@ -60,6 +60,17 @@ RSpec.describe Integration do
   end
 
   describe 'Scopes' do
+    describe '.third_party_wikis' do
+      let!(:integration1) { create(:jira_integration) }
+      let!(:integration2) { create(:redmine_integration) }
+      let!(:integration3) { create(:confluence_integration) }
+      let!(:integration4) { create(:shimo_integration) }
+
+      it 'returns the right group integration' do
+        expect(described_class.third_party_wikis).to contain_exactly(integration3, integration4)
+      end
+    end
+
     describe '.with_default_settings' do
       it 'returns the correct integrations' do
         instance_integration = create(:integration, :instance)

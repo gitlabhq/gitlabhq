@@ -3,6 +3,11 @@
 class ApplicationExperiment < Gitlab::Experiment
   control { nil } # provide a default control for anonymous experiments
 
+  # Documented in:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/357904
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/345932
+  #
+  # @deprecated
   def publish_to_database
     ActiveSupport::Deprecation.warn('publish_to_database is deprecated and should not be used for reporting anymore')
 
@@ -21,10 +26,13 @@ class ApplicationExperiment < Gitlab::Experiment
     # define a default nil control behavior so we can omit it when not needed
   end
 
-  # TODO: remove
   # This is deprecated logic as of v0.6.0 and should eventually be removed, but
   # needs to stay intact for actively running experiments. The new strategy
   # utilizes Digest::SHA2, a secret seed, and generates a 64-byte string.
+  #
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/334590
+  #
+  # @deprecated
   def key_for(source, seed = name)
     source = source.keys + source.values if source.is_a?(Hash)
 

@@ -32,6 +32,7 @@ export default {
                 nodes,
                 statuses,
                 pageInfo,
+                count: incoming.count,
               };
             }
 
@@ -45,6 +46,7 @@ export default {
           nodes,
           statuses,
           pageInfo,
+          count: incoming.count,
         };
       },
     },
