@@ -5,7 +5,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
   class="prometheus-graphs"
   data-qa-selector="prometheus_graphs"
   environmentstate="available"
-  metricsdashboardbasepath="/monitoring/monitor-project/-/environments/1/metrics"
+  metricsdashboardbasepath="/monitoring/monitor-project/-/metrics?environment=1"
   metricsendpoint="/monitoring/monitor-project/-/environments/1/additional_metrics.json"
 >
   <div>

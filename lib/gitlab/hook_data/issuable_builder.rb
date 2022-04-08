@@ -53,10 +53,7 @@ module Gitlab
       end
 
       def final_changes(changes_hash)
-        changes_hash.reduce({}) do |hash, (key, changes_array)|
-          hash[key] = Hash[CHANGES_KEYS.zip(changes_array)]
-          hash
-        end
+        changes_hash.transform_values { |changes_array| Hash[CHANGES_KEYS.zip(changes_array)] }
       end
     end
   end

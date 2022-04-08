@@ -16,7 +16,7 @@ class EnvironmentStatusEntity < Grape::Entity
   end
 
   expose :metrics_monitoring_url, if: ->(*) { can_read_environment? } do |es|
-    environment_metrics_path(es.environment)
+    project_metrics_dashboard_path(es.project, environment: es.environment)
   end
 
   expose :stop_url, if: ->(*) { can_stop_environment? } do |es|

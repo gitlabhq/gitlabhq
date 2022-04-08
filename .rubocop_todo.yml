@@ -300,16 +300,6 @@ Style/BarePercentLiterals:
 Style/CaseLikeIf:
   Enabled: false
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/EachWithObject:
-  Exclude:
-    - 'lib/expand_variables.rb'
-    - 'lib/gitlab/ci/ansi2html.rb'
-    - 'lib/gitlab/hook_data/issuable_builder.rb'
-    - 'lib/gitlab/i18n/po_linter.rb'
-    - 'lib/gitlab/import_export/members_mapper.rb'
-
 # Offense count: 55
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

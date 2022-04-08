@@ -18,10 +18,6 @@ module Routing
       project_environment_path(environment.project, environment, *args)
     end
 
-    def environment_metrics_path(environment, *args)
-      metrics_project_environment_path(environment.project, environment, *args)
-    end
-
     def environment_delete_path(environment, *args)
       expose_path(api_v4_projects_environments_path(id: environment.project.id, environment_id: environment.id))
     end

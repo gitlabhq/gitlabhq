@@ -50,9 +50,8 @@ module ExpandVariables
 
       # Convert hash array to variables
       if variables.is_a?(Array)
-        variables = variables.reduce({}) do |hash, variable|
+        variables = variables.each_with_object({}) do |variable, hash|
           hash[variable[:key]] = variable[:value]
-          hash
         end
       end
 

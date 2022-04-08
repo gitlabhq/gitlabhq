@@ -110,7 +110,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def load_topic
-    @topic = Projects::Topic.find_by_name(params[:topic_name])
+    @topic = Projects::Topic.find_by_name_case_insensitive(params[:topic_name])
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

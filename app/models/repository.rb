@@ -2,6 +2,12 @@
 
 require 'securerandom'
 
+# Explicitly require licensee/license file in order to use Licensee::InvalidLicense class defined in
+# https://github.com/licensee/licensee/blob/v9.14.1/lib/licensee/license.rb#L6
+# The problem is that nested classes are not automatically preloaded which may lead to
+# uninitialized constant exception being raised: https://gitlab.com/gitlab-org/gitlab/-/issues/356658
+require 'licensee/license'
+
 class Repository
   REF_MERGE_REQUEST = 'merge-requests'
   REF_KEEP_AROUND = 'keep-around'

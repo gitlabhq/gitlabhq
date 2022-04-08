@@ -45,7 +45,7 @@ export const removeLeadingSlash = (str) => (str || '').replace(/^\/+/, '');
 /**
  * GraphQL environments API returns only id and name.
  * For the environments dropdown we need metrics_path.
- * This method parses the results and add neccessart attrs
+ * This method parses the results and add necessary attrs
  *
  * @param {Array} response Environments API result
  * @param {String} projectPath Current project path
@@ -57,7 +57,7 @@ export const parseEnvironmentsResponse = (response = [], projectPath) =>
     return {
       ...env,
       id,
-      metrics_path: `${projectPath}/environments/${id}/metrics`,
+      metrics_path: `${projectPath}/-/metrics?environment=${id}`,
     };
   });
 
