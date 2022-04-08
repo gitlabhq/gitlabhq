@@ -6,11 +6,6 @@ module Backup
       @progress = progress
     end
 
-    # human readable task name used for logging
-    def human_name
-      raise NotImplementedError
-    end
-
     # dump task backup to `path`
     #
     # @param [String] path fully qualified backup task destination
@@ -30,11 +25,6 @@ module Backup
 
     # a string returned here will be displayed to the user after calling #restore
     def post_restore_warning
-    end
-
-    # returns `true` when the task should be used
-    def enabled
-      true
     end
 
     private

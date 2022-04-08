@@ -124,7 +124,7 @@ describe('BoardFilteredSearch', () => {
         { type: 'milestone', value: { data: 'New Milestone', operator: '=' } },
         { type: 'type', value: { data: 'INCIDENT', operator: '=' } },
         { type: 'weight', value: { data: '2', operator: '=' } },
-        { type: 'iteration', value: { data: '3341', operator: '=' } },
+        { type: 'iteration', value: { data: 'Any&3', operator: '=' } },
         { type: 'release', value: { data: 'v1.0.0', operator: '=' } },
       ];
       jest.spyOn(urlUtility, 'updateHistory');
@@ -134,7 +134,7 @@ describe('BoardFilteredSearch', () => {
         title: '',
         replace: true,
         url:
-          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label%262&assignee_username=root&milestone_title=New%20Milestone&iteration_id=3341&types=INCIDENT&weight=2&release_tag=v1.0.0',
+          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label%262&assignee_username=root&milestone_title=New%20Milestone&iteration_id=Any&iteration_cadence_id=3&types=INCIDENT&weight=2&release_tag=v1.0.0',
       });
     });
 

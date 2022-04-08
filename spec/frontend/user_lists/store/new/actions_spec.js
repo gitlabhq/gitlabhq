@@ -4,7 +4,7 @@ import { redirectTo } from '~/lib/utils/url_utility';
 import * as actions from '~/user_lists/store/new/actions';
 import * as types from '~/user_lists/store/new/mutation_types';
 import createState from '~/user_lists/store/new/state';
-import { userList } from '../../../feature_flags/mock_data';
+import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api');
 jest.mock('~/lib/utils/url_utility');

@@ -241,6 +241,8 @@ warrant a comment could be:
 - Any benchmarking performed to complement the change.
 - Potentially insecure code.
 
+If there are any projects, snippets, or other assets that are required for a reviewer to validate the solution, ensure they have access to those assets before requesting review.
+
 Avoid:
 
 - Adding TODO comments (referenced above) directly to the source code unless the reviewer requires

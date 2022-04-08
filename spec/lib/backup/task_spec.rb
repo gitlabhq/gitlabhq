@@ -7,12 +7,6 @@ RSpec.describe Backup::Task do
 
   subject { described_class.new(progress) }
 
-  describe '#human_name' do
-    it 'must be implemented by the subclass' do
-      expect { subject.human_name }.to raise_error(NotImplementedError)
-    end
-  end
-
   describe '#dump' do
     it 'must be implemented by the subclass' do
       expect { subject.dump('some/path', 'backup_id') }.to raise_error(NotImplementedError)

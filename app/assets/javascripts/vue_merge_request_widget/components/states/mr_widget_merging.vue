@@ -1,7 +1,7 @@
 <script>
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import simplePoll from '~/lib/utils/simple_poll';
-import MergeRequest from '../../../merge_request';
+import MergeRequest from '~/merge_request';
 import eventHub from '../../event_hub';
 import { MERGE_ACTIVE_STATUS_PHRASES, STATE_MACHINE } from '../../constants';
 import statusIcon from '../mr_widget_status_icon.vue';

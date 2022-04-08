@@ -22,8 +22,8 @@ RSpec.describe Backup::Manager do
 
   describe '#run_create_task' do
     let(:enabled) { true }
-    let(:task) { instance_double(Backup::Task, human_name: 'my task', enabled: enabled) }
-    let(:definitions) { { 'my_task' => Backup::Manager::TaskDefinition.new(task: task, destination_path: 'my_task.tar.gz') } }
+    let(:task) { instance_double(Backup::Task) }
+    let(:definitions) { { 'my_task' => Backup::Manager::TaskDefinition.new(task: task, enabled: enabled, destination_path: 'my_task.tar.gz', human_name: 'my task') } }
 
     it 'calls the named task' do
       expect(task).to receive(:dump)
@@ -58,12 +58,10 @@ RSpec.describe Backup::Manager do
     let(:enabled) { true }
     let(:pre_restore_warning) { nil }
     let(:post_restore_warning) { nil }
-    let(:definitions) { { 'my_task' => Backup::Manager::TaskDefinition.new(task: task, destination_path: 'my_task.tar.gz') } }
+    let(:definitions) { { 'my_task' => Backup::Manager::TaskDefinition.new(task: task, enabled: enabled, human_name: 'my task', destination_path: 'my_task.tar.gz') } }
     let(:backup_information) { {} }
     let(:task) do
       instance_double(Backup::Task,
-             human_name: 'my task',
-             enabled: enabled,
              pre_restore_warning: pre_restore_warning,
              post_restore_warning: post_restore_warning)
     end
@@ -158,12 +156,12 @@ RSpec.describe Backup::Manager do
       }
     end
 
-    let(:task1) { instance_double(Backup::Task, human_name: 'task 1', enabled: true) }
-    let(:task2) { instance_double(Backup::Task, human_name: 'task 2', enabled: true) }
+    let(:task1) { instance_double(Backup::Task) }
+    let(:task2) { instance_double(Backup::Task) }
     let(:definitions) do
       {
-        'task1' => Backup::Manager::TaskDefinition.new(task: task1, destination_path: 'task1.tar.gz'),
-        'task2' => Backup::Manager::TaskDefinition.new(task: task2, destination_path: 'task2.tar.gz')
+        'task1' => Backup::Manager::TaskDefinition.new(task: task1, human_name: 'task 1', destination_path: 'task1.tar.gz'),
+        'task2' => Backup::Manager::TaskDefinition.new(task: task2, human_name: 'task 2', destination_path: 'task2.tar.gz')
       }
     end
 
@@ -735,12 +733,12 @@ RSpec.describe Backup::Manager do
   end
 
   describe '#restore' do
-    let(:task1) { instance_double(Backup::Task, human_name: 'task 1', enabled: true, pre_restore_warning: nil, post_restore_warning: nil) }
-    let(:task2) { instance_double(Backup::Task, human_name: 'task 2', enabled: true, pre_restore_warning: nil, post_restore_warning: nil) }
+    let(:task1) { instance_double(Backup::Task, pre_restore_warning: nil, post_restore_warning: nil) }
+    let(:task2) { instance_double(Backup::Task, pre_restore_warning: nil, post_restore_warning: nil) }
     let(:definitions) do
       {
-        'task1' => Backup::Manager::TaskDefinition.new(task: task1, destination_path: 'task1.tar.gz'),
-        'task2' => Backup::Manager::TaskDefinition.new(task: task2, destination_path: 'task2.tar.gz')
+        'task1' => Backup::Manager::TaskDefinition.new(task: task1, human_name: 'task 1', destination_path: 'task1.tar.gz'),
+        'task2' => Backup::Manager::TaskDefinition.new(task: task2, human_name: 'task 2', destination_path: 'task2.tar.gz')
       }
     end
 

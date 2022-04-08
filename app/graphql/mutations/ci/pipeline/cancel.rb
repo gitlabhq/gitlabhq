@@ -13,6 +13,8 @@ module Mutations
 
           if pipeline.cancelable?
             pipeline.cancel_running
+            pipeline.cancel
+
             { success: true, errors: [] }
           else
             { success: false, errors: ['Pipeline is not cancelable'] }

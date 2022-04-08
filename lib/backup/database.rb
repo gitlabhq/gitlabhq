@@ -134,11 +134,6 @@ module Backup
       MSG
     end
 
-    override :human_name
-    def human_name
-      _('database')
-    end
-
     protected
 
     def database

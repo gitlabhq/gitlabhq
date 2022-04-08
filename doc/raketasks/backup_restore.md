@@ -381,7 +381,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 14.10.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](<path to>/administration/feature_flags.md) named `incremental_repository_backup`.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `incremental_repository_backup`.
 On GitLab.com, this feature is not available.
 
 Incremental backups can be faster than full backups because they only pack changes since the last backup into the backup

@@ -5014,7 +5014,7 @@ Input type: `UpdateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationupdatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** No longer allowed to update confidentiality of notes. Deprecated in 14.10. |
 | <a id="mutationupdatenoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
 
 #### Fields

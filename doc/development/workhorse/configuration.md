@@ -6,9 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Workhorse configuration
 
-For historical reasons Workhorse uses both command line flags, a configuration file and environment variables.
+For historical reasons, Workhorse uses:
 
-All new configuration options that get added to Workhorse should go into the configuration file.
+- Command line flags.
+- A configuration file.
+- Environment variables.
+
+Add any new Workhorse configuration options into the configuration file.
 
 ## CLI options
 
@@ -61,35 +65,32 @@ Options:
 ```
 
 The 'auth backend' refers to the GitLab Rails application. The name is
-a holdover from when GitLab Workhorse only handled Git push/pull over
+a holdover from when GitLab Workhorse only handled `git push` and `git pull` over
 HTTP.
 
 GitLab Workhorse can listen on either a TCP or a Unix domain socket. It
 can also open a second listening TCP listening socket with the Go
 [`net/http/pprof` profiler server](http://golang.org/pkg/net/http/pprof/).
 
-GitLab Workhorse can listen on Redis events (currently only builds/register
-for runners). This requires you to pass a valid TOML configuration file via
-`-config` flag.
-For regular setups it only requires the following (replacing the string
+GitLab Workhorse can listen on Redis build and runner registration events if you
+pass a valid TOML configuration file through the `-config` flag.
+A regular setup it only requires the following (replacing the string
 with the actual socket)
 
 ## Redis
 
 GitLab Workhorse integrates with Redis to do long polling for CI build
-requests. This is configured via two things:
+requests. To configure it:
 
-- Redis settings in the TOML configuration file
-- The `-apiCiLongPollingDuration` command line flag to control polling
-  behavior for CI build requests
+- Configure Redis settings in the TOML configuration file.
+- Control polling behavior for CI build requests with the `-apiCiLongPollingDuration`
+  command-line flag.
 
-It is OK to enable Redis in the configuration file but to leave CI polling
-disabled; this just results in an idle Redis pubsub connection. The
-opposite is not possible: CI long polling requires a correct Redis
-configuration.
+You can enable Redis in the configuration file while leaving CI polling
+disabled. This configuration results in an idle Redis Pub/Sub connection. The
+opposite is not possible: CI long polling requires a correct Redis configuration.
 
-Below we discuss the options for the `[redis]` section in the configuration
-file.
+For example, the `[redis]` section in the configuration file could contain:
 
 ```plaintext
 [redis]
@@ -99,15 +100,13 @@ Sentinel = [ "tcp://sentinel1:23456", "tcp://sentinel2:23456" ]
 SentinelMaster = "mymaster"
 ```
 
-- `URL` takes a string in the format `unix://path/to/redis.sock` or
-`tcp://host:port`.
-- `Password` is only required if your Redis instance is password-protected
-- `Sentinel` is used if you are using Sentinel.
+- `URL` - A string in the format `unix://path/to/redis.sock` or `tcp://host:port`.
+- `Password` - Required only if your Redis instance is password-protected.
+- `Sentinel` - Required if you use Sentinel.
 
-  NOTE:
-  If both `Sentinel` and `URL` are given, only `Sentinel` will be used.
+If both `Sentinel` and `URL` are given, only `Sentinel` is used.
 
-Optional fields are as follows:
+Optional fields:
 
 ```plaintext
 [redis]
@@ -116,15 +115,14 @@ MaxIdle = 1
 MaxActive = 1
 ```
 
-- `DB` is the Database to connect to. Defaults to `0`
-- `MaxIdle` is how many idle connections can be in the Redis pool at once. Defaults to 1
-- `MaxActive` is how many connections the pool can keep. Defaults to 1
+- `DB` - The database to connect to. Defaults to `0`.
+- `MaxIdle` - How many idle connections can be in the Redis pool at once. Defaults to `1`.
+- `MaxActive` - How many connections the pool can keep. Defaults to `1`.
 
 ## Relative URL support
 
-If you are mounting GitLab at a relative URL, e.g.
-`example.com/gitlab`, then you should also use this relative URL in
-the `authBackend` setting:
+If you mount GitLab at a relative URL, like `example.com/gitlab`), use this
+relative URL in the `authBackend` setting:
 
 ```plaintext
 gitlab-workhorse -authBackend http://localhost:8080/gitlab
@@ -132,33 +130,32 @@ gitlab-workhorse -authBackend http://localhost:8080/gitlab
 
 ## Interaction of authBackend and authSocket
 
-The interaction between `authBackend` and `authSocket` can be a bit
-confusing. It comes down to: if `authSocket` is set it overrides the
-_host_ part of `authBackend` but not the relative path.
+The interaction between `authBackend` and `authSocket` can be confusing.
+If `authSocket` is set, it overrides the host portion of `authBackend`, but not
+the relative path.
 
 In table form:
 
-|authBackend|authSocket|Workhorse connects to?|Rails relative URL|
-|---|---|---|---|
-|unset|unset|`localhost:8080`|`/`|
-|`http://localhost:3000`|unset|`localhost:3000`|`/`|
-|`http://localhost:3000/gitlab`|unset|`localhost:3000`|`/gitlab`|
-|unset|`/path/to/socket`|`/path/to/socket`|`/`|
-|`http://localhost:3000`|`/path/to/socket`|`/path/to/socket`|`/`|
-|`http://localhost:3000/gitlab`|`/path/to/socket`|`/path/to/socket`|`/gitlab`|
+| authBackend                    | authSocket        | Workhorse connects to | Rails relative URL |
+|--------------------------------|-------------------|-----------------------|--------------------|
+| unset                          | unset             | `localhost:8080`      | `/`                |
+| `http://localhost:3000`        | unset             | `localhost:3000`      | `/`                |
+| `http://localhost:3000/gitlab` | unset             | `localhost:3000`      | `/gitlab`          |
+| unset                          | `/path/to/socket` | `/path/to/socket`     | `/`                |
+| `http://localhost:3000`        | `/path/to/socket` | `/path/to/socket`     | `/`                |
+| `http://localhost:3000/gitlab` | `/path/to/socket` | `/path/to/socket`     | `/gitlab`          |
 
 The same applies to `cableBackend` and `cableSocket`.
 
 ## Error tracking
 
-GitLab-Workhorse supports remote error tracking with
-[Sentry](https://sentry.io). To enable this feature set the
-`GITLAB_WORKHORSE_SENTRY_DSN` environment variable.
+GitLab-Workhorse supports remote error tracking with [Sentry](https://sentry.io).
+To enable this feature, set the `GITLAB_WORKHORSE_SENTRY_DSN` environment variable.
 You can also set the `GITLAB_WORKHORSE_SENTRY_ENVIRONMENT` environment variable to
-use the Sentry environment functionality to separate staging, production and
+use the Sentry environment feature to separate staging, production and
 development.
 
-Omnibus (`/etc/gitlab/gitlab.rb`):
+Omnibus GitLab (`/etc/gitlab/gitlab.rb`):
 
 ```ruby
 gitlab_workhorse['env'] = {
@@ -174,46 +171,48 @@ export GITLAB_WORKHORSE_SENTRY_DSN='https://foobar'
 export GITLAB_WORKHORSE_SENTRY_ENVIRONMENT='production'
 ```
 
-## Distributed Tracing
+## Distributed tracing
 
-Workhorse supports distributed tracing through [LabKit](https://gitlab.com/gitlab-org/labkit/) using [OpenTracing APIs](https://opentracing.io).
+Workhorse supports distributed tracing through [LabKit](https://gitlab.com/gitlab-org/labkit/)
+using [OpenTracing APIs](https://opentracing.io).
 
-By default, no tracing implementation is linked into the binary, but different OpenTracing providers can be linked in using [build tags](https://golang.org/pkg/go/build/#hdr-Build_Constraints) or build constraints. This can be done by setting the `BUILD_TAGS` make variable.
+By default, no tracing implementation is linked into the binary. You can link in
+different OpenTracing providers with [build tags](https://golang.org/pkg/go/build/#hdr-Build_Constraints)
+or build constraints by setting the `BUILD_TAGS` make variable.
 
-For more details of the supported providers, see LabKit, but as an example, for Jaeger tracing support, include the tags: `BUILD_TAGS="tracer_static tracer_static_jaeger"`.
+For more details of the supported providers, refer to LabKit. For an example of
+Jaeger tracing support, include the tags: `BUILD_TAGS="tracer_static tracer_static_jaeger"` like this:
 
 ```shell
 make BUILD_TAGS="tracer_static tracer_static_jaeger"
 ```
 
-Once Workhorse is compiled with an opentracing provider, the tracing configuration is configured via the `GITLAB_TRACING` environment variable.
-
-For example:
+After you compile Workhorse with an OpenTracing provider, configure the tracing
+configuration with the `GITLAB_TRACING` environment variable, like this:
 
 ```shell
 GITLAB_TRACING=opentracing://jaeger ./gitlab-workhorse
 ```
 
-## Continuous Profiling
+## Continuous profiling
 
-Workhorse supports continuous profiling through [LabKit](https://gitlab.com/gitlab-org/labkit/) using [Stackdriver Profiler](https://cloud.google.com/profiler).
-
-By default, the Stackdriver Profiler implementation is linked in the binary using [build tags](https://golang.org/pkg/go/build/#hdr-Build_Constraints), though it's not
-required and can be skipped.
-
-For example:
+Workhorse supports continuous profiling through [LabKit](https://gitlab.com/gitlab-org/labkit/)
+using [Stackdriver Profiler](https://cloud.google.com/profiler). By default, the
+Stackdriver Profiler implementation is linked in the binary using
+[build tags](https://golang.org/pkg/go/build/#hdr-Build_Constraints), though it's not
+required and can be skipped. For example:
 
 ```shell
 make BUILD_TAGS=""
 ```
 
-Once Workhorse is compiled with Continuous Profiling, the profiler configuration can be set via `GITLAB_CONTINUOUS_PROFILING`
-environment variable.
-
-For example:
+After you compile Workhorse with continuous profiling, set the profiler configuration
+with the `GITLAB_CONTINUOUS_PROFILING` environment variable. For example:
 
 ```shell
 GITLAB_CONTINUOUS_PROFILING="stackdriver?service=workhorse&service_version=1.0.1&project_id=test-123 ./gitlab-workhorse"
 ```
 
-More information about see the [LabKit monitoring documentation](https://gitlab.com/gitlab-org/labkit/-/blob/master/monitoring/doc.go).
+## Related topics
+
+- [LabKit monitoring documentation](https://gitlab.com/gitlab-org/labkit/-/blob/master/monitoring/doc.go).

@@ -5266,6 +5266,9 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
+msgid "Authentication error: enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}"
+msgstr ""
+
 msgid "Authentication failed: %{error_message}"
 msgstr ""
 
@@ -15458,6 +15461,9 @@ msgid "Failed to load group activity metrics. Please try again."
 msgstr ""
 
 msgid "Failed to load groups, users and deploy keys."
+msgstr ""
+
+msgid "Failed to load iteration cadences."
 msgstr ""
 
 msgid "Failed to load iterations."

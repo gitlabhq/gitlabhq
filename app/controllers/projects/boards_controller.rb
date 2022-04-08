@@ -8,7 +8,6 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:board_multi_select, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:realtime_labels, project&.group, default_enabled: :yaml)
     experiment(:prominent_create_board_btn, subject: current_user) do |e|
       e.control { }
@@ -51,3 +50,5 @@ class Projects::BoardsController < Projects::ApplicationController
     access_denied! unless can?(current_user, :read_issue_board, project)
   end
 end
+
+Projects::BoardsController.prepend_mod

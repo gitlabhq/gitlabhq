@@ -15,7 +15,8 @@ module Mutations
         argument :confidential,
                  GraphQL::Types::Boolean,
                  required: false,
-                 description: 'Confidentiality flag of a note. Default is false.'
+                 description: 'Confidentiality flag of a note. Default is false.',
+                 deprecated: { reason: 'No longer allowed to update confidentiality of notes', milestone: '14.10' }
 
         private
 

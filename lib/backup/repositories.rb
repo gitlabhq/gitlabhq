@@ -33,11 +33,6 @@ module Backup
       restore_object_pools
     end
 
-    override :human_name
-    def human_name
-      _('repositories')
-    end
-
     private
 
     attr_reader :strategy

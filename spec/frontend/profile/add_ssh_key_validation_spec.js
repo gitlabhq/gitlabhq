@@ -1,4 +1,4 @@
-import AddSshKeyValidation from '../../../app/assets/javascripts/profile/add_ssh_key_validation';
+import AddSshKeyValidation from '~/profile/add_ssh_key_validation';
 
 describe('AddSshKeyValidation', () => {
   describe('submit', () => {

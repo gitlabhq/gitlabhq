@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage_monthly.verify.ci_pipeline_config_auto_devops
-description: Total pipelines from an Auto DevOps template
+description: Distinct users that ran an auto DevOps pipeline without a .gitlab-ci.yml file.
 product_section: ops
 product_stage: configure
 product_group: group::configure

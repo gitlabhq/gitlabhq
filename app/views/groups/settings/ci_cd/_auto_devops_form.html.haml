@@ -1,16 +1,16 @@
-= form_for group, url: update_auto_devops_group_settings_ci_cd_path(group), method: :patch do |f|
+= gitlab_ui_form_for group, url: update_auto_devops_group_settings_ci_cd_path(group), method: :patch do |f|
   = form_errors(group)
   %fieldset
     .form-group
       .card.auto-devops-card
         .card-body
-          .form-check
-            = f.check_box :auto_devops_enabled, class: 'form-check-input', checked: group.auto_devops_enabled?
-            = f.label :auto_devops_enabled, class: 'form-check-label' do
-              %strong= s_('GroupSettings|Default to Auto DevOps pipeline for all projects within this group')
-              = gl_badge_tag badge_for_auto_devops_scope(group), variant: :info
-            .form-text.text-muted
-              = s_('GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found.')
-              = link_to _('Learn more.'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
+          - learn_more_link = link_to _('Learn more.'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
+          - help_text = s_('GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found.')
+          - badge = gl_badge_tag badge_for_auto_devops_scope(group), variant: :info
+          - label = s_('GroupSettings|Default to Auto DevOps pipeline for all projects within this group')
+          = f.gitlab_ui_checkbox_component :auto_devops_enabled,
+            '%{label} %{badge}'.html_safe % { label: label, badge: badge.html_safe },
+            help_text: '%{help_text} %{learn_more_link}'.html_safe % { help_text: help_text, learn_more_link: learn_more_link },
+            checkbox_options: { checked: group.auto_devops_enabled? }
 
       = f.submit _('Save changes'), class: 'btn gl-button btn-confirm gl-mt-5'

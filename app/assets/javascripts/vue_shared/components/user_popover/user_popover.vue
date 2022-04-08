@@ -8,7 +8,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
-import { glEmojiTag } from '../../../emoji';
+import { glEmojiTag } from '~/emoji';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 
 const MAX_SKELETON_LINES = 4;

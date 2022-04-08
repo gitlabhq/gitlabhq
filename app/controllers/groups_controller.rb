@@ -33,7 +33,6 @@ class GroupsController < Groups::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:vue_issues_list, @group, default_enabled: :yaml)
-    push_frontend_feature_flag(:iteration_cadences, @group, default_enabled: :yaml)
   end
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]

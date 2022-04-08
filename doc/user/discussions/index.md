@@ -152,7 +152,8 @@ If an issue or merge request is locked and closed, you cannot reopen it.
 
 ## Mark a comment as confidential **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/351143) in GitLab 14.10: you can only mark comments in issues and epics as confidential. Previously, it was also possible for comments in merge requests and snippets.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -160,9 +161,25 @@ ask an administrator to [enable the feature flag](../../administration/feature_f
 On GitLab.com, this feature is not available.
 You should not use this feature for production environments.
 
-You can make a comment confidential, so that it is visible only to project members
-who have at least the Reporter role.
+You can make a comment **in an issue or an epic** confidential, so that it is visible only to you (the commenting user) and
+the project members who have at least the Reporter role.
 
+Keep in mind:
+
+- You can only mark comments as confidential when you create them.
+- You can't change the confidentiality of existing comments.
+- Replies to comments use same confidentiality as the original comment.
+
+Prerequisites:
+
+- You must either:
+  - Have at least the Reporter role for the project.
+  - Be the issue assignee.
+  - Be the issue author.
+
+To mark a comment as confidential:
+
+1. Start adding a new comment.
 1. Below the comment, select the **Make this comment confidential** checkbox.
 1. Select **Comment**.
 

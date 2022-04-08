@@ -12,7 +12,7 @@ import {
 } from '~/user_lists/store/index/actions';
 import * as types from '~/user_lists/store/index/mutation_types';
 import createState from '~/user_lists/store/index/state';
-import { userList } from '../../../feature_flags/mock_data';
+import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api.js');
 

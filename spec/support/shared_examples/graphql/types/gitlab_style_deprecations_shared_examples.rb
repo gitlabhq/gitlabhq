@@ -62,9 +62,9 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
     expect(deprecable.deprecation_reason).to include 'This was renamed.'
   end
 
-  it 'supports named reasons: discouraged' do
-    deprecable = subject(deprecated: { milestone: '1.10', reason: :discouraged })
+  it 'supports named reasons: alpha' do
+    deprecable = subject(deprecated: { milestone: '1.10', reason: :alpha })
 
-    expect(deprecable.deprecation_reason).to include 'Use of this is not recommended.'
+    expect(deprecable.deprecation_reason).to include 'This feature is in Alpha'
   end
 end

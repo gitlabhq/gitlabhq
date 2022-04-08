@@ -168,7 +168,12 @@ RSpec.describe GraphqlController do
         post :execute
 
         expect(response).to have_gitlab_http_status(:unauthorized)
-        expect(json_response).to eq({ 'errors' => [{ 'message' => '2FA required' }] })
+
+        expected_message = "Authentication error: " \
+        "enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}" %
+        { mfa_help_page: EnforcesTwoFactorAuthentication::MFA_HELP_PAGE }
+
+        expect(json_response).to eq({ 'errors' => [{ 'message' => expected_message }] })
       end
     end
 

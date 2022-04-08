@@ -235,19 +235,19 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       db_backup_error = Backup::DatabaseBackupError.new(config, db_file_name)
 
       where(:backup_class, :rake_task, :error) do
-        Backup::Database     | 'gitlab:backup:db:create'        | db_backup_error
-        Backup::Builds       | 'gitlab:backup:builds:create'    | file_backup_error
-        Backup::Uploads      | 'gitlab:backup:uploads:create'   | file_backup_error
-        Backup::Artifacts    | 'gitlab:backup:artifacts:create' | file_backup_error
-        Backup::Pages        | 'gitlab:backup:pages:create'     | file_backup_error
-        Backup::Lfs          | 'gitlab:backup:lfs:create'       | file_backup_error
-        Backup::Registry     | 'gitlab:backup:registry:create'  | file_backup_error
+        Backup::Database | 'gitlab:backup:db:create'        | db_backup_error
+        Backup::Files    | 'gitlab:backup:builds:create'    | file_backup_error
+        Backup::Files    | 'gitlab:backup:uploads:create'   | file_backup_error
+        Backup::Files    | 'gitlab:backup:artifacts:create' | file_backup_error
+        Backup::Files    | 'gitlab:backup:pages:create'     | file_backup_error
+        Backup::Files    | 'gitlab:backup:lfs:create'       | file_backup_error
+        Backup::Files    | 'gitlab:backup:registry:create'  | file_backup_error
       end
 
       with_them do
         before do
-          expect_next_instance_of(backup_class) do |instance|
-            expect(instance).to receive(:dump).and_raise(error)
+          allow_next_instance_of(backup_class) do |instance|
+            allow(instance).to receive(:dump).and_raise(error)
           end
         end
 

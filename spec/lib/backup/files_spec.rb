@@ -39,7 +39,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#restore' do
-    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, '/var/gitlab-registry') }
 
     let(:timestamp) { Time.utc(2017, 3, 22) }
 
@@ -110,7 +110,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#dump' do
-    subject { described_class.new(progress, 'pages', '/var/gitlab-pages', excludes: ['@pages.tmp']) }
+    subject { described_class.new(progress, '/var/gitlab-pages', excludes: ['@pages.tmp']) }
 
     before do
       allow(subject).to receive(:run_pipeline!).and_return([[true, true], ''])
@@ -176,7 +176,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#exclude_dirs' do
-    subject { described_class.new(progress, 'pages', '/var/gitlab-pages', excludes: ['@pages.tmp']) }
+    subject { described_class.new(progress, '/var/gitlab-pages', excludes: ['@pages.tmp']) }
 
     it 'prepends a leading dot slash to tar excludes' do
       expect(subject.exclude_dirs(:tar)).to eq(['--exclude=lost+found', '--exclude=./@pages.tmp'])
@@ -188,7 +188,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#run_pipeline!' do
-    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, '/var/gitlab-registry') }
 
     it 'executes an Open3.pipeline for cmd_list' do
       expect(Open3).to receive(:pipeline).with(%w[whew command], %w[another cmd], any_args)
@@ -222,7 +222,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#pipeline_succeeded?' do
-    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, '/var/gitlab-registry') }
 
     it 'returns true if both tar and gzip succeeeded' do
       expect(
@@ -262,7 +262,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#tar_ignore_non_success?' do
-    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, '/var/gitlab-registry') }
 
     context 'if `tar` command exits with 1 exitstatus' do
       it 'returns true' do
@@ -310,7 +310,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#noncritical_warning?' do
-    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, '/var/gitlab-registry') }
 
     it 'returns true if given text matches noncritical warnings list' do
       expect(

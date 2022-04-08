@@ -4,7 +4,10 @@ import { mapActions } from 'vuex';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  FILTERED_SEARCH_TERM,
+  FILTER_ANY,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { AssigneeFilterType } from '~/boards/constants';
 
@@ -42,6 +45,7 @@ export default {
         search,
         milestoneTitle,
         iterationId,
+        iterationCadenceId,
         types,
         weight,
         epicId,
@@ -95,10 +99,20 @@ export default {
         });
       }
 
-      if (iterationId) {
+      let iterationData = null;
+
+      if (iterationId && iterationCadenceId) {
+        iterationData = `${iterationId}&${iterationCadenceId}`;
+      } else if (iterationCadenceId) {
+        iterationData = `${FILTER_ANY}&${iterationCadenceId}`;
+      } else if (iterationId) {
+        iterationData = iterationId;
+      }
+
+      if (iterationData) {
         filteredSearchValue.push({
           type: 'iteration',
-          value: { data: iterationId, operator: '=' },
+          value: { data: iterationData, operator: '=' },
         });
       }
 
@@ -228,9 +242,12 @@ export default {
         epicId,
         myReactionEmoji,
         iterationId,
+        iterationCadenceId,
         releaseTag,
         confidential,
       } = this.filterParams;
+      let iteration = iterationId;
+      let cadence = iterationCadenceId;
       let notParams = {};
 
       if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
@@ -251,6 +268,10 @@ export default {
         );
       }
 
+      if (iterationId?.includes('&')) {
+        [iteration, cadence] = iterationId.split('&');
+      }
+
       return mapValues(
         {
           ...notParams,
@@ -259,7 +280,8 @@ export default {
           assignee_username: assigneeUsername,
           assignee_id: assigneeId,
           milestone_title: milestoneTitle,
-          iteration_id: iterationId,
+          iteration_id: iteration,
+          iteration_cadence_id: cadence,
           search,
           types,
           weight,

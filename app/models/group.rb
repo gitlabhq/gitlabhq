@@ -828,12 +828,7 @@ class Group < Namespace
   end
 
   def work_items_feature_flag_enabled?
-    actors = [root_ancestor]
-    actors << self if root_ancestor != self
-
-    actors.any? do |actor|
-      Feature.enabled?(:work_items, actor, default_enabled: :yaml)
-    end
+    feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end
 
   # Check for enabled features, similar to `Project#feature_available?`
@@ -848,6 +843,15 @@ class Group < Namespace
   end
 
   private
+
+  def feature_flag_enabled_for_self_or_ancestor?(feature_flag)
+    actors = [root_ancestor]
+    actors << self if root_ancestor != self
+
+    actors.any? do |actor|
+      ::Feature.enabled?(feature_flag, actor, default_enabled: :yaml)
+    end
+  end
 
   def max_member_access(user_ids)
     Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(User),

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import BranchGraph from '../../../network/branch_graph';
+import BranchGraph from '~/network/branch_graph';
 
 const vph = $(window).height() - 250;
 

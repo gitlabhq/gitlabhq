@@ -10,12 +10,12 @@ import extensionsContainer from '~/vue_merge_request_widget/components/extension
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import httpStatusCodes from '~/lib/utils/http_status';
 
-import { failedReport } from '../../../reports/mock_data/mock_data';
-import mixedResultsTestReports from '../../../reports/mock_data/new_and_fixed_failures_report.json';
-import newErrorsTestReports from '../../../reports/mock_data/new_errors_report.json';
-import newFailedTestReports from '../../../reports/mock_data/new_failures_report.json';
-import successTestReports from '../../../reports/mock_data/no_failures_report.json';
-import resolvedFailures from '../../../reports/mock_data/resolved_failures.json';
+import { failedReport } from 'jest/reports/mock_data/mock_data';
+import mixedResultsTestReports from 'jest/reports/mock_data/new_and_fixed_failures_report.json';
+import newErrorsTestReports from 'jest/reports/mock_data/new_errors_report.json';
+import newFailedTestReports from 'jest/reports/mock_data/new_failures_report.json';
+import successTestReports from 'jest/reports/mock_data/no_failures_report.json';
+import resolvedFailures from 'jest/reports/mock_data/resolved_failures.json';
 
 const reportWithParsingErrors = failedReport;
 reportWithParsingErrors.suites[0].suite_errors = {

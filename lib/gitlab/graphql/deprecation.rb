@@ -5,7 +5,7 @@ module Gitlab
     class Deprecation
       REASONS = {
         renamed: 'This was renamed.',
-        discouraged: 'Use of this is not recommended.'
+        alpha: 'This feature is in Alpha, and can be removed or changed at any point.'
       }.freeze
 
       include ActiveModel::Validations

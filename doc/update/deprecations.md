@@ -74,6 +74,18 @@ For more information about iteration cadences, you can refer to
 
 **Planned removal milestone: 16.0 (2023-04-22)**
 
+### Toggle notes confidentiality on APIs
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. Updating notes confidential attribute is no longer supported by any means. We are changing this to simplify the experience and prevent private information from being unintentionally exposed.
+
+**Planned removal milestone: 16.0 (2023-05-22)**
+
 ## 14.9
 
 ### Background upload for object storage

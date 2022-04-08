@@ -5,68 +5,34 @@ module Backup
     FILE_NAME_SUFFIX = '_gitlab_backup.tar'
     MANIFEST_NAME = 'backup_information.yml'
 
+    # pages used to deploy tmp files to this path
+    # if some of these files are still there, we don't need them in the backup
+    LEGACY_PAGES_TMP_PATH = '@pages.tmp'
+
     TaskDefinition = Struct.new(
+      :enabled, # `true` if the task can be used. Treated as `true` when not specified.
+      :human_name, # Name of the task used for logging.
       :destination_path, # Where the task should put its backup file/dir.
       :destination_optional, # `true` if the destination might not exist on a successful backup.
       :cleanup_path, # Path to remove after a successful backup. Uses `destination_path` when not specified.
       :task,
       keyword_init: true
-    )
+    ) do
+      def enabled?
+        enabled.nil? || enabled
+      end
+    end
 
     attr_reader :progress
 
     def initialize(progress, definitions: nil)
       @progress = progress
 
-      force = ENV['force'] == 'yes'
       @incremental = Feature.feature_flags_available? &&
         Feature.enabled?(:incremental_repository_backup, default_enabled: :yaml) &&
         Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
 
-      @definitions = definitions || {
-        'db' => TaskDefinition.new(
-          destination_path: 'db/database.sql.gz',
-          cleanup_path: 'db',
-          task: Database.new(progress, force: force)
-        ),
-        'repositories' => TaskDefinition.new(
-          destination_path: 'repositories',
-          destination_optional: true,
-          task: Repositories.new(progress, strategy: repository_backup_strategy)
-        ),
-        'uploads' => TaskDefinition.new(
-          destination_path: 'uploads.tar.gz',
-          task: Uploads.new(progress)
-        ),
-        'builds' => TaskDefinition.new(
-          destination_path: 'builds.tar.gz',
-          task: Builds.new(progress)
-        ),
-        'artifacts' => TaskDefinition.new(
-          destination_path: 'artifacts.tar.gz',
-          task: Artifacts.new(progress)
-        ),
-        'pages' => TaskDefinition.new(
-          destination_path: 'pages.tar.gz',
-          task: Pages.new(progress)
-        ),
-        'lfs' => TaskDefinition.new(
-          destination_path: 'lfs.tar.gz',
-          task: Lfs.new(progress)
-        ),
-        'terraform_state' => TaskDefinition.new(
-          destination_path: 'terraform_state.tar.gz',
-          task: TerraformState.new(progress)
-        ),
-        'registry' => TaskDefinition.new(
-          destination_path: 'registry.tar.gz',
-          task: Registry.new(progress)
-        ),
-        'packages' => TaskDefinition.new(
-          destination_path: 'packages.tar.gz',
-          task: Packages.new(progress)
-        )
-      }.freeze
+      @definitions = definitions || build_definitions
     end
 
     def create
@@ -102,22 +68,22 @@ module Backup
 
       build_backup_information
 
-      unless definition.task.enabled
-        puts_time "Dumping #{definition.task.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
+      unless definition.enabled?
+        puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
       end
 
       if skipped?(task_name)
-        puts_time "Dumping #{definition.task.human_name} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
+        puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
         return
       end
 
-      puts_time "Dumping #{definition.task.human_name} ... ".color(:blue)
+      puts_time "Dumping #{definition.human_name} ... ".color(:blue)
       definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
-      puts_time "Dumping #{definition.task.human_name} ... ".color(:blue) + "done".color(:green)
+      puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
-      puts_time "Dumping #{definition.task.human_name} failed: #{e.message}".color(:red)
+      puts_time "Dumping #{definition.human_name} failed: #{e.message}".color(:red)
     end
 
     def restore
@@ -146,12 +112,12 @@ module Backup
     def run_restore_task(task_name)
       definition = @definitions[task_name]
 
-      unless definition.task.enabled
-        puts_time "Restoring #{definition.task.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
+      unless definition.enabled?
+        puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
       end
 
-      puts_time "Restoring #{definition.task.human_name} ... ".color(:blue)
+      puts_time "Restoring #{definition.human_name} ... ".color(:blue)
 
       warning = definition.task.pre_restore_warning
       if warning.present?
@@ -161,7 +127,7 @@ module Backup
 
       definition.task.restore(File.join(Gitlab.config.backup.path, definition.destination_path))
 
-      puts_time "Restoring #{definition.task.human_name} ... ".color(:blue) + "done".color(:green)
+      puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
       warning = definition.task.post_restore_warning
       if warning.present?
@@ -175,6 +141,82 @@ module Backup
     end
 
     private
+
+    def build_definitions
+      {
+        'db' => TaskDefinition.new(
+          human_name: _('database'),
+          destination_path: 'db/database.sql.gz',
+          cleanup_path: 'db',
+          task: build_db_task
+        ),
+        'repositories' => TaskDefinition.new(
+          human_name: _('repositories'),
+          destination_path: 'repositories',
+          destination_optional: true,
+          task: build_repositories_task
+        ),
+        'uploads' => TaskDefinition.new(
+          human_name: _('uploads'),
+          destination_path: 'uploads.tar.gz',
+          task: build_files_task(File.join(Gitlab.config.uploads.storage_path, 'uploads'), excludes: ['tmp'])
+        ),
+        'builds' => TaskDefinition.new(
+          human_name: _('builds'),
+          destination_path: 'builds.tar.gz',
+          task: build_files_task(Settings.gitlab_ci.builds_path)
+        ),
+        'artifacts' => TaskDefinition.new(
+          human_name: _('artifacts'),
+          destination_path: 'artifacts.tar.gz',
+          task: build_files_task(JobArtifactUploader.root, excludes: ['tmp'])
+        ),
+        'pages' => TaskDefinition.new(
+          human_name: _('pages'),
+          destination_path: 'pages.tar.gz',
+          task: build_files_task(Gitlab.config.pages.path, excludes: [LEGACY_PAGES_TMP_PATH])
+        ),
+        'lfs' => TaskDefinition.new(
+          human_name: _('lfs objects'),
+          destination_path: 'lfs.tar.gz',
+          task: build_files_task(Settings.lfs.storage_path)
+        ),
+        'terraform_state' => TaskDefinition.new(
+          human_name: _('terraform states'),
+          destination_path: 'terraform_state.tar.gz',
+          task: build_files_task(Settings.terraform_state.storage_path, excludes: ['tmp'])
+        ),
+        'registry' => TaskDefinition.new(
+          enabled: Gitlab.config.registry.enabled,
+          human_name: _('container registry images'),
+          destination_path: 'registry.tar.gz',
+          task: build_files_task(Settings.registry.path)
+        ),
+        'packages' => TaskDefinition.new(
+          human_name: _('packages'),
+          destination_path: 'packages.tar.gz',
+          task: build_files_task(Settings.packages.storage_path, excludes: ['tmp'])
+        )
+      }.freeze
+    end
+
+    def build_db_task
+      force = ENV['force'] == 'yes'
+
+      Database.new(progress, force: force)
+    end
+
+    def build_repositories_task
+      max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
+      max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
+      strategy = Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
+
+      Repositories.new(progress, strategy: strategy)
+    end
+
+    def build_files_task(app_files_dir, excludes: [])
+      Files.new(progress, app_files_dir, excludes: excludes)
+    end
 
     def incremental?
       @incremental
@@ -394,7 +436,7 @@ module Backup
     end
 
     def enabled_task?(task_name)
-      @definitions[task_name].task.enabled
+      @definitions[task_name].enabled?
     end
 
     def backup_file?(file)
@@ -498,12 +540,6 @@ module Backup
 
     def google_provider?
       Gitlab.config.backup.upload.connection&.provider&.downcase == 'google'
-    end
-
-    def repository_backup_strategy
-      max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
-      max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
-      Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
     end
 
     def puts_time(msg)
