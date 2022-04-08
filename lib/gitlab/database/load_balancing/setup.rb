@@ -17,6 +17,12 @@ module Gitlab
           configure_connection
           setup_connection_proxy
           setup_service_discovery
+
+          ::Gitlab::Database::LoadBalancing::Logger.debug(
+            event: :setup,
+            model: model.name,
+            start_service_discovery: @start_service_discovery
+          )
         end
 
         def configure_connection

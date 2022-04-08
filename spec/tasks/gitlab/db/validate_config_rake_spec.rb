@@ -72,17 +72,22 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
         expect { run_rake_task('gitlab:db:validate_config') }.to raise_error(match)
       end
 
-      it 'to stderr instead of exception for production' do
-        allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-
-        expect { run_rake_task('gitlab:db:validate_config') }.to output(match).to_stderr
-      end
-
-      it 'if GITLAB_VALIDATE_DATABASE_CONFIG is set' do
-        stub_env('GITLAB_VALIDATE_DATABASE_CONFIG', '1')
+      it 'for production' do
         allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
 
         expect { run_rake_task('gitlab:db:validate_config') }.to raise_error(match)
+      end
+
+      it 'if GITLAB_VALIDATE_DATABASE_CONFIG=1' do
+        stub_env('GITLAB_VALIDATE_DATABASE_CONFIG', '1')
+
+        expect { run_rake_task('gitlab:db:validate_config') }.to raise_error(match)
+      end
+
+      it 'to stderr if GITLAB_VALIDATE_DATABASE_CONFIG=0' do
+        stub_env('GITLAB_VALIDATE_DATABASE_CONFIG', '0')
+
+        expect { run_rake_task('gitlab:db:validate_config') }.to output(match).to_stderr
       end
     end
 

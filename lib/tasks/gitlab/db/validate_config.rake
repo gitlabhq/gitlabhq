@@ -85,9 +85,13 @@ namespace :gitlab do
         warnings.unshift("Database config validation failure:")
 
         # Warn (for now) by default in production environment
-        if Gitlab::Utils.to_boolean(ENV['GITLAB_VALIDATE_DATABASE_CONFIG'], default: Gitlab.dev_or_test_env?)
+        if Gitlab::Utils.to_boolean(ENV['GITLAB_VALIDATE_DATABASE_CONFIG'], default: true)
+          warnings << "Use `export GITLAB_VALIDATE_DATABASE_CONFIG=0` to ignore this validation."
+
           raise warnings.join("\n")
         else
+          warnings << "Use `export GITLAB_VALIDATE_DATABASE_CONFIG=1` to enforce this validation."
+
           warn warnings.join("\n")
         end
       end

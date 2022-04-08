@@ -95,7 +95,6 @@ module ApplicationSettingImplementation
         help_page_text: nil,
         help_page_documentation_base_url: nil,
         hide_third_party_offers: false,
-        housekeeping_bitmaps_enabled: true,
         housekeeping_enabled: true,
         housekeeping_full_repack_period: 50,
         housekeeping_gc_period: 200,

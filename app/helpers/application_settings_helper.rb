@@ -266,7 +266,6 @@ module ApplicationSettingsHelper
       :help_page_text,
       :hide_third_party_offers,
       :home_page_url,
-      :housekeeping_bitmaps_enabled,
       :housekeeping_enabled,
       :housekeeping_full_repack_period,
       :housekeeping_gc_period,

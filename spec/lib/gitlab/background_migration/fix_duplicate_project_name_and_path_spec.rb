@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::FixDuplicateProjectNameAndPath, :migration do
+RSpec.describe Gitlab::BackgroundMigration::FixDuplicateProjectNameAndPath, :migration, schema: 20220325155953 do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

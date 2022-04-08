@@ -342,7 +342,7 @@ listed in the descriptions of the relevant settings.
 | `help_text` **(PREMIUM)**                | string           | no                                   | GitLab server administrator information. |
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties in GitLab. |
 | `home_page_url`                          | string           | no                                   | Redirect to this URL when not logged in. |
-| `housekeeping_bitmaps_enabled`           | boolean          | required by: `housekeeping_enabled`  | Enable Git pack file bitmap creation. |
+| `housekeeping_bitmaps_enabled`           | boolean          | no                                   | Git pack file bitmap creation is always enabled and cannot be changed via API and UI. This API field is deprecated and always returns `true`. |
 | `housekeeping_enabled`                   | boolean          | no                                   | (**If enabled, requires:** `housekeeping_bitmaps_enabled`, `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period`) Enable or disable Git housekeeping. |
 | `housekeeping_full_repack_period`        | integer          | required by: `housekeeping_enabled`  | Number of Git pushes after which an incremental `git repack` is run. |
 | `housekeeping_gc_period`                 | integer          | required by: `housekeeping_enabled`  | Number of Git pushes after which `git gc` is run. |

@@ -28,13 +28,6 @@
           .form-text.text-muted
             = _("Leaving this setting enabled is recommended.")
             = link_to s_('Learn more.'), help_page_path('administration/housekeeping.md', anchor: 'housekeeping-options'), target: '_blank', rel: 'noopener noreferrer'
-        .form-check
-          = f.check_box :housekeeping_bitmaps_enabled, class: 'form-check-input'
-          = f.label :housekeeping_bitmaps_enabled, class: 'form-check-label' do
-            = _("Enable Git pack file bitmap creation")
-          .form-text.text-muted
-            = _("Improves Git cloning performance.")
-            = link_to s_('Learn more.'), help_page_path('administration/housekeeping.md', anchor: 'housekeeping-options'), target: '_blank', rel: 'noopener noreferrer'
       .form-group
         = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'label-bold'
         = f.number_field :housekeeping_incremental_repack_period, class: 'form-control gl-form-input'

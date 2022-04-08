@@ -40,8 +40,6 @@ The following housekeeping options are available:
 - **Enable automatic repository housekeeping**: Regularly run `git repack` and `git gc`. If you
   keep this setting disabled for a long time, Git repository access on your GitLab server becomes
   slower and your repositories use more disk space.
-- **Enable Git pack file bitmap creation**: Create pack file bitmaps which accelerates `git clone`
-  performance. Makes housekeeping take a little longer.
 - **Incremental repack period**: Number of Git pushes after which an incremental `git repack` is
   run.
 - **Full repack period**: Number of Git pushes after which a full `git repack` is run.

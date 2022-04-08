@@ -265,6 +265,47 @@ RSpec.describe Gitlab::Database do
         expect(described_class.gitlab_schemas_for_connection(ActiveRecord::Base.connection)).to include(:gitlab_ci, :gitlab_shared)
       end
     end
+
+    context "when there's CI connection", :request_store do
+      before do
+        skip_if_multiple_databases_not_setup
+
+        # FF due to lib/gitlab/database/load_balancing/configuration.rb:92
+        # Requires usage of `:request_store`
+        stub_feature_flags(force_no_sharing_primary_model: true)
+      end
+
+      context 'when CI uses database_tasks: false does indicate that ci: is subset of main:' do
+        before do
+          allow(Ci::ApplicationRecord.connection_db_config).to receive(:database_tasks?).and_return(false)
+        end
+
+        it 'does return gitlab_ci when accessing via main: connection' do
+          expect(described_class.gitlab_schemas_for_connection(Project.connection)).to include(:gitlab_ci, :gitlab_main, :gitlab_shared)
+        end
+
+        it 'does not return gitlab_main when accessing via ci: connection' do
+          expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).to include(:gitlab_ci, :gitlab_shared)
+          expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).not_to include(:gitlab_main)
+        end
+      end
+
+      context 'when CI uses database_tasks: true does indicate that ci: has own database' do
+        before do
+          allow(Ci::ApplicationRecord.connection_db_config).to receive(:database_tasks?).and_return(true)
+        end
+
+        it 'does not return gitlab_ci when accessing via main: connection' do
+          expect(described_class.gitlab_schemas_for_connection(Project.connection)).to include(:gitlab_main, :gitlab_shared)
+          expect(described_class.gitlab_schemas_for_connection(Project.connection)).not_to include(:gitlab_ci)
+        end
+
+        it 'does not return gitlab_main when accessing via ci: connection' do
+          expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).to include(:gitlab_ci, :gitlab_shared)
+          expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).not_to include(:gitlab_main)
+        end
+      end
+    end
   end
 
   describe '#true_value' do
