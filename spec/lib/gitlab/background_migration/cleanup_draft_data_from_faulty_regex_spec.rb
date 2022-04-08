@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::CleanupDraftDataFromFaultyRegex do
+RSpec.describe Gitlab::BackgroundMigration::CleanupDraftDataFromFaultyRegex, :migration, schema: 20220326161803 do
   let(:namespaces)     { table(:namespaces) }
   let(:projects)       { table(:projects) }
   let(:merge_requests) { table(:merge_requests) }

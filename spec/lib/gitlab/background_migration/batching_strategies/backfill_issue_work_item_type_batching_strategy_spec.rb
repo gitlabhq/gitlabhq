@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::BackfillIssueWorkItemTypeBatchingStrategy,
-               '#next_batch' do
+RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::BackfillIssueWorkItemTypeBatchingStrategy, '#next_batch', schema: 20220326161803 do # rubocop:disable Layout/LineLength
   # let! can't be used in migration specs because all tables but `work_item_types` are deleted after each spec
   let!(:issue_type_enum) { { issue: 0, incident: 1, test_case: 2, requirement: 3, task: 4 } }
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }

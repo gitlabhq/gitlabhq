@@ -59,7 +59,7 @@ FactoryBot.define do
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
 
-      hash = {
+      project_feature_hash = {
         wiki_access_level: evaluator.wiki_access_level,
         builds_access_level: builds_access_level,
         snippets_access_level: evaluator.snippets_access_level,
@@ -75,7 +75,16 @@ FactoryBot.define do
         security_and_compliance_access_level: evaluator.security_and_compliance_access_level
       }
 
-      project.build_project_feature(hash)
+      project_namespace_hash = {
+        name: evaluator.name,
+        path: evaluator.path,
+        parent: evaluator.namespace,
+        shared_runners_enabled: evaluator.shared_runners_enabled,
+        visibility_level: evaluator.visibility_level
+      }
+
+      project.build_project_namespace(project_namespace_hash)
+      project.build_project_feature(project_feature_hash)
     end
 
     after(:create) do |project, evaluator|

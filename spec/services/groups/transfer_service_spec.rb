@@ -252,23 +252,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
           expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
         end
-
-        # currently when a project is created it gets a corresponding project namespace
-        # so we test the case where a project without a project namespace is transferred
-        # for backward compatibility
-        context 'without project namespace' do
-          before do
-            project_namespace = project.project_namespace
-            project.update_column(:project_namespace_id, nil)
-            project_namespace.delete
-          end
-
-          it 'adds an error on group' do
-            expect(project.reload.project_namespace).to be_nil
-            expect(transfer_service.execute(new_parent_group)).to be_falsy
-            expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
-          end
-        end
       end
 
       context 'when projects have project namespaces' do

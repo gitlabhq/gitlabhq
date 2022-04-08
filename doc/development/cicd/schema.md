@@ -138,71 +138,72 @@ under the topmost **properties** key.
 
 ## Test the schema
 
-### Verifying changes manually
+### Verify changes
 
 1. Enable the `schema_linting` feature flag.
 1. Go to **CI/CD** > **Editor**.
 1. Write your CI/CD configuration in the editor and verify that the schema validates
    it correctly.
 
-### Writing specs
+### Write specs
 
-All of our schema specs live in the `spec/frontend/editor/schema/ci` directory.
-Legacy tests are written in JSON, but we recommend writing all new tests in YAML.
-You can write them as if you're adding to a `.gitlab-ci.yml` configuration file.
+All of the CI/CD schema specs are in [`spec/frontend/editor/schema/ci`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/frontend/editor/schema/ci).
+Legacy tests are in JSON, but we recommend writing all new tests in YAML.
+You can write them as if you're adding a new `.gitlab-ci.yml` configuration file.
 
 Tests are separated into **positive** tests and **negative** tests. Positive tests
-are snippets of CI configuration code that use the schema keywords as intended.
-Conversely, negative tests give examples of how to use the schema keywords incorrectly.
-This allows us the check that our CI schema validates different examples of input.
+are snippets of CI/CD configuration code that use the schema keywords as intended.
+Conversely, negative tests give examples of the schema keywords being used incorrectly.
+These tests ensure that the schema validates different examples of input as expected.
 
-`ci_schema_spec.js` is responsible for running all of our tests against the CI schema.
+`ci_schema_spec.js` is responsible for running all of the tests against the schema.
 
 A detailed explanation of how the tests are set up can be found in this
 [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83047).
 
-#### How to update schema specs
+#### Update schema specs
 
-1. If a YAML test does not exist for the specified keyword, create new files in
+If a YAML test does not exist for the specified keyword, create new files in
 `yaml_tests/positive_tests` and `yaml_tests/negative_tests`. Otherwise, you can update
-the existing tests.
-1. Write both positive and negative tests to validaste different kinds of input.
+the existing tests:
+
+1. Write both positive and negative tests to validate different kinds of input.
 1. If you created new files, import them in `ci_schema_spec.js` and add each file to their
-corresponding object entries.
+   corresponding object entries. For example:
 
-```javascript
-import CacheYaml from './yaml_tests/positive_tests/cache.yml';
-import CacheNegativeYaml from './yaml_tests/negative_tests/cache.yml';
+   ```javascript
+   import CacheYaml from './yaml_tests/positive_tests/cache.yml';
+   import CacheNegativeYaml from './yaml_tests/negative_tests/cache.yml';
 
-// import your new test files
-import NewKeywordTestYaml from './yaml_tests/positive_tests/cache.yml';
-import NewKeywordTestNegativeYaml from './yaml_tests/negative_tests/cache.yml';
+   // import your new test files
+   import NewKeywordTestYaml from './yaml_tests/positive_tests/cache.yml';
+   import NewKeywordTestNegativeYaml from './yaml_tests/negative_tests/cache.yml';
 
-describe('positive tests', () => {
-  it.each(
-    Object.entries({
-      CacheYaml,
-      NewKeywordTestYaml, // add positive test here
-    }),
-  )('schema validates %s', (_, input) => {
-    expect(input).toValidateJsonSchema(schema);
-  });
-});
+   describe('positive tests', () => {
+     it.each(
+       Object.entries({
+         CacheYaml,
+         NewKeywordTestYaml, // add positive test here
+       }),
+     )('schema validates %s', (_, input) => {
+       expect(input).toValidateJsonSchema(schema);
+     });
+   });
 
-describe('negative tests', () => {
-  it.each(
-    Object.entries({
-      CacheNegativeYaml,
-      NewKeywordTestYaml, // add negative test here
-    }),
-  )('schema validates %s', (_, input) => {
-    expect(input).not.toValidateJsonSchema(schema);
-  });
-});
-```
+   describe('negative tests', () => {
+     it.each(
+       Object.entries({
+         CacheNegativeYaml,
+         NewKeywordTestYaml, // add negative test here
+       }),
+     )('schema validates %s', (_, input) => {
+       expect(input).not.toValidateJsonSchema(schema);
+     });
+   });
+   ```
 
-1. Run the command `yarn jest spec/frontend/editor/schema/ci/ci_schema_spec.js`.
-1. Make sure that:
+1. Run the command `yarn jest spec/frontend/editor/schema/ci/ci_schema_spec.js`
+   and verify that all the tests successfully pass.
 
-- All tests successfully pass.
-- If the spec covers a change to an existing keyword and it affects the legacy JSON tests, make sure to also update them.
+If the spec covers a change to an existing keyword and it affects the legacy JSON
+tests, update them as well.

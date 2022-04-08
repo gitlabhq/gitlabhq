@@ -28,7 +28,7 @@ module Gitlab
             variables.concat(secret_project_variables(environment: environment))
             variables.concat(job.trigger_request.user_variables) if job.trigger_request
             variables.concat(pipeline.variables)
-            variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
+            variables.concat(pipeline_schedule_variables)
           end
         end
 
@@ -117,6 +117,18 @@ module Gitlab
             variables.append(key: 'CI_BUILD_STAGE', value: job.stage)
             variables.append(key: 'CI_BUILD_TRIGGERED', value: 'true') if job.trigger_request
             variables.append(key: 'CI_BUILD_MANUAL', value: 'true') if job.action?
+          end
+        end
+
+        def pipeline_schedule_variables
+          strong_memoize(:pipeline_schedule_variables) do
+            variables = if pipeline.pipeline_schedule
+                          pipeline.pipeline_schedule.job_variables
+                        else
+                          []
+                        end
+
+            Gitlab::Ci::Variables::Collection.new(variables)
           end
         end
 

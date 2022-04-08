@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.1.4.6'
+gem 'rails', '~> 6.1.4.7'
 
 gem 'bootsnap', '~> 1.9.1', require: false
 

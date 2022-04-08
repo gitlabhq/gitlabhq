@@ -420,6 +420,14 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   1. Add `gitlab_kas['enable'] = false` to `gitlab.rb`.
   1. If the server is already upgraded to 14.8, run `gitlab-ctl reconfigure`.
 
+- If upgrading from a version earlier than 14.3.0, to avoid
+  [an issue with job retries](https://gitlab.com/gitlab-org/gitlab/-/issues/357822), first upgrade
+  to GitLab 14.7.x and make sure all batched migrations have finished.
+- If upgrading from version 14.3.0 or later, you might notice a failed
+  [batched migration](../user/admin_area/monitoring/background_migrations.md) named
+  `BackfillNamespaceIdForNamespaceRoute`. You can [ignore](https://gitlab.com/gitlab-org/gitlab/-/issues/357822)
+  this. Retry it after you upgrade to version 14.9.x.
+
 ### 14.7.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).

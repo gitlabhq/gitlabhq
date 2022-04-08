@@ -17,7 +17,8 @@ RSpec.describe AuditEventService do
                                             author_name: user.name,
                                             entity_id: project.id,
                                             entity_type: "Project",
-                                            action: :destroy)
+                                            action: :destroy,
+                                            created_at: anything)
 
       expect { service.security_event }.to change(AuditEvent, :count).by(1)
     end
@@ -39,7 +40,8 @@ RSpec.describe AuditEventService do
                                             from: 'true',
                                             to: 'false',
                                             action: :create,
-                                            target_id: 1)
+                                            target_id: 1,
+                                            created_at: anything)
 
       expect { service.security_event }.to change(AuditEvent, :count).by(1)
 
@@ -48,6 +50,25 @@ RSpec.describe AuditEventService do
       expect(details[:to]).to be false
       expect(details[:action]).to eq(:create)
       expect(details[:target_id]).to eq(1)
+    end
+
+    context 'when defining created_at manually' do
+      let(:service) { described_class.new(user, project, { action: :destroy }, :database, 3.weeks.ago) }
+
+      it 'is overridden successfully' do
+        freeze_time do
+          expect(service).to receive(:file_logger).and_return(logger)
+          expect(logger).to receive(:info).with(author_id: user.id,
+                                                author_name: user.name,
+                                                entity_id: project.id,
+                                                entity_type: "Project",
+                                                action: :destroy,
+                                                created_at: 3.weeks.ago)
+
+          expect { service.security_event }.to change(AuditEvent, :count).by(1)
+          expect(AuditEvent.last.created_at).to eq(3.weeks.ago)
+        end
+      end
     end
 
     context 'authentication event' do
@@ -110,7 +131,8 @@ RSpec.describe AuditEventService do
                                             author_name: user.name,
                                             entity_type: 'Project',
                                             entity_id: project.id,
-                                            action: :destroy)
+                                            action: :destroy,
+                                            created_at: anything)
 
       service.log_security_event_to_file
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::MigrateShimoConfluenceIntegrationCategory do
+RSpec.describe Gitlab::BackgroundMigration::MigrateShimoConfluenceIntegrationCategory, schema: 20220326161803 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:integrations) { table(:integrations) }

@@ -199,6 +199,20 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
           'O' => '15', 'P' => '15')
       end
     end
+
+    context 'with schedule variables' do
+      let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project) }
+      let_it_be(:schedule_variable) { create(:ci_pipeline_schedule_variable, pipeline_schedule: schedule) }
+
+      before do
+        pipeline.update!(pipeline_schedule_id: schedule.id)
+      end
+
+      it 'includes schedule variables' do
+        expect(subject.to_runner_variables)
+          .to include(a_hash_including(key: schedule_variable.key, value: schedule_variable.value))
+      end
+    end
   end
 
   describe '#user_variables' do

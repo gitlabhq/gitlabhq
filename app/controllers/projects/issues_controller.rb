@@ -42,7 +42,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:vue_issues_list, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:contacts_autocomplete, project&.group, default_enabled: :yaml)
-    push_frontend_feature_flag(:markdown_continue_lists, project, default_enabled: :yaml)
     push_frontend_feature_flag(:incident_timeline, project, default_enabled: :yaml)
   end
 

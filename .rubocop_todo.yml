@@ -11,13 +11,6 @@ Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
 
-# Offense count: 754
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: require_no_space, require_space
-Layout/SpaceInLambdaLiteral:
-  Enabled: false
-
 # Offense count: 2
 # Configuration parameters: AllowComments.
 Lint/EmptyFile:
@@ -95,13 +88,6 @@ Performance/MethodObjectAsBlock:
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Enabled: false
-
-# Offense count: 4
-# Configuration parameters: CustomIncludeMethods.
-RSpec/EmptyExampleGroup:
-  Exclude:
-    - 'ee/spec/services/personal_access_tokens/revoke_invalid_tokens_spec.rb'
-    - 'spec/services/projects/prometheus/alerts/notify_service_spec.rb'
 
 # Offense count: 1428
 # Cop supports --auto-correct.

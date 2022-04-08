@@ -12460,6 +12460,9 @@ msgstr ""
 msgid "Deployment Frequency"
 msgstr ""
 
+msgid "Deployment Target|%{linkStart}How to provision or deploy to Kubernetes clusters from GitLab?%{linkEnd}"
+msgstr ""
+
 msgid "Deployment Target|Project deployment target (optional)"
 msgstr ""
 

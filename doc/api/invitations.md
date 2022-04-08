@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Invitations API **(FREE)**
 
-Use the Invitations API to send email to users you want to join a group or project, and to list pending
+Use the Invitations API to invite or add users to a group or project, and to list pending
 invitations.
 
 ## Valid access levels
@@ -26,9 +26,9 @@ WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
 projects in personal namespaces don't show owner (`50`) permission.
 
-## Invite by email to group or project
+## Add a member to a group or project
 
-Invites a new user by email to join a group or project.
+Adds a new member. You can specify a user ID or invite a user by email.
 
 ```plaintext
 POST /groups/:id/invitations
@@ -38,7 +38,8 @@ POST /projects/:id/invitations
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `email` | string | yes | The email of the new member or multiple emails separated by commas |
+| `email` | string | yes (if `user_id` isn't provided) | The email of the new member or multiple emails separated by commas. |
+| `user_id`   | integer/string | yes (if `email` isn't provided) | The ID of the new member or multiple IDs separated by commas. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350999) in GitLab 14.10. |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327120). |
@@ -47,9 +48,9 @@ POST /projects/:id/invitations
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "email=test@example.com&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/invitations"
+     --data "email=test@example.com&user_id=1&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/invitations"
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "email=test@example.com&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/invitations"
+     --data "email=test@example.com&user_id=1&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/invitations"
 ```
 
 Example responses:
@@ -67,7 +68,8 @@ When there was any error sending the email:
   "status": "error",
   "message": {
                "test@example.com": "Invite email has already been taken",
-               "test2@example.com": "User already exists in source"
+               "test2@example.com": "User already exists in source",
+               "test_username": "Access level is not included in the list"
              }
 }
 ```
@@ -77,7 +79,7 @@ When there was any error sending the email:
 Gets a list of invited group or project members viewable by the authenticated user.
 Returns invitations to direct members only, and not through inherited ancestors' groups.
 
-This function takes pagination parameters `page` and `per_page` to restrict the list of users.
+This function takes pagination parameters `page` and `per_page` to restrict the list of members.
 
 ```plaintext
 GET /groups/:id/invitations

@@ -18,13 +18,14 @@ actions performed across the application.
 
 To instrument an audit event, the following attributes should be provided:
 
-| Attribute    | Type                 | Required? | Description                                         |
-|:-------------|:---------------------|:----------|:----------------------------------------------------|
-| `name`       | String               | false     | Action name to be audited. Used for error tracking  |
-| `author`     | User                 | true      | User who authors the change                         |
-| `scope`      | User, Project, Group | true      | Scope which the audit event belongs to              |
-| `target`     | Object               | true      | Target object being audited                         |
-| `message`    | String               | true      | Message describing the action                       |
+| Attribute    | Type                 | Required? | Description                                                      |
+|:-------------|:---------------------|:----------|:-----------------------------------------------------------------|
+| `name`       | String               | false     | Action name to be audited. Used for error tracking               |
+| `author`     | User                 | true      | User who authors the change                                      |
+| `scope`      | User, Project, Group | true      | Scope which the audit event belongs to                           |
+| `target`     | Object               | true      | Target object being audited                                      |
+| `message`    | String               | true      | Message describing the action                                    |
+| `created_at` | DateTime             | false     | The time when the action occured. Defaults to `DateTime.current` |
 
 ## How to instrument new Audit Events
 
@@ -97,7 +98,8 @@ if merge_approval_rule.save
     author: current_user,
     scope: project_alpha,
     target: merge_approval_rule,
-    message: 'Created a new approval rule'
+    message: 'Created a new approval rule',
+    created_at: DateTime.current # Useful for pre-dating an audit event when created asynchronously.
   }
 
   ::Gitlab::Audit::Auditor.audit(audit_context)

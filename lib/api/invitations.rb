@@ -20,8 +20,9 @@ module API
           success Entities::Invitation
         end
         params do
-          requires :email, types: [String, Array[String]], email_or_email_list: true, desc: 'The email address to invite, or multiple emails separated by comma'
           requires :access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'A valid access level (defaults: `30`, developer access level)'
+          optional :email, types: [String, Array[String]], email_or_email_list: true, desc: 'The email address to invite, or multiple emails separated by comma'
+          optional :user_id, types: [Integer, String], desc: 'The user ID of the new member or multiple IDs separated by commas.'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'invitations-api'
           optional :tasks_to_be_done, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Tasks the inviter wants the member to do'
@@ -30,11 +31,14 @@ module API
         post ":id/invitations" do
           ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/354016')
 
-          params[:source] = find_source(source_type, params[:id])
+          bad_request!('Must provide either email or user_id as a parameter') if params[:email].blank? && params[:user_id].blank?
 
-          authorize_admin_source!(source_type, params[:source])
+          source = find_source(source_type, params[:id])
+          authorize_admin_source!(source_type, source)
 
-          ::Members::InviteService.new(current_user, params).execute
+          create_service_params = params.except(:user_id).merge({ user_ids: params[:user_id], source: source })
+
+          ::Members::InviteService.new(current_user, create_service_params).execute
         end
 
         desc 'Get a list of group or project invitations viewable by the authenticated user' do

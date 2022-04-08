@@ -46,5 +46,13 @@ RSpec.describe Packages::Rubygems::MetadataExtractionService do
       expect(metadata.requirements).to eq(gemspec.requirements.to_json)
       expect(metadata.rubygems_version).to eq(gemspec.rubygems_version)
     end
+
+    context 'with an existing metadatum' do
+      let_it_be(:metadatum) { create(:rubygems_metadatum, package: package) }
+
+      it 'updates it' do
+        expect { subject }.not_to change { Packages::Rubygems::Metadatum.count }
+      end
+    end
   end
 end

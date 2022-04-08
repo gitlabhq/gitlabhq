@@ -69,13 +69,31 @@ RSpec.describe API::Invitations do
           end
         end
 
-        it 'invites a new member' do
+        it 'adds a new member by email' do
           expect do
             post invitations_url(source, maintainer),
                  params: { email: email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(1)
+        end
+
+        it 'adds a new member by user_id' do
+          expect do
+            post invitations_url(source, maintainer),
+                 params: { user_id: stranger.id, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.non_invite.count }.by(1)
+        end
+
+        it 'adds new members with email and user_id' do
+          expect do
+            post invitations_url(source, maintainer),
+                 params: { email: email, user_id: stranger.id, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.invite.count }.by(1).and change { source.members.non_invite.count }.by(1)
         end
 
         it 'invites a list of new email addresses' do
@@ -87,6 +105,19 @@ RSpec.describe API::Invitations do
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(2)
+        end
+
+        it 'invites a list of new email addresses and user ids' do
+          expect do
+            stranger2 = create(:user)
+            email_list = [email, email2].join(',')
+            user_id_list = "#{stranger.id},#{stranger2.id}"
+
+            post invitations_url(source, maintainer),
+                 params: { email: email_list, user_id: user_id_list, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.invite.count }.by(2).and change { source.members.non_invite.count }.by(2)
         end
       end
 
@@ -235,27 +266,36 @@ RSpec.describe API::Invitations do
         expect(json_response['message'][developer.email]).to eq("User already exists in source")
       end
 
-      it 'returns 404 when the email is not valid' do
+      it 'returns 400 when the invite params of email and user_id are not sent' do
+        post invitations_url(source, maintainer),
+             params: { access_level: Member::MAINTAINER }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
+      end
+
+      it 'returns 400 when the email is blank' do
         post invitations_url(source, maintainer),
              params: { email: '', access_level: Member::MAINTAINER }
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['message']).to eq('Invites cannot be blank')
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
       end
 
-      it 'returns 404 when the email list is not a valid format' do
+      it 'returns 400 when the user_id is blank' do
+        post invitations_url(source, maintainer),
+             params: { user_id: '', access_level: Member::MAINTAINER }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
+      end
+
+      it 'returns 400 when the email list is not a valid format' do
         post invitations_url(source, maintainer),
              params: { email: 'email1@example.com,not-an-email', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('email contains an invalid email address')
-      end
-
-      it 'returns 400 when email is not given' do
-        post invitations_url(source, maintainer),
-             params: { access_level: Member::MAINTAINER }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when access_level is not given' do

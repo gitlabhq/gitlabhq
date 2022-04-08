@@ -57,7 +57,7 @@ GEM
     concord (0.1.5)
       adamantium (~> 0.2.0)
       equalizer (~> 0.0.9)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     confiner (0.3.0)
       gitlab (>= 4.17)
       zeitwerk (~> 2.5.1)
@@ -357,7 +357,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 6.1.4.6)
+  activesupport (~> 6.1.4.7)
   airborne (~> 0.3.4)
   allure-rspec (~> 2.16.0)
   capybara (~> 3.35.0)

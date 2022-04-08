@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNamespaces, :migration do
+RSpec.describe Gitlab::BackgroundMigration::ProjectNamespaces::BackfillProjectNamespaces, :migration, schema: 20220326161803 do
   include MigrationsHelpers
 
   context 'when migrating data', :aggregate_failures do

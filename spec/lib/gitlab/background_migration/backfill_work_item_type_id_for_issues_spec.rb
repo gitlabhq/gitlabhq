@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTypeIdForIssues do
+RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTypeIdForIssues, :migration, schema: 20220326161803 do
   subject(:migrate) { migration.perform(start_id, end_id, batch_table, batch_column, sub_batch_size, pause_ms, issue_type_enum[:issue], issue_type.id) }
 
   let(:migration) { described_class.new }
