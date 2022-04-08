@@ -7032,9 +7032,6 @@ msgstr ""
 msgid "Changed assignee(s)."
 msgstr ""
 
-msgid "Changed merge method to %{merge_method}"
-msgstr ""
-
 msgid "Changed reviewer(s)."
 msgstr ""
 
