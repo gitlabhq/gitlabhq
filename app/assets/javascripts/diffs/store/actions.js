@@ -13,7 +13,7 @@ import httpStatusCodes from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
-import notesEventHub from '../../notes/event_hub';
+import notesEventHub from '~/notes/event_hub';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,

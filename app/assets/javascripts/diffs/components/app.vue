@@ -21,7 +21,7 @@ import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_wi
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import notesEventHub from '../../notes/event_hub';
+import notesEventHub from '~/notes/event_hub';
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,

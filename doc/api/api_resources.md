@@ -114,6 +114,7 @@ The following API resources are available in the group context:
 | [Group labels](group_labels.md)                                  | `/groups/:id/labels` |
 | [Group-level variables](group_level_variables.md)                | `/groups/:id/variables` |
 | [Group milestones](group_milestones.md)                          | `/groups/:id/milestones` |
+| [Group releases](group_releases.md)                              | `/groups/:id/releases`|
 | [Group wikis](group_wikis.md) **(PREMIUM)**                      | `/groups/:id/wikis` |
 | [Invitations](invitations.md)                                    | `/groups/:id/invitations` (also available for projects) |
 | [Issues](issues.md)                                              | `/groups/:id/issues` (also available for projects and standalone) |

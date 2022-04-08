@@ -6,8 +6,9 @@ module QA
     describe "Gitlab migration" do
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
-      let(:gitlab_group) { 'gitlab-migration' }
-      let(:gitlab_source_address) { "https://staging.gitlab.com" }
+      let(:gitlab_group) { ENV['QA_LARGE_IMPORT_GROUP'] || 'gitlab-migration' }
+      let(:gitlab_project) { ENV['QA_LARGE_IMPORT_REPO'] || 'dri' }
+      let(:gitlab_source_address) { 'https://staging.gitlab.com' }
 
       let(:import_wait_duration) do
         {
@@ -65,7 +66,7 @@ module QA
         end
       end
 
-      let(:source_project) { source_group.projects.find { |project| project.name.include?("dri") }.reload! }
+      let(:source_project) { source_group.projects.find { |project| project.name.include?(gitlab_project) }.reload! }
       let(:source_branches) { source_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
@@ -86,7 +87,7 @@ module QA
         end
       end
 
-      let(:imported_project) { imported_group.projects.find { |project| project.name.include?("dri") }.reload! }
+      let(:imported_project) { imported_group.projects.find { |project| project.name.include?(gitlab_project) }.reload! }
       let(:branches) { imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
@@ -280,10 +281,15 @@ module QA
           #
           expected_body = expected_item[:body]
           actual_body = actual_item[:body]
-          body_msg = <<~MSG
-            #{msg} same description. diff:\n#{differ.diff(expected_body, actual_body)}
-          MSG
+          body_msg = "#{msg} same description. diff:\n#{differ.diff(expected_body, actual_body)}"
           expect(actual_body).to eq(expected_body), body_msg
+
+          # Print difference in state
+          #
+          expected_state = expected_item[:state]
+          actual_state = actual_item[:state]
+          state_msg = "#{msg} same state. Source: #{expected_state}, Target: #{actual_state}"
+          expect(actual_state).to eq(expected_state), state_msg
 
           # Print amount difference first
           #
@@ -330,6 +336,7 @@ module QA
             url: mr[:web_url],
             title: mr[:title],
             body: sanitize_description(mr[:description]) || '',
+            state: mr[:state],
             comments: resource
               .comments(auto_paginate: true, attempts: 2)
               .map { |c| sanitize_comment(c[:body]) }
@@ -355,6 +362,7 @@ module QA
           [issue[:iid], {
             url: issue[:web_url],
             title: issue[:title],
+            state: issue[:state],
             body: sanitize_description(issue[:description]) || '',
             comments: resource
               .comments(auto_paginate: true, attempts: 2)

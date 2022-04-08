@@ -3,8 +3,8 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import timeAgoMixin from '~/vue_shared/mixins/timeago';
-import CiIcon from '../../vue_shared/components/ci_icon.vue';
-import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import { rightSidebarViews } from '../constants';
 import IdeStatusList from './ide_status_list.vue';
 import IdeStatusMr from './ide_status_mr.vue';

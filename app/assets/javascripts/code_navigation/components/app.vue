@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import eventHub from '../../notes/event_hub';
+import eventHub from '~/notes/event_hub';
 import Popover from './popover.vue';
 
 export default {

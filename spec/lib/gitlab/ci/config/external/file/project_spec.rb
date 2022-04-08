@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       let(:root_ref_sha) { project.repository.root_ref_sha }
 
       before do
-        stub_project_blob(root_ref_sha, '/file.yml') { 'image: ruby:2.7' }
+        stub_project_blob(root_ref_sha, '/file.yml') { 'image: image:1.0' }
       end
 
       it { is_expected.to be_truthy }
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       let(:ref_sha) { project.commit('master').sha }
 
       before do
-        stub_project_blob(ref_sha, '/file.yml') { 'image: ruby:2.7' }
+        stub_project_blob(ref_sha, '/file.yml') { 'image: image:1.0' }
       end
 
       it { is_expected.to be_truthy }

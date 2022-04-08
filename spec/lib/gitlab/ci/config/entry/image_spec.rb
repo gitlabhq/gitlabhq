@@ -6,11 +6,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
   let(:entry) { described_class.new(config) }
 
   context 'when configuration is a string' do
-    let(:config) { 'ruby:2.7' }
+    let(:config) { 'image:1.0' }
 
     describe '#value' do
       it 'returns image hash' do
-        expect(entry.value).to eq({ name: 'ruby:2.7' })
+        expect(entry.value).to eq({ name: 'image:1.0' })
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
 
     describe '#image' do
       it "returns image's name" do
-        expect(entry.name).to eq 'ruby:2.7'
+        expect(entry.name).to eq 'image:1.0'
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
   end
 
   context 'when configuration is a hash' do
-    let(:config) { { name: 'ruby:2.7', entrypoint: %w(/bin/sh run) } }
+    let(:config) { { name: 'image:1.0', entrypoint: %w(/bin/sh run) } }
 
     describe '#value' do
       it 'returns image hash' do
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
 
     describe '#image' do
       it "returns image's name" do
-        expect(entry.name).to eq 'ruby:2.7'
+        expect(entry.name).to eq 'image:1.0'
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
 
     context 'when configuration has ports' do
       let(:ports) { [{ number: 80, protocol: 'http', name: 'foobar' }] }
-      let(:config) { { name: 'ruby:2.7', entrypoint: %w(/bin/sh run), ports: ports } }
+      let(:config) { { name: 'image:1.0', entrypoint: %w(/bin/sh run), ports: ports } }
       let(:entry) { described_class.new(config, with_image_ports: image_ports) }
       let(:image_ports) { false }
 
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
   end
 
   context 'when entry value is not correct' do
-    let(:config) { ['ruby:2.7'] }
+    let(:config) { ['image:1.0'] }
 
     describe '#errors' do
       it 'saves errors' do
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
   end
 
   context 'when unexpected key is specified' do
-    let(:config) { { name: 'ruby:2.7', non_existing: 'test' } }
+    let(:config) { { name: 'image:1.0', non_existing: 'test' } }
 
     describe '#errors' do
       it 'saves errors' do

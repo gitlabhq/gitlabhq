@@ -6,13 +6,18 @@ module Gitlab::UsageDataCounters
     KNOWN_EVENTS_FILE_PATH = File.expand_path('known_events/ci_templates.yml', __dir__)
 
     class << self
-      def track_unique_project_event(project_id:, template:, config_source:)
+      def track_unique_project_event(project:, template:, config_source:, user:)
         expanded_template_name = expand_template_name(template)
         return unless expanded_template_name
 
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(
-          ci_template_event_name(expanded_template_name, config_source), values: project_id
+          ci_template_event_name(expanded_template_name, config_source), values: project.id
         )
+
+        namespace = project.namespace
+        if Feature.enabled?(:route_hll_to_snowplow, namespace, default_enabled: :yaml)
+          Gitlab::Tracking.event(name, 'ci_templates_unique', namespace: namespace, user: user, project: project)
+        end
       end
 
       def ci_templates(relative_base = 'lib/gitlab/ci/templates')

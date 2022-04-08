@@ -11,29 +11,11 @@ Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
 
-# Offense count: 170
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: aligned, indented
-Layout/MultilineOperationIndentation:
-  Enabled: false
-
 # Offense count: 754
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: require_no_space, require_space
 Layout/SpaceInLambdaLiteral:
-  Enabled: false
-
-# Offense count: 585
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/SpaceInsideParens:
-  Enabled: false
-
-# Offense count: 84
-Lint/ConstantDefinitionInBlock:
   Enabled: false
 
 # Offense count: 2

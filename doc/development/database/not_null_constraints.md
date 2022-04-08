@@ -197,7 +197,7 @@ end
 
 If you have to clean up a nullable column for a [high-traffic table](../migration_style_guide.md#high-traffic-tables)
 (for example, the `artifacts` in `ci_builds`), your background migration will go on for a while and
-it will need an additional [background migration cleaning up](../background_migrations.md#cleaning-up)
+it will need an additional [background migration cleaning up](background_migrations.md#cleaning-up)
 in the release after adding the data migration.
 
 In that rare case you will need 3 releases end-to-end:

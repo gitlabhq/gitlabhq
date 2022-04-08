@@ -1417,7 +1417,7 @@ To prepare the new server:
 1. Flush the Redis database to disk, and stop GitLab other than the services needed for migration:
 
    ```shell
-   sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket save && sudo gitlab-ctl stop && sudo gitlab-ctl start postgresql
+   sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket save && sudo gitlab-ctl stop && sudo gitlab-ctl start postgresql && sudo gitlab-ctl start gitaly
    ```
 
 1. Create a GitLab backup:

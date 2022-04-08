@@ -17,8 +17,10 @@ module Groups
     def releases
       if Feature.enabled?(:group_releases_finder_inoperator)
         Releases::GroupReleasesFinder
-          .new(@group, current_user, { include_subgroups: true, page: params[:page], per: 30 })
+          .new(@group, current_user)
           .execute(preload: false)
+          .page(params[:page])
+          .per(30)
       else
         ReleasesFinder
           .new(@group, current_user, { include_subgroups: true })

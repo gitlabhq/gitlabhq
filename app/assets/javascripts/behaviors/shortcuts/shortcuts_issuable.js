@@ -4,7 +4,7 @@ import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { isElementVisible } from '~/lib/utils/dom_utils';
 import { DEBOUNCE_DROPDOWN_DELAY } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
-import Sidebar from '../../right_sidebar';
+import Sidebar from '~/right_sidebar';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
 import {
   keysFor,

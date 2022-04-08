@@ -151,9 +151,9 @@ the whole column type.
 
 You can check the following guides for each specific use case:
 
-- [Adding foreign-key constraints](migration_style_guide.md#adding-foreign-key-constraints)
-- [Adding `NOT NULL` constraints](database/not_null_constraints.md)
-- [Adding limits to text columns](database/strings_and_the_text_data_type.md)
+- [Adding foreign-key constraints](../migration_style_guide.md#adding-foreign-key-constraints)
+- [Adding `NOT NULL` constraints](not_null_constraints.md)
+- [Adding limits to text columns](strings_and_the_text_data_type.md)
 
 ## Changing Column Types
 
@@ -240,7 +240,7 @@ migrations](background_migrations.md#cleaning-up).
 Adding indexes does not require downtime when `add_concurrent_index`
 is used.
 
-See also [Migration Style Guide](migration_style_guide.md#adding-indexes)
+See also [Migration Style Guide](../migration_style_guide.md#adding-indexes)
 for more information.
 
 ## Dropping Indexes
@@ -265,7 +265,7 @@ If the table and the ActiveRecord model is not in use yet, removing the old
 table and creating a new one is the preferred way to "rename" the table.
 
 Renaming a table is possible without downtime by following our multi-release
-[rename table process](database/rename_database_tables.md#rename-table-without-downtime).
+[rename table process](rename_database_tables.md#rename-table-without-downtime).
 
 ## Adding Foreign Keys
 
@@ -355,7 +355,7 @@ Check how the migration is performing while it's running. Multiple ways to do th
 
 #### High-level status of batched background migrations
 
-See how to [check the status of batched background migrations](../update/index.md#checking-for-background-migrations-before-upgrading).
+See how to [check the status of batched background migrations](../../update/index.md#checking-for-background-migrations-before-upgrading).
 
 #### Query the database
 

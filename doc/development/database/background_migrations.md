@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Background migrations
 
 Background migrations should be used to perform data migrations whenever a
-migration exceeds [the time limits in our guidelines](migration_style_guide.md#how-long-a-migration-should-take). For example, you can use background
+migration exceeds [the time limits in our guidelines](../migration_style_guide.md#how-long-a-migration-should-take). For example, you can use background
 migrations to migrate data that's stored in a single JSON column
 to a separate table instead.
 
@@ -17,9 +17,9 @@ migrations automatically reschedule themselves for a later point in time.
 ## When To Use Background Migrations
 
 You should use a background migration when you migrate _data_ in tables that have
-so many rows that the process would exceed [the time limits in our guidelines](migration_style_guide.md#how-long-a-migration-should-take) if performed using a regular Rails migration.
+so many rows that the process would exceed [the time limits in our guidelines](../migration_style_guide.md#how-long-a-migration-should-take) if performed using a regular Rails migration.
 
-- Background migrations should be used when migrating data in [high-traffic tables](migration_style_guide.md#high-traffic-tables).
+- Background migrations should be used when migrating data in [high-traffic tables](../migration_style_guide.md#high-traffic-tables).
 - Background migrations may also be used when executing numerous single-row queries
 for every item on a large dataset. Typically, for single-record patterns, runtime is
 largely dependent on the size of the dataset, hence it should be split accordingly
@@ -63,7 +63,7 @@ integrity is guaranteed.
 
 All the background migration classes for EE-only features should be present in GitLab CE.
 For this purpose, an empty class can be created for GitLab CE, and it can be extended for GitLab EE
-as explained in the [guidelines for implementing Enterprise Edition features](ee_features.md#code-in-libgitlabbackground_migration).
+as explained in the [guidelines for implementing Enterprise Edition features](../ee_features.md#code-in-libgitlabbackground_migration).
 
 ## How It Works
 
@@ -168,7 +168,7 @@ roughly be as follows:
             the `delete_tracking_jobs: false` parameter.
    1. Remove the old column.
 
-This may also require a bump to the [import/export version](../user/project/settings/import_export.md), if
+This may also require a bump to the [import/export version](../../user/project/settings/import_export.md), if
 importing a project from a prior version of GitLab requires the data to be in
 the new format.
 
@@ -298,7 +298,7 @@ It is required to write tests for:
 The `:migration` and `schema: :latest` RSpec tags are automatically set for
 background migration specs.
 See the
-[Testing Rails migrations](testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
+[Testing Rails migrations](../testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
 style guide.
 
 Keep in mind that `before` and `after` RSpec hooks are going
@@ -359,9 +359,9 @@ A strategy to make the migration run faster is to schedule larger batches, and t
 within the background migration to perform multiple statements.
 
 The background migration helpers that queue multiple jobs such as
-`queue_background_migration_jobs_by_range_at_intervals` use [`EachBatch`](iterating_tables_in_batches.md).
+`queue_background_migration_jobs_by_range_at_intervals` use [`EachBatch`](../iterating_tables_in_batches.md).
 The example above has batches of 1000, where each queued job takes two seconds. If the query has been optimized
-to make the time for the delete statement within the [query performance guidelines](query_performance.md),
+to make the time for the delete statement within the [query performance guidelines](../query_performance.md),
 1000 may be the largest number of records that can be deleted in a reasonable amount of time.
 
 The minimum and most common interval for delaying jobs is two minutes. This results in two seconds

@@ -526,7 +526,7 @@ RSpec.describe Ci::CreatePipelineService do
           let(:ci_yaml) do
             <<-EOS
               image:
-                name: ruby:2.7
+                name: image:1.0
                 ports:
                   - 80
             EOS
@@ -538,12 +538,12 @@ RSpec.describe Ci::CreatePipelineService do
         context 'in the job image' do
           let(:ci_yaml) do
             <<-EOS
-              image: ruby:2.7
+              image: image:1.0
 
               test:
                 script: rspec
                 image:
-                  name: ruby:2.7
+                  name: image:1.0
                   ports:
                     - 80
             EOS
@@ -555,11 +555,11 @@ RSpec.describe Ci::CreatePipelineService do
         context 'in the service' do
           let(:ci_yaml) do
             <<-EOS
-              image: ruby:2.7
+              image: image:1.0
 
               test:
                 script: rspec
-                image: ruby:2.7
+                image: image:1.0
                 services:
                   - name: test
                     ports:

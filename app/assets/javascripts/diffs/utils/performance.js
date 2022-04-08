@@ -7,7 +7,7 @@ import {
   MR_DIFFS_MARK_DIFF_FILES_END,
   MR_DIFFS_MEASURE_FILE_TREE_DONE,
   MR_DIFFS_MEASURE_DIFF_FILES_DONE,
-} from '../../performance/constants';
+} from '~/performance/constants';
 
 import {
   EVT_PERF_MARK_FILE_TREE_START,

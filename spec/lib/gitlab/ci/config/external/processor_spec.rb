@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
     subject { processor.perform }
 
     context 'when no external files defined' do
-      let(:values) { { image: 'ruby:2.7' } }
+      let(:values) { { image: 'image:1.0' } }
 
       it 'returns the same values' do
         expect(processor.perform).to eq(values)
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
     end
 
     context 'when an invalid local file is defined' do
-      let(:values) { { include: '/lib/gitlab/ci/templates/non-existent-file.yml', image: 'ruby:2.7' } }
+      let(:values) { { include: '/lib/gitlab/ci/templates/non-existent-file.yml', image: 'image:1.0' } }
 
       it 'raises an error' do
         expect { processor.perform }.to raise_error(
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
 
     context 'when an invalid remote file is defined' do
       let(:remote_file) { 'http://doesntexist.com/.gitlab-ci-1.yml' }
-      let(:values) { { include: remote_file, image: 'ruby:2.7' } }
+      let(:values) { { include: remote_file, image: 'image:1.0' } }
 
       before do
         stub_full_request(remote_file).and_raise(SocketError.new('Some HTTP error'))
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
 
     context 'with a valid remote external file is defined' do
       let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
-      let(:values) { { include: remote_file, image: 'ruby:2.7' } }
+      let(:values) { { include: remote_file, image: 'image:1.0' } }
       let(:external_file_content) do
         <<-HEREDOC
         before_script:
@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
     end
 
     context 'with a valid local external file is defined' do
-      let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'ruby:2.7' } }
+      let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'image:1.0' } }
       let(:local_file_content) do
         <<-HEREDOC
         before_script:
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       let(:values) do
         {
           include: external_files,
-          image: 'ruby:2.7'
+          image: 'image:1.0'
         }
       end
 
@@ -165,7 +165,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
     end
 
     context 'when external files are defined but not valid' do
-      let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'ruby:2.7' } }
+      let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'image:1.0' } }
 
       let(:local_file_content) { 'invalid content file ////' }
 
@@ -187,7 +187,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       let(:values) do
         {
           include: remote_file,
-          image: 'ruby:2.7'
+          image: 'image:1.0'
         }
       end
 
@@ -200,7 +200,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       it 'takes precedence' do
         stub_full_request(remote_file).to_return(body: remote_file_content)
 
-        expect(processor.perform[:image]).to eq('ruby:2.7')
+        expect(processor.perform[:image]).to eq('image:1.0')
       end
     end
 
@@ -210,7 +210,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
           include: [
             { local: '/local/file.yml' }
           ],
-          image: 'ruby:2.7'
+          image: 'image:1.0'
         }
       end
 
@@ -294,7 +294,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
     context 'when config includes an external configuration file via SSL web request' do
       before do
         stub_full_request('https://sha256.badssl.com/fake.yml', ip_address: '8.8.8.8')
-          .to_return(body: 'image: ruby:2.6', status: 200)
+          .to_return(body: 'image: image:1.0', status: 200)
 
         stub_full_request('https://self-signed.badssl.com/fake.yml', ip_address: '8.8.8.9')
           .to_raise(OpenSSL::SSL::SSLError.new('SSL_connect returned=1 errno=0 state=error: certificate verify failed (self signed certificate)'))
@@ -303,7 +303,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       context 'with an acceptable certificate' do
         let(:values) { { include: 'https://sha256.badssl.com/fake.yml' } }
 
-        it { is_expected.to include(image: 'ruby:2.6') }
+        it { is_expected.to include(image: 'image:1.0') }
       end
 
       context 'with a self-signed certificate' do
@@ -319,7 +319,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       let(:values) do
         {
           include: { project: another_project.full_path, file: '/templates/my-build.yml' },
-          image: 'ruby:2.7'
+          image: 'image:1.0'
         }
       end
 
@@ -349,7 +349,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
             project: another_project.full_path,
             file: ['/templates/my-build.yml', '/templates/my-test.yml']
           },
-          image: 'ruby:2.7'
+          image: 'image:1.0'
         }
       end
 
@@ -383,7 +383,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       let_it_be(:project) { create(:project, :repository) }
 
       let(:values) do
-        { include: 'myfolder/*.yml', image: 'ruby:2.7' }
+        { include: 'myfolder/*.yml', image: 'image:1.0' }
       end
 
       before do

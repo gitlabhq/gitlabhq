@@ -5,30 +5,52 @@ require 'spec_helper'
 RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
   describe '.track_unique_project_event' do
     using RSpec::Parameterized::TableSyntax
+    include SnowplowHelpers
 
-    let(:project_id) { 1 }
+    let(:project) { build(:project) }
+    let(:user) { build(:user) }
 
     shared_examples 'tracks template' do
+      let(:subject) { described_class.track_unique_project_event(project: project, template: template_path, config_source: config_source, user: user) }
+
       it "has an event defined for template" do
         expect do
-          described_class.track_unique_project_event(
-            project_id: project_id,
-            template: template_path,
-            config_source: config_source
-          )
+          subject
         end.not_to raise_error
       end
 
       it "tracks template" do
         expanded_template_name = described_class.expand_template_name(template_path)
         expected_template_event_name = described_class.ci_template_event_name(expanded_template_name, config_source)
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(receive(:track_event)).with(expected_template_event_name, values: project_id)
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(receive(:track_event)).with(expected_template_event_name, values: project.id)
 
-        described_class.track_unique_project_event(project_id: project_id, template: template_path, config_source: config_source)
+        subject
+      end
+
+      context 'Snowplow' do
+        it 'event is not tracked if FF is disabled' do
+          stub_feature_flags(route_hll_to_snowplow: false)
+
+          subject
+
+          expect_no_snowplow_event
+        end
+
+        it 'tracks event' do
+          subject
+
+          expect_snowplow_event(
+            category: described_class.to_s,
+            action: 'ci_templates_unique',
+            namespace: project.namespace,
+            user: user,
+            project: project
+          )
+        end
       end
     end
 
-    context 'with explicit includes' do
+    context 'with explicit includes', :snowplow do
       let(:config_source) { :repository_source }
 
       (described_class.ci_templates - ['Verify/Browser-Performance.latest.gitlab-ci.yml', 'Verify/Browser-Performance.gitlab-ci.yml']).each do |template|
@@ -40,7 +62,7 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
       end
     end
 
-    context 'with implicit includes' do
+    context 'with implicit includes', :snowplow do
       let(:config_source) { :auto_devops_source }
 
       [
@@ -60,7 +82,7 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
 
     it 'expands short template names' do
       expect do
-        described_class.track_unique_project_event(project_id: 1, template: 'Dependency-Scanning.gitlab-ci.yml', config_source: :repository_source)
+        described_class.track_unique_project_event(project: project, template: 'Dependency-Scanning.gitlab-ci.yml', config_source: :repository_source, user: user)
       end.not_to raise_error
     end
   end

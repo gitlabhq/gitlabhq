@@ -10,7 +10,7 @@ FactoryBot.define do
 
     options do
       {
-        image: 'ruby:2.7',
+        image: 'image:1.0',
         services: ['postgres'],
         script: ['ls -a']
       }
@@ -493,7 +493,7 @@ FactoryBot.define do
     trait :extended_options do
       options do
         {
-          image: { name: 'ruby:2.7', entrypoint: '/bin/sh' },
+          image: { name: 'image:1.0', entrypoint: '/bin/sh' },
           services: ['postgres', { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }, { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
           script: %w(echo),
           after_script: %w(ls date),

@@ -11,6 +11,10 @@ RSpec.shared_examples 'wiki model' do
 
   subject { wiki }
 
+  it 'VALID_USER_MARKUPS contains all valid markups' do
+    expect(described_class::VALID_USER_MARKUPS.keys).to match_array(%i(markdown rdoc asciidoc org))
+  end
+
   it 'container class includes HasWiki' do
     # NOTE: This is not enforced at runtime, since we also need to support Geo::DeletedProject
     expect(wiki_container).to be_kind_of(HasWiki)
@@ -516,6 +520,15 @@ RSpec.shared_examples 'wiki model' do
 
       it 'returns false and sets error message' do
         expect(subject.update_page(page.page, content: 'new content', format: :foobar)).to eq false
+        expect(subject.error_message).to match(/Invalid format selected/)
+      end
+    end
+
+    context 'when format is not allowed' do
+      let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
+
+      it 'returns false and sets error message' do
+        expect(subject.update_page(page.page, content: 'new content', format: :creole)).to eq false
         expect(subject.error_message).to match(/Invalid format selected/)
       end
     end

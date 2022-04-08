@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Releases do
+  include UploadHelpers
+
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }
@@ -1357,5 +1359,81 @@ RSpec.describe API::Releases do
       user: user,
       release_cli: release_cli
     )
+  end
+
+  describe 'GET /groups/:id/releases' do
+    let_it_be(:user1) { create(:user, can_create_group: false) }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path)) }
+    let_it_be(:group2) { create(:group, :private) }
+    let_it_be(:project1) { create(:project, namespace: group1) }
+    let_it_be(:project2) { create(:project, namespace: group2) }
+    let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+    let_it_be(:release1) { create(:release, project: project1) }
+    let_it_be(:release2) { create(:release, project: project2) }
+    let_it_be(:release3) { create(:release, project: project3) }
+
+    context 'when authenticated as owner' do
+      it 'gets releases from all projects in the group' do
+        get api("/groups/#{group1.id}/releases", admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.length).to eq(2)
+        expect(json_response.pluck('name')).to match_array([release1.name, release3.name])
+      end
+
+      it 'respects order by parameters' do
+        create(:release, project: project1, released_at: DateTime.now + 1.day)
+        get api("/groups/#{group1.id}/releases", admin), params: { sort: 'desc' }
+
+        expect(DateTime.parse(json_response[0]["released_at"]))
+          .to be > (DateTime.parse(json_response[1]["released_at"]))
+      end
+
+      it 'respects the simple parameter' do
+        get api("/groups/#{group1.id}/releases", admin), params: { simple: true }
+
+        expect(json_response[0].keys).not_to include("assets")
+      end
+
+      it 'denies access to private groups' do
+        get api("/groups/#{group2.id}/releases", user1), params: { simple: true }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns not found unless :group_releases_finder_inoperator feature flag enabled' do
+        stub_feature_flags(group_releases_finder_inoperator: false)
+
+        get api("/groups/#{group1.id}/releases", admin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'performance testing' do
+      shared_examples 'avoids N+1 queries' do |query_params = {}|
+        context 'with subgroups' do
+          let(:group) { create(:group) }
+
+          it 'include_subgroups avoids N+1 queries' do
+            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              get api("/groups/#{group.id}/releases", admin), params: query_params.merge({ include_subgroups: true })
+            end.count
+
+            subgroups = create_list(:group, 10, parent: group1)
+            projects = create_list(:project, 10, namespace: subgroups[0])
+            create_list(:release, 10, project: projects[0], author: admin)
+
+            expect do
+              get api("/groups/#{group.id}/releases", admin), params: query_params.merge({ include_subgroups: true })
+            end.not_to exceed_all_query_limit(control_count)
+          end
+        end
+      end
+
+      it_behaves_like 'avoids N+1 queries'
+      it_behaves_like 'avoids N+1 queries', { simple: true }
+    end
   end
 end

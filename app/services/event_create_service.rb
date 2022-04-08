@@ -184,8 +184,9 @@ class EventCreateService
 
     track_event(event_action: :pushed, event_target: Project, author_id: current_user.id)
 
-    if Feature.enabled?(:route_hll_to_snowplow, project, default_enabled: :yaml)
-      Gitlab::Tracking.event(self.class.to_s, 'action_active_users_project_repo', namespace: project, user: current_user)
+    namespace = project.namespace
+    if Feature.enabled?(:route_hll_to_snowplow, namespace, default_enabled: :yaml)
+      Gitlab::Tracking.event(self.class.to_s, 'action_active_users_project_repo', namespace: namespace, user: current_user, project: project)
     end
 
     Users::LastPushEventService.new(current_user)

@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
 
   let(:file_content) do
     <<~HEREDOC
-    image: 'ruby:2.7'
+    image: 'image:1.0'
     HEREDOC
   end
 
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'when the string is a local file' do
         let(:values) do
           { include: local_file,
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'returns File instances' do
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'when the key is a local file hash' do
         let(:values) do
           { include: { 'local' => local_file },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'returns File instances' do
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
 
       context 'when the string is a remote file' do
         let(:values) do
-          { include: remote_url, image: 'ruby:2.7' }
+          { include: remote_url, image: 'image:1.0' }
         end
 
         it 'returns File instances' do
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'when the key is a remote file hash' do
         let(:values) do
           { include: { 'remote' => remote_url },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'returns File instances' do
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'when the key is a template file hash' do
         let(:values) do
           { include: { 'template' => template_file },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'returns File instances' do
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
         let(:remote_url) { 'https://gitlab.com/secret-file.yml' }
         let(:values) do
           { include: { 'local' => local_file, 'remote' => remote_url },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'returns ambigious specification error' do
@@ -109,7 +109,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context "when the key is a project's file" do
         let(:values) do
           { include: { project: project.full_path, file: local_file },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'returns File instances' do
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context "when the key is project's files" do
         let(:values) do
           { include: { project: project.full_path, file: [local_file, 'another_file_path.yml'] },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'returns two File instances' do
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context "when 'include' is defined as an array" do
       let(:values) do
         { include: [remote_url, local_file],
-          image: 'ruby:2.7' }
+          image: 'image:1.0' }
       end
 
       it 'returns Files instances' do
@@ -147,7 +147,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context "when 'include' is defined as an array of hashes" do
       let(:values) do
         { include: [{ remote: remote_url }, { local: local_file }],
-          image: 'ruby:2.7' }
+          image: 'image:1.0' }
       end
 
       it 'returns Files instances' do
@@ -158,7 +158,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'when it has ambigious match' do
         let(:values) do
           { include: [{ remote: remote_url, local: local_file }],
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'returns ambigious specification error' do
@@ -170,7 +170,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context "when 'include' is not defined" do
       let(:values) do
         {
-          image: 'ruby:2.7'
+          image: 'image:1.0'
         }
       end
 
@@ -185,7 +185,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           { 'local' => local_file },
           { 'local' => local_file }
         ],
-        image: 'ruby:2.7' }
+        image: 'image:1.0' }
       end
 
       it 'does not raise an exception' do
@@ -199,7 +199,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
             { 'local' => local_file },
             { 'remote' => remote_url }
           ],
-          image: 'ruby:2.7' }
+          image: 'image:1.0' }
       end
 
       before do
@@ -217,7 +217,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
             { 'local' => local_file },
             { 'remote' => remote_url }
           ],
-          image: 'ruby:2.7' }
+          image: 'image:1.0' }
       end
 
       before do
@@ -269,7 +269,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'defined as an array' do
         let(:values) do
           { include: [full_local_file_path, remote_url],
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'expands the variable' do
@@ -281,7 +281,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'defined as an array of hashes' do
         let(:values) do
           { include: [{ local: full_local_file_path }, { remote: remote_url }],
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'expands the variable' do
@@ -303,7 +303,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'project name' do
         let(:values) do
           { include: { project: '$CI_PROJECT_PATH', file: local_file },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'expands the variable', :aggregate_failures do
@@ -315,7 +315,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'with multiple files' do
         let(:values) do
           { include: { project: project.full_path, file: [full_local_file_path, 'another_file_path.yml'] },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'expands the variable' do
@@ -327,7 +327,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       context 'when include variable has an unsupported type for variable expansion' do
         let(:values) do
           { include: { project: project.id, file: local_file },
-            image: 'ruby:2.7' }
+            image: 'image:1.0' }
         end
 
         it 'does not invoke expansion for the variable', :aggregate_failures do
@@ -365,7 +365,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       let(:values) do
         { include: [{ remote: remote_url },
                     { local: local_file, rules: [{ if: "$CI_PROJECT_ID == '#{project_id}'" }] }],
-          image: 'ruby:2.7' }
+          image: 'image:1.0' }
       end
 
       context 'when the rules matches' do

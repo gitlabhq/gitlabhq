@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlPopover, GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
-import CiIcon from '../../vue_shared/components/ci_icon.vue';
-import timeagoMixin from '../../vue_shared/mixins/timeago';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { mrStates, humanMRStates } from '../constants';
 import query from '../queries/merge_request.query.graphql';
 

@@ -6,7 +6,7 @@ import { mapActions } from 'vuex';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
 
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteEditedText from './note_edited_text.vue';
 import noteHeader from './note_header.vue';
 

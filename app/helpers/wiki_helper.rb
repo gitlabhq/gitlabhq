@@ -139,6 +139,10 @@ module WikiHelper
     api_v4_projects_wikis_path(wiki_page_render_api_endpoint_params(page))
   end
 
+  def wiki_markup_hash_by_name_id
+    Wiki::VALID_USER_MARKUPS.map { |key, value| { value[:name] => key } }.reduce({}, :merge)
+  end
+
   private
 
   def wiki_page_render_api_endpoint_params(page)

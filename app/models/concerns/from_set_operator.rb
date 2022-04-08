@@ -11,7 +11,12 @@ module FromSetOperator
     raise "Trying to redefine method '#{method(method_name)}'" if methods.include?(method_name)
 
     define_method(method_name) do |members, remove_duplicates: true, remove_order: true, alias_as: table_name|
-      operator_sql = operator.new(members, remove_duplicates: remove_duplicates, remove_order: remove_order).to_sql
+      operator_sql =
+        if members.any?
+          operator.new(members, remove_duplicates: remove_duplicates, remove_order: remove_order).to_sql
+        else
+          where("1=0").to_sql
+        end
 
       from(Arel.sql("(#{operator_sql}) #{alias_as}"))
     end

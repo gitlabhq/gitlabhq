@@ -93,7 +93,7 @@ falling into an endless loop as described in following
 When dealing with data migrations the preferred way to iterate over a large volume of data is using
 `EachBatch`.
 
-A special case of data migration is a [background migration](background_migrations.md#scheduling)
+A special case of data migration is a [background migration](database/background_migrations.md#scheduling)
 where the actual data modification is executed in a background job. The migration code that
 determines the data ranges (slices) and schedules the background jobs uses `each_batch`.
 

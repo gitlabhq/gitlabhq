@@ -15,10 +15,7 @@ module Releases
       @current_user = current_user
       @params = params
 
-      params[:order_by] ||= 'released_at'
       params[:sort] ||= 'desc'
-      params[:page] ||= 0
-      params[:per] ||= 30
     end
 
     def execute(preload: true)
@@ -26,7 +23,7 @@ module Releases
 
       releases = get_releases
       releases.preloaded if preload
-      paginate_releases(releases)
+      releases
     end
 
     private
@@ -46,9 +43,6 @@ module Releases
       Release.sort_by_attribute("released_at_#{params[:sort]}").order(id: params[:sort])
     end
 
-    def paginate_releases(releases)
-      releases.page(params[:page].to_i).per(params[:per])
-    end
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end

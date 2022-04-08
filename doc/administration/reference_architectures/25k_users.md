@@ -24,7 +24,7 @@ full list of reference architectures, see
 | Consul<sup>1</sup>                                | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | PostgreSQL<sup>1</sup>                            | 3           | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge` | `D16s v3` |
 | PgBouncer<sup>1</sup>                             | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| Internal load balancing node<sup>3</sup>          | 1           | 4 vCPU, 3.6GB memory    | `n1-highcpu-4`   | `c5.large`   | `F2s v2`  |
+| Internal load balancing node<sup>3</sup>          | 1           | 4 vCPU, 3.6GB memory    | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
 | Redis/Sentinel - Cache<sup>2</sup>                | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
 | Redis/Sentinel - Persistent<sup>2</sup>           | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
 | Gitaly<sup>5</sup>                                | 3           | 32 vCPU, 120 GB memory  | `n1-standard-32` | `m5.8xlarge` | `D32s v3` |
@@ -86,7 +86,7 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
-  
+
   redis_cache -[hidden]-> redis_persistent
 }
 
@@ -2358,7 +2358,7 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
-  
+
   redis_cache -[hidden]-> redis_persistent
 }
 

@@ -23,14 +23,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Migrations
 
-- [Avoiding downtime in migrations](../avoiding_downtime_in_migrations.md)
+- [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md)
 - [SQL guidelines](../sql.md) for working with SQL queries
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations
 - [Testing Rails migrations](../testing_guide/testing_migrations_guide.md) guide
-- [Post deployment migrations](../post_deployment_migrations.md)
-- [Background migrations](../background_migrations.md)
+- [Post deployment migrations](post_deployment_migrations.md)
+- [Background migrations](background_migrations.md)
 - [Swapping tables](../swapping_tables.md)
-- [Deleting migrations](../deleting_migrations.md)
+- [Deleting migrations](deleting_migrations.md)
 - [Partitioning tables](table_partitioning.md)
 
 ## Debugging

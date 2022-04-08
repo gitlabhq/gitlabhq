@@ -4,7 +4,7 @@ import { groupBy } from 'lodash';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { glEmojiTag } from '../../emoji';
+import { glEmojiTag } from '~/emoji';
 
 // Internal constant, specific to this component, used when no `currentUserId` is given
 const NO_USER_ID = -1;

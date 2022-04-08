@@ -216,7 +216,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'ruby:2.7', 'entrypoint' => '/bin/sh', 'ports' => [] })
+            expect(json_response['image']).to eq({ 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [] })
             expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
                                                        'alias' => nil, 'command' => nil, 'ports' => [], 'variables' => nil },
                                                      { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',

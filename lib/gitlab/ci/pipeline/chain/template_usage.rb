@@ -19,7 +19,7 @@ module Gitlab
 
           def track_event(template)
             Gitlab::UsageDataCounters::CiTemplateUniqueCounter
-              .track_unique_project_event(project_id: pipeline.project_id, template: template, config_source: pipeline.config_source)
+              .track_unique_project_event(project: pipeline.project, template: template, config_source: pipeline.config_source, user: current_user)
           end
 
           def included_templates

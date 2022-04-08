@@ -45,14 +45,14 @@ work it needs to perform and how long it takes to complete:
    One exception is a migration that takes longer but is absolutely critical for the application to operate correctly.
    For example, you might have indices that enforce unique tuples, or that are needed for query performance in critical parts of the application. In cases where the migration would be unacceptably slow, however, a better option might be to guard the feature with a [feature flag](feature_flags/index.md)
    and perform a post-deployment migration instead. The feature can then be turned on after the migration finishes.
-1. [**Post-deployment migrations.**](post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
+1. [**Post-deployment migrations.**](database/post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
    run _after_ new application code has been deployed (for GitLab.com after the production deployment has finished).
    They can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
    Common examples for schema changes that should run post-deploy include:
      - Clean-ups, like removing unused columns.
      - Adding non-critical indices on high-traffic tables.
      - Adding non-critical indices that take a long time to create.
-1. [**Background migrations.**](background_migrations.md) These aren't regular Rails migrations, but application code that is
+1. [**Background migrations.**](database/background_migrations.md) These aren't regular Rails migrations, but application code that is
    executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
    exceed the timing guidelines for post-deploy migrations. Background migrations should _not_ change the schema.
 
@@ -129,13 +129,13 @@ TARGET=12-9-stable-ee scripts/regenerate-schema
 
 ## Avoiding downtime
 
-The document ["Avoiding downtime in migrations"](avoiding_downtime_in_migrations.md) specifies
+The document ["Avoiding downtime in migrations"](database/avoiding_downtime_in_migrations.md) specifies
 various database operations, such as:
 
-- [dropping and renaming columns](avoiding_downtime_in_migrations.md#dropping-columns)
-- [changing column constraints and types](avoiding_downtime_in_migrations.md#changing-column-constraints)
-- [adding and dropping indexes, tables, and foreign keys](avoiding_downtime_in_migrations.md#adding-indexes)
-- [migrating `integer` primary keys to `bigint`](avoiding_downtime_in_migrations.md#migrating-integer-primary-keys-to-bigint)
+- [dropping and renaming columns](database/avoiding_downtime_in_migrations.md#dropping-columns)
+- [changing column constraints and types](database/avoiding_downtime_in_migrations.md#changing-column-constraints)
+- [adding and dropping indexes, tables, and foreign keys](database/avoiding_downtime_in_migrations.md#adding-indexes)
+- [migrating `integer` primary keys to `bigint`](database/avoiding_downtime_in_migrations.md#migrating-integer-primary-keys-to-bigint)
 
 and explains how to perform them without requiring downtime.
 
@@ -219,7 +219,7 @@ in that limit. Singular query timings should fit within the [standard limit](que
 In case you need to insert, update, or delete a significant amount of data, you:
 
 - Must disable the single transaction with `disable_ddl_transaction!`.
-- Should consider doing it in a [Background Migration](background_migrations.md).
+- Should consider doing it in a [Background Migration](database/background_migrations.md).
 
 ## Migration helpers and versioning
 
@@ -1114,7 +1114,7 @@ by an integer. For example: `users` would turn into `users0`
 ## Using models in migrations (discouraged)
 
 The use of models in migrations is generally discouraged. As such models are
-[contraindicated for background migrations](background_migrations.md#isolation),
+[contraindicated for background migrations](database/background_migrations.md#isolation),
 the model needs to be declared in the migration.
 
 If using a model in the migrations, you should first

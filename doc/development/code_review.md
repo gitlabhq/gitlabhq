@@ -615,9 +615,9 @@ Enterprise Edition instance. This has some implications:
       migration on the staging environment if you aren't sure.
    1. Categorized correctly:
       - Regular migrations run before the new code is running on the instance.
-      - [Post-deployment migrations](post_deployment_migrations.md) run _after_
+      - [Post-deployment migrations](database/post_deployment_migrations.md) run _after_
         the new code is deployed, when the instance is configured to do that.
-      - [Background migrations](background_migrations.md) run in Sidekiq, and
+      - [Background migrations](database/background_migrations.md) run in Sidekiq, and
         should only be done for migrations that would take an extreme amount of
         time at GitLab.com scale.
 1. **Sidekiq workers** [cannot change in a backwards-incompatible way](sidekiq/compatibility_across_updates.md):

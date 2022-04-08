@@ -5,6 +5,7 @@
     "name": { "type": "string" },
     "description": { "type": "string" },
     "description_html": { "type": "string" },
+    "tag_name": { "type":  "string"},
     "created_at":  { "type": "string", "format": "date-time" },
     "released_at": { "type": "string", "format": "date-time" },
     "upcoming_release": { "type": "boolean" },

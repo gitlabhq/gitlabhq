@@ -10,18 +10,45 @@ class Wiki
   extend ActiveModel::Naming
 
   MARKUPS = { # rubocop:disable Style/MultilineIfModifier
-    'Markdown' => :markdown,
-    'RDoc'     => :rdoc,
-    'AsciiDoc' => :asciidoc,
-    'Org'      => :org
+    markdown: {
+      name: 'Markdown',
+      default_extension: :md,
+      created_by_user: true
+    },
+    rdoc: {
+      name: 'RDoc',
+      default_extension: :rdoc,
+      created_by_user: true
+    },
+    asciidoc: {
+      name: 'AsciiDoc',
+      default_extension: :asciidoc,
+      created_by_user: true
+    },
+    org: {
+      name: 'Org',
+      default_extension: :org,
+      created_by_user: true
+    },
+    textile: {
+      name: 'Textile',
+      default_extension: :textile
+    },
+    creole: {
+      name: 'Creole',
+      default_extension: :creole
+    },
+    rest: {
+      name: 'reStructuredText',
+      default_extension: :rst
+    },
+    mediawiki: {
+      name: 'MediaWiki',
+      default_extension: :mediawiki
+    }
   }.freeze unless defined?(MARKUPS)
 
-  DEFAULT_MARKUP_EXTENSIONS = { # rubocop:disable Style/MultilineIfModifier
-    markdown: 'md',
-    rdoc:     'rdoc',
-    asciidoc: 'asciidoc',
-    org:      'org'
-  }.freeze unless defined?(DEFAULT_MARKUP_EXTENSIONS)
+  VALID_USER_MARKUPS = MARKUPS.select { |_, v| v[:created_by_user] }.freeze unless defined?(VALID_USER_MARKUPS)
 
   CouldNotCreateWikiError = Class.new(StandardError)
 
@@ -355,13 +382,15 @@ class Wiki
   end
 
   def with_valid_format(format, &block)
-    unless Wiki::MARKUPS.value?(format.to_sym)
+    default_extension = Wiki::VALID_USER_MARKUPS.dig(format.to_sym, :default_extension).to_s
+
+    if default_extension.blank?
       @error_message = _('Invalid format selected')
 
       return false
     end
 
-    yield Wiki::DEFAULT_MARKUP_EXTENSIONS[format.to_sym]
+    yield default_extension
   end
 
   def sluggified_full_path(title, extension)

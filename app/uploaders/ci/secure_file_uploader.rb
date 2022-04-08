@@ -10,7 +10,7 @@ module Ci
     encrypt(key: :key)
 
     def key
-      OpenSSL::HMAC.digest('SHA256', Gitlab::Application.secrets.db_key_base, model.project_id.to_s)
+      Digest::SHA256.digest model.key_data
     end
 
     def checksum

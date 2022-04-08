@@ -1,4 +1,4 @@
-import '../../webpack';
+import '~/webpack';
 
 import setConfigs from '@gitlab/ui/dist/config';
 import Vue from 'vue';

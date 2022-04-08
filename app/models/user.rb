@@ -2286,17 +2286,20 @@ class User < ApplicationRecord
     # to avoid querying descendants since they are already covered
     # by ancestor namespaces. If the FF is not available fallback to
     # inefficient search: https://gitlab.com/gitlab-org/gitlab/-/issues/336436
-    namespace_ids =
-      if Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
-        Group.joins(:all_group_members)
-          .merge(search_members)
-          .shortest_traversal_ids_prefixes
-          .map(&:last)
-      else
-        search_members.pluck(:source_id)
-      end
+    unless Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
+      return Ci::NamespaceMirror.contains_any_of_namespaces(search_members.pluck(:source_id))
+    end
 
-    Ci::NamespaceMirror.contains_any_of_namespaces(namespace_ids)
+    traversal_ids = Group.joins(:all_group_members)
+      .merge(search_members)
+      .shortest_traversal_ids_prefixes
+
+    # Use efficient btree index to perform search
+    if Feature.enabled?(:ci_owned_runners_unnest_index, self, default_enabled: :yaml)
+      Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
+    else
+      Ci::NamespaceMirror.contains_any_of_namespaces(traversal_ids.map(&:last))
+    end
   end
 end
 

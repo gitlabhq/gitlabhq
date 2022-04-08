@@ -4,6 +4,8 @@ module Ci
   # This model represents a record in a shadow table of the main database's namespaces table.
   # It allows us to navigate the namespace hierarchy on the ci database without resorting to a JOIN.
   class NamespaceMirror < ApplicationRecord
+    include FromUnion
+
     belongs_to :namespace
 
     scope :by_group_and_descendants, -> (id) do
@@ -12,6 +14,24 @@ module Ci
 
     scope :contains_any_of_namespaces, -> (ids) do
       where('traversal_ids && ARRAY[?]::int[]', ids)
+    end
+
+    scope :contains_traversal_ids, -> (traversal_ids) do
+      mirrors = []
+
+      traversal_ids.group_by(&:count).each do |columns_count, traversal_ids_group|
+        columns = Array.new(columns_count) { |i| "(traversal_ids[#{i + 1}])" }
+        pairs = traversal_ids_group.map do |ids|
+          ids = ids.map { |id| Arel::Nodes.build_quoted(id).to_sql }
+          "(#{ids.join(",")})"
+        end
+
+        # Create condition in format:
+        # ((traversal_ids[1]),(traversal_ids[2])) IN ((1,2),(2,3))
+        mirrors << Ci::NamespaceMirror.where("(#{columns.join(",")}) IN (#{pairs.join(",")})") # rubocop:disable GitlabSecurity/SqlInjection
+      end
+
+      self.from_union(mirrors)
     end
 
     scope :by_namespace_id, -> (namespace_id) { where(namespace_id: namespace_id) }

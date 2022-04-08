@@ -35,8 +35,9 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       expect_snowplow_event(
         category: described_class.to_s,
         action: 'action_active_users_project_repo',
-        namespace: project,
-        user: user
+        namespace: project.namespace,
+        user: user,
+        project: project
       )
     end
   end

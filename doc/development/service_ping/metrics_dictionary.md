@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Metrics Dictionary Guide
 
 [Service Ping](index.md) metrics are defined in individual YAML files definitions from which the
-[Metrics Dictionary](https://metrics.gitlab.com/) is built.
+[Metrics Dictionary](https://metrics.gitlab.com/) is built. Currently, the metrics dictionary is built automatically once a day. When a change to a metric is made in a YAML file, you can see the change in the dictionary within 24 hours.
 This guide describes the dictionary and how it's implemented.
 
 ## Metrics Definition and validation

@@ -22,8 +22,8 @@
           }
 
           // We do not have rails_ujs here, so we're manually making a link trigger a form submit.
-          document.getElementById('sign_out_link').addEventListener('click', function(e) {
+          document.querySelector('.js-sign-out-link')?.addEventListener('click', (e) => {
             e.preventDefault();
-            document.getElementById('sign_out_form').submit();
+            document.querySelector('.js-sign-out-form')?.submit();
           });
         }());

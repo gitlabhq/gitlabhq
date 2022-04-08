@@ -241,10 +241,10 @@ Get a Release for the given tag.
 GET /projects/:id/releases/:tag_name
 ```
 
-| Attribute     | Type           | Required | Description                                                                         |
-| ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
-| `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
+| Attribute                  | Type           | Required | Description                                                                         |
+|----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
+| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).  |
+| `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
 Example request:

@@ -13038,8 +13038,10 @@ CREATE TABLE ci_secure_files (
     name text NOT NULL,
     file text NOT NULL,
     checksum bytea NOT NULL,
+    key_data text,
     CONSTRAINT check_320790634d CHECK ((char_length(file) <= 255)),
-    CONSTRAINT check_402c7b4a56 CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_402c7b4a56 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_7279b4e293 CHECK ((char_length(key_data) <= 128))
 );
 
 CREATE SEQUENCE ci_secure_files_id_seq
@@ -27032,6 +27034,8 @@ CREATE UNIQUE INDEX index_ci_job_variables_on_key_and_job_id ON ci_job_variables
 CREATE INDEX index_ci_minutes_additional_packs_on_namespace_id_purchase_xid ON ci_minutes_additional_packs USING btree (namespace_id, purchase_xid);
 
 CREATE UNIQUE INDEX index_ci_namespace_mirrors_on_namespace_id ON ci_namespace_mirrors USING btree (namespace_id);
+
+CREATE INDEX index_ci_namespace_mirrors_on_traversal_ids_unnest ON ci_namespace_mirrors USING btree ((traversal_ids[1]), (traversal_ids[2]), (traversal_ids[3]), (traversal_ids[4])) INCLUDE (traversal_ids, namespace_id);
 
 CREATE UNIQUE INDEX index_ci_namespace_monthly_usages_on_namespace_id_and_date ON ci_namespace_monthly_usages USING btree (namespace_id, date);
 

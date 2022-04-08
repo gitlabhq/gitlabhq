@@ -2224,7 +2224,7 @@ RSpec.describe Ci::Build do
   describe '#options' do
     let(:options) do
       {
-        image: "ruby:2.7",
+        image: "image:1.0",
         services: ["postgres"],
         script: ["ls -a"]
       }
@@ -2235,7 +2235,7 @@ RSpec.describe Ci::Build do
     end
 
     it 'allows to access with symbolized keys' do
-      expect(build.options[:image]).to eq('ruby:2.7')
+      expect(build.options[:image]).to eq('image:1.0')
     end
 
     it 'rejects access with string keys' do

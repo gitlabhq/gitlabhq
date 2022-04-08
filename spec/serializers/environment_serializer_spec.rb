@@ -50,7 +50,7 @@ RSpec.describe EnvironmentSerializer do
 
     context 'when there is a single environment' do
       before do
-        create(:environment, name: 'staging')
+        create(:environment, project: project, name: 'staging')
       end
 
       it 'represents one standalone environment' do
@@ -63,8 +63,8 @@ RSpec.describe EnvironmentSerializer do
 
     context 'when there are multiple environments in folder' do
       before do
-        create(:environment, name: 'staging/my-review-1')
-        create(:environment, name: 'staging/my-review-2')
+        create(:environment, project: project, name: 'staging/my-review-1')
+        create(:environment, project: project, name: 'staging/my-review-2')
       end
 
       it 'represents one item that is a folder' do
@@ -78,10 +78,10 @@ RSpec.describe EnvironmentSerializer do
 
     context 'when there are multiple folders and standalone environments' do
       before do
-        create(:environment, name: 'staging/my-review-1')
-        create(:environment, name: 'staging/my-review-2')
-        create(:environment, name: 'production/my-review-3')
-        create(:environment, name: 'testing')
+        create(:environment, project: project, name: 'staging/my-review-1')
+        create(:environment, project: project, name: 'staging/my-review-2')
+        create(:environment, project: project, name: 'production/my-review-3')
+        create(:environment, project: project, name: 'testing')
       end
 
       it 'represents multiple items grouped within folders' do
@@ -124,7 +124,7 @@ RSpec.describe EnvironmentSerializer do
     context 'when resource is paginatable relation' do
       context 'when there is a single environment object in relation' do
         before do
-          create(:environment)
+          create(:environment, project: project)
         end
 
         it 'serializes environments' do
@@ -134,7 +134,7 @@ RSpec.describe EnvironmentSerializer do
 
       context 'when multiple environment objects are serialized' do
         before do
-          create_list(:environment, 3)
+          create_list(:environment, 3, project: project)
         end
 
         it 'serializes appropriate number of objects' do
@@ -159,10 +159,10 @@ RSpec.describe EnvironmentSerializer do
         end
 
         before do
-          create(:environment, name: 'staging/review-1')
-          create(:environment, name: 'staging/review-2')
-          create(:environment, name: 'production/deploy-3')
-          create(:environment, name: 'testing')
+          create(:environment, project: project, name: 'staging/review-1')
+          create(:environment, project: project, name: 'staging/review-2')
+          create(:environment, project: project, name: 'production/deploy-3')
+          create(:environment, project: project, name: 'testing')
         end
 
         it 'paginates grouped items including ordering' do
@@ -189,7 +189,7 @@ RSpec.describe EnvironmentSerializer do
     let(:resource) { Environment.all }
 
     before do
-      create(:environment, name: 'staging/review-1')
+      create(:environment, project: project, name: 'staging/review-1')
       create_environment_with_associations(project)
     end
 

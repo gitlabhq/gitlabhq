@@ -15,9 +15,9 @@ RSpec.describe Ci::SecureFileUploader do
 
   describe '#key' do
     it 'creates a digest with a secret key and the project id' do
-      expect(OpenSSL::HMAC)
+      expect(Digest::SHA256)
         .to receive(:digest)
-        .with('SHA256', Gitlab::Application.secrets.db_key_base, ci_secure_file.project_id.to_s)
+        .with(ci_secure_file.key_data)
         .and_return('digest')
 
       expect(subject.key).to eq('digest')

@@ -60,6 +60,8 @@ The correct approach is to add a new metric for GitLab 12.6 release with updated
 
 and update existing business analysis artefacts to use `example_metric_without_archived` instead of `example_metric`
 
+Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automatically once a day. When a change to a metric is made in a YAML file, you can see the change in the dictionary within 24 hours.
+
 ## Remove a metric
 
 WARNING:

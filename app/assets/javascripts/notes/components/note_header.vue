@@ -8,7 +8,7 @@ import {
 import { mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import UserNameWithStatus from '../../sidebar/components/assignees/user_name_with_status.vue';
+import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
 import { NOTEABLE_TYPE_MAPPING } from '../constants';
 

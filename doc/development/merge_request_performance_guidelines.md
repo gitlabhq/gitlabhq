@@ -16,7 +16,7 @@ with and agreed upon by backend maintainers and performance specialists.
 It's also highly recommended that you read the following guides:
 
 - [Performance Guidelines](performance.md)
-- [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md)
+- [Avoiding downtime in migrations](database/avoiding_downtime_in_migrations.md)
 
 ## Definition
 
