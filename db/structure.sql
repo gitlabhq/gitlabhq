@@ -18638,7 +18638,8 @@ CREATE TABLE plan_limits (
     dotenv_variables integer DEFAULT 20 NOT NULL,
     dotenv_size integer DEFAULT 5120 NOT NULL,
     pipeline_triggers integer DEFAULT 25000 NOT NULL,
-    project_ci_secure_files integer DEFAULT 100 NOT NULL
+    project_ci_secure_files integer DEFAULT 100 NOT NULL,
+    repository_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

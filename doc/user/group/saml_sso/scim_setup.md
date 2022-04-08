@@ -133,7 +133,7 @@ After the above steps are complete:
 
 The Okta GitLab application currently only supports SCIM. Continue
 using the separate Okta [SAML SSO](index.md) configuration along with the new SCIM
-application described above.
+application described above. An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/216173) to add SAML support to the Okta GitLab application.
 
 ### OneLogin
 
