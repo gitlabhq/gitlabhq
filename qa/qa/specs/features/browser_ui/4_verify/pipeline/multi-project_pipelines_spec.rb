@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Release' do
+  RSpec.describe 'Verify' do
     describe 'Multi-project pipelines' do
       let(:downstream_job_name) { 'downstream_job' }
       let(:executor) { "qa-runner-#{SecureRandom.hex(4)}" }

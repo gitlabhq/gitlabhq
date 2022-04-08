@@ -5,7 +5,7 @@ module QA
       # Static address variables declared for mapping environment to logging URLs
       STAGING_ADDRESS     = 'https://staging.gitlab.com'
       STAGING_REF_ADDRESS = 'https://staging-ref.gitlab.com'
-      PRODUCTION_ADDRESS  = 'https://www.gitlab.com'
+      PRODUCTION_ADDRESS  = 'https://gitlab.com'
       PRE_PROD_ADDRESS    = 'https://pre.gitlab.com'
       SENTRY_ENVIRONMENTS = {
         staging:        'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',

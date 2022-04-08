@@ -302,6 +302,56 @@ FactoryBot.define do
       end
     end
 
+    # Bandit reports are correctly de-duplicated when ran in the same pipeline
+    # as a corresponding semgrep report.
+    # This report does not include signature tracking.
+    trait :sast_bandit do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-sast-report-bandit.json'), 'application/json')
+      end
+    end
+
+    # Equivalent Semgrep report for :sast_bandit report.
+    # This report includes signature tracking.
+    trait :sast_semgrep_for_bandit do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-sast-report-semgrep-for-bandit.json'), 'application/json')
+      end
+    end
+
+    # Gosec reports are not correctly de-duplicated when ran in the same pipeline
+    # as a corresponding semgrep report.
+    # This report includes signature tracking.
+    trait :sast_gosec do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-sast-report-gosec.json'), 'application/json')
+      end
+    end
+
+    # Equivalent Semgrep report for :sast_gosec report.
+    # This report includes signature tracking.
+    trait :sast_semgrep_for_gosec do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-sast-report-semgrep-for-gosec.json'), 'application/json')
+      end
+    end
+
     trait :common_security_report do
       file_format { :raw }
       file_type { :dependency_scanning }

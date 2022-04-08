@@ -358,7 +358,7 @@ export default {
           :loading="redirecting"
           :disabled="redirecting"
           category="primary"
-          variant="success"
+          variant="confirm"
           :href="newIncidentPath"
           @click="navigateToCreateNewIncident"
         >

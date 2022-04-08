@@ -169,7 +169,7 @@ RSpec.describe 'Merge request > User posts notes', :js do
         end
 
         page.within('.modal') do
-          click_button('OK', match: :first)
+          click_button('Cancel editing', match: :first)
         end
 
         expect(find('.js-note-text').text).to eq ''

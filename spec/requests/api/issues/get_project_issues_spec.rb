@@ -877,5 +877,35 @@ RSpec.describe API::Issues do
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    context 'with a confidential note' do
+      let!(:note) do
+        create(
+          :note,
+          :confidential,
+          project: project,
+          noteable: issue,
+          author: create(:user)
+        )
+      end
+
+      it 'returns a full list of participants' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}/participants", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        participant_ids = json_response.map { |el| el['id'] }
+        expect(participant_ids).to match_array([issue.author_id, note.author_id])
+      end
+
+      context 'when user cannot see a confidential note' do
+        it 'returns a limited list of participants' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/participants", create(:user))
+
+          expect(response).to have_gitlab_http_status(:ok)
+          participant_ids = json_response.map { |el| el['id'] }
+          expect(participant_ids).to match_array([issue.author_id])
+        end
+      end
+    end
   end
 end

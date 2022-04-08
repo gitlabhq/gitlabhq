@@ -185,7 +185,7 @@ export default {
         <gl-button
           class="mr-auto js-no-auto-disable"
           category="primary"
-          variant="success"
+          variant="confirm"
           type="submit"
           :disabled="isFormSubmissionDisabled"
           data-testid="submit-button"

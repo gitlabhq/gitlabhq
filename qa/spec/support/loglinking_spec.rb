@@ -83,7 +83,7 @@ RSpec.describe QA::Support::Loglinking do
   describe '.logging_environment' do
     let(:staging_address) { 'https://staging.gitlab.com' }
     let(:staging_ref_address) { 'https://staging-ref.gitlab.com' }
-    let(:production_address) { 'https://www.gitlab.com' }
+    let(:production_address) { 'https://gitlab.com' }
     let(:pre_prod_address) { 'https://pre.gitlab.com' }
     let(:logging_env_array) do
       [

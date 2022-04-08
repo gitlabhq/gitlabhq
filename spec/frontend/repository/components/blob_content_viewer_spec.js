@@ -258,6 +258,7 @@ describe('Blob content viewer component', () => {
         codeNavigationPath: simpleViewerMock.codeNavigationPath,
         blobPath: simpleViewerMock.path,
         pathPrefix: simpleViewerMock.projectBlobPathRoot,
+        wrapTextNodes: true,
       });
     });
 

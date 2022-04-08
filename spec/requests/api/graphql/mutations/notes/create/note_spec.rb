@@ -17,8 +17,7 @@ RSpec.describe 'Adding a Note' do
       noteable_id: GitlabSchema.id_from_object(noteable).to_s,
       discussion_id: (GitlabSchema.id_from_object(discussion).to_s if discussion),
       merge_request_diff_head_sha: head_sha.presence,
-      body: body,
-      confidential: true
+      body: body
     }
 
     graphql_mutation(:create_note, variables)
@@ -49,7 +48,6 @@ RSpec.describe 'Adding a Note' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(mutation_response['note']['body']).to eq('Body text')
-      expect(mutation_response['note']['confidential']).to eq(true)
     end
 
     describe 'creating Notes in reply to a discussion' do
@@ -77,6 +75,25 @@ RSpec.describe 'Adding a Note' do
           end
         end
       end
+    end
+
+    context 'for an issue' do
+      let(:noteable) { create(:issue, project: project) }
+      let(:mutation) do
+        variables = {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          confidential: true
+        }
+
+        graphql_mutation(:create_note, variables)
+      end
+
+      before do
+        project.add_developer(current_user)
+      end
+
+      it_behaves_like 'a Note mutation with confidential notes'
     end
 
     context 'when body only contains quick actions' do

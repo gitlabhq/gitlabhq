@@ -6630,7 +6630,7 @@ msgstr ""
 msgid "CICD|Select projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable."
 msgstr ""
 
-msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file."
+msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file. %{link_start}What is Auto DevOps?%{link_end}"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
@@ -6796,6 +6796,9 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Cancel and close"
+msgstr ""
+
+msgid "Cancel editing"
 msgstr ""
 
 msgid "Cancel index deletion"
@@ -9977,6 +9980,9 @@ msgid "ContextCommits|Failed to delete context commits. Please try again."
 msgstr ""
 
 msgid "Continue"
+msgstr ""
+
+msgid "Continue editing"
 msgstr ""
 
 msgid "Continue to the next step"
@@ -22129,6 +22135,9 @@ msgid "Layout|Fluid"
 msgstr ""
 
 msgid "Lead Time"
+msgstr ""
+
+msgid "Lead Time for Changes"
 msgstr ""
 
 msgid "Lead time"
@@ -42376,9 +42385,6 @@ msgstr ""
 msgid "What does this command do?"
 msgstr ""
 
-msgid "What is Auto DevOps?"
-msgstr ""
-
 msgid "What is Markdown?"
 msgstr ""
 
@@ -43950,6 +43956,12 @@ msgstr ""
 msgid "can not be changed for existing notes"
 msgstr ""
 
+msgid "can not be set for this resource"
+msgstr ""
+
+msgid "can not be set for this type of note"
+msgstr ""
+
 msgid "can only be changed by a group admin."
 msgstr ""
 
@@ -45431,6 +45443,9 @@ msgid "reply"
 msgid_plural "replies"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "reply should have same confidentiality as top-level note"
+msgstr ""
 
 msgid "repositories"
 msgstr ""

@@ -805,29 +805,29 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/workspace/index.md @fneill
 
 [Authentication and Authorization]
-app/**/*password* @gitlab-org/manage/authentication-and-authorization
-ee/app/**/*password* @gitlab-org/manage/authentication-and-authorization
-config/**/*password* @gitlab-org/manage/authentication-and-authorization
-ee/config/**/*password* @gitlab-org/manage/authentication-and-authorization
-lib/**/*password* @gitlab-org/manage/authentication-and-authorization
-ee/lib/**/*password* @gitlab-org/manage/authentication-and-authorization
-app/controllers/**/*password* @gitlab-org/manage/authentication-and-authorization
-ee/app/controllers/**/*password* @gitlab-org/manage/authentication-and-authorization
+/app/**/*password* @gitlab-org/manage/authentication-and-authorization
+/ee/app/**/*password* @gitlab-org/manage/authentication-and-authorization
+/config/**/*password* @gitlab-org/manage/authentication-and-authorization
+/ee/config/**/*password* @gitlab-org/manage/authentication-and-authorization
+/lib/**/*password* @gitlab-org/manage/authentication-and-authorization
+/ee/lib/**/*password* @gitlab-org/manage/authentication-and-authorization
+/app/controllers/**/*password* @gitlab-org/manage/authentication-and-authorization
+/ee/app/controllers/**/*password* @gitlab-org/manage/authentication-and-authorization
 
-app/**/*auth* @gitlab-org/manage/authentication-and-authorization
-ee/app/**/*auth* @gitlab-org/manage/authentication-and-authorization
-config/**/*auth* @gitlab-org/manage/authentication-and-authorization
-ee/config/**/*auth* @gitlab-org/manage/authentication-and-authorization
-lib/**/*auth* @gitlab-org/manage/authentication-and-authorization
-ee/lib/**/*auth* @gitlab-org/manage/authentication-and-authorization
-app/controllers/**/*auth* @gitlab-org/manage/authentication-and-authorization
-ee/app/controllers/**/*auth* @gitlab-org/manage/authentication-and-authorization
+/app/**/*auth* @gitlab-org/manage/authentication-and-authorization
+/ee/app/**/*auth* @gitlab-org/manage/authentication-and-authorization
+/config/**/*auth* @gitlab-org/manage/authentication-and-authorization
+/ee/config/**/*auth* @gitlab-org/manage/authentication-and-authorization
+/lib/**/*auth* @gitlab-org/manage/authentication-and-authorization
+/ee/lib/**/*auth* @gitlab-org/manage/authentication-and-authorization
+/app/controllers/**/*auth* @gitlab-org/manage/authentication-and-authorization
+/ee/app/controllers/**/*auth* @gitlab-org/manage/authentication-and-authorization
 
-app/**/*token* @gitlab-org/manage/authentication-and-authorization
-ee/app/**/*token* @gitlab-org/manage/authentication-and-authorization
-config/**/*token* @gitlab-org/manage/authentication-and-authorization
-ee/config/**/*token* @gitlab-org/manage/authentication-and-authorization
-lib/**/*token* @gitlab-org/manage/authentication-and-authorization
-ee/lib/**/*token* @gitlab-org/manage/authentication-and-authorization
-app/controllers/**/*token* @gitlab-org/manage/authentication-and-authorization
-ee/app/controllers/**/*token* @gitlab-org/manage/authentication-and-authorization
+/app/**/*token* @gitlab-org/manage/authentication-and-authorization
+/ee/app/**/*token* @gitlab-org/manage/authentication-and-authorization
+/config/**/*token* @gitlab-org/manage/authentication-and-authorization
+/ee/config/**/*token* @gitlab-org/manage/authentication-and-authorization
+/lib/**/*token* @gitlab-org/manage/authentication-and-authorization
+/ee/lib/**/*token* @gitlab-org/manage/authentication-and-authorization
+/app/controllers/**/*token* @gitlab-org/manage/authentication-and-authorization
+/ee/app/controllers/**/*token* @gitlab-org/manage/authentication-and-authorization

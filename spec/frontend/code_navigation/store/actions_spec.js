@@ -7,13 +7,15 @@ import axios from '~/lib/utils/axios_utils';
 jest.mock('~/code_navigation/utils');
 
 describe('Code navigation actions', () => {
+  const wrapTextNodes = true;
+
   describe('setInitialData', () => {
     it('commits SET_INITIAL_DATA', (done) => {
       testAction(
         actions.setInitialData,
-        { projectPath: 'test' },
+        { projectPath: 'test', wrapTextNodes },
         {},
-        [{ type: 'SET_INITIAL_DATA', payload: { projectPath: 'test' } }],
+        [{ type: 'SET_INITIAL_DATA', payload: { projectPath: 'test', wrapTextNodes } }],
         [],
         done,
       );
@@ -30,7 +32,7 @@ describe('Code navigation actions', () => {
 
     const codeNavigationPath =
       'gitlab-org/gitlab-shell/-/jobs/1114/artifacts/raw/lsif/cmd/check/main.go.json';
-    const state = { blobs: [{ path: 'index.js', codeNavigationPath }] };
+    const state = { blobs: [{ path: 'index.js', codeNavigationPath }], wrapTextNodes };
 
     beforeEach(() => {
       window.gon = { api_version: '1' };
@@ -109,10 +111,14 @@ describe('Code navigation actions', () => {
           [],
         )
           .then(() => {
-            expect(addInteractionClass).toHaveBeenCalledWith('index.js', {
-              start_line: 0,
-              start_char: 0,
-              hover: { value: '123' },
+            expect(addInteractionClass).toHaveBeenCalledWith({
+              path: 'index.js',
+              d: {
+                start_line: 0,
+                start_char: 0,
+                hover: { value: '123' },
+              },
+              wrapTextNodes,
             });
           })
           .then(done)
@@ -144,14 +150,19 @@ describe('Code navigation actions', () => {
         data: {
           'index.js': { '0:0': 'test', '1:1': 'console.log' },
         },
+        wrapTextNodes,
       };
 
       actions.showBlobInteractionZones({ state }, 'index.js');
 
       expect(addInteractionClass).toHaveBeenCalled();
       expect(addInteractionClass.mock.calls.length).toBe(2);
-      expect(addInteractionClass.mock.calls[0]).toEqual(['index.js', 'test']);
-      expect(addInteractionClass.mock.calls[1]).toEqual(['index.js', 'console.log']);
+      expect(addInteractionClass.mock.calls[0]).toEqual([
+        { path: 'index.js', d: 'test', wrapTextNodes },
+      ]);
+      expect(addInteractionClass.mock.calls[1]).toEqual([
+        { path: 'index.js', d: 'console.log', wrapTextNodes },
+      ]);
     });
 
     it('does not call addInteractionClass when no data exists', () => {

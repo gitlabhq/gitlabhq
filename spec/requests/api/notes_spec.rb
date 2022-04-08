@@ -22,7 +22,7 @@ RSpec.describe API::Notes do
     let!(:issue) { create(:issue, project: project, author: user) }
     let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
 
-    it_behaves_like "noteable API", 'projects', 'issues', 'iid' do
+    it_behaves_like "noteable API with confidential notes", 'projects', 'issues', 'iid' do
       let(:parent) { project }
       let(:noteable) { issue }
       let(:note) { issue_note }

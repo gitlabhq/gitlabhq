@@ -301,6 +301,7 @@ export default {
         :code-navigation-path="blobInfo.codeNavigationPath"
         :blob-path="blobInfo.path"
         :path-prefix="blobInfo.projectBlobPathRoot"
+        :wrap-text-nodes="glFeatures.highlightJs"
       />
     </div>
   </div>

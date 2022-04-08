@@ -149,7 +149,7 @@ class MappingTest
   end
 end
 
-results = tests.map { |test| MappingTest.new(test) }
+results = tests.map { |test| MappingTest.new(**test) }
 
 failed_tests = results.select(&:failed?)
 if failed_tests.any?

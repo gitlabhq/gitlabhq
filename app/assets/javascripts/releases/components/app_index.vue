@@ -238,7 +238,7 @@ export default {
         :href="newReleasePath"
         :aria-describedby="shouldRenderEmptyState && 'releases-description'"
         category="primary"
-        variant="success"
+        variant="confirm"
         >{{ $options.i18n.newRelease }}</gl-button
       >
     </div>

@@ -359,39 +359,6 @@ RSpec.describe NotePolicy do
             expect(permissions(assignee, confidential_note)).to be_disallowed(:admin_note, :reposition_note, :resolve_note)
           end
         end
-
-        context 'for merge requests' do
-          let(:merge_request) { create(:merge_request, source_project: project, author: author, assignees: [assignee]) }
-          let(:confidential_note) { create(:note, :confidential, project: project, noteable: merge_request) }
-
-          it_behaves_like 'confidential notes permissions'
-
-          it 'allows noteable assignees to read all notes' do
-            expect(permissions(assignee, confidential_note)).to be_allowed(:read_note, :award_emoji)
-            expect(permissions(assignee, confidential_note)).to be_disallowed(:admin_note, :reposition_note, :resolve_note)
-          end
-        end
-
-        context 'for project snippets' do
-          let(:project_snippet) { create(:project_snippet, project: project, author: author) }
-          let(:confidential_note) { create(:note, :confidential, project: project, noteable: project_snippet) }
-
-          it_behaves_like 'confidential notes permissions'
-        end
-
-        context 'for personal snippets' do
-          let(:personal_snippet) { create(:personal_snippet, author: author) }
-          let(:confidential_note) { create(:note, :confidential, project: nil, noteable: personal_snippet) }
-
-          it 'allows snippet author to read and resolve all notes' do
-            expect(permissions(author, confidential_note)).to be_allowed(:read_note, :resolve_note, :award_emoji)
-            expect(permissions(author, confidential_note)).to be_disallowed(:admin_note, :reposition_note)
-          end
-
-          it 'does not allow maintainers to read confidential notes and replies' do
-            expect(permissions(maintainer, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
-          end
-        end
       end
     end
   end

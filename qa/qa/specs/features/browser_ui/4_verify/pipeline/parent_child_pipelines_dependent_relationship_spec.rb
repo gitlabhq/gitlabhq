@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Release', :runner, :reliable do
+  RSpec.describe 'Verify', :runner, :reliable do
     describe 'Parent-child pipelines dependent relationship' do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|

@@ -7,6 +7,7 @@ import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
 import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/vue_shared/components/source_viewer/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import LineHighlighter from '~/blob/line_highlighter';
+import eventHub from '~/notes/event_hub';
 
 jest.mock('~/blob/line_highlighter');
 jest.mock('highlight.js/lib/core');
@@ -30,7 +31,8 @@ describe('Source Viewer component', () => {
   const chunk1 = generateContent('// Some source code 1', 70);
   const chunk2 = generateContent('// Some source code 2', 70);
   const content = chunk1 + chunk2;
-  const DEFAULT_BLOB_DATA = { language, rawTextBlob: content };
+  const path = 'some/path.js';
+  const DEFAULT_BLOB_DATA = { language, rawTextBlob: content, path };
   const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
 
   const createComponent = async (blob = {}) => {
@@ -47,6 +49,7 @@ describe('Source Viewer component', () => {
     hljs.highlight.mockImplementation(() => ({ value: highlightedContent }));
     hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
+    jest.spyOn(eventHub, '$emit');
 
     return createComponent();
   });
@@ -100,6 +103,11 @@ describe('Source Viewer component', () => {
         startingFrom: 70,
       });
     });
+  });
+
+  it('emits showBlobInteractionZones on the eventHub when chunk appears', () => {
+    findChunks().at(0).vm.$emit('appear');
+    expect(eventHub.$emit).toBeCalledWith('showBlobInteractionZones', path);
   });
 
   describe('LineHighlighter', () => {

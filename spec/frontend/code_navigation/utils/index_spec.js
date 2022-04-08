@@ -45,14 +45,42 @@ describe('addInteractionClass', () => {
     ${0} | ${0} | ${0}
     ${0} | ${8} | ${2}
     ${1} | ${0} | ${0}
+    ${1} | ${0} | ${0}
   `(
     'it sets code navigation attributes for line $line and character $char',
     ({ line, char, index }) => {
-      addInteractionClass('index.js', { start_line: line, start_char: char });
+      addInteractionClass({ path: 'index.js', d: { start_line: line, start_char: char } });
 
       expect(document.querySelectorAll(`#LC${line + 1} span`)[index].classList).toContain(
         'js-code-navigation',
       );
     },
   );
+
+  describe('wrapTextNodes', () => {
+    beforeEach(() => {
+      setFixtures(
+        '<div data-path="index.js"><div class="blob-content"><div id="LC1" class="line"> Text </div></div></div>',
+      );
+    });
+
+    const params = { path: 'index.js', d: { start_line: 0, start_char: 0 } };
+    const findAllSpans = () => document.querySelectorAll('#LC1 span');
+
+    it('does not wrap text nodes by default', () => {
+      addInteractionClass(params);
+      const spans = findAllSpans();
+      expect(spans.length).toBe(0);
+    });
+
+    it('wraps text nodes if wrapTextNodes is true', () => {
+      addInteractionClass({ ...params, wrapTextNodes: true });
+      const spans = findAllSpans();
+
+      expect(spans.length).toBe(3);
+      expect(spans[0].textContent).toBe(' ');
+      expect(spans[1].textContent).toBe('Text');
+      expect(spans[2].textContent).toBe(' ');
+    });
+  });
 });

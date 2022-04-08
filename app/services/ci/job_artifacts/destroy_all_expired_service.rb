@@ -7,16 +7,14 @@ module Ci
       include ::Gitlab::LoopHelpers
 
       BATCH_SIZE = 100
+      LOOP_LIMIT = 500
       LOOP_TIMEOUT = 5.minutes
-      SMALL_LOOP_LIMIT = 100
-      LARGE_LOOP_LIMIT = 500
-      EXCLUSIVE_LOCK_KEY = 'expired_job_artifacts:destroy:lock'
       LOCK_TIMEOUT = 6.minutes
+      EXCLUSIVE_LOCK_KEY = 'expired_job_artifacts:destroy:lock'
 
       def initialize
         @removed_artifacts_count = 0
         @start_at = Time.current
-        @loop_limit = ::Feature.enabled?(:ci_artifact_fast_removal_large_loop_limit, default_enabled: :yaml) ? LARGE_LOOP_LIMIT : SMALL_LOOP_LIMIT
       end
 
       ##
@@ -42,7 +40,7 @@ module Ci
       private
 
       def destroy_unlocked_job_artifacts
-        loop_until(timeout: LOOP_TIMEOUT, limit: @loop_limit) do
+        loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
           artifacts = Ci::JobArtifact.expired_before(@start_at).artifact_unlocked.limit(BATCH_SIZE)
           service_response = destroy_batch(artifacts)
           @removed_artifacts_count += service_response[:destroyed_artifacts_count]
@@ -59,7 +57,7 @@ module Ci
           @removed_artifacts_count += service_response[:destroyed_artifacts_count]
 
           break if loop_timeout?
-          break if index >= @loop_limit
+          break if index >= LOOP_LIMIT
         end
       end
 

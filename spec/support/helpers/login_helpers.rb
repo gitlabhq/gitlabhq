@@ -99,7 +99,7 @@ module LoginHelpers
     fill_in "user_password", with: (password || "12345678")
     check 'user_remember_me' if remember
 
-    click_button "Sign in"
+    find('[data-testid="sign-in-button"]:enabled').click
 
     if two_factor_auth
       fill_in "user_otp_attempt", with: user.reload.current_otp

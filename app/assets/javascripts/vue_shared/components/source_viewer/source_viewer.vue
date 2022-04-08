@@ -1,6 +1,7 @@
 <script>
 import { GlSafeHtmlDirective, GlLoadingIcon } from '@gitlab/ui';
 import LineHighlighter from '~/blob/line_highlighter';
+import eventHub from '~/notes/event_hub';
 import { ROUGE_TO_HLJS_LANGUAGE_MAP, LINES_PER_CHUNK } from './constants';
 import Chunk from './components/chunk.vue';
 
@@ -102,6 +103,8 @@ export default {
       Object.assign(chunk, { language, content: highlightedContent, isHighlighted: true });
 
       this.selectLine();
+
+      this.$nextTick(() => eventHub.$emit('showBlobInteractionZones', this.blob.path));
     },
     highlight(content, language) {
       let detectedLanguage = language;
@@ -153,6 +156,7 @@ export default {
     class="file-content code js-syntax-highlight blob-content gl-display-flex gl-flex-direction-column gl-overflow-auto"
     :class="$options.userColorScheme"
     data-type="simple"
+    :data-path="blob.path"
     data-qa-selector="blob_viewer_file_content"
   >
     <chunk
