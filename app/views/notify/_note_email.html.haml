@@ -23,9 +23,10 @@
       - else
         = link_to 'discussion', target_url
 
-- if include_stylesheet_link && discussion&.diff_discussion? && discussion.on_text?
-  = content_for :head do
-    = stylesheet_link_tag 'mailers/highlighted_diff_email'
+- if discussion&.diff_discussion? && discussion.on_text?
+  - if include_stylesheet_link
+    = content_for :head do
+      = stylesheet_link_tag 'mailers/highlighted_diff_email'
 
   %table.code.gl-mb-5
     = render partial: "projects/diffs/email_line",

@@ -43,16 +43,36 @@ RSpec.describe Packages::CleanupPackageFileWorker do
       end
     end
 
-    context 'with an error during the destroy' do
+    context 'with a package file to destroy' do
       let_it_be(:package_file) { create(:package_file, :pending_destruction) }
 
-      before do
-        expect(worker).to receive(:log_metadata).and_raise('Error!')
+      context 'with an error during the destroy' do
+        before do
+          expect(worker).to receive(:log_metadata).and_raise('Error!')
+        end
+
+        it 'handles the error' do
+          expect { subject }.to change { Packages::PackageFile.error.count }.from(0).to(1)
+          expect(package_file.reload).to be_error
+        end
       end
 
-      it 'handles the error' do
-        expect { subject }.to change { Packages::PackageFile.error.count }.from(0).to(1)
-        expect(package_file.reload).to be_error
+      context 'when trying to destroy a destroyed record' do
+        before do
+          allow_next_found_instance_of(Packages::PackageFile) do |package_file|
+            destroy_method = package_file.method(:destroy!)
+
+            allow(package_file).to receive(:destroy!) do
+              destroy_method.call
+
+              raise 'Error!'
+            end
+          end
+        end
+
+        it 'handles the error' do
+          expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+        end
       end
     end
 

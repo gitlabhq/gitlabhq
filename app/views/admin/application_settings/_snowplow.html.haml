@@ -9,14 +9,12 @@
       - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('development/snowplow/index') }
       = html_escape(_('Configure %{link} to track events. %{link_start}Learn more.%{link_end}')) % { link: link_to('Snowplow', 'https://snowplowanalytics.com/', target: '_blank', rel: 'noopener noreferrer').html_safe, link_start: link_start, link_end: '</a>'.html_safe }
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-snowplow-settings'), html: { class: 'fieldset-form', id: 'snowplow-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-snowplow-settings'), html: { class: 'fieldset-form', id: 'snowplow-settings' } do |f|
       = form_errors(@application_setting) if expanded
 
       %fieldset
         .form-group
-          .form-check
-            = f.check_box :snowplow_enabled, class: 'form-check-input', data: { qa_selector: 'snowplow_enabled_checkbox' }
-            = f.label :snowplow_enabled, _('Enable Snowplow tracking'), class: 'form-check-label'
+          = f.gitlab_ui_checkbox_component :snowplow_enabled, _('Enable Snowplow tracking'), checkbox_options: { data: { qa_selector: 'snowplow_enabled_checkbox' } }
         .form-group
           = f.label :snowplow_collector_hostname, _('Collector hostname'), class: 'label-light'
           = f.text_field :snowplow_collector_hostname, class: 'form-control gl-form-input', placeholder: 'snowplow.example.com'

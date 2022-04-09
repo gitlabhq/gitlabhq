@@ -652,7 +652,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     context 'supports gitlab api on .com with a recent repository' do
       before do
         expect(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
-        expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, with_size: true).and_return(response)
+        expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
       end
 
       context 'with a size_bytes field' do
@@ -1076,6 +1076,43 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
   end
 
+  describe '.all_migrated?' do
+    let_it_be(:project) { create(:project) }
+
+    subject { project.container_repositories.all_migrated? }
+
+    context 'with no repositories' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with only recent repositories' do
+      let_it_be(:container_repository1) { create(:container_repository, project: project) }
+      let_it_be_with_reload(:container_repository2) { create(:container_repository, project: project) }
+
+      it { is_expected.to be_truthy }
+
+      context 'with one old non migrated repository' do
+        before do
+          container_repository2.update!(created_at: described_class::MIGRATION_PHASE_1_ENDED_AT - 3.months)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'with one old migrated repository' do
+        before do
+          container_repository2.update!(
+            created_at: described_class::MIGRATION_PHASE_1_ENDED_AT - 3.months,
+            migration_state: 'import_done',
+            migration_import_done_at: Time.zone.now
+          )
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
   describe '.with_enabled_policy' do
     let_it_be(:repository) { create(:container_repository) }
     let_it_be(:repository2) { create(:container_repository) }
@@ -1271,11 +1308,12 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       let_it_be(:import_done_repository) { create(:container_repository, :import_done, migration_pre_import_done_at: 3.days.ago, migration_import_done_at: 2.days.ago) }
       let_it_be(:import_aborted_repository) { create(:container_repository, :import_aborted, migration_pre_import_done_at: 5.days.ago, migration_aborted_at: 1.day.ago) }
       let_it_be(:pre_import_done_repository) { create(:container_repository, :pre_import_done, migration_pre_import_done_at: 1.hour.ago) }
+      let_it_be(:import_skipped_repository) { create(:container_repository, :import_skipped, migration_skipped_at: 90.minutes.ago) }
 
       subject { described_class.recently_done_migration_step }
 
       it 'returns completed imports by done_at date' do
-        expect(subject.to_a).to eq([pre_import_done_repository, import_aborted_repository, import_done_repository])
+        expect(subject.to_a).to eq([pre_import_done_repository, import_skipped_repository, import_aborted_repository, import_done_repository])
       end
     end
 
@@ -1296,13 +1334,15 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     describe '#last_import_step_done_at' do
       let_it_be(:aborted_at) { Time.zone.now - 1.hour }
       let_it_be(:pre_import_done_at) { Time.zone.now - 2.hours }
+      let_it_be(:skipped_at) { Time.zone.now - 3.hours }
 
       subject { repository.last_import_step_done_at }
 
       before do
         repository.update_columns(
           migration_pre_import_done_at: pre_import_done_at,
-          migration_aborted_at: aborted_at
+          migration_aborted_at: aborted_at,
+          migration_skipped_at: skipped_at
         )
       end
 

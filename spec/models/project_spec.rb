@@ -2715,6 +2715,39 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#container_repositories_size' do
+    let(:project) { build(:project) }
+
+    subject { project.container_repositories_size }
+
+    context 'on gitlab.com' do
+      where(:no_container_repositories, :all_migrated, :gitlab_api_supported, :returned_size, :expected_result) do
+        true  | nil   | nil   | nil | 0
+        false | false | nil   | nil | nil
+        false | true  | false | nil | nil
+        false | true  | true  | 555 | 555
+        false | true  | true  | nil | nil
+      end
+
+      with_them do
+        before do
+          stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
+          allow(Gitlab).to receive(:com?).and_return(true)
+          allow(project.container_repositories).to receive(:empty?).and_return(no_container_repositories)
+          allow(project.container_repositories).to receive(:all_migrated?).and_return(all_migrated)
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
+          allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project.full_path).and_return(returned_size)
+        end
+
+        it { is_expected.to eq(expected_result) }
+      end
+    end
+
+    context 'not on gitlab.com' do
+      it { is_expected.to eq(nil) }
+    end
+  end
+
   describe '#container_registry_enabled=' do
     let_it_be_with_reload(:project) { create(:project) }
 

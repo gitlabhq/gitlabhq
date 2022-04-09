@@ -82,7 +82,7 @@ module ContainerRegistry
       def waiting_time_passed?
         delay = migration.enqueue_waiting_time
         return true if delay == 0
-        return true unless last_step_completed_repository
+        return true unless last_step_completed_repository&.last_import_step_done_at
 
         last_step_completed_repository.last_import_step_done_at < Time.zone.now - delay
       end

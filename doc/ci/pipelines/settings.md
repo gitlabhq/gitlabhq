@@ -76,7 +76,14 @@ To avoid this scenario:
 1. Select the **Skip outdated deployment jobs** checkbox.
 1. Select **Save changes**.
 
-Older deployment jobs are skipped when a new deployment starts.
+When a new deployment starts, older deployment jobs are skipped. Skipped jobs are labeled:
+
+- `forward deployment failure` in the pipeline view.
+- `The deployment job is older than the previously succeeded deployment job, and therefore cannot be run`
+  when viewing the completed job.
+
+Job age is determined by the job start time, not the commit time, so a newer commit
+can be skipped in some circumstances.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md).
 

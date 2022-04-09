@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures, :clean_gitlab_redis_shared_state do
+  using RSpec::Parameterized::TableSyntax
   include ExclusiveLeaseHelpers
 
   let_it_be_with_reload(:container_repository) { create(:container_repository, created_at: 2.days.ago) }
@@ -131,14 +132,34 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
     end
 
     context 'too soon before previous completed import step' do
-      before do
-        create(:container_repository, :import_done, migration_import_done_at: 1.minute.ago)
-        allow(ContainerRegistry::Migration).to receive(:enqueue_waiting_time).and_return(1.hour)
+      where(:state, :timestamp) do
+        :import_done     | :migration_import_done_at
+        :pre_import_done | :migration_pre_import_done_at
+        :import_aborted  | :migration_aborted_at
+        :import_skipped  | :migration_skipped_at
       end
 
-      it_behaves_like 'no action' do
+      with_them do
         before do
-          expect_log_extra_metadata(waiting_time_passed: false, current_waiting_time_setting: 1.hour)
+          allow(ContainerRegistry::Migration).to receive(:enqueue_waiting_time).and_return(1.hour)
+          create(:container_repository, state, timestamp => 1.minute.ago)
+        end
+
+        it_behaves_like 'no action' do
+          before do
+            expect_log_extra_metadata(waiting_time_passed: false, current_waiting_time_setting: 1.hour)
+          end
+        end
+      end
+
+      context 'when last completed repository has nil timestamps' do
+        before do
+          allow(ContainerRegistry::Migration).to receive(:enqueue_waiting_time).and_return(1.hour)
+          create(:container_repository, migration_state: 'import_done')
+        end
+
+        it 'continues to try the next import' do
+          expect { subject }.to change { container_repository.reload.migration_state }
         end
       end
     end

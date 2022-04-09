@@ -86,6 +86,13 @@ module CycleAnalyticsHelpers
     wait_for_stages_to_load(ready_selector)
   end
 
+  def select_value_stream(value_stream_name)
+    toggle_value_stream_dropdown
+
+    page.find('[data-testid="dropdown-value-streams"]').all('li button').find { |item| item.text == value_stream_name.to_s }.click
+    wait_for_requests
+  end
+
   def toggle_dropdown(field)
     page.within("[data-testid*='#{field}']") do
       find('.dropdown-toggle').click

@@ -27,6 +27,12 @@ module ContainerRegistry
       end
     end
 
+    def self.deduplicated_size(path)
+      with_dummy_client(token_config: { type: :nested_repositories_token, path: path }) do |client|
+        client.repository_details(path, sizing: :self_with_descendants)['size_bytes']
+      end
+    end
+
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#compliance-check
     def supports_gitlab_api?
       strong_memoize(:supports_gitlab_api) do
@@ -78,10 +84,10 @@ module ContainerRegistry
       end
     end
 
-    def repository_details(path, with_size: false)
+    def repository_details(path, sizing: nil)
       with_token_faraday do |faraday_client|
         req = faraday_client.get("/gitlab/v1/repositories/#{path}/") do |req|
-          req.params['size'] = 'self' if with_size
+          req.params['size'] = sizing if sizing
         end
 
         break {} unless req.success?

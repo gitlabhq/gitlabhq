@@ -17,6 +17,7 @@ class ContainerRepository < ApplicationRecord
   SKIPPABLE_MIGRATION_STATES = (ABORTABLE_MIGRATION_STATES + %w[import_aborted]).freeze
 
   MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
+  MIGRATION_PHASE_1_ENDED_AT = Date.new(2022, 01, 23).freeze
 
   TooManyImportsError = Class.new(StandardError)
 
@@ -58,8 +59,8 @@ class ContainerRepository < ApplicationRecord
   scope :import_in_process, -> { where(migration_state: %w[pre_importing pre_import_done importing]) }
 
   scope :recently_done_migration_step, -> do
-    where(migration_state: %w[import_done pre_import_done import_aborted])
-      .order(Arel.sql('GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at) DESC'))
+    where(migration_state: %w[import_done pre_import_done import_aborted import_skipped])
+      .order(Arel.sql('GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at, migration_skipped_at) DESC'))
   end
 
   scope :ready_for_import, -> do
@@ -160,7 +161,7 @@ class ContainerRepository < ApplicationRecord
       end
     end
 
-    before_transition %i[pre_importing import_aborted] => :pre_import_done do |container_repository|
+    before_transition any => :pre_import_done do |container_repository|
       container_repository.migration_pre_import_done_at = Time.zone.now
     end
 
@@ -215,6 +216,13 @@ class ContainerRepository < ApplicationRecord
       project: path.repository_project,
       name: path.repository_name
     ).exists?
+  end
+
+  def self.all_migrated?
+    # check that the set of non migrated repositories is empty
+    where(created_at: ...MIGRATION_PHASE_1_ENDED_AT)
+      .where.not(migration_state: 'import_done')
+      .empty?
   end
 
   def self.with_enabled_policy
@@ -359,7 +367,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def last_import_step_done_at
-    [migration_pre_import_done_at, migration_import_done_at, migration_aborted_at].compact.max
+    [migration_pre_import_done_at, migration_import_done_at, migration_aborted_at, migration_skipped_at].compact.max
   end
 
   def external_import_status
@@ -456,7 +464,7 @@ class ContainerRepository < ApplicationRecord
       next if self.created_at.before?(MIGRATION_PHASE_1_STARTED_AT)
       next unless gitlab_api_client.supports_gitlab_api?
 
-      gitlab_api_client.repository_details(self.path, with_size: true)['size_bytes']
+      gitlab_api_client.repository_details(self.path, sizing: :self)['size_bytes']
     end
   end
 

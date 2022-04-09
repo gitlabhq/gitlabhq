@@ -39298,6 +39298,9 @@ msgstr ""
 msgid "To access this domain create a new DNS record"
 msgstr ""
 
+msgid "To activate your trial, we need additional details from you."
+msgstr ""
+
 msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -39305,6 +39308,9 @@ msgid "To add the entry manually, provide the following details to the applicati
 msgstr ""
 
 msgid "To ask someone to look at a merge request, select %{strongStart}Request attention%{strongEnd}. Select again to remove the request."
+msgstr ""
+
+msgid "To complete registration, we need additional details from you."
 msgstr ""
 
 msgid "To confirm, type %{phrase_code}"

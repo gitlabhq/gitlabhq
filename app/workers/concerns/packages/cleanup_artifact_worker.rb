@@ -14,7 +14,9 @@ module Packages
 
         artifact.destroy!
       rescue StandardError
-        artifact&.update_column(:status, :error)
+        unless artifact&.destroyed?
+          artifact&.update_column(:status, :error)
+        end
       end
 
       after_destroy
