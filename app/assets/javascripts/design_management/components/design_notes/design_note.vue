@@ -1,11 +1,11 @@
 <script>
 import {
-  GlTooltipDirective,
-  GlIcon,
-  GlLink,
-  GlSafeHtmlDirective,
   GlAvatar,
   GlAvatarLink,
+  GlButton,
+  GlLink,
+  GlSafeHtmlDirective,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -22,14 +22,14 @@ export default {
     editCommentLabel: __('Edit comment'),
   },
   components: {
+    ApolloMutation,
+    DesignReplyForm,
     GlAvatar,
     GlAvatarLink,
-    TimelineEntryItem,
-    TimeAgoTooltip,
-    DesignReplyForm,
-    ApolloMutation,
-    GlIcon,
+    GlButton,
     GlLink,
+    TimeAgoTooltip,
+    TimelineEntryItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -123,18 +123,17 @@ export default {
       </div>
       <div class="gl-display-flex gl-align-items-baseline">
         <slot name="resolve-discussion"></slot>
-        <button
+        <gl-button
           v-if="isEditButtonVisible"
           v-gl-tooltip
-          type="button"
-          :title="$options.i18n.editCommentLabel"
           :aria-label="$options.i18n.editCommentLabel"
-          class="note-action-button btn btn-transparent qa-note-edit-button"
+          :title="$options.i18n.editCommentLabel"
+          category="tertiary"
           data-testid="note-edit"
+          icon="pencil"
+          size="small"
           @click="isEditing = true"
-        >
-          <gl-icon name="pencil" class="link-highlight" />
-        </button>
+        />
       </div>
     </div>
     <template v-if="!isEditing">

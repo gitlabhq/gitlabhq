@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
@@ -26,15 +26,14 @@ export default {
   components: {
     ApolloMutation,
     DesignNote,
-    DesignNoteSignedOut,
-    ReplyPlaceholder,
-    DesignReplyForm,
-    GlIcon,
-    GlLoadingIcon,
-    GlLink,
-    ToggleRepliesWidget,
-    TimeAgoTooltip,
     DesignNotePin,
+    DesignNoteSignedOut,
+    DesignReplyForm,
+    GlButton,
+    GlLink,
+    ReplyPlaceholder,
+    TimeAgoTooltip,
+    ToggleRepliesWidget,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -239,18 +238,17 @@ export default {
         @error="$emit('update-note-error', $event)"
       >
         <template v-if="isLoggedIn && discussion.resolvable" #resolve-discussion>
-          <button
+          <gl-button
             v-gl-tooltip
-            :class="{ 'is-active': discussion.resolved }"
-            :title="resolveCheckboxText"
             :aria-label="resolveCheckboxText"
-            class="line-resolve-btn note-action-button gl-mr-3"
+            :icon="resolveIconName"
+            :title="resolveCheckboxText"
+            :loading="isResolving"
+            category="tertiary"
             data-testid="resolve-button"
+            size="small"
             @click.stop="toggleResolvedStatus"
-          >
-            <gl-icon v-if="!isResolving" :name="resolveIconName" data-testid="resolve-icon" />
-            <gl-loading-icon v-else size="sm" inline />
-          </button>
+          />
         </template>
         <template v-if="discussion.resolved" #resolved-status>
           <p class="gl-text-gray-500 gl-font-sm gl-m-0 gl-mt-5" data-testid="resolved-message">

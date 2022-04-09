@@ -122,7 +122,7 @@ describe('Design note component', () => {
         },
       });
 
-      findEditButton().trigger('click');
+      findEditButton().vm.$emit('click');
 
       await nextTick();
       expect(findReplyForm().exists()).toBe(true);
