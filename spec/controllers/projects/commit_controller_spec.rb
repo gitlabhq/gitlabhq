@@ -60,6 +60,22 @@ RSpec.describe Projects::CommitController do
       end
     end
 
+    context 'with valid page' do
+      it 'responds with 200' do
+        go(id: commit.id, page: 1)
+
+        expect(response).to be_ok
+      end
+    end
+
+    context 'with invalid page' do
+      it 'does not return an error' do
+        go(id: commit.id, page: ['invalid'])
+
+        expect(response).to be_ok
+      end
+    end
+
     it 'handles binary files' do
       go(id: TestEnv::BRANCH_SHA['binary-encoding'], format: 'html')
 

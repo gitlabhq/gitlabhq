@@ -163,13 +163,7 @@ RSpec.describe CommitsHelper do
       end
     end
 
-    let(:params) do
-      {
-        page: page
-      }
-    end
-
-    subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate, per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE) }
+    subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate, page: page, per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE) }
 
     before do
       allow(helper).to receive(:params).and_return(params)
@@ -183,7 +177,7 @@ RSpec.describe CommitsHelper do
       end
 
       it "can change the number of items per page" do
-        commits = helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate, per: 10)
+        commits = helper.conditionally_paginate_diff_files(diffs_collection, page: page, paginate: paginate, per: 10)
 
         expect(commits).to be_an(Array)
         expect(commits.size).to eq(10)

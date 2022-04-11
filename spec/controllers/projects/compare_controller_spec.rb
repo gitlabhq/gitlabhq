@@ -58,11 +58,13 @@ RSpec.describe Projects::CompareController do
         from_project_id: from_project_id,
         from: from_ref,
         to: to_ref,
-        w: whitespace
+        w: whitespace,
+        page: page
       }
     end
 
     let(:whitespace) { nil }
+    let(:page) { nil }
 
     context 'when the refs exist in the same project' do
       context 'when we set the white space param' do
@@ -194,6 +196,34 @@ RSpec.describe Projects::CompareController do
 
         expect(flash[:alert]).to eq("Invalid branch name(s): improve%' =,awesome, master%' AND 2554=4423 AND '%'='")
         expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when page is valid' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { '08f22f25' }
+      let(:to_ref) { '66eceea0' }
+      let(:page) { 1 }
+
+      it 'shows the diff' do
+        show_request
+
+        expect(response).to be_successful
+        expect(assigns(:diffs).diff_files.first).to be_present
+        expect(assigns(:commits).length).to be >= 1
+      end
+    end
+
+    context 'when page is not valid' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { '08f22f25' }
+      let(:to_ref) { '66eceea0' }
+      let(:page) { ['invalid'] }
+
+      it 'does not return an error' do
+        show_request
+
+        expect(response).to be_successful
       end
     end
   end

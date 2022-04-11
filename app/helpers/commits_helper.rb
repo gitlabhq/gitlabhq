@@ -135,9 +135,9 @@ module CommitsHelper
     %w(btn gpg-status-box) + Array(additional_classes)
   end
 
-  def conditionally_paginate_diff_files(diffs, paginate:, per:)
+  def conditionally_paginate_diff_files(diffs, paginate:, page:, per:)
     if paginate
-      Kaminari.paginate_array(diffs.diff_files.to_a).page(params[:page]).per(per)
+      Kaminari.paginate_array(diffs.diff_files.to_a).page(page).per(per)
     else
       diffs.diff_files
     end

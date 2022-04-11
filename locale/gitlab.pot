@@ -19799,6 +19799,9 @@ msgstr ""
 msgid "IncidentManagement|Incidents"
 msgstr ""
 
+msgid "IncidentManagement|Learn more about incident statuses"
+msgstr ""
+
 msgid "IncidentManagement|Low - S4"
 msgstr ""
 

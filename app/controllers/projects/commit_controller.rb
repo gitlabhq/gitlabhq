@@ -31,7 +31,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        render
+        render locals: { pagination_params: params.permit(:page) }
       end
       format.diff do
         send_git_diff(@project.repository, @commit.diff_refs)

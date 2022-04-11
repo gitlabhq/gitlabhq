@@ -1,4 +1,5 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EscalationStatus from '~/sidebar/components/incidents/escalation_status.vue';
 import {
@@ -25,6 +26,11 @@ describe('EscalationStatus', () => {
 
   const findDropdownComponent = () => wrapper.findComponent(GlDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findDropdownMenu = () => findDropdownComponent().find('.dropdown-menu');
+  const toggleDropdown = async () => {
+    await findDropdownComponent().findComponent('button').trigger('click');
+    await waitForPromises();
+  };
 
   describe('status', () => {
     it('shows the current status', () => {
@@ -47,6 +53,34 @@ describe('EscalationStatus', () => {
       await findDropdownItems().at(1).vm.$emit('click');
 
       expect(wrapper.emitted().input[0][0]).toBe(STATUS_ACKNOWLEDGED);
+    });
+  });
+
+  describe('close behavior', () => {
+    it('allows the dropdown to be closed by default', async () => {
+      createComponent();
+      // Open dropdown
+      await toggleDropdown();
+
+      expect(findDropdownMenu().classes('show')).toBe(true);
+
+      // Attempt to close dropdown
+      await toggleDropdown();
+
+      expect(findDropdownMenu().classes('show')).toBe(false);
+    });
+
+    it('preventDropdownClose prevents the dropdown from closing', async () => {
+      createComponent({ preventDropdownClose: true });
+      // Open dropdown
+      await toggleDropdown();
+
+      expect(findDropdownMenu().classes('show')).toBe(true);
+
+      // Attempt to close dropdown
+      await toggleDropdown();
+
+      expect(findDropdownMenu().classes('show')).toBe(true);
     });
   });
 });

@@ -21,6 +21,11 @@ export default {
         return [...STATUS_LIST, null].includes(value);
       },
     },
+    preventDropdownClose: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     currentStatusLabel() {
@@ -35,6 +40,11 @@ export default {
       this.$refs.dropdown.hide();
     },
     getStatusLabel,
+    hideDropdown(event) {
+      if (this.preventDropdownClose) {
+        event.preventDefault();
+      }
+    },
   },
 };
 </script>
@@ -45,6 +55,7 @@ export default {
     block
     :text="currentStatusLabel"
     toggle-class="dropdown-menu-toggle gl-mb-2"
+    @hide="hideDropdown"
   >
     <slot name="header"> </slot>
     <gl-dropdown-item
