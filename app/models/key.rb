@@ -26,7 +26,13 @@ class Key < ApplicationRecord
 
   validates :fingerprint,
     uniqueness: true,
-    presence: { message: 'cannot be generated' }
+    presence: { message: 'cannot be generated' },
+    unless: -> { Gitlab::FIPS.enabled? }
+
+  validates :fingerprint_sha256,
+    uniqueness: true,
+    presence: { message: 'cannot be generated' },
+    if: -> { Gitlab::FIPS.enabled? }
 
   validate :key_meets_restrictions
 
@@ -129,7 +135,7 @@ class Key < ApplicationRecord
 
     return unless public_key.valid?
 
-    self.fingerprint_md5 = public_key.fingerprint
+    self.fingerprint_md5 = public_key.fingerprint unless Gitlab::FIPS.enabled?
     self.fingerprint_sha256 = public_key.fingerprint_sha256.gsub("SHA256:", "")
   end
 

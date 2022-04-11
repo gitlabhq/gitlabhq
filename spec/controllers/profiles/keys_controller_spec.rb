@@ -17,7 +17,25 @@ RSpec.describe Profiles::KeysController do
         post :create, params: { key: build(:key, expires_at: expires_at).attributes }
       end.to change { Key.count }.by(1)
 
-      expect(Key.last.expires_at).to be_like_time(expires_at)
+      key = Key.last
+      expect(key.expires_at).to be_like_time(expires_at)
+      expect(key.fingerprint_md5).to be_present
+      expect(key.fingerprint_sha256).to be_present
+    end
+
+    context 'with FIPS mode', :fips_mode do
+      it 'creates a new key without MD5 fingerprint' do
+        expires_at = 3.days.from_now
+
+        expect do
+          post :create, params: { key: build(:rsa_key_4096, expires_at: expires_at).attributes }
+        end.to change { Key.count }.by(1)
+
+        key = Key.last
+        expect(key.expires_at).to be_like_time(expires_at)
+        expect(key.fingerprint_md5).to be_nil
+        expect(key.fingerprint_sha256).to be_present
+      end
     end
   end
 end

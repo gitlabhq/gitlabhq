@@ -123,25 +123,55 @@ RSpec.describe Key, :mailer do
     end
   end
 
-  context "validation of uniqueness (based on fingerprint uniqueness)" do
+  context 'validation of uniqueness (based on fingerprint uniqueness)' do
     let(:user) { create(:user) }
 
-    it "accepts the key once" do
-      expect(build(:key, user: user)).to be_valid
+    shared_examples 'fingerprint uniqueness' do
+      it 'accepts the key once' do
+        expect(build(:rsa_key_4096, user: user)).to be_valid
+      end
+
+      it 'does not accept the exact same key twice' do
+        first_key = create(:rsa_key_4096, user: user)
+
+        expect(build(:key, user: user, key: first_key.key)).not_to be_valid
+      end
+
+      it 'does not accept a duplicate key with a different comment' do
+        first_key = create(:rsa_key_4096, user: user)
+        duplicate = build(:key, user: user, key: first_key.key)
+        duplicate.key << ' extra comment'
+
+        expect(duplicate).not_to be_valid
+      end
     end
 
-    it "does not accept the exact same key twice" do
-      first_key = create(:key, user: user)
-
-      expect(build(:key, user: user, key: first_key.key)).not_to be_valid
+    context 'with FIPS mode off' do
+      it_behaves_like 'fingerprint uniqueness'
     end
 
-    it "does not accept a duplicate key with a different comment" do
-      first_key = create(:key, user: user)
-      duplicate = build(:key, user: user, key: first_key.key)
-      duplicate.key << ' extra comment'
+    context 'with FIPS mode', :fips_mode do
+      it_behaves_like 'fingerprint uniqueness'
+    end
+  end
 
-      expect(duplicate).not_to be_valid
+  context 'fingerprint generation' do
+    it 'generates both md5 and sha256 fingerprints' do
+      key = build(:rsa_key_4096)
+
+      expect(key).to be_valid
+      expect(key.fingerprint).to be_kind_of(String)
+      expect(key.fingerprint_sha256).to be_kind_of(String)
+    end
+
+    context 'with FIPS mode', :fips_mode do
+      it 'generates only sha256 fingerprint' do
+        key = build(:rsa_key_4096)
+
+        expect(key).to be_valid
+        expect(key.fingerprint).to be_nil
+        expect(key.fingerprint_sha256).to be_kind_of(String)
+      end
     end
   end
 
