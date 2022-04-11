@@ -31,7 +31,7 @@ describe('ImportProjectsTable', () => {
   const findImportAllButton = () =>
     wrapper
       .findAll(GlButton)
-      .filter((w) => w.props().variant === 'success')
+      .filter((w) => w.props().variant === 'confirm')
       .at(0);
   const findImportAllModal = () => wrapper.find({ ref: 'importAllModal' });
 

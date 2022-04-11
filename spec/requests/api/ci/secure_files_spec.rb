@@ -293,6 +293,20 @@ RSpec.describe API::Ci::SecureFiles do
         expect(json_response['error']).to eq('name is missing')
       end
 
+      it 'returns an error when the file name has already been used' do
+        post_params = {
+          name: secure_file.name,
+          file: fixture_file_upload('spec/fixtures/ci_secure_files/upload-keystore.jks')
+        }
+
+        expect do
+          post api("/projects/#{project.id}/secure_files", maintainer), params: post_params
+        end.not_to change { project.secure_files.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['name']).to include('has already been taken')
+      end
+
       it 'returns an error when an unexpected permission is supplied' do
         post_params = {
           file: fixture_file_upload('spec/fixtures/ci_secure_files/upload-keystore.jks'),

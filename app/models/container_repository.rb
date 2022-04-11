@@ -34,7 +34,17 @@ class ContainerRepository < ApplicationRecord
 
   enum status: { delete_scheduled: 0, delete_failed: 1 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
-  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3, migration_canceled: 4, not_found: 5, native_import: 6 }
+
+  enum migration_skipped_reason: {
+    not_in_plan: 0,
+    too_many_retries: 1,
+    too_many_tags: 2,
+    root_namespace_in_deny_list: 3,
+    migration_canceled: 4,
+    not_found: 5,
+    native_import: 6,
+    migration_forced_canceled: 7
+  }
 
   delegate :client, :gitlab_api_client, to: :registry
 
@@ -502,6 +512,19 @@ class ContainerRepository < ApplicationRecord
     return :error unless gitlab_api_client.supports_gitlab_api?
 
     gitlab_api_client.cancel_repository_import(self.path)
+  end
+
+  # This method is not meant for consumption by the code
+  # It is meant for manual use in the case that a migration needs to be
+  # cancelled by an admin or SRE
+  def force_migration_cancel
+    return :error unless gitlab_api_client.supports_gitlab_api?
+
+    response = gitlab_api_client.cancel_repository_import(self.path, force: true)
+
+    skip_import(reason: :migration_forced_canceled) if response[:status] == :ok
+
+    response
   end
 
   def self.build_from_path(path)

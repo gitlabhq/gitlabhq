@@ -762,6 +762,61 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
       it_behaves_like 'gitlab migration client request', :cancel_repository_import
     end
+
+    describe '#force_migration_cancel' do
+      subject { repository.force_migration_cancel }
+
+      shared_examples 'returning the same response as the client' do
+        it 'returns the same response' do
+          expect(repository.gitlab_api_client)
+            .to receive(:cancel_repository_import).with(repository.path, force: true).and_return(client_response)
+
+          expect(subject).to eq(client_response)
+        end
+      end
+
+      context 'successful cancellation' do
+        let(:client_response) { { status: :ok } }
+
+        it_behaves_like 'returning the same response as the client'
+
+        it 'skips the migration' do
+          expect(repository.gitlab_api_client)
+            .to receive(:cancel_repository_import).with(repository.path, force: true).and_return(client_response)
+
+          expect { subject }.to change { repository.reload.migration_state }.to('import_skipped')
+            .and change { repository.migration_skipped_reason }.to('migration_forced_canceled')
+            .and change { repository.migration_skipped_at }
+        end
+      end
+
+      context 'failed cancellation' do
+        let(:client_response) { { status: :error } }
+
+        it_behaves_like 'returning the same response as the client'
+
+        it 'does not skip the migration' do
+          expect(repository.gitlab_api_client)
+            .to receive(:cancel_repository_import).with(repository.path, force: true).and_return(client_response)
+
+          expect { subject }.to not_change { repository.reload.migration_state }
+            .and not_change { repository.migration_skipped_reason }
+            .and not_change { repository.migration_skipped_at }
+        end
+      end
+
+      context 'when the gitlab_api feature is not supported' do
+        before do
+          allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(false)
+        end
+
+        it 'returns :error' do
+          expect(repository.gitlab_api_client).not_to receive(:cancel_repository_import)
+
+          expect(subject).to eq(:error)
+        end
+      end
+    end
   end
 
   describe '.build_from_path' do

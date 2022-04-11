@@ -15,6 +15,7 @@ module Ci
 
     validates :file, presence: true, file_size: { maximum: FILE_SIZE_LIMIT }
     validates :checksum, :file_store, :name, :permissions, :project_id, presence: true
+    validates :name, uniqueness: { scope: :project }
 
     after_initialize :generate_key_data
     before_validation :assign_checksum

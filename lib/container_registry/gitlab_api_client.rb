@@ -58,10 +58,12 @@ module ContainerRegistry
       IMPORT_RESPONSES.fetch(response.status, :error)
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#import-repository
-    def cancel_repository_import(path)
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#cancel-repository-import
+    def cancel_repository_import(path, force: false)
       response = with_import_token_faraday do |faraday_client|
-        faraday_client.delete(import_url_for(path))
+        faraday_client.delete(import_url_for(path)) do |req|
+          req.params['force'] = true if force
+        end
       end
 
       status = IMPORT_RESPONSES.fetch(response.status, :error)

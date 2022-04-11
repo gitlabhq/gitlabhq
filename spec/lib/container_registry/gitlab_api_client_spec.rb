@@ -107,7 +107,9 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
   end
 
   describe '#cancel_repository_import' do
-    subject { client.cancel_repository_import(path) }
+    let(:force) { false }
+
+    subject { client.cancel_repository_import(path, force: force) }
 
     where(:status_code, :expected_result) do
       200 | :already_imported
@@ -124,7 +126,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
 
     with_them do
       before do
-        stub_import_cancel(path, status_code)
+        stub_import_cancel(path, status_code, force: force)
       end
 
       it { is_expected.to eq({ status: expected_result, migration_state: nil }) }
@@ -134,10 +136,20 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
       let(:status) { 'this_is_a_test' }
 
       before do
-        stub_import_cancel(path, 400, status: status)
+        stub_import_cancel(path, 400, status: status, force: force)
       end
 
       it { is_expected.to eq({ status: :bad_request, migration_state: status }) }
+    end
+
+    context 'force cancel' do
+      let(:force) { true }
+
+      before do
+        stub_import_cancel(path, 202, force: force)
+      end
+
+      it { is_expected.to eq({ status: :ok, migration_state: nil }) }
     end
   end
 
@@ -330,15 +342,24 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
       )
   end
 
-  def stub_import_cancel(path, http_status, status: nil)
+  def stub_import_cancel(path, http_status, status: nil, force: false)
     body = {}
 
     if http_status == 400
       body = { status: status }
     end
 
-    stub_request(:delete, "#{registry_api_url}/gitlab/v1/import/#{path}/")
-      .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{import_token}" })
+    headers = {
+      'Accept' => described_class::JSON_TYPE,
+      'Authorization' => "bearer #{import_token}",
+      'User-Agent' => "GitLab/#{Gitlab::VERSION}",
+      'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3'
+    }
+
+    params = force ? '?force=true' : ''
+
+    stub_request(:delete, "#{registry_api_url}/gitlab/v1/import/#{path}/#{params}")
+      .with(headers: headers)
       .to_return(
         status: http_status,
         body: body.to_json,
