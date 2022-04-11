@@ -10100,6 +10100,7 @@ Dependency proxy manifest.
 | <a id="dependencyproxymanifestid"></a>`id` | [`DependencyProxyManifestID!`](#dependencyproxymanifestid) | ID of the manifest. |
 | <a id="dependencyproxymanifestimagename"></a>`imageName` | [`String!`](#string) | Name of the image. |
 | <a id="dependencyproxymanifestsize"></a>`size` | [`String!`](#string) | Size of the manifest file. |
+| <a id="dependencyproxymanifeststatus"></a>`status` | [`DependencyProxyManifestStatus!`](#dependencyproxymanifeststatus) | Status of the manifest (default, pending_destruction, processing, error). |
 | <a id="dependencyproxymanifestupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 
 ### `DependencyProxySetting`
@@ -18085,6 +18086,15 @@ Weight of the data visualization palette.
 | <a id="datavisualizationweightenumweight_800"></a>`WEIGHT_800` | 800 weight. |
 | <a id="datavisualizationweightenumweight_900"></a>`WEIGHT_900` | 900 weight. |
 | <a id="datavisualizationweightenumweight_950"></a>`WEIGHT_950` | 950 weight. |
+
+### `DependencyProxyManifestStatus`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dependencyproxymanifeststatusdefault"></a>`DEFAULT` | Dependency proxy manifest has a status of default. |
+| <a id="dependencyproxymanifeststatuserror"></a>`ERROR` | Dependency proxy manifest has a status of error. |
+| <a id="dependencyproxymanifeststatuspending_destruction"></a>`PENDING_DESTRUCTION` | Dependency proxy manifest has a status of pending_destruction. |
+| <a id="dependencyproxymanifeststatusprocessing"></a>`PROCESSING` | Dependency proxy manifest has a status of processing. |
 
 ### `DeploymentTier`
 

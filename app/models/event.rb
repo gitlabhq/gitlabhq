@@ -10,6 +10,7 @@ class Event < ApplicationRecord
   include UsageStatistics
   include ShaAttribute
 
+  # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/358088
   default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
 
   ACTIONS = HashWithIndifferentAccess.new(

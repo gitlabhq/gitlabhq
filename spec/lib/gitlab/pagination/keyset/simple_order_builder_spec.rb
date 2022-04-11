@@ -20,6 +20,22 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
       expect(column_definition).to be_not_nullable
       expect(column_definition).to be_distinct
     end
+
+    context "when the order scope's model uses default_scope" do
+      let(:scope) do
+        model = Class.new(ApplicationRecord) do
+          self.table_name = 'events'
+
+          default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
+        end
+
+        model.reorder(nil)
+      end
+
+      it 'orders by primary key' do
+        expect(sql_with_order).to end_with('ORDER BY "events"."id" DESC')
+      end
+    end
   end
 
   context 'when primary key order present' do

@@ -19,7 +19,9 @@ module Gitlab
 
         def initialize(scope:)
           @scope = scope
-          @order_values = scope.order_values
+          # We need to run 'compact' because 'nil' is not removed from order_values
+          # in some cases due to the use of 'default_scope'.
+          @order_values = scope.order_values.compact
           @model_class = scope.model
           @arel_table = @model_class.arel_table
           @primary_key = @model_class.primary_key
