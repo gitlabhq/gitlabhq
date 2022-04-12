@@ -509,7 +509,15 @@ class Note < ApplicationRecord
     # Instead of calling touch which is throttled via ThrottledTouch concern,
     # we bump the updated_at column directly. This also prevents executing
     # after_commit callbacks that we don't need.
-    update_column(:updated_at, Time.current)
+    attributes_to_update = { updated_at: Time.current }
+
+    # Notes that were edited before the `last_edited_at` column was added, fall back to `updated_at` for the edit time.
+    # We copy this over to the correct column so we don't erroneously change the edit timestamp.
+    if updated_by_id.present? && read_attribute(:last_edited_at).blank?
+      attributes_to_update[:last_edited_at] = updated_at
+    end
+
+    update_columns(attributes_to_update)
   end
 
   def expire_etag_cache

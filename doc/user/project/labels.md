@@ -449,6 +449,22 @@ The labels higher in the list get higher priority.
 To learn what happens when you sort by priority or label priority, see
 [Sorting and ordering issue lists](issues/sorting_issue_lists.md).
 
+## Real-time changes to labels
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an
+administrator to [enable the feature flag](../../administration/feature_flags.md) named `realtime_labels`.
+On GitLab.com, this feature is unavailable.
+
+Changed labels are immediately visible to other users, without refreshing the page, on the following:
+
+- Epics
+- Incidents
+- Issues
+- Merge requests
+
 ## Troubleshooting
 
 ### Some label titles end with `_duplicate<number>`

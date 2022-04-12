@@ -1,6 +1,6 @@
 - return unless Gitlab::Tracking.enabled?
 
-- namespace = @group || @project&.namespace
+- namespace = @group || @project&.namespace || @namespace
 
 = javascript_tag do
   :plain

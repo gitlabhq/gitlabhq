@@ -81,11 +81,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
     path = Gitlab::Ci::Build::Artifacts::Path.new(params[:path])
 
-    if ::Feature.enabled?(:ci_safe_artifact_content_type, project, default_enabled: :yaml)
-      send_artifacts_entry(artifacts_file, path)
-    else
-      legacy_send_artifacts_entry(artifacts_file, path)
-    end
+    send_artifacts_entry(artifacts_file, path)
   end
 
   def keep

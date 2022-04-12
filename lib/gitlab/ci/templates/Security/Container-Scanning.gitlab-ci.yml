@@ -25,7 +25,7 @@ variables:
   CS_ANALYZER_IMAGE: registry.gitlab.com/security-products/container-scanning:4
 
 container_scanning:
-  image: "$CS_ANALYZER_IMAGE"
+  image: "$CS_ANALYZER_IMAGE$CS_IMAGE_SUFFIX"
   stage: test
   variables:
     # To provide a `vulnerability-allowlist.yml` file, override the GIT_STRATEGY variable in your
@@ -46,5 +46,11 @@ container_scanning:
   rules:
     - if: $CONTAINER_SCANNING_DISABLED
       when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bcontainer_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true" &&
+          $CS_ANALYZER_IMAGE !~ /-(fips|ubi)\z/
+      variables:
+        CS_IMAGE_SUFFIX: -fips
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bcontainer_scanning\b/

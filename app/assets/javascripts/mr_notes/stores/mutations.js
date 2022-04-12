@@ -10,4 +10,7 @@ export default {
   [types.SET_MR_METADATA](state, metadata) {
     Object.assign(state, { mrMetadata: metadata });
   },
+  [types.SET_FAILED_TO_LOAD_METADATA](state, value) {
+    Object.assign(state, { failedToLoadMetadata: value });
+  },
 };

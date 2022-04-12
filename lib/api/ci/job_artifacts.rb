@@ -60,11 +60,7 @@ module API
 
             bad_request! unless path.valid?
 
-            if ::Feature.enabled?(:ci_safe_artifact_content_type, build&.project, default_enabled: :yaml)
-              send_artifacts_entry(build.artifacts_file, path)
-            else
-              legacy_send_artifacts_entry(build.artifacts_file, path)
-            end
+            send_artifacts_entry(build.artifacts_file, path)
           end
 
         desc 'Download the artifacts archive from a job' do

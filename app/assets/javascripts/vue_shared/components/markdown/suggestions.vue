@@ -47,6 +47,11 @@ export default {
       required: false,
       default: 0,
     },
+    failedToLoadMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -58,6 +63,9 @@ export default {
       this.reset();
     },
     noteHtml() {
+      this.reset();
+    },
+    failedToLoadMetadata() {
       this.reset();
     },
   },
@@ -105,6 +113,7 @@ export default {
         helpPagePath,
         defaultCommitMessage,
         suggestionsCount,
+        failedToLoadMetadata,
       } = this;
       const suggestion =
         suggestions && suggestions[suggestionIndex] ? suggestions[suggestionIndex] : {};
@@ -117,6 +126,7 @@ export default {
           helpPagePath,
           defaultCommitMessage,
           suggestionsCount,
+          failedToLoadMetadata,
         },
       });
 

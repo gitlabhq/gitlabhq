@@ -561,16 +561,6 @@ RSpec.describe API::Ci::JobArtifacts do
                           'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
                           'Gitlab-Workhorse-Detect-Content-Type' => 'true')
           end
-
-          context 'when ci_safe_artifact_content_type is disabled' do
-            before do
-              stub_feature_flags(ci_safe_artifact_content_type: false)
-            end
-
-            it 'does not let workhorse set content type' do
-              expect(response.headers).not_to include('Gitlab-Workhorse-Detect-Content-Type')
-            end
-          end
         end
 
         context 'when project is public with builds access disabled' do

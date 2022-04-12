@@ -381,18 +381,6 @@ RSpec.describe Projects::ArtifactsController do
             let(:store) { ObjectStorage::Store::LOCAL }
             let(:archive_path) { JobArtifactUploader.root }
           end
-
-          context 'when ci_safe_artifact_content_type is disabled' do
-            before do
-              stub_feature_flags(ci_safe_artifact_content_type: false)
-            end
-
-            it 'does not let workhorse set content type' do
-              subject
-
-              expect(response.headers).not_to include('Gitlab-Workhorse-Detect-Content-Type')
-            end
-          end
         end
 
         context 'when the artifact is not zip' do

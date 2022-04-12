@@ -72,11 +72,15 @@ MergeRequest.prototype.initMRBtnListeners = function () {
         const wipEvent = getParameterValues('merge_request[wip_event]', url)[0];
         const mobileDropdown = draftToggle.closest('.dropdown.show');
 
+        const loader = document.createElement('span');
+        loader.classList.add('gl-spinner', 'gl-mr-3');
+
         if (mobileDropdown) {
           $(mobileDropdown.firstElementChild).dropdown('toggle');
         }
 
         draftToggle.setAttribute('disabled', 'disabled');
+        draftToggle.prepend(loader);
 
         axios
           .put(draftToggle.href, null, { params: { format: 'json' } })

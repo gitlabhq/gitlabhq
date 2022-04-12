@@ -3714,7 +3714,7 @@ and [multi-project pipelines](../pipelines/multi_project_pipelines.md).
 
 - `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
   in the trigger job are passed to downstream pipelines.
-- `pipeline_variables`: `true` or `false` (default). When `true`, [manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
+- `pipeline_variables`: `true` or `false` (default). When `true`, [manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable) and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are passed to downstream pipelines.
 
 **Example of `trigger:forward`**:

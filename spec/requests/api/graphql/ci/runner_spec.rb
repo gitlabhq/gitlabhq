@@ -27,6 +27,10 @@ RSpec.describe 'Query.runner(id)' do
 
   let_it_be(:active_project_runner) { create(:ci_runner, :project) }
 
+  before do
+    allow(Gitlab::Ci::RunnerUpgradeCheck.instance).to receive(:check_runner_upgrade_status)
+  end
+
   shared_examples 'runner details fetch' do
     let(:query) do
       wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))

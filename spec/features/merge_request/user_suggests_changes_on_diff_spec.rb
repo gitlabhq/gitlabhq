@@ -379,4 +379,41 @@ RSpec.describe 'User comments on a diff', :js do
       end
     end
   end
+
+  context 'failed to load metadata' do
+    let(:dummy_controller) do
+      Class.new(Projects::MergeRequests::DiffsController) do
+        def diffs_metadata
+          render json: '', status: :internal_server_error
+        end
+      end
+    end
+
+    before do
+      stub_const('Projects::MergeRequests::DiffsController', dummy_controller)
+
+      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
+
+      page.within('.js-discussion-note-form') do
+        fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
+        click_button('Add comment now')
+      end
+
+      wait_for_requests
+
+      visit(project_merge_request_path(project, merge_request))
+
+      wait_for_requests
+    end
+
+    it 'displays an error' do
+      page.within('.discussion-notes') do
+        click_button('Apply suggestion')
+
+        wait_for_requests
+
+        expect(page).to have_content('Unable to fully load the default commit message. You can still apply this suggestion and the commit message will be correct.')
+      end
+    end
+  end
 end

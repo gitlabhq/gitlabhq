@@ -1,64 +1,37 @@
 import MockAdapter from 'axios-mock-adapter';
-
-import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 
-import { setEndpoints, setMrMetadata, fetchMrMetadata } from '~/mr_notes/stores/actions';
-import mutationTypes from '~/mr_notes/stores/mutation_types';
+import { createStore } from '~/mr_notes/stores';
 
 describe('MR Notes Mutator Actions', () => {
-  describe('setEndpoints', () => {
-    it('should trigger the SET_ENDPOINTS state mutation', (done) => {
-      const endpoints = { endpointA: 'a' };
+  let store;
 
-      testAction(
-        setEndpoints,
-        endpoints,
-        {},
-        [
-          {
-            type: mutationTypes.SET_ENDPOINTS,
-            payload: endpoints,
-          },
-        ],
-        [],
-        done,
-      );
-    });
+  beforeEach(() => {
+    store = createStore();
   });
 
-  describe('setMrMetadata', () => {
-    it('should trigger the SET_MR_METADATA state mutation', async () => {
-      const mrMetadata = { propA: 'a', propB: 'b' };
+  describe('setEndpoints', () => {
+    it('sets endpoints', async () => {
+      const endpoints = { endpointA: 'a' };
 
-      await testAction(
-        setMrMetadata,
-        mrMetadata,
-        {},
-        [
-          {
-            type: mutationTypes.SET_MR_METADATA,
-            payload: mrMetadata,
-          },
-        ],
-        [],
-      );
+      await store.dispatch('setEndpoints', endpoints);
+
+      expect(store.state.page.endpoints).toEqual(endpoints);
     });
   });
 
   describe('fetchMrMetadata', () => {
     const mrMetadata = { meta: true, data: 'foo' };
-    const state = {
-      endpoints: {
-        metadata: 'metadata',
-      },
-    };
+    const metadata = 'metadata';
+    const endpoints = { metadata };
     let mock;
 
-    beforeEach(() => {
+    beforeEach(async () => {
+      await store.dispatch('setEndpoints', endpoints);
+
       mock = new MockAdapter(axios);
 
-      mock.onGet(state.endpoints.metadata).reply(200, mrMetadata);
+      mock.onGet(metadata).reply(200, mrMetadata);
     });
 
     afterEach(() => {
@@ -66,27 +39,26 @@ describe('MR Notes Mutator Actions', () => {
     });
 
     it('should fetch the data from the API', async () => {
-      await fetchMrMetadata({ state, dispatch: () => {} });
+      await store.dispatch('fetchMrMetadata');
 
       await axios.waitForAll();
 
       expect(mock.history.get).toHaveLength(1);
-      expect(mock.history.get[0].url).toBe(state.endpoints.metadata);
+      expect(mock.history.get[0].url).toBe(metadata);
     });
 
-    it('should set the fetched data into state', () => {
-      return testAction(
-        fetchMrMetadata,
-        {},
-        state,
-        [],
-        [
-          {
-            type: 'setMrMetadata',
-            payload: mrMetadata,
-          },
-        ],
-      );
+    it('should set the fetched data into state', async () => {
+      await store.dispatch('fetchMrMetadata');
+
+      expect(store.state.page.mrMetadata).toEqual(mrMetadata);
+    });
+
+    it('should set failedToLoadMetadata flag when request fails', async () => {
+      mock.onGet(metadata).reply(500);
+
+      await store.dispatch('fetchMrMetadata');
+
+      expect(store.state.page.failedToLoadMetadata).toBe(true);
     });
   });
 });

@@ -35,12 +35,6 @@ module WorkhorseHelper
     head :ok
   end
 
-  # Send an entry from artifacts through Workhorse
-  def legacy_send_artifacts_entry(file, entry)
-    headers.store(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
-    head :ok
-  end
-
   # Send an entry from artifacts through Workhorse and set safe content type
   def send_artifacts_entry(file, entry)
     headers.store(*Gitlab::Workhorse.send_artifacts_entry(file, entry))

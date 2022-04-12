@@ -9450,6 +9450,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunnertokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Runner token expiration time. |
+| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatusType`](#cirunnerupgradestatustype) | **Deprecated** in 14.10. This feature is in Alpha, and can be removed or changed at any point. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
@@ -17840,6 +17841,14 @@ Values for sorting runners.
 | <a id="cirunnertypegroup_type"></a>`GROUP_TYPE` | A runner that is group type. |
 | <a id="cirunnertypeinstance_type"></a>`INSTANCE_TYPE` | A runner that is instance type. |
 | <a id="cirunnertypeproject_type"></a>`PROJECT_TYPE` | A runner that is project type. |
+
+### `CiRunnerUpgradeStatusType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cirunnerupgradestatustypeavailable"></a>`AVAILABLE` | An update is available for the runner. |
+| <a id="cirunnerupgradestatustypenot_available"></a>`NOT_AVAILABLE` | An update is not available for the runner. |
+| <a id="cirunnerupgradestatustyperecommended"></a>`RECOMMENDED` | An update is available and recommended for the runner. |
 
 ### `CodeQualityDegradationSeverity`
 

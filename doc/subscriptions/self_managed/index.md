@@ -148,6 +148,9 @@ This sync job runs daily around 3AM UTC. If the job fails, it is retried up to 1
 
 The daily job provides **only** the following information to the Customers Portal:
 
+- Company name
+- Licensee name
+- Licensee email
 - Date
 - Timestamp
 - License key

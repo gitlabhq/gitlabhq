@@ -1291,7 +1291,7 @@
                     },
                     "pipeline_variables": {
                       "type": "boolean",
-                      "description": "Variables added for manual pipeline runs are passed to downstream pipelines.",
+                      "description": "Variables added for manual pipeline runs and scheduled pipelines are passed to downstream pipelines.",
                       "default": false
                     }
                   }
@@ -1407,7 +1407,7 @@
                     },
                     "pipeline_variables": {
                       "type": "boolean",
-                      "description": "Variables added for manual pipeline runs are passed to downstream pipelines.",
+                      "description": "Variables added for manual pipeline runs and scheduled pipelines are passed to downstream pipelines.",
                       "default": false
                     }
                   }

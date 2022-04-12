@@ -1753,4 +1753,27 @@ RSpec.describe Note do
       expect(note.commands_changes.keys).to contain_exactly(:emoji_award, :time_estimate, :spend_time)
     end
   end
+
+  describe '#bump_updated_at', :freeze_time do
+    it 'sets updated_at to the current timestamp' do
+      note = create(:note, updated_at: 1.day.ago)
+
+      note.bump_updated_at
+      note.reload
+
+      expect(note.updated_at).to be_like_time(Time.current)
+    end
+
+    context 'with legacy edited note' do
+      it 'copies updated_at to last_edited_at before bumping the timestamp' do
+        note = create(:note, updated_at: 1.day.ago, updated_by: create(:user), last_edited_at: nil)
+
+        note.bump_updated_at
+        note.reload
+
+        expect(note.last_edited_at).to be_like_time(1.day.ago)
+        expect(note.updated_at).to be_like_time(Time.current)
+      end
+    end
+  end
 end

@@ -222,6 +222,7 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. | All |
+| `CS_IMAGE_SUFFIX`              | `""`          | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7630) in GitLab 14.10. | All |
 | `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore vulnerabilities that are not fixed. | All |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are Unknown, Low, Medium, High, and Critical. | Trivy |
@@ -238,20 +239,27 @@ Support depends on the scanner:
 - [Grype](https://github.com/anchore/grype#grype)
 - [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/os/) (Default).
 
-#### UBI-based images
+#### FIPS-enabled images
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5775) in GitLab 14.1.
 
-GitLab also offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
-versions of the container-scanning images. You can therefore replace standard images with UBI-based
-images. To configure the images, set the `CS_ANALYZER_IMAGE` variable to the standard tag plus the
-`-ubi` extension.
+GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the container-scanning images. You can therefore replace standard images with FIPS-enabled
+images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify the `CS_ANALYZER_IMAGE` variable to the
+standard tag plus the `-fips` extension.
 
 | Scanner name    | `CS_ANALYZER_IMAGE` |
 | --------------- | ------------------- |
-| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:4-ubi` |
-| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:4-ubi` |
-| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:4-ubi` |
+| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:4-fips` |
+| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:4-fips` |
+| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:4-fips` |
+
+NOTE:
+Prior to GitLab 15.0, the `-ubi` image extension is also available. GitLab 15.0 and later only
+support `-fips`.
+
+Starting with GitLab 14.10, `-fips` is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is
+enabled in the GitLab instance.
 
 ### Enable Container Scanning through an automatic merge request
 
