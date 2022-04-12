@@ -19410,7 +19410,8 @@ CREATE TABLE project_statistics (
     wiki_size bigint,
     snippets_size bigint,
     pipeline_artifacts_size bigint DEFAULT 0 NOT NULL,
-    uploads_size bigint DEFAULT 0 NOT NULL
+    uploads_size bigint DEFAULT 0 NOT NULL,
+    container_registry_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE project_statistics_id_seq

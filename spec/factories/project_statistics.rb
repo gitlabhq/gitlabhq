@@ -24,6 +24,7 @@ FactoryBot.define do
         project_statistics.snippets_size = evaluator.size_multiplier * 6
         project_statistics.pipeline_artifacts_size = evaluator.size_multiplier * 7
         project_statistics.uploads_size = evaluator.size_multiplier * 8
+        project_statistics.container_registry_size = evaluator.size_multiplier * 9
       end
     end
   end

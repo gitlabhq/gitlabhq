@@ -1588,7 +1588,7 @@ Returns:
 - `404 User Not Found` if the user cannot be found.
 - `403 Forbidden` when trying to unban a user that is not banned.
 
-### Get user contribution events
+## Get user contribution events
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)
 
