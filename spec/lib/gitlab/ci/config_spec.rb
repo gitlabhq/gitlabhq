@@ -104,6 +104,26 @@ RSpec.describe Gitlab::Ci::Config do
     end
 
     it { is_expected.to contain_exactly('Jobs/Deploy.gitlab-ci.yml', 'Jobs/Build.gitlab-ci.yml') }
+
+    it 'stores includes' do
+      expect(config.metadata[:includes]).to contain_exactly(
+        { type: :template,
+          location: 'Jobs/Deploy.gitlab-ci.yml',
+          extra: {},
+          context_project: nil,
+          context_sha: nil },
+        { type: :template,
+          location: 'Jobs/Build.gitlab-ci.yml',
+          extra: {},
+          context_project: nil,
+          context_sha: nil },
+        { type: :remote,
+          location: 'https://example.com/gitlab-ci.yml',
+          extra: {},
+          context_project: nil,
+          context_sha: nil }
+      )
+    end
   end
 
   context 'when using extendable hash' do
@@ -402,6 +422,26 @@ RSpec.describe Gitlab::Ci::Config do
             expect(filename).to eq('.another-ci-file.yml')
           end
         end
+      end
+
+      it 'stores includes' do
+        expect(config.metadata[:includes]).to contain_exactly(
+          { type: :local,
+            location: local_location,
+            extra: {},
+            context_project: project.full_path,
+            context_sha: '12345' },
+          { type: :remote,
+            location: remote_location,
+            extra: {},
+            context_project: project.full_path,
+            context_sha: '12345' },
+          { type: :file,
+            location: '.gitlab-ci.yml',
+            extra: { project: main_project.full_path, ref: 'HEAD' },
+            context_project: project.full_path,
+            context_sha: '12345' }
+        )
       end
     end
 

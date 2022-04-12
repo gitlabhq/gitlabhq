@@ -4,8 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
   let(:parent_pipeline) { create(:ci_pipeline) }
+  let(:variables) {}
   let(:context) do
-    Gitlab::Ci::Config::External::Context.new(parent_pipeline: parent_pipeline)
+    Gitlab::Ci::Config::External::Context.new(variables: variables, parent_pipeline: parent_pipeline)
   end
 
   let(:external_file) { described_class.new(params, context) }
@@ -170,6 +171,58 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
           end
         end
       end
+
+      context 'when job is provided as a variable' do
+        let(:variables) do
+          Gitlab::Ci::Variables::Collection.new([
+            { key: 'VAR1', value: 'a_secret_variable_value', masked: true }
+          ])
+        end
+
+        let(:params) { { artifact: 'generated.yml', job: 'a_secret_variable_value' } }
+
+        context 'when job does not exist in the parent pipeline' do
+          let(:expected_error) do
+            'Job `xxxxxxxxxxxxxxxxxxxxxxx` not found in parent pipeline or does not have artifacts!'
+          end
+
+          it_behaves_like 'is invalid'
+        end
+      end
+    end
+  end
+
+  describe '#metadata' do
+    let(:params) { { artifact: 'generated.yml' } }
+
+    subject(:metadata) { external_file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: nil,
+        context_sha: nil,
+        type: :artifact,
+        location: 'generated.yml',
+        extra: { job_name: nil }
+      )
+    }
+
+    context 'when job name includes a masked variable' do
+      let(:variables) do
+        Gitlab::Ci::Variables::Collection.new([{ key: 'VAR1', value: 'a_secret_variable_value', masked: true }])
+      end
+
+      let(:params) { { artifact: 'generated.yml', job: 'a_secret_variable_value' } }
+
+      it {
+        is_expected.to eq(
+          context_project: nil,
+          context_sha: nil,
+          type: :artifact,
+          location: 'generated.yml',
+          extra: { job_name: 'xxxxxxxxxxxxxxxxxxxxxxx' }
+        )
+      }
     end
   end
 end

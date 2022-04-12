@@ -160,6 +160,23 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         expect(project_file.error_message).to include('Included file `/invalid-file` does not have YAML extension!')
       end
     end
+
+    context 'when non-existing project is used with a masked variable' do
+      let(:variables) do
+        Gitlab::Ci::Variables::Collection.new([
+          { key: 'VAR1', value: 'a_secret_variable_value', masked: true }
+        ])
+      end
+
+      let(:params) do
+        { project: 'a_secret_variable_value', file: '/file.yml' }
+      end
+
+      it 'returns false with masked project name' do
+        expect(valid?).to be_falsy
+        expect(project_file.error_message).to include("Project `xxxxxxxxxxxxxxxxxxxxxxx` not found or access denied!")
+      end
+    end
   end
 
   describe '#expand_context' do
@@ -174,6 +191,45 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         sha: project.commit('master').id,
         parent_pipeline: parent_pipeline,
         variables: project.predefined_variables.to_runner_variables)
+    end
+  end
+
+  describe '#metadata' do
+    let(:params) do
+      { project: project.full_path, file: '/file.yml' }
+    end
+
+    subject(:metadata) { project_file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: context_project.full_path,
+        context_sha: '12345',
+        type: :file,
+        location: '/file.yml',
+        extra: { project: project.full_path, ref: 'HEAD' }
+      )
+    }
+
+    context 'when project name and ref include masked variables' do
+      let(:variables) do
+        Gitlab::Ci::Variables::Collection.new([
+          { key: 'VAR1', value: 'a_secret_variable_value1', masked: true },
+          { key: 'VAR2', value: 'a_secret_variable_value2', masked: true }
+        ])
+      end
+
+      let(:params) { { project: 'a_secret_variable_value1', ref: 'a_secret_variable_value2', file: '/file.yml' } }
+
+      it {
+        is_expected.to eq(
+          context_project: context_project.full_path,
+          context_sha: '12345',
+          type: :file,
+          location: '/file.yml',
+          extra: { project: 'xxxxxxxxxxxxxxxxxxxxxxxx', ref: 'xxxxxxxxxxxxxxxxxxxxxxxx' }
+        )
+      }
     end
   end
 

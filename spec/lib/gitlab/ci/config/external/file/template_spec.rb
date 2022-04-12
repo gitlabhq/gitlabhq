@@ -114,4 +114,18 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template do
       is_expected.to be_empty
     end
   end
+
+  describe '#metadata' do
+    subject(:metadata) { template_file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: project.full_path,
+        context_sha: '12345',
+        type: :template,
+        location: template,
+        extra: {}
+      )
+    }
+  end
 end

@@ -24735,13 +24735,13 @@ msgstr ""
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""
 
-msgid "NamespaceStorage|%{name_with_link} namespace has approximately %{percent} namespace storage space remaining."
+msgid "NamespaceStorage|%{name_with_link} namespace has approximately %{percent} (%{size}) namespace storage space remaining."
 msgstr ""
 
 msgid "NamespaceStorage|%{name_with_link} namespace has exceeded its namespace storage limit."
 msgstr ""
 
-msgid "NamespaceStorage|%{name}(%{url}) namespace has approximately %{percent} namespace storage space remaining."
+msgid "NamespaceStorage|%{name}(%{url}) namespace has approximately %{percent} (%{size}) namespace storage space remaining."
 msgstr ""
 
 msgid "NamespaceStorage|%{name}(%{url}) namespace has exceeded its namespace storage limit."

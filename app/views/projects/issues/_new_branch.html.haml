@@ -55,7 +55,7 @@
               %label{ for: 'source-name' }
                 = _('Source (branch or tag)')
               %input#source-name.js-ref.ref.form-control.gl-form-input{ type: 'text', placeholder: "#{@project.default_branch}", value: "#{@project.default_branch}", data: { value: "#{@project.default_branch}" } }
-              %span.js-ref-message.form-text.text-muted
+              %span.js-ref-message.form-text
 
             .form-group
               %button.btn.gl-button.btn-confirm.js-create-target{ type: 'button', data: { action: 'create-mr' } }

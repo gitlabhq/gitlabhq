@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
   end
 
   describe "#perform" do
-    subject { processor.perform }
+    subject(:perform) { processor.perform }
 
     context 'when no external files defined' do
       let(:values) { { image: 'image:1.0' } }
@@ -262,6 +262,18 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
 
           expect(process_obs_count).to eq(3)
         end
+
+        it 'stores includes' do
+          perform
+
+          expect(context.includes).to contain_exactly(
+            { type: :local, location: '/local/file.yml', extra: {}, context_project: project.full_path, context_sha: '12345' },
+            { type: :template, location: 'Ruby.gitlab-ci.yml', extra: {}, context_project: project.full_path, context_sha: '12345' },
+            { type: :remote, location: 'http://my.domain.com/config.yml', extra: {}, context_project: project.full_path, context_sha: '12345' },
+            { type: :file, location: '/templates/my-workflow.yml', extra: { project: another_project.full_path, ref: 'HEAD' }, context_project: project.full_path, context_sha: '12345' },
+            { type: :local, location: '/templates/my-build.yml', extra: {}, context_project: another_project.full_path, context_sha: another_project.commit.sha }
+          )
+        end
       end
 
       context 'when user is reporter of another project' do
@@ -377,10 +389,19 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         output = processor.perform
         expect(output.keys).to match_array([:image, :my_build, :my_test])
       end
+
+      it 'stores includes' do
+        perform
+
+        expect(context.includes).to contain_exactly(
+          { type: :file, location: '/templates/my-build.yml', extra: { project: another_project.full_path, ref: 'HEAD' }, context_project: project.full_path, context_sha: '12345' },
+          { type: :file, location: '/templates/my-test.yml', extra: { project: another_project.full_path, ref: 'HEAD' }, context_project: project.full_path, context_sha: '12345' }
+        )
+      end
     end
 
     context 'when local file path has wildcard' do
-      let_it_be(:project) { create(:project, :repository) }
+      let(:project) { create(:project, :repository) }
 
       let(:values) do
         { include: 'myfolder/*.yml', image: 'image:1.0' }
@@ -411,6 +432,15 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       it 'fetches the matched files' do
         output = processor.perform
         expect(output.keys).to match_array([:image, :my_build, :my_test])
+      end
+
+      it 'stores includes' do
+        perform
+
+        expect(context.includes).to contain_exactly(
+          { type: :local, location: 'myfolder/file1.yml', extra: {}, context_project: project.full_path, context_sha: '12345' },
+          { type: :local, location: 'myfolder/file2.yml', extra: {}, context_project: project.full_path, context_sha: '12345' }
+        )
       end
     end
 

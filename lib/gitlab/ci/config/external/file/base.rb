@@ -55,6 +55,21 @@ module Gitlab
               end
             end
 
+            def metadata
+              {
+                context_project: context.project&.full_path,
+                context_sha: context.sha
+              }
+            end
+
+            def eql?(other)
+              other.hash == hash
+            end
+
+            def hash
+              [params, context.project&.full_path, context.sha].hash
+            end
+
             protected
 
             def expanded_content_hash

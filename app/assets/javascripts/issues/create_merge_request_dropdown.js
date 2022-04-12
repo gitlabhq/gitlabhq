@@ -453,7 +453,7 @@ export default class CreateMergeRequestDropdown {
   removeMessage(target) {
     const { input, message } = this.getTargetData(target);
     const inputClasses = ['gl-field-error-outline', 'gl-field-success-outline'];
-    const messageClasses = ['text-muted', 'text-danger', 'text-success'];
+    const messageClasses = ['gl-text-gray-600', 'gl-text-red-500', 'gl-text-green-500'];
 
     inputClasses.forEach((cssClass) => input.classList.remove(cssClass));
     messageClasses.forEach((cssClass) => message.classList.remove(cssClass));
@@ -476,7 +476,7 @@ export default class CreateMergeRequestDropdown {
 
     this.removeMessage(target);
     input.classList.add('gl-field-success-outline');
-    message.classList.add('text-success');
+    message.classList.add('gl-text-green-500');
     message.textContent = sprintf(__('%{text} is available'), { text });
     message.style.display = 'inline-block';
   }
@@ -486,7 +486,7 @@ export default class CreateMergeRequestDropdown {
     const text = target === 'branch' ? __('branch name') : __('source');
 
     this.removeMessage(target);
-    message.classList.add('text-muted');
+    message.classList.add('gl-text-gray-600');
     message.textContent = sprintf(__('Checking %{text} availability…'), { text });
     message.style.display = 'inline-block';
   }
@@ -498,7 +498,7 @@ export default class CreateMergeRequestDropdown {
 
     this.removeMessage(target);
     input.classList.add('gl-field-error-outline');
-    message.classList.add('text-danger');
+    message.classList.add('gl-text-red-500');
     message.textContent = text;
     message.style.display = 'inline-block';
   }

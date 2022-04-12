@@ -104,9 +104,11 @@ export default {
       <div v-if="author" class="d-flex">
         <span class="text-secondary">{{ __('by') }}&nbsp;</span>
         <user-avatar-link
+          class="gl-my-n1"
           :link-href="author.webUrl"
           :img-src="author.avatarUrl"
           :img-alt="userImageAltDescription"
+          :img-size="24"
           :tooltip-text="author.username"
           tooltip-placement="bottom"
         />

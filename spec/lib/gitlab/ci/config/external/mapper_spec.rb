@@ -21,6 +21,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     HEREDOC
   end
 
+  subject(:mapper) { described_class.new(values, context) }
+
   before do
     stub_full_request(remote_url).to_return(body: file_content)
 
@@ -30,7 +32,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
   end
 
   describe '#process' do
-    subject { described_class.new(values, context).process }
+    subject(:process) { mapper.process }
 
     context "when single 'include' keyword is defined" do
       context 'when the string is a local file' do
@@ -189,7 +191,12 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       end
 
       it 'does not raise an exception' do
-        expect { subject }.not_to raise_error
+        expect { process }.not_to raise_error
+      end
+
+      it 'has expanset with one' do
+        process
+        expect(mapper.expandset.size).to eq(1)
       end
     end
 
@@ -383,6 +390,28 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
         it 'does not include the file' do
           expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote))
         end
+      end
+    end
+
+    context "when locations are same after masking variables" do
+      let(:variables) do
+        Gitlab::Ci::Variables::Collection.new([
+          { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file1', 'masked' => true },
+          { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file2', 'masked' => true }
+        ])
+      end
+
+      let(:values) do
+        { include: [
+          { 'local' => 'hello/secret-file1.yml' },
+          { 'local' => 'hello/secret-file2.yml' }
+        ],
+        image: 'ruby:2.7' }
+      end
+
+      it 'has expanset with two' do
+        process
+        expect(mapper.expandset.size).to eq(2)
       end
     end
   end

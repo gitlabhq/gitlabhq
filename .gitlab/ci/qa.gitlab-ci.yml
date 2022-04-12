@@ -16,14 +16,14 @@
 qa:internal:
   extends:
     - .qa-job-base
-    - .qa:rules:ee-and-foss
+    - .qa:rules:internal
   script:
     - bundle exec rspec
 
 qa:internal-as-if-foss:
   extends:
     - qa:internal
-    - .qa:rules:as-if-foss
+    - .qa:rules:internal-as-if-foss
     - .as-if-foss
 
 qa:selectors:

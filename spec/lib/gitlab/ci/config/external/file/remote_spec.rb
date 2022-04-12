@@ -199,4 +199,22 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
       is_expected.to be_empty
     end
   end
+
+  describe '#metadata' do
+    before do
+      stub_full_request(location).to_return(body: remote_file_content)
+    end
+
+    subject(:metadata) { remote_file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: nil,
+        context_sha: '12345',
+        type: :remote,
+        location: 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml',
+        extra: {}
+      )
+    }
+  end
 end

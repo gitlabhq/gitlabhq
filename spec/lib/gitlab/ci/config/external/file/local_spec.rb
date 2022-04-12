@@ -187,4 +187,20 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
       end
     end
   end
+
+  describe '#metadata' do
+    let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
+
+    subject(:metadata) { local_file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: project.full_path,
+        context_sha: '12345',
+        type: :local,
+        location: location,
+        extra: {}
+      )
+    }
+  end
 end

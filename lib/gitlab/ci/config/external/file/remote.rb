@@ -18,6 +18,14 @@ module Gitlab
               strong_memoize(:content) { fetch_remote_content }
             end
 
+            def metadata
+              super.merge(
+                type: :remote,
+                location: masked_location,
+                extra: {}
+              )
+            end
+
             private
 
             def validate_location!

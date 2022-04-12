@@ -858,6 +858,11 @@
 ############
 # QA rules #
 ############
+.qa:rules:internal:
+  rules:
+    - <<: *if-default-refs
+      changes: *qa-patterns
+
 .qa:rules:ee-and-foss:
   rules:
     - <<: *if-default-refs
@@ -872,6 +877,12 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *ci-patterns
+
+.qa:rules:internal-as-if-foss:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-default-refs
+      changes: *qa-patterns
 
 .qa:rules:package-and-qa:
   rules:

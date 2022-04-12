@@ -57,6 +57,9 @@ export default {
     currentUserId: {
       default: null,
     },
+    canCreateEpic: {
+      default: false,
+    },
   },
   props: {
     list: {
@@ -129,7 +132,7 @@ export default {
       return (this.listType === ListType.backlog || this.showListHeaderButton) && !this.isEpicBoard;
     },
     isNewEpicShown() {
-      return this.isEpicBoard && this.listType !== ListType.closed;
+      return this.isEpicBoard && this.canCreateEpic && this.listType !== ListType.closed;
     },
     isSettingsShown() {
       return (
@@ -448,7 +451,6 @@ export default {
           icon="settings"
           @click="openSidebarSettings"
         />
-        <gl-tooltip :target="() => $refs.settingsBtn">{{ $options.i18n.listSettings }}</gl-tooltip>
       </gl-button-group>
     </h3>
   </header>

@@ -28,6 +28,14 @@ module Gitlab
               end
             end
 
+            def metadata
+              super.merge(
+                type: :artifact,
+                location: masked_location,
+                extra: { job_name: masked_job_name }
+              )
+            end
+
             private
 
             def project
@@ -52,7 +60,7 @@ module Gitlab
               end
 
               unless artifact_job.present?
-                errors.push("Job `#{job_name}` not found in parent pipeline or does not have artifacts!")
+                errors.push("Job `#{masked_job_name}` not found in parent pipeline or does not have artifacts!")
                 return false
               end
 
@@ -79,6 +87,12 @@ module Gitlab
                 user: context.user,
                 parent_pipeline: context.parent_pipeline
               }
+            end
+
+            def masked_job_name
+              strong_memoize(:masked_job_name) do
+                context.mask_variables_from(job_name)
+              end
             end
           end
         end

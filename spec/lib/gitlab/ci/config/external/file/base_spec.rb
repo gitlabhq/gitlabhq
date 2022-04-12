@@ -112,4 +112,52 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
       end
     end
   end
+
+  describe '#metadata' do
+    let(:location) { 'some/file/config.yml' }
+
+    subject(:metadata) { file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: nil,
+        context_sha: 'HEAD'
+      )
+    }
+  end
+
+  describe '#eql?' do
+    let(:location) { 'some/file/config.yml' }
+
+    subject(:eql) { file.eql?(other_file) }
+
+    context 'when the other file has the same params' do
+      let(:other_file) { test_class.new(location, context) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when the other file has not the same params' do
+      let(:other_file) { test_class.new('some/other/file', context) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#hash' do
+    let(:location) { 'some/file/config.yml' }
+
+    subject(:filehash) { file.hash }
+
+    context 'with a project' do
+      let(:project) { create(:project) }
+      let(:context_params) { { project: project, sha: 'HEAD', variables: variables } }
+
+      it { is_expected.to eq([location, project.full_path, 'HEAD'].hash) }
+    end
+
+    context 'without a project' do
+      it { is_expected.to eq([location, nil, 'HEAD'].hash) }
+    end
+  end
 end

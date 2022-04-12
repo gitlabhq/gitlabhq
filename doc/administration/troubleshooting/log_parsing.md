@@ -143,6 +143,18 @@ CT: 297  ROUTE: /api/:version/projects/:id/repository/tags       DURS: 731.39,  
 CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02,  979.68,  958.21
 ```
 
+### Parsing `gitlab-rails/geo.log`
+
+#### Find most common Geo sync errors
+
+If [the `geo:status` Rake task](../geo/replication/troubleshooting.md#sync-status-rake-task)
+repeatedly reports that some items never reach 100%,
+the following command helps to focus on the most common errors.
+
+```shell
+jq --raw-output 'select(.severity == "ERROR") | [.project_path, .message] | @tsv' geo.log | sort | uniq -c | sort | tail
+```
+
 ### Parsing `gitaly/current`
 
 #### Find all Gitaly requests sent from web UI

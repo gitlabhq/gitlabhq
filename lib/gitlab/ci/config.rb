@@ -82,7 +82,13 @@ module Gitlab
       end
 
       def included_templates
-        @context.expandset.filter_map { |i| i[:template] }
+        @context.includes.filter_map { |i| i[:location] if i[:type] == :template }
+      end
+
+      def metadata
+        {
+          includes: @context.includes
+        }
       end
 
       private
