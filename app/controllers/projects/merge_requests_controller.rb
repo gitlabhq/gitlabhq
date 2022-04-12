@@ -43,10 +43,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:secure_vulnerability_training, project, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:realtime_labels, project, default_enabled: :yaml)
-
-    # Usage data feature flags
-    #
-    push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
   end
 
   before_action do

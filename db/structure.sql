@@ -26445,8 +26445,6 @@ CREATE INDEX cadence_create_iterations_automation ON iterations_cadences USING b
 
 CREATE INDEX ci_builds_gitlab_monitor_metrics ON ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
 
-CREATE INDEX ci_job_artifacts_expire_at_unlocked_idx ON ci_job_artifacts USING btree (expire_at) WHERE (locked = 0);
-
 CREATE INDEX code_owner_approval_required ON protected_branches USING btree (project_id, code_owner_approval_required) WHERE (code_owner_approval_required = true);
 
 CREATE UNIQUE INDEX commit_user_mentions_on_commit_id_and_note_id_unique_index ON commit_user_mentions USING btree (commit_id, note_id);

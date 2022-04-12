@@ -29,6 +29,49 @@ RSpec.describe GroupGroupLink do
                                                           ])
       end
     end
+
+    describe '.distinct_on_shared_with_group_id_with_group_access' do
+      let_it_be(:sub_shared_group) { create(:group, parent: shared_group) }
+      let_it_be(:other_group) { create(:group) }
+
+      let_it_be(:group_group_link_2) do
+        create(
+          :group_group_link,
+          shared_group: shared_group,
+          shared_with_group: other_group,
+          group_access: Gitlab::Access::GUEST
+        )
+      end
+
+      let_it_be(:group_group_link_3) do
+        create(
+          :group_group_link,
+          shared_group: sub_shared_group,
+          shared_with_group: group,
+          group_access: Gitlab::Access::GUEST
+        )
+      end
+
+      let_it_be(:group_group_link_4) do
+        create(
+          :group_group_link,
+          shared_group: sub_shared_group,
+          shared_with_group: other_group,
+          group_access: Gitlab::Access::DEVELOPER
+        )
+      end
+
+      it 'returns only one group link per group (with max group access)' do
+        distinct_group_group_links = described_class.distinct_on_shared_with_group_id_with_group_access
+
+        expect(described_class.all.count).to eq(4)
+        expect(distinct_group_group_links.count).to eq(2)
+        expect(distinct_group_group_links).to include(group_group_link)
+        expect(distinct_group_group_links).not_to include(group_group_link_2)
+        expect(distinct_group_group_links).not_to include(group_group_link_3)
+        expect(distinct_group_group_links).to include(group_group_link_4)
+      end
+    end
   end
 
   describe 'validation' do
@@ -56,5 +99,10 @@ RSpec.describe GroupGroupLink do
 
       group_group_link.human_access
     end
+  end
+
+  describe 'search by group name' do
+    it { expect(described_class.search(group.name)).to eq([group_group_link]) }
+    it { expect(described_class.search('not-a-group-name')).to be_empty }
   end
 end

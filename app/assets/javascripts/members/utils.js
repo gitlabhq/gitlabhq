@@ -32,7 +32,7 @@ export const isGroup = (member) => {
 };
 
 export const isDirectMember = (member) => {
-  return isGroup(member) || member.isDirectMember;
+  return member.isDirectMember;
 };
 
 export const isCurrentUser = (member, currentUserId) => {

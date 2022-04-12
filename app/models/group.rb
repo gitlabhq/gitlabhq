@@ -43,7 +43,28 @@ class Group < Namespace
   has_many :milestones
   has_many :integrations
   has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
-  has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink'
+  has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink' do
+    def of_ancestors
+      group = proxy_association.owner
+
+      return GroupGroupLink.none unless group.has_parent?
+
+      GroupGroupLink.where(shared_group_id: group.ancestors.reorder(nil).select(:id))
+    end
+
+    def of_ancestors_and_self
+      group = proxy_association.owner
+
+      source_ids =
+        if group.has_parent?
+          group.self_and_ancestors.reorder(nil).select(:id)
+        else
+          group.id
+        end
+
+      GroupGroupLink.where(shared_group_id: source_ids)
+    end
+  end
   has_many :shared_groups, through: :shared_group_links, source: :shared_group
   has_many :shared_with_groups, through: :shared_with_group_links, source: :shared_with_group
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

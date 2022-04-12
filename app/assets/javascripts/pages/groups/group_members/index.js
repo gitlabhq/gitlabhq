@@ -32,12 +32,25 @@ initMembersApp(document.querySelector('.js-group-members-list-app'), {
     },
   },
   [MEMBER_TYPES.group]: {
-    tableFields: SHARED_FIELDS.concat('granted'),
+    tableFields: gon?.features?.groupMemberInheritedGroup
+      ? SHARED_FIELDS.concat(['source', 'granted'])
+      : SHARED_FIELDS.concat(['granted']),
     tableAttrs: {
       table: { 'data-qa-selector': 'groups_list' },
       tr: { 'data-qa-selector': 'group_row' },
     },
     requestFormatter: groupLinkRequestFormatter,
+    ...(gon?.features?.groupMemberInheritedGroup
+      ? {
+          filteredSearchBar: {
+            show: true,
+            tokens: ['with_inherited_permissions'],
+            searchParam: 'search_groups',
+            placeholder: s__('Members|Filter groups'),
+            recentSearchesStorageKey: 'group_links_members',
+          },
+        }
+      : {}),
   },
   [MEMBER_TYPES.invite]: {
     tableFields: SHARED_FIELDS.concat('invited'),

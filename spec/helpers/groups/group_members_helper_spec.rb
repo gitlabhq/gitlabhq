@@ -38,7 +38,9 @@ RSpec.describe Groups::GroupMembersHelper do
         shared_group,
         members: present_members(members_collection),
         invited: present_members(invited),
-        access_requests: present_members(access_requests)
+        access_requests: present_members(access_requests),
+        include_relations: [:inherited, :direct],
+        search: nil
       )
     end
 
@@ -95,6 +97,64 @@ RSpec.describe Groups::GroupMembersHelper do
 
       it 'sets `member_path` property' do
         expect(subject[:group][:member_path]).to eq('/groups/foo-bar/-/group_links/:id')
+      end
+
+      context 'inherited' do
+        let_it_be(:sub_shared_group) { create(:group, parent: shared_group) }
+        let_it_be(:sub_shared_with_group) { create(:group) }
+        let_it_be(:sub_group_group_link) { create(:group_group_link, shared_group: sub_shared_group, shared_with_group: sub_shared_with_group) }
+
+        let_it_be(:subject_group) { sub_shared_group }
+
+        before do
+          allow(helper).to receive(:group_group_member_path).with(sub_shared_group, ':id').and_return('/groups/foo-bar/-/group_members/:id')
+          allow(helper).to receive(:group_group_link_path).with(sub_shared_group, ':id').and_return('/groups/foo-bar/-/group_links/:id')
+          allow(helper).to receive(:can?).with(current_user, :admin_group_member, sub_shared_group).and_return(true)
+          allow(helper).to receive(:can?).with(current_user, :export_group_memberships, sub_shared_group).and_return(true)
+        end
+
+        subject do
+          helper.group_members_app_data(
+            sub_shared_group,
+            members: present_members(members_collection),
+            invited: present_members(invited),
+            access_requests: present_members(access_requests),
+            include_relations: include_relations,
+            search: nil
+          )
+        end
+
+        using RSpec::Parameterized::TableSyntax
+
+        where(:include_relations, :result) do
+          [:inherited, :direct] | lazy { [group_group_link, sub_group_group_link].map(&:id) }
+          [:inherited]          | lazy { [group_group_link].map(&:id) }
+          [:direct]             | lazy { [sub_group_group_link].map(&:id) }
+        end
+
+        with_them do
+          it 'returns correct group links' do
+            expect(subject[:group][:members].map { |link| link[:id] }).to match_array(result)
+          end
+        end
+
+        context 'when group_member_inherited_group disabled' do
+          before do
+            stub_feature_flags(group_member_inherited_group: false)
+          end
+
+          where(:include_relations, :result) do
+            [:inherited, :direct] | lazy { [sub_group_group_link.id] }
+            [:inherited]          | lazy { [sub_group_group_link.id] }
+            [:direct]             | lazy { [sub_group_group_link.id] }
+          end
+
+          with_them do
+            it 'always returns direct member links' do
+              expect(subject[:group][:members].map { |link| link[:id] }).to match_array(result)
+            end
+          end
+        end
       end
     end
 

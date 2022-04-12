@@ -166,7 +166,7 @@ export default {
                       }}
                     </p>
                     <gl-button
-                      variant="success"
+                      variant="confirm"
                       category="primary"
                       :title="__('New file')"
                       :aria-label="__('New file')"

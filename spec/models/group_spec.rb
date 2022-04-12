@@ -3371,4 +3371,50 @@ RSpec.describe Group do
       let(:feature_flag_method) { :work_items_feature_flag_enabled? }
     end
   end
+
+  describe 'group shares' do
+    let!(:sub_group) { create(:group, parent: group) }
+    let!(:sub_sub_group) { create(:group, parent: sub_group) }
+    let!(:shared_group_1) { create(:group) }
+    let!(:shared_group_2) { create(:group) }
+    let!(:shared_group_3) { create(:group) }
+
+    before do
+      group.shared_with_groups << shared_group_1
+      sub_group.shared_with_groups << shared_group_2
+      sub_sub_group.shared_with_groups << shared_group_3
+    end
+
+    describe '#shared_with_group_links.of_ancestors' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:subject_group, :result) do
+        ref(:group)         | []
+        ref(:sub_group)     | lazy { [shared_group_1].map(&:id) }
+        ref(:sub_sub_group) | lazy { [shared_group_1, shared_group_2].map(&:id) }
+      end
+
+      with_them do
+        it 'returns correct group shares' do
+          expect(subject_group.shared_with_group_links.of_ancestors.map(&:shared_with_group_id)).to match_array(result)
+        end
+      end
+    end
+
+    describe '#shared_with_group_links.of_ancestors_and_self' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:subject_group, :result) do
+        ref(:group)         | lazy { [shared_group_1].map(&:id) }
+        ref(:sub_group)     | lazy { [shared_group_1, shared_group_2].map(&:id) }
+        ref(:sub_sub_group) | lazy { [shared_group_1, shared_group_2, shared_group_3].map(&:id) }
+      end
+
+      with_them do
+        it 'returns correct group shares' do
+          expect(subject_group.shared_with_group_links.of_ancestors_and_self.map(&:shared_with_group_id)).to match_array(result)
+        end
+      end
+    end
+  end
 end

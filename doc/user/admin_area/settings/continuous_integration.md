@@ -149,8 +149,8 @@ As an administrator you can set either a global or namespace-specific limit on t
 
 ## Archive jobs
 
-Archiving jobs is useful for reducing the CI/CD footprint on the system by
-removing some of the capabilities of the jobs (metadata needed to run the job),
+Archiving jobs is useful for reducing the CI/CD footprint on the system by removing some 
+of the capabilities of the jobs (metadata stored in the database needed to run the job),
 but persisting the traces and artifacts for auditing purposes.
 
 To set the duration for which the jobs are considered as old and expired:
@@ -161,7 +161,7 @@ To set the duration for which the jobs are considered as old and expired:
 1. Set the value of **Archive jobs**.
 1. Hit **Save changes** for the changes to take effect.
 
-After that time passes, the jobs are archived and no longer able to be
+After that time passes, the jobs are archived in the background and no longer able to be
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
 for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 

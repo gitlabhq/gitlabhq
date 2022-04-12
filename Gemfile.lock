@@ -467,7 +467,7 @@ GEM
       danger (>= 8.4.5)
       danger-gitlab (>= 8.0.0)
       rake
-    gitlab-experiment (0.7.0)
+    gitlab-experiment (0.7.1)
       activesupport (>= 3.0)
       request_store (>= 1.0)
     gitlab-fog-azure-rm (1.2.0)
@@ -1496,7 +1496,7 @@ DEPENDENCIES
   github-markup (~> 1.7.0)
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 3.0)
-  gitlab-experiment (~> 0.7.0)
+  gitlab-experiment (~> 0.7.1)
   gitlab-fog-azure-rm (~> 1.2.0)
   gitlab-labkit (~> 0.22.0)
   gitlab-license (~> 2.1.0)

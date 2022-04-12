@@ -4,22 +4,14 @@ module GroupLink
   class GroupGroupLinkEntity < GroupLink::GroupLinkEntity
     include RequestAwareEntity
 
-    expose :can_update do |group_link|
-      can_manage?(group_link)
-    end
-
-    expose :can_remove do |group_link|
-      can_manage?(group_link)
+    expose :source do |group_link|
+      GroupEntity.represent(group_link.shared_from, only: [:id, :full_name, :web_url])
     end
 
     private
 
-    def current_user
-      options[:current_user]
-    end
-
-    def can_manage?(group_link)
-      can?(current_user, :admin_group_member, group_link.shared_group)
+    def admin_permission_name
+      :admin_group_member
     end
   end
 end

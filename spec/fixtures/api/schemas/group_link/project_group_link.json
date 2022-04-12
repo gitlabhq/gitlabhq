@@ -4,12 +4,18 @@
     { "$ref": "group_link.json" },
     {
       "required": [
-        "can_update",
-        "can_remove"
+        "source"
       ],
       "properties": {
-        "can_update": { "type": "boolean" },
-        "can_remove": { "type": "boolean" }
+        "source": {
+          "type": "object",
+          "required": ["id", "full_name"],
+          "properties": {
+            "id": { "type": "integer" },
+            "full_name": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
       }
     }
   ]

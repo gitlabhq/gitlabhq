@@ -288,10 +288,14 @@ To share a given group, for example, `Frontend` with another group, for example,
 1. On the left sidebar, select **Group information > Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select `Engineering`.
-1. Select a [role](../permissions.md).
+1. Select a [role](../permissions.md) as maximum access level.
 1. Select **Invite**.
 
-All the members of the `Engineering` group are added to the `Frontend` group.
+After sharing the `Frontend` group with the `Engineering` group:
+
+- The **Groups** tab lists the `Engineering` group.
+- The **Groups** tab lists a group regardless of whether it is a public or private group.
+- All members of the `Engineering` group have access to the `Frontend` group. The same access levels of the members apply up to the maximum access level selected when sharing the group.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
 

@@ -1,0 +1,8 @@
+---
+name: group_member_inherited_group
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71465
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357244
+milestone: '14.10'
+type: development
+group: group::workspace
+default_enabled: false

@@ -347,35 +347,33 @@ export default {
       this.setHighlightedRow(id.split('diff-content').pop().slice(1));
     }
 
-    if (window.gon?.features?.diffSettingsUsageData) {
-      const events = [];
+    const events = [];
 
-      if (this.renderTreeList) {
-        events.push(TRACKING_FILE_BROWSER_TREE);
-      } else {
-        events.push(TRACKING_FILE_BROWSER_LIST);
-      }
-
-      if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
-        events.push(TRACKING_DIFF_VIEW_INLINE);
-      } else {
-        events.push(TRACKING_DIFF_VIEW_PARALLEL);
-      }
-
-      if (this.showWhitespace) {
-        events.push(TRACKING_WHITESPACE_SHOW);
-      } else {
-        events.push(TRACKING_WHITESPACE_HIDE);
-      }
-
-      if (this.viewDiffsFileByFile) {
-        events.push(TRACKING_SINGLE_FILE_MODE);
-      } else {
-        events.push(TRACKING_MULTIPLE_FILES_MODE);
-      }
-
-      queueRedisHllEvents(events);
+    if (this.renderTreeList) {
+      events.push(TRACKING_FILE_BROWSER_TREE);
+    } else {
+      events.push(TRACKING_FILE_BROWSER_LIST);
     }
+
+    if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
+      events.push(TRACKING_DIFF_VIEW_INLINE);
+    } else {
+      events.push(TRACKING_DIFF_VIEW_PARALLEL);
+    }
+
+    if (this.showWhitespace) {
+      events.push(TRACKING_WHITESPACE_SHOW);
+    } else {
+      events.push(TRACKING_WHITESPACE_HIDE);
+    }
+
+    if (this.viewDiffsFileByFile) {
+      events.push(TRACKING_SINGLE_FILE_MODE);
+    } else {
+      events.push(TRACKING_MULTIPLE_FILES_MODE);
+    }
+
+    queueRedisHllEvents(events);
 
     this.subscribeToVirtualScrollingEvents();
   },
