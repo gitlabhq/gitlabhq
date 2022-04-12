@@ -961,7 +961,7 @@ module Gitlab
             "\n\n" \
             "Finalize it manualy by running" \
             "\n\n" \
-            "\tsudo gitlab-rake gitlab:background_migrations:finalize[#{job_class_name},#{table_name},#{column_name},'#{job_arguments.inspect.gsub(',', '\,')}']" \
+            "\tsudo gitlab-rake gitlab:background_migrations:finalize[#{job_class_name},#{table_name},#{column_name},'#{job_arguments.to_json.gsub(',', '\,')}']" \
             "\n\n" \
             "For more information, check the documentation" \
             "\n\n" \

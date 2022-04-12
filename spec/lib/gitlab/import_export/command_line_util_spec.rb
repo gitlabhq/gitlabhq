@@ -167,6 +167,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
       context 'for object_storage uri' do
         let(:enabled_object_storage_setting) do
           {
+            'enabled' => true,
             'object_store' =>
             {
               'enabled' => true,

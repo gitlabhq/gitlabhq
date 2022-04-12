@@ -103,6 +103,28 @@ RSpec.describe Ci::UpdateBuildQueueService do
         end
       end
     end
+
+    describe '#remove!' do
+      context 'when pending build exists' do
+        before do
+          create(:ci_pending_build, build: build, project: build.project)
+        end
+
+        it 'removes pending build in a transaction' do
+          dequeued = subject.remove!(build)
+
+          expect(dequeued).to eq build.id
+        end
+      end
+
+      context 'when pending build does not exist' do
+        it 'does nothing if there is no pending build to remove' do
+          dequeued = subject.remove!(build)
+
+          expect(dequeued).to be_nil
+        end
+      end
+    end
   end
 
   describe 'shared runner builds tracking' do

@@ -43,6 +43,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       let(:import_url) { "#{host}/external-diffs/merge_request_diffs/mr-1/diff-1" }
       let(:enabled_object_storage_setting) do
         {
+          'enabled' => true,
           'object_store' =>
           {
             'enabled' => true,
@@ -79,6 +80,49 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           it_behaves_like 'validates URI and hostname' do
             let(:expected_uri) { 'http://127.0.0.1:9000/external-diffs/merge_request_diffs/mr-1/diff-1' }
             let(:expected_hostname) { nil }
+          end
+        end
+
+        context 'when LFS object storage is enabled' do
+          let(:lfs_config) do
+            {
+              'enabled' => lfs_enabled,
+              # This nesting of Settingslogic is necessary to trigger the bug
+              'object_store' => Settingslogic.new({ 'enabled' => true })
+            }
+          end
+
+          let(:config) do
+            {
+              'gitlab' => Gitlab.config.gitlab,
+              'repositories' => { 'storages' => { 'default' => 'test' } },
+              'lfs' => Settingslogic.new(lfs_config)
+            }
+          end
+
+          let(:host) { 'http://127.0.0.1:9000' }
+          let(:settings) { Settingslogic.new(config) }
+
+          before do
+            allow(Gitlab).to receive(:config).and_return(settings)
+            # Triggers Settingslogic bug: https://gitlab.com/gitlab-org/gitlab/-/issues/286873
+            settings.repositories.storages.default
+          end
+
+          context 'when LFS is disabled' do
+            let(:lfs_enabled) { false }
+
+            it 'raises an error' do
+              expect { subject }.to raise_error(described_class::BlockedUrlError)
+            end
+          end
+
+          context 'when LFS is enabled with no connection endpoint' do
+            let(:lfs_enabled) { true }
+
+            it 'raises an error' do
+              expect { subject }.to raise_error(described_class::BlockedUrlError)
+            end
           end
         end
       end

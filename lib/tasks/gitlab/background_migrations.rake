@@ -19,7 +19,7 @@ namespace :gitlab do
         args[:job_class_name],
         args[:table_name],
         args[:column_name],
-        Gitlab::Json.parse(args[:job_arguments]),
+        args[:job_arguments],
         connection: main_model.connection
       )
     end
@@ -38,7 +38,7 @@ namespace :gitlab do
             args[:job_class_name],
             args[:table_name],
             args[:column_name],
-            Gitlab::Json.parse(args[:job_arguments]),
+            args[:job_arguments],
             connection: model.connection
           )
         end

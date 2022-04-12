@@ -156,6 +156,18 @@ module Ci
     def process_build(build, params)
       unless build.pending?
         @metrics.increment_queue_operation(:build_not_pending)
+
+        if Feature.enabled?(:ci_pending_builds_table_resiliency, default_enabled: :yaml)
+          ##
+          # If this build can not be picked because we had stale data in
+          # `ci_pending_builds` table, we need to respond with 409 to retry
+          # this operation.
+          #
+          if ::Ci::UpdateBuildQueueService.new.remove!(build)
+            return Result.new(nil, nil, false)
+          end
+        end
+
         return
       end
 

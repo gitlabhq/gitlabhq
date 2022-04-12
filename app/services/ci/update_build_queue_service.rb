@@ -37,14 +37,19 @@ module Ci
 
       raise InvalidQueueTransition unless transition.from == 'pending'
 
-      transition.within_transaction do
-        removed = build.all_queuing_entries.delete_all
+      transition.within_transaction { remove!(build) }
+    end
 
-        if removed > 0
-          metrics.increment_queue_operation(:build_queue_pop)
+    ##
+    # Force recemove build from the queue, without checking a transition state
+    #
+    def remove!(build)
+      removed = build.all_queuing_entries.delete_all
 
-          build.id
-        end
+      if removed > 0
+        metrics.increment_queue_operation(:build_queue_pop)
+
+        build.id
       end
     end
 

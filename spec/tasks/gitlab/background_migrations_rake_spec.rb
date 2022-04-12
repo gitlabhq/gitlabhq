@@ -42,6 +42,17 @@ RSpec.describe 'gitlab:background_migrations namespace rake tasks' do
       end
     end
 
+    context 'with a null parameter' do
+      let(:arguments) { %w[ProjectNamespaces::BackfillProjectNamespaces projects id] + ['[null\, "up"]'] }
+
+      it 'finalizes the matching migration' do
+        expect(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner).to receive(:finalize)
+          .with('ProjectNamespaces::BackfillProjectNamespaces', 'projects', 'id', [nil, "up"], connection: connection)
+
+        expect { finalize_task }.to output(/Done/).to_stdout
+      end
+    end
+
     context 'when multiple database feature is enabled' do
       subject(:finalize_task) { run_rake_task("gitlab:background_migrations:finalize:#{ci_database_name}", *arguments) }
 
