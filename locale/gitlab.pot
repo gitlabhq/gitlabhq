@@ -1557,9 +1557,6 @@ msgstr ""
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
-msgid "A Metrics Dashboard menu item appears in the Monitoring section of the Admin Area."
-msgstr ""
-
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
@@ -2125,9 +2122,6 @@ msgid "Add a line"
 msgstr ""
 
 msgid "Add a link"
-msgstr ""
-
-msgid "Add a link to Grafana"
 msgstr ""
 
 msgid "Add a new issue"
@@ -4338,6 +4332,12 @@ msgid "Application was successfully updated."
 msgstr ""
 
 msgid "Application: %{name}"
+msgstr ""
+
+msgid "ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin Area."
+msgstr ""
+
+msgid "ApplicationSettings|Add a link to Grafana"
 msgstr ""
 
 msgid "ApplicationSettings|After sign up text"

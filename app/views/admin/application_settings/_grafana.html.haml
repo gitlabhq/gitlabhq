@@ -1,14 +1,11 @@
-= form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-grafana-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-grafana-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      .form-check
-        = f.check_box :grafana_enabled, class: 'form-check-input'
-        = f.label :grafana_enabled, class: 'form-check-label' do
-          = _("Add a link to Grafana")
-        .form-text.text-muted
-          = _("A Metrics Dashboard menu item appears in the Monitoring section of the Admin Area.")
+      = f.gitlab_ui_checkbox_component :grafana_enabled,
+      s_('ApplicationSettings|Add a link to Grafana'),
+      help_text: s_('ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin Area.')
     .form-group
       = f.label :grafana_url, _('Grafana URL'), class: 'label-bold'
       = f.text_field :grafana_url, class: 'form-control gl-form-input', placeholder: '/-/grafana'

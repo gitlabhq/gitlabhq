@@ -64,7 +64,13 @@ func NewAPI(myURL *url.URL, version string, roundTripper http.RoundTripper) *API
 }
 
 type GeoProxyEndpointResponse struct {
-	GeoProxyURL string `json:"geo_proxy_url"`
+	GeoProxyURL       string `json:"geo_proxy_url"`
+	GeoProxyExtraData string `json:"geo_proxy_extra_data"`
+}
+
+type GeoProxyData struct {
+	GeoProxyURL       *url.URL
+	GeoProxyExtraData string
 }
 
 type HandleFunc func(http.ResponseWriter, *http.Request, *Response)
@@ -394,7 +400,7 @@ func validResponseContentType(resp *http.Response) bool {
 	return helper.IsContentType(ResponseContentType, resp.Header.Get("Content-Type"))
 }
 
-func (api *API) GetGeoProxyURL() (*url.URL, error) {
+func (api *API) GetGeoProxyData() (*GeoProxyData, error) {
 	geoProxyApiUrl := *api.URL
 	geoProxyApiUrl.Path, geoProxyApiUrl.RawPath = joinURLPath(api.URL, geoProxyEndpointPath)
 	geoProxyApiReq := &http.Request{
@@ -405,23 +411,26 @@ func (api *API) GetGeoProxyURL() (*url.URL, error) {
 
 	httpResponse, err := api.doRequestWithoutRedirects(geoProxyApiReq)
 	if err != nil {
-		return nil, fmt.Errorf("GetGeoProxyURL: do request: %v", err)
+		return nil, fmt.Errorf("GetGeoProxyData: do request: %v", err)
 	}
 	defer httpResponse.Body.Close()
 
 	if httpResponse.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("GetGeoProxyURL: Received HTTP status code: %v", httpResponse.StatusCode)
+		return nil, fmt.Errorf("GetGeoProxyData: Received HTTP status code: %v", httpResponse.StatusCode)
 	}
 
 	response := &GeoProxyEndpointResponse{}
 	if err := json.NewDecoder(httpResponse.Body).Decode(response); err != nil {
-		return nil, fmt.Errorf("GetGeoProxyURL: decode response: %v", err)
+		return nil, fmt.Errorf("GetGeoProxyData: decode response: %v", err)
 	}
 
 	geoProxyURL, err := url.Parse(response.GeoProxyURL)
 	if err != nil {
-		return nil, fmt.Errorf("GetGeoProxyURL: Could not parse Geo proxy URL: %v, err: %v", response.GeoProxyURL, err)
+		return nil, fmt.Errorf("GetGeoProxyData: Could not parse Geo proxy URL: %v, err: %v", response.GeoProxyURL, err)
 	}
 
-	return geoProxyURL, nil
+	return &GeoProxyData{
+		GeoProxyURL:       geoProxyURL,
+		GeoProxyExtraData: response.GeoProxyExtraData,
+	}, nil
 }

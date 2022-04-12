@@ -50,5 +50,19 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDraftStatusOnMergeRequests, 
 
       subject.perform(mr_ids.first, mr_ids.last)
     end
+
+    it_behaves_like 'marks background migration job records' do
+      let!(:non_eligible_mrs) do
+        Array.new(2) do
+          create_merge_request(
+            title: "Not a d-r-a-f-t 1",
+            draft: false,
+            state_id: 1
+          )
+        end
+      end
+
+      let(:arguments) { [non_eligible_mrs.first.id, non_eligible_mrs.last.id] }
+    end
   end
 end

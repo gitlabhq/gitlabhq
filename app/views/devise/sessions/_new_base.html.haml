@@ -1,4 +1,4 @@
-= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user gl-show-field-errors js-sign-in-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
+= gitlab_ui_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user gl-show-field-errors js-sign-in-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
   .form-group
     = f.label _('Username or email'), for: 'user_login', class: 'label-bold'
     = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input top js-username-field', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('This field is required.'), data: { qa_selector: 'login_field', testid: 'username-field' }
@@ -7,10 +7,9 @@
     = f.password_field :password, class: 'form-control gl-form-input bottom', autocomplete: 'current-password', required: true, title: _('This field is required.'), data: { qa_selector: 'password_field' }
   - if devise_mapping.rememberable?
     %div
-      %label{ for: 'user_remember_me' }
-        = f.check_box :remember_me
-        %span= _('Remember me')
-      .float-right
+      .gl-display-inline-block
+        = f.gitlab_ui_checkbox_component :remember_me, _('Remember me')
+      .gl-float-right
         - if unconfirmed_email?
           = link_to _('Resend confirmation email'), new_user_confirmation_path
         - else
