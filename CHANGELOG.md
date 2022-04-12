@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.9.3 (2022-04-12)
+
+### Fixed (4 changes)
+
+- [Revert Protected Environment group access inheritence](gitlab-org/gitlab@488fd8f3f6770eebae10c815398534ff41d57546) ([merge request](gitlab-org/gitlab!84664))
+- [Fix URL blocker when object storage enabled but type is disabled](gitlab-org/gitlab@d0da89768774de9cf635af530ed7386e65f92d40) ([merge request](gitlab-org/gitlab!84664))
+- [Remove pending builds from the queue on conflict](gitlab-org/gitlab@8c88898dfd1619cc635ce5b98e30eebd91da497f) ([merge request](gitlab-org/gitlab!84664))
+- [Fix null argument handling in background migration Rake task](gitlab-org/gitlab@23e1eb3272828b3546e18efdfaea5a8077cb20f4) ([merge request](gitlab-org/gitlab!84664))
+
 ## 14.9.2 (2022-03-31)
 
 ### Security (20 changes)
