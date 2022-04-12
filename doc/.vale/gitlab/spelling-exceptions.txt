@@ -524,6 +524,7 @@ repurposing
 requeue
 requeued
 requeues
+requeuing
 Restlet
 resync
 resynced

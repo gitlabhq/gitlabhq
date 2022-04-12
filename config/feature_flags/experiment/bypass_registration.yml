@@ -1,8 +1,0 @@
----
-name: bypass_registration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72827
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340560
-milestone: '14.5'
-type: experiment
-group: group::adoption
-default_enabled: false

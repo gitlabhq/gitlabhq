@@ -2,6 +2,7 @@ import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
+import FeatureCardBadge from '~/security_configuration/components/feature_card_badge.vue';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 import { makeFeature } from './utils';
@@ -16,6 +17,7 @@ describe('FeatureCard component', () => {
         propsData,
         stubs: {
           ManageViaMr: true,
+          FeatureCardBadge: true,
         },
       }),
     );
@@ -23,6 +25,8 @@ describe('FeatureCard component', () => {
 
   const findLinks = ({ text, href }) =>
     wrapper.findAll(`a[href="${href}"]`).filter((link) => link.text() === text);
+
+  const findBadge = () => wrapper.findComponent(FeatureCardBadge);
 
   const findEnableLinks = () =>
     findLinks({
@@ -259,6 +263,29 @@ describe('FeatureCard component', () => {
             href: feature.secondary.configurationPath,
           });
           expect(links.exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('information badge', () => {
+      describe.each`
+        context                                 | available | badge
+        ${'available feature with badge'}       | ${true}   | ${{ text: 'test' }}
+        ${'unavailable feature without badge'}  | ${false}  | ${null}
+        ${'available feature without badge'}    | ${true}   | ${null}
+        ${'unavailable feature with badge'}     | ${false}  | ${{ text: 'test' }}
+        ${'available feature with empty badge'} | ${false}  | ${{}}
+      `('given $context', ({ available, badge }) => {
+        beforeEach(() => {
+          feature = makeFeature({
+            available,
+            badge,
+          });
+          createComponent({ feature });
+        });
+
+        it('should show badge when badge given in configuration and available', () => {
+          expect(findBadge().exists()).toBe(Boolean(available && badge && badge.text));
         });
       });
     });

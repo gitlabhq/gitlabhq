@@ -1,8 +1,0 @@
----
-name: wiki_async_load
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82394
-rollout_issue_url:
-milestone: '14.9'
-type: development
-group: group::editor
-default_enabled: false

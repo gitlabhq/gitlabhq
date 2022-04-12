@@ -4220,9 +4220,6 @@ msgstr ""
 msgid "Analytics"
 msgstr ""
 
-msgid "Analyze a review version of your web application."
-msgstr ""
-
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr ""
 
@@ -5453,6 +5450,9 @@ msgid "Available ID"
 msgstr ""
 
 msgid "Available group runners: %{runners}"
+msgstr ""
+
+msgid "Available on-demand"
 msgstr ""
 
 msgid "Available runners: %{runners}"
@@ -21295,9 +21295,6 @@ msgstr ""
 msgid "Iteration|cannot be more than 500 years in the future"
 msgstr ""
 
-msgid "I’m joining my team who’s already on GitLab"
-msgstr ""
-
 msgid "Jaeger URL"
 msgstr ""
 
@@ -25990,6 +25987,9 @@ msgid "On-call Schedules"
 msgstr ""
 
 msgid "On-call schedules"
+msgstr ""
+
+msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr ""
 
 msgid "OnCallScheduless|Any escalation rules that are using this schedule will also be deleted."
@@ -44121,6 +44121,9 @@ msgid "ciReport|All severities"
 msgstr ""
 
 msgid "ciReport|All tools"
+msgstr ""
+
+msgid "ciReport|Analyze a deployed version of your web application for known vulnerabilities by examining it from the outside in. DAST works by simulating external attacks on your application while it is running."
 msgstr ""
 
 msgid "ciReport|Automatically apply the patch in a new branch"

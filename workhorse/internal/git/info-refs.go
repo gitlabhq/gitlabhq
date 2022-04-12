@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 
 	"github.com/golang/gddo/httputil"
 	grpccodes "google.golang.org/grpc/codes"
@@ -64,21 +65,43 @@ func handleGetInfoRefsWithGitaly(ctx context.Context, responseWriter *HttpRespon
 		return err
 	}
 
-	var w io.Writer
-
+	var w io.WriteCloser = nopCloser{responseWriter}
 	if encoding == "gzip" {
-		gzWriter := gzip.NewWriter(responseWriter)
-		w = gzWriter
-		defer gzWriter.Close()
+		gzWriter := getGzWriter(responseWriter)
+		defer putGzWriter(gzWriter)
 
+		w = gzWriter
 		responseWriter.Header().Set("Content-Encoding", "gzip")
-	} else {
-		w = responseWriter
 	}
 
 	if _, err = io.Copy(w, infoRefsResponseReader); err != nil {
 		return err
 	}
 
+	if err := w.Close(); err != nil {
+		return err
+	}
+
 	return nil
 }
+
+var gzipPool = &sync.Pool{New: func() interface{} {
+	// Invariant: the inner writer is io.Discard. We do not want to retain
+	// response writers of past requests in the pool.
+	return gzip.NewWriter(io.Discard)
+}}
+
+func getGzWriter(w io.Writer) *gzip.Writer {
+	gzWriter := gzipPool.Get().(*gzip.Writer)
+	gzWriter.Reset(w)
+	return gzWriter
+}
+
+func putGzWriter(w *gzip.Writer) {
+	w.Reset(io.Discard) // Maintain pool invariant
+	gzipPool.Put(w)
+}
+
+type nopCloser struct{ io.Writer }
+
+func (nc nopCloser) Close() error { return nil }

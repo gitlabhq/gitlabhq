@@ -31,6 +31,8 @@ module Gitlab
 
       def configuration_path; end
 
+      def meta_info_path; end
+
       private
 
       attr_reader :project, :configured

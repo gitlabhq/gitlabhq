@@ -50,11 +50,17 @@ export const SAST_IAC_CONFIG_HELP_PATH = helpPagePath(
 
 export const DAST_NAME = __('Dynamic Application Security Testing (DAST)');
 export const DAST_SHORT_NAME = s__('ciReport|DAST');
-export const DAST_DESCRIPTION = __('Analyze a review version of your web application.');
+export const DAST_DESCRIPTION = s__(
+  'ciReport|Analyze a deployed version of your web application for known vulnerabilities by examining it from the outside in. DAST works by simulating external attacks on your application while it is running.',
+);
 export const DAST_HELP_PATH = helpPagePath('user/application_security/dast/index');
 export const DAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/dast/index', {
   anchor: 'enable-dast',
 });
+export const DAST_BADGE_TEXT = __('Available on-demand');
+export const DAST_BADGE_TOOLTIP = __(
+  'On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects',
+);
 
 export const DAST_PROFILES_NAME = __('DAST profiles');
 export const DAST_PROFILES_DESCRIPTION = s__(
@@ -171,18 +177,23 @@ export const securityFeatures = [
     type: REPORT_TYPE_SAST_IAC,
   },
   {
-    name: DAST_NAME,
-    shortName: DAST_SHORT_NAME,
-    description: DAST_DESCRIPTION,
-    helpPath: DAST_HELP_PATH,
-    configurationHelpPath: DAST_CONFIG_HELP_PATH,
-    type: REPORT_TYPE_DAST,
+    badge: {
+      text: DAST_BADGE_TEXT,
+      tooltipText: DAST_BADGE_TOOLTIP,
+      variant: 'info',
+    },
     secondary: {
       type: REPORT_TYPE_DAST_PROFILES,
       name: DAST_PROFILES_NAME,
       description: DAST_PROFILES_DESCRIPTION,
       configurationText: DAST_PROFILES_CONFIG_TEXT,
     },
+    name: DAST_NAME,
+    shortName: DAST_SHORT_NAME,
+    description: DAST_DESCRIPTION,
+    helpPath: DAST_HELP_PATH,
+    configurationHelpPath: DAST_CONFIG_HELP_PATH,
+    type: REPORT_TYPE_DAST,
   },
   {
     name: DEPENDENCY_SCANNING_NAME,

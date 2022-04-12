@@ -63,7 +63,13 @@ module Gitlab
 
             job.split_and_retry! if job.can_split?(exception)
           rescue SplitAndRetryError => error
-            Gitlab::AppLogger.error(message: error.message, batched_job_id: job.id)
+            Gitlab::AppLogger.error(
+              message: error.message,
+              batched_job_id: job.id,
+              batched_migration_id: job.batched_migration.id,
+              job_class_name: job.migration_job_class_name,
+              job_arguments: job.migration_job_arguments
+            )
           end
 
           after_transition do |job, transition|
@@ -73,13 +79,23 @@ module Gitlab
 
             job.batched_job_transition_logs.create(previous_status: transition.from, next_status: transition.to, exception_class: exception&.class, exception_message: exception&.message)
 
-            Gitlab::ErrorTracking.track_exception(exception, batched_job_id: job.id) if exception
+            Gitlab::ErrorTracking.track_exception(exception, batched_job_id: job.id, job_class_name: job.migration_job_class_name, job_arguments: job.migration_job_arguments) if exception
 
-            Gitlab::AppLogger.info(message: 'BatchedJob transition', batched_job_id: job.id, previous_state: transition.from_name, new_state: transition.to_name)
+            Gitlab::AppLogger.info(
+              message: 'BatchedJob transition',
+              batched_job_id: job.id,
+              previous_state: transition.from_name,
+              new_state: transition.to_name,
+              batched_migration_id: job.batched_migration.id,
+              job_class_name: job.migration_job_class_name,
+              job_arguments: job.migration_job_arguments,
+              exception_class: exception&.class,
+              exception_message: exception&.message
+            )
           end
         end
 
-        delegate :job_class, :table_name, :column_name, :job_arguments,
+        delegate :job_class, :table_name, :column_name, :job_arguments, :job_class_name,
           to: :batched_migration, prefix: :migration
 
         attribute :pause_ms, :integer, default: 100

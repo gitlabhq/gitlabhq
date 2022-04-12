@@ -49,7 +49,7 @@ flowchart RL
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Add users to a project so they become members and have permission
-to perform actions.
+to perform actions. The Owner [role](../../permissions.md#project-members-permissions) can only be added at the group level.
 
 Prerequisite:
 

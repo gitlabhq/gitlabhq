@@ -982,7 +982,7 @@ There is also an easy way to check it automatically with `sudo gitlab-rake gitla
 
 This exception is seen when your Elasticsearch cluster is configured to reject requests above a certain size (10MiB in this case). This corresponds to the `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a larger size and restart your Elasticsearch cluster.
 
-AWS has [fixed limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-limits.html) for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of the underlying instance.
+AWS has [fixed limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html#network-limits) for this setting ("Maximum size of HTTP request payloads"), based on the size of the underlying instance.
 
 ### My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly
 

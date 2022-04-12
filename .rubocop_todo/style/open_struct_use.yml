@@ -1,7 +1,6 @@
 ---
 Style/OpenStructUse:
   Exclude:
-  - app/helpers/application_settings_helper.rb
   - ee/spec/features/projects/new_project_spec.rb
   - ee/spec/finders/template_finder_spec.rb
   - ee/spec/helpers/ee/blob_helper_spec.rb
