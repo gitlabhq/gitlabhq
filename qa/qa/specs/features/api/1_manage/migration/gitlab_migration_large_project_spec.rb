@@ -115,6 +115,7 @@ module QA
             source: {
               name: "GitLab Source",
               project_name: source_project.path_with_namespace,
+              address: gitlab_source_address,
               data: {
                 branches: source_branches.length,
                 commits: source_commits.length,
@@ -130,6 +131,7 @@ module QA
             target: {
               name: "GitLab Target",
               project_name: imported_project.path_with_namespace,
+              address: QA::Runtime::Scenario.gitlab_address,
               data: {
                 branches: branches.length,
                 commits: commits.length,

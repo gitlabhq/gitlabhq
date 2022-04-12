@@ -2696,18 +2696,19 @@ you can use this image from the GitLab Container Registry: `registry.gitlab.com/
 
 **Example of `release` keyword**:
 
-  ```yaml
-  release_job:
-    stage: release
-    image: registry.gitlab.com/gitlab-org/release-cli:latest
-    rules:
-      - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
-    script:
-      - echo "Running the release job."
-    release:
-      name: 'Release $CI_COMMIT_TAG'
-      description: 'Release created using the release-cli.'
-  ```
+```yaml
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
+  script:
+    - echo "Running the release job."
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Release created using the release-cli.'
+```
 
 This example creates a release:
 

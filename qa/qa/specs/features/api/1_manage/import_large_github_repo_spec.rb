@@ -121,6 +121,7 @@ module QA
             source: {
               name: "GitHub",
               project_name: github_repo,
+              address: "https://github.com",
               data: {
                 branches: gh_branches.length,
                 commits: gh_commits.length,
@@ -135,6 +136,7 @@ module QA
             target: {
               name: "GitLab",
               project_name: imported_project.path_with_namespace,
+              address: QA::Runtime::Scenario.gitlab_address,
               data: {
                 branches: gl_branches.length,
                 commits: gl_commits.length,
