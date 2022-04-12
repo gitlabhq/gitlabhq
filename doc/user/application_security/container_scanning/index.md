@@ -186,7 +186,7 @@ The `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` CI/CD variable controls whether the
 findings related to programming languages. The languages supported depend on the
 [scanner used](#change-scanners):
 
-- [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/language/).
+- [Trivy](https://aquasecurity.github.io/trivy/latest/docs/vulnerability/detection/language/).
 - [Grype](https://github.com/anchore/grype#features).
 
 By default, the report only includes packages managed by the Operating System (OS) package manager
@@ -237,7 +237,7 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 Support depends on the scanner:
 
 - [Grype](https://github.com/anchore/grype#grype)
-- [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/os/) (Default).
+- [Trivy](https://aquasecurity.github.io/trivy/latest/docs/vulnerability/detection/os/) (Default).
 
 #### FIPS-enabled images
 
@@ -761,7 +761,7 @@ The images include the latest advisory database available for their respective s
 scanner includes data from multiple sources:
 
 - [Grype](https://github.com/anchore/grype#grypes-database).
-- [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/data-source/).
+- [Trivy](https://aquasecurity.github.io/trivy/latest/docs/vulnerability/detection/data-source/).
 
 Database update information for other analyzers is available in the
 [maintenance table](../index.md#vulnerability-scanner-maintenance).

@@ -1080,6 +1080,12 @@ If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error duri
 - To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
 - If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../administration/operations/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
 
+### Indexing is very slow or fails with `rejected execution of coordinating operation` messages
+
+Bulk requests are getting rejected by the Elasticsearch node(s) likely due to load and lack of available memory.
+Ensure that your Elasticsearch cluster meets the [system requirements](#system-requirements) and has enough resources
+to perform bulk operations. See also the error ["429 (Too Many Requests)"](#indexing-fails-with-error-elastic-error-429-too-many-requests).
+
 ### Access requirements for the self-managed AWS OpenSearch Service
 
 To use the self-managed AWS OpenSearch Service with GitLab, configure your instance's domain access policies

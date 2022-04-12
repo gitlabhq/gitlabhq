@@ -281,6 +281,7 @@ Continued reading:
 - [Flows](flows.md)
 - [RSpec metadata/tags](rspec_metadata_tests.md)
 - [Execution context selection](execution_context_selection.md)
+- [Troubleshooting](troubleshooting.md)
 
 ## Where can I ask for help?
 

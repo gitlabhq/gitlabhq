@@ -65,6 +65,9 @@ _Consider adding links to check for Sentry errors, Production logs for 5xx, 302s
     - [ ] `/chatops run feature set <feature-flag-name> true --dev`
     - [ ] `/chatops run feature set <feature-flag-name> true --staging`
 - [ ] Verify that the feature works as expected. Posting the QA result in this issue is preferable.
+      The best environment to validate the feature in is [staging-canary](https://about.gitlab.com/handbook/engineering/infrastructure/environments/#staging-canary)
+      as this is the first environment deployed to. Note you will need to make sure you are configured to use canary as outlined [here](https://about.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/)
+      when accessing the staging environment in order to make sure you are testing appropriately.
 
 ### Specific rollout on production
 
