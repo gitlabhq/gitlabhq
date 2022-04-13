@@ -43,8 +43,8 @@ This workflow is considered push-based, because GitLab is pushing requests from 
 GitLab supports the following Kubernetes versions. You can upgrade your
 Kubernetes version to a supported version at any time:
 
+- 1.21 (support ends on November 22, 2022)
 - 1.20 (support ends on July 22, 2022)
-- 1.19 (support ends on February 22, 2022)
 
 GitLab supports at least two production-ready Kubernetes minor
 versions at any given time. GitLab regularly reviews the supported versions and

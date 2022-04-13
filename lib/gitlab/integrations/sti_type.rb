@@ -3,12 +3,12 @@
 module Gitlab
   module Integrations
     class StiType < ActiveRecord::Type::String
-      NAMESPACED_INTEGRATIONS = Set.new(%w(
+      NAMESPACED_INTEGRATIONS = %w[
         Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
         Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat Harbor Irker Jenkins Jira Mattermost
         MattermostSlashCommands MicrosoftTeams MockCi MockMonitoring Packagist PipelinesEmail Pivotaltracker
         Prometheus Pushover Redmine Shimo Slack SlackSlashCommands Teamcity UnifyCircuit WebexTeams Youtrack Zentao
-      )).freeze
+      ].to_set.freeze
 
       def self.namespaced_integrations
         NAMESPACED_INTEGRATIONS

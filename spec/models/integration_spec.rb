@@ -276,6 +276,20 @@ RSpec.describe Integration do
     end
   end
 
+  describe '#inheritable?' do
+    it 'is true for an instance integration' do
+      expect(create(:integration, :instance)).to be_inheritable
+    end
+
+    it 'is true for a group integration' do
+      expect(create(:integration, :group)).to be_inheritable
+    end
+
+    it 'is false for a project integration' do
+      expect(create(:integration)).not_to be_inheritable
+    end
+  end
+
   describe '.build_from_integration' do
     context 'when integration is invalid' do
       let(:invalid_integration) do
@@ -644,6 +658,33 @@ RSpec.describe Integration do
     end
   end
 
+  describe '#properties=' do
+    let(:integration_type) do
+      Class.new(described_class) do
+        field :foo
+        field :bar
+      end
+    end
+
+    it 'supports indifferent access' do
+      integration = integration_type.new
+
+      integration.properties = { foo: 1, 'bar' => 2 }
+
+      expect(integration).to have_attributes(foo: 1, bar: 2)
+    end
+  end
+
+  describe '#properties' do
+    it 'is not mutable' do
+      integration = described_class.new
+
+      integration.properties = { foo: 1, bar: 2 }
+
+      expect { integration.properties[:foo] = 3 }.to raise_error
+    end
+  end
+
   describe "{property}_touched?" do
     let(:integration) do
       Integrations::Bamboo.create!(
@@ -896,45 +937,26 @@ RSpec.describe Integration do
     end
   end
 
-  describe 'encrypted_properties' do
+  describe '#to_integration_hash' do
     let(:properties) { { foo: 1, bar: true } }
     let(:db_props) { properties.stringify_keys }
     let(:record) { create(:integration, :instance, properties: properties) }
 
-    it 'contains the same data as properties' do
-      expect(record).to have_attributes(
-        properties: db_props,
-        encrypted_properties_tmp: db_props
-      )
-    end
+    it 'does not include the properties key' do
+      hash = record.to_integration_hash
 
-    it 'is persisted' do
-      encrypted_properties = described_class.id_in(record.id)
-
-      expect(encrypted_properties).to contain_exactly have_attributes(encrypted_properties_tmp: db_props)
-    end
-
-    it 'is updated when using prop_accessors' do
-      some_integration = Class.new(described_class) do
-        prop_accessor :foo
-      end
-
-      record = some_integration.new
-
-      record.foo = 'the foo'
-
-      expect(record.encrypted_properties_tmp).to eq({ 'foo' => 'the foo' })
+      expect(hash).not_to have_key('properties')
     end
 
     it 'saves correctly using insert_all' do
       hash = record.to_integration_hash
-      hash[:project_id] = project
+      hash[:project_id] = project.id
 
       expect do
         described_class.insert_all([hash])
       end.to change(described_class, :count).by(1)
 
-      expect(described_class.last).to have_attributes(encrypted_properties_tmp: db_props)
+      expect(described_class.last).to have_attributes(properties: db_props)
     end
 
     it 'is part of the to_integration_hash' do
@@ -944,7 +966,7 @@ RSpec.describe Integration do
       expect(hash['encrypted_properties']).not_to eq(record.encrypted_properties)
       expect(hash['encrypted_properties_iv']).not_to eq(record.encrypted_properties_iv)
 
-      decrypted = described_class.decrypt(:encrypted_properties_tmp,
+      decrypted = described_class.decrypt(:properties,
                                           hash['encrypted_properties'],
                                           { iv: hash['encrypted_properties_iv'] })
 
@@ -969,7 +991,7 @@ RSpec.describe Integration do
         end.to change(described_class, :count).by(1)
 
         expect(described_class.last).not_to eq record
-        expect(described_class.last).to have_attributes(encrypted_properties_tmp: db_props)
+        expect(described_class.last).to have_attributes(properties: db_props)
       end
     end
   end
@@ -1092,6 +1114,49 @@ RSpec.describe Integration do
         test_value: be(nil),
         test_value?: be(false)
       )
+    end
+  end
+
+  describe '#attributes' do
+    it 'does not include properties' do
+      expect(create(:integration).attributes).not_to have_key('properties')
+    end
+
+    it 'can be used in assign_attributes without nullifying properties' do
+      record = create(:integration, :instance, properties: { url: generate(:url) })
+
+      attrs = record.attributes
+
+      expect { record.assign_attributes(attrs) }.not_to change(record, :properties)
+    end
+  end
+
+  describe '#dup' do
+    let(:original) { create(:integration, properties: { one: 1, two: 2, three: 3 }) }
+
+    it 'results in distinct ciphertexts, but identical properties' do
+      copy = original.dup
+
+      expect(copy).to have_attributes(properties: eq(original.properties))
+
+      expect(copy).not_to have_attributes(
+        encrypted_properties: eq(original.encrypted_properties)
+      )
+    end
+
+    context 'when the model supports data-fields' do
+      let(:original) { create(:jira_integration, username: generate(:username), url: generate(:url)) }
+
+      it 'creates distinct but identical data-fields' do
+        copy = original.dup
+
+        expect(copy).to have_attributes(
+          username: original.username,
+          url: original.url
+        )
+
+        expect(copy.data_fields).not_to eq(original.data_fields)
+      end
     end
   end
 end

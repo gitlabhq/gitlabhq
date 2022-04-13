@@ -71,6 +71,7 @@ describe QA::Tools::ReliableReport do
         |> filter(fn: (r) => r.status != "pending" and
           r.merge_request == "false" and
           r.quarantined == "false" and
+          r.smoke == "false" and
           r.reliable == "#{reliable}" and
           r._field == "id"
         )

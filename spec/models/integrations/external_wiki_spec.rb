@@ -24,7 +24,7 @@ RSpec.describe Integrations::ExternalWiki do
 
   describe 'test' do
     before do
-      subject.properties['external_wiki_url'] = url
+      subject.external_wiki_url = url
     end
 
     let(:url) { 'http://foo' }

@@ -95,14 +95,9 @@ function trackShowUserDropdownLink(trackEvent, elToTrack, el) {
 export function initNavUserDropdownTracking() {
   const el = document.querySelector('.js-nav-user-dropdown');
   const buyEl = document.querySelector('.js-buy-pipeline-minutes-link');
-  const upgradeEl = document.querySelector('.js-upgrade-plan-link');
 
   if (el && buyEl) {
     trackShowUserDropdownLink('show_buy_ci_minutes', buyEl, el);
-  }
-
-  if (el && upgradeEl) {
-    trackShowUserDropdownLink('show_upgrade_link', upgradeEl, el);
   }
 }
 

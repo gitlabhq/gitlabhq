@@ -10,12 +10,87 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
     it { is_expected.not_to validate_presence_of(:group) }
     it { is_expected.not_to validate_presence_of(:enabled) }
 
-    %i[incremental_runtimes_in_seconds incremental_processed_records last_full_run_runtimes_in_seconds last_full_run_processed_records].each do |column|
+    %i[incremental_runtimes_in_seconds incremental_processed_records full_runtimes_in_seconds full_processed_records].each do |column|
       it "validates the array length of #{column}" do
         record = described_class.new(column => [1] * 11)
 
         expect(record).to be_invalid
         expect(record.errors).to have_key(column)
+      end
+    end
+  end
+
+  describe 'attribute updater methods' do
+    subject(:aggregation) { build(:cycle_analytics_aggregation) }
+
+    describe '#cursor_for' do
+      it 'returns empty cursors' do
+        aggregation.last_full_issues_id = nil
+        aggregation.last_full_issues_updated_at = nil
+
+        expect(aggregation.cursor_for(:full, Issue)).to eq({})
+      end
+
+      context 'when cursor is not empty' do
+        it 'returns the cursor values' do
+          current_time = Time.current
+
+          aggregation.last_full_issues_id = 1111
+          aggregation.last_full_issues_updated_at = current_time
+
+          expect(aggregation.cursor_for(:full, Issue)).to eq({ id: 1111, updated_at: current_time })
+        end
+      end
+    end
+
+    describe '#refresh_last_run' do
+      it 'updates the run_at column' do
+        freeze_time do
+          aggregation.refresh_last_run(:incremental)
+
+          expect(aggregation.last_incremental_run_at).to eq(Time.current)
+        end
+      end
+    end
+
+    describe '#reset_full_run_cursors' do
+      it 'resets all full run cursors to nil' do
+        aggregation.last_full_issues_id = 111
+        aggregation.last_full_issues_updated_at = Time.current
+        aggregation.last_full_merge_requests_id = 111
+        aggregation.last_full_merge_requests_updated_at = Time.current
+
+        aggregation.reset_full_run_cursors
+
+        expect(aggregation).to have_attributes(
+          last_full_issues_id: nil,
+          last_full_issues_updated_at: nil,
+          last_full_merge_requests_id: nil,
+          last_full_merge_requests_updated_at: nil
+        )
+      end
+    end
+
+    describe '#set_cursor' do
+      it 'sets the cursor values for the given mode' do
+        aggregation.set_cursor(:full, Issue, { id: 2222, updated_at: nil })
+
+        expect(aggregation).to have_attributes(
+          last_full_issues_id: 2222,
+          last_full_issues_updated_at: nil
+        )
+      end
+    end
+
+    describe '#set_stats' do
+      it 'appends stats to the runtime and processed_records attributes' do
+        aggregation.set_stats(:full, 10, 20)
+        aggregation.set_stats(:full, 20, 30)
+
+        expect(aggregation).to have_attributes(
+          full_runtimes_in_seconds: [10, 20],
+          full_processed_records: [20, 30]
+        )
       end
     end
   end

@@ -32,12 +32,6 @@ module Integrations
     scope :preload_project, -> { preload(:project) }
     scope :with_clusters_with_cilium, -> { joins(project: [:clusters]).merge(Clusters::Cluster.with_available_cilium) }
 
-    def initialize_properties
-      if properties.nil?
-        self.properties = {}
-      end
-    end
-
     def show_active_box?
       false
     end

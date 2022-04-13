@@ -189,7 +189,7 @@ FactoryBot.define do
   end
 
   trait :chat_notification do
-    webhook { 'https://example.com/webhook' }
+    sequence(:webhook) { |n| "https://example.com/webhook/#{n}" }
   end
 
   trait :inactive do

@@ -197,7 +197,7 @@ module API
 
           pipeline = current_authenticated_job.pipeline
           project = current_authenticated_job.project
-          agent_authorizations = Clusters::AgentAuthorizationsFinder.new(project).execute
+          agent_authorizations = ::Clusters::AgentAuthorizationsFinder.new(project).execute
           project_groups = project.group&.self_and_ancestor_ids&.map { |id| { id: id } } || []
           user_access_level = project.team.max_member_access(current_user.id)
           roles_in_project = Gitlab::Access.sym_options_with_owner

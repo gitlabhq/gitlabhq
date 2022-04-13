@@ -63,7 +63,7 @@ RSpec.describe Projects::PostCreationWorker do
           end
 
           it 'cleans invalid record and logs warning', :aggregate_failures do
-            invalid_integration_record = build(:prometheus_integration, properties: { api_url: nil, manual_configuration: true }.to_json)
+            invalid_integration_record = build(:prometheus_integration, properties: { api_url: nil, manual_configuration: true })
             allow(::Integrations::Prometheus).to receive(:new).and_return(invalid_integration_record)
 
             expect(Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(ActiveRecord::RecordInvalid), include(extra: { project_id: a_kind_of(Integer) })).twice

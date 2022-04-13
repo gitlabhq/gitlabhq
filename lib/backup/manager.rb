@@ -201,7 +201,7 @@ module Backup
     end
 
     def build_db_task
-      force = ENV['force'] == 'yes'
+      force = Gitlab::Utils.to_boolean(ENV['force'], default: false)
 
       Database.new(progress, force: force)
     end

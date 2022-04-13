@@ -222,66 +222,6 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       end
     end
 
-    context 'when multiple orders with nil values are defined' do
-      let!(:project1) { create(:project, last_repository_check_at: 10.days.ago) }    # Asc: project5  Desc: project3
-      let!(:project2) { create(:project, last_repository_check_at: nil) }            # Asc: project1  Desc: project1
-      let!(:project3) { create(:project, last_repository_check_at: 5.days.ago) }     # Asc: project3  Desc: project5
-      let!(:project4) { create(:project, last_repository_check_at: nil) }            # Asc: project2  Desc: project2
-      let!(:project5) { create(:project, last_repository_check_at: 20.days.ago) }    # Asc: project4  Desc: project4
-
-      context 'when ascending' do
-        let(:nodes) do
-          Project.order(Arel.sql('projects.last_repository_check_at IS NULL')).order(last_repository_check_at: :asc).order(id: :asc)
-        end
-
-        let(:ascending_nodes) { [project5, project1, project3, project2, project4] }
-
-        it_behaves_like 'nodes are in ascending order'
-
-        context 'when before cursor value is NULL' do
-          let(:arguments) { { before: encoded_cursor(project4) } }
-
-          it 'returns all projects before the cursor' do
-            expect(subject.sliced_nodes).to eq([project5, project1, project3, project2])
-          end
-        end
-
-        context 'when after cursor value is NULL' do
-          let(:arguments) { { after: encoded_cursor(project2) } }
-
-          it 'returns all projects after the cursor' do
-            expect(subject.sliced_nodes).to eq([project4])
-          end
-        end
-      end
-
-      context 'when descending' do
-        let(:nodes) do
-          Project.order(Arel.sql('projects.last_repository_check_at IS NULL')).order(last_repository_check_at: :desc).order(id: :asc)
-        end
-
-        let(:descending_nodes) { [project3, project1, project5, project2, project4] }
-
-        it_behaves_like 'nodes are in descending order'
-
-        context 'when before cursor value is NULL' do
-          let(:arguments) { { before: encoded_cursor(project4) } }
-
-          it 'returns all projects before the cursor' do
-            expect(subject.sliced_nodes).to eq([project3, project1, project5, project2])
-          end
-        end
-
-        context 'when after cursor value is NULL' do
-          let(:arguments) { { after: encoded_cursor(project2) } }
-
-          it 'returns all projects after the cursor' do
-            expect(subject.sliced_nodes).to eq([project4])
-          end
-        end
-      end
-    end
-
     context 'when ordering uses LOWER' do
       let!(:project1) { create(:project, name: 'A') } # Asc: project1  Desc: project4
       let!(:project2) { create(:project, name: 'c') } # Asc: project5  Desc: project2

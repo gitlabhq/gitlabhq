@@ -94,10 +94,6 @@ module Integrations
       !!URI(url).hostname&.end_with?(JIRA_CLOUD_HOST)
     end
 
-    def initialize_properties
-      {}
-    end
-
     def data_fields
       jira_tracker_data || self.build_jira_tracker_data
     end
@@ -106,7 +102,7 @@ module Integrations
       return unless reset_password?
 
       data_fields.password = nil
-      properties.delete('password') if properties
+      self.properties = properties.except('password')
     end
 
     def set_default_data

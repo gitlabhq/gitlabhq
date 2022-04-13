@@ -112,8 +112,9 @@ module Projects
 
         integration = project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
         integration.assign_attributes(attrs)
+        attrs = integration.to_integration_hash.except('created_at', 'updated_at')
 
-        { prometheus_integration_attributes: integration.attributes.except(*%w[id project_id created_at updated_at]) }
+        { prometheus_integration_attributes: attrs }
       end
 
       def incident_management_setting_params

@@ -10951,9 +10951,6 @@ msgstr ""
 msgid "CurrentUser|Start an Ultimate trial"
 msgstr ""
 
-msgid "CurrentUser|Upgrade"
-msgstr ""
-
 msgid "Custom Attributes"
 msgstr ""
 

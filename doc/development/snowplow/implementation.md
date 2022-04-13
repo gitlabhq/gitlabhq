@@ -21,8 +21,25 @@ For the recommended frontend tracking implementation, see [Usage recommendations
 Structured events and page views include the [`gitlab_standard`](schemas.md#gitlab_standard)
 context, using the `window.gl.snowplowStandardContext` object which includes
 [default data](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/layouts/_snowplow.html.haml)
-as base. This object can be modified for any subsequent structured event fired,
-although it's not recommended.
+as base:
+
+| Property | Example |
+| -------- | ------- |
+| `context_generated_at` | `"2022-01-01T01:00:00.000Z"` |
+| `environment` | `"production"` |
+| `extra` | `{}` |
+| `namespace_id` | `123` |
+| `plan` | `"gold"` |
+| `project_id` | `456` |
+| `source` | `"gitlab-rails"` |
+| `user_id` | `789`* |
+
+_\* Undergoes a pseudonymization process at the collector level._
+
+These properties [are overriden](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/tracking/get_standard_context.js)
+with frontend-specific values, like `source` (`gitlab-javascript`), `google_analytics_id`
+and the custom `extra` object. You can modify this object for any subsequent
+structured event that fires, although this is not recommended.
 
 Tracking implementations must have an `action` and a `category`. You can provide additional
 properties from the [structured event taxonomy](index.md#structured-event-taxonomy), in
@@ -396,13 +413,13 @@ Use the following arguments:
 |------------|---------------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | `category` | String                    |               | Area or aspect of the application. For example,  `HealthCheckController` or `Lfs::FileTransformer`.                  |
 | `action`   | String                    |               | The action being taken. For example, a controller action such as `create`, or an Active Record callback. |
-| `label`    | String                    | nil           | The specific element or object to act on. This can be one of the following: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created.                                                          |
-| `property` | String                    | nil           | Any additional property of the element, or object being acted on.                                                          |
-| `value`    | Numeric                   | nil           | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility.                                                          |
-| `context`  | Array\[SelfDescribingJSON\] | nil           | An array of custom contexts to send with this event. Most events should not have any custom contexts.                             |
-| `project`  | Project                   | nil           | The project associated with the event. |
-| `user`     | User                      | nil           | The user associated with the event. |
-| `namespace` | Namespace                | nil           | The namespace associated with the event. |
+| `label`    | String                    | `nil`           | The specific element or object to act on. This can be one of the following: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created.                                                          |
+| `property` | String                    | `nil`           | Any additional property of the element, or object being acted on.                                                          |
+| `value`    | Numeric                   | `nil`           | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility.                                                          |
+| `context`  | Array\[SelfDescribingJSON\] | `nil`           | An array of custom contexts to send with this event. Most events should not have any custom contexts.                             |
+| `project`  | Project                   | `nil`           | The project associated with the event. |
+| `user`     | User                      | `nil`           | The user associated with the event. This value undergoes a pseudonymization process at the collector level. |
+| `namespace` | Namespace                | `nil`           | The namespace associated with the event. |
 | `extra`   | Hash                | `{}`         | Additional keyword arguments are collected into a hash and sent with the event. |
 
 ### Unit testing

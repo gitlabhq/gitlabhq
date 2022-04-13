@@ -150,6 +150,23 @@ ORDER BY page_view_start DESC
 LIMIT 100
 ```
 
+#### Top 20 users who fired `reply_comment_button` in the last 30 days
+
+```sql
+SELECT
+  count(*) as hits,
+  se_action,
+  se_category,
+  gsc_pseudonymized_user_id
+FROM legacy.snowplow_gitlab_events_30
+WHERE
+  se_label = 'reply_comment_button'
+  AND gsc_pseudonymized_user_id IS NOT NULL
+GROUP BY gsc_pseudonymized_user_id, se_category, se_action
+ORDER BY count(*) DESC
+LIMIT 20
+```
+
 #### Query JSON formatted data
 
 ```sql

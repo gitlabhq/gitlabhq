@@ -12,8 +12,9 @@ module Integrations
     validate :number_of_recipients_within_limit, if: :validate_recipients?
 
     def initialize_properties
-      if properties.nil?
-        self.properties = {}
+      super
+
+      if properties.blank?
         self.notify_only_broken_pipelines = true
         self.branches_to_be_notified = "default"
       elsif !self.notify_only_default_branch.nil?

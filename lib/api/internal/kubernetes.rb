@@ -54,7 +54,7 @@ module API
         def check_agent_token
           unauthorized! unless agent_token
 
-          Clusters::AgentTokens::TrackUsageService.new(agent_token).execute
+          ::Clusters::AgentTokens::TrackUsageService.new(agent_token).execute
         end
       end
 
@@ -91,9 +91,9 @@ module API
             requires :agent_config, type: JSON, desc: 'Configuration for the Agent'
           end
           post '/' do
-            agent = Clusters::Agent.find(params[:agent_id])
+            agent = ::Clusters::Agent.find(params[:agent_id])
 
-            Clusters::Agents::RefreshAuthorizationService.new(agent, config: params[:agent_config]).execute
+            ::Clusters::Agents::RefreshAuthorizationService.new(agent, config: params[:agent_config]).execute
 
             no_content!
           end

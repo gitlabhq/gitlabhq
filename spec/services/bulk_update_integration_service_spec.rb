@@ -9,7 +9,13 @@ RSpec.describe BulkUpdateIntegrationService do
     stub_jira_integration_test
   end
 
-  let(:excluded_attributes) { %w[id project_id group_id inherit_from_id instance template created_at updated_at] }
+  let(:excluded_attributes) do
+    %w[
+       id project_id group_id inherit_from_id instance template
+       created_at updated_at encrypted_properties encrypted_properties_iv
+    ]
+  end
+
   let(:batch) do
     Integration.inherited_descendants_from_self_or_ancestors_from(subgroup_integration).where(id: group_integration.id..integration.id)
   end
@@ -50,7 +56,9 @@ RSpec.describe BulkUpdateIntegrationService do
     end
 
     context 'with integration with data fields' do
-      let(:excluded_attributes) { %w[id service_id created_at updated_at] }
+      let(:excluded_attributes) do
+        %w[id service_id created_at updated_at encrypted_properties encrypted_properties_iv]
+      end
 
       it 'updates the data fields from the integration', :aggregate_failures do
         described_class.new(subgroup_integration, batch).execute

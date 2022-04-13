@@ -27,12 +27,12 @@ module Integrations
     end
 
     # Since SSL verification will always be enabled for Buildkite,
-    # we no longer needs to store the boolean.
+    # we no longer need to store the boolean.
     # This is a stub method to work with deprecated API param.
     # TODO: remove enable_ssl_verification after 14.0
     # https://gitlab.com/gitlab-org/gitlab/-/issues/222808
     def enable_ssl_verification=(_value)
-      self.properties.delete('enable_ssl_verification') # Remove unused key
+      self.properties = properties.except('enable_ssl_verification') # Remove unused key
     end
 
     override :hook_url
