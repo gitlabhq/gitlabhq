@@ -42,6 +42,7 @@ const Api = {
   projectMergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   projectRunnersPath: '/api/:version/projects/:id/runners',
   projectProtectedBranchesPath: '/api/:version/projects/:id/protected_branches',
+  projectProtectedBranchesNamePath: '/api/:version/projects/:id/protected_branches/:name',
   projectSearchPath: '/api/:version/projects/:id/search',
   projectSharePath: '/api/:version/projects/:id/share',
   projectMilestonesPath: '/api/:version/projects/:id/milestones',
@@ -370,6 +371,14 @@ const Api = {
         },
       })
       .then(({ data }) => data);
+  },
+
+  projectProtectedBranch(id, branchName) {
+    const url = Api.buildUrl(Api.projectProtectedBranchesNamePath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':name', branchName);
+
+    return axios.get(url).then(({ data }) => data);
   },
 
   projectSearch(id, options = {}) {

@@ -28363,6 +28363,12 @@ msgstr ""
 msgid "Preferences|Choose what content you want to see on your homepage."
 msgstr ""
 
+msgid "Preferences|Color for added lines"
+msgstr ""
+
+msgid "Preferences|Color for removed lines"
+msgstr ""
+
 msgid "Preferences|Configure how dates and times display for you."
 msgstr ""
 
@@ -28370,6 +28376,12 @@ msgid "Preferences|Customize integrations with third party services."
 msgstr ""
 
 msgid "Preferences|Customize the appearance of the application header and navigation sidebar."
+msgstr ""
+
+msgid "Preferences|Customize the colors of removed and added lines in diffs."
+msgstr ""
+
+msgid "Preferences|Diff colors"
 msgstr ""
 
 msgid "Preferences|Display time in 24-hour format"
@@ -28406,6 +28418,9 @@ msgid "Preferences|Must be a number between %{min} and %{max}"
 msgstr ""
 
 msgid "Preferences|Navigation theme"
+msgstr ""
+
+msgid "Preferences|Preview"
 msgstr ""
 
 msgid "Preferences|Project overview content"
@@ -33404,6 +33419,9 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
+msgid "SecurityOrchestration| and "
+msgstr ""
+
 msgid "SecurityOrchestration| or "
 msgstr ""
 
@@ -33630,6 +33648,9 @@ msgid "SecurityOrchestration|Step 2: Policy details"
 msgstr ""
 
 msgid "SecurityOrchestration|Summary"
+msgstr ""
+
+msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all branches to ensure the values are accurate before updating this policy."
 msgstr ""
 
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
@@ -36507,6 +36528,12 @@ msgstr ""
 msgid "SuggestedColors|Crimson"
 msgstr ""
 
+msgid "SuggestedColors|Current addition color"
+msgstr ""
+
+msgid "SuggestedColors|Current removal color"
+msgstr ""
+
 msgid "SuggestedColors|Dark coral"
 msgstr ""
 
@@ -36520,6 +36547,12 @@ msgid "SuggestedColors|Dark violet"
 msgstr ""
 
 msgid "SuggestedColors|Deep violet"
+msgstr ""
+
+msgid "SuggestedColors|Default addition color"
+msgstr ""
+
+msgid "SuggestedColors|Default removal color"
 msgstr ""
 
 msgid "SuggestedColors|Gray"
@@ -36538,6 +36571,9 @@ msgid "SuggestedColors|Magenta-pink"
 msgstr ""
 
 msgid "SuggestedColors|Medium sea green"
+msgstr ""
+
+msgid "SuggestedColors|Orange"
 msgstr ""
 
 msgid "SuggestedColors|Red"

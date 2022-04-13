@@ -1,0 +1,20 @@
+- deletion_color = local_assigns.fetch(:deletion, nil)
+- addition_color = local_assigns.fetch(:addition, nil)
+
+- if deletion_color.present? || request.path == profile_preferences_path
+  = stylesheet_link_tag_defer "highlight/diff_custom_colors_deletion"
+- if deletion_color.present?
+  - deletion_color_rgb = hex_color_to_rgb_array(deletion_color).join(',')
+  :css
+    :root {
+      --diff-deletion-color: rgba(#{deletion_color_rgb},0.2);
+    }
+
+- if addition_color.present? || request.path == profile_preferences_path
+  = stylesheet_link_tag_defer "highlight/diff_custom_colors_addition"
+- if addition_color.present?
+  - addition_color_rgb = hex_color_to_rgb_array(addition_color).join(',')
+  :css
+    :root {
+      --diff-addition-color: rgba(#{addition_color_rgb},0.2);
+    }

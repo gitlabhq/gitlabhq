@@ -1733,4 +1733,36 @@ describe('Api', () => {
       });
     });
   });
+
+  describe('projectProtectedBranch', () => {
+    const branchName = 'new-branch-name';
+    const dummyProjectId = 5;
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${dummyProjectId}/protected_branches/${branchName}`;
+
+    it('returns 404 for non-existing branch', () => {
+      jest.spyOn(axios, 'get');
+
+      mock.onGet(expectedUrl).replyOnce(httpStatus.NOT_FOUND, {
+        message: '404 Not found',
+      });
+
+      return Api.projectProtectedBranch(dummyProjectId, branchName).catch((error) => {
+        expect(error.response.status).toBe(httpStatus.NOT_FOUND);
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl);
+      });
+    });
+
+    it('returns 200 with branch information', () => {
+      const expectedObj = { name: branchName };
+
+      jest.spyOn(axios, 'get');
+
+      mock.onGet(expectedUrl).replyOnce(httpStatus.OK, expectedObj);
+
+      return Api.projectProtectedBranch(dummyProjectId, branchName).then((data) => {
+        expect(data).toEqual(expectedObj);
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl);
+      });
+    });
+  });
 });

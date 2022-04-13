@@ -314,6 +314,8 @@ module Gitlab
     config.assets.precompile << "themes/*.css"
 
     config.assets.precompile << "highlight/themes/*.css"
+    config.assets.precompile << "highlight/diff_custom_colors_addition.css"
+    config.assets.precompile << "highlight/diff_custom_colors_deletion.css"
 
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"

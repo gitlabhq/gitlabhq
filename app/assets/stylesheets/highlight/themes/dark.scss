@@ -120,6 +120,8 @@ $dark-il: #de935f;
   --color-hljs-selector-id: #{$dark-nn};
   --color-hljs-selector-attr: #{$dark-nt};
   --color-hljs-selector-pseudo: #{$dark-nd};
+  --default-diff-color-deletion: #ff3333;
+  --default-diff-color-addition: #288f2a;
 }
 
 .code.dark {

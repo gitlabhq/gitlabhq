@@ -89,6 +89,20 @@ The default syntax theme is White, and you can choose among 5 different themes:
 
 Introduced in GitLab 13.6, the themes [Solarized](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) and [Monokai](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) also apply to the [Web IDE](../project/web_ide/index.md) and [Snippets](../snippets.md).
 
+## Diff colors
+
+A diff compares the old/removed content with the new/added content (e.g. when 
+[reviewing a merge request](../project/merge_requests/reviews/index.md#review-a-merge-request) or in a 
+[Markdown inline diff](../markdown.md#inline-diff)).
+Typically, the colors red and green are used for removed and added lines in diffs.
+The exact colors depend on the selected [syntax highlighting theme](#syntax-highlighting-theme).
+The colors may lead to difficulties in case of red–green color blindness.
+
+For this reason, you can customize the following colors:
+
+- Color for removed lines
+- Color for added lines
+
 ## Behavior
 
 The following settings allow you to customize the behavior of the GitLab layout

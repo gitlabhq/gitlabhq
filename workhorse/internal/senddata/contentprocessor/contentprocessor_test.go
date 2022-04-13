@@ -56,10 +56,16 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 			body:               "<html><body>Hello world!</body></html>",
 		},
 		{
-			desc:               "Javascript type",
+			desc:               "Javascript within HTML type",
 			contentType:        "text/plain; charset=utf-8",
 			contentDisposition: "inline",
 			body:               "<script>alert(\"foo\")</script>",
+		},
+		{
+			desc:               "Javascript type",
+			contentType:        "text/plain; charset=utf-8",
+			contentDisposition: "inline",
+			body:               "alert(\"foo\")",
 		},
 		{
 			desc:               "Image type",
@@ -170,25 +176,41 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 }
 
 func TestFailOverrideContentType(t *testing.T) {
-	testCase := struct {
-		contentType string
-		body        string
+	testCases := []struct {
+		desc                 string
+		overrideFromUpstream string
+		responseContentType  string
+		body                 string
 	}{
-		contentType: "text/plain; charset=utf-8",
-		body:        "<html><body>Hello world!</body></html>",
+		{
+			desc:                 "Force text/html into text/plain",
+			responseContentType:  "text/plain; charset=utf-8",
+			overrideFromUpstream: "text/html; charset=utf-8",
+			body:                 "<html><body>Hello world!</body></html>",
+		},
+		{
+			desc:                 "Force application/javascript into text/plain",
+			responseContentType:  "text/plain; charset=utf-8",
+			overrideFromUpstream: "application/javascript; charset=utf-8",
+			body:                 "alert(1);",
+		},
 	}
 
-	h := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		// We are pretending to be upstream or an inner layer of the ResponseWriter chain
-		w.Header().Set(headers.GitlabWorkhorseDetectContentTypeHeader, "true")
-		w.Header().Set(headers.ContentTypeHeader, "text/html; charset=utf-8")
-		_, err := io.WriteString(w, testCase.body)
-		require.NoError(t, err)
-	})
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			h := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				// We are pretending to be upstream or an inner layer of the ResponseWriter chain
+				w.Header().Set(headers.GitlabWorkhorseDetectContentTypeHeader, "true")
+				w.Header().Set(headers.ContentTypeHeader, tc.overrideFromUpstream)
+				_, err := io.WriteString(w, tc.body)
+				require.NoError(t, err)
+			})
 
-	resp := makeRequest(t, h, testCase.body, "")
+			resp := makeRequest(t, h, tc.body, "")
 
-	require.Equal(t, testCase.contentType, resp.Header.Get(headers.ContentTypeHeader))
+			require.Equal(t, tc.responseContentType, resp.Header.Get(headers.ContentTypeHeader))
+		})
+	}
 }
 
 func TestSuccessOverrideContentDispositionFromInlineToAttachment(t *testing.T) {

@@ -324,6 +324,8 @@ class User < ApplicationRecord
             :setup_for_company, :setup_for_company=,
             :render_whitespace_in_code, :render_whitespace_in_code=,
             :markdown_surround_selection, :markdown_surround_selection=,
+            :diffs_deletion_color, :diffs_deletion_color=,
+            :diffs_addition_color, :diffs_addition_color=,
             to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true

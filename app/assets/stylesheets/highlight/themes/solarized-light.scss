@@ -94,6 +94,11 @@ $solarized-light-vg: #268bd2;
 $solarized-light-vi: #268bd2;
 $solarized-light-il: #2aa198;
 
+:root {
+  --default-diff-color-deletion: #dc322f;
+  --default-diff-color-addition: #859900;
+}
+
 @mixin match-line {
   color: $black-transparent;
   background: $solarized-light-matchline-bg;

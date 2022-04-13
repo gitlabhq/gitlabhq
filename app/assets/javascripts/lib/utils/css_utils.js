@@ -19,3 +19,7 @@ export function loadCSSFile(path) {
     }
   });
 }
+
+export function getCssVariable(variable) {
+  return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+}

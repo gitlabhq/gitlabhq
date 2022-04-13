@@ -45,6 +45,19 @@
       %hr
 
   .row.js-preferences-form.js-search-settings-section
+    .col-lg-4.profile-settings-sidebar#diffs-colors
+      %h4.gl-mt-0
+        = s_('Preferences|Diff colors')
+      %p
+        = s_('Preferences|Customize the colors of removed and added lines in diffs.')
+    .col-lg-8
+      .form-group
+        #js-profile-preferences-diffs-colors-app{ data: user_diffs_colors }
+
+    .col-sm-12
+      %hr
+
+  .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#behavior
       %h4.gl-mt-0
         = s_('Preferences|Behavior')

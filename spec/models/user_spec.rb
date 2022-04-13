@@ -69,6 +69,12 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:markdown_surround_selection).to(:user_preference) }
     it { is_expected.to delegate_method(:markdown_surround_selection=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:diffs_deletion_color).to(:user_preference) }
+    it { is_expected.to delegate_method(:diffs_deletion_color=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:diffs_addition_color).to(:user_preference) }
+    it { is_expected.to delegate_method(:diffs_addition_color=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 

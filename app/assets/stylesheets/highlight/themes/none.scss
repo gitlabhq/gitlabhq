@@ -9,6 +9,11 @@
   background-color: $white-normal;
 }
 
+:root {
+  --default-diff-color-deletion: #b4b4b4;
+  --default-diff-color-addition: #b4b4b4;
+}
+
 .code.none {
   // Line numbers
   .file-line-num {

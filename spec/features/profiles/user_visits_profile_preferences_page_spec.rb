@@ -18,14 +18,6 @@ RSpec.describe 'User visits the profile preferences page', :js do
   end
 
   describe 'User changes their syntax highlighting theme', :js do
-    it 'creates a flash message' do
-      choose 'user_color_scheme_id_5'
-
-      wait_for_requests
-
-      expect_preferences_saved_message
-    end
-
     it 'updates their preference' do
       choose 'user_color_scheme_id_5'
 

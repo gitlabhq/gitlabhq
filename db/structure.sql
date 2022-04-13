@@ -21335,7 +21335,11 @@ CREATE TABLE user_preferences (
     experience_level smallint,
     view_diffs_file_by_file boolean DEFAULT false NOT NULL,
     gitpod_enabled boolean DEFAULT false NOT NULL,
-    markdown_surround_selection boolean DEFAULT true NOT NULL
+    markdown_surround_selection boolean DEFAULT true NOT NULL,
+    diffs_deletion_color text,
+    diffs_addition_color text,
+    CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
+    CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );
 
 CREATE SEQUENCE user_preferences_id_seq
@@ -29662,6 +29666,8 @@ CREATE INDEX tmp_index_for_namespace_id_migration_on_group_members ON members US
 CREATE INDEX tmp_index_for_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Namespace'::text));
 
 CREATE INDEX tmp_index_for_null_project_namespace_id ON projects USING btree (id) WHERE (project_namespace_id IS NULL);
+
+CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
 CREATE INDEX tmp_index_issues_on_issue_type_and_id ON issues USING btree (issue_type, id);
 

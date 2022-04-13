@@ -34,34 +34,6 @@ To view CI/CD analytics:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > CI/CD Analytics**.
 
-## DevOps Research and Assessment (DORA) key metrics **(ULTIMATE)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
-> - [Added support](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) for lead time for changes in GitLab 13.10.
-
-The DevOps Research and Assessment ([DORA](https://cloud.google.com/blog/products/devops-sre/the-2019-accelerate-state-of-devops-elite-performance-productivity-and-scaling))
-team developed several key metrics that you can use as performance indicators for software development
-teams:
-
-- Deployment frequency: How often an organization successfully releases to production.
-- Lead time for changes: The amount of time it takes for code to reach production.
-- Change failure rate: The percentage of deployments that cause a failure in production.
-- Time to restore service: How long it takes for an organization to recover from a failure in
-  production.
-
-### Supported metrics in GitLab
-
-The following table shows the supported metrics, at which level they are supported, and which GitLab version (API and UI) they were introduced:
-
-| Metric                    | Level               | API version                          | Chart (UI) version                    | Comments  |
-|---------------------------|---------------------|--------------------------------------|---------------------------------------|-----------|
-| `deployment_frequency`    | Project-level       | [13.7+](../../api/dora/metrics.md)   | [13.8+](#view-deployment-frequency-chart) | The [old API endpoint](../../api/dora4_project_analytics.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
-| `deployment_frequency`    | Group-level         | [13.10+](../../api/dora/metrics.md)  | [13.12+](#view-deployment-frequency-chart)                    | |
-| `lead_time_for_changes`   | Project-level       | [13.10+](../../api/dora/metrics.md)  | [13.11+](#view-lead-time-for-changes-chart)           | Unit in seconds. Aggregation method is median. |
-| `lead_time_for_changes`   | Group-level         |  [13.10+](../../api/dora/metrics.md) | [14.0+](#view-lead-time-for-changes-chart)               | Unit in seconds. Aggregation method is median. |
-| `change_failure_rate`     | Project/Group-level |  To be supported                     | To be supported                       | |
-| `time_to_restore_service` | Project/Group-level |  To be supported                     | To be supported                       | |
-
 ## View deployment frequency chart **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.8.

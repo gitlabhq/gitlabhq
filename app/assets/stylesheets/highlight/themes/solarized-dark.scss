@@ -92,6 +92,11 @@ $solarized-dark-vg: #268bd2;
 $solarized-dark-vi: #268bd2;
 $solarized-dark-il: #2aa198;
 
+:root {
+  --default-diff-color-deletion: #ff362c;
+  --default-diff-color-addition: #647e0e;
+}
+
 .code.solarized-dark {
   // Line numbers
   .file-line-num {

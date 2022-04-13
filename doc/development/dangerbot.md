@@ -142,7 +142,7 @@ To enable the Dangerfile on another existing GitLab project, complete the follow
 1. Create a `Dangerfile` with the following content:
 
     ```ruby
-    require_relative "lib/gitlab-dangerfiles"
+    require "gitlab-dangerfiles"
 
     Gitlab::Dangerfiles.for_project(self, &:import_defaults)
     ```
