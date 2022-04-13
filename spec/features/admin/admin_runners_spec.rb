@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe "Admin Runners" do
-  include StubENV
+  include Spec::Support::Helpers::Features::RunnersHelpers
+
+  let_it_be(:admin) { create(:admin) }
 
   before do
-    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
 
@@ -20,47 +20,54 @@ RSpec.describe "Admin Runners" do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace, creator: user) }
 
+    context "runners registration" do
+      before do
+        visit admin_runners_path
+      end
+
+      it_behaves_like "shows and resets runner registration token" do
+        let(:dropdown_text) { 'Register an instance runner' }
+        let(:registration_token) { Gitlab::CurrentSettings.runners_registration_token }
+      end
+    end
+
     context "when there are runners" do
-      it 'has all necessary texts' do
-        create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: Time.zone.now)
-        create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.week.ago)
-        create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.year.ago)
+      context "with an instance runner" do
+        let!(:instance_runner) { create(:ci_runner, :instance) }
 
-        visit admin_runners_path
+        before do
+          visit admin_runners_path
+        end
 
-        expect(page).to have_text "Register an instance runner"
-        expect(page).to have_text "Online runners 1"
-        expect(page).to have_text "Offline runners 2"
-        expect(page).to have_text "Stale runners 1"
-      end
+        it_behaves_like 'shows runner in list' do
+          let(:runner) { instance_runner }
+        end
 
-      it 'with an instance runner shows an instance badge' do
-        runner = create(:ci_runner, :instance)
+        it_behaves_like 'pauses, resumes and deletes a runner' do
+          let(:runner) { instance_runner }
+        end
 
-        visit admin_runners_path
-
-        within "[data-testid='runner-row-#{runner.id}']" do
-          expect(page).to have_selector '.badge', text: 'shared'
+        it 'shows an instance badge' do
+          within_runner_row(instance_runner.id) do
+            expect(page).to have_selector '.badge', text: 'shared'
+          end
         end
       end
 
-      it 'with a group runner shows a group badge' do
-        runner = create(:ci_runner, :group, groups: [group])
+      context "with multiple runners" do
+        before do
+          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: Time.zone.now)
+          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.week.ago)
+          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.year.ago)
 
-        visit admin_runners_path
-
-        within "[data-testid='runner-row-#{runner.id}']" do
-          expect(page).to have_selector '.badge', text: 'group'
+          visit admin_runners_path
         end
-      end
 
-      it 'with a project runner shows a project badge' do
-        runner = create(:ci_runner, :project, projects: [project])
-
-        visit admin_runners_path
-
-        within "[data-testid='runner-row-#{runner.id}']" do
-          expect(page).to have_selector '.badge', text: 'specific'
+        it 'has all necessary texts' do
+          expect(page).to have_text "Register an instance runner"
+          expect(page).to have_text "Online runners 1"
+          expect(page).to have_text "Offline runners 2"
+          expect(page).to have_text "Stale runners 1"
         end
       end
 
@@ -72,44 +79,8 @@ RSpec.describe "Admin Runners" do
 
         visit admin_runners_path
 
-        within "[data-testid='runner-row-#{runner.id}'] [data-label='Jobs']" do
-          expect(page).to have_content '2'
-        end
-      end
-
-      describe 'delete runner' do
-        let!(:runner) { create(:ci_runner, description: 'runner-foo') }
-
-        before do
-          visit admin_runners_path
-
-          within "[data-testid='runner-row-#{runner.id}']" do
-            click_on 'Delete runner'
-          end
-        end
-
-        it 'shows a confirmation modal' do
-          expect(page).to have_text "Delete runner ##{runner.id} (#{runner.short_sha})?"
-          expect(page).to have_text "Are you sure you want to continue?"
-        end
-
-        it 'deletes a runner' do
-          within '.modal' do
-            click_on 'Delete runner'
-          end
-
-          expect(page.find('.gl-toast')).to have_text(/Runner .+ deleted/)
-          expect(page).not_to have_content 'runner-foo'
-        end
-
-        it 'cancels runner deletion' do
-          within '.modal' do
-            click_on 'Cancel'
-          end
-
-          wait_for_requests
-
-          expect(page).to have_content 'runner-foo'
+        within_runner_row(runner.id) do
+          expect(find("[data-label='Jobs']")).to have_content '2'
         end
       end
 
@@ -249,7 +220,7 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-paused'
           expect(page).to have_content 'runner-never-contacted'
 
-          within "[data-testid='runner-row-#{never_contacted.id}']" do
+          within_runner_row(never_contacted.id) do
             expect(page).to have_selector '.badge', text: 'never contacted'
           end
         end
@@ -447,15 +418,7 @@ RSpec.describe "Admin Runners" do
         visit admin_runners_path
       end
 
-      it 'has all necessary texts including no runner message' do
-        expect(page).to have_text "Register an instance runner"
-
-        expect(page).to have_text "Online runners 0"
-        expect(page).to have_text "Offline runners 0"
-        expect(page).to have_text "Stale runners 0"
-
-        expect(page).to have_text 'No runners found'
-      end
+      it_behaves_like "shows no runners"
 
       it 'shows tabs with total counts equal to 0' do
         expect(page).to have_link('All 0')
@@ -482,17 +445,6 @@ RSpec.describe "Admin Runners" do
         visit admin_runners_path('status[]': 'PAUSED')
 
         expect(page).to have_current_path(admin_runners_path('paused[]': 'true') )
-      end
-    end
-
-    describe "runners registration" do
-      before do
-        visit admin_runners_path
-      end
-
-      it_behaves_like "shows and resets runner registration token" do
-        let(:dropdown_text) { 'Register an instance runner' }
-        let(:registration_token) { Gitlab::CurrentSettings.runners_registration_token }
       end
     end
   end
@@ -643,58 +595,5 @@ RSpec.describe "Admin Runners" do
         expect(new_runner_project).to have_content(@project1.path)
       end
     end
-  end
-
-  private
-
-  def search_bar_selector
-    '[data-testid="runners-filtered-search"]'
-  end
-
-  # The filters must be clicked first to be able to receive events
-  # See: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1493
-  def focus_filtered_search
-    page.within(search_bar_selector) do
-      page.find('.gl-filtered-search-term-token').click
-    end
-  end
-
-  def input_filtered_search_keys(search_term)
-    focus_filtered_search
-
-    page.within(search_bar_selector) do
-      page.find('input').send_keys(search_term)
-      click_on 'Search'
-    end
-
-    wait_for_requests
-  end
-
-  def open_filtered_search_suggestions(filter)
-    focus_filtered_search
-
-    page.within(search_bar_selector) do
-      click_on filter
-    end
-
-    wait_for_requests
-  end
-
-  def input_filtered_search_filter_is_only(filter, value)
-    focus_filtered_search
-
-    page.within(search_bar_selector) do
-      click_on filter
-
-      # For OPERATOR_IS_ONLY, clicking the filter
-      # immediately preselects "=" operator
-
-      page.find('input').send_keys(value)
-      page.find('input').send_keys(:enter)
-
-      click_on 'Search'
-    end
-
-    wait_for_requests
   end
 end

@@ -13,8 +13,12 @@ import {
 const ALLOWED_URL_HASHES = ['#diff', '#note'];
 
 export default class Tracking {
-  static queuedEvents = [];
+  static nonInitializedQueue = [];
   static initialized = false;
+  static definitionsLoaded = false;
+  static definitionsManifest = {};
+  static definitionsEventsQueue = [];
+  static definitions = [];
 
   /**
    * (Legacy) Determines if tracking is enabled at the user level.
@@ -54,11 +58,69 @@ export default class Tracking {
     }
 
     if (!this.initialized) {
-      this.queuedEvents.push(eventData);
+      this.nonInitializedQueue.push(eventData);
       return false;
     }
 
     return dispatchSnowplowEvent(...eventData);
+  }
+
+  /**
+   * Preloads event definitions.
+   *
+   * @returns {undefined}
+   */
+  static loadDefinitions() {
+    // TODO: fetch definitions from the server and flush the queue
+    // See https://gitlab.com/gitlab-org/gitlab/-/issues/358256
+    this.definitionsLoaded = true;
+
+    while (this.definitionsEventsQueue.length) {
+      this.dispatchFromDefinition(...this.definitionsEventsQueue.shift());
+    }
+  }
+
+  /**
+   * Dispatches a structured event with data from its event definition.
+   *
+   * @param {String} basename
+   * @param {Object} eventData
+   * @returns {undefined|Boolean}
+   */
+  static definition(basename, eventData = {}) {
+    if (!this.enabled()) {
+      return false;
+    }
+
+    if (!(basename in this.definitionsManifest)) {
+      throw new Error(`Missing Snowplow event definition "${basename}"`);
+    }
+
+    return this.dispatchFromDefinition(basename, eventData);
+  }
+
+  /**
+   * Builds an event with data from a valid definition and sends it to
+   * Snowplow. If the definitions are not loaded, it pushes the data to a queue.
+   *
+   * @param {String} basename
+   * @param {Object} eventData
+   * @returns {undefined|Boolean}
+   */
+  static dispatchFromDefinition(basename, eventData) {
+    if (!this.definitionsLoaded) {
+      this.definitionsEventsQueue.push([basename, eventData]);
+
+      return false;
+    }
+
+    const eventDefinition = this.definitions.find((definition) => definition.key === basename);
+
+    return this.event(
+      eventData.category ?? eventDefinition.category,
+      eventData.action ?? eventDefinition.action,
+      eventData,
+    );
   }
 
   /**
@@ -69,8 +131,8 @@ export default class Tracking {
   static flushPendingEvents() {
     this.initialized = true;
 
-    while (this.queuedEvents.length) {
-      dispatchSnowplowEvent(...this.queuedEvents.shift());
+    while (this.nonInitializedQueue.length) {
+      dispatchSnowplowEvent(...this.nonInitializedQueue.shift());
     }
   }
 

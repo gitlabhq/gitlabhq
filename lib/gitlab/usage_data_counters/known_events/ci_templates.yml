@@ -619,3 +619,7 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_matlab
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly

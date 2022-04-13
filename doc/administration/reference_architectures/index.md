@@ -430,7 +430,7 @@ to any of the [available reference architectures](#available-reference-architect
 > - Required domain knowledge: PostgreSQL, HAProxy, shared storage, distributed systems
 
 GitLab supports [zero-downtime upgrades](../../update/zero_downtime.md).
-Single GitLab nodes can be updated with only a [few minutes of downtime](../../update/zero_downtime.md#single-node-deployment).
+Single GitLab nodes can be updated with only a [few minutes of downtime](../../update/index.md#upgrade-based-on-installation-method).
 To avoid this, we recommend to separate GitLab into several application nodes.
 As long as at least one of each component is online and capable of handling the instance's usage load, your team's productivity will not be interrupted during the update.
 

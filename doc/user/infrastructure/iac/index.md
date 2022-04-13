@@ -91,49 +91,29 @@ in the template you fetched to customize your configuration.
 
 ## GitLab-managed Terraform state
 
-[Terraform remote backends](https://www.terraform.io/docs/language/settings/backends/index.html)
-enable you to store the state file in a remote, shared store. GitLab uses the
-[Terraform HTTP backend](https://www.terraform.io/docs/language/settings/backends/http.html)
-to securely store the state files in local storage (the default) or
-[the remote store of your choice](../../../administration/terraform_state.md).
-
-The GitLab-managed Terraform state backend can safely store your Terraform state. It spares you from setting up additional remote resources like
-Amazon S3 or Google Cloud Storage. Its features include:
-
-- Supporting encryption of the state file both in transit and at rest.
-- Locking and unlocking state.
-- Remote Terraform plan and apply execution.
-
-Read more about setting up and [using GitLab-managed Terraform states](terraform_state.md).
+Use the [GitLab-managed Terraform state](terraform_state.md) to store state
+files in local storage or in a remote store of your choice.
 
 ## Terraform module registry
 
-GitLab can be used as a [Terraform module registry](../../packages/terraform_module_registry/index.md)
-to create and publish Terraform modules to a private registry specific to your
-top-level namespace.
+Use GitLab as a [Terraform module registry](../../packages/terraform_module_registry/index.md)
+to create and publish Terraform modules to a private registry.
 
 ## Terraform integration in merge requests
 
-Collaborating around Infrastructure as Code (IaC) changes requires both code changes
-and expected infrastructure changes to be checked and approved. GitLab provides a
-solution to help collaboration around Terraform code changes and their expected
-effects using the merge request pages. This way users don't have to build custom
-tools or rely on 3rd party solutions to streamline their IaC workflows.
-
-Read more on setting up and [using the merge request integrations](mr_integration.md).
+Use the [Terraform integration in merge requests](mr_integration.md)
+to collaborate on Terraform code changes and Infrastructure-as-Code
+workflows.
 
 ## The GitLab Terraform provider
 
-WARNING:
+NOTE:
 The GitLab Terraform provider is released separately from GitLab.
-We are working on migrating the GitLab Terraform provider for GitLab.com.
+We are working on migrating the GitLab Terraform provider to GitLab.com.
 
-You can use the [GitLab Terraform provider](https://github.com/gitlabhq/terraform-provider-gitlab)
-to manage various aspects of GitLab using Terraform. The provider is an open source project,
-owned by GitLab, where everyone can contribute.
-
-The [documentation of the provider](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs)
-is available as part of the official Terraform provider documentation.
+The [GitLab Terraform provider](https://github.com/gitlabhq/terraform-provider-gitlab) is a plugin for Terraform to facilitate
+managing of GitLab resources such as users, groups, and projects.
+Its documentation is available on [Terraform](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs).
 
 ## Create a new cluster through IaC
 

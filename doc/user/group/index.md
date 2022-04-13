@@ -796,22 +796,24 @@ The group's new subgroups have push rules set for them based on either:
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
 
-## Group approval rules **(PREMIUM)**
+## Group approval settings **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
 > - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
 
-Group approval rules manage [project merge request approval rules](../project/merge_requests/approvals/index.md)
-at the top-level group level. These rules [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+Group approval settings manage [project merge request approval settings](../project/merge_requests/approvals/settings.md)
+at the top-level group level. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
-To view the merge request approval rules for a group:
+To view the merge request approval settings for a group:
 
 1. Go to the top-level group's **Settings > General** page.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.
 1. Select **Save changes**.
+
+Support for group-level settings for merge request approval rules is tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
 ## Related topics
 
