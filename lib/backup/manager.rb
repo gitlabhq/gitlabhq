@@ -271,7 +271,7 @@ module Backup
 
     def upload
       connection_settings = Gitlab.config.backup.upload.connection
-      if connection_settings.blank?
+      if connection_settings.blank? || skipped?('remote')
         puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
         return
       end

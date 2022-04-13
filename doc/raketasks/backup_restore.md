@@ -724,6 +724,23 @@ sudo gitlab-backup create DIRECTORY=weekly
 
 Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:create` instead.
 
+#### Skip uploading backups to remote storage
+
+If you have configured GitLab to [upload backups in a remote storage](#uploading-backups-to-a-remote-cloud-storage),
+you can use the `SKIP=remote` option to skip uploading your backups to the remote storage.
+
+For Omnibus GitLab packages:
+
+```shell
+sudo gitlab-backup create SKIP=remote
+```
+
+For installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create SKIP=remote RAILS_ENV=production
+```
+
 #### Uploading to locally mounted shares
 
 You may also send backups to a mounted share (for example, `NFS`,`CIFS`, or

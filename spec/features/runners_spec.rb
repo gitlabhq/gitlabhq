@@ -352,6 +352,7 @@ RSpec.describe 'Runners' do
 
     before do
       group.add_owner(user)
+      stub_feature_flags(runner_list_group_view_vue_ui: false)
     end
 
     context 'group with no runners' do

@@ -440,6 +440,23 @@ RSpec.describe Backup::Manager do
         connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
       end
 
+      context 'skipped upload' do
+        let(:backup_information) do
+          {
+            backup_created_at: Time.zone.parse('2019-01-01'),
+            gitlab_version: '12.3',
+            skipped: ['remote']
+          }
+        end
+
+        it 'informs the user' do
+          stub_env('SKIP', 'remote')
+          subject.create # rubocop:disable Rails/SaveBang
+
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Uploading backup archive to remote storage directory ... [SKIPPED]')
+        end
+      end
+
       context 'target path' do
         it 'uses the tar filename by default' do
           expect_any_instance_of(Fog::Collection).to receive(:create)

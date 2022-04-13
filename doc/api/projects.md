@@ -375,7 +375,7 @@ Get a list of visible projects owned by the given user. When accessed without
 authentication, only public projects are returned.
 
 NOTE:
-Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned.
+Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
 
 This endpoint supports [keyset pagination](index.md#keyset-based-pagination)
 for selected `order_by` options.
