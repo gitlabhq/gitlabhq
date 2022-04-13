@@ -117,6 +117,7 @@ When the snippet is committed to the `.gitlab-ci.yml` file, pipelines include an
 > - Support for OpenAPI Specification using YAML format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
 > - Support for OpenAPI Specification v3.1 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.2.
 > - Support to generate media type `application/xml` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.8.
+> - Support to select media types was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10.
 
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an API description format for REST APIs.
 This section shows you how to configure API fuzzing using an OpenAPI Specification to provide information about the target API to test.
@@ -129,6 +130,25 @@ the body generation is limited to these body types:
 - `multipart/form-data`
 - `application/json`
 - `application/xml`
+
+### OpenAPI and media types
+
+A media type (formerly known as MIME type) is an identifier for file formats and format contents transmitted. A OpenAPI document lets you specify that a given operation can accept different media types, hence a given request can send data using different file content. As for example, a `PUT /user` operation to update user data could accept data in either XML (media type `application/xml`) or JSON (media type `application/json`) format.
+OpenAPI 2.x lets you specify the accepted media types globally or per operation, and OpenAPI 3.x lets you specify the accepted media types per operation. API Fuzzing checks the listed media types and tries to produce sample data for each supported media type.
+
+- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), the default behavior is to select one of the supported media types to use. The first supported media type is chosen from the list. This behavior is configurable.
+- In GitLab 14.9 and earlier, the default behavior is to perform testing using all supported media types. This means if two media types are listed (for example, `application/json` and `application/xml`), tests are performed using JSON, and then the same tests using XML.
+
+Testing the same operation (for example, `POST /user`) using different media types (for example, `application/json` and `application/xml`) is not always desirable. 
+For example, if the target application executes the same code regardless of the request content type, it will take longer to finish the test session, and it may report duplicate vulnerabilities related to the request body depending on the target app.
+
+The environment variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` lets you specify whether or not to use all supported media types instead of one when generating requests for a given operation. When the environmental variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` is set to any value, API Fuzzing will try to generate requests for all supported media types instead of one in a given operation. This will cause testing to take longer as testing is repeated for each provided media type.
+
+Alternatively, the variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that will each be tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
+
+Multiple media types in `FUZZAPI_OPENAPI_MEDIA_TYPES` must separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and  `multipart/form-data`, set the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though unsupported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8` is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when filtering media types on request generation.
+
+The environment variables `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` and `FUZZAPI_OPENAPI_MEDIA_TYPES` allow you to decide how to handle media types. These settings are mutually exclusive. If both are enabled, API Fuzzing reports an error.
 
 #### Configure Web API fuzzing with an OpenAPI Specification
 
@@ -571,8 +591,12 @@ profile increases as the number of tests increases.
 | `FUZZAPI_CONFIG`                                            | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/276395) in GitLab 13.12, replaced with default `.gitlab/gitlab-api-fuzzing-config.yml`. API Fuzzing configuration file. |
 |[`FUZZAPI_PROFILE`](#api-fuzzing-profiles)                   | Configuration profile to use during testing. Defaults to `Quick-10`. |
 |[`FUZZAPI_EXCLUDE_PATHS`](#exclude-paths)                    | Exclude API URL paths from testing. |
+|[`FUZZAPI_EXCLUDE_PARAMETER_ENV`](#exclude-parameters)       | JSON string containing excluded parameters. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292196) in GitLab 14.10. |
+|[`FUZZAPI_EXCLUDE_PARAMETER_FILE`](#exclude-parameters)      | Path to a JSON file containing excluded parameters. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292196) in GitLab 14.10. |
 |[`FUZZAPI_OPENAPI`](#openapi-specification)                  | OpenAPI Specification file or URL. |
 |[`FUZZAPI_OPENAPI_RELAXED_VALIDATION`](#openapi-specification) | Relax document validation. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345950) in GitLab 14.7. |
+|[`FUZZAPI_OPENAPI_ALL_MEDIA_TYPES`](#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
+|[`FUZZAPI_OPENAPI_MEDIA_TYPES`](#openapi-specification)  | Colon (`:`) separated media types accepted for testing. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
 |[`FUZZAPI_HAR`](#http-archive-har)                           | HTTP Archive (HAR) file. |
 |[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection)          | Postman Collection file. |
 |[`FUZZAPI_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. |
@@ -1041,6 +1065,235 @@ variables:
   FUZZAPI_EXCLUDE_PATHS=/auth*;/v1/*
 ```
 
+### Exclude parameters
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292196) in GitLab 14.10.
+
+While testing an API you may might want to exclude a parameter (query string, header, or body element) from testing. This may be needed because a parameter always causes a failure, slows down testing, or for other reasons. To exclude parameters you can use one of the following variables: `FUZZAPI_EXCLUDE_PARAMETER_ENV` or `FUZZAPI_EXCLUDE_PARAMETER_FILE`.
+
+The `FUZZAPI_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and will not often change. Another option is the variable `FUZZAPI_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime from a pre script using `FUZZAPI_PRE_SCRIPT`.
+
+#### Exclude parameters using a JSON document
+
+The JSON document contains a JSON object which uses specific properties to identify which parameter should be excluded.
+You can provide the following properties to exclude specific parameters during the scanning process:
+
+- `headers`: Use this property to exclude specific headers. The property's value is an array of header names to be excluded. Names are case-insensitive.
+- `cookies`: Use this property's value to exclude specific cookies. The property's value is an array of cookie names to be excluded. Names are case-sensitive.
+- `query`: Use this property to exclude specific fields from the query string. The property's value is an array of field names from the query string to be excluded. Names are case-sensitive.
+- `body-form`: Use this property to exclude specific fields from a request that uses the media type `application/x-www-form-urlencoded`. The property's value is an array of the field names from the body to be excluded. Names are case-sensitive.
+- `body-json`: Use this property to exclude specific JSON nodes from a request that uses the media type `application/json`. The property's value is an array, each entry of the array is a [JSON Path](https://goessner.net/articles/JsonPath/) expression.
+- `body-xml`: Use this property to exclude specific XML nodes from a request that uses media type `application/xml`. The property's value is an array, each entry of the array is a [XPath v2](https://www.w3.org/TR/xpath20/) expression.
+
+The following JSON document is an example of the expected structure to exclude parameters.  
+
+```json
+{
+  "headers": [
+    "header1",
+    "header2"
+  ],
+  "cookies": [
+    "cookie1",
+    "cookie2"
+  ],
+  "query": [
+    "query-string1",
+    "query-string2"
+  ],
+  "body-form": [
+    "form-param1",
+    "form-param2"
+  ],
+  "body-json": [
+    "json-path-expression-1",
+    "json-path-expression-2"
+  ],
+  "body-xml" : [
+    "xpath-expression-1",
+    "xpath-expression-2"
+  ]
+}
+```
+
+#### Examples
+
+##### Excluding a single header
+
+To exclude the header `Upgrade-Insecure-Requests`, set the `header` property's value to an array with the header name: `[ "Upgrade-Insecure-Requests" ]`. For instance, the JSON document looks like this:
+
+```json
+{
+  "headers": [ "Upgrade-Insecure-Requests" ]
+}
+```
+
+Header names are case-insensitive, thus the header name `UPGRADE-INSECURE-REQUESTS` is equivalent to `Upgrade-Insecure-Requests`.
+
+##### Excluding both a header and two cookies
+
+To exclude the header `Authorization` and the cookies `PHPSESSID` and `csrftoken`, set the `headers` property's value to an array with header name `[ "Authorization" ]` and the `cookies` property's value to an array with the cookies' names `[ "PHPSESSID", "csrftoken" ]`. For instance, the JSON document looks like this:
+
+```json
+{
+  "headers": [ "Authorization" ],
+  "cookies": [ "PHPSESSID", "csrftoken" ]
+}
+```
+
+##### Excluding a `body-form` parameter
+
+To exclude the `password` field in a request that uses `application/x-www-form-urlencoded`, set the `body-form` property's value to an array with the field name `[ "password" ]`. For instance, the JSON document looks like this:
+
+```json
+{
+  "body-form":  [ "password" ]
+}
+```
+
+The exclude parameters uses `body-form` when the request uses a content type `application/x-www-form-urlencoded`.
+
+##### Excluding a specific JSON nodes using JSON Path 
+
+To exclude the `schema` property in the root object, set the `body-json` property's value to an array with the JSON Path expression `[ "$.schema" ]`.
+
+The JSON Path expression uses special syntax to identify JSON nodes: `$` refers to the root of the JSON document, `.` refers to the current object (in our case the root object), and the text `schema` refers to a property name. Thus, the JSON path expression `$.schema` refers to a property `schema` in the root object. 
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-json": [ "$.schema" ]
+}
+```
+
+The exclude parameters uses `body-json` when the request uses a content type `application/json`. Each entry in `body-json` is expected to be a [JSON Path expression](https://goessner.net/articles/JsonPath/). In JSON Path, characters like `$`, `*`, `.` among others have special meaning. 
+
+##### Excluding multiple JSON nodes using JSON Path 
+
+To exclude the property `password` on each entry of an array of `users` at the root level, set the `body-json` property's value to an array with the JSON Path expression `[ "$.users[*].paswword" ]`.
+
+The JSON Path expression starts with `$` to refer to the root node and uses `.` to refer to the current node. Then, it uses `users` to refer to a property and the characters `[` and `]` to enclose the index in the array you want to use, instead of providing a number as an index you use `*` to specify any index. After the index reference, we find `.` which now refers to any given selected index in the array, preceded by a property name `password`. 
+
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-json": [ "$.users[*].paswword" ]
+}
+```
+
+The exclude parameters uses `body-json` when the request uses a content type `application/json`. Each entry in `body-json` is expected to be a [JSON Path expression](https://goessner.net/articles/JsonPath/). In JSON Path characters like `$`, `*`, `.` among others have special meaning. 
+
+##### Excluding an XML attribute
+
+To exclude an attribute named `isEnabled` located in the root element `credentials`, set the `body-xml` property's value to an array with the XPath expression `[ "/credentials/@isEnabled" ]`.
+
+The XPath expression `/credentials/@isEnabled`, starts with `/` to indicate the root of the XML document, then it is followed by the word `credentials` which indicates the name of the element to match. It uses a `/` to refer to a node of the previous XML element, and the character `@` to indicate that the name `isEnable` is an attribute.
+
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-xml": [ 
+    "/credentials/@isEnabled"
+  ]
+}
+```
+
+The exclude parameters uses `body-xml` when the request uses a content type `application/xml`. Each entry in `body-xml` is expected to be an [XPath v2 expression](https://www.w3.org/TR/xpath20/). In XPath expressions, characters like `@`, `/`, `:`, `[`, `]` among others have special meanings. 
+
+##### Excluding an XML element's text
+
+To exclude the text of the `username` element contained in root node `credentials`, set the `body-xml` property's value to an array with the XPath expression `[/credentials/username/text()" ]`. 
+
+In the XPath expression `/credentials/username/text()`, the first character `/` refers to the root XML node, and then after it indicates an XML element's name `credentials`. Similarly, the character `/` refers to the current element, followed by a new XML element's name `username`. Last part has a `/` that refers to the current element, and uses a XPath function called `text()` which identifies the text of the current element.
+
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-xml": [ 
+    "/credentials/username/text()"
+  ]
+}
+```
+
+The exclude parameters uses `body-xml` when the request uses a content type `application/xml`. Each entry in `body-xml` is expected to be a [XPath v2 expression](https://www.w3.org/TR/xpath20/). In XPath expressions characters like `@`, `/`, `:`, `[`, `]` among others have special meanings. 
+
+##### Excluding an XML element
+
+To exclude the element `username` contained in root node `credentials`, set the `body-xml` property's value to an array with the XPath expression `[/credentials/username" ]`. 
+
+In the XPath expression `/credentials/username`, the first character `/` refers to the root XML node, and then after it indicates an XML element's name `credentials`. Similarly, the character `/` refers to the current element, followed by a new XML element's name `username`.
+
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-xml": [ 
+    "/credentials/username"
+  ]
+}
+```
+
+The exclude parameters uses `body-xml` when the request uses a content type `application/xml`. Each entry in `body-xml` is expected to be a [XPath v2 expression](https://www.w3.org/TR/xpath20/). In XPath expressions characters like `@`, `/`, `:`, `[`, `]` among others have special meanings.
+
+##### Excluding an XML node with namespaces
+
+To exclude a XML element `login` which is defined in namespace `s`, and contained in `credentials` root node, set the `body-xml` property's value to an array with the XPath expression `[ "/credentials/s:login" ]`. 
+
+In the XPath expression `/credentials/s:login`, the first character `/` refers to the root XML node, and then after it indicates an XML element's name `credentials`. Similarly, the character `/` refers to the current element, followed by a new XML element's name `s:login`. Notice that name contains the character `:`, this character separates the namespace from the node name. 
+
+The namespace name should have been defined in the XML document which is part of the body request. You may check the namespace in the specification document HAR, OpenAPI, or Postman Collection file.
+
+```json
+{
+  "body-xml": [ 
+    "/credentials/s:login"
+  ]
+}
+```
+
+The exclude parameters uses `body-xml` when the request uses a content type `application/xml`. Each entry in `body-xml` is expected to be a [XPath v2 expression](https://www.w3.org/TR/xpath20/). In XPath expressions characters like `@`, `/`, `:`, `[`, `]` among others have special meanings. 
+
+#### Using a JSON string
+
+To provide the exclusion JSON document set the variable `FUZZAPI_EXCLUDE_PARAMETER_ENV` with the JSON string. In the following example, the `.gitlab-ci.yml`, the `FUZZAPI_EXCLUDE_PARAMETER_ENV` variable is set to a JSON string:
+
+```yaml
+stages:
+     - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+variables:
+  FUZZAPI_PROFILE: Quick
+  FUZZAPI_OPENAPI: test-api-specification.json
+  FUZZAPI_TARGET_URL: http://test-deployment/
+  FUZZAPI_EXCLUDE_PARAMETER_ENV: '{ "headers": [ "Upgrade-Insecure-Requests" ] }'
+```
+
+#### Using a file
+
+To provide the exclusion JSON document, set the variable `FUZZAPI_EXCLUDE_PARAMETER_FILE` with the JSON file path. The file path is relative to the job current working directory. In the following example `.gitlab-ci.yml` file, the `FUZZAPI_EXCLUDE_PARAMETER_FILE` variable is set to a JSON file path:
+
+```yaml
+stages:
+     - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+variables:
+  FUZZAPI_PROFILE: Quick
+  FUZZAPI_OPENAPI: test-api-specification.json
+  FUZZAPI_TARGET_URL: http://test-deployment/
+  FUZZAPI_EXCLUDE_PARAMETER_FILE: api-fuzzing-exclude-parameters.json
+```
+
+The `api-fuzzing-exclude-parameters.json` is a JSON document that follows the structure of [exclude parameters document](#exclude-parameters-using-a-json-document). 
+
 ### Header Fuzzing
 
 Header fuzzing is disabled by default due to the high number of false positives that occur with many
@@ -1499,6 +1752,19 @@ API Security can still try to consume an OpenAPI document that does not fully co
      FUZZAPI_OPENAPI: test-api-specification.json
      FUZZAPI_OPENAPI_RELAXED_VALIDATION: On
 ```
+
+### No operation in the OpenAPI document is consuming any supported media type
+
+API Security uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error will be thrown.
+
+**Error message**
+
+- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), `Error, no operation in the OpenApi document is consuming any supported media type. Check 'OpenAPI Specification' to check the supported media types.`
+
+**Solution**
+
+1. Review the supported media types in the [OpenAPI Specification](#openapi-specification) section.
+1. Edit your OpenAPI document, allowing at least a given operation to accept any of the supported media types. Alternatively, a supported media type could be set in the OpenAPI document level and get applied to all operations. This step may require changes in your application to ensure the supported media type is accepted by the application.
 
 ## Get support or request an improvement
 

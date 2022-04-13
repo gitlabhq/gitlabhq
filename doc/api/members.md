@@ -311,7 +311,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217384) in GitLab 13.5.
 
-Gets a list of group members that count as billable. The list includes members in the subgroup or subproject.
+Gets a list of group members that count as billable. The list includes members in subgroups and projects.
 
 This API endpoint works on top-level groups only. It does not work on subgroups.
 

@@ -86,11 +86,12 @@ module Gitlab
               end
             end
 
-            def initialize(report_type, report_data, report_version = nil, project: nil)
+            def initialize(report_type, report_data, report_version = nil, project: nil, scanner: nil)
               @report_type = report_type&.to_sym
               @report_data = report_data
               @report_version = report_version
               @project = project
+              @scanner = scanner
               @errors = []
               @warnings = []
               @deprecation_warnings = []
@@ -137,7 +138,9 @@ module Gitlab
                 security_report_type: report_type,
                 security_report_version: report_version,
                 project_id: @project.id,
-                security_report_failure: problem_type
+                security_report_failure: problem_type,
+                security_report_scanner_id: @scanner&.dig('id'),
+                security_report_scanner_version: @scanner&.dig('version')
               )
             end
 

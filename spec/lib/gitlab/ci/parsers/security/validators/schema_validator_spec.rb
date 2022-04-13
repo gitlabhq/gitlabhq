@@ -5,7 +5,15 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
   let_it_be(:project) { create(:project) }
 
-  let(:validator) { described_class.new(report_type, report_data, report_version, project: project) }
+  let(:scanner) do
+    {
+      'id' => 'gemnasium',
+      'name' => 'Gemnasium',
+      'version' => '2.1.0'
+    }
+  end
+
+  let(:validator) { described_class.new(report_type, report_data, report_version, project: project, scanner: scanner) }
 
   describe 'SUPPORTED_VERSIONS' do
     schema_path = Rails.root.join("lib", "gitlab", "ci", "parsers", "security", "validators", "schemas")
@@ -84,7 +92,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
             security_report_type: report_type,
             security_report_version: report_version,
             project_id: project.id,
-            security_report_failure: 'schema_validation_fails'
+            security_report_failure: 'schema_validation_fails',
+            security_report_scanner_id: 'gemnasium',
+            security_report_scanner_version: '2.1.0'
           )
 
           subject
@@ -112,7 +122,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
             security_report_type: report_type,
             security_report_version: report_version,
             project_id: project.id,
-            security_report_failure: 'using_deprecated_schema_version'
+            security_report_failure: 'using_deprecated_schema_version',
+            security_report_scanner_id: 'gemnasium',
+            security_report_scanner_version: '2.1.0'
           )
 
           subject
@@ -175,7 +187,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
               security_report_type: report_type,
               security_report_version: report_version,
               project_id: project.id,
-              security_report_failure: 'using_unsupported_schema_version'
+              security_report_failure: 'using_unsupported_schema_version',
+              security_report_scanner_id: 'gemnasium',
+              security_report_scanner_version: '2.1.0'
             )
 
             subject
@@ -187,6 +201,34 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
             {
               'version' => report_version
             }
+          end
+
+          context 'and scanner information is empty' do
+            let(:scanner) { {} }
+
+            it 'logs related information' do
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                message: "security report schema validation problem",
+                security_report_type: report_type,
+                security_report_version: report_version,
+                project_id: project.id,
+                security_report_failure: 'schema_validation_fails',
+                security_report_scanner_id: nil,
+                security_report_scanner_version: nil
+              )
+
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                message: "security report schema validation problem",
+                security_report_type: report_type,
+                security_report_version: report_version,
+                project_id: project.id,
+                security_report_failure: 'using_unsupported_schema_version',
+                security_report_scanner_id: nil,
+                security_report_scanner_version: nil
+              )
+
+              subject
+            end
           end
 
           it { is_expected.to be_falsey }

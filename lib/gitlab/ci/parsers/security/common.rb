@@ -72,7 +72,13 @@ module Gitlab
           end
 
           def schema_validator
-            @schema_validator ||= ::Gitlab::Ci::Parsers::Security::Validators::SchemaValidator.new(report.type, report_data, report.version, project: @project)
+            @schema_validator ||= ::Gitlab::Ci::Parsers::Security::Validators::SchemaValidator.new(
+              report.type,
+              report_data,
+              report.version,
+              project: @project,
+              scanner: top_level_scanner
+            )
           end
 
           def report_data

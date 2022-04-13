@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe API::Releases do
-  include UploadHelpers
-
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }
@@ -1364,7 +1362,7 @@ RSpec.describe API::Releases do
   describe 'GET /groups/:id/releases' do
     let_it_be(:user1) { create(:user, can_create_group: false) }
     let_it_be(:admin) { create(:admin) }
-    let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path)) }
+    let_it_be(:group1) { create(:group) }
     let_it_be(:group2) { create(:group, :private) }
     let_it_be(:project1) { create(:project, namespace: group1) }
     let_it_be(:project2) { create(:project, namespace: group2) }
@@ -1408,6 +1406,21 @@ RSpec.describe API::Releases do
         get api("/groups/#{group1.id}/releases", admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when authenticated as guest' do
+      before do
+        group1.add_guest(guest)
+      end
+
+      it "does not expose tag, commit, source code or helper paths" do
+        get api("/groups/#{group1.id}/releases", guest)
+
+        expect(response).to match_response_schema('public_api/v4/release/releases_for_guest')
+        expect(json_response[0]['assets']['count']).to eq(release1.links.count)
+        expect(json_response[0]['commit_path']).to be_nil
+        expect(json_response[0]['tag_path']).to be_nil
       end
     end
 

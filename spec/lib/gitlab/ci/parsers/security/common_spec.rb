@@ -4,6 +4,18 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Security::Common do
   describe '#parse!' do
+    let_it_be(:scanner_data) do
+      {
+        scan: {
+          scanner: {
+              id: "gemnasium",
+              name: "Gemnasium",
+              version: "2.1.0"
+          }
+        }
+      }
+    end
+
     where(vulnerability_finding_signatures_enabled: [true, false])
     with_them do
       let_it_be(:pipeline) { create(:ci_pipeline) }
@@ -30,7 +42,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
 
       describe 'schema validation' do
         let(:validator_class) { Gitlab::Ci::Parsers::Security::Validators::SchemaValidator }
-        let(:parser) { described_class.new('{}', report, vulnerability_finding_signatures_enabled, validate: validate) }
+        let(:data) { {}.merge(scanner_data) }
+        let(:json_data) { data.to_json }
+        let(:parser) { described_class.new(json_data, report, vulnerability_finding_signatures_enabled, validate: validate) }
 
         subject(:parse_report) { parser.parse! }
 
@@ -57,7 +71,13 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
           it 'instantiates the validator with correct params' do
             parse_report
 
-            expect(validator_class).to have_received(:new).with(report.type, {}, report.version, project: pipeline.project)
+            expect(validator_class).to have_received(:new).with(
+              report.type,
+              data.deep_stringify_keys,
+              report.version,
+              project: pipeline.project,
+              scanner: data.dig(:scan, :scanner).deep_stringify_keys
+            )
           end
 
           context 'when the report data is not valid according to the schema' do
@@ -119,7 +139,13 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
           it 'instantiates the validator with correct params' do
             parse_report
 
-            expect(validator_class).to have_received(:new).with(report.type, {}, report.version, project: pipeline.project)
+            expect(validator_class).to have_received(:new).with(
+              report.type,
+              data.deep_stringify_keys,
+              report.version,
+              project: pipeline.project,
+              scanner: data.dig(:scan, :scanner).deep_stringify_keys
+            )
           end
 
           context 'when the report data is not valid according to the schema' do
