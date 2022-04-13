@@ -4,7 +4,7 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/C++.gitlab-ci.yml
 
 # use the official gcc image, based on debian
-# can use verions as well, like gcc:5.2
+# can use versions as well, like gcc:5.2
 # see https://hub.docker.com/_/gcc/
 
 image: gcc

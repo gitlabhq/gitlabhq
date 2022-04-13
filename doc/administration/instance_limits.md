@@ -383,6 +383,20 @@ Plan.default.actual_limits.update!(ci_active_jobs: 500)
 
 Set the limit to `0` to disable it.
 
+### Maximum time jobs can run
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16777) in GitLab 12.3.
+
+The default maximum time that jobs can run for is 60 minutes. Jobs that run for
+more than 60 minutes time out.
+
+You can change the maximum time a job can run before it times out:
+
+- At the project-level in the [project's CI/CD settings](../ci/pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
+  for a given project. This limit must be between 10 minutes and 1 month.
+- At the [runner level](../ci/runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+  This limit must be 10 minutes or longer.
+
 ### Maximum number of deployment jobs in a pipeline
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46931) in GitLab 13.7.
