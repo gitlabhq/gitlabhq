@@ -18,12 +18,11 @@ describe('User Popovers', () => {
 
     return link;
   };
-  const findPopovers = () => {
-    return Array.from(document.querySelectorAll('[data-testid="user-popover"]'));
-  };
 
   const dummyUser = { name: 'root' };
   const dummyUserStatus = { message: 'active' };
+
+  let popovers;
 
   const triggerEvent = (eventName, el) => {
     const event = new MouseEvent(eventName, {
@@ -46,49 +45,29 @@ describe('User Popovers', () => {
       .spyOn(UsersCache, 'retrieveStatusById')
       .mockImplementation((userId) => userStatusCacheSpy(userId));
 
-    initUserPopovers(document.querySelectorAll(selector), (popoverInstance) => {
-      const mountingRoot = document.createElement('div');
-      document.body.appendChild(mountingRoot);
-      popoverInstance.$mount(mountingRoot);
-    });
+    popovers = initUserPopovers(document.querySelectorAll(selector));
   });
 
-  describe('shows a placeholder popover on hover', () => {
-    let linksWithUsers;
-    beforeEach(() => {
-      linksWithUsers = findFixtureLinks();
-      linksWithUsers.forEach((el) => {
-        triggerEvent('mouseenter', el);
-      });
-    });
+  it('initializes a popover for each user link with a user id', () => {
+    const linksWithUsers = findFixtureLinks();
 
-    it('for initial links', () => {
-      expect(findPopovers().length).toBe(linksWithUsers.length);
-    });
+    expect(linksWithUsers.length).toBe(popovers.length);
+  });
 
-    it('for elements added after initial load', async () => {
-      const addedLinks = [createUserLink(), createUserLink()];
-      addedLinks.forEach((link) => {
-        document.body.appendChild(link);
-      });
+  it('adds popovers to user links added to the DOM tree after the initial call', async () => {
+    document.body.appendChild(createUserLink());
+    document.body.appendChild(createUserLink());
 
-      await Promise.resolve();
+    const linksWithUsers = findFixtureLinks();
 
-      addedLinks.forEach((link) => {
-        triggerEvent('mouseenter', link);
-      });
-
-      expect(findPopovers().length).toBe(linksWithUsers.length + addedLinks.length);
-    });
+    expect(linksWithUsers.length).toBe(popovers.length + 2);
   });
 
   it('does not initialize the user popovers twice for the same element', () => {
-    const [firstUserLink] = findFixtureLinks();
-    triggerEvent('mouseenter', firstUserLink);
-    triggerEvent('mouseleave', firstUserLink);
-    triggerEvent('mouseenter', firstUserLink);
+    const newPopovers = initUserPopovers(document.querySelectorAll(selector));
+    const samePopovers = popovers.every((popover, index) => newPopovers[index] === popover);
 
-    expect(findPopovers().length).toBe(1);
+    expect(samePopovers).toBe(true);
   });
 
   describe('when user link emits mouseenter event', () => {
@@ -107,11 +86,11 @@ describe('User Popovers', () => {
       expect(userLink.dataset.originalTitle).toBeFalsy();
     });
 
-    it('populates popover with preloaded user data', () => {
+    it('populates popovers with preloaded user data', () => {
       const { name, userId, username } = userLink.dataset;
-      const [firstPopover] = findFixtureLinks();
+      const [firstPopover] = popovers;
 
-      expect(firstPopover.user).toEqual(
+      expect(firstPopover.$props.user).toEqual(
         expect.objectContaining({
           name,
           userId,

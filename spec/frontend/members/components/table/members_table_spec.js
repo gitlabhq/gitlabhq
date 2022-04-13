@@ -21,6 +21,7 @@ import {
   BADGE_LABELS_PENDING_OWNER_APPROVAL,
   TAB_QUERY_PARAM_VALUES,
 } from '~/members/constants';
+import * as initUserPopovers from '~/user_popovers';
 import {
   member as memberMock,
   directMember,
@@ -254,6 +255,14 @@ describe('MembersTable', () => {
         memberMock.accessLevel.stringValue,
       );
     });
+  });
+
+  it('initializes user popovers when mounted', () => {
+    const initUserPopoversMock = jest.spyOn(initUserPopovers, 'default');
+
+    createComponent();
+
+    expect(initUserPopoversMock).toHaveBeenCalled();
   });
 
   it('adds QA selector to table', () => {

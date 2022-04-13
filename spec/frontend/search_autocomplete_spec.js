@@ -223,34 +223,22 @@ describe('Search autocomplete dropdown', () => {
       });
     }
 
-    it('suggest Projects', (done) => {
-      // eslint-disable-next-line promise/catch-or-return
-      triggerAutocomplete().finally(() => {
-        const list = widget.wrap.find('.dropdown-menu').find('ul');
-        const link = "a[href$='/gitlab-org/gitlab-test']";
+    it('suggest Projects', async () => {
+      await triggerAutocomplete();
 
-        expect(list.find(link).length).toBe(1);
+      const list = widget.wrap.find('.dropdown-menu').find('ul');
+      const link = "a[href$='/gitlab-org/gitlab-test']";
 
-        done();
-      });
-
-      // Make sure jest properly acknowledge the `done` invocation
-      jest.runOnlyPendingTimers();
+      expect(list.find(link).length).toBe(1);
     });
 
-    it('suggest Groups', (done) => {
-      // eslint-disable-next-line promise/catch-or-return
-      triggerAutocomplete().finally(() => {
-        const list = widget.wrap.find('.dropdown-menu').find('ul');
-        const link = "a[href$='/gitlab-org']";
+    it('suggest Groups', async () => {
+      await triggerAutocomplete();
 
-        expect(list.find(link).length).toBe(1);
+      const list = widget.wrap.find('.dropdown-menu').find('ul');
+      const link = "a[href$='/gitlab-org']";
 
-        done();
-      });
-
-      // Make sure jest properly acknowledge the `done` invocation
-      jest.runOnlyPendingTimers();
+      expect(list.find(link).length).toBe(1);
     });
   });
 

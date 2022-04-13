@@ -189,9 +189,9 @@ describe('MrWidgetOptions', () => {
           });
 
           describe('when merge request is opened', () => {
-            beforeEach((done) => {
+            beforeEach(() => {
               wrapper.vm.mr.isOpen = true;
-              nextTick(done);
+              return nextTick();
             });
 
             it('should render collaboration status', () => {
@@ -200,9 +200,9 @@ describe('MrWidgetOptions', () => {
           });
 
           describe('when merge request is not opened', () => {
-            beforeEach((done) => {
+            beforeEach(() => {
               wrapper.vm.mr.isOpen = false;
-              nextTick(done);
+              return nextTick();
             });
 
             it('should not render collaboration status', () => {
@@ -217,9 +217,9 @@ describe('MrWidgetOptions', () => {
           });
 
           describe('when merge request is opened', () => {
-            beforeEach((done) => {
+            beforeEach(() => {
               wrapper.vm.mr.isOpen = true;
-              nextTick(done);
+              return nextTick();
             });
 
             it('should not render collaboration status', () => {
@@ -231,11 +231,11 @@ describe('MrWidgetOptions', () => {
 
       describe('showMergePipelineForkWarning', () => {
         describe('when the source project and target project are the same', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', true);
             Vue.set(wrapper.vm.mr, 'sourceProjectId', 1);
             Vue.set(wrapper.vm.mr, 'targetProjectId', 1);
-            nextTick(done);
+            return nextTick();
           });
 
           it('should be false', () => {
@@ -244,11 +244,11 @@ describe('MrWidgetOptions', () => {
         });
 
         describe('when merge pipelines are not enabled', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', false);
             Vue.set(wrapper.vm.mr, 'sourceProjectId', 1);
             Vue.set(wrapper.vm.mr, 'targetProjectId', 2);
-            nextTick(done);
+            return nextTick();
           });
 
           it('should be false', () => {
@@ -257,11 +257,11 @@ describe('MrWidgetOptions', () => {
         });
 
         describe('when merge pipelines are enabled _and_ the source project and target project are different', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', true);
             Vue.set(wrapper.vm.mr, 'sourceProjectId', 1);
             Vue.set(wrapper.vm.mr, 'targetProjectId', 2);
-            nextTick(done);
+            return nextTick();
           });
 
           it('should be true', () => {
@@ -441,15 +441,10 @@ describe('MrWidgetOptions', () => {
           expect(setFaviconOverlay).toHaveBeenCalledWith(overlayDataUrl);
         });
 
-        it('should not call setFavicon when there is no ciStatusFaviconPath', (done) => {
+        it('should not call setFavicon when there is no ciStatusFaviconPath', async () => {
           wrapper.vm.mr.ciStatusFaviconPath = null;
-          wrapper.vm
-            .setFaviconHelper()
-            .then(() => {
-              expect(faviconElement.getAttribute('href')).toEqual(null);
-              done();
-            })
-            .catch(done.fail);
+          await wrapper.vm.setFaviconHelper();
+          expect(faviconElement.getAttribute('href')).toEqual(null);
         });
       });
 
@@ -536,44 +531,36 @@ describe('MrWidgetOptions', () => {
         expect(wrapper.find('.close-related-link').exists()).toBe(true);
       });
 
-      it('does not render if state is nothingToMerge', (done) => {
+      it('does not render if state is nothingToMerge', async () => {
         wrapper.vm.mr.state = stateKey.nothingToMerge;
-        nextTick(() => {
-          expect(wrapper.find('.close-related-link').exists()).toBe(false);
-          done();
-        });
+        await nextTick();
+        expect(wrapper.find('.close-related-link').exists()).toBe(false);
       });
     });
 
     describe('rendering source branch removal status', () => {
-      it('renders when user cannot remove branch and branch should be removed', (done) => {
+      it('renders when user cannot remove branch and branch should be removed', async () => {
         wrapper.vm.mr.canRemoveSourceBranch = false;
         wrapper.vm.mr.shouldRemoveSourceBranch = true;
         wrapper.vm.mr.state = 'readyToMerge';
 
-        nextTick(() => {
-          const tooltip = wrapper.find('[data-testid="question-o-icon"]');
+        await nextTick();
+        const tooltip = wrapper.find('[data-testid="question-o-icon"]');
 
-          expect(wrapper.text()).toContain('Deletes the source branch');
-          expect(tooltip.attributes('title')).toBe(
-            'A user with write access to the source branch selected this option',
-          );
-
-          done();
-        });
+        expect(wrapper.text()).toContain('Deletes the source branch');
+        expect(tooltip.attributes('title')).toBe(
+          'A user with write access to the source branch selected this option',
+        );
       });
 
-      it('does not render in merged state', (done) => {
+      it('does not render in merged state', async () => {
         wrapper.vm.mr.canRemoveSourceBranch = false;
         wrapper.vm.mr.shouldRemoveSourceBranch = true;
         wrapper.vm.mr.state = 'merged';
 
-        nextTick(() => {
-          expect(wrapper.text()).toContain('The source branch has been deleted');
-          expect(wrapper.text()).not.toContain('Deletes the source branch');
-
-          done();
-        });
+        await nextTick();
+        expect(wrapper.text()).toContain('The source branch has been deleted');
+        expect(wrapper.text()).not.toContain('Deletes the source branch');
       });
     });
 
@@ -607,7 +594,7 @@ describe('MrWidgetOptions', () => {
         status: SUCCESS,
       };
 
-      beforeEach((done) => {
+      beforeEach(() => {
         wrapper.vm.mr.deployments.push(
           {
             ...deploymentMockData,
@@ -618,7 +605,7 @@ describe('MrWidgetOptions', () => {
           },
         );
 
-        nextTick(done);
+        return nextTick();
       });
 
       it('renders multiple deployments', () => {
@@ -641,7 +628,7 @@ describe('MrWidgetOptions', () => {
 
     describe('pipeline for target branch after merge', () => {
       describe('with information for target branch pipeline', () => {
-        beforeEach((done) => {
+        beforeEach(() => {
           wrapper.vm.mr.state = 'merged';
           wrapper.vm.mr.mergePipeline = {
             id: 127,
@@ -749,7 +736,7 @@ describe('MrWidgetOptions', () => {
             },
             cancel_path: '/root/ci-web-terminal/pipelines/127/cancel',
           };
-          nextTick(done);
+          return nextTick();
         });
 
         it('renders pipeline block', () => {
@@ -757,7 +744,7 @@ describe('MrWidgetOptions', () => {
         });
 
         describe('with post merge deployments', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             wrapper.vm.mr.postMergeDeployments = [
               {
                 id: 15,
@@ -789,7 +776,7 @@ describe('MrWidgetOptions', () => {
               },
             ];
 
-            nextTick(done);
+            return nextTick();
           });
 
           it('renders post deployment information', () => {
@@ -799,10 +786,10 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('without information for target branch pipeline', () => {
-        beforeEach((done) => {
+        beforeEach(() => {
           wrapper.vm.mr.state = 'merged';
 
-          nextTick(done);
+          return nextTick();
         });
 
         it('does not render pipeline block', () => {
@@ -811,10 +798,10 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('when state is not merged', () => {
-        beforeEach((done) => {
+        beforeEach(() => {
           wrapper.vm.mr.state = 'archived';
 
-          nextTick(done);
+          return nextTick();
         });
 
         it('does not render pipeline block', () => {

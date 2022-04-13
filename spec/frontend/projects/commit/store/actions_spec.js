@@ -44,12 +44,12 @@ describe('Commit form modal store actions', () => {
   });
 
   describe('fetchBranches', () => {
-    it('dispatch correct actions on fetchBranches', (done) => {
+    it('dispatch correct actions on fetchBranches', () => {
       jest
         .spyOn(axios, 'get')
         .mockImplementation(() => Promise.resolve({ data: { Branches: mockData.mockBranches } }));
 
-      testAction(
+      return testAction(
         actions.fetchBranches,
         {},
         state,
@@ -60,19 +60,15 @@ describe('Commit form modal store actions', () => {
           },
         ],
         [{ type: 'requestBranches' }],
-        () => {
-          done();
-        },
       );
     });
 
-    it('should show flash error and set error in state on fetchBranches failure', (done) => {
+    it('should show flash error and set error in state on fetchBranches failure', async () => {
       jest.spyOn(axios, 'get').mockRejectedValue();
 
-      testAction(actions.fetchBranches, {}, state, [], [{ type: 'requestBranches' }], () => {
-        expect(createFlash).toHaveBeenCalledWith({ message: PROJECT_BRANCHES_ERROR });
-        done();
-      });
+      await testAction(actions.fetchBranches, {}, state, [], [{ type: 'requestBranches' }]);
+
+      expect(createFlash).toHaveBeenCalledWith({ message: PROJECT_BRANCHES_ERROR });
     });
   });
 

@@ -175,22 +175,19 @@ describe('MemoryUsage', () => {
       expect(el.querySelector('.js-usage-info')).toBeDefined();
     });
 
-    it('should show loading metrics message while metrics are being loaded', (done) => {
+    it('should show loading metrics message while metrics are being loaded', async () => {
       vm.loadingMetrics = true;
       vm.hasMetrics = false;
       vm.loadFailed = false;
 
-      nextTick(() => {
-        expect(el.querySelector('.js-usage-info.usage-info-loading')).toBeDefined();
+      await nextTick();
 
-        expect(el.querySelector('.js-usage-info .usage-info-load-spinner')).toBeDefined();
-
-        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadingMetrics);
-        done();
-      });
+      expect(el.querySelector('.js-usage-info.usage-info-loading')).toBeDefined();
+      expect(el.querySelector('.js-usage-info .usage-info-load-spinner')).toBeDefined();
+      expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadingMetrics);
     });
 
-    it('should show deployment memory usage when metrics are loaded', (done) => {
+    it('should show deployment memory usage when metrics are loaded', async () => {
       // ignore BoostrapVue warnings
       jest.spyOn(console, 'warn').mockImplementation();
 
@@ -199,37 +196,32 @@ describe('MemoryUsage', () => {
       vm.loadFailed = false;
       vm.memoryMetrics = metricsMockData.metrics.memory_values[0].values;
 
-      nextTick(() => {
-        expect(el.querySelector('.memory-graph-container')).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.hasMetrics);
-        done();
-      });
+      await nextTick();
+
+      expect(el.querySelector('.memory-graph-container')).toBeDefined();
+      expect(el.querySelector('.js-usage-info').innerText).toContain(messages.hasMetrics);
     });
 
-    it('should show failure message when metrics loading failed', (done) => {
+    it('should show failure message when metrics loading failed', async () => {
       vm.loadingMetrics = false;
       vm.hasMetrics = false;
       vm.loadFailed = true;
 
-      nextTick(() => {
-        expect(el.querySelector('.js-usage-info.usage-info-failed')).toBeDefined();
+      await nextTick();
 
-        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadFailed);
-        done();
-      });
+      expect(el.querySelector('.js-usage-info.usage-info-failed')).toBeDefined();
+      expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadFailed);
     });
 
-    it('should show metrics unavailable message when metrics loading failed', (done) => {
+    it('should show metrics unavailable message when metrics loading failed', async () => {
       vm.loadingMetrics = false;
       vm.hasMetrics = false;
       vm.loadFailed = false;
 
-      nextTick(() => {
-        expect(el.querySelector('.js-usage-info.usage-info-unavailable')).toBeDefined();
+      await nextTick();
 
-        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.metricsUnavailable);
-        done();
-      });
+      expect(el.querySelector('.js-usage-info.usage-info-unavailable')).toBeDefined();
+      expect(el.querySelector('.js-usage-info').innerText).toContain(messages.metricsUnavailable);
     });
   });
 });

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import syntaxHighlight from '~/syntax_highlight';
+import initUserPopovers from '../../user_popovers';
 import highlightCurrentUser from './highlight_current_user';
 import { renderKroki } from './render_kroki';
 import renderMath from './render_math';
@@ -21,6 +22,7 @@ $.fn.renderGFM = function renderGFM() {
     renderMermaid(this.find('.js-render-mermaid'));
   }
   highlightCurrentUser(this.find('.gfm-project_member').get());
+  initUserPopovers(this.find('.js-user-link').get());
 
   const mrPopoverElements = this.find('.gfm-merge_request').get();
   if (mrPopoverElements.length) {

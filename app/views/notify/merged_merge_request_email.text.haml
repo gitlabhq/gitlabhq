@@ -4,6 +4,6 @@
 
 = merge_path_description(@merge_request, 'to')
 
-sprintf(s_('Notify|Author: %{author_name}'), { author_name: sanitize_name(@merge_request.author_name) })
+= sprintf(s_('Notify|Author: %{author_name}'), { author_name: sanitize_name(@merge_request.author_name) })
 = assignees_label(@merge_request)
 = reviewers_label(@merge_request)

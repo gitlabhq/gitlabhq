@@ -23,13 +23,12 @@ describe('AccountAndLimits', () => {
       expect($userInternalRegex.readOnly).toBeTruthy();
     });
 
-    it('is checked', (done) => {
+    it('is checked', () => {
       if (!$userDefaultExternal.prop('checked')) $userDefaultExternal.click();
 
       expect($userDefaultExternal.prop('checked')).toBeTruthy();
       expect($userInternalRegex.placeholder).toEqual(PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE);
       expect($userInternalRegex.readOnly).toBeFalsy();
-      done();
     });
   });
 });

@@ -17,16 +17,15 @@ describe('Accessibility Reports actions', () => {
   });
 
   describe('setEndpoints', () => {
-    it('should commit SET_ENDPOINTS mutation', (done) => {
+    it('should commit SET_ENDPOINTS mutation', () => {
       const endpoint = 'endpoint.json';
 
-      testAction(
+      return testAction(
         actions.setEndpoint,
         endpoint,
         localState,
         [{ type: types.SET_ENDPOINT, payload: endpoint }],
         [],
-        done,
       );
     });
   });
@@ -46,11 +45,11 @@ describe('Accessibility Reports actions', () => {
     });
 
     describe('success', () => {
-      it('should commit REQUEST_REPORT mutation and dispatch receiveReportSuccess', (done) => {
+      it('should commit REQUEST_REPORT mutation and dispatch receiveReportSuccess', () => {
         const data = { report: { summary: {} } };
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(200, data);
 
-        testAction(
+        return testAction(
           actions.fetchReport,
           null,
           localState,
@@ -61,60 +60,55 @@ describe('Accessibility Reports actions', () => {
               type: 'receiveReportSuccess',
             },
           ],
-          done,
         );
       });
     });
 
     describe('error', () => {
-      it('should commit REQUEST_REPORT and RECEIVE_REPORT_ERROR mutations', (done) => {
+      it('should commit REQUEST_REPORT and RECEIVE_REPORT_ERROR mutations', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
 
-        testAction(
+        return testAction(
           actions.fetchReport,
           null,
           localState,
           [{ type: types.REQUEST_REPORT }],
           [{ type: 'receiveReportError' }],
-          done,
         );
       });
     });
   });
 
   describe('receiveReportSuccess', () => {
-    it('should commit RECEIVE_REPORT_SUCCESS mutation with 200', (done) => {
-      testAction(
+    it('should commit RECEIVE_REPORT_SUCCESS mutation with 200', () => {
+      return testAction(
         actions.receiveReportSuccess,
         { status: 200, data: mockReport },
         localState,
         [{ type: types.RECEIVE_REPORT_SUCCESS, payload: mockReport }],
         [{ type: 'stopPolling' }],
-        done,
       );
     });
 
-    it('should not commit RECEIVE_REPORTS_SUCCESS mutation with 204', (done) => {
-      testAction(
+    it('should not commit RECEIVE_REPORTS_SUCCESS mutation with 204', () => {
+      return testAction(
         actions.receiveReportSuccess,
         { status: 204, data: mockReport },
         localState,
         [],
         [],
-        done,
       );
     });
   });
 
   describe('receiveReportError', () => {
-    it('should commit RECEIVE_REPORT_ERROR mutation', (done) => {
-      testAction(
+    it('should commit RECEIVE_REPORT_ERROR mutation', () => {
+      return testAction(
         actions.receiveReportError,
         null,
         localState,
         [{ type: types.RECEIVE_REPORT_ERROR }],
         [{ type: 'stopPolling' }],
-        done,
       );
     });
   });

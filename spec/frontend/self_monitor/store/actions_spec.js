@@ -16,27 +16,25 @@ describe('self monitor actions', () => {
   });
 
   describe('setSelfMonitor', () => {
-    it('commits the SET_ENABLED mutation', (done) => {
-      testAction(
+    it('commits the SET_ENABLED mutation', () => {
+      return testAction(
         actions.setSelfMonitor,
         null,
         state,
         [{ type: types.SET_ENABLED, payload: null }],
         [],
-        done,
       );
     });
   });
 
   describe('resetAlert', () => {
-    it('commits the SET_ENABLED mutation', (done) => {
-      testAction(
+    it('commits the SET_ENABLED mutation', () => {
+      return testAction(
         actions.resetAlert,
         null,
         state,
         [{ type: types.SET_SHOW_ALERT, payload: false }],
         [],
-        done,
       );
     });
   });
@@ -54,8 +52,8 @@ describe('self monitor actions', () => {
         });
       });
 
-      it('dispatches status request with job data', (done) => {
-        testAction(
+      it('dispatches status request with job data', () => {
+        return testAction(
           actions.requestCreateProject,
           null,
           state,
@@ -71,12 +69,11 @@ describe('self monitor actions', () => {
               payload: '123',
             },
           ],
-          done,
         );
       });
 
-      it('dispatches success with project path', (done) => {
-        testAction(
+      it('dispatches success with project path', () => {
+        return testAction(
           actions.requestCreateProjectStatus,
           null,
           state,
@@ -87,7 +84,6 @@ describe('self monitor actions', () => {
               payload: { project_full_path: '/self-monitor-url' },
             },
           ],
-          done,
         );
       });
     });
@@ -98,8 +94,8 @@ describe('self monitor actions', () => {
         mock.onPost(state.createProjectEndpoint).reply(500);
       });
 
-      it('dispatches error', (done) => {
-        testAction(
+      it('dispatches error', () => {
+        return testAction(
           actions.requestCreateProject,
           null,
           state,
@@ -115,14 +111,13 @@ describe('self monitor actions', () => {
               payload: new Error('Request failed with status code 500'),
             },
           ],
-          done,
         );
       });
     });
 
     describe('requestCreateProjectSuccess', () => {
-      it('should commit the received data', (done) => {
-        testAction(
+      it('should commit the received data', () => {
+        return testAction(
           actions.requestCreateProjectSuccess,
           { project_full_path: '/self-monitor-url' },
           state,
@@ -146,7 +141,6 @@ describe('self monitor actions', () => {
               type: 'setSelfMonitor',
             },
           ],
-          done,
         );
       });
     });
@@ -165,8 +159,8 @@ describe('self monitor actions', () => {
         });
       });
 
-      it('dispatches status request with job data', (done) => {
-        testAction(
+      it('dispatches status request with job data', () => {
+        return testAction(
           actions.requestDeleteProject,
           null,
           state,
@@ -182,12 +176,11 @@ describe('self monitor actions', () => {
               payload: '456',
             },
           ],
-          done,
         );
       });
 
-      it('dispatches success with status', (done) => {
-        testAction(
+      it('dispatches success with status', () => {
+        return testAction(
           actions.requestDeleteProjectStatus,
           null,
           state,
@@ -198,7 +191,6 @@ describe('self monitor actions', () => {
               payload: { status: 'success' },
             },
           ],
-          done,
         );
       });
     });
@@ -209,8 +201,8 @@ describe('self monitor actions', () => {
         mock.onDelete(state.deleteProjectEndpoint).reply(500);
       });
 
-      it('dispatches error', (done) => {
-        testAction(
+      it('dispatches error', () => {
+        return testAction(
           actions.requestDeleteProject,
           null,
           state,
@@ -226,14 +218,13 @@ describe('self monitor actions', () => {
               payload: new Error('Request failed with status code 500'),
             },
           ],
-          done,
         );
       });
     });
 
     describe('requestDeleteProjectSuccess', () => {
-      it('should commit mutations to remove previously set data', (done) => {
-        testAction(
+      it('should commit mutations to remove previously set data', () => {
+        return testAction(
           actions.requestDeleteProjectSuccess,
           null,
           state,
@@ -252,7 +243,6 @@ describe('self monitor actions', () => {
             { type: types.SET_LOADING, payload: false },
           ],
           [],
-          done,
         );
       });
     });

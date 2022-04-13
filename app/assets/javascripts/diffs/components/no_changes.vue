@@ -61,7 +61,7 @@ export default {
           </gl-sprintf>
         </div>
         <div class="text-center">
-          <gl-button :href="getNoteableData.new_blob_path" variant="success" category="primary">{{
+          <gl-button :href="getNoteableData.new_blob_path" variant="confirm" category="primary">{{
             __('Create commit')
           }}</gl-button>
         </div>

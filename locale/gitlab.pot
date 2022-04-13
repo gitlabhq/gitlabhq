@@ -796,9 +796,6 @@ msgstr ""
 msgid "%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it's ready."
 msgstr ""
 
-msgid "%{link_start}What information does GitLab Inc. collect?%{link_end}"
-msgstr ""
-
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
@@ -965,9 +962,6 @@ msgid "%{securityScanner} result is not available because a pipeline has not bee
 msgid_plural "%{securityScanner} results are not available because a pipeline has not been run since it was enabled. %{linkStart}Run a pipeline%{linkEnd}"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "%{service_ping_link_start}What information is shared with GitLab Inc.?%{service_ping_link_end}"
-msgstr ""
 
 msgid "%{size} %{unit}"
 msgstr ""
@@ -2646,6 +2640,15 @@ msgstr ""
 msgid "AdminSettings|Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "AdminSettings|Email from GitLab - email users right from the Admin Area. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AdminSettings|Enable Registration Features"
+msgstr ""
+
+msgid "AdminSettings|Enable Service Ping"
+msgstr ""
+
 msgid "AdminSettings|Enable pipeline suggestion banner"
 msgstr ""
 
@@ -2665,6 +2668,9 @@ msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest succes
 msgstr ""
 
 msgid "AdminSettings|Let's Encrypt email"
+msgstr ""
+
+msgid "AdminSettings|Limit project size at a global, group, and project level. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
@@ -2697,13 +2703,22 @@ msgstr ""
 msgid "AdminSettings|No required pipeline"
 msgstr ""
 
+msgid "AdminSettings|Preview payload"
+msgstr ""
+
 msgid "AdminSettings|Protect CI/CD variables by default"
+msgstr ""
+
+msgid "AdminSettings|Registration Features include:"
 msgstr ""
 
 msgid "AdminSettings|Require users to prove ownership of custom domains"
 msgstr ""
 
 msgid "AdminSettings|Required pipeline configuration"
+msgstr ""
+
+msgid "AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Save %{name} limits"
@@ -2716,6 +2731,9 @@ msgid "AdminSettings|Select a group to use as the source for instance-level proj
 msgstr ""
 
 msgid "AdminSettings|Select to disable public access for Pages sites, which requires users to sign in for access to the Pages sites in your instance. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "AdminSettings|Service ping is disabled in your configuration file, and cannot be enabled through this form. For more information, see the documentation on %{link_start}deactivating service ping%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (minutes)"
@@ -2748,7 +2766,16 @@ msgstr ""
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
 msgstr ""
 
+msgid "AdminSettings|To enable Registration Features, first enable Service Ping."
+msgstr ""
+
+msgid "AdminSettings|To help improve GitLab and its user experience, GitLab periodically collects usage information. %{link_start}What information is shared with GitLab Inc.?%{link_end}"
+msgstr ""
+
 msgid "AdminSettings|Total number of jobs in currently active pipelines"
+msgstr ""
+
+msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."
 msgstr ""
 
 msgid "AdminStatistics|Active Users"
@@ -5752,6 +5779,9 @@ msgstr ""
 msgid "Billings|Reactivate trial"
 msgstr ""
 
+msgid "Billings|Seats in use / Seats in subscription"
+msgstr ""
+
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr ""
 
@@ -5779,22 +5809,28 @@ msgstr ""
 msgid "Billing|%{user} was successfully approved"
 msgstr ""
 
+msgid "Billing|Add seats"
+msgstr ""
+
 msgid "Billing|An email address is only visible for users with public emails."
 msgstr ""
 
 msgid "Billing|An error occurred while approving %{user}"
 msgstr ""
 
-msgid "Billing|An error occurred while getting a billable member details"
+msgid "Billing|An error occurred while getting a billable member details."
 msgstr ""
 
-msgid "Billing|An error occurred while loading billable members list"
+msgid "Billing|An error occurred while loading GitLab subscription details."
+msgstr ""
+
+msgid "Billing|An error occurred while loading billable members list."
 msgstr ""
 
 msgid "Billing|An error occurred while loading pending members list"
 msgstr ""
 
-msgid "Billing|An error occurred while removing a billable member"
+msgid "Billing|An error occurred while removing a billable member."
 msgstr ""
 
 msgid "Billing|Awaiting member signup"
@@ -5810,9 +5846,6 @@ msgid "Billing|Enter at least three characters to search."
 msgstr ""
 
 msgid "Billing|Export list"
-msgstr ""
-
-msgid "Billing|Group"
 msgstr ""
 
 msgid "Billing|Group invite"
@@ -5840,9 +5873,6 @@ msgid "Billing|Type %{username} to confirm"
 msgstr ""
 
 msgid "Billing|User was successfully removed"
-msgstr ""
-
-msgid "Billing|Users occupying seats in"
 msgstr ""
 
 msgid "Billing|View pending approvals"
@@ -13699,9 +13729,6 @@ msgstr ""
 msgid "Email display name"
 msgstr ""
 
-msgid "Email from GitLab - email users right from the Admin Area. %{link_start}Learn more%{link_end}."
-msgstr ""
-
 msgid "Email not verified. Please verify your email in Salesforce."
 msgstr ""
 
@@ -13834,16 +13861,10 @@ msgstr ""
 msgid "Enable Pseudonymizer data collection"
 msgstr ""
 
-msgid "Enable Registration Features"
-msgstr ""
-
 msgid "Enable SSL verification"
 msgstr ""
 
 msgid "Enable Sentry error tracking"
-msgstr ""
-
-msgid "Enable Service Ping"
 msgstr ""
 
 msgid "Enable Snowplow tracking"
@@ -16149,9 +16170,6 @@ msgstr ""
 msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
-msgid "For more information, see the documentation on %{deactivating_service_ping_link_start}deactivating service ping%{deactivating_service_ping_link_end}."
-msgstr ""
-
 msgid "Forgot your password?"
 msgstr ""
 
@@ -16938,7 +16956,7 @@ msgstr ""
 msgid "GitLab group: %{source_link}"
 msgstr ""
 
-msgid "GitLab informs you if a new version is available."
+msgid "GitLab informs you if a new version is available. %{link_start}What information does GitLab Inc. collect?%{link_end}"
 msgstr ""
 
 msgid "GitLab is a complete DevOps platform, delivered as a single application, fundamentally changing the way Development, Security, and Ops teams collaborate"
@@ -22587,9 +22605,6 @@ msgid "Licenses|View license details for your project"
 msgstr ""
 
 msgid "Limit display of time tracking units to hours."
-msgstr ""
-
-msgid "Limit project size at a global, group, and project level. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Limit sign in from multiple IP addresses"
@@ -31017,9 +31032,6 @@ msgstr ""
 msgid "Register with two-factor app"
 msgstr ""
 
-msgid "Registration Features include:"
-msgstr ""
-
 msgid "RegistrationFeatures|Enable Service Ping and register for this feature."
 msgstr ""
 
@@ -32117,9 +32129,6 @@ msgid "Restoring the group will prevent the group, its subgroups and projects fr
 msgstr ""
 
 msgid "Restoring the project will prevent the project from being removed on this date and restore people's ability to make changes to it."
-msgstr ""
-
-msgid "Restrict group access by IP address. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Restrict membership by email domain"
@@ -34461,9 +34470,6 @@ msgid "Service account generated successfully"
 msgstr ""
 
 msgid "Service accounts"
-msgstr ""
-
-msgid "Service ping is disabled in your configuration file, and cannot be enabled through this form."
 msgstr ""
 
 msgid "Service usage data"
@@ -39409,9 +39415,6 @@ msgstr ""
 msgid "To get started, use the link below to confirm your account."
 msgstr ""
 
-msgid "To help improve GitLab and its user experience, GitLab periodically collects usage information."
-msgstr ""
-
 msgid "To help improve GitLab, we would like to periodically %{docs_link}. This can be changed at any time in %{settings_link}."
 msgstr ""
 
@@ -41248,7 +41251,7 @@ msgstr ""
 msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
 msgstr ""
 
-msgid "Users can reactivate their account by signing in."
+msgid "Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}"
 msgstr ""
 
 msgid "Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki."

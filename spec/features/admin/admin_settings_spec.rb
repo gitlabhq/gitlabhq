@@ -450,7 +450,7 @@ RSpec.describe 'Admin updates settings' do
             visit ci_cd_admin_application_settings_path
 
             page.within('.as-registry') do
-              find('#application_setting_container_registry_expiration_policies_caching.form-check-input').click
+              find('#application_setting_container_registry_expiration_policies_caching').click
               click_button 'Save changes'
             end
 

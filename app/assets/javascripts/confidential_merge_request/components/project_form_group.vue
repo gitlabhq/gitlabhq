@@ -87,7 +87,7 @@ export default {
     },
     showWarning() {
       if (this.warningText) {
-        this.warningText.classList.remove('hidden');
+        this.warningText.classList.remove('gl-display-none');
       }
 
       if (this.createBtn) {

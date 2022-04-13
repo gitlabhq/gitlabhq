@@ -192,6 +192,8 @@ pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_cla
 #### Background migrations stuck in 'pending' state
 
 GitLab 13.6 introduced an issue where a background migration named `BackfillJiraTrackerDeploymentType2` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [13.6.0 version-specific instructions](#1360).
+GitLab 14.4 introduced an issue where a background migration named `PopulateTopicsTotalProjectsCountCache` can be permanently stuck in a **pending** state across upgrades when the instance lacks records that match the migration's target. To clean up this stuck migration, see the [14.4.0 version-specific instructions](#1440).
+GitLab 14.8 introduced an issue where a background migration named `PopulateTopicsNonPrivateProjectsCount` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [14.8.0 version-specific instructions](#1480).
 
 For other background migrations stuck in pending, run the following check. If it returns non-zero and the count does not decrease over time, follow the rest of the steps in this section.
 
@@ -419,6 +421,17 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
   1. Add `gitlab_kas['enable'] = false` to `gitlab.rb`.
   1. If the server is already upgraded to 14.8, run `gitlab-ctl reconfigure`.
+- GitLab 14.8.0 includes a
+[background migration `PopulateTopicsNonPrivateProjectsCount`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79140)
+that may remain stuck permanently in a **pending** state.
+
+    To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+    ```ruby
+        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsNonPrivateProjectsCount").find_each do |job|
+          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCountq", job.arguments)
+        end
+    ```
 
 - If upgrading from a version earlier than 14.3.0, to avoid
   [an issue with job retries](https://gitlab.com/gitlab-org/gitlab/-/issues/357822), first upgrade
@@ -487,6 +500,17 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   as Sidekiq would continue using a bad connection. Geo and other features that rely on
   cron jobs running regularly do not work until Sidekiq is restarted. We recommend
   upgrading to GitLab 14.4.3 and later if this issue affects you.
+- GitLab 14.4.0 includes a
+[background migration `PopulateTopicsTotalProjectsCountCache`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71033)
+that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
+
+    To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+    ```ruby
+        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsTotalProjectsCountCache").find_each do |job|
+          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsTotalProjectsCountCache", job.arguments)
+        end
+    ```
 
 ### 14.3.0
 

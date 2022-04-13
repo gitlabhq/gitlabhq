@@ -26,8 +26,8 @@ describe('sast report actions', () => {
   });
 
   describe('setDiffEndpoint', () => {
-    it(`should commit ${types.SET_DIFF_ENDPOINT} with the correct path`, (done) => {
-      testAction(
+    it(`should commit ${types.SET_DIFF_ENDPOINT} with the correct path`, () => {
+      return testAction(
         actions.setDiffEndpoint,
         diffEndpoint,
         state,
@@ -38,20 +38,19 @@ describe('sast report actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('requestDiff', () => {
-    it(`should commit ${types.REQUEST_DIFF}`, (done) => {
-      testAction(actions.requestDiff, {}, state, [{ type: types.REQUEST_DIFF }], [], done);
+    it(`should commit ${types.REQUEST_DIFF}`, () => {
+      return testAction(actions.requestDiff, {}, state, [{ type: types.REQUEST_DIFF }], []);
     });
   });
 
   describe('receiveDiffSuccess', () => {
-    it(`should commit ${types.RECEIVE_DIFF_SUCCESS} with the correct response`, (done) => {
-      testAction(
+    it(`should commit ${types.RECEIVE_DIFF_SUCCESS} with the correct response`, () => {
+      return testAction(
         actions.receiveDiffSuccess,
         reports,
         state,
@@ -62,14 +61,13 @@ describe('sast report actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('receiveDiffError', () => {
-    it(`should commit ${types.RECEIVE_DIFF_ERROR} with the correct response`, (done) => {
-      testAction(
+    it(`should commit ${types.RECEIVE_DIFF_ERROR} with the correct response`, () => {
+      return testAction(
         actions.receiveDiffError,
         error,
         state,
@@ -80,7 +78,6 @@ describe('sast report actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
@@ -107,9 +104,9 @@ describe('sast report actions', () => {
           .replyOnce(200, reports.enrichData);
       });
 
-      it('should dispatch the `receiveDiffSuccess` action', (done) => {
+      it('should dispatch the `receiveDiffSuccess` action', () => {
         const { diff, enrichData } = reports;
-        testAction(
+        return testAction(
           actions.fetchDiff,
           {},
           { ...rootState, ...state },
@@ -124,7 +121,6 @@ describe('sast report actions', () => {
               },
             },
           ],
-          done,
         );
       });
     });
@@ -135,10 +131,10 @@ describe('sast report actions', () => {
         mock.onGet(diffEndpoint).replyOnce(200, reports.diff);
       });
 
-      it('should dispatch the `receiveDiffSuccess` action with empty enrich data', (done) => {
+      it('should dispatch the `receiveDiffSuccess` action with empty enrich data', () => {
         const { diff } = reports;
         const enrichData = [];
-        testAction(
+        return testAction(
           actions.fetchDiff,
           {},
           { ...rootState, ...state },
@@ -153,7 +149,6 @@ describe('sast report actions', () => {
               },
             },
           ],
-          done,
         );
       });
     });
@@ -167,14 +162,13 @@ describe('sast report actions', () => {
           .replyOnce(404);
       });
 
-      it('should dispatch the `receiveError` action', (done) => {
-        testAction(
+      it('should dispatch the `receiveError` action', () => {
+        return testAction(
           actions.fetchDiff,
           {},
           { ...rootState, ...state },
           [],
           [{ type: 'requestDiff' }, { type: 'receiveDiffError' }],
-          done,
         );
       });
     });
@@ -188,14 +182,13 @@ describe('sast report actions', () => {
           .replyOnce(200, reports.enrichData);
       });
 
-      it('should dispatch the `receiveDiffError` action', (done) => {
-        testAction(
+      it('should dispatch the `receiveDiffError` action', () => {
+        return testAction(
           actions.fetchDiff,
           {},
           { ...rootState, ...state },
           [],
           [{ type: 'requestDiff' }, { type: 'receiveDiffError' }],
-          done,
         );
       });
     });

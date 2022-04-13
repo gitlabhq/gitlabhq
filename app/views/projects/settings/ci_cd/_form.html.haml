@@ -1,35 +1,28 @@
+- help_link_public_pipelines = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'change-which-users-can-view-your-pipelines'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_auto_canceling = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_skip_outdated =link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
+
 .row.gl-mt-3
   .col-lg-12
-    = form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings') do |f|
+    = gitlab_ui_form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings') do |f|
       = form_errors(@project)
       %fieldset.builds-feature
         .form-group
-          .form-check
-            = f.check_box :public_builds, { class: 'form-check-input' }
-            = f.label :public_builds, class: 'form-check-label' do
-              %strong= _("Public pipelines")
-            .form-text.text-muted
-              = _("Allow public access to pipelines and job details, including output logs and artifacts.")
-              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'change-which-users-can-view-your-pipelines'), target: '_blank', rel: 'noopener noreferrer'
+          = f.gitlab_ui_checkbox_component :public_builds,
+            _("Public pipelines"),
+            help_text: (_('Allow public access to pipelines and job details, including output logs and artifacts.') + ' ' + help_link_public_pipelines).html_safe
 
         .form-group
-          .form-check
-            = f.check_box :auto_cancel_pending_pipelines, { class: 'form-check-input' }, 'enabled', 'disabled'
-            = f.label :auto_cancel_pending_pipelines, class: 'form-check-label' do
-              %strong= _("Auto-cancel redundant pipelines")
-            .form-text.text-muted
-              = _("New pipelines cause older pending or running pipelines on the same branch to be cancelled.")
-              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank', rel: 'noopener noreferrer'
+          = f.gitlab_ui_checkbox_component :auto_cancel_pending_pipelines,
+            _("Auto-cancel redundant pipelines"),
+            checked_value: 'enabled',
+            unchecked_value: 'disabled',
+            help_text: (_('New pipelines cause older pending or running pipelines on the same branch to be cancelled.') + ' ' + help_link_auto_canceling).html_safe
 
         .form-group
-          .form-check
-            = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
-              = form.check_box :forward_deployment_enabled, { class: 'form-check-input' }
-              = form.label :forward_deployment_enabled, class: 'form-check-label' do
-                %strong= _("Skip outdated deployment jobs")
-              .form-text.text-muted
-                = _("When a deployment job is successful, skip older deployment jobs that are still pending.")
-                = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
+          = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
+            = form.gitlab_ui_checkbox_component :forward_deployment_enabled, _("Skip outdated deployment jobs"),
+              help_text: (_('When a deployment job is successful, skip older deployment jobs that are still pending.') + ' ' + help_link_skip_outdated).html_safe
 
         .form-group
           = f.label :ci_config_path, _('CI/CD configuration file'), class: 'label-bold'

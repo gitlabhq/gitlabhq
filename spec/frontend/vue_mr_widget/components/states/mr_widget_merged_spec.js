@@ -198,14 +198,13 @@ describe('MRWidgetMerged', () => {
     );
   });
 
-  it('hides button to copy commit SHA if SHA does not exist', (done) => {
+  it('hides button to copy commit SHA if SHA does not exist', async () => {
     vm.mr.mergeCommitSha = null;
 
-    nextTick(() => {
-      expect(selectors.copyMergeShaButton).toBe(null);
-      expect(vm.$el.querySelector('.mr-info-list').innerText).not.toContain('with');
-      done();
-    });
+    await nextTick();
+
+    expect(selectors.copyMergeShaButton).toBe(null);
+    expect(vm.$el.querySelector('.mr-info-list').innerText).not.toContain('with');
   });
 
   it('shows merge commit SHA link', () => {
@@ -214,24 +213,22 @@ describe('MRWidgetMerged', () => {
     expect(selectors.mergeCommitShaLink.href).toBe(vm.mr.mergeCommitPath);
   });
 
-  it('should not show source branch deleted text', (done) => {
+  it('should not show source branch deleted text', async () => {
     vm.mr.sourceBranchRemoved = false;
 
-    nextTick(() => {
-      expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
-      done();
-    });
+    await nextTick();
+
+    expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
   });
 
-  it('should show source branch deleting text', (done) => {
+  it('should show source branch deleting text', async () => {
     vm.mr.isRemovingSourceBranch = true;
     vm.mr.sourceBranchRemoved = false;
 
-    nextTick(() => {
-      expect(vm.$el.innerText).toContain('The source branch is being deleted');
-      expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
-      done();
-    });
+    await nextTick();
+
+    expect(vm.$el.innerText).toContain('The source branch is being deleted');
+    expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
   });
 
   it('should use mergedEvent mergedAt as tooltip title', () => {

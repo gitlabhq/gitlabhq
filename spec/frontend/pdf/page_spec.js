@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import PageComponent from '~/pdf/page/index.vue';
 
@@ -14,8 +14,7 @@ describe('Page component', () => {
     vm.$destroy();
   });
 
-  it('renders the page when mounting', (done) => {
-    const promise = Promise.resolve();
+  it('renders the page when mounting', async () => {
     const testPage = {
       render: jest.fn().mockReturnValue({ promise: Promise.resolve() }),
       getViewport: jest.fn().mockReturnValue({}),
@@ -28,12 +27,9 @@ describe('Page component', () => {
 
     expect(vm.rendering).toBe(true);
 
-    promise
-      .then(() => {
-        expect(testPage.render).toHaveBeenCalledWith(vm.renderContext);
-        expect(vm.rendering).toBe(false);
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+
+    expect(testPage.render).toHaveBeenCalledWith(vm.renderContext);
+    expect(vm.rendering).toBe(false);
   });
 });

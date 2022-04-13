@@ -26,7 +26,7 @@ describe('stop_jobs_modal.vue', () => {
   });
 
   describe('onSubmit', () => {
-    it('stops jobs and redirects to overview page', (done) => {
+    it('stops jobs and redirects to overview page', async () => {
       const responseURL = `${TEST_HOST}/stop_jobs_modal.vue/jobs`;
       jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(props.url);
@@ -37,29 +37,19 @@ describe('stop_jobs_modal.vue', () => {
         });
       });
 
-      vm.onSubmit()
-        .then(() => {
-          expect(redirectTo).toHaveBeenCalledWith(responseURL);
-        })
-        .then(done)
-        .catch(done.fail);
+      await vm.onSubmit();
+      expect(redirectTo).toHaveBeenCalledWith(responseURL);
     });
 
-    it('displays error if stopping jobs failed', (done) => {
+    it('displays error if stopping jobs failed', async () => {
       const dummyError = new Error('stopping jobs failed');
       jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(props.url);
         return Promise.reject(dummyError);
       });
 
-      vm.onSubmit()
-        .then(done.fail)
-        .catch((error) => {
-          expect(error).toBe(dummyError);
-          expect(redirectTo).not.toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      await expect(vm.onSubmit()).rejects.toEqual(dummyError);
+      expect(redirectTo).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createFlash from '~/flash';
@@ -27,11 +28,6 @@ const testApprovals = () => ({
   require_password_to_approve: false,
 });
 const testApprovalRulesResponse = () => ({ rules: [{ id: 2 }] });
-
-// For some reason, the `Promise.resolve()` needs to be deferred
-// or the timing doesn't work.
-const tick = () => Promise.resolve();
-const waitForTick = (done) => tick().then(done).catch(done.fail);
 
 describe('MRWidget approvals', () => {
   let wrapper;
@@ -105,7 +101,7 @@ describe('MRWidget approvals', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ fetchingApprovals: true });
 
-      return tick().then(() => {
+      return nextTick().then(() => {
         expect(wrapper.text()).toContain(FETCH_LOADING);
       });
     });
@@ -116,10 +112,10 @@ describe('MRWidget approvals', () => {
   });
 
   describe('when fetch approvals error', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       jest.spyOn(service, 'fetchApprovals').mockReturnValue(Promise.reject());
       createComponent();
-      waitForTick(done);
+      return nextTick();
     });
 
     it('still shows loading message', () => {
@@ -133,13 +129,13 @@ describe('MRWidget approvals', () => {
 
   describe('action button', () => {
     describe('when mr is closed', () => {
-      beforeEach((done) => {
+      beforeEach(() => {
         mr.isOpen = false;
         mr.approvals.user_has_approved = false;
         mr.approvals.user_can_approve = true;
 
         createComponent();
-        waitForTick(done);
+        return nextTick();
       });
 
       it('action is not rendered', () => {
@@ -148,12 +144,12 @@ describe('MRWidget approvals', () => {
     });
 
     describe('when user cannot approve', () => {
-      beforeEach((done) => {
+      beforeEach(() => {
         mr.approvals.user_has_approved = false;
         mr.approvals.user_can_approve = false;
 
         createComponent();
-        waitForTick(done);
+        return nextTick();
       });
 
       it('action is not rendered', () => {
@@ -168,9 +164,9 @@ describe('MRWidget approvals', () => {
       });
 
       describe('and MR is unapproved', () => {
-        beforeEach((done) => {
+        beforeEach(() => {
           createComponent();
-          waitForTick(done);
+          return nextTick();
         });
 
         it('approve action is rendered', () => {
@@ -188,10 +184,10 @@ describe('MRWidget approvals', () => {
         });
 
         describe('with no approvers', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             mr.approvals.approved_by = [];
             createComponent();
-            waitForTick(done);
+            return nextTick();
           });
 
           it('approve action (with inverted style) is rendered', () => {
@@ -204,10 +200,10 @@ describe('MRWidget approvals', () => {
         });
 
         describe('with approvers', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             mr.approvals.approved_by = [{ user: { id: 7 } }];
             createComponent();
-            waitForTick(done);
+            return nextTick();
           });
 
           it('approve additionally action is rendered', () => {
@@ -221,9 +217,9 @@ describe('MRWidget approvals', () => {
       });
 
       describe('when approve action is clicked', () => {
-        beforeEach((done) => {
+        beforeEach(() => {
           createComponent();
-          waitForTick(done);
+          return nextTick();
         });
 
         it('shows loading icon', () => {
@@ -234,15 +230,15 @@ describe('MRWidget approvals', () => {
 
           action.vm.$emit('click');
 
-          return tick().then(() => {
+          return nextTick().then(() => {
             expect(action.props('loading')).toBe(true);
           });
         });
 
         describe('and after loading', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             findAction().vm.$emit('click');
-            waitForTick(done);
+            return nextTick();
           });
 
           it('calls service approve', () => {
@@ -259,10 +255,10 @@ describe('MRWidget approvals', () => {
         });
 
         describe('and error', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             jest.spyOn(service, 'approveMergeRequest').mockReturnValue(Promise.reject());
             findAction().vm.$emit('click');
-            waitForTick(done);
+            return nextTick();
           });
 
           it('flashes error message', () => {
@@ -273,12 +269,12 @@ describe('MRWidget approvals', () => {
     });
 
     describe('when user has approved', () => {
-      beforeEach((done) => {
+      beforeEach(() => {
         mr.approvals.user_has_approved = true;
         mr.approvals.user_can_approve = false;
 
         createComponent();
-        waitForTick(done);
+        return nextTick();
       });
 
       it('revoke action is rendered', () => {
@@ -291,9 +287,9 @@ describe('MRWidget approvals', () => {
 
       describe('when revoke action is clicked', () => {
         describe('and successful', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             findAction().vm.$emit('click');
-            waitForTick(done);
+            return nextTick();
           });
 
           it('calls service unapprove', () => {
@@ -310,10 +306,10 @@ describe('MRWidget approvals', () => {
         });
 
         describe('and error', () => {
-          beforeEach((done) => {
+          beforeEach(() => {
             jest.spyOn(service, 'unapproveMergeRequest').mockReturnValue(Promise.reject());
             findAction().vm.$emit('click');
-            waitForTick(done);
+            return nextTick();
           });
 
           it('flashes error message', () => {
@@ -333,11 +329,11 @@ describe('MRWidget approvals', () => {
       });
 
       describe('and can approve', () => {
-        beforeEach((done) => {
+        beforeEach(() => {
           mr.approvals.user_can_approve = true;
 
           createComponent();
-          waitForTick(done);
+          return nextTick();
         });
 
         it('is shown', () => {
@@ -350,11 +346,11 @@ describe('MRWidget approvals', () => {
       });
 
       describe('and cannot approve', () => {
-        beforeEach((done) => {
+        beforeEach(() => {
           mr.approvals.user_can_approve = false;
 
           createComponent();
-          waitForTick(done);
+          return nextTick();
         });
 
         it('is shown', () => {
@@ -369,9 +365,9 @@ describe('MRWidget approvals', () => {
   });
 
   describe('approvals summary', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       createComponent();
-      waitForTick(done);
+      return nextTick();
     });
 
     it('is rendered with props', () => {
