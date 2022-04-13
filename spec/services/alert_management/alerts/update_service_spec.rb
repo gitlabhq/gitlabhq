@@ -253,51 +253,25 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
           end
         end
 
-        shared_examples 'updates the incident escalation status with the new alert status' do
-          specify do
-            expect(::Issues::UpdateService).to receive(:new).once.and_call_original
-            expect(described_class).to receive(:new).once.and_call_original
-
-            expect { response }.to change { escalation_status&.reload&.acknowledged? }.to(true)
-                               .and change { alert.reload.acknowledged? }.to(true)
-          end
-        end
-
         it_behaves_like 'does not sync with the incident status'
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(incident_escalations: false)
-          end
-
-          it_behaves_like 'does not sync with the incident status'
-        end
 
         context 'when the issue is an incident' do
           before do
             issue.update!(issue_type: Issue.issue_types[:incident])
           end
 
-          context 'when the incident does not have an escalation status' do
-            it_behaves_like 'updates the incident escalation status with the new alert status'
-
-            context 'when feature flag is disabled' do
-              before do
-                stub_feature_flags(incident_escalations: false)
-              end
-
-              it_behaves_like 'updates the incident escalation status with the new alert status'
-            end
-
-            def escalation_status
-              issue.reload.escalation_status
-            end
-          end
+          it_behaves_like 'does not sync with the incident status'
 
           context 'when the incident has an escalation status' do
             let_it_be(:escalation_status, reload: true) { create(:incident_management_issuable_escalation_status, issue: issue) }
 
-            it_behaves_like 'updates the incident escalation status with the new alert status'
+            it 'updates the incident escalation status with the new alert status' do
+              expect(::Issues::UpdateService).to receive(:new).once.and_call_original
+              expect(described_class).to receive(:new).once.and_call_original
+
+              expect { response }.to change { escalation_status.reload.acknowledged? }.to(true)
+                                 .and change { alert.reload.acknowledged? }.to(true)
+            end
 
             context 'when the statuses match' do
               before do
@@ -312,7 +286,7 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
                 stub_feature_flags(incident_escalations: false)
               end
 
-              it_behaves_like 'updates the incident escalation status with the new alert status'
+              it_behaves_like 'does not sync with the incident status'
             end
           end
         end

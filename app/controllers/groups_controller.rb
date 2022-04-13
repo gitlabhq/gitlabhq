@@ -15,7 +15,6 @@ class GroupsController < Groups::ApplicationController
 
   prepend_before_action(only: [:show, :issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
-  prepend_before_action :ensure_export_enabled, only: [:export, :download_export]
   prepend_before_action :check_captcha, only: :create, if: -> { captcha_enabled? }
 
   before_action :authenticate_user!, only: [:new, :create]
@@ -337,10 +336,6 @@ class GroupsController < Groups::ApplicationController
     scope = params[:action] == :download_export ? @group : nil
 
     check_rate_limit!(prefixed_action, scope: [current_user, scope].compact)
-  end
-
-  def ensure_export_enabled
-    render_404 unless Feature.enabled?(:group_import_export, @group, default_enabled: true)
   end
 
   private

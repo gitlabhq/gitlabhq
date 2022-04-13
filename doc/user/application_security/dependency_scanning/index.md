@@ -1236,3 +1236,24 @@ analyzers, edit your `gitlab-ci.yml` file and either:
   For example, currently the `gemnasium-maven-dependency_scanning` job pulls the latest
   `gemnasium-maven` Docker image because `DS_ANALYZER_IMAGE` is set to
   `"$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"`.
+
+### Dependency Scanning of setuptools project fails with `use_2to3 is invalid` error
+
+Support for [2to3](https://docs.python.org/3/library/2to3.html)
+was [removed](https://setuptools.pypa.io/en/latest/history.html#v58-0-0)
+in `setuptools` version `v58.0.0`. Dependency Scanning (running `python 3.9`) uses `setuptools`
+version `58.1.0+`, which doesn't support `2to3`. Therefore, a `setuptools` dependency relying on
+`lib2to3` will fail with this message:
+
+```plaintext
+error in <dependency name> setup command: use_2to3 is invalid
+```
+
+To work around this error, downgrade the analyzer's version of `setuptools` (e.g. `v57.5.0`):
+
+```yaml
+gemnasium-python-dependency_scanning:
+  before_script:
+    - pip install setuptools==57.5.0
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python:2-python-3.9
+```

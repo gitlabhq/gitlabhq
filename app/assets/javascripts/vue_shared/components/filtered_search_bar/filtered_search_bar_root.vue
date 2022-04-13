@@ -163,33 +163,6 @@ export default {
       return undefined;
     },
   },
-  watch: {
-    /**
-     * GlFilteredSearch currently doesn't emit any event when
-     * tokens are manually removed from search field so we'd
-     * never know when user actually clears all the tokens.
-     * This watcher listens for updates to `filterValue` on
-     * such instances. :(
-     */
-    filterValue(newValue, oldValue) {
-      const [firstVal] = newValue;
-      if (
-        !this.initialRender &&
-        newValue.length === 1 &&
-        firstVal.type === 'filtered-search-term' &&
-        !firstVal.value.data
-      ) {
-        const filtersCleared =
-          oldValue[0].type !== 'filtered-search-term' || oldValue[0].value.data !== '';
-        this.$emit('onFilter', [], filtersCleared);
-      }
-
-      // Set initial render flag to false
-      // as we don't want to emit event
-      // on initial load when value is empty already.
-      this.initialRender = false;
-    },
-  },
   created() {
     if (this.recentSearchesStorageKey) this.setupRecentSearch();
   },
@@ -322,6 +295,10 @@ export default {
 
       return tokenOption.title;
     },
+    onClear() {
+      const cleared = true;
+      this.$emit('onFilter', [], cleared);
+    },
   },
 };
 </script>
@@ -345,6 +322,7 @@ export default {
       :suggestions-list-class="suggestionsListClass"
       class="flex-grow-1"
       @history-item-selected="handleHistoryItemSelected"
+      @clear="onClear"
       @clear-history="handleClearHistory"
       @submit="handleFilterSubmit"
     >

@@ -69,8 +69,8 @@ describe('InstallAgentModal', () => {
     });
 
     it('shows code block with agent installation command', () => {
-      expect(findCodeBlock().props('code')).toContain(`--agent-token=${agentToken}`);
-      expect(findCodeBlock().props('code')).toContain(`--kas-address=${kasAddress}`);
+      expect(findCodeBlock().props('code')).toContain(`--set config.token=${agentToken}`);
+      expect(findCodeBlock().props('code')).toContain(`--set config.kasAddress=${kasAddress}`);
     });
   });
 });

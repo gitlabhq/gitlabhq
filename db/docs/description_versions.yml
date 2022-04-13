@@ -3,5 +3,5 @@ table_name: description_versions
 classes:
 - DescriptionVersion
 feature_categories: 
-- team_planning
+- design_management
 description: 

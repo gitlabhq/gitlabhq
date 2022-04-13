@@ -3,5 +3,5 @@ table_name: lists
 classes:
 - List
 feature_categories:
-- team_planning
+- design_management
 description: 

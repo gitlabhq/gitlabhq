@@ -3,7 +3,6 @@
 class Import::GitlabGroupsController < ApplicationController
   include WorkhorseAuthorization
 
-  before_action :ensure_group_import_enabled
   before_action :check_import_rate_limit!, only: %i[create]
 
   feature_category :importers
@@ -49,10 +48,6 @@ class Import::GitlabGroupsController < ApplicationController
     else
       Gitlab::VisibilityLevel::PRIVATE
     end
-  end
-
-  def ensure_group_import_enabled
-    render_404 unless Feature.enabled?(:group_import_export, @group, default_enabled: true)
   end
 
   def check_import_rate_limit!

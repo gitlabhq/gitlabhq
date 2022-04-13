@@ -838,6 +838,8 @@ module Ci
     def predefined_commit_variables
       strong_memoize(:predefined_commit_variables) do
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
+          next variables unless sha.present?
+
           variables.append(key: 'CI_COMMIT_SHA', value: sha)
           variables.append(key: 'CI_COMMIT_SHORT_SHA', value: short_sha)
           variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)

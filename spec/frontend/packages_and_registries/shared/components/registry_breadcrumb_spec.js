@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount, RouterLinkStub } from '@vue/test-utils';
 
 import component from '~/packages_and_registries/shared/components/registry_breadcrumb.vue';
 
@@ -21,6 +21,9 @@ describe('Registry Breadcrumb', () => {
           },
         },
       },
+      stubs: {
+        RouterLink: RouterLinkStub,
+      },
     });
   };
 
@@ -30,7 +33,6 @@ describe('Registry Breadcrumb', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('when is rootRoute', () => {
@@ -46,7 +48,6 @@ describe('Registry Breadcrumb', () => {
       const links = wrapper.findAll('a');
 
       expect(links).toHaveLength(1);
-      expect(links.at(0).attributes('href')).toBe('/');
     });
 
     it('the link text is calculated by nameGenerator', () => {
@@ -67,7 +68,6 @@ describe('Registry Breadcrumb', () => {
       const links = wrapper.findAll('a');
 
       expect(links).toHaveLength(2);
-      expect(links.at(0).attributes('href')).toBe('/');
       expect(links.at(1).attributes('href')).toBe('#');
     });
 

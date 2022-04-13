@@ -34,7 +34,7 @@ RSpec.describe 'Cluster agent registration', :js do
 
     expect(page).to have_content('You cannot see this token again after you close this window.')
     expect(page).to have_content('example-agent-token')
-    expect(page).to have_content('docker run --pull=always --rm')
+    expect(page).to have_content('helm upgrade --install')
 
     within find('.modal-footer') do
       click_button('Close')

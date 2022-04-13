@@ -501,4 +501,115 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
       end
     end
   end
+
+  describe '#config_variables' do
+    subject(:config_variables) { builder.config_variables }
+
+    context 'without project' do
+      before do
+        pipeline.update!(project_id: nil)
+      end
+
+      it { expect(config_variables.size).to eq(0) }
+    end
+
+    context 'without repository' do
+      let(:project) { create(:project) }
+      let(:pipeline) { build(:ci_pipeline, ref: nil, sha: nil, project: project) }
+
+      it { expect(config_variables['CI_COMMIT_SHA']).to be_nil }
+    end
+
+    context 'with protected variables' do
+      let_it_be(:instance_variable) do
+        create(:ci_instance_variable, :protected, key: 'instance_variable')
+      end
+
+      let_it_be(:group_variable) do
+        create(:ci_group_variable, :protected, group: group, key: 'group_variable')
+      end
+
+      let_it_be(:project_variable) do
+        create(:ci_variable, :protected, project: project, key: 'project_variable')
+      end
+
+      it 'does not include protected variables' do
+        expect(config_variables[instance_variable.key]).to be_nil
+        expect(config_variables[group_variable.key]).to be_nil
+        expect(config_variables[project_variable.key]).to be_nil
+      end
+    end
+
+    context 'with scoped variables' do
+      let_it_be(:scoped_group_variable) do
+        create(:ci_group_variable,
+          group: group,
+          key: 'group_variable',
+          value: 'scoped',
+          environment_scope: 'scoped')
+      end
+
+      let_it_be(:group_variable) do
+        create(:ci_group_variable,
+          group: group,
+          key: 'group_variable',
+          value: 'unscoped')
+      end
+
+      let_it_be(:scoped_project_variable) do
+        create(:ci_variable,
+          project: project,
+          key: 'project_variable',
+          value: 'scoped',
+          environment_scope: 'scoped')
+      end
+
+      let_it_be(:project_variable) do
+        create(:ci_variable,
+          project: project,
+          key: 'project_variable',
+          value: 'unscoped')
+      end
+
+      it 'does not include scoped variables' do
+        expect(config_variables.to_hash[group_variable.key]).to eq('unscoped')
+        expect(config_variables.to_hash[project_variable.key]).to eq('unscoped')
+      end
+    end
+
+    context 'variables ordering' do
+      def var(name, value)
+        { key: name, value: value.to_s, public: true, masked: false }
+      end
+
+      before do
+        allow(pipeline.project).to receive(:predefined_variables) { [var('A', 1), var('B', 1)] }
+        allow(pipeline).to receive(:predefined_variables) { [var('B', 2), var('C', 2)] }
+        allow(builder).to receive(:secret_instance_variables) { [var('C', 3), var('D', 3)] }
+        allow(builder).to receive(:secret_group_variables) { [var('D', 4), var('E', 4)] }
+        allow(builder).to receive(:secret_project_variables) { [var('E', 5), var('F', 5)] }
+        allow(pipeline).to receive(:variables) { [var('F', 6), var('G', 6)] }
+        allow(pipeline).to receive(:pipeline_schedule) { double(job_variables: [var('G', 7), var('H', 7)]) }
+      end
+
+      it 'returns variables in order depending on resource hierarchy' do
+        expect(config_variables.to_runner_variables).to eq(
+          [var('A', 1), var('B', 1),
+           var('B', 2), var('C', 2),
+           var('C', 3), var('D', 3),
+           var('D', 4), var('E', 4),
+           var('E', 5), var('F', 5),
+           var('F', 6), var('G', 6),
+           var('G', 7), var('H', 7)])
+      end
+
+      it 'overrides duplicate keys depending on resource hierarchy' do
+        expect(config_variables.to_hash).to match(
+          'A' => '1', 'B' => '2',
+          'C' => '3', 'D' => '4',
+          'E' => '5', 'F' => '6',
+          'G' => '7', 'H' => '7')
+      end
+    end
+  end
 end

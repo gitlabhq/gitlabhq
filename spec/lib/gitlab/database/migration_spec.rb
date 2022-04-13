@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Database::Migration do
       # This breaks upon Rails upgrade. In that case, we'll add a new version in Gitlab::Database::Migration::MIGRATION_CLASSES,
       # bump .current_version and leave existing migrations and already defined versions of Gitlab::Database::Migration
       # untouched.
-      expect(described_class[described_class.current_version].superclass).to eq(ActiveRecord::Migration::Current)
+      expect(described_class[described_class.current_version]).to be < ActiveRecord::Migration::Current
     end
   end
 

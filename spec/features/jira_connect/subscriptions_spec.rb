@@ -36,7 +36,7 @@ RSpec.describe 'Subscriptions Content Security Policy' do
     it 'appends to CSP directives' do
       visit jira_connect_subscriptions_path(jwt: jwt)
 
-      is_expected.to include("frame-ancestors 'self' https://*.atlassian.net")
+      is_expected.to include("frame-ancestors 'self' https://*.atlassian.net https://*.jira.com")
       is_expected.to include("script-src 'self' https://some-cdn.test https://connect-cdn.atl-paas.net")
       is_expected.to include("style-src 'self' https://some-cdn.test 'unsafe-inline'")
     end

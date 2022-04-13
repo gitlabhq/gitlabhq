@@ -1,8 +1,6 @@
 <script>
-import { GlAvatar, GlButton, GlCard, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
+import { GlButton, GlCard, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import { sprintf } from '~/locale';
-import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import {
   STARTER_TEMPLATE_NAME,
   RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME,
@@ -11,21 +9,22 @@ import {
   RUNNERS_SETTINGS_BUTTON_CLICKED_EVENT,
   I18N,
 } from '~/pipeline_editor/constants';
+import Tracking from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { isExperimentVariant } from '~/experimentation/utils';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
-import { isExperimentVariant } from '~/experimentation/utils';
-import Tracking from '~/tracking';
+import CiTemplates from './ci_templates.vue';
 
 export default {
   components: {
-    GlAvatar,
     GlButton,
     GlCard,
     GlSprintf,
     GlIcon,
     GlLink,
     GitlabExperiment,
+    CiTemplates,
   },
   mixins: [Tracking.mixin()],
   STARTER_TEMPLATE_NAME,
@@ -34,8 +33,7 @@ export default {
   RUNNERS_DOCUMENTATION_LINK_CLICKED_EVENT,
   RUNNERS_SETTINGS_BUTTON_CLICKED_EVENT,
   I18N,
-  AVATAR_SHAPE_OPTION_RECT,
-  inject: ['pipelineEditorPath', 'suggestedCiTemplates'],
+  inject: ['pipelineEditorPath'],
   props: {
     ciRunnerSettingsPath: {
       type: String,
@@ -49,17 +47,7 @@ export default {
     },
   },
   data() {
-    const templates = this.suggestedCiTemplates.map(({ name, logo }) => {
-      return {
-        name,
-        logo,
-        link: mergeUrlParams({ template: name }, this.pipelineEditorPath),
-        description: sprintf(this.$options.I18N.templates.description, { name }),
-      };
-    });
-
     return {
-      templates,
       gettingStartedTemplateUrl: mergeUrlParams(
         { template: STARTER_TEMPLATE_NAME },
         this.pipelineEditorPath,
@@ -179,43 +167,7 @@ export default {
       <h2 class="gl-font-lg gl-text-gray-900">{{ $options.I18N.templates.title }}</h2>
       <p class="gl-text-gray-800 gl-mb-6">{{ $options.I18N.templates.subtitle }}</p>
 
-      <ul class="gl-list-style-none gl-pl-0">
-        <li v-for="template in templates" :key="template.name">
-          <div
-            class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-border-b-solid gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-pt-3"
-          >
-            <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
-              <gl-avatar
-                :src="template.logo"
-                :size="48"
-                class="gl-mr-5 gl-bg-white dark-mode-override"
-                :shape="$options.AVATAR_SHAPE_OPTION_RECT"
-                :alt="template.name"
-                data-testid="template-logo"
-              />
-              <div class="gl-flex-direction-row">
-                <div class="gl-mb-3">
-                  <strong class="gl-text-gray-800" data-testid="template-name">
-                    {{ template.name }}
-                  </strong>
-                </div>
-                <p class="gl-mb-0 gl-font-sm" data-testid="template-description">
-                  {{ template.description }}
-                </p>
-              </div>
-            </div>
-            <gl-button
-              category="primary"
-              variant="confirm"
-              :href="template.link"
-              data-testid="template-link"
-              @click="trackEvent(template.name)"
-            >
-              {{ $options.I18N.templates.cta }}
-            </gl-button>
-          </div>
-        </li>
-      </ul>
+      <ci-templates />
     </template>
   </div>
 </template>

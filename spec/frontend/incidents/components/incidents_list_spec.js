@@ -171,6 +171,7 @@ describe('Incidents List', () => {
 
       expect(link.text()).toBe(title);
       expect(link.attributes('href')).toContain(`issues/incident/${iid}`);
+      expect(link.find('.gl-text-truncate').exists()).toBe(true);
     });
 
     describe('Assignees', () => {
@@ -201,15 +202,14 @@ describe('Incidents List', () => {
 
     describe('Escalation status', () => {
       it('renders escalation status per row', () => {
-        expect(findEscalationStatus().length).toBe(mockIncidents.length);
+        const statuses = findEscalationStatus().wrappers;
+        const expectedStatuses = ['Triggered', 'Acknowledged', 'Resolved', I18N.noEscalationStatus];
 
-        const actualStatuses = findEscalationStatus().wrappers.map((status) => status.text());
-        expect(actualStatuses).toEqual([
-          'Triggered',
-          'Acknowledged',
-          'Resolved',
-          I18N.noEscalationStatus,
-        ]);
+        expect(statuses.length).toBe(mockIncidents.length);
+        statuses.forEach((status, index) => {
+          expect(status.text()).toEqual(expectedStatuses[index]);
+          expect(status.classes('gl-text-truncate')).toBe(true);
+        });
       });
 
       describe('when feature is disabled', () => {

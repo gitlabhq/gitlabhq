@@ -3,5 +3,5 @@ table_name: issue_email_participants
 classes:
 - IssueEmailParticipant
 feature_categories: 
-- users
+- service_desk
 description: 

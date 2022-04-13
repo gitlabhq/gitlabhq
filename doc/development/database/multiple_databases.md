@@ -9,6 +9,63 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To scale GitLab, the we are
 [decomposing the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
 
+## GitLab Schema
+
+For properly discovering allowed patterns between different databases
+the GitLab application implements the `lib/gitlab/database/gitlab_schemas.yml` YAML file.
+
+This file provides a virtual classification of tables into a `gitlab_schema`
+which conceptually is similar to [PostgreSQL Schema](https://www.postgresql.org/docs/current/ddl-schemas.html).
+We decided as part of [using database schemas to better isolated CI decomposed features](https://gitlab.com/gitlab-org/gitlab/-/issues/333415)
+that we cannot use PostgreSQL schema due to complex migration procedures. Instead we implemented
+the concept of application-level classification.
+Each table of GitLab needs to have a `gitlab_schema` assigned:
+
+- `gitlab_main`: describes all tables that are being stored in the `main:` database (for example, like `projects`, `users`).
+- `gitlab_ci`: describes all CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`).
+- `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`).
+- `...`: more schemas to be introduced with additional decomposed databases
+
+The usage of schema enforces the base class to be used:
+
+- `ApplicationRecord` for `gitlab_main`
+- `Ci::ApplicationRecord` for `gitlab_ci`
+- `Gitlab::Database::SharedModel` for `gitlab_shared`
+
+### The impact of `gitlab_schema`
+
+The usage of `gitlab_schema` has a significant impact on the application.
+The `gitlab_schema` primary purpose is to introduce a barrier between different data access patterns.
+
+This is used as a primary source of classification for:
+
+- [Discovering cross-joins across tables from different schemas](#removing-joins-between-ci_-and-non-ci_-tables)
+- [Discovering cross-database transactions across tables from different schemas](#removing-cross-database-transactions)
+
+### The special purpose of `gitlab_shared`
+
+`gitlab_shared` is a special case describing tables or views that by design contain data across
+all decomposed databases. This does describe application-defined tables (like `loose_foreign_keys_deleted_records`),
+Rails-defined tables (like `schema_migrations` or `ar_internal_metadata` as well as internal PostgreSQL tables
+(for example, `pg_attribute`).
+
+**Be careful** to use `gitlab_shared` as it requires special handling while accessing data.
+Since `gitlab_shared` shares not only structure but also data, the application needs to be written in a way
+that traverses all data from all databases in sequential manner.
+
+```ruby
+Gitlab::Database::EachDatabase.each_model_connection([MySharedModel]) do |connection, connection_name|
+  MySharedModel.select_all_data...
+end
+```
+
+As such, migrations modifying data of `gitlab_shared` tables are expected to run across
+all decomposed databases.
+
+## Migrations
+
+Read [Migrations for Multiple Databases](migrations_for_multiple_databases.md).
+
 ## CI/CD Database
 
 > Support for configuring the GitLab Rails application to use a distinct

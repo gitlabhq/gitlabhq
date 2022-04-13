@@ -1168,6 +1168,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
       end
     end
+
+    context 'without a commit' do
+      let(:pipeline) { build(:ci_empty_pipeline, :created, sha: nil) }
+
+      it 'does not expose commit variables' do
+        expect(subject.to_hash.keys)
+          .not_to include(
+            'CI_COMMIT_SHA',
+            'CI_COMMIT_SHORT_SHA',
+            'CI_COMMIT_BEFORE_SHA',
+            'CI_COMMIT_REF_NAME',
+            'CI_COMMIT_REF_SLUG',
+            'CI_COMMIT_BRANCH',
+            'CI_COMMIT_TAG',
+            'CI_COMMIT_MESSAGE',
+            'CI_COMMIT_TITLE',
+            'CI_COMMIT_DESCRIPTION',
+            'CI_COMMIT_REF_PROTECTED',
+            'CI_COMMIT_TIMESTAMP',
+            'CI_COMMIT_AUTHOR')
+      end
+    end
   end
 
   describe '#protected_ref?' do

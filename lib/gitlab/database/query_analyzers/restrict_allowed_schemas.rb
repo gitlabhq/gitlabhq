@@ -69,8 +69,10 @@ module Gitlab
             schemas = self.dml_schemas(tables)
 
             if (schemas - self.allowed_gitlab_schemas).any?
-              raise DMLAccessDeniedError, "Select/DML queries (SELECT/UPDATE/DELETE) do access '#{tables}' (#{schemas.to_a}) " \
-                "which is outside of list of allowed schemas: '#{self.allowed_gitlab_schemas}'."
+              raise DMLAccessDeniedError, \
+                "Select/DML queries (SELECT/UPDATE/DELETE) do access '#{tables}' (#{schemas.to_a}) " \
+                "which is outside of list of allowed schemas: '#{self.allowed_gitlab_schemas}'. " \
+                "#{documentation_url}"
             end
           end
 
@@ -93,11 +95,19 @@ module Gitlab
           end
 
           def raise_dml_not_allowed_error(message)
-            raise DMLNotAllowedError, "Select/DML queries (SELECT/UPDATE/DELETE) are disallowed in the DDL (structure) mode. #{message}"
+            raise DMLNotAllowedError, \
+              "Select/DML queries (SELECT/UPDATE/DELETE) are disallowed in the DDL (structure) mode. " \
+              "#{message}. #{documentation_url}" \
           end
 
           def raise_ddl_not_allowed_error(message)
-            raise DDLNotAllowedError, "DDL queries (structure) are disallowed in the Select/DML (SELECT/UPDATE/DELETE) mode. #{message}"
+            raise DDLNotAllowedError, \
+              "DDL queries (structure) are disallowed in the Select/DML (SELECT/UPDATE/DELETE) mode. " \
+              "#{message}. #{documentation_url}"
+          end
+
+          def documentation_url
+            "For more information visit: https://docs.gitlab.com/ee/development/database/migrations_for_multiple_databases.html"
           end
         end
       end

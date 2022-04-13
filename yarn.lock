@@ -1005,15 +1005,15 @@
     stylelint-declaration-strict-value "1.8.0"
     stylelint-scss "4.1.0"
 
-"@gitlab/svgs@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-2.6.0.tgz#49f020b0a732f5df01138bd21b610a0a940badd6"
-  integrity sha512-jI8CHlrriePtUsognRkpZQWVsZe7ZjytmKakeYyU1aKvsnJ4fAeySlVkCAiqKbbZm3T/eeH/6b3jxHn24U0k0Q==
+"@gitlab/svgs@2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-2.8.0.tgz#b32f3672d9cffa2d59f5edb6828ae931a36d220f"
+  integrity sha512-N1D6q5xKze3HwPMjLnsXMZOPQGX4CT+jEQgZYkB8akVx/rqT/YSZ9pZaxWoRdq1Tiwi9B2ArctopRgNiN8fqdw==
 
-"@gitlab/ui@38.0.1":
-  version "38.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-38.0.1.tgz#73767792f6e27791f84899dbe29b09547ecd8004"
-  integrity sha512-y83h2JsFypuvx1P3BFB7iEbusv/tc/jx3CkEEFY9N8/P25Fs3F3wcYChhlYZ2V1VX0wwEHzBV9cvPIGcmAGNMA==
+"@gitlab/ui@38.8.1":
+  version "38.8.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-38.8.1.tgz#f4892ffd51c4cacf30cb94ffca31487afdac2b0c"
+  integrity sha512-eTGt+LODmox1GZRkLfFH9/zl4dG9/6ewpYzXvIo1B4uzHz27lhEgVSM57nZRPXmk4o05LQMnm6eelHoBdMX13g==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.20.1"
@@ -10781,12 +10781,12 @@ sade@^1.7.3:
   dependencies:
     mri "^1.1.0"
 
-safe-buffer@5.1.2, safe-buffer@>=5.1.0, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
+safe-buffer@5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
   integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
 
-safe-buffer@5.2.1:
+safe-buffer@5.2.1, safe-buffer@>=5.1.0, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==

@@ -452,9 +452,12 @@ a.gl-badge.badge-warning:active {
 .gl-form-input.form-control:disabled,
 .gl-form-input.form-control:not(.form-control-plaintext):not([type="color"]):read-only {
   background-color: #1f1f1f;
-  color: #868686;
   box-shadow: inset 0 0 0 1px #404040;
+}
+.gl-form-input:disabled,
+.gl-form-input.form-control:disabled {
   cursor: not-allowed;
+  color: #868686;
 }
 .gl-form-input::placeholder,
 .gl-form-input.form-control::placeholder {

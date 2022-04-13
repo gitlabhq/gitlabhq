@@ -3,5 +3,5 @@ table_name: project_repositories
 classes:
 - ProjectRepository
 feature_categories:
-- projects
+- source_code_management
 description: 

@@ -113,7 +113,7 @@ describe('RunnerList', () => {
     });
 
     it('filter values are shown', () => {
-      expect(findGlFilteredSearch().props('value')).toEqual(mockFilters);
+      expect(findGlFilteredSearch().props('value')).toMatchObject(mockFilters);
     });
 
     it('sort option is selected', () => {

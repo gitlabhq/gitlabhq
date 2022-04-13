@@ -3,5 +3,5 @@ table_name: project_auto_devops
 classes:
 - ProjectAutoDevops
 feature_categories:
-- continuous_integration
+- auto_devops
 description: 

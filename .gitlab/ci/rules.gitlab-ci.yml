@@ -1480,18 +1480,6 @@
       when: never
     - changes: *dependency-patterns
 
-.reports:rules:bundler-audit-dependency_scanning:
-  rules:
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /bundler-audit/ || $DS_DEFAULT_ANALYZERS !~ /bundler-audit/'
-      when: never
-    - changes: *bundler-patterns
-
-.reports:rules:retire-js-dependency_scanning:
-  rules:
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /retire.js/ || $DS_DEFAULT_ANALYZERS !~ /retire.js/'
-      when: never
-    - changes: *nodejs-patterns
-
 .reports:rules:gemnasium-python-dependency_scanning:
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/ || $DS_DEFAULT_ANALYZERS !~ /gemnasium-python/'

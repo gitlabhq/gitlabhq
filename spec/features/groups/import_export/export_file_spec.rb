@@ -26,22 +26,6 @@ RSpec.describe 'Group Export', :js do
     end
   end
 
-  context 'when the group import/export FF is disabled' do
-    before do
-      stub_feature_flags(group_import_export: false)
-
-      group.add_owner(user)
-      sign_in(user)
-    end
-
-    it 'does not show the group export options' do
-      visit edit_group_path(group)
-
-      expect(page).to have_content('Advanced')
-      expect(page).not_to have_content('Export group')
-    end
-  end
-
   context 'when the signed in user does not have the required permission level' do
     before do
       group.add_guest(user)

@@ -21,7 +21,7 @@ module Gitlab
       :project_blame_link,
       :time_ago_tooltip)
 
-    def initialize(subject, **attributes)
+    def initialize(blame, **attributes)
       super
 
       @commits = {}

@@ -48,29 +48,6 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateServ
     end
 
     it_behaves_like 'availability error response'
-
-    context 'with incident associated with alert' do
-      let(:alert_status) { :acknowledged }
-
-      before do
-        create(:alert_management_alert, alert_status, project: issue.project, issue: issue)
-        issue.reload
-      end
-
-      it_behaves_like 'successful response', { status_event: :acknowledge }
-
-      context 'when alert status does not match incident status' do
-        let(:alert_status) { :triggered }
-
-        include_examples 'error response', 'Invalid value was provided for parameters: status'
-      end
-
-      context 'with a standard issue' do
-        let(:issue) { create(:issue) }
-
-        it_behaves_like 'availability error response'
-      end
-    end
   end
 
   context 'when user is anonymous' do

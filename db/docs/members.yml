@@ -6,5 +6,6 @@ classes:
 - ProjectMember
 - ProjectNamespaceMember
 feature_categories:
-- authentication_and_authorization
+- projects
+- subgroups
 description: 

@@ -98,7 +98,6 @@ RSpec.describe Issues::CreateService do
       end
 
       it_behaves_like 'not an incident issue'
-      include_examples 'does not call the escalation status CreateService'
 
       context 'when issue is incident type' do
         before do
@@ -119,22 +118,12 @@ RSpec.describe Issues::CreateService do
           end
 
           it_behaves_like 'incident issue'
-          include_examples 'calls the escalation status CreateService'
 
-          context 'when :incident_escalations feature flag is disabled' do
-            before do
-              stub_feature_flags(incident_escalations: false)
-            end
+          it 'calls IncidentManagement::Incidents::CreateEscalationStatusService' do
+            expect_next(::IncidentManagement::IssuableEscalationStatuses::CreateService, a_kind_of(Issue))
+              .to receive(:execute)
 
-            include_examples 'does not call the escalation status CreateService'
-
-            context 'with associated alert' do
-              before do
-                opts.merge!(alert_management_alert: build(:alert_management_alert, project: project))
-              end
-
-              include_examples 'calls the escalation status CreateService'
-            end
+            issue
           end
 
           context 'when invalid' do

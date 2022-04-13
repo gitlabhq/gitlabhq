@@ -16,6 +16,10 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
   # To disable transactions uncomment the following line and remove these
   # comments:
   # disable_ddl_transaction!
+  #
+  # Configure the `gitlab_schema` to perform data manipulation (DML).
+  # Visit: https://docs.gitlab.com/ee/development/database/migrations_for_multiple_databases.html
+  # restrict_gitlab_migration gitlab_schema: :gitlab_main
 
 <%- if migration_action == 'add' -%>
   def change

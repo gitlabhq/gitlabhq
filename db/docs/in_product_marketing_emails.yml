@@ -3,5 +3,5 @@ table_name: in_product_marketing_emails
 classes:
 - Users::InProductMarketingEmail
 feature_categories:
-- navigation
+- experimentation_activation
 description: 

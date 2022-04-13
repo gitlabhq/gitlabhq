@@ -96,9 +96,9 @@ export const I18N_AGENT_TOKEN = {
   ),
   tokenSubtitle: s__('ClusterAgents|The agent uses the token to connect with GitLab.'),
 
-  basicInstallTitle: s__('ClusterAgents|Recommended installation method'),
+  basicInstallTitle: s__('ClusterAgents|Install using Helm (recommended)'),
   basicInstallBody: s__(
-    'ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included.',
+    'ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included in the command.',
   ),
 
   advancedInstallTitle: s__('ClusterAgents|Advanced installation methods'),

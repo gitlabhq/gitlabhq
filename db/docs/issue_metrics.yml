@@ -3,5 +3,5 @@ table_name: issue_metrics
 classes:
 - Issue::Metrics
 feature_categories:
-- source_code_management
+- value_stream_management
 description: 

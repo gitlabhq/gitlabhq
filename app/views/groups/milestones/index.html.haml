@@ -12,7 +12,7 @@
         = link_to _('New milestone'), new_group_milestone_path(@group), class: "btn gl-button btn-confirm", data: { qa_selector: "new_group_milestone_link" }
 
   - if @milestones.blank?
-    = render 'shared/empty_states/milestones_tab', learn_more_path: help_page_path('user/group/milestones') do
+    = render 'shared/empty_states/milestones_tab', learn_more_path: help_page_path('user/project/milestones/index') do
       - if can?(current_user, :admin_milestone, @group)
         .text-center
           = link_to _('New milestone'), new_group_milestone_path(@group), class: "btn gl-button btn-confirm", data: { qa_selector: "new_group_milestone_link" }
@@ -26,7 +26,7 @@
             = render 'milestone', milestone: milestone
       = paginate @milestones, theme: "gitlab"
 - else
-  = render 'shared/empty_states/milestones', learn_more_path: help_page_path('user/group/milestones') do
+  = render 'shared/empty_states/milestones', learn_more_path: help_page_path('user/project/milestones/index') do
     - if can?(current_user, :admin_milestone, @group)
       .text-center
         = link_to _('New milestone'), new_group_milestone_path(@group), class: "btn gl-button btn-confirm", data: { qa_selector: "new_group_milestone_link" }

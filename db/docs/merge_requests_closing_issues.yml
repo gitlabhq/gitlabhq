@@ -3,5 +3,5 @@ table_name: merge_requests_closing_issues
 classes:
 - MergeRequestsClosingIssues
 feature_categories:
-- team_planning
+- code_review
 description: 

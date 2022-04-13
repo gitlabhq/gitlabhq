@@ -3,5 +3,5 @@ table_name: project_authorizations
 classes:
 - ProjectAuthorization
 feature_categories: 
-- authentication_and_authorization
+- projects
 description: 

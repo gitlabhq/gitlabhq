@@ -200,18 +200,6 @@ module Issuable
       incident?
     end
 
-    # When :incident_escalations feature flag is disabled, new
-    # incidents should not have a status record unless the incident
-    # is associated with the alert. However, escalation attributes
-    # are synced with Alert/IssuableEscalationStatus, so we want to
-    # ensure that parity is kept prior to rollout.
-    # Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/345769.
-    def sync_escalation_attributes_from_alert?
-      incident? &&
-        ::Feature.disabled?(:incident_escalations, project) &&
-        alert_management_alert.present?
-    end
-
     def incident?
       is_a?(Issue) && super
     end

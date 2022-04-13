@@ -31,8 +31,8 @@ could result in loading unexpected code or associations which may cause unintend
 side effects or failures during upgrades.
 
 ```ruby
-class SomeMigration < Gitlab::Database::Migration[1.0]
-  class Services < ActiveRecord::Base
+class SomeMigration < Gitlab::Database::Migration[2.0]
+  class Services < MigrationRecord
     self.table_name = 'services'
     self.inheritance_column = :_type_disabled
   end

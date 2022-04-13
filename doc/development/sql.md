@@ -254,13 +254,13 @@ of records plucked. `MAX_PLUCK` defaults to `1_000` in `ApplicationRecord`.
 
 ## Inherit from ApplicationRecord
 
-Most models in the GitLab codebase should inherit from `ApplicationRecord`,
-rather than from `ActiveRecord::Base`. This allows helper methods to be easily
-added.
+Most models in the GitLab codebase should inherit from `ApplicationRecord`
+or `Ci::ApplicationRecord` rather than from `ActiveRecord::Base`. This allows
+helper methods to be easily added.
 
 An exception to this rule exists for models created in database migrations. As
 these should be isolated from application code, they should continue to subclass
-from `ActiveRecord::Base`.
+from `MigrationRecord` which is available only in migration context.
 
 ## Use UNIONs
 

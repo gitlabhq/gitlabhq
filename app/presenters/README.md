@@ -68,9 +68,11 @@ we gain the following benefits:
 
 If you need a presenter class that has only necessary interfaces for the view-related context,
 inherit from `Gitlab::View::Presenter::Simple`.
-It provides a `.presents` the method which allows you to define an accessor for the
-presented object. It also includes common helpers like `Gitlab::Routing` and
-`Gitlab::Allowable`.
+
+It provides a `.presents` class method which allows you to define the class the presenter is wrapping,
+and specify an accessor for the presented object using the `as:` keyword.
+
+It also includes common helpers like `Gitlab::Routing` and `Gitlab::Allowable`.
 
 ```ruby
 class LabelPresenter < Gitlab::View::Presenter::Simple

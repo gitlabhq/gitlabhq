@@ -3,5 +3,5 @@ table_name: deployment_merge_requests
 classes:
 - DeploymentMergeRequest
 feature_categories: 
-- deployment_management
+- advanced_deployments
 description: 

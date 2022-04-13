@@ -3,5 +3,5 @@ table_name: experiment_users
 classes:
 - ExperimentUser
 feature_categories: 
-- experimentation_expansion
+- experimentation_conversion
 description: 

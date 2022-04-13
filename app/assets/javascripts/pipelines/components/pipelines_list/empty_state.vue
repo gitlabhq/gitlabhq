@@ -1,7 +1,7 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import PipelinesCiTemplates from './pipelines_ci_templates.vue';
+import PipelinesCiTemplates from './empty_state/pipelines_ci_templates.vue';
 
 export default {
   i18n: {

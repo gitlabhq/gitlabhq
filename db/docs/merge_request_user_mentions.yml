@@ -4,5 +4,4 @@ classes:
 - MergeRequestUserMention
 feature_categories: 
 - code_review
-- users
 description: 

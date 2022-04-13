@@ -3,5 +3,6 @@ table_name: merge_request_metrics
 classes:
 - MergeRequest::Metrics
 feature_categories: 
-- metrics
+- value_stream_management
+- code_review
 description: 

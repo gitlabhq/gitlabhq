@@ -240,7 +240,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             end
 
             def software_license_class
-              Class.new(ActiveRecord::Base) do
+              Class.new(Gitlab::Database::Migration[2.0]::MigrationRecord) do
                 self.table_name = 'software_licenses'
               end
             end
@@ -272,7 +272,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             end
 
             def ci_instance_variables_class
-              Class.new(ActiveRecord::Base) do
+              Class.new(Gitlab::Database::Migration[2.0]::MigrationRecord) do
                 self.table_name = 'ci_instance_variables'
               end
             end
@@ -303,7 +303,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             end
 
             def detached_partitions_class
-              Class.new(ActiveRecord::Base) do
+              Class.new(Gitlab::Database::Migration[2.0]::MigrationRecord) do
                 self.table_name = 'detached_partitions'
               end
             end

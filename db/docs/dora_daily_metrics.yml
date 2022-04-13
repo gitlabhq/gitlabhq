@@ -3,5 +3,5 @@ table_name: dora_daily_metrics
 classes:
 - Dora::DailyMetrics
 feature_categories:
-- continuous_delivery
+- value_stream_management
 description: 

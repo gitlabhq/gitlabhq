@@ -2,7 +2,6 @@
 table_name: resource_state_events
 classes:
 - ResourceStateEvent
-feature_categories: 
-- source_code_management
+feature_categories:
 - team_planning
 description: 

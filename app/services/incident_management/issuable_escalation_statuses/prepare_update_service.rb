@@ -31,10 +31,7 @@ module IncidentManagement
       attr_reader :issuable, :param_errors
 
       def available?
-        (
-          issuable.supports_escalation? ||
-          issuable.sync_escalation_attributes_from_alert? # Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/345769
-        ) && user_has_permissions?
+        issuable.supports_escalation? && user_has_permissions?
       end
 
       def user_has_permissions?
@@ -62,14 +59,6 @@ module IncidentManagement
       def filter_status
         status = params.delete(:status)
         return unless status
-
-        # If we're updating the escalation status because the
-        # alert was updated & the feature flag is disabled, then
-        # we should not allow the status to be different from the alert's.
-        # Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/345769
-        if issuable.sync_escalation_attributes_from_alert? && status != issuable.alert_management_alert.status_name
-          add_param_error(:status) && return
-        end
 
         status_event = escalation_status.status_event_for(status)
         add_param_error(:status) && return unless status_event

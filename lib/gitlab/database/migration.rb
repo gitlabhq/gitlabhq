@@ -41,6 +41,12 @@ module Gitlab
 
       class V2_0 < V1_0 # rubocop:disable Naming/ClassAndModuleCamelCase
         include Gitlab::Database::MigrationHelpers::RestrictGitlabSchema
+
+        # When running migrations, the `db:migrate` switches connection of
+        # ActiveRecord::Base depending where the migration runs.
+        # This helper class is provided to avoid confusion using `ActiveRecord::Base`
+        class MigrationRecord < ActiveRecord::Base
+        end
       end
 
       def self.[](version)
@@ -53,7 +59,7 @@ module Gitlab
 
       # The current version to be used in new migrations
       def self.current_version
-        1.0
+        2.0
       end
     end
   end

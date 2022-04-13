@@ -100,7 +100,5 @@ export const I18N = {
     subtitle: s__(
       "Pipelines|Use a template based on your project's language or framework to get started with GitLab CI/CD.",
     ),
-    description: s__('Pipelines|CI/CD template to test and deploy your %{name} project.'),
-    cta: s__('Pipelines|Use template'),
   },
 };

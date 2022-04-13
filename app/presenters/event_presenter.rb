@@ -3,7 +3,7 @@
 class EventPresenter < Gitlab::View::Presenter::Delegated
   presents ::Event, as: :event
 
-  def initialize(subject, **attributes)
+  def initialize(event, **attributes)
     super
 
     @visible_to_user_cache = ActiveSupport::Cache::MemoryStore.new

@@ -23,6 +23,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Migrations
 
+- [Migrations for multiple databases](migrations_for_multiple_databases.md)
 - [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md)
 - [SQL guidelines](../sql.md) for working with SQL queries
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations

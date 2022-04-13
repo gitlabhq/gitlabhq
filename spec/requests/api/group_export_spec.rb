@@ -30,75 +30,61 @@ RSpec.describe API::GroupExport do
       group.add_owner(user)
     end
 
-    context 'group_import_export feature flag enabled' do
+    context 'when export file exists' do
       before do
-        stub_feature_flags(group_import_export: true)
-
         allow(Gitlab::ApplicationRateLimiter)
           .to receive(:increment)
           .and_return(0)
+
+        upload.export_file = fixture_file_upload('spec/fixtures/group_export.tar.gz', "`/tar.gz")
+        upload.save!
       end
 
-      context 'when export file exists' do
+      it 'downloads exported group archive' do
+        get api(download_path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when export_file.file does not exist' do
         before do
-          upload.export_file = fixture_file_upload('spec/fixtures/group_export.tar.gz', "`/tar.gz")
-          upload.save!
-        end
-
-        it 'downloads exported group archive' do
-          get api(download_path, user)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        context 'when export_file.file does not exist' do
-          before do
-            expect_next_instance_of(ImportExportUploader) do |uploader|
-              expect(uploader).to receive(:file).and_return(nil)
-            end
-          end
-
-          it 'returns 404' do
-            get api(download_path, user)
-
-            expect(response).to have_gitlab_http_status(:not_found)
+          expect_next_instance_of(ImportExportUploader) do |uploader|
+            expect(uploader).to receive(:file).and_return(nil)
           end
         end
 
-        context 'when object is not present' do
-          let(:other_group) { create(:group, :with_export) }
-          let(:other_download_path) { "/groups/#{other_group.id}/export/download" }
-
-          before do
-            other_group.add_owner(user)
-            other_group.export_file.file.delete
-          end
-
-          it 'returns 404' do
-            get api(other_download_path, user)
-
-            expect(response).to have_gitlab_http_status(:not_found)
-            expect(json_response['message']).to eq('The group export file is not available yet')
-          end
-        end
-      end
-
-      context 'when export file does not exist' do
         it 'returns 404' do
           get api(download_path, user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'when object is not present' do
+        let(:other_group) { create(:group, :with_export) }
+        let(:other_download_path) { "/groups/#{other_group.id}/export/download" }
+
+        before do
+          other_group.add_owner(user)
+          other_group.export_file.file.delete
+        end
+
+        it 'returns 404' do
+          get api(other_download_path, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('The group export file is not available yet')
+        end
+      end
     end
 
-    context 'group_import_export feature flag disabled' do
-      before do
-        stub_feature_flags(group_import_export: false)
-      end
-
-      it 'responds with 404 Not Found' do
+    context 'when export file does not exist' do
+      it 'returns 404' do
         get api(download_path, user)
+
+        allow(Gitlab::ApplicationRateLimiter)
+          .to receive(:increment)
+          .and_return(0)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -122,58 +108,40 @@ RSpec.describe API::GroupExport do
   end
 
   describe 'POST /groups/:group_id/export' do
-    context 'group_import_export feature flag enabled' do
+    context 'when user is a group owner' do
       before do
-        stub_feature_flags(group_import_export: true)
+        group.add_owner(user)
       end
 
-      context 'when user is a group owner' do
-        before do
-          group.add_owner(user)
-        end
+      it 'accepts download' do
+        post api(path, user)
 
-        it 'accepts download' do
-          post api(path, user)
-
-          expect(response).to have_gitlab_http_status(:accepted)
-        end
-      end
-
-      context 'when the export cannot be started' do
-        before do
-          group.add_owner(user)
-          allow(GroupExportWorker).to receive(:perform_async).and_return(nil)
-        end
-
-        it 'returns an error' do
-          post api(path, user)
-
-          expect(response).to have_gitlab_http_status(:error)
-        end
-      end
-
-      context 'when user is not a group owner' do
-        before do
-          group.add_developer(user)
-        end
-
-        it 'forbids the request' do
-          post api(path, user)
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
+        expect(response).to have_gitlab_http_status(:accepted)
       end
     end
 
-    context 'group_import_export feature flag disabled' do
+    context 'when the export cannot be started' do
       before do
-        stub_feature_flags(group_import_export: false)
+        group.add_owner(user)
+        allow(GroupExportWorker).to receive(:perform_async).and_return(nil)
       end
 
-      it 'responds with 404 Not Found' do
+      it 'returns an error' do
         post api(path, user)
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:error)
+      end
+    end
+
+    context 'when user is not a group owner' do
+      before do
+        group.add_developer(user)
+      end
+
+      it 'forbids the request' do
+        post api(path, user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -202,7 +170,6 @@ RSpec.describe API::GroupExport do
     let(:status_path) { "/groups/#{group.id}/export_relations/status" }
 
     before do
-      stub_feature_flags(group_import_export: true)
       group.add_owner(user)
     end
 

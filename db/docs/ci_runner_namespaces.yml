@@ -3,5 +3,5 @@ table_name: ci_runner_namespaces
 classes:
 - Ci::RunnerNamespace
 feature_categories: 
-- continuous_integration
+- runner
 description: 

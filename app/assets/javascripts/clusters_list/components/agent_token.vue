@@ -9,7 +9,7 @@ import { I18N_AGENT_TOKEN } from '../constants';
 export default {
   i18n: I18N_AGENT_TOKEN,
   advancedInstallPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'advanced-installation',
+    anchor: 'advanced-installation-method',
   }),
   components: {
     GlAlert,

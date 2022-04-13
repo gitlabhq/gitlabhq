@@ -173,7 +173,7 @@ describe('Pipelines filtered search', () => {
         { type: 'filtered-search-term', value: { data: '' } },
       ];
 
-      expect(findFilteredSearch().props('value')).toEqual(expectedValueProp);
+      expect(findFilteredSearch().props('value')).toMatchObject(expectedValueProp);
       expect(findFilteredSearch().props('value')).toHaveLength(expectedValueProp.length);
     });
   });

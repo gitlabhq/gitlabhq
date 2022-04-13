@@ -392,19 +392,24 @@ export default {
           </template>
 
           <template #cell(title)="{ item }">
-            <div :class="{ 'gl-display-flex gl-align-items-center': item.state === 'closed' }">
+            <div
+              :class="{
+                'gl-display-flex gl-align-items-center gl-max-w-full': item.state === 'closed',
+              }"
+            >
               <gl-link
-                v-gl-tooltip
-                :title="item.title"
                 data-testid="incident-link"
                 :href="showIncidentLink(item)"
+                class="gl-min-w-0"
               >
-                {{ item.title }}
+                <tooltip-on-truncate :title="item.title" class="gl-text-truncate gl-display-block">
+                  {{ item.title }}
+                </tooltip-on-truncate>
               </gl-link>
               <gl-icon
                 v-if="item.state === 'closed'"
                 name="issue-close"
-                class="gl-mx-1 gl-fill-blue-500 gl-flex-shrink-0"
+                class="gl-ml-2 gl-fill-blue-500 gl-flex-shrink-0"
                 :size="16"
                 data-testid="incident-closed"
               />

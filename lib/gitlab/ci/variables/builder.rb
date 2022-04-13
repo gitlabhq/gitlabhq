@@ -10,7 +10,7 @@ module Gitlab
           @pipeline = pipeline
           @instance_variables_builder = Builder::Instance.new
           @project_variables_builder = Builder::Project.new(project)
-          @group_variables_builder = Builder::Group.new(project.group)
+          @group_variables_builder = Builder::Group.new(project&.group)
         end
 
         def scoped_variables(job, environment:, dependencies:)
@@ -27,6 +27,20 @@ module Gitlab
             variables.concat(secret_group_variables(environment: environment))
             variables.concat(secret_project_variables(environment: environment))
             variables.concat(job.trigger_request.user_variables) if job.trigger_request
+            variables.concat(pipeline.variables)
+            variables.concat(pipeline_schedule_variables)
+          end
+        end
+
+        def config_variables
+          Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            break variables unless project
+
+            variables.concat(project.predefined_variables)
+            variables.concat(pipeline.predefined_variables)
+            variables.concat(secret_instance_variables)
+            variables.concat(secret_group_variables(environment: nil))
+            variables.concat(secret_project_variables(environment: nil))
             variables.concat(pipeline.variables)
             variables.concat(pipeline_schedule_variables)
           end

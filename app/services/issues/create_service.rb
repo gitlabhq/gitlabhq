@@ -87,10 +87,7 @@ module Issues
     attr_reader :spam_params
 
     def create_escalation_status(issue)
-      # Remove sync check with https://gitlab.com/gitlab-org/gitlab/-/issues/345769
-      return unless issue.supports_escalation? || issue.sync_escalation_attributes_from_alert?
-
-      ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute
+      ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
     end
 
     def user_agent_detail_service

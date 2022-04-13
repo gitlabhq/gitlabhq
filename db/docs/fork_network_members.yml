@@ -3,5 +3,5 @@ table_name: fork_network_members
 classes:
 - ForkNetworkMember
 feature_categories:
-- devops_reports
+- source_code_management
 description: 

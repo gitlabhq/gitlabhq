@@ -3,16 +3,6 @@
 RSpec.shared_examples 'boards create mutation' do
   include GraphqlHelpers
 
-  let_it_be(:current_user, reload: true) { create(:user) }
-  let(:name) { 'board name' }
-  let(:mutation) { graphql_mutation(:create_board, params) }
-
-  subject { post_graphql_mutation(mutation, current_user: current_user) }
-
-  def mutation_response
-    graphql_mutation_response(:create_board)
-  end
-
   context 'when the user does not have permission' do
     it_behaves_like 'a mutation that returns a top-level access error'
 

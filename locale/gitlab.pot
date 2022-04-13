@@ -7038,6 +7038,9 @@ msgstr ""
 msgid "Changed assignee(s)."
 msgstr ""
 
+msgid "Changed merge method to %{merge_method}"
+msgstr ""
+
 msgid "Changed reviewer(s)."
 msgstr ""
 
@@ -8001,7 +8004,7 @@ msgstr ""
 msgid "ClusterAgents|Failed to register an agent"
 msgstr ""
 
-msgid "ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included."
+msgid "ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included in the command."
 msgstr ""
 
 msgid "ClusterAgents|GitLab agent"
@@ -8017,6 +8020,9 @@ msgid "ClusterAgents|How do I register an agent?"
 msgstr ""
 
 msgid "ClusterAgents|How to update an agent?"
+msgstr ""
+
+msgid "ClusterAgents|Install using Helm (recommended)"
 msgstr ""
 
 msgid "ClusterAgents|Last connected %{timeAgo}."
@@ -8050,9 +8056,6 @@ msgid "ClusterAgents|Not connected"
 msgstr ""
 
 msgid "ClusterAgents|Recommended"
-msgstr ""
-
-msgid "ClusterAgents|Recommended installation method"
 msgstr ""
 
 msgid "ClusterAgents|Register"

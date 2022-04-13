@@ -39,7 +39,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
 
   private_constant :CALLOUT_FAILURE_MESSAGES
 
-  presents ::CommitStatus, as: :build
+  presents ::CommitStatus
 
   def self.callout_failure_messages
     CALLOUT_FAILURE_MESSAGES

@@ -155,20 +155,6 @@ RSpec.describe Import::GitlabGroupsController do
       end
     end
 
-    context 'when group import FF is disabled' do
-      let(:request_params) { { path: 'test-group-import', name: 'test-group-import' } }
-
-      before do
-        stub_feature_flags(group_import_export: false)
-      end
-
-      it 'returns an error' do
-        expect { import_request }.not_to change { Group.count }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'when the parent group is invalid' do
       let(:request_params) { { path: 'test-group-import', name: 'test-group-import', parent_id: -1 } }
 

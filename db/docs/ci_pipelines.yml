@@ -3,5 +3,5 @@ table_name: ci_pipelines
 classes:
 - Ci::Pipeline
 feature_categories:
-- code_review
+- continuous_integration
 description: 
