@@ -102,6 +102,7 @@ export default {
         :text="$options.i18n.importIssuesText"
         :text-sr-only="!showLabel"
         :icon="importButtonIcon"
+        class="gl-w-full gl-md-w-auto"
       >
         <gl-dropdown-item v-gl-modal="importModalId">
           {{ $options.i18n.importCsvText }}

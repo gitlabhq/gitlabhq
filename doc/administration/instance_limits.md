@@ -240,7 +240,7 @@ Activity history for projects and individuals' profiles was limited to one year 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14939) in GitLab 12.7.
 
-There is a limit when embedding metrics in GitLab Flavored Markdown (GFM) for performance reasons.
+There is a limit when embedding metrics in GitLab Flavored Markdown (GLFM) for performance reasons.
 
 - **Max limit**: 100 embeds.
 

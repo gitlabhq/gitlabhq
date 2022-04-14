@@ -5,6 +5,4 @@
   .help-block
     = local_assigns.fetch(:help_text, nil)
 .form-group
-  %label{ for: 'user_email_opted_in' }
-    = form.check_box :email_opted_in
-    %span= _('Receive product marketing emails')
+  = form.gitlab_ui_checkbox_component :email_opted_in, _('Receive product marketing emails')

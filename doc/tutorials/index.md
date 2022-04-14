@@ -18,7 +18,7 @@ and running quickly.
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Introduction to GitLab](https://youtu.be/_4SmIyQ5eis?t=90) (59m 51s) | Walk through recommended processes and example workflows for using GitLab. | **{star}** |
 | [GitLab 101](https://gitlab.edcast.com/pathways/copy-of-gitlab-certification)  |  Learn the basics of GitLab in this certification course. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for DevOps](https://www.youtube.com/watch?v=7q9Y1Cv-ib0) (12m 34s) | Use GitLab through the entire DevOps lifecycle, from planning to monitoring. | **{star}** |
-| [Use Markdown at GitLab](../user/markdown.md) |  GitLab Flavored Markdown (GFM) is used in many areas of GitLab, for example, in merge requests. | **{star}** |
+| [Use Markdown at GitLab](../user/markdown.md) |  GitLab Flavored Markdown (GLFM) is used in many areas of GitLab, for example, in merge requests. | **{star}** |
 | [GitLab 201](https://gitlab.edcast.com/pathways/ECL-44010cf6-7a9c-4b9b-b684-fa08508a3252)  |  Go beyond the basics to learn more about using GitLab for your work. | |
 | Learn GitLab project | You might already have the **Learn GitLab** project, which has tutorial-style issues to help you learn GitLab. If not, download [this export file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/project_templates/learn_gitlab_ultimate.tar.gz) and [import it to a new project](../user/project/settings/import_export.md#import-a-project-and-its-data). | |
 | [Productivity tips](https://about.gitlab.com/blog/2021/02/18/improve-your-gitlab-productivity-with-these-10-tips/) | Get tips to help make you a productive GitLab user. | |

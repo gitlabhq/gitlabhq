@@ -785,7 +785,7 @@ export default {
           </gl-button>
           <csv-import-export-buttons
             v-if="showCsvButtons"
-            class="gl-mr-3"
+            class="gl-w-full gl-sm-w-auto gl-sm-mr-3"
             :export-csv-path="exportCsvPathWithQuery"
             :issuable-count="currentTabCount"
           />

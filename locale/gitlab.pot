@@ -5251,7 +5251,7 @@ msgstr ""
 msgid "Authenticate"
 msgstr ""
 
-msgid "Authenticate user SSH keys without requiring additional configuration. Performance of GitLab can be improved by using the GitLab database instead."
+msgid "Authenticate user SSH keys without requiring additional configuration. Performance of GitLab can be improved by using the GitLab database instead. %{link_start}How do I configure authentication using the GitLab database? %{link_end}"
 msgstr ""
 
 msgid "Authenticate with GitHub"
@@ -18699,9 +18699,6 @@ msgid "Housekeeping successfully started"
 msgstr ""
 
 msgid "How do I configure Akismet?"
-msgstr ""
-
-msgid "How do I configure authentication using the GitLab database?"
 msgstr ""
 
 msgid "How do I configure it?"

@@ -53,7 +53,7 @@ Example response:
 [
    {
       "tag_name":"v0.2",
-      "description":"## CHANGELOG\r\n\r\n- Escape label and milestone titles to prevent XSS in GFM autocomplete. !2740\r\n- Prevent private snippets from being embeddable.\r\n- Add subresources removal to member destroy service.",
+      "description":"## CHANGELOG\r\n\r\n- Escape label and milestone titles to prevent XSS in GLFM autocomplete. !2740\r\n- Prevent private snippets from being embeddable.\r\n- Add subresources removal to member destroy service.",
       "name":"Awesome app v0.2 beta",
       "created_at":"2019-01-03T01:56:19.539Z",
       "released_at":"2019-01-03T01:56:19.539Z",

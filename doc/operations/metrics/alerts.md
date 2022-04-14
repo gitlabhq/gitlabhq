@@ -79,7 +79,7 @@ values extracted from the [`alerts` field in webhook payload](https://prometheus
   - `starts_at`: Alert start time from the payload's `startsAt` field
   - `full_query`: Alert query extracted from the payload's `generatorURL` field
   - Optional list of attached annotations extracted from `annotations/*`
-- Alert [GFM](../../user/markdown.md): GitLab Flavored Markdown from the payload's `annotations/gitlab_incident_markdown` field.
+- Alert [GLFM](../../user/markdown.md): GitLab Flavored Markdown from the payload's `annotations/gitlab_incident_markdown` field.
 - Alert Severity ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab version 13.9):
   Extracted from the alert payload field `labels/severity`. Maps case-insensitive
   value to [Alert's severity](../incident_management/alerts.md#alert-severity):
