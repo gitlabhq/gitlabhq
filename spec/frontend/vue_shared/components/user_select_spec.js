@@ -16,7 +16,7 @@ import {
   searchResponseOnMR,
   projectMembersResponse,
   participantsQueryResponse,
-} from '../../sidebar/mock_data';
+} from 'jest/sidebar/mock_data';
 
 const assignee = {
   id: 'gid://gitlab/User/4',

@@ -409,17 +409,13 @@ export default {
     <div>
       <gl-alert
         v-if="!isDeprecationNoticeDismissed"
-        :title="__('Feature deprecation and removal')"
+        :title="__('Feature deprecation')"
         class="mb-3"
-        variant="danger"
+        variant="warning"
         @dismiss="isDeprecationNoticeDismissed = true"
       >
         <gl-sprintf
-          :message="
-            s__(
-              'Deprecations|The metrics, logs and tracing features were deprecated in GitLab 14.7 and are %{epicStart} scheduled for removal %{epicEnd} in GitLab 15.0.',
-            )
-          "
+          :message="s__('Deprecations|The metrics feature was deprecated in GitLab 14.7.')"
         >
           <template #epic="{ content }">
             <gl-link href="https://gitlab.com/groups/gitlab-org/-/epics/7188" target="_blank">{{

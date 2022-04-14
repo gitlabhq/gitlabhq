@@ -40,16 +40,20 @@ module Gitlab
         # 1. The minimum value for the partitioning column in the table
         # 2. If no data is present yet, the current month
         def partition_table_by_date(table_name, column_name, min_date: nil, max_date: nil)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
           assert_table_is_allowed(table_name)
 
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
 
           max_date ||= Date.today + 1.month
 
-          min_date ||= connection.select_one(<<~SQL)['minimum'] || max_date - 1.month
-            SELECT date_trunc('MONTH', MIN(#{column_name})) AS minimum
-            FROM #{table_name}
-          SQL
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+            min_date ||= connection.select_one(<<~SQL)['minimum'] || max_date - 1.month
+              SELECT date_trunc('MONTH', MIN(#{column_name})) AS minimum
+              FROM #{table_name}
+            SQL
+          end
 
           raise "max_date #{max_date} must be greater than min_date #{min_date}" if min_date >= max_date
 
@@ -154,6 +158,8 @@ module Gitlab
         #   finalize_backfilling_partitioned_table :audit_events
         #
         def finalize_backfilling_partitioned_table(table_name)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
+
           assert_table_is_allowed(table_name)
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
 
@@ -170,8 +176,10 @@ module Gitlab
           primary_key = connection.primary_key(table_name)
           copy_missed_records(table_name, partitioned_table_name, primary_key)
 
-          disable_statement_timeout do
-            execute("VACUUM FREEZE ANALYZE #{partitioned_table_name}")
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+            disable_statement_timeout do
+              execute("VACUUM FREEZE ANALYZE #{partitioned_table_name}")
+            end
           end
         end
 

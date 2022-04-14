@@ -55,9 +55,9 @@ Example:
 There are two ways to configure the approval requirements:
 
 - [Unified approval setting](#unified-approval-setting) ... You can define who can execute **and** approve deployments.
-  This is useful when there is no separation of duties between executors and approvers in your oraganization.
+  This is useful when there is no separation of duties between executors and approvers in your organization.
 - [Multiple approval rules](#multiple-approval-rules) ... You can define who can execute **or** approve deployments.
-  This is useful when there is a separation of duties between executors and approvers in your oraganization.
+  This is useful when there is a separation of duties between executors and approvers in your organization.
 
 NOTE:
 Multiple approval rules is a more flexible option than the unified approval setting, thus both configurations shouldn't

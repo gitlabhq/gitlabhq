@@ -12654,10 +12654,16 @@ msgstr ""
 msgid "Deprecations|For information on a possible replacement %{epicStart} learn more about Opstrace %{epicEnd}."
 msgstr ""
 
-msgid "Deprecations|The metrics, logs and tracing features were deprecated in GitLab 14.7 and are %{epicStart} scheduled for removal %{epicEnd} in GitLab 15.0."
+msgid "Deprecations|The logs and tracing features were deprecated in GitLab 14.7 and are %{epicStart} scheduled for removal %{epicEnd} in GitLab 15.0."
 msgstr ""
 
-msgid "Deprecations|The metrics, logs and tracing features were deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0. For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}."
+msgid "Deprecations|The logs and tracing features were deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0. For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}."
+msgstr ""
+
+msgid "Deprecations|The metrics feature was deprecated in GitLab 14.7."
+msgstr ""
+
+msgid "Deprecations|The metrics feature was deprecated in GitLab 14.7. The logs and tracing features were also deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0. For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}."
 msgstr ""
 
 msgid "Deprioritize label"
@@ -15646,7 +15652,7 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
-msgid "Feature deprecation and removal"
+msgid "Feature deprecation"
 msgstr ""
 
 msgid "Feature flag status"

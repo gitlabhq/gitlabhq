@@ -4,7 +4,7 @@ import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
 import { createStore } from '~/mr_notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { noteableDataMock } from '../../notes/mock_data';
+import { noteableDataMock } from 'jest/notes/mock_data';
 import diffFileMockData from '../mock_data/diff_file';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {

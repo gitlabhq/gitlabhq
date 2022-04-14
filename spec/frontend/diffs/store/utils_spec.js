@@ -13,7 +13,7 @@ import {
 } from '~/diffs/constants';
 import * as utils from '~/diffs/store/utils';
 import { MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
-import { noteableDataMock } from '../../notes/mock_data';
+import { noteableDataMock } from 'jest/notes/mock_data';
 import diffFileMockData from '../mock_data/diff_file';
 import { diffMetadata } from '../mock_data/diff_metadata';
 

@@ -89,8 +89,11 @@ describe('InputCopyToggleVisibility', () => {
       });
 
       describe('when clicked', () => {
+        let event;
+
         beforeEach(async () => {
-          await findRevealButton().trigger('click');
+          event = { stopPropagation: jest.fn() };
+          await findRevealButton().trigger('click', event);
         });
 
         it('displays value', () => {
@@ -109,6 +112,11 @@ describe('InputCopyToggleVisibility', () => {
 
         it('emits `visibility-change` event', () => {
           expect(wrapper.emitted('visibility-change')[0]).toEqual([true]);
+        });
+
+        it('stops propagation on click event', () => {
+          // in case the input is located in a dropdown or modal
+          expect(event.stopPropagation).toHaveBeenCalledTimes(1);
         });
       });
     });

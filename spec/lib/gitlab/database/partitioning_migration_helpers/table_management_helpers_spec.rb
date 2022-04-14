@@ -125,6 +125,17 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         expect_table_partitioned_by(partitioned_table, [partition_column])
       end
 
+      it 'requires the migration helper to be run in DDL mode' do
+        expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_ddl_mode!)
+
+        migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+
+        expect(connection.table_exists?(partitioned_table)).to be(true)
+        expect(connection.primary_key(partitioned_table)).to eq(new_primary_key)
+
+        expect_table_partitioned_by(partitioned_table, [partition_column])
+      end
+
       it 'changes the primary key datatype to bigint' do
         migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
 
@@ -191,6 +202,8 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           end
 
           it 'creates a partition spanning over each month from the first record' do
+            expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:with_suppressed).and_yield
+
             migration.partition_table_by_date source_table, partition_column, max_date: max_date
 
             expect_range_partitions_for(partitioned_table, {
@@ -206,6 +219,8 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
         context 'without data' do
           it 'creates the catchall partition plus two actual partition' do
+            expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:with_suppressed).and_yield
+
             migration.partition_table_by_date source_table, partition_column, max_date: max_date
 
             expect_range_partitions_for(partitioned_table, {
@@ -536,6 +551,16 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
         migration.finalize_backfilling_partitioned_table source_table
       end
+
+      it 'requires the migration helper to execute in DML mode' do
+        expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
+        expect(Gitlab::BackgroundMigration).to receive(:steal)
+          .with(described_class::MIGRATION_CLASS_NAME)
+          .and_yield(background_job)
+
+        migration.finalize_backfilling_partitioned_table source_table
+      end
     end
 
     context 'when there is missed data' do
@@ -627,6 +652,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           allow(backfill).to receive(:perform).and_return(1)
         end
 
+        expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:with_suppressed).and_yield
         expect(migration).to receive(:disable_statement_timeout).and_call_original
         expect(migration).to receive(:execute).with("VACUUM FREEZE ANALYZE #{partitioned_table}")
 

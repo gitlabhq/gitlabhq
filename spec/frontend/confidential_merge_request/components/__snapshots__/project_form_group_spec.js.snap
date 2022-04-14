@@ -12,7 +12,7 @@ exports[`Confidential merge request project form group component renders empty s
     <!---->
      
     <p
-      class="text-muted mt-1 mb-0"
+      class="gl-text-gray-600 gl-mt-1 gl-mb-0"
     >
       
         No forks are available to you.
@@ -27,7 +27,7 @@ exports[`Confidential merge request project form group component renders empty s
       </a>
        and set the fork's visibility to private. 
       <gl-link-stub
-        class="w-auto p-0 d-inline-block text-primary bg-transparent"
+        class="gl-w-auto gl-p-0 gl-display-inline-block gl-bg-transparent"
         href="/help"
         target="_blank"
       >
@@ -62,13 +62,13 @@ exports[`Confidential merge request project form group component renders fork dr
     />
      
     <p
-      class="text-muted mt-1 mb-0"
+      class="gl-text-gray-600 gl-mt-1 gl-mb-0"
     >
       
         To protect this issue's confidentiality, a private fork of this project was selected.
        
       <gl-link-stub
-        class="w-auto p-0 d-inline-block text-primary bg-transparent"
+        class="gl-w-auto gl-p-0 gl-display-inline-block gl-bg-transparent"
         href="/help"
         target="_blank"
       >

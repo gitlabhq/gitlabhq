@@ -7,7 +7,7 @@ import Api from '~/api';
 import { redirectTo } from '~/lib/utils/url_utility';
 import NewUserList from '~/user_lists/components/new_user_list.vue';
 import createStore from '~/user_lists/store/new';
-import { userList } from '../../feature_flags/mock_data';
+import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api');
 jest.mock('~/lib/utils/url_utility');
