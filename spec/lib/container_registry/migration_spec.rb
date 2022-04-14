@@ -37,8 +37,8 @@ RSpec.describe ContainerRegistry::Migration do
     subject { described_class.enqueue_waiting_time }
 
     where(:slow_enabled, :fast_enabled, :expected_result) do
-      false | false | 1.hour
-      true  | false | 6.hours
+      false | false | 45.minutes
+      true  | false | 165.minutes
       false | true  | 0
       true  | true  | 0
     end

@@ -15,7 +15,7 @@ export default {
   computed: {
     iconClass() {
       if (this.itemType === ITEM_TYPE.GROUP) {
-        return 'group';
+        return 'subgroup';
       }
       return 'project';
     },

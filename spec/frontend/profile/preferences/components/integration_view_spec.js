@@ -1,5 +1,5 @@
-import { GlFormText } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlFormGroup } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
@@ -21,7 +21,7 @@ describe('IntegrationView component', () => {
 
   function createComponent(options = {}) {
     const { props = {}, provide = {} } = options;
-    return shallowMount(IntegrationView, {
+    return mountExtended(IntegrationView, {
       provide: {
         userFields,
         ...provide,
@@ -33,28 +33,20 @@ describe('IntegrationView component', () => {
     });
   }
 
-  function findCheckbox() {
-    return wrapper.find('[data-testid="profile-preferences-integration-checkbox"]');
-  }
-  function findFormGroup() {
-    return wrapper.find('[data-testid="profile-preferences-integration-form-group"]');
-  }
-  function findHiddenField() {
-    return wrapper.find('[data-testid="profile-preferences-integration-hidden-field"]');
-  }
-  function findFormGroupLabel() {
-    return wrapper.find('[data-testid="profile-preferences-integration-form-group"] label');
-  }
+  const findCheckbox = () => wrapper.findByLabelText(new RegExp(defaultProps.config.label));
+  const findFormGroup = () => wrapper.findComponent(GlFormGroup);
+  const findHiddenField = () =>
+    wrapper.findByTestId('profile-preferences-integration-hidden-field');
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
   });
 
-  it('should render the title correctly', () => {
+  it('should render the form group legend correctly', () => {
     wrapper = createComponent();
 
-    expect(wrapper.find('label.label-bold').text()).toBe('Foo');
+    expect(wrapper.findByText(defaultProps.config.title).exists()).toBe(true);
   });
 
   it('should render the form correctly', () => {
@@ -106,13 +98,6 @@ describe('IntegrationView component', () => {
   it('should render the help text', () => {
     wrapper = createComponent();
 
-    expect(wrapper.find(GlFormText).exists()).toBe(true);
     expect(wrapper.find(IntegrationHelpText).exists()).toBe(true);
-  });
-
-  it('should render the label correctly', () => {
-    wrapper = createComponent();
-
-    expect(findFormGroupLabel().text()).toBe('Enable foo');
   });
 });

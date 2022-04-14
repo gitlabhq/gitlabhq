@@ -117,7 +117,7 @@ export default {
 
 <template>
   <header
-    class="page-content-header gl-display-flex gl-min-h-7"
+    class="page-content-header gl-md-display-flex gl-min-h-7"
     data-qa-selector="pipeline_header"
     data-testid="ci-header-content"
   >
@@ -163,11 +163,7 @@ export default {
       </template>
     </section>
 
-    <section
-      v-if="$slots.default"
-      data-testid="ci-header-action-buttons"
-      class="gl-display-flex gl-mr-3"
-    >
+    <section v-if="$slots.default" data-testid="ci-header-action-buttons" class="gl-display-flex">
       <slot></slot>
     </section>
     <gl-button

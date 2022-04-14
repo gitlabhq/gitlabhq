@@ -396,6 +396,7 @@ export default {
         :key="variable.uniqueId"
         class="gl-mb-3 gl-ml-n3 gl-pb-2"
         data-testid="ci-variable-row"
+        data-qa-selector="ci_variable_row_container"
       >
         <div
           class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row"
@@ -411,6 +412,7 @@ export default {
             :placeholder="s__('CiVariables|Input variable key')"
             :class="$options.formElementClasses"
             data-testid="pipeline-form-ci-variable-key"
+            data-qa-selector="ci_variable_key_field"
             @change="addEmptyVariable(refFullName)"
           />
           <gl-form-textarea
@@ -420,6 +422,7 @@ export default {
             :style="$options.textAreaStyle"
             :no-resize="false"
             data-testid="pipeline-form-ci-variable-value"
+            data-qa-selector="ci_variable_value_field"
           />
 
           <template v-if="variables.length > 1">

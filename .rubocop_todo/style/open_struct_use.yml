@@ -17,7 +17,5 @@ Style/OpenStructUse:
   - spec/helpers/profiles_helper_spec.rb
   - spec/lib/gitlab/gitaly_client/blobs_stitcher_spec.rb
   - spec/lib/gitlab/gitaly_client/diff_stitcher_spec.rb
-  - spec/lib/gitlab/legacy_github_import/project_creator_spec.rb
-  - spec/lib/gitlab/quick_actions/command_definition_spec.rb
   - spec/services/system_note_service_spec.rb
   - spec/support/helpers/repo_helpers.rb

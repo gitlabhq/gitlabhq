@@ -1,4 +1,4 @@
-= form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-help-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-help-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -9,10 +9,7 @@
       = f.text_area :help_page_text, class: 'form-control gl-form-input', rows: 4
       .form-text.text-muted= _('Markdown enabled.')
     .form-group
-      .form-check
-        = f.check_box :help_page_hide_commercial_content, class: 'form-check-input'
-        = f.label :help_page_hide_commercial_content, class: 'form-check-label' do
-          = _('Hide marketing-related entries from the Help page')
+      = f.gitlab_ui_checkbox_component :help_page_hide_commercial_content, _('Hide marketing-related entries from the Help page')
     .form-group
       = f.label :help_page_support_url, _('Support page URL'), class: 'label-bold'
       = f.text_field :help_page_support_url, class: 'form-control gl-form-input', placeholder: 'https://company.example.com/getting-help', :'aria-describedby' => 'support_help_block'

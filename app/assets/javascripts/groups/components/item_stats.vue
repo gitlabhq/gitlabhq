@@ -55,7 +55,7 @@ export default {
       :title="__('Subgroups')"
       :value="item.subgroupCount"
       css-class="number-subgroups gl-ml-5"
-      icon-name="group"
+      icon-name="subgroup"
       data-testid="subgroups-count"
     />
     <item-stats-value

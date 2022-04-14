@@ -8,7 +8,7 @@ module QA
           include Component::CiBadgeLink
 
           view 'app/assets/javascripts/vue_shared/components/header_ci_component.vue' do
-            element :pipeline_header
+            element :pipeline_header, required: true
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/graph_component.vue' do
@@ -16,8 +16,8 @@ module QA
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
-            element :job_item_container
-            element :job_link
+            element :job_item_container, required: true
+            element :job_link, required: true
             element :job_action_button
           end
 

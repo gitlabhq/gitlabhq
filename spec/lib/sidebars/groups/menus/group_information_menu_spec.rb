@@ -28,6 +28,20 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu do
     end
   end
 
+  describe '#sprite_icon' do
+    subject { described_class.new(context).sprite_icon }
+
+    context 'when group is a root group' do
+      specify { is_expected.to eq 'group'}
+    end
+
+    context 'when group is a child group' do
+      let(:group) { build(:group, parent: root_group) }
+
+      specify { is_expected.to eq 'subgroup'}
+    end
+  end
+
   describe 'Menu Items' do
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 

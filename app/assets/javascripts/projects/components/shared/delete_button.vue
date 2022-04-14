@@ -104,7 +104,6 @@ export default {
     <gl-modal
       ref="removeModal"
       :modal-id="modalId"
-      size="sm"
       ok-variant="danger"
       footer-class="gl-bg-gray-10 gl-p-5"
       title-class="gl-text-red-500"

@@ -26,7 +26,7 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
   describe "#noop?" do
     context "when the command has an action block" do
       before do
-        subject.action_block = proc { }
+        subject.action_block = proc {}
       end
 
       it "returns false" do
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
   end
 
   describe "#available?" do
-    let(:opts) { OpenStruct.new(go: false) }
+    let(:opts) { ActiveSupport::InheritableOptions.new(go: false) }
 
     context "when the command has a condition block" do
       before do
@@ -104,7 +104,8 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
   end
 
   describe "#execute" do
-    let(:context) { OpenStruct.new(run: false, commands_executed_count: nil) }
+    let(:fake_context) { Struct.new(:run, :commands_executed_count, :received_arg) }
+    let(:context) { fake_context.new(false, nil, nil) }
 
     context "when the command is a noop" do
       it "doesn't execute the command" do

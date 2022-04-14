@@ -9,15 +9,13 @@
       = _('Amazon EKS integration allows you to provision EKS clusters from GitLab.')
 
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-eks-settings'), html: { class: 'fieldset-form', id: 'eks-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-eks-settings'), html: { class: 'fieldset-form', id: 'eks-settings' } do |f|
       = form_errors(@application_setting)
 
       %fieldset
         .form-group
-          .form-check
-            = f.check_box :eks_integration_enabled, class: 'form-check-input'
-            = f.label :eks_integration_enabled, class: 'form-check-label' do
-              = _('Enable Amazon EKS integration')
+          = f.gitlab_ui_checkbox_component :eks_integration_enabled,
+            _('Enable Amazon EKS integration')
         .form-group
           = f.label :eks_account_id, _('Account ID'), class: 'label-bold'
           = f.text_field :eks_account_id, class: 'form-control gl-form-input'

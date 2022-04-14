@@ -8,14 +8,13 @@
     %p
       = _('Configure the %{link} integration.').html_safe % { link: link_to(_('Mailgun events'), 'https://documentation.mailgun.com/en/latest/user_manual.html#webhooks', target: '_blank', rel: 'noopener noreferrer') }
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-mailgun-settings'), html: { class: 'fieldset-form', id: 'mailgun-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-mailgun-settings'), html: { class: 'fieldset-form', id: 'mailgun-settings' } do |f|
       = form_errors(@application_setting) if expanded
 
       %fieldset
         .form-group
-          .form-check
-            = f.check_box :mailgun_events_enabled, class: 'form-check-input'
-            = f.label :mailgun_events_enabled, _('Enable Mailgun event receiver'), class: 'form-check-label'
+          = f.gitlab_ui_checkbox_component :mailgun_events_enabled,
+          _('Enable Mailgun event receiver')
         .form-group
           = f.label :mailgun_signing_key, _('Mailgun HTTP webhook signing key'), class: 'label-light'
           = f.text_field :mailgun_signing_key, class: 'form-control gl-form-input'

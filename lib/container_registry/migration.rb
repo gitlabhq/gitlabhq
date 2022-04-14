@@ -39,9 +39,9 @@ module ContainerRegistry
 
     def self.enqueue_waiting_time
       return 0 if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_fast)
-      return 6.hours if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_slow)
+      return 165.minutes if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_slow)
 
-      1.hour
+      45.minutes
     end
 
     def self.capacity

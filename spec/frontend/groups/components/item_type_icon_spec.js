@@ -34,7 +34,7 @@ describe('ItemTypeIcon', () => {
 
     it.each`
       type                 | icon
-      ${ITEM_TYPE.GROUP}   | ${'group'}
+      ${ITEM_TYPE.GROUP}   | ${'subgroup'}
       ${ITEM_TYPE.PROJECT} | ${'project'}
     `('shows "$icon" icon when `itemType` is "$type"', ({ type, icon }) => {
       createComponent({

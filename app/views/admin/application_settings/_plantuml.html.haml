@@ -9,14 +9,13 @@
       = _('Render diagrams in your documents using PlantUML.')
       = link_to _('Learn more.'), help_page_path('administration/integration/plantuml.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-plantuml-settings'), html: { class: 'fieldset-form', id: 'plantuml-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-plantuml-settings'), html: { class: 'fieldset-form', id: 'plantuml-settings' } do |f|
       = form_errors(@application_setting) if expanded
 
       %fieldset
         .form-group
-          .form-check
-            = f.check_box :plantuml_enabled, class: 'form-check-input'
-            = f.label :plantuml_enabled, _('Enable PlantUML'), class: 'form-check-label'
+          = f.gitlab_ui_checkbox_component :plantuml_enabled,
+            _('Enable PlantUML')
         .form-group
           = f.label :plantuml_url, _('PlantUML URL'), class: 'label-bold'
           = f.text_field :plantuml_url, class: 'form-control gl-form-input', placeholder: 'http://your-plantuml-instance:8080'

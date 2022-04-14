@@ -11,12 +11,11 @@
       = link_to sprite_icon('question-o'), 'https://github.com/WICG/floc', target: '_blank', rel: 'noopener noreferrer', class: 'has-tooltip', title: _('More information')
 
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-floc-settings'), html: { class: 'fieldset-form', id: 'floc-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-floc-settings'), html: { class: 'fieldset-form', id: 'floc-settings' } do |f|
       = form_errors(@application_setting)
 
       %fieldset
         .form-group
-          .form-check
-            = f.check_box :floc_enabled, class: 'form-check-input'
-            = f.label :floc_enabled, s_('FloC|Enable FloC (Federated Learning of Cohorts)'), class: 'form-check-label'
+          = f.gitlab_ui_checkbox_component :floc_enabled,
+          s_('FloC|Enable FloC (Federated Learning of Cohorts)')
       = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'

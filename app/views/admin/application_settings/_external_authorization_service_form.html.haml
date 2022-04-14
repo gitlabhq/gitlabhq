@@ -9,17 +9,14 @@
       = link_to _('Learn more.'), help_page_path('user/admin_area/settings/external_authorization'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
 
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-external-auth-settings'), html: { class: 'fieldset-form', id: 'external-auth-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-external-auth-settings'), html: { class: 'fieldset-form', id: 'external-auth-settings' } do |f|
       = form_errors(@application_setting)
 
       %fieldset
         .form-group
-          .form-check
-            = f.check_box :external_authorization_service_enabled, class: 'form-check-input'
-            = f.label :external_authorization_service_enabled, class: 'form-check-label' do
-              = s_('ExternalAuthorization|Enable classification control using an external service')
-          %span.form-text.text-muted
-            = external_authorization_description
+          = f.gitlab_ui_checkbox_component :external_authorization_service_enabled,
+            s_('ExternalAuthorization|Enable classification control using an external service'),
+            help_text: external_authorization_description
         .form-group
           = f.label :external_authorization_service_url, s_('ExternalAuthorization|Service URL'), class: 'label-bold'
           = f.text_field :external_authorization_service_url, class: 'form-control gl-form-input'

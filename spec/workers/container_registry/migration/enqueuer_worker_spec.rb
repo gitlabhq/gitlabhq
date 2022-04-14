@@ -141,20 +141,20 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
 
       with_them do
         before do
-          allow(ContainerRegistry::Migration).to receive(:enqueue_waiting_time).and_return(1.hour)
+          allow(ContainerRegistry::Migration).to receive(:enqueue_waiting_time).and_return(45.minutes)
           create(:container_repository, state, timestamp => 1.minute.ago)
         end
 
         it_behaves_like 'no action' do
           before do
-            expect_log_extra_metadata(waiting_time_passed: false, current_waiting_time_setting: 1.hour)
+            expect_log_extra_metadata(waiting_time_passed: false, current_waiting_time_setting: 45.minutes)
           end
         end
       end
 
       context 'when last completed repository has nil timestamps' do
         before do
-          allow(ContainerRegistry::Migration).to receive(:enqueue_waiting_time).and_return(1.hour)
+          allow(ContainerRegistry::Migration).to receive(:enqueue_waiting_time).and_return(45.minutes)
           create(:container_repository, migration_state: 'import_done')
         end
 
