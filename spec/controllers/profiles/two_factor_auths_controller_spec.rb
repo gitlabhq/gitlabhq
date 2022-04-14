@@ -107,10 +107,22 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       expect(assigns[:qr_code]).to eq(code)
     end
 
-    it 'generates a unique otp_secret every time the page is loaded' do
-      expect(User).to receive(:generate_otp_secret).with(32).and_call_original.twice
+    it 'generates a single otp_secret with multiple page loads', :freeze_time do
+      expect(User).to receive(:generate_otp_secret).with(32).and_call_original.once
+
+      user.update!(otp_secret: nil, otp_secret_expires_at: nil)
 
       2.times do
+        get :show
+      end
+    end
+
+    it 'generates a new otp_secret once the ttl has expired' do
+      expect(User).to receive(:generate_otp_secret).with(32).and_call_original.once
+
+      user.update!(otp_secret: "FT7KAVNU63YZH7PBRVPVL7CPSAENXY25", otp_secret_expires_at: 2.minutes.from_now)
+
+      travel_to(10.minutes.from_now) do
         get :show
       end
     end

@@ -133,7 +133,9 @@ module QA
       end
 
       def all_elements(name, **kwargs)
-        if kwargs.keys.none? { |key| [:minimum, :maximum, :count, :between].include?(key) }
+        all_args = [:minimum, :maximum, :count, :between]
+
+        if kwargs.keys.none? { |key| all_args.include?(key) }
           raise ArgumentError, "Please use :minimum, :maximum, :count, or :between so that all is more reliable"
         end
 
@@ -469,8 +471,8 @@ module QA
         return element_when_flag_disabled if has_element?(element_when_flag_disabled)
 
         raise ElementNotFound,
-          "Could not find the expected element as #{element_when_flag_enabled} or #{element_when_flag_disabled}." \
-          "The relevant feature flag is #{feature_flag}"
+              "Could not find the expected element as #{element_when_flag_enabled} or #{element_when_flag_disabled}." \
+              "The relevant feature flag is #{feature_flag}"
       end
     end
   end

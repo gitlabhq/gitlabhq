@@ -189,6 +189,20 @@ FactoryBot.define do
       set_expanded_environment_name
     end
 
+    trait :start_staging do
+      name { 'start staging' }
+      environment { 'staging' }
+
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'staging', action: 'start' }
+        }
+      end
+
+      set_expanded_environment_name
+    end
+
     trait :stop_staging do
       name { 'stop staging' }
       environment { 'staging' }

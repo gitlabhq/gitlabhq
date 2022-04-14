@@ -1,0 +1,8 @@
+---
+name: environment_multiple_stop_actions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84922
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358911
+milestone: '14.10'
+type: development
+group: group::release
+default_enabled: false

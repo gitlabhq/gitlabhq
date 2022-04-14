@@ -2,10 +2,10 @@
 
 module QA
   RSpec.shared_examples 'a QA scenario class' do
-    let(:attributes) { spy('Runtime::Scenario') }
-    let(:runner) { spy('Specs::Runner') }
-    let(:release) { spy('Runtime::Release') }
-    let(:feature) { spy('Runtime::Feature') }
+    let(:attributes) { class_spy('Runtime::Scenario') }
+    let(:runner) { class_spy('Specs::Runner') }
+    let(:release) { class_spy('Runtime::Release') }
+    let(:feature) { class_spy('Runtime::Feature') }
 
     let(:args) { { gitlab_address: 'http://gitlab_address' } }
     let(:named_options) { %w[--address http://gitlab_address] }
@@ -45,7 +45,7 @@ module QA
       expect(runner).to have_received(:tags=).with(tags)
     end
 
-    context 'specifying RSpec options' do
+    context 'with RSpec options' do
       it 'sets options on runner' do
         subject.perform(args, *options)
 

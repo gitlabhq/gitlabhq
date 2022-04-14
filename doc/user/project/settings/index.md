@@ -89,14 +89,10 @@ read-only view to discourage this behavior.
 Compliance framework pipelines allow group owners to define
 a compliance pipeline in a separate repository that gets
 executed in place of the local project's `gitlab-ci.yml` file. As part of this pipeline, an
-`include` statement can reference the local project's `gitlab-ci.yml` file. This way, the two CI
-files are merged together any time the pipeline runs. Jobs and variables defined in the compliance
+`include` statement can reference the local project's `gitlab-ci.yml` file. This way, the compliance
+pipeline jobs can run alongside the project-specific jobs any time the pipeline runs.
+Jobs and variables defined in the compliance
 pipeline can't be changed by variables in the local project's `gitlab-ci.yml` file.
-
-When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/scan-execution-policies.md),
-as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
-For details on the similarities and differences between these features, see
-[Enforce scan execution](../../application_security/#enforce-scan-execution).
 
 When you set up the compliance framework, use the **Compliance pipeline configuration** box to link
 the compliance framework to specific CI/CD configuration. Use the
@@ -184,6 +180,11 @@ include:  # Execute individual project's configuration (if project contains .git
   file: '$CI_CONFIG_PATH'
   ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
 ```
+
+When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/scan-execution-policies.md),
+as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
+For details on the similarities and differences between these features, see
+[Enforce scan execution](../../application_security/#enforce-scan-execution).
 
 ##### Ensure compliance jobs are always run
 

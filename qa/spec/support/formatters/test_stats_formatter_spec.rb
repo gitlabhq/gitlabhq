@@ -26,6 +26,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:ui_fabrication) { 0 }
   let(:api_fabrication) { 0 }
   let(:fabrication_resources) { {} }
+  let(:testcase) { 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234' }
 
   let(:influx_client_args) do
     {
@@ -51,7 +52,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
         merge_request: 'false',
         run_type: run_type,
         stage: stage.match(%r{\d{1,2}_(\w+)}).captures.first,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+        testcase: testcase
       },
       fields: {
         id: './spec/support/formatters/test_stats_formatter_spec.rb[1:1]',
@@ -80,12 +81,6 @@ describe QA::Support::Formatters::TestStatsFormatter do
   around do |example|
     RSpec::Core::Sandbox.sandboxed do |config|
       config.formatter = QA::Support::Formatters::TestStatsFormatter
-
-      config.append_after do |example|
-        example.metadata[:api_fabrication] = Thread.current[:api_fabrication]
-        example.metadata[:browser_ui_fabrication] = Thread.current[:browser_ui_fabrication]
-      end
-
       config.before(:context) { RSpec.current_example = nil }
 
       example.run
@@ -226,16 +221,18 @@ describe QA::Support::Formatters::TestStatsFormatter do
     end
 
     context 'with fabrication runtimes' do
-      let(:ui_fabrication) { 10 }
       let(:api_fabrication) { 4 }
-
-      before do
-        Thread.current[:api_fabrication] = api_fabrication
-        Thread.current[:browser_ui_fabrication] = ui_fabrication
-      end
+      let(:ui_fabrication) { 10 }
+      let(:testcase) { nil }
 
       it 'exports data to influxdb with fabrication times' do
-        run_spec
+        run_spec do
+          # Main logic tracks fabrication time in thread local variable and injects it as metadata from
+          # global after hook defined in main spec_helper.
+          #
+          # Inject the values directly since we do not load e2e test spec_helper in unit tests
+          it('spec', api_fabrication: 4, browser_ui_fabrication: 10) {}
+        end
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])

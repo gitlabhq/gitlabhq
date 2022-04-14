@@ -10,8 +10,10 @@ module Environments
 
     def perform(environment_id, params = {})
       Environment.find_by_id(environment_id).try do |environment|
-        user = environment.stop_action&.user
-        environment.stop_with_action!(user)
+        stop_actions = environment.stop_actions
+
+        user = stop_actions.last&.user
+        environment.stop_with_actions!(user)
       end
     end
   end

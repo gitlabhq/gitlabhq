@@ -202,6 +202,7 @@ RSpec.describe Environments::StopService do
       context 'with environment related jobs ' do
         let!(:environment) { create(:environment, :available, name: 'staging', project: project) }
         let!(:prepare_staging_job) { create(:ci_build, :prepare_staging, pipeline: pipeline, project: project) }
+        let!(:start_staging_job) { create(:ci_build, :start_staging, :with_deployment, :manual, pipeline: pipeline, project: project) }
         let!(:stop_staging_job) { create(:ci_build, :stop_staging, :manual, pipeline: pipeline, project: project) }
 
         it 'does not stop environments that was not started by the merge request' do

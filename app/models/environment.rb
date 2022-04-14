@@ -59,7 +59,7 @@ class Environment < ApplicationRecord
             allow_nil: true,
             addressable_url: true
 
-  delegate :stop_action, :manual_actions, to: :last_deployment, allow_nil: true
+  delegate :manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
 
   scope :available, -> { with_state(:available) }
@@ -89,12 +89,18 @@ class Environment < ApplicationRecord
 
   scope :for_project, -> (project) { where(project_id: project) }
   scope :for_tier, -> (tier) { where(tier: tier).where.not(tier: nil) }
-  scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
   scope :unfoldered, -> { where(environment_type: nil) }
   scope :with_rank, -> do
     select('environments.*, rank() OVER (PARTITION BY project_id ORDER BY id DESC)')
   end
   scope :for_id, -> (id) { where(id: id) }
+
+  scope :with_deployment, -> (sha, status: nil) do
+    deployments = Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)
+    deployments = deployments.where(status: status) if status
+
+    where('EXISTS (?)', deployments)
+  end
 
   scope :stopped_review_apps, -> (before, limit) do
     stopped
@@ -185,6 +191,23 @@ class Environment < ApplicationRecord
     last_deployment&.deployable
   end
 
+  def last_deployment_pipeline
+    last_deployable&.pipeline
+  end
+
+  # This method returns the deployment records of the last deployment pipeline, that successfully executed to this environment.
+  # e.g.
+  # A pipeline contains
+  #   - deploy job A => production environment
+  #   - deploy job B => production environment
+  # In this case, `last_deployment_group` returns both deployments, whereas `last_deployable` returns only B.
+  def last_deployment_group
+    return Deployment.none unless last_deployment_pipeline
+
+    successful_deployments.where(
+      deployable_id: last_deployment_pipeline.latest_builds.pluck(:id))
+  end
+
   # NOTE: Below assocation overrides is a workaround for issue https://gitlab.com/gitlab-org/gitlab/-/issues/339908
   # It helps to avoid cross joins with the CI database.
   # Caveat: It also overrides and losses the default AR caching mechanism.
@@ -255,8 +278,8 @@ class Environment < ApplicationRecord
     external_url.gsub(%r{\A.*?://}, '')
   end
 
-  def stop_action_available?
-    available? && stop_action.present?
+  def stop_actions_available?
+    available? && stop_actions.present?
   end
 
   def cancel_deployment_jobs!
@@ -269,18 +292,34 @@ class Environment < ApplicationRecord
     end
   end
 
-  def stop_with_action!(current_user)
+  def stop_with_actions!(current_user)
     return unless available?
 
     stop!
 
-    return unless stop_action
+    actions = []
 
-    Gitlab::OptimisticLocking.retry_lock(
-      stop_action,
-      name: 'environment_stop_with_action'
-    ) do |build|
-      build&.play(current_user)
+    stop_actions.each do |stop_action|
+      Gitlab::OptimisticLocking.retry_lock(
+        stop_action,
+        name: 'environment_stop_with_actions'
+      ) do |build|
+        actions << build.play(current_user)
+      end
+    end
+
+    actions
+  end
+
+  def stop_actions
+    strong_memoize(:stop_actions) do
+      if ::Feature.enabled?(:environment_multiple_stop_actions, project, default_enabled: :yaml)
+        # Fix N+1 queries it brings to the serializer.
+        # Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/358780
+        last_deployment_group.map(&:stop_action).compact
+      else
+        [last_deployment&.stop_action].compact
+      end
     end
   end
 

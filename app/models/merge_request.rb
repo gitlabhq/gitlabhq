@@ -1456,9 +1456,9 @@ class MergeRequest < ApplicationRecord
     Environment.where(project: project, name: environments)
   end
 
-  def environments_in_head_pipeline
+  def environments_in_head_pipeline(deployment_status: nil)
     if ::Feature.enabled?(:fix_related_environments_for_merge_requests, target_project, default_enabled: :yaml)
-      actual_head_pipeline&.environments_in_self_and_descendants || Environment.none
+      actual_head_pipeline&.environments_in_self_and_descendants(deployment_status: deployment_status) || Environment.none
     else
       legacy_environments
     end

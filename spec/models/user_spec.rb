@@ -2089,6 +2089,74 @@ RSpec.describe User do
     end
   end
 
+  describe 'needs_new_otp_secret?', :freeze_time do
+    let(:user) { create(:user) }
+
+    context 'when two-factor is not enabled' do
+      it 'returns true if otp_secret_expires_at is nil' do
+        expect(user.needs_new_otp_secret?).to eq(true)
+      end
+
+      it 'returns true if the otp_secret_expires_at has passed' do
+        user.update!(otp_secret_expires_at: 10.minutes.ago)
+
+        expect(user.reload.needs_new_otp_secret?).to eq(true)
+      end
+
+      it 'returns false if the otp_secret_expires_at has not passed' do
+        user.update!(otp_secret_expires_at: 10.minutes.from_now)
+
+        expect(user.reload.needs_new_otp_secret?).to eq(false)
+      end
+    end
+
+    context 'when two-factor is enabled' do
+      let(:user) { create(:user, :two_factor) }
+
+      it 'returns false even if ttl is expired' do
+        user.otp_secret_expires_at = 10.minutes.ago
+
+        expect(user.needs_new_otp_secret?).to eq(false)
+      end
+    end
+  end
+
+  describe 'otp_secret_expired?', :freeze_time do
+    let(:user) { create(:user) }
+
+    it 'returns true if otp_secret_expires_at is nil' do
+      expect(user.otp_secret_expired?).to eq(true)
+    end
+
+    it 'returns true if the otp_secret_expires_at has passed' do
+      user.otp_secret_expires_at = 10.minutes.ago
+
+      expect(user.otp_secret_expired?).to eq(true)
+    end
+
+    it 'returns false if the otp_secret_expires_at has not passed' do
+      user.otp_secret_expires_at = 20.minutes.from_now
+
+      expect(user.otp_secret_expired?).to eq(false)
+    end
+  end
+
+  describe 'update_otp_secret!', :freeze_time do
+    let(:user) { create(:user) }
+
+    before do
+      user.update_otp_secret!
+    end
+
+    it 'sets the otp_secret' do
+      expect(user.otp_secret).to have_attributes(length: described_class::OTP_SECRET_LENGTH)
+    end
+
+    it 'updates the otp_secret_expires_at' do
+      expect(user.otp_secret_expires_at).to eq(Time.current + described_class::OTP_SECRET_TTL)
+    end
+  end
+
   describe 'projects' do
     before do
       @user = create(:user)

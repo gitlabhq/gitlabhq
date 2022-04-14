@@ -959,7 +959,7 @@ module Ci
       Ci::Build.latest.where(pipeline: self_and_descendants)
     end
 
-    def environments_in_self_and_descendants
+    def environments_in_self_and_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
       expanded_environment_names =
@@ -969,7 +969,7 @@ module Ci
                                       .limit(100)
                                       .pluck(:expanded_environment_name)
 
-      Environment.where(project: project, name: expanded_environment_names).with_deployment(sha)
+      Environment.where(project: project, name: expanded_environment_names).with_deployment(sha, status: deployment_status)
     end
 
     # With multi-project and parent-child pipelines

@@ -72,41 +72,47 @@ RSpec.describe QA::Support::Page::Logging do
   end
 
   it 'logs has_element?' do
-    expect { subject.has_element?(:element) }
-      .to output(/has_element\? :element \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/o).to_stdout_from_any_process
+    expect { subject.has_element?(:element) }.to output(
+      /has_element\? :element \(wait: #{Capybara.default_max_wait_time}\) returned: true/o
+    ).to_stdout_from_any_process
   end
 
   it 'logs has_element? with text' do
-    expect { subject.has_element?(:element, text: "some text") }
-      .to output(/has_element\? :element with text "some text" \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/o).to_stdout_from_any_process
+    expect { subject.has_element?(:element, text: "some text") }.to output(
+      /has_element\? :element with text "some text" \(wait: #{Capybara.default_max_wait_time}\) returned: true/o
+    ).to_stdout_from_any_process
   end
 
   it 'logs has_no_element?' do
     allow(page).to receive(:has_no_css?).and_return(true)
 
-    expect { subject.has_no_element?(:element) }
-      .to output(/has_no_element\? :element \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/o).to_stdout_from_any_process
+    expect { subject.has_no_element?(:element) }.to output(
+      /has_no_element\? :element \(wait: #{Capybara.default_max_wait_time}\) returned: true/o
+    ).to_stdout_from_any_process
   end
 
   it 'logs has_no_element? with text' do
     allow(page).to receive(:has_no_css?).and_return(true)
 
-    expect { subject.has_no_element?(:element, text: "more text") }
-      .to output(/has_no_element\? :element with text "more text" \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/o).to_stdout_from_any_process
+    expect { subject.has_no_element?(:element, text: "more text") }.to output(
+      /has_no_element\? :element with text "more text" \(wait: #{Capybara.default_max_wait_time}\) returned: true/o
+    ).to_stdout_from_any_process
   end
 
   it 'logs has_text?' do
     allow(page).to receive(:has_text?).and_return(true)
 
-    expect { subject.has_text? 'foo' }
-      .to output(/has_text\?\('foo', wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned true/o).to_stdout_from_any_process
+    expect { subject.has_text? 'foo' }.to output(
+      /has_text\?\('foo', wait: #{Capybara.default_max_wait_time}\) returned true/o
+    ).to_stdout_from_any_process
   end
 
   it 'logs has_no_text?' do
     allow(page).to receive(:has_no_text?).with('foo', any_args).and_return(true)
 
-    expect { subject.has_no_text? 'foo' }
-      .to output(/has_no_text\?\('foo', wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned true/o).to_stdout_from_any_process
+    expect { subject.has_no_text? 'foo' }.to output(
+      /has_no_text\?\('foo', wait: #{Capybara.default_max_wait_time}\) returned true/o
+    ).to_stdout_from_any_process
   end
 
   it 'logs finished_loading?' do
@@ -123,7 +129,7 @@ RSpec.describe QA::Support::Page::Logging do
       .to output(/end within element :element/).to_stdout_from_any_process
   end
 
-  context 'all_elements' do
+  context 'with all_elements' do
     it 'logs the number of elements found' do
       allow(page).to receive(:all).and_return([1, 2])
 

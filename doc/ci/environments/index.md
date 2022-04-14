@@ -558,6 +558,55 @@ Because `stop_review_app` is set to `auto_stop_in: 1 week`,
 if a merge request is inactive for more than a week,
 GitLab automatically triggers the `stop_review_app` job to stop the environment.
 
+#### Multiple stop actions for an environment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22456) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`.
+On GitLab.com, this feature is not available. We are enabling in phases and the status can be tracked in [issue 358911](https://gitlab.com/gitlab-org/gitlab/-/issues/358911).
+
+This feature is useful when you need to perform multiple **parallel** stop actions on an environment.
+
+To configure multiple stop actions on an environment, specify the [`on_stop`](../yaml/index.md#environmenton_stop)
+keyword across multiple [deployment jobs](../jobs/index.md#deployment-jobs) for the same `environment`, as defined in the `.gitlab-ci.yml` file.
+
+When an environment is stopped, the matching `on_stop` actions from *successful deployment jobs* alone are run in parallel in no particular order.
+
+In the following example, for the `test` environment there are two deployment jobs `deploy-to-cloud-a`
+and `deploy-to-cloud-b`.
+
+```yaml
+deploy-to-cloud-a:
+  script: echo "Deploy to cloud a"
+  environment:
+    name: test
+    on_stop: teardown-cloud-a
+
+deploy-to-cloud-b:
+  script: echo "Deploy to cloud b"
+  environment:
+    name: test
+    on_stop: teardown-cloud-b
+
+teardown-cloud-a:
+  script: echo "Delete the resources in cloud a"
+  environment:
+    name: test
+    action: stop
+  when: manual
+
+teardown-cloud-b:
+  script: echo "Delete the resources in cloud b"
+  environment:
+    name: test
+    action: stop
+  when: manual
+```
+
+When the environment is stopped, the system runs `on_stop` actions
+`teardown-cloud-a` and `teardown-cloud-b` in parallel.
+
 #### View a deployment's scheduled stop time
 
 You can view a deployment's expiration date in the GitLab UI.

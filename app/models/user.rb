@@ -37,6 +37,9 @@ class User < ApplicationRecord
 
   COUNT_CACHE_VALIDITY_PERIOD = 24.hours
 
+  OTP_SECRET_LENGTH = 32
+  OTP_SECRET_TTL = 2.minutes
+
   MAX_USERNAME_LENGTH = 255
   MIN_USERNAME_LENGTH = 2
 
@@ -952,6 +955,21 @@ class User < ApplicationRecord
     return false unless Feature.enabled?(:webauthn, default_enabled: :yaml)
 
     (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
+  end
+
+  def needs_new_otp_secret?
+    !two_factor_enabled? && otp_secret_expired?
+  end
+
+  def otp_secret_expired?
+    return true unless otp_secret_expires_at
+
+    otp_secret_expires_at < Time.current
+  end
+
+  def update_otp_secret!
+    self.otp_secret = User.generate_otp_secret(OTP_SECRET_LENGTH)
+    self.otp_secret_expires_at = Time.current + OTP_SECRET_TTL
   end
 
   def namespace_move_dir_allowed

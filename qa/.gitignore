@@ -1,6 +1,8 @@
 tmp/
+reports/
+no_of_examples/
+
 .ruby-version
 .tool-versions
 .ruby-gemset
 urls.yml
-reports/

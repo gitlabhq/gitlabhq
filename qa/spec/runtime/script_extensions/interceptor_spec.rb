@@ -8,6 +8,7 @@ RSpec.describe 'Interceptor' do
   before(:context) do
     skip 'Only can test for chrome' unless QA::Runtime::Env.can_intercept?
 
+    QA::Runtime::Browser.configure!
     QA::Runtime::Browser::Session.enable_interception
   end
 
@@ -26,7 +27,7 @@ RSpec.describe 'Interceptor' do
   end
 
   context 'with Interceptor' do
-    context 'caching' do
+    context 'with caching' do
       it 'checks the cache' do
         expect(check_cache).to be(true)
       end

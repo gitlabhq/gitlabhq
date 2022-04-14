@@ -11,7 +11,7 @@ module QA
             end
 
             def has_disabled_usage_data_checkbox?
-              has_element?(:enable_usage_data_checkbox, disabled: true)
+              has_element?(:enable_usage_data_checkbox, disabled: true, visible: false)
             end
           end
         end

@@ -104,11 +104,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def stop
     return render_404 unless @environment.available?
 
-    stop_action = @environment.stop_with_action!(current_user)
+    stop_actions = @environment.stop_with_actions!(current_user)
 
     action_or_env_url =
-      if stop_action
-        polymorphic_url([project, stop_action])
+      if stop_actions&.count == 1
+        polymorphic_url([project, stop_actions.first])
       else
         project_environment_url(project, @environment)
       end

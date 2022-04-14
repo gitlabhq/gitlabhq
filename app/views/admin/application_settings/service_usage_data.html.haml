@@ -16,10 +16,9 @@
     .js-text.d-inline= _('Download payload')
   %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
 - else
-  = render 'shared/global_alert',
-    variant: :warning,
+  = render Pajamas::AlertComponent.new(variant: :warning,
     dismissible: false,
-    title: 'Service Ping payload not found in the application cache' do
+    title: _('Service Ping payload not found in the application cache')) do
 
     .gl-alert-body
       - enable_service_ping_link_url = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'enable-or-disable-usage-statistics')
