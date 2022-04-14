@@ -27,12 +27,12 @@ variables:
     SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
     #
     FUZZAPI_VERSION: "1"
-    FUZZAPI_VERSION_TAG: ""
+    FUZZAPI_IMAGE_SUFFIX: ""
     FUZZAPI_IMAGE: api-fuzzing
 
 apifuzzer_fuzz:
     stage: fuzz
-    image: $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION$FUZZAPI_VERSION_TAG
+    image: $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION$FUZZAPI_IMAGE_SUFFIX
     allow_failure: true
     rules:
         - if: $API_FUZZING_DISABLED
@@ -43,7 +43,7 @@ apifuzzer_fuzz:
         - if: $CI_COMMIT_BRANCH &&
               $CI_GITLAB_FIPS_MODE == "true"
           variables:
-              FUZZAPI_VERSION_TAG: "-fips"
+              FUZZAPI_IMAGE_SUFFIX: "-fips"
         - if: $CI_COMMIT_BRANCH
     script:
         - /peach/analyzer-fuzz-api

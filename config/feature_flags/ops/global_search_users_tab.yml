@@ -1,0 +1,8 @@
+---
+name: global_search_users_tab
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84186
+rollout_issue_url:
+milestone: '14.10'
+type: ops
+group: group::global search
+default_enabled: true

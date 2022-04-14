@@ -282,7 +282,7 @@ class User < ApplicationRecord
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
-  after_save if: -> { saved_change_to_email? && confirmed? } do
+  after_save if: -> { (saved_change_to_email? || saved_change_to_confirmed_at?) && confirmed? } do
     email_to_confirm = self.emails.find_by(email: self.email)
 
     if email_to_confirm.present?

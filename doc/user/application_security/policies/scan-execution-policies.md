@@ -132,8 +132,8 @@ Note the following:
 
 ## Example security policies project
 
-You can use this example in a `.gitlab/security-policies/policy.yml`, as described in
-[Security policies project](index.md#security-policies-project).
+You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
+[security policy project](index.md#security-policy-project):
 
 ```yaml
 ---

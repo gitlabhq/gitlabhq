@@ -1585,6 +1585,31 @@ RSpec.describe Ci::Build do
 
         it { is_expected.to eq('review/x') }
       end
+
+      context 'when environment name uses a nested variable' do
+        let(:yaml_variables) do
+          [
+            { key: 'ENVIRONMENT_NAME', value: '${CI_COMMIT_REF_NAME}' }
+          ]
+        end
+
+        let(:build) do
+          create(:ci_build,
+                 ref: 'master',
+                 yaml_variables: yaml_variables,
+                 environment: 'review/$ENVIRONMENT_NAME')
+        end
+
+        it { is_expected.to eq('review/master') }
+
+        context 'when the FF ci_expand_environment_name_and_url is disabled' do
+          before do
+            stub_feature_flags(ci_expand_environment_name_and_url: false)
+          end
+
+          it { is_expected.to eq('review/${CI_COMMIT_REF_NAME}') }
+        end
+      end
     end
 
     describe '#expanded_kubernetes_namespace' do

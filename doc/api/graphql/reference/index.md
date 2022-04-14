@@ -10023,6 +10023,7 @@ Input type for DastSiteProfile authentication.
 | <a id="dastsiteprofileauthenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether authentication is enabled. |
 | <a id="dastsiteprofileauthpassword"></a>`password` | [`String`](#string) | Redacted password to authenticate with on the target website. |
 | <a id="dastsiteprofileauthpasswordfield"></a>`passwordField` | [`String`](#string) | Name of password field at the sign-in HTML form. |
+| <a id="dastsiteprofileauthsubmitfield"></a>`submitField` | [`String`](#string) | Name or ID of sign-in submit button at the sign-in HTML form. |
 | <a id="dastsiteprofileauthurl"></a>`url` | [`String`](#string) | The URL of the page containing the sign-in HTML form on the target website. |
 | <a id="dastsiteprofileauthusername"></a>`username` | [`String`](#string) | Username to authenticate with on the target website. |
 | <a id="dastsiteprofileauthusernamefield"></a>`usernameField` | [`String`](#string) | Name of username field at the sign-in HTML form. |
@@ -20608,6 +20609,7 @@ Input type for DastSiteProfile authentication.
 | <a id="dastsiteprofileauthinputenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether authentication is enabled. |
 | <a id="dastsiteprofileauthinputpassword"></a>`password` | [`String`](#string) | Password to authenticate with on the target website. |
 | <a id="dastsiteprofileauthinputpasswordfield"></a>`passwordField` | [`String`](#string) | Name of password field at the sign-in HTML form. |
+| <a id="dastsiteprofileauthinputsubmitfield"></a>`submitField` | [`String`](#string) | Name or ID of sign-in submit button at the sign-in HTML form. |
 | <a id="dastsiteprofileauthinputurl"></a>`url` | [`String`](#string) | The URL of the page containing the sign-in HTML form on the target website. |
 | <a id="dastsiteprofileauthinputusername"></a>`username` | [`String`](#string) | Username to authenticate with on the target website. |
 | <a id="dastsiteprofileauthinputusernamefield"></a>`usernameField` | [`String`](#string) | Name of username field at the sign-in HTML form. |

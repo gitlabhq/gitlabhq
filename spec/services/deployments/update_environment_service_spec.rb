@@ -286,6 +286,37 @@ RSpec.describe Deployments::UpdateEnvironmentService do
       end
     end
 
+    context 'when environment url uses a nested variable' do
+      let(:yaml_variables) do
+        [
+          { key: 'MAIN_DOMAIN', value: '${STACK_NAME}.example.com' },
+          { key: 'STACK_NAME', value: 'appname-${ENVIRONMENT_NAME}' },
+          { key: 'ENVIRONMENT_NAME', value: '${CI_COMMIT_REF_SLUG}' }
+        ]
+      end
+
+      let(:job) do
+        create(:ci_build,
+               :with_deployment,
+               pipeline: pipeline,
+               ref: 'master',
+               environment: 'production',
+               project: project,
+               yaml_variables: yaml_variables,
+               options: { environment: { name: 'production', url: 'http://$MAIN_DOMAIN' } })
+      end
+
+      it { is_expected.to eq('http://appname-master.example.com') }
+
+      context 'when the FF ci_expand_environment_name_and_url is disabled' do
+        before do
+          stub_feature_flags(ci_expand_environment_name_and_url: false)
+        end
+
+        it { is_expected.to eq('http://${STACK_NAME}.example.com') }
+      end
+    end
+
     context 'when yaml environment does not have url' do
       let(:job) { create(:ci_build, :with_deployment, pipeline: pipeline, environment: 'staging', project: project) }
 

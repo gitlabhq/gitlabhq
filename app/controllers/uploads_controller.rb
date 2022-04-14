@@ -14,7 +14,8 @@ class UploadsController < ApplicationController
     "appearance"       => Appearance,
     "personal_snippet" => PersonalSnippet,
     "projects/topic"   => Projects::Topic,
-    nil                => PersonalSnippet
+    'alert_management_metric_image' => ::AlertManagement::MetricImage,
+    nil => PersonalSnippet
   }.freeze
 
   rescue_from UnknownUploadModelError, with: :render_404
@@ -56,6 +57,8 @@ class UploadsController < ApplicationController
       true
     when Projects::Topic
       true
+    when ::AlertManagement::MetricImage
+      can?(current_user, :read_alert_management_metric_image, model.alert)
     else
       can?(current_user, "read_#{model.class.underscore}".to_sym, model)
     end

@@ -63,6 +63,28 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
         expect(nb_file.diff).to be_nil
       end
     end
+
+    context 'timeout' do
+      it 'utilizes timeout for web' do
+        expect(Timeout).to receive(:timeout).with(described_class::RENDERED_TIMEOUT_FOREGROUND).and_call_original
+
+        nb_file.diff
+      end
+
+      it 'falls back to nil on timeout' do
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        expect(Timeout).to receive(:timeout).and_raise(Timeout::Error)
+
+        expect(nb_file.diff).to be_nil
+      end
+
+      it 'utilizes longer timeout for sidekiq' do
+        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+        expect(Timeout).to receive(:timeout).with(described_class::RENDERED_TIMEOUT_BACKGROUND).and_call_original
+
+        nb_file.diff
+      end
+    end
   end
 
   describe '#has_renderable?' do

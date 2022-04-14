@@ -1,21 +1,24 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { NodeViewWrapper } from '@tiptap/vue-2';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import ImageWrapper from '~/content_editor/components/wrappers/image.vue';
+import MediaWrapper from '~/content_editor/components/wrappers/media.vue';
 
-describe('content/components/wrappers/image', () => {
+describe('content/components/wrappers/media', () => {
   let wrapper;
 
   const createWrapper = async (nodeAttrs = {}) => {
-    wrapper = shallowMountExtended(ImageWrapper, {
+    wrapper = shallowMountExtended(MediaWrapper, {
       propsData: {
         node: {
           attrs: nodeAttrs,
+          type: {
+            name: 'image',
+          },
         },
       },
     });
   };
-  const findImage = () => wrapper.findByTestId('image');
+  const findMedia = () => wrapper.findByTestId('media');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   afterEach(() => {
@@ -33,7 +36,7 @@ describe('content/components/wrappers/image', () => {
 
     createWrapper({ src });
 
-    expect(findImage().attributes().src).toBe(src);
+    expect(findMedia().attributes().src).toBe(src);
   });
 
   describe('when uploading', () => {
@@ -45,8 +48,8 @@ describe('content/components/wrappers/image', () => {
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
-    it('adds gl-opacity-5 class selector to image', () => {
-      expect(findImage().classes()).toContain('gl-opacity-5');
+    it('adds gl-opacity-5 class selector to the media tag', () => {
+      expect(findMedia().classes()).toContain('gl-opacity-5');
     });
   });
 
@@ -59,8 +62,8 @@ describe('content/components/wrappers/image', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('does not add gl-opacity-5 class selector to image', () => {
-      expect(findImage().classes()).not.toContain('gl-opacity-5');
+    it('does not add gl-opacity-5 class selector to the media tag', () => {
+      expect(findMedia().classes()).not.toContain('gl-opacity-5');
     });
   });
 });

@@ -1,6 +1,6 @@
 import { Image } from '@tiptap/extension-image';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
-import ImageWrapper from '../components/wrappers/image.vue';
+import MediaWrapper from '../components/wrappers/media.vue';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 const resolveImageEl = (element) =>
@@ -78,6 +78,6 @@ export default Image.extend({
     ];
   },
   addNodeView() {
-    return VueNodeViewRenderer(ImageWrapper);
+    return VueNodeViewRenderer(MediaWrapper);
   },
 });

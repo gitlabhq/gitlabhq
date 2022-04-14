@@ -1035,6 +1035,9 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
+      # - { name: 'alicloud',
+      #     app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET' }
       # See omniauth-cas3 for more configuration details
       # - { name: 'cas3',
       #     label: 'cas3',
@@ -1562,6 +1565,9 @@ test:
     external_providers: []
 
     providers:
+      - { name: 'alicloud',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
       - { name: 'cas3',
           label: 'cas3',
           args: { url: 'https://sso.example.com',

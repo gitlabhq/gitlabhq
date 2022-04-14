@@ -169,15 +169,17 @@ class SearchController < ApplicationController
 
     search_allowed = case params[:scope]
                      when 'blobs'
-                       Feature.enabled?(:global_search_code_tab, current_user, type: :ops, default_enabled: true)
+                       Feature.enabled?(:global_search_code_tab, current_user, type: :ops, default_enabled: :yaml)
                      when 'commits'
-                       Feature.enabled?(:global_search_commits_tab, current_user, type: :ops, default_enabled: true)
+                       Feature.enabled?(:global_search_commits_tab, current_user, type: :ops, default_enabled: :yaml)
                      when 'issues'
-                       Feature.enabled?(:global_search_issues_tab, current_user, type: :ops, default_enabled: true)
+                       Feature.enabled?(:global_search_issues_tab, current_user, type: :ops, default_enabled: :yaml)
                      when 'merge_requests'
-                       Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops, default_enabled: true)
+                       Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops, default_enabled: :yaml)
                      when 'wiki_blobs'
-                       Feature.enabled?(:global_search_wiki_tab, current_user, type: :ops, default_enabled: true)
+                       Feature.enabled?(:global_search_wiki_tab, current_user, type: :ops, default_enabled: :yaml)
+                     when 'users'
+                       Feature.enabled?(:global_search_users_tab, current_user, type: :ops, default_enabled: :yaml)
                      else
                        true
                      end

@@ -163,6 +163,7 @@ module API
       mount ::API::Admin::InstanceClusters
       mount ::API::Admin::PlanLimits
       mount ::API::Admin::Sidekiq
+      mount ::API::AlertManagementAlerts
       mount ::API::Appearance
       mount ::API::Applications
       mount ::API::Avatar

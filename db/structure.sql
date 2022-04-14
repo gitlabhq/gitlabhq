@@ -11265,6 +11265,11 @@ CREATE TABLE application_settings (
     database_grafana_api_url text,
     database_grafana_tag text,
     public_runner_releases_url text DEFAULT 'https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases'::text NOT NULL,
+    encrypted_arkose_labs_public_api_key bytea,
+    encrypted_arkose_labs_public_api_key_iv bytea,
+    encrypted_arkose_labs_private_api_key bytea,
+    encrypted_arkose_labs_private_api_key_iv bytea,
+    arkose_labs_verify_api_url text,
     delete_inactive_projects boolean DEFAULT false NOT NULL,
     inactive_projects_delete_after_months integer DEFAULT 2 NOT NULL,
     inactive_projects_min_size_mb integer DEFAULT 0 NOT NULL,
@@ -11299,7 +11304,8 @@ CREATE TABLE application_settings (
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5024c8801 CHECK ((char_length(elasticsearch_username) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255)),
-    CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255))
+    CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255)),
+    CONSTRAINT check_f6563bc000 CHECK ((char_length(arkose_labs_verify_api_url) <= 255))
 );
 
 COMMENT ON COLUMN application_settings.content_validation_endpoint_url IS 'JiHu-specific column';

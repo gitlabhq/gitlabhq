@@ -436,11 +436,11 @@ module SearchHelper
   end
 
   def show_user_search_tab?
-    if @project
-      project_search_tabs?(:members)
-    else
-      can?(current_user, :read_users_list)
-    end
+    return project_search_tabs?(:members) if @project
+    return false unless can?(current_user, :read_users_list)
+    return true if @group
+
+    Feature.enabled?(:global_search_users_tab, current_user, type: :ops, default_enabled: :yaml)
   end
 
   def issuable_state_to_badge_class(issuable)

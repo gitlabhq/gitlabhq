@@ -14,7 +14,7 @@
 
   .settings-content
     - if mirror_settings_enabled
-      = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
+      = gitlab_ui_form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
         .panel.panel-default
           .panel-body
             %div= form_errors(@project)

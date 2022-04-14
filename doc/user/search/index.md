@@ -41,6 +41,7 @@ in the search field in the upper right corner:
 > - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
 > - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
 > - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
+> - Filtering by type was [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
 > - Filtering by attention request was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343528) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `mr_attention_requests`. Disabled by default.
 
 Follow these steps to filter the **Issues** and **Merge requests** list pages in projects and
@@ -59,12 +60,6 @@ groups:
    - My-reaction
    - Release
    - Type
-
-     FLAG:
-     On self-managed GitLab, by default filtering by type is not available.
-     To make it available per group, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `vue_issues_list`.
-     On GitLab.com, this feature is not available.
-
    - Weight
    - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are

@@ -211,6 +211,7 @@ RSpec.describe SearchController do
             :global_search_merge_requests_tab | 'merge_requests'
             :global_search_wiki_tab           | 'wiki_blobs'
             :global_search_commits_tab        | 'commits'
+            :global_search_users_tab          | 'users'
           end
 
           with_them do

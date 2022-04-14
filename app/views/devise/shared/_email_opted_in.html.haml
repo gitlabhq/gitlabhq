@@ -3,5 +3,4 @@
 .gl-mb-3.js-email-opt-in.hidden
   .gl-font-weight-bold.gl-mb-3
     = _('Email updates (optional)')
-  = f.check_box :email_opted_in
-  = f.label :email_opted_in, _("I'd like to receive updates about GitLab via email"), class: 'gl-font-weight-normal'
+  = f.gitlab_ui_checkbox_component :email_opted_in, _("I'd like to receive updates about GitLab via email")

@@ -21,6 +21,17 @@ RSpec.describe 'Uploads', 'routing' do
     )
   end
 
+  it 'allows fetching alert metric metric images' do
+    expect(get('/uploads/-/system/alert_management_metric_image/file/1/test.jpg')).to route_to(
+      controller: 'uploads',
+      action: 'show',
+      model: 'alert_management_metric_image',
+      id: '1',
+      filename: 'test.jpg',
+      mounted_as: 'file'
+    )
+  end
+
   it 'does not allow creating uploads for other models' do
     unroutable_models = UploadsController::MODEL_CLASSES.keys.compact - %w(personal_snippet user)
 

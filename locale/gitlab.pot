@@ -4178,9 +4178,6 @@ msgstr ""
 msgid "An error occurred while uploading the file. Please try again."
 msgstr ""
 
-msgid "An error occurred while uploading the image. Please try again."
-msgstr ""
-
 msgid "An error occurred while validating group path"
 msgstr ""
 
@@ -6557,9 +6554,6 @@ msgid "CI settings"
 msgstr ""
 
 msgid "CI variables"
-msgstr ""
-
-msgid "CI will run using the credentials assigned above."
 msgstr ""
 
 msgid "CI/CD"
@@ -18881,7 +18875,7 @@ msgstr ""
 msgid "If checked, new group memberships and permissions can only be added via LDAP synchronization"
 msgstr ""
 
-msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
+msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "If disabled, only administrators can configure repository mirroring."
@@ -39907,7 +39901,7 @@ msgstr ""
 msgid "Trigger pipelines for mirror updates"
 msgstr ""
 
-msgid "Trigger pipelines when branches or tags are updated in the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load."
+msgid "Trigger pipelines when branches or tags are updated in the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load. %{strong_start}CI will run using the credentials assigned above.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Trigger removed."

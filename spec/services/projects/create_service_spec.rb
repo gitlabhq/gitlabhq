@@ -135,10 +135,22 @@ RSpec.describe Projects::CreateService, '#execute' do
       create_project(user, opts)
     end
 
-    it 'builds associated project settings' do
+    it 'creates associated project settings' do
       project = create_project(user, opts)
 
-      expect(project.project_setting).to be_new_record
+      expect(project.project_setting).to be_persisted
+    end
+
+    context 'create_project_settings feature flag is disabled' do
+      before do
+        stub_feature_flags(create_project_settings: false)
+      end
+
+      it 'builds associated project settings' do
+        project = create_project(user, opts)
+
+        expect(project.project_setting).to be_new_record
+      end
     end
 
     it_behaves_like 'storing arguments in the application context' do

@@ -1560,7 +1560,7 @@ RSpec.describe User do
       end
 
       it 'adds the confirmed primary email to emails' do
-        expect(user.emails.confirmed.map(&:email)).not_to include(user.email)
+        expect(user.emails.confirmed.map(&:email)).not_to include(user.unconfirmed_email)
 
         user.confirm
 
@@ -1619,13 +1619,22 @@ RSpec.describe User do
     context 'when the email is changed but not confirmed' do
       let(:user) { create(:user, email: 'primary@example.com') }
 
-      it 'does not add the new email to emails yet' do
+      before do
         user.update!(email: 'new_primary@example.com')
+      end
 
+      it 'does not add the new email to emails yet' do
         expect(user.unconfirmed_email).to eq('new_primary@example.com')
         expect(user.email).to eq('primary@example.com')
         expect(user).to be_confirmed
         expect(user.emails.pluck(:email)).not_to include('new_primary@example.com')
+      end
+
+      it 'adds the new email to emails upon confirmation' do
+        user.confirm
+        expect(user.email).to eq('new_primary@example.com')
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).to include('new_primary@example.com')
       end
     end
 
@@ -1635,6 +1644,11 @@ RSpec.describe User do
       it 'does not add the email to emails yet' do
         expect(user).not_to be_confirmed
         expect(user.emails.pluck(:email)).not_to include('primary@example.com')
+      end
+
+      it 'adds the email to emails upon confirmation' do
+        user.confirm
+        expect(user.emails.pluck(:email)).to include('primary@example.com')
       end
     end
 

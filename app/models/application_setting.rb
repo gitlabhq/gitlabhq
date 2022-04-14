@@ -621,6 +621,8 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :external_pipeline_validation_service_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :mailgun_signing_key, encryption_options_base_32_aes_256_gcm.merge(encode: false)
   attr_encrypted :database_grafana_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :arkose_labs_public_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :arkose_labs_private_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: _('must be a boolean value') }

@@ -2,6 +2,7 @@
 
 module AuthHelper
   PROVIDERS_WITH_ICONS = %w(
+    alicloud
     atlassian_oauth2
     auth0
     authentiq

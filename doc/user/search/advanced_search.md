@@ -26,8 +26,8 @@ when searching in:
 - Comments
 - Code
 - Commits
-- Wiki (except [group wikis](../project/wiki/group.md))
 - Users
+- Wiki (except [group wikis](../project/wiki/group.md))
 
 The Advanced Search can be useful in various scenarios:
 
@@ -76,6 +76,7 @@ its performance:
 | Commits | `global_search_commits_tab` | When enabled, the global search includes commits as part of the search. |
 | Issues | `global_search_issues_tab` | When enabled, the global search includes issues as part of the search. |
 | Merge Requests | `global_search_merge_requests_tab` | When enabled, the global search includes merge requests as part of the search. |
+| Users | `global_search_users_tab` | When enabled, the global search includes users as part of the search. |
 | Wiki | `global_search_wiki_tab` | When enabled, the global search includes wiki as part of the search. [Group wikis](../project/wiki/group.md) are not included. |
 
 ## Global Search validation
