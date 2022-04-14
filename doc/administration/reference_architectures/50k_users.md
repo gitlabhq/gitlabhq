@@ -2202,7 +2202,8 @@ There are two ways of specifying object storage configuration in GitLab:
 Starting with GitLab 13.2, consolidated object storage configuration is available. It simplifies your GitLab configuration since the connection details are shared across object types. Refer to [Consolidated object storage configuration](../object_storage.md#consolidated-object-storage-configuration) guide for instructions on how to set it up.
 
 GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared via NFS on any GitLab Rails and Sidekiq nodes.
-In GitLab 13.6 and later, it's recommended to switch to [Incremental logging](../job_logs.md#incremental-logging-architecture), which uses Redis instead of disk space for temporary caching of job logs.
+
+In GitLab 13.6 and later, it's also recommended to switch to [Incremental logging](../job_logs.md#incremental-logging-architecture), which uses Redis instead of disk space for temporary caching of job logs. This is required when no NFS node has been deployed.
 
 For configuring object storage in GitLab 13.1 and earlier, or for storage types not
 supported by consolidated configuration form, refer to the following guides based
@@ -2296,12 +2297,12 @@ use Google Cloud's Kubernetes Engine (GKE) and associated machine types, but the
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 
-| Service                                               | Nodes | Configuration           | GCP              | Allocatable CPUs and Memory |
-|-------------------------------------------------------|-------|-------------------------|------------------|-----------------------------|
-| Webservice                                            | 16    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | 510 vCPU, 472 GB memory   |
-| Sidekiq                                               | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 15.5 vCPU, 50 GB memory     |
-| Supporting services such as NGINX, Prometheus         | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
-
+| Service                                       | Nodes | Configuration           | GCP             | AWS          | Min Allocatable CPUs and Memory |
+|-----------------------------------------------|-------|-------------------------|-----------------|--------------|---------------------------------|
+| Webservice                                    | 16    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | `m5.8xlarge` | 510 vCPU, 472 GB memory         |
+| Sidekiq                                       | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 15.5 vCPU, 50 GB memory         |
+| Supporting services such as NGINX, Prometheus | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 7.75 vCPU, 25 GB memory         |
+ 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vcpu / memory ratios and avoid scaling during **performance testing**.
@@ -2310,18 +2311,18 @@ future with further specific cloud provider details.
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
-| Service                                             | Nodes | Configuration           | GCP              |
-|-----------------------------------------------------|-------|-------------------------|------------------|
-| Consul<sup>1</sup>                                  | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| PostgreSQL<sup>1</sup>                              | 3     | 32 vCPU, 120 GB memory  | `n1-standard-32` |
-| PgBouncer<sup>1</sup>                               | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Internal load balancing node<sup>3</sup>            | 1     | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`   |
-| Redis/Sentinel - Cache<sup>2</sup>                  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Redis/Sentinel - Persistent<sup>2</sup>             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Gitaly<sup>5</sup>                                  | 3     | 64 vCPU, 240 GB memory  | `n1-standard-64` |
-| Praefect<sup>5</sup>                                | 3     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   |
-| Praefect PostgreSQL<sup>1</sup>                     | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Object storage<sup>4</sup>                          | n/a   | n/a                     | n/a              |
+| Service                                  | Nodes | Configuration          | GCP              | AWS           |
+|------------------------------------------|-------|------------------------|------------------|---------------|
+| Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
+| PostgreSQL<sup>1</sup>                   | 3     | 32 vCPU, 120 GB memory | `n1-standard-32` | `m5.8xlarge`  |
+| PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
+| Internal load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`   | `c5.2xlarge`  |
+| Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
+| Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
+| Gitaly<sup>5</sup>                       | 3     | 64 vCPU, 240 GB memory | `n1-standard-64` | `m5.16xlarge` |
+| Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`   | `c5.xlarge`   |
+| Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
+| Object storage<sup>4</sup>               | n/a   | n/a                    | n/a              | n/a           |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'project navbar structure' do
+  include NavbarStructureHelper
+
   let(:security_and_compliance_nav_item) do
     {
       nav_item: _('Security & Compliance'),
@@ -93,13 +95,7 @@ RSpec.shared_context 'project navbar structure' do
       },
       {
         nav_item: _('Analytics'),
-        nav_sub_items: [
-          _('Value stream'),
-          _('CI/CD'),
-          (_('Code review') if Gitlab.ee?),
-          (_('Merge request') if Gitlab.ee?),
-          _('Repository')
-        ]
+        nav_sub_items: analytics_sub_nav_item
       },
       {
         nav_item: _('Wiki'),

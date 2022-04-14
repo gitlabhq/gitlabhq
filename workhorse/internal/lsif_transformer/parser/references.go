@@ -86,10 +86,15 @@ func (r *References) For(docs map[Id]string, refId Id) []SerializedReference {
 }
 
 func (r *References) Close() error {
-	return combineErrors(
+	for _, err := range []error{
 		r.Items.Close(),
 		r.Offsets.Close(),
-	)
+	} {
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (r *References) getItems(refId Id) []Item {

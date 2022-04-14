@@ -1,11 +1,16 @@
 <script>
-import { GlEmptyState, GlIcon, GlLink } from '@gitlab/ui';
+import { GlEmptyState, GlLink } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  i18n: {
+    title: s__("Terraform|Your project doesn't have any Terraform state files"),
+    description: s__('Terraform|How to use GitLab-managed Terraform state?'),
+  },
+  docsUrl: helpPagePath('user/infrastructure/iac/terraform_state'),
   components: {
     GlEmptyState,
-    GlIcon,
     GlLink,
   },
   props: {
@@ -14,23 +19,13 @@ export default {
       required: true,
     },
   },
-  computed: {
-    docsUrl() {
-      return helpPagePath('user/infrastructure/iac/terraform_state');
-    },
-  },
 };
 </script>
 
 <template>
-  <gl-empty-state :svg-path="image" :title="s__('Terraform|Get started with Terraform')">
+  <gl-empty-state :svg-path="image" :title="$options.i18n.title">
     <template #description>
-      <p>
-        <gl-link :href="docsUrl" target="_blank"
-          >{{ s__('Terraform|How to use GitLab-managed Terraform State?') }}
-          <gl-icon name="external-link"
-        /></gl-link>
-      </p>
+      <gl-link :href="$options.docsUrl">{{ $options.i18n.description }}</gl-link>
     </template>
   </gl-empty-state>
 </template>

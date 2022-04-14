@@ -37189,10 +37189,7 @@ msgstr ""
 msgid "Terraform|Generating the report caused an error."
 msgstr ""
 
-msgid "Terraform|Get started with Terraform"
-msgstr ""
-
-msgid "Terraform|How to use GitLab-managed Terraform State?"
+msgid "Terraform|How to use GitLab-managed Terraform state?"
 msgstr ""
 
 msgid "Terraform|Job status"
@@ -37271,6 +37268,9 @@ msgid "Terraform|You are about to remove the state file %{name}. This will perma
 msgstr ""
 
 msgid "Terraform|You cannot remove the State file because it's locked. Unlock the State file first before removing it."
+msgstr ""
+
+msgid "Terraform|Your project doesn't have any Terraform state files"
 msgstr ""
 
 msgid "Test"

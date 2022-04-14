@@ -95,10 +95,15 @@ func (h *Hovers) For(refId Id) json.RawMessage {
 }
 
 func (h *Hovers) Close() error {
-	return combineErrors(
+	for _, err := range []error{
 		h.File.Close(),
 		h.Offsets.Close(),
-	)
+	} {
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (h *Hovers) addData(line []byte) error {

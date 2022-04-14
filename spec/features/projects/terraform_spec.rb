@@ -22,7 +22,7 @@ RSpec.describe 'Terraform', :js do
       end
 
       it 'sees an empty state' do
-        expect(page).to have_content('Get started with Terraform')
+        expect(page).to have_content("Your project doesn't have any Terraform state files")
       end
     end
 
