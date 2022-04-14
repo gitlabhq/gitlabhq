@@ -3,8 +3,6 @@
 mutation resetHttpIntegrationToken($id: ID!) {
   httpIntegrationResetToken(input: { id: $id }) {
     errors
-    # We have ID in a deeply nested fragment
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     integration {
       ...HttpIntegrationItem
     }

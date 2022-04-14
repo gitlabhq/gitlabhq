@@ -123,6 +123,10 @@ Using dependency injection to provide values from HAML is ideal when:
   prop-drilling becomes an inconvenience. Prop-drilling when the same prop is passed
   through all components in the hierarchy until the component that is genuinely using it.
 
+Dependency injection can potentially break a child component (either an immediate child or multiple levels deep) if the value declared in the `inject` configuration doesn't have defaults defined and the parent component has not provided the value using the `provide` configuration.
+
+- A [default value](https://vuejs.org/guide/components/provide-inject.html#injection-default-values) might be useful in contexts where it makes sense.
+
 ##### props
 
 If the value from HAML doesn't fit the criteria of dependency injection, use `props`.

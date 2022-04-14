@@ -12,6 +12,10 @@ RSpec.describe Ci::CreatePipelineService do
 
   before do
     stub_ci_pipeline_to_return_yaml_file
+
+    # Disable rate limiting for pipeline creation
+    allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
+      .and_return(pipelines_create: { threshold: 0, interval: 1.minute })
   end
 
   describe '#execute' do

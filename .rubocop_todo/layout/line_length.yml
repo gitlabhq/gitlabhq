@@ -650,7 +650,6 @@ Layout/LineLength:
     - 'app/services/loose_foreign_keys/batch_cleaner_service.rb'
     - 'app/services/loose_foreign_keys/cleaner_service.rb'
     - 'app/services/members/approve_access_request_service.rb'
-    - 'app/services/members/create_service.rb'
     - 'app/services/members/destroy_service.rb'
     - 'app/services/members/invitation_reminder_email_service.rb'
     - 'app/services/members/mailgun/process_webhook_service.rb'

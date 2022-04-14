@@ -51,8 +51,8 @@ module Members
     end
 
     override :add_error_for_member
-    def add_error_for_member(member)
-      errors[invited_object(member)] = member.errors.full_messages.to_sentence
+    def add_error_for_member(member, existing_errors)
+      errors[invited_object(member)] = all_member_errors(member, existing_errors).to_sentence
     end
 
     def invited_object(member)

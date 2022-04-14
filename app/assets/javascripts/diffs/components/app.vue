@@ -570,12 +570,8 @@ export default {
         this.scrollVirtualScrollerToIndex(index);
       }
     },
-    async scrollVirtualScrollerToIndex(index) {
+    scrollVirtualScrollerToIndex(index) {
       this.virtualScrollCurrentIndex = index;
-
-      await this.$nextTick();
-
-      this.virtualScrollCurrentIndex = -1;
     },
     scrollVirtualScrollerToDiffNote() {
       const id = window?.location?.hash;
@@ -701,7 +697,7 @@ export default {
                     </dynamic-scroller-item>
                   </template>
                 </pre-renderer>
-                <virtual-scroller-scroll-sync :index="virtualScrollCurrentIndex" />
+                <virtual-scroller-scroll-sync v-model="virtualScrollCurrentIndex" />
               </template>
             </dynamic-scroller>
             <template v-else>

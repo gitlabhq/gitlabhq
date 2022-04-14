@@ -2,8 +2,6 @@
 
 mutation createBoardList($boardId: BoardID!, $backlog: Boolean, $labelId: LabelID) {
   boardListCreate(input: { boardId: $boardId, backlog: $backlog, labelId: $labelId }) {
-    # We have ID in a deeply nested fragment
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     list {
       ...BoardListFragment
     }

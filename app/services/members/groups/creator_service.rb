@@ -3,14 +3,14 @@
 module Members
   module Groups
     class CreatorService < Members::CreatorService
-      def self.access_levels
-        Gitlab::Access.sym_options_with_owner
-      end
-
       private
 
-      def can_update_member?
-        super || current_user.can?(:update_group_member, member)
+      def can_create_new_member?
+        current_user.can?(:admin_group_member, member.group)
+      end
+
+      def can_update_existing_member?
+        current_user.can?(:update_group_member, member)
       end
     end
   end

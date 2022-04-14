@@ -143,6 +143,32 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     end
   end
 
+  context 'when adding a project_bot' do
+    let_it_be(:project_bot) { create(:user, :project_bot) }
+
+    let(:user_ids) { project_bot.id }
+
+    context 'when project_bot is already a member' do
+      before do
+        source.add_developer(project_bot)
+      end
+
+      it 'does not update the member' do
+        expect(execute_service[:status]).to eq(:error)
+        expect(execute_service[:message]).to eq("#{project_bot.username}: not authorized to update member")
+        expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(false)
+      end
+    end
+
+    context 'when project_bot is not already a member' do
+      it 'adds the member' do
+        expect(execute_service[:status]).to eq(:success)
+        expect(source.users).to include project_bot
+        expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(true)
+      end
+    end
+  end
+
   context 'when tracking the invite source', :snowplow do
     context 'when invite_source is not passed' do
       let(:additional_params) { {} }

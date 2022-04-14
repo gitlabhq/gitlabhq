@@ -16,6 +16,7 @@ module Members
       @errors = []
       @invites = invites_from_params
       @source = params[:source]
+      @tasks_to_be_done_members = []
     end
 
     def execute
@@ -25,6 +26,7 @@ module Members
       validate_invitable!
 
       add_members
+      create_tasks_to_be_done
       enqueue_onboarding_progress_action
 
       publish_event!
@@ -40,7 +42,8 @@ module Members
 
     private
 
-    attr_reader :source, :errors, :invites, :member_created_namespace_id, :members
+    attr_reader :source, :errors, :invites, :member_created_namespace_id, :members,
+                :tasks_to_be_done_members, :member_created_member_task_id
 
     def invites_from_params
       return params[:user_ids] if params[:user_ids].is_a?(Array)
@@ -76,13 +79,15 @@ module Members
       )
 
       members.each { |member| process_result(member) }
-
-      create_tasks_to_be_done
     end
 
     def process_result(member)
-      if member.invalid?
-        add_error_for_member(member)
+      existing_errors = member.errors.full_messages
+
+      # calling invalid? clears any errors that were added outside of the
+      # rails validation process
+      if member.invalid? || existing_errors.present?
+        add_error_for_member(member, existing_errors)
       else
         after_execute(member: member)
         @member_created_namespace_id ||= member.namespace_id
@@ -90,20 +95,29 @@ module Members
     end
 
     # overridden
-    def add_error_for_member(member)
+    def add_error_for_member(member, existing_errors)
       prefix = "#{member.user.username}: " if member.user.present?
 
-      errors << "#{prefix}#{member.errors.full_messages.to_sentence}"
+      errors << "#{prefix}#{all_member_errors(member, existing_errors).to_sentence}"
+    end
+
+    def all_member_errors(member, existing_errors)
+      existing_errors.concat(member.errors.full_messages).uniq
     end
 
     def after_execute(member:)
       super
 
+      build_tasks_to_be_done_members(member)
       track_invite_source(member)
     end
 
     def track_invite_source(member)
-      Gitlab::Tracking.event(self.class.name, 'create_member', label: invite_source, property: tracking_property(member), user: current_user)
+      Gitlab::Tracking.event(self.class.name,
+                             'create_member',
+                             label: invite_source,
+                             property: tracking_property(member),
+                             user: current_user)
     end
 
     def invite_source
@@ -117,17 +131,28 @@ module Members
       member.invite? ? 'net_new_user' : 'existing_user'
     end
 
-    def create_tasks_to_be_done
-      return if params[:tasks_to_be_done].blank? || params[:tasks_project_id].blank?
+    def build_tasks_to_be_done_members(member)
+      return unless tasks_to_be_done?(member)
 
-      # Only create task issues for existing users. Tasks for new users are created when they signup.
-      valid_members = members.select { |member| member.valid? && member.member_task.valid? && member.user.present? }
-      return unless valid_members.present?
-
+      @tasks_to_be_done_members << member
       # We can take the first `member_task` here, since all tasks will have the same attributes needed
       # for the `TasksToBeDone::CreateWorker`, ie. `project` and `tasks_to_be_done`.
-      member_task = valid_members[0].member_task
-      TasksToBeDone::CreateWorker.perform_async(member_task.id, current_user.id, valid_members.map(&:user_id))
+      @member_created_member_task_id ||= member.member_task.id
+    end
+
+    def tasks_to_be_done?(member)
+      return false if params[:tasks_to_be_done].blank? || params[:tasks_project_id].blank?
+
+      # Only create task issues for existing users. Tasks for new users are created when they signup.
+      member.member_task&.valid? && member.user.present?
+    end
+
+    def create_tasks_to_be_done
+      return unless member_created_member_task_id # signal if there is any work to be done here
+
+      TasksToBeDone::CreateWorker.perform_async(member_created_member_task_id,
+                                                current_user.id,
+                                                tasks_to_be_done_members.map(&:user_id))
     end
 
     def user_limit

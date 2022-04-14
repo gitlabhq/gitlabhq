@@ -1,0 +1,8 @@
+---
+name: ci_throttle_pipelines_creation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83969
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357520
+milestone: '14.10'
+type: development
+group: group::pipeline execution
+default_enabled: false
