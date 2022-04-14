@@ -293,7 +293,7 @@ class GroupsController < Groups::ApplicationController
       :setup_for_company,
       :jobs_to_be_done,
       :crm_enabled
-    ]
+    ] + [group_feature_attributes: group_feature_attributes]
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -395,6 +395,10 @@ class GroupsController < Groups::ApplicationController
     return if params[:parent_id]
 
     experiment(:require_verification_for_namespace_creation, user: current_user).track(:start_create_group)
+  end
+
+  def group_feature_attributes
+    []
   end
 end
 

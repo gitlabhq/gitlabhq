@@ -2,14 +2,12 @@
   .col-sm-2.col-form-label.pt-0
     = f.label :lfs_enabled, _('Large File Storage')
   .col-sm-10
-    .form-check
-      = f.check_box :lfs_enabled, checked: @group.lfs_enabled?, class: 'form-check-input'
-      = f.label :lfs_enabled, class: 'form-check-label' do
-        %strong
-          = _('Allow projects within this group to use Git LFS')
-          = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
-        %br/
-        %span= _('This setting can be overridden in each project.')
+    - label = _('Allow projects within this group to use Git LFS')
+    - help_link = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index'), class: 'gl-ml-2'
+    = f.gitlab_ui_checkbox_component :lfs_enabled,
+      '%{label}%{help_link}'.html_safe % { label: label, help_link: help_link },
+      help_text: _('This setting can be overridden in each project.'),
+      checkbox_options: { checked: @group.lfs_enabled? }
 .form-group.row
   .col-sm-2.col-form-label
     = f.label s_('ProjectCreationLevel|Allowed to create projects')
@@ -26,12 +24,9 @@
   .col-sm-2.col-form-label.pt-0
     = f.label :require_two_factor_authentication, _('Two-factor authentication')
   .col-sm-10
-    .form-check
-      = f.check_box :require_two_factor_authentication, class: 'form-check-input'
-      = f.label :require_two_factor_authentication, class: 'form-check-label' do
-        %strong
-          = _("Require all users in this group to set up two-factor authentication")
-          = link_to sprite_icon('question-o'), help_page_path('security/two_factor_authentication', anchor: 'enforce-2fa-for-all-users-in-a-group')
+    - label = _("Require all users in this group to set up two-factor authentication")
+    - help_link = link_to sprite_icon('question-o'), help_page_path('security/two_factor_authentication', anchor: 'enforce-2fa-for-all-users-in-a-group'), class: 'gl-ml-2'
+    = f.gitlab_ui_checkbox_component :require_two_factor_authentication, '%{label}%{help_link}'.html_safe % { label: label, help_link: help_link }
 .form-group.row
   .offset-sm-2.col-sm-10
     .form-check

@@ -19304,7 +19304,8 @@ ALTER SEQUENCE project_mirror_data_id_seq OWNED BY project_mirror_data.id;
 CREATE TABLE project_pages_metadata (
     project_id bigint NOT NULL,
     deployed boolean DEFAULT false NOT NULL,
-    pages_deployment_id bigint
+    pages_deployment_id bigint,
+    onboarding_complete boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE project_repositories (

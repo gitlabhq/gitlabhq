@@ -29,15 +29,15 @@ RSpec.shared_examples 'resource access tokens creation' do |resource_type|
     click_on '1'
 
     # Scopes
-    check 'api'
     check 'read_api'
+    check 'read_repository'
 
     click_on "Create #{resource_type} access token"
 
     expect(active_resource_access_tokens).to have_text(name)
     expect(active_resource_access_tokens).to have_text('in')
-    expect(active_resource_access_tokens).to have_text('api')
     expect(active_resource_access_tokens).to have_text('read_api')
+    expect(active_resource_access_tokens).to have_text('read_repository')
     expect(active_resource_access_tokens).to have_text('Maintainer')
     expect(created_resource_access_token).not_to be_empty
   end

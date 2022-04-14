@@ -305,8 +305,11 @@ Parameters:
   "website_url": "",
   "organization": "",
   "job_title": "Operations Specialist",
+  "pronouns": "he/him",
+  "work_information": null,
   "followers": 1,
-  "following": 1
+  "following": 1,
+  "local_time": "3:38 PM"
 }
 ```
 
@@ -346,6 +349,11 @@ Example Responses:
   "website_url": "",
   "organization": "",
   "job_title": "Operations Specialist",
+  "pronouns": "he/him",
+  "work_information": null,
+  "followers": 1,
+  "following": 1,
+  "local_time": "3:38 PM",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
@@ -580,6 +588,13 @@ GET /user
   "twitter": "",
   "website_url": "",
   "organization": "",
+  "job_title": "",
+  "pronouns": "he/him",
+  "bot": false,
+  "work_information": null,
+  "followers": 0,
+  "following": 0,
+  "local_time": "3:38 PM",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
@@ -596,9 +611,12 @@ GET /user
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false,
-  "private_profile": false
+  "private_profile": false,
+  "commit_email": "admin@example.com",
 }
 ```
+
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
 
 ## List current user (for admins)
 
@@ -654,7 +672,8 @@ Parameters:
   "commit_email": "john-codes@example.com",
   "current_sign_in_ip": "196.165.1.102",
   "last_sign_in_ip": "172.127.2.22",
-  "namespace_id": 1
+  "namespace_id": 1,
+  "note": null
 }
 ```
 

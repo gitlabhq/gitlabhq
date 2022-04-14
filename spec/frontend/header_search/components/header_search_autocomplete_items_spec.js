@@ -8,6 +8,9 @@ import {
   LARGE_AVATAR_PX,
   PROJECTS_CATEGORY,
   SMALL_AVATAR_PX,
+  ISSUES_CATEGORY,
+  MERGE_REQUEST_CATEGORY,
+  RECENT_EPICS_CATEGORY,
 } from '~/header_search/constants';
 import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
@@ -50,7 +53,12 @@ describe('HeaderSearchAutocompleteItems', () => {
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findGlDropdownDividers = () => wrapper.findAllComponents(GlDropdownDivider);
   const findFirstDropdownItem = () => findDropdownItems().at(0);
-  const findDropdownItemTitles = () => findDropdownItems().wrappers.map((w) => w.text());
+  const findDropdownItemTitles = () =>
+    findDropdownItems().wrappers.map((w) => w.findAll('span').at(1).text());
+  const findDropdownItemSubTitles = () =>
+    findDropdownItems()
+      .wrappers.filter((w) => w.findAll('span').length > 2)
+      .map((w) => w.findAll('span').at(2).text());
   const findDropdownItemLinks = () => findDropdownItems().wrappers.map((w) => w.attributes('href'));
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findGlAvatar = () => wrapper.findComponent(GlAvatar);
@@ -95,8 +103,15 @@ describe('HeaderSearchAutocompleteItems', () => {
         });
 
         it('renders titles correctly', () => {
-          const expectedTitles = MOCK_SORTED_AUTOCOMPLETE_OPTIONS.map((o) => o.label);
+          const expectedTitles = MOCK_SORTED_AUTOCOMPLETE_OPTIONS.map((o) => o.value || o.label);
           expect(findDropdownItemTitles()).toStrictEqual(expectedTitles);
+        });
+
+        it('renders sub-titles correctly', () => {
+          const expectedSubTitles = MOCK_SORTED_AUTOCOMPLETE_OPTIONS.filter((o) => o.value).map(
+            (o) => o.label,
+          );
+          expect(findDropdownItemSubTitles()).toStrictEqual(expectedSubTitles);
         });
 
         it('renders links correctly', () => {
@@ -106,15 +121,30 @@ describe('HeaderSearchAutocompleteItems', () => {
       });
 
       describe.each`
-        item                                                             | showAvatar | avatarSize
-        ${{ data: [{ category: PROJECTS_CATEGORY, avatar_url: null }] }} | ${true}    | ${String(LARGE_AVATAR_PX)}
-        ${{ data: [{ category: GROUPS_CATEGORY, avatar_url: '/123' }] }} | ${true}    | ${String(LARGE_AVATAR_PX)}
-        ${{ data: [{ category: 'Help', avatar_url: '' }] }}              | ${true}    | ${String(SMALL_AVATAR_PX)}
-        ${{ data: [{ category: 'Settings' }] }}                          | ${false}   | ${false}
-      `('GlAvatar', ({ item, showAvatar, avatarSize }) => {
+        item                                                                                                          | showAvatar | avatarSize                 | searchContext                            | entityId | entityName
+        ${{ data: [{ category: PROJECTS_CATEGORY, avatar_url: null }] }}                                              | ${true}    | ${String(LARGE_AVATAR_PX)} | ${{ project: { id: 29 } }}               | ${'29'}  | ${''}
+        ${{ data: [{ category: GROUPS_CATEGORY, avatar_url: '/123' }] }}                                              | ${true}    | ${String(LARGE_AVATAR_PX)} | ${{ group: { id: 12 } }}                 | ${'12'}  | ${''}
+        ${{ data: [{ category: 'Help', avatar_url: '' }] }}                                                           | ${true}    | ${String(SMALL_AVATAR_PX)} | ${null}                                  | ${'0'}   | ${''}
+        ${{ data: [{ category: 'Settings' }] }}                                                                       | ${false}   | ${false}                   | ${null}                                  | ${false} | ${false}
+        ${{ data: [{ category: GROUPS_CATEGORY, avatar_url: null }] }}                                                | ${true}    | ${String(LARGE_AVATAR_PX)} | ${{ group: { id: 1, name: 'test1' } }}   | ${'1'}   | ${'test1'}
+        ${{ data: [{ category: PROJECTS_CATEGORY, avatar_url: null }] }}                                              | ${true}    | ${String(LARGE_AVATAR_PX)} | ${{ project: { id: 2, name: 'test2' } }} | ${'2'}   | ${'test2'}
+        ${{ data: [{ category: ISSUES_CATEGORY, avatar_url: null }] }}                                                | ${true}    | ${String(SMALL_AVATAR_PX)} | ${{ project: { id: 3, name: 'test3' } }} | ${'3'}   | ${'test3'}
+        ${{ data: [{ category: MERGE_REQUEST_CATEGORY, avatar_url: null }] }}                                         | ${true}    | ${String(SMALL_AVATAR_PX)} | ${{ project: { id: 4, name: 'test4' } }} | ${'4'}   | ${'test4'}
+        ${{ data: [{ category: RECENT_EPICS_CATEGORY, avatar_url: null }] }}                                          | ${true}    | ${String(SMALL_AVATAR_PX)} | ${{ group: { id: 5, name: 'test5' } }}   | ${'5'}   | ${'test5'}
+        ${{ data: [{ category: GROUPS_CATEGORY, avatar_url: null, group_id: 6, group_name: 'test6' }] }}              | ${true}    | ${String(LARGE_AVATAR_PX)} | ${null}                                  | ${'6'}   | ${'test6'}
+        ${{ data: [{ category: PROJECTS_CATEGORY, avatar_url: null, project_id: 7, project_name: 'test7' }] }}        | ${true}    | ${String(LARGE_AVATAR_PX)} | ${null}                                  | ${'7'}   | ${'test7'}
+        ${{ data: [{ category: ISSUES_CATEGORY, avatar_url: null, project_id: 8, project_name: 'test8' }] }}          | ${true}    | ${String(SMALL_AVATAR_PX)} | ${null}                                  | ${'8'}   | ${'test8'}
+        ${{ data: [{ category: MERGE_REQUEST_CATEGORY, avatar_url: null, project_id: 9, project_name: 'test9' }] }}   | ${true}    | ${String(SMALL_AVATAR_PX)} | ${null}                                  | ${'9'}   | ${'test9'}
+        ${{ data: [{ category: RECENT_EPICS_CATEGORY, avatar_url: null, group_id: 10, group_name: 'test10' }] }}      | ${true}    | ${String(SMALL_AVATAR_PX)} | ${null}                                  | ${'10'}  | ${'test10'}
+        ${{ data: [{ category: GROUPS_CATEGORY, avatar_url: null, group_id: 11, group_name: 'test11' }] }}            | ${true}    | ${String(LARGE_AVATAR_PX)} | ${{ group: { id: 1, name: 'test1' } }}   | ${'11'}  | ${'test11'}
+        ${{ data: [{ category: PROJECTS_CATEGORY, avatar_url: null, project_id: 12, project_name: 'test12' }] }}      | ${true}    | ${String(LARGE_AVATAR_PX)} | ${{ project: { id: 2, name: 'test2' } }} | ${'12'}  | ${'test12'}
+        ${{ data: [{ category: ISSUES_CATEGORY, avatar_url: null, project_id: 13, project_name: 'test13' }] }}        | ${true}    | ${String(SMALL_AVATAR_PX)} | ${{ project: { id: 3, name: 'test3' } }} | ${'13'}  | ${'test13'}
+        ${{ data: [{ category: MERGE_REQUEST_CATEGORY, avatar_url: null, project_id: 14, project_name: 'test14' }] }} | ${true}    | ${String(SMALL_AVATAR_PX)} | ${{ project: { id: 4, name: 'test4' } }} | ${'14'}  | ${'test14'}
+        ${{ data: [{ category: RECENT_EPICS_CATEGORY, avatar_url: null, group_id: 15, group_name: 'test15' }] }}      | ${true}    | ${String(SMALL_AVATAR_PX)} | ${{ group: { id: 5, name: 'test5' } }}   | ${'15'}  | ${'test15'}
+      `('GlAvatar', ({ item, showAvatar, avatarSize, searchContext, entityId, entityName }) => {
         describe(`when category is ${item.data[0].category} and avatar_url is ${item.data[0].avatar_url}`, () => {
           beforeEach(() => {
-            createComponent({}, { autocompleteGroupedSearchOptions: () => [item] });
+            createComponent({ searchContext }, { autocompleteGroupedSearchOptions: () => [item] });
           });
 
           it(`should${showAvatar ? '' : ' not'} render`, () => {
@@ -123,6 +153,16 @@ describe('HeaderSearchAutocompleteItems', () => {
 
           it(`should set avatarSize to ${avatarSize}`, () => {
             expect(findGlAvatar().exists() && findGlAvatar().attributes('size')).toBe(avatarSize);
+          });
+
+          it(`should set avatar entityId to ${entityId}`, () => {
+            expect(findGlAvatar().exists() && findGlAvatar().attributes('entityid')).toBe(entityId);
+          });
+
+          it(`should set avatar entityName to ${entityName}`, () => {
+            expect(findGlAvatar().exists() && findGlAvatar().attributes('entityname')).toBe(
+              entityName,
+            );
           });
         });
       });

@@ -260,6 +260,7 @@ module SearchHelper
       {
         category: "Groups",
         id: group.id,
+        value: "#{search_result_sanitize(group.name)}",
         label: "#{search_result_sanitize(group.full_name)}",
         url: group_path(group),
         avatar_url: group.avatar_url || ''
@@ -311,7 +312,9 @@ module SearchHelper
         id: mr.id,
         label: search_result_sanitize(mr.title),
         url: merge_request_path(mr),
-        avatar_url: mr.project.avatar_url || ''
+        avatar_url: mr.project.avatar_url || '',
+        project_id: mr.target_project_id,
+        project_name: mr.target_project.name
       }
     end
   end
@@ -325,7 +328,9 @@ module SearchHelper
         id: i.id,
         label: search_result_sanitize(i.title),
         url: issue_path(i),
-        avatar_url: i.project.avatar_url || ''
+        avatar_url: i.project.avatar_url || '',
+        project_id: i.project_id,
+        project_name: i.project.name
       }
     end
   end

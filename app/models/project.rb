@@ -1946,6 +1946,10 @@ class Project < ApplicationRecord
     Gitlab.config.pages.enabled
   end
 
+  def pages_show_onboarding?
+    !(pages_metadatum&.onboarding_complete || pages_metadatum&.deployed)
+  end
+
   def remove_private_deploy_keys
     exclude_keys_linked_to_other_projects = <<-SQL
       NOT EXISTS (
@@ -1959,6 +1963,10 @@ class Project < ApplicationRecord
     deploy_keys.where(public: false)
                .where(exclude_keys_linked_to_other_projects)
                .delete_all
+  end
+
+  def mark_pages_onboarding_complete
+    ensure_pages_metadatum.update!(onboarding_complete: true)
   end
 
   def mark_pages_as_deployed

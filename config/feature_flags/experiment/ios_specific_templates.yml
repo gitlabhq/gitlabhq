@@ -1,0 +1,8 @@
+---
+name: ios_specific_templates
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84589
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356398
+milestone: "14.10"
+type: experiment
+group: group::activation
+default_enabled: false

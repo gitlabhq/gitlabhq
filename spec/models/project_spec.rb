@@ -2293,6 +2293,44 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#pages_show_onboarding?' do
+    let(:project) { create(:project) }
+
+    subject { project.pages_show_onboarding? }
+
+    context "if there is no metadata" do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'if onboarding is complete' do
+      before do
+        project.pages_metadatum.update_column(:onboarding_complete, true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'if there is metadata, but onboarding is not complete' do
+      before do
+        project.pages_metadatum.update_column(:onboarding_complete, false)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    # During migration, the onboarding_complete property can still be false,
+    # but will be updated later. To account for that case, pages_show_onboarding?
+    # should return false if `deployed` is true.
+    context "will return false if pages is deployed even if onboarding_complete is false" do
+      before do
+        project.pages_metadatum.update_column(:onboarding_complete, false)
+        project.pages_metadatum.update_column(:deployed, true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#pages_deployed?' do
     let(:project) { create(:project) }
 
@@ -6623,6 +6661,25 @@ RSpec.describe Project, factory_default: :keep do
           expect(project.errors[:shared_runners_enabled]).to contain_exactly('cannot be enabled because parent group does not allow it')
         end
       end
+    end
+  end
+
+  describe '#mark_pages_onboarding_complete' do
+    let(:project) { create(:project) }
+
+    it "creates new record and sets onboarding_complete to true if none exists yet" do
+      project.mark_pages_onboarding_complete
+
+      expect(project.pages_metadatum.reload.onboarding_complete).to eq(true)
+    end
+
+    it "overrides an existing setting" do
+      pages_metadatum = project.pages_metadatum
+      pages_metadatum.update!(onboarding_complete: false)
+
+      expect do
+        project.mark_pages_onboarding_complete
+      end.to change { pages_metadatum.reload.onboarding_complete }.from(false).to(true)
     end
   end
 

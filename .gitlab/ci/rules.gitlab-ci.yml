@@ -1583,17 +1583,12 @@
 #
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76756
 
-# Since `review-qa-smoke` isn't allowed to fail, we need to use `when: always` for `review-qa-smoke-report`.
-.review:rules:review-qa-smoke-report:
-  rules:
-    - when: always
-
 .review:rules:review-qa-reliable:
   rules:
     - when: on_success
 
 # Since `review-qa-reliable` isn't allowed to fail, we need to use `when: always`for `review-qa-reliable-report`.
-.review:rules:review-qa-reliable-report:
+.review:rules:review-qa-blocking-report:
   rules:
     - when: always
 
@@ -1612,11 +1607,6 @@
   rules:
     - when: on_success
     - when: on_failure
-
-.review:rules:knapsack-report:
-  rules:
-    - if: '$KNAPSACK_GENERATE_REPORT == "true"'
-      when: always
 
 .review:rules:review-cleanup:
   rules:

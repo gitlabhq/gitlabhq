@@ -15,15 +15,11 @@ module QA
         end
       end
 
-      before do
-        sleep 5 # Runner should register within 5 seconds
-      end
-
       # Removing a runner via the UI is covered by `spec/features/runners_spec.rb``
       it 'removes the runner' do
-        runners = runner.list_of_runners(tag_list: runner_tags)
-
-        expect(runners.size).to eq(1)
+        runners = nil
+        expect { (runners = runner.list_of_runners(tag_list: runner_tags)).size }
+          .to eventually_eq(1).within(max_duration: 10, sleep_interval: 1)
         expect(runners.first[:description]).to eq(executor)
 
         request = Runtime::API::Request.new(api_client, "runners/#{runners.first[:id]}")

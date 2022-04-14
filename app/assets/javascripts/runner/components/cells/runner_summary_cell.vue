@@ -60,7 +60,8 @@ export default {
       {{ description }}
     </tooltip-on-truncate>
     <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="ipAddress">
-      {{ __('IP Address') }} <strong>{{ ipAddress }}</strong>
+      <span class="gl-md-display-none gl-lg-display-inline">{{ __('IP Address') }}</span>
+      <strong>{{ ipAddress }}</strong>
     </tooltip-on-truncate>
   </div>
 </template>

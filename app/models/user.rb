@@ -476,7 +476,7 @@ class User < ApplicationRecord
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
-  scope :without_forbidden_states, -> { confirmed.where.not(state: FORBIDDEN_SEARCH_STATES) }
+  scope :without_forbidden_states, -> { where.not(state: FORBIDDEN_SEARCH_STATES) }
 
   strip_attributes! :name
 
@@ -1732,8 +1732,12 @@ class User < ApplicationRecord
   end
 
   def attention_requested_open_merge_requests_count(force: false)
-    Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+    if Feature.enabled?(:uncached_mr_attention_requests_count, self, default_enabled: :yaml)
       MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
+    else
+      Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+        MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
+      end
     end
   end
 

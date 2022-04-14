@@ -106,6 +106,12 @@ module Ci
         e.candidate { data[:any_runners_available] = project.active_runners.exists?.to_s }
       end
 
+      experiment(:ios_specific_templates, actor: current_user, project: project, sticky_to: project) do |e|
+        e.candidate do
+          data[:registration_token] = project.runners_token if can?(current_user, :register_project_runners, project)
+        end
+      end
+
       data
     end
 

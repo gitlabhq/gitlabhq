@@ -20,6 +20,12 @@ export const GROUPS_CATEGORY = 'Groups';
 
 export const PROJECTS_CATEGORY = 'Projects';
 
+export const ISSUES_CATEGORY = 'Recent issues';
+
+export const MERGE_REQUEST_CATEGORY = 'Recent merge requests';
+
+export const RECENT_EPICS_CATEGORY = 'Recent epics';
+
 export const LARGE_AVATAR_PX = 32;
 
 export const SMALL_AVATAR_PX = 16;

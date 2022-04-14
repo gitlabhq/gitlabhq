@@ -4988,16 +4988,35 @@ RSpec.describe User do
   end
 
   describe '#attention_requested_open_merge_requests_count' do
-    it 'returns number of open merge requests from non-archived projects' do
-      user    = create(:user)
-      project = create(:project, :public)
-      archived_project = create(:project, :public, :archived)
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:archived_project) { create(:project, :public, :archived) }
 
+    before do
       create(:merge_request, source_project: project, author: user, reviewers: [user])
       create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
       create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
+    end
 
+    it 'returns number of open merge requests from non-archived projects' do
+      expect(Rails.cache).not_to receive(:fetch)
       expect(user.attention_requested_open_merge_requests_count(force: true)).to eq 1
+    end
+
+    context 'when uncached_mr_attention_requests_count is disabled' do
+      before do
+        stub_feature_flags(uncached_mr_attention_requests_count: false)
+      end
+
+      it 'fetches from cache' do
+        expect(Rails.cache).to receive(:fetch).with(
+          user.attention_request_cache_key,
+          force: false,
+          expires_in: described_class::COUNT_CACHE_VALIDITY_PERIOD
+        ).and_call_original
+
+        expect(user.attention_requested_open_merge_requests_count).to eq 1
+      end
     end
   end
 
@@ -6748,9 +6767,9 @@ RSpec.describe User do
     let_it_be(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
     let_it_be(:internal_user) { User.alert_bot.tap { |u| u.confirm } }
 
-    it 'does not return blocked, banned or unconfirmed users' do
+    it 'does not return blocked or banned users' do
       expect(described_class.without_forbidden_states).to match_array([
-        normal_user, admin_user, external_user, omniauth_user, internal_user
+        normal_user, admin_user, external_user, unconfirmed_user, omniauth_user, internal_user
       ])
     end
   end

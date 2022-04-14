@@ -71,7 +71,7 @@ RSpec.describe SearchHelper do
         create(:group).add_owner(user)
         result = search_autocomplete_opts("gro").first
 
-        expect(result.keys).to match_array(%i[category id label url avatar_url])
+        expect(result.keys).to match_array(%i[category id value label url avatar_url])
       end
 
       it 'includes the users recently viewed issues', :aggregate_failures do

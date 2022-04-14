@@ -1,16 +1,13 @@
-= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-git-lfs-limits-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-git-lfs-limits-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     %h5
       = _('Authenticated Git LFS request rate limit')
     .form-group
-      .form-check
-        = f.check_box :throttle_authenticated_git_lfs_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_authenticated_git_lfs_checkbox' }
-        = f.label :throttle_authenticated_git_lfs_enabled, class: 'form-check-label gl-font-weight-bold' do
-          = _('Enable authenticated Git LFS request rate limit')
-        %span.form-text.gl-text-gray-600
-          = _('Helps reduce request volume (for example, from crawlers or abusive bots)')
+      = f.gitlab_ui_checkbox_component :throttle_authenticated_git_lfs_enabled,
+        _('Enable authenticated Git LFS request rate limit'),
+        help_text: _('Helps reduce request volume (for example, from crawlers or abusive bots)')
     .form-group
       = f.label :throttle_authenticated_git_lfs_requests_per_period, _('Max authenticated Git LFS requests per period per user'), class: 'gl-font-weight-bold'
       = f.number_field :throttle_authenticated_git_lfs_requests_per_period, class: 'form-control gl-form-input'

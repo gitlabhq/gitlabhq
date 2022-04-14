@@ -72,7 +72,7 @@ describe('GroupsListItem', () => {
 
       expect(addSubscriptionSpy).toHaveBeenCalledWith(mockSubscriptionPath, mockGroup1.full_path);
       expect(persistAlert).toHaveBeenCalledWith({
-        linkUrl: '/help/integration/jira_development_panel.html#usage',
+        linkUrl: '/help/integration/jira_development_panel.html#use-the-integration',
         message:
           'You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}',
         title: 'Namespace successfully linked',

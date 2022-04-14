@@ -68,7 +68,7 @@ module Jira
       end
 
       def auth_docs_link_start
-        auth_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira', anchor: 'authentication-in-jira')
+        auth_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/index', anchor: 'authentication-in-jira')
         '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auth_docs_link_url }
       end
 

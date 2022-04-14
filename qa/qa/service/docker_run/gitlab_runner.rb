@@ -43,6 +43,8 @@ module QA
             #{@image}  #{add_gitlab_tls_cert if @address.include? "https"} && docker exec --detach #{@name} sh -c "#{register_command}"
           CMD
 
+          wait_until_running_and_configured
+
           # Prove airgappedness
           if runner_network == 'airgapped'
             shell("docker exec #{@name} sh -c '#{prove_airgap}'")
@@ -110,6 +112,10 @@ module QA
           <<~CMD
             && docker cp #{gitlab_tls_certificate.path} #{@name}:/etc/gitlab-runner/certs/gitlab.test.crt
           CMD
+        end
+
+        def wait_until_running_and_configured
+          wait_until_shell_command_matches("docker logs #{@name}", /Configuration loaded/)
         end
       end
     end

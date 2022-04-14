@@ -276,7 +276,7 @@ by changing the status. Setting the status to:
 For [incidents created from alerts](alerts.md#create-an-incident-from-an-alert),
 updating the incident status also updates the alert status.
 
-## Change escalation policy **(PREMIUM)**
+### Change escalation policy **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
 

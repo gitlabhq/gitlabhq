@@ -151,5 +151,46 @@ RSpec.describe Ci::PipelinesHelper do
         end
       end
     end
+
+    describe 'the `registration_token` attribute' do
+      subject { data[:registration_token] }
+
+      describe 'when the project is eligible for the `ios_specific_templates` experiment' do
+        let_it_be(:project) { create(:project, :auto_devops_disabled) }
+        let_it_be(:user) { create(:user) }
+
+        before do
+          allow(helper).to receive(:current_user).and_return(user)
+          project.add_developer(user)
+          create(:project_setting, project: project, target_platforms: %w(ios))
+        end
+
+        context 'when the `ios_specific_templates` experiment variant is control' do
+          before do
+            stub_experiments(ios_specific_templates: :control)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when the `ios_specific_templates` experiment variant is candidate' do
+          before do
+            stub_experiments(ios_specific_templates: :candidate)
+          end
+
+          context 'when the user cannot register project runners' do
+            before do
+              allow(helper).to receive(:can?).with(user, :register_project_runners, project).and_return(false)
+            end
+
+            it { is_expected.to be_nil }
+          end
+
+          context 'when the user can register project runners' do
+            it { is_expected.to eq(project.runners_token) }
+          end
+        end
+      end
+    end
   end
 end

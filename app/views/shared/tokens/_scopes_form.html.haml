@@ -1,9 +1,14 @@
 - scopes = local_assigns.fetch(:scopes)
 - prefix = local_assigns.fetch(:prefix)
 - token = local_assigns.fetch(:token)
+- f = local_assigns.fetch(:f)
 
-- scopes.each do |scope|
-  %fieldset.form-group.form-check
-    = check_box_tag "#{prefix}[scopes][]", scope, token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}", class: "form-check-input", data: { qa_selector: "#{scope}_checkbox" }
-    = label_tag "#{prefix}_scopes_#{scope}", scope, class: 'label-bold form-check-label'
-    .text-secondary= t scope, scope: scope_description(prefix)
+%fieldset
+  - scopes.each do |scope|
+    - help_text = t scope, scope: scope_description(prefix)
+    = f.gitlab_ui_checkbox_component :scopes, scope,
+      help_text: help_text,
+      checkbox_options: { checked: token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}", multiple: true, data: { qa_selector: "#{scope}_checkbox" } },
+      checked_value: scope,
+      unchecked_value: nil,
+      label_options: { data: { qa_selector: "#{scope}_label" } }

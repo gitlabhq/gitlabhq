@@ -1,4 +1,4 @@
-= form_for [:admin, @application], url: @url, html: {role: 'form'} do |f|
+= gitlab_ui_form_for [:admin, @application], url: @url, html: {role: 'form'} do |f|
   = form_errors(application)
 
   = content_tag :div, class: 'form-group row' do
@@ -45,7 +45,7 @@
     .col-sm-2.col-form-label.pt-0
       = f.label :scopes
     .col-sm-10
-      = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes
+      = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes, f: f
 
   .form-actions
     = f.submit _('Save application'), class: "gl-button btn btn-confirm wide"
