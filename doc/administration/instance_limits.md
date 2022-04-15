@@ -980,3 +980,12 @@ In addition to application-based limits, GitLab.com is configured to use Cloudfl
 ## Container Repository tag deletion limit
 
 Container repository tags are in the Container Registry and, as such, each tag deletion will trigger network requests to the Container Registry. Because of this, we limit the number of tags that a single API call can delete to 20.
+
+## Project-level Secure Files API limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8.
+
+The [secure files API](../api/secure_files.md) enforces the following limits:
+
+- Files must be smaller than 5 MB.
+- Projects cannot have more than 100 secure files.
