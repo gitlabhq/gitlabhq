@@ -69,39 +69,31 @@ module ApplicationSettingsHelper
     end
   end
 
-  # Return a group of checkboxes that use Bootstrap's button plugin for a
-  # toggle button effect.
-  def restricted_level_checkboxes(help_block_id, checkbox_name, options = {})
+  def restricted_level_checkboxes(form)
     Gitlab::VisibilityLevel.values.map do |level|
       checked = restricted_visibility_levels(true).include?(level)
-      css_class = checked ? 'active' : ''
-      tag_name = "application_setting_visibility_level_#{level}"
 
-      label_tag(tag_name, class: css_class) do
-        check_box_tag(checkbox_name, level, checked,
-                      autocomplete: 'off',
-                      'aria-describedby' => help_block_id,
-                      'class' => options[:class],
-                      id: tag_name) + visibility_level_icon(level) + visibility_level_label(level)
-      end
+      form.gitlab_ui_checkbox_component(
+        :restricted_visibility_levels,
+        "#{visibility_level_icon(level)} #{visibility_level_label(level)}".html_safe,
+        checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
+        checked_value: level,
+        unchecked_value: nil
+      )
     end
   end
 
-  # Return a group of checkboxes that use Bootstrap's button plugin for a
-  # toggle button effect.
-  def import_sources_checkboxes(help_block_id, options = {})
+  def import_sources_checkboxes(form)
     Gitlab::ImportSources.options.map do |name, source|
       checked = @application_setting.import_sources.include?(source)
-      css_class = checked ? 'active' : ''
-      checkbox_name = 'application_setting[import_sources][]'
 
-      label_tag(name, class: css_class) do
-        check_box_tag(checkbox_name, source, checked,
-                      autocomplete: 'off',
-                      'aria-describedby' => help_block_id,
-                      'class' => options[:class],
-                      id: name.tr(' ', '_')) + name
-      end
+      form.gitlab_ui_checkbox_component(
+        :import_sources,
+        name,
+        checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
+        checked_value: source,
+        unchecked_value: nil
+      )
     end
   end
 

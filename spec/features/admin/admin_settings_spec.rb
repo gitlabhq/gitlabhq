@@ -34,16 +34,16 @@ RSpec.describe 'Admin updates settings' do
 
       it 'uncheck all restricted visibility levels' do
         page.within('.as-visibility-access') do
-          find('#application_setting_visibility_level_0').set(false)
-          find('#application_setting_visibility_level_10').set(false)
-          find('#application_setting_visibility_level_20').set(false)
+          find('#application_setting_restricted_visibility_levels_0').set(false)
+          find('#application_setting_restricted_visibility_levels_10').set(false)
+          find('#application_setting_restricted_visibility_levels_20').set(false)
           click_button 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
-        expect(find('#application_setting_visibility_level_0')).not_to be_checked
-        expect(find('#application_setting_visibility_level_10')).not_to be_checked
-        expect(find('#application_setting_visibility_level_20')).not_to be_checked
+        expect(find('#application_setting_restricted_visibility_levels_0')).not_to be_checked
+        expect(find('#application_setting_restricted_visibility_levels_10')).not_to be_checked
+        expect(find('#application_setting_restricted_visibility_levels_20')).not_to be_checked
       end
 
       it 'modify import sources' do

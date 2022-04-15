@@ -17,7 +17,11 @@ module QA
         end
 
         def has_todo_list?
-          has_element? :todo_item_container
+          has_element?(:todo_item_container)
+        end
+
+        def has_no_todo_list?
+          has_no_element?(:todo_item_container)
         end
 
         def has_latest_todo_item_with_content?(action, title)

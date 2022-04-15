@@ -57,12 +57,30 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
         project.repository.remove
       end
 
-      it 'does not include commit_url' do
+      it 'returns nil for commit_url' do
         expect(data[:commit_url]).to be_nil
       end
 
-      it 'does not include commit_title' do
+      it 'returns nil for commit_title' do
         expect(data[:commit_title]).to be_nil
+      end
+    end
+
+    context 'when deployed_by is nil' do
+      let_it_be(:deployment) { create(:deployment, user: nil, deployable: nil) }
+
+      subject(:data) { described_class.build(deployment, Time.current) }
+
+      before(:all) do
+        deployment.user = nil
+      end
+
+      it 'returns nil for user' do
+        expect(data[:user]).to be_nil
+      end
+
+      it 'returns nil for user_url' do
+        expect(data[:user_url]).to be_nil
       end
     end
   end

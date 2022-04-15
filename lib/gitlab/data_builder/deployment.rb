@@ -17,6 +17,11 @@ module Gitlab
             Gitlab::UrlBuilder.build(commit)
           end
 
+        user_url =
+          if deployment.deployed_by
+            Gitlab::UrlBuilder.build(deployment.deployed_by)
+          end
+
         {
           object_kind: 'deployment',
           status: deployment.status,
@@ -27,8 +32,8 @@ module Gitlab
           environment: deployment.environment.name,
           project: deployment.project.hook_attrs,
           short_sha: deployment.short_sha,
-          user: deployment.deployed_by.hook_attrs,
-          user_url: Gitlab::UrlBuilder.build(deployment.deployed_by),
+          user: deployment.deployed_by&.hook_attrs,
+          user_url: user_url,
           commit_url: commit_url,
           commit_title: deployment.commit_title,
           ref: deployment.ref
