@@ -293,6 +293,10 @@ control over how the Pages daemon runs and serves content in your environment.
 | `rate_limit_source_ip_burst`            | Rate limit per source IP maximum burst allowed per second. |
 | `rate_limit_domain`                     | Rate limit per domain in number of requests per second. Set to `0` to disable this feature. |
 | `rate_limit_domain_burst`               | Rate limit per domain maximum burst allowed per second. |
+| `server_read_timeout`                   | Maximum duration to read the request headers and body. For no timeout, set to `0` or a negative value. Default: `5s` |
+| `server_read_header_timeout`            | Maximum duration to read the request headers. For no timeout, set to `0` or a negative value. Default: `1s` |
+| `server_write_timeout`                  | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. Default: `5m` |
+| `server_keep_alive`                     | The `Keep-Alive` period for network connections accepted by this listener. If `0`, `Keep-Alive` is enabled if supported by the protocol and operating system. If negative, `Keep-Alive` is disabled. Default: `15s` |
 
 ## Advanced configuration
 

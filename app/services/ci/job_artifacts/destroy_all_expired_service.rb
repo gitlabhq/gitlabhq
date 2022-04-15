@@ -24,8 +24,6 @@ module Ci
       # preventing multiple `ExpireBuildArtifactsWorker` CRON jobs run concurrently,
       # which is scheduled every 7 minutes.
       def execute
-        return 0 unless ::Feature.enabled?(:ci_destroy_all_expired_service, default_enabled: :yaml)
-
         in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
           if ::Feature.enabled?(:ci_destroy_unlocked_job_artifacts)
             destroy_unlocked_job_artifacts

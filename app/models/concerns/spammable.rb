@@ -84,7 +84,8 @@ module Spammable
   end
 
   def unrecoverable_spam_error!
-    self.errors.add(:base, "Your #{spammable_entity_type} has been recognized as spam and has been discarded.")
+    self.errors.add(:base, _("Your %{spammable_entity_type} has been recognized as spam and has been discarded.") \
+                    % { spammable_entity_type: spammable_entity_type })
   end
 
   def spammable_entity_type

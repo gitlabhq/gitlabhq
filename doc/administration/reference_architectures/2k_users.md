@@ -667,6 +667,7 @@ On each node perform the following:
    # Object Storage
    # This is an example for configuring Object Storage on GCP
    # Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['enabled'] = true
    gitlab_rails['object_store']['connection'] = {
      'provider' => 'Google',
      'google_project' => '<gcp-project-name>',

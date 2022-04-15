@@ -43513,6 +43513,9 @@ msgstr ""
 msgid "Your %{plan} subscription expires on %{expiry_date}"
 msgstr ""
 
+msgid "Your %{spammable_entity_type} has been recognized as spam and has been discarded."
+msgstr ""
+
 msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."
 msgstr ""
 
