@@ -16,12 +16,13 @@ export function initStoreFromElement(element) {
     jobsPath,
     importPath,
     namespacesPath,
+    defaultTargetNamespace,
     paginatable,
   } = element.dataset;
 
   return createStore({
     initialState: {
-      defaultTargetNamespace: gon.current_username,
+      defaultTargetNamespace,
       ciCdOnly: parseBoolean(ciCdOnly),
       canSelectNamespace: parseBoolean(canSelectNamespace),
       provider,

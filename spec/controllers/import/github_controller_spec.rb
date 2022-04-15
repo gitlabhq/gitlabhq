@@ -82,11 +82,33 @@ RSpec.describe Import::GithubController do
         expect(controller).to redirect_to(new_import_url)
         expect(flash[:alert]).to eq('Access denied to your GitHub account.')
       end
+
+      it "includes namespace_id from session if it is present" do
+        namespace_id = 1
+        session[:namespace_id] = 1
+
+        get :callback, params: { state: valid_auth_state }
+
+        expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
+      end
     end
   end
 
   describe "POST personal_access_token" do
     it_behaves_like 'a GitHub-ish import controller: POST personal_access_token'
+
+    it 'passes namespace_id param as query param if it was present' do
+      namespace_id = 5
+      status_import_url = public_send("status_import_#{provider}_url", { namespace_id: namespace_id })
+
+      allow_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
+        allow(client).to receive(:user).and_return(true)
+      end
+
+      post :personal_access_token, params: { personal_access_token: 'some-token', namespace_id: 5 }
+
+      expect(controller).to redirect_to(status_import_url)
+    end
   end
 
   describe "GET status" do

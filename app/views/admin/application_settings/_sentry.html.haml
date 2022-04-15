@@ -1,4 +1,4 @@
-= form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-sentry-settings'), html: { class: 'fieldset-form', id: 'sentry-settings' } do |f|
+= gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-sentry-settings'), html: { class: 'fieldset-form', id: 'sentry-settings' } do |f|
   = form_errors(@application_setting)
 
   %span.text-muted
@@ -6,9 +6,7 @@
 
   %fieldset
     .form-group
-      .form-check
-        = f.check_box :sentry_enabled, class: 'form-check-input'
-        = f.label :sentry_enabled, _('Enable Sentry error tracking'), class: 'form-check-label'
+      = f.gitlab_ui_checkbox_component :sentry_enabled, _('Enable Sentry error tracking')
     .form-group
       = f.label :sentry_dsn, _('DSN'), class: 'label-light'
       = f.text_field :sentry_dsn, class: 'form-control gl-form-input', placeholder: 'https://public@sentry.example.com/1'

@@ -1,5 +1,6 @@
 - active_tab = local_assigns.fetch(:active_tab, 'blank')
 - track_label = local_assigns.fetch(:track_label, 'import_project')
+- namespace_id = local_assigns.fetch(:destination_namespace_id, nil)
 
 .project-import
   .form-group.import-btn-container.clearfix
@@ -16,7 +17,7 @@
 
       - if github_import_enabled?
         %div
-          = link_to new_import_github_path, class: 'gl-button btn-default btn js-import-github js-import-project-btn', data: { platform: 'github', **tracking_attrs_data(track_label, 'click_button', 'github') } do
+          = link_to new_import_github_path(namespace_id: namespace_id), class: 'gl-button btn-default btn js-import-github js-import-project-btn', data: { platform: 'github', **tracking_attrs_data(track_label, 'click_button', 'github') } do
             .gl-button-icon
               = sprite_icon('github')
             GitHub

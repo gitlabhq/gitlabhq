@@ -184,6 +184,41 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
         expect(json_response.dig("provider_repos").count).to eq(1)
       end
     end
+
+    context 'when namespace_id query param is provided' do
+      let_it_be(:current_user) { create(:user) }
+
+      let(:namespace) { create(:namespace) }
+
+      before do
+        allow(controller).to receive(:current_user).and_return(current_user)
+      end
+
+      context 'when user is allowed to create projects in this namespace' do
+        before do
+          allow(current_user).to receive(:can?).and_return(true)
+        end
+
+        it 'provides namespace to the template' do
+          get :status, params: { namespace_id: namespace.id }, format: :html
+
+          expect(response).to have_gitlab_http_status :ok
+          expect(assigns(:namespace)).to eq(namespace)
+        end
+      end
+
+      context 'when user is not allowed to create projects in this namespace' do
+        before do
+          allow(current_user).to receive(:can?).and_return(false)
+        end
+
+        it 'renders 404' do
+          get :status, params: { namespace_id: namespace.id }, format: :html
+
+          expect(response).to have_gitlab_http_status :not_found
+        end
+      end
+    end
   end
 end
 

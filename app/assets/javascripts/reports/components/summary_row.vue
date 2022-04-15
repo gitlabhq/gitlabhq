@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import Popover from '~/vue_shared/components/help_popover.vue';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { ICON_WARNING } from '../constants';
 
 /**
@@ -16,7 +16,7 @@ export default {
   name: 'ReportSummaryRow',
   components: {
     CiIcon,
-    Popover,
+    HelpPopover,
     GlLoadingIcon,
   },
   props: {
@@ -79,7 +79,7 @@ export default {
       <div class="report-block-list-issue-description-text" data-testid="summary-row-description">
         <slot name="summary">{{ summary }}</slot
         ><span v-if="popoverOptions" class="text-nowrap"
-          >&nbsp;<popover v-if="popoverOptions" :options="popoverOptions" class="align-top" />
+          >&nbsp;<help-popover v-if="popoverOptions" :options="popoverOptions" class="align-top" />
         </span>
       </div>
     </div>
