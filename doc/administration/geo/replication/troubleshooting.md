@@ -128,6 +128,9 @@ http://secondary.example.com/
                 Last status report was: 1 minute ago
 ```
 
+To find more details about failed items, check
+[the `gitlab-rails/geo.log` file](../../troubleshooting/log_parsing.md#find-most-common-geo-sync-errors)
+
 ### Check if PostgreSQL replication is working
 
 To check if PostgreSQL replication is working, check if:

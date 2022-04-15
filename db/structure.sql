@@ -17697,7 +17697,8 @@ CREATE TABLE onboarding_progresses (
     secure_secret_detection_run_at timestamp with time zone,
     secure_coverage_fuzzing_run_at timestamp with time zone,
     secure_cluster_image_scanning_run_at timestamp with time zone,
-    secure_api_fuzzing_run_at timestamp with time zone
+    secure_api_fuzzing_run_at timestamp with time zone,
+    license_scanning_run_at timestamp with time zone
 );
 
 CREATE SEQUENCE onboarding_progresses_id_seq

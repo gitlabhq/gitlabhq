@@ -2,17 +2,29 @@
 module Gitlab
   module Diff
     module CustomDiff
+      RENDERED_TIMEOUT_BACKGROUND = 20.seconds
+      RENDERED_TIMEOUT_FOREGROUND = 1.5.seconds
+      BACKGROUND_EXECUTION = 'background'
+      FOREGROUND_EXECUTION = 'foreground'
+      LOG_IPYNBDIFF_GENERATED = 'IPYNB_DIFF_GENERATED'
+      LOG_IPYNBDIFF_TIMEOUT = 'IPYNB_DIFF_TIMEOUT'
+      LOG_IPYNBDIFF_INVALID = 'IPYNB_DIFF_INVALID'
+
       class << self
         def preprocess_before_diff(path, old_blob, new_blob)
           return unless path.ends_with? '.ipynb'
 
-          transformed_diff(old_blob&.data, new_blob&.data)&.tap do
-            transformed_for_diff(new_blob, old_blob)
-            Gitlab::AppLogger.info({ message: 'IPYNB_DIFF_GENERATED' })
+          Timeout.timeout(timeout_time) do
+            transformed_diff(old_blob&.data, new_blob&.data)&.tap do
+              transformed_for_diff(new_blob, old_blob)
+              log_event(LOG_IPYNBDIFF_GENERATED)
+            end
           end
+        rescue Timeout::Error => e
+          rendered_timeout.increment(source: execution_source)
+          log_event(LOG_IPYNBDIFF_TIMEOUT, e)
         rescue IpynbDiff::InvalidNotebookError, IpynbDiff::InvalidTokenError => e
-          Gitlab::ErrorTracking.log_exception(e)
-          nil
+          log_event(LOG_IPYNBDIFF_INVALID, e)
         end
 
         def transformed_diff(before, after)
@@ -49,6 +61,27 @@ module Gitlab
           blobs.each do |b|
             blobs_with_transformed_diffs[b] = true if b
           end
+        end
+
+        def rendered_timeout
+          @rendered_timeout ||= Gitlab::Metrics.counter(
+            :ipynb_semantic_diff_timeouts_total,
+            'Counts the times notebook rendering timed out'
+          )
+        end
+
+        def timeout_time
+          Gitlab::Runtime.sidekiq? ? RENDERED_TIMEOUT_BACKGROUND : RENDERED_TIMEOUT_FOREGROUND
+        end
+
+        def execution_source
+          Gitlab::Runtime.sidekiq? ? BACKGROUND_EXECUTION : FOREGROUND_EXECUTION
+        end
+
+        def log_event(message, error = nil)
+          Gitlab::AppLogger.info({ message: message })
+          Gitlab::ErrorTracking.track_exception(error) if error
+          nil
         end
       end
     end

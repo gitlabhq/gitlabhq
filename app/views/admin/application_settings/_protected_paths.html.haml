@@ -1,14 +1,11 @@
-= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-protected-paths-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-protected-paths-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      .form-check
-        = f.check_box :throttle_protected_paths_enabled, class: 'form-check-input'
-        = f.label :throttle_protected_paths_enabled, class: 'form-check-label' do
-          = _('Enable rate limiting for POST requests to the specified paths')
-        %span.form-text.text-muted
-          = _('Helps reduce request volume for protected paths.')
+      = f.gitlab_ui_checkbox_component :throttle_protected_paths_enabled,
+        _('Enable rate limiting for POST requests to the specified paths'),
+        help_text: _('Helps reduce request volume for protected paths.')
     .form-group
       = f.label :throttle_protected_paths_requests_per_period, 'Maximum requests per period per user', class: 'label-bold'
       = f.number_field :throttle_protected_paths_requests_per_period, class: 'form-control gl-form-input'

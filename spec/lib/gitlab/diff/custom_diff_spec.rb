@@ -34,6 +34,59 @@ RSpec.describe Gitlab::Diff::CustomDiff do
         expect(described_class.transformed_for_diff?(blob)).to be_falsey
       end
     end
+
+    context 'timeout' do
+      subject { described_class.preprocess_before_diff(ipynb_blob.path, nil, ipynb_blob) }
+
+      it 'falls back to nil on timeout' do
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        expect(Timeout).to receive(:timeout).and_raise(Timeout::Error)
+
+        expect(subject).to be_nil
+      end
+
+      context 'when in foreground' do
+        it 'utilizes timeout for web' do
+          expect(Timeout).to receive(:timeout).with(described_class::RENDERED_TIMEOUT_FOREGROUND).and_call_original
+
+          expect(subject).not_to include('cells')
+        end
+
+        it 'increments metrics' do
+          counter = Gitlab::Metrics.counter(:ipynb_semantic_diff_timeouts_total, 'desc')
+
+          expect(Timeout).to receive(:timeout).and_raise(Timeout::Error)
+          expect { subject }.to change { counter.get(source: described_class::FOREGROUND_EXECUTION) }.by(1)
+        end
+      end
+
+      context 'when in background' do
+        before do
+          allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+        end
+
+        it 'utilizes longer timeout for sidekiq' do
+          expect(Timeout).to receive(:timeout).with(described_class::RENDERED_TIMEOUT_BACKGROUND).and_call_original
+
+          expect(subject).not_to include('cells')
+        end
+
+        it 'increments metrics' do
+          counter = Gitlab::Metrics.counter(:ipynb_semantic_diff_timeouts_total, 'desc')
+
+          expect(Timeout).to receive(:timeout).and_raise(Timeout::Error)
+          expect { subject }.to change { counter.get(source: described_class::BACKGROUND_EXECUTION) }.by(1)
+        end
+      end
+    end
+
+    context 'when invalid ipynb' do
+      it 'returns nil' do
+        expect(ipynb_blob).to receive(:data).and_return('invalid ipynb')
+
+        expect(described_class.preprocess_before_diff(ipynb_blob.path, nil, ipynb_blob)).to be_nil
+      end
+    end
   end
 
   describe '#transformed_blob_data' do

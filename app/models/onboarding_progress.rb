@@ -27,7 +27,8 @@ class OnboardingProgress < ApplicationRecord
     :secure_secret_detection_run,
     :secure_coverage_fuzzing_run,
     :secure_api_fuzzing_run,
-    :secure_cluster_image_scanning_run
+    :secure_cluster_image_scanning_run,
+    :license_scanning_run
   ].freeze
 
   scope :incomplete_actions, -> (actions) do

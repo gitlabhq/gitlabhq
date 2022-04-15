@@ -16,7 +16,8 @@ Before troubleshooting, see the Gitaly and Gitaly Cluster
 
 The following sections provide possible solutions to Gitaly errors.
 
-See also [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings.
+See also [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings,
+and our advice on [parsing the `gitaly/current` file](../troubleshooting/log_parsing.md#parsing-gitalycurrent).
 
 ### Check versions when using standalone Gitaly servers
 

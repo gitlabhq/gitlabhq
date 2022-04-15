@@ -2,7 +2,9 @@
 
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", :requires_admin, only: { job: 'large-gitlab-import' } do
+  RSpec.describe "Manage", requires_admin: 'uses admin API client for resource creation',
+                           feature_flag: { name: 'bulk_import_projects', scope: :global },
+                           only: { job: 'large-gitlab-import' } do
     describe "Gitlab migration" do
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
