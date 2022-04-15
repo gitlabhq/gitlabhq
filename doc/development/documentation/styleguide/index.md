@@ -1570,7 +1570,7 @@ For example:
 ```markdown
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](link-to-issue)
-for use in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X.
+in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X.
 ```
 
 After the feature or product is officially deprecated and removed, remove

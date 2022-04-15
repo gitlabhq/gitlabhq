@@ -281,7 +281,7 @@ GET /projects/:id/approval_rules/:approval_rule_id
 WARNING:
 The Vulnerability-Check feature, including the Vulnerability-Check attributes listed here, is in its
 end-of-life process. It is [deprecated](../update/deprecations.md#vulnerability-check)
-for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
 [Security Approval Policies](../user/application_security/policies/#scan-result-policy-editor).
 
 You can create project approval rules using the following endpoint:
@@ -413,7 +413,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 WARNING:
 The Vulnerability-Check feature, including the Vulnerability-Check attributes listed here, is in its
 end-of-life process. It is [deprecated](../update/deprecations.md#vulnerability-check)
-for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
 [Security Approval Policies](../user/application_security/policies/#scan-result-policy-editor).
 
 You can update project approval rules using the following endpoint:

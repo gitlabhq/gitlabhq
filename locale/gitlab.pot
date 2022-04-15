@@ -43842,13 +43842,13 @@ msgstr ""
 msgid "ZentaoIntegration|If different from Web URL."
 msgstr ""
 
-msgid "ZentaoIntegration|Issue list"
-msgstr ""
-
 msgid "ZentaoIntegration|Open ZenTao"
 msgstr ""
 
 msgid "ZentaoIntegration|Use ZenTao as this project's issue tracker."
+msgstr ""
+
+msgid "ZentaoIntegration|ZenTao"
 msgstr ""
 
 msgid "ZentaoIntegration|ZenTao API URL (optional)"

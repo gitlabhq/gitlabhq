@@ -21,6 +21,7 @@ class User < ApplicationRecord
   include OptionallySearch
   include FromUnion
   include BatchDestroyDependentAssociations
+  include BatchNullifyDependentAssociations
   include HasUniqueInternalUsers
   include IgnorableColumns
   include UpdateHighestRole
@@ -189,6 +190,8 @@ class User < ApplicationRecord
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :updated_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :closed_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :closed_by_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :events,                   dependent: :delete_all, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
@@ -668,9 +671,9 @@ class User < ApplicationRecord
 
       order = <<~SQL
         CASE
-          WHEN users.name = :query THEN 0
-          WHEN users.username = :query THEN 1
-          WHEN users.public_email = :query THEN 2
+          WHEN LOWER(users.name) = :query THEN 0
+          WHEN LOWER(users.username) = :query THEN 1
+          WHEN LOWER(users.public_email) = :query THEN 2
           ELSE 3
         END
       SQL

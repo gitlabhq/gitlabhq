@@ -238,7 +238,7 @@ RSpec.describe SessionsController do
 
             unsuccesful_login(user_params)
 
-            expect(response).to render_template(:new)
+            expect(response).to redirect_to new_user_session_path
             expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
             expect(subject.current_user).to be_nil
           end
@@ -262,7 +262,7 @@ RSpec.describe SessionsController do
             it 'displays an error when the reCAPTCHA is not solved' do
               unsuccesful_login(user_params, sesion_params: { failed_login_attempts: 6 })
 
-              expect(response).to render_template(:new)
+              expect(response).to redirect_to new_user_session_path
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
               expect(subject.current_user).to be_nil
             end
@@ -282,7 +282,7 @@ RSpec.describe SessionsController do
             it 'displays an error when the reCAPTCHA is not solved' do
               unsuccesful_login(user_params)
 
-              expect(response).to render_template(:new)
+              expect(response).to redirect_to new_user_session_path
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
               expect(subject.current_user).to be_nil
             end

@@ -13,6 +13,8 @@ query BoardLists(
       id
       hideBacklogList
       lists(issueFilters: $filters) {
+        # We have ID in a deeply nested fragment
+        # eslint-disable-next-line @graphql-eslint/require-id-when-available
         nodes {
           ...BoardListFragment
         }
@@ -25,6 +27,8 @@ query BoardLists(
       id
       hideBacklogList
       lists(issueFilters: $filters) {
+        # We have ID in a deeply nested fragment
+        # eslint-disable-next-line @graphql-eslint/require-id-when-available
         nodes {
           ...BoardListFragment
         }

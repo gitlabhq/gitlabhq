@@ -2741,6 +2741,19 @@ RSpec.describe User do
     let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
     let_it_be(:email) { create(:email, user: user, email: 'alias@example.com') }
 
+    describe 'name user and email relative ordering' do
+      let_it_be(:named_alexander) { create(:user, name: 'Alexander Person', username: 'abcd', email: 'abcd@example.com') }
+      let_it_be(:username_alexand) { create(:user, name: 'Joao Alexander', username: 'Alexand', email: 'joao@example.com') }
+
+      it 'prioritizes exact matches' do
+        expect(described_class.search('Alexand')).to eq([username_alexand, named_alexander])
+      end
+
+      it 'falls back to ordering by name' do
+        expect(described_class.search('Alexander')).to eq([named_alexander, username_alexand])
+      end
+    end
+
     describe 'name matching' do
       it 'returns users with a matching name with exact match first' do
         expect(described_class.search(user.name)).to eq([user, user2])

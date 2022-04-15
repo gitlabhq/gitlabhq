@@ -98,7 +98,7 @@
                 .input-group-text
                   #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
               = f.text_field :path, class: 'form-control h-auto', data: { qa_selector: 'project_path_field' }
-        = f.submit _('Change path'), class: "gl-button btn btn-warning", data: { qa_selector: 'change_path_button' }
+        = f.submit _('Change path'), class: "gl-button btn btn-danger", data: { qa_selector: 'change_path_button' }
 
     = render 'transfer', project: @project
 

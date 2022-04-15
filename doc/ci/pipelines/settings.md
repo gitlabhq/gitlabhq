@@ -230,7 +230,7 @@ Setting the regular expression this way takes precedence over project settings.
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
-for use in GitLab 14.9, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
+in GitLab 14.9, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
 You can add test coverage results to merge requests using the Project's CI/CD settings:
 

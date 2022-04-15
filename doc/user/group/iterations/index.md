@@ -45,7 +45,7 @@ From there you can create a new iteration or select an iteration to get a more d
 
 WARNING:
 Manual iteration management is in its end-of-life process. Creating an iteration is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
-for use in GitLab 14.10, and is planned for removal in GitLab 16.0.
+in GitLab 14.10, and is planned for removal in GitLab 16.0.
 
 Prerequisites:
 
@@ -66,7 +66,7 @@ To create an iteration:
 
 WARNING:
 Editing all attributes, with the exception of `description` is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
-for use in GitLab 14.10, and is planned for removal in GitLab 16.0.
+in GitLab 14.10, and is planned for removal in GitLab 16.0.
 In the future only editing an iteration's `description` will be allowed.
 
 Prerequisites:
@@ -82,7 +82,7 @@ To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
 
 WARNING:
 Manual iteration management is in its end-of-life process. Deleting an iteration is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
-for use in GitLab 14.10, and is planned for removal in GitLab 16.0.
+in GitLab 14.10, and is planned for removal in GitLab 16.0.
 
 Prerequisites:
 

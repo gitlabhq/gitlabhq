@@ -100,9 +100,9 @@ module Users
     end
 
     # rubocop:disable CodeReuse/ActiveRecord
-    def batched_migrate(base_scope, column)
+    def batched_migrate(base_scope, column, batch_size: 50)
       loop do
-        update_count = base_scope.where(column => user.id).limit(100).update_all(column => ghost_user.id)
+        update_count = base_scope.where(column => user.id).limit(batch_size).update_all(column => ghost_user.id)
         break if update_count == 0
       end
     end

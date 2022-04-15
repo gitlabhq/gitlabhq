@@ -1,3 +1,4 @@
+# eslint-disable-next-line @graphql-eslint/require-id-when-available
 fragment UserAvailability on User {
   status {
     availability

@@ -1,3 +1,4 @@
+# eslint-disable-next-line @graphql-eslint/require-id-when-available
 fragment IncidentFields on Issue {
   severity
   escalationStatus

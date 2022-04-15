@@ -218,7 +218,7 @@ security issues:
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](../../update/deprecations.md#vulnerability-check)
-for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
 [Security Approval Policies](policies/scan-result-policies.md).
 
 To prevent a merge request introducing a security vulnerability in a project, enable the

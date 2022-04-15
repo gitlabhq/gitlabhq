@@ -13,6 +13,7 @@ query getDesign(
       id
       designCollection {
         designs(atVersion: $atVersion, filenames: $filenames) {
+          # eslint-disable-next-line @graphql-eslint/require-id-when-available
           nodes {
             ...DesignItem
             issue {

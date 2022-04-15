@@ -15,7 +15,7 @@ your applications.
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485)
-for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
+in GitLab 14.7, and is planned for removal in GitLab 15.0.
 
 Metrics help you understand the health and performance of your infrastructure,
 applications, and systems by providing insights into your application's reliability,
@@ -63,7 +63,7 @@ and the work required to fix them - all without leaving GitLab.
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485)
-for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
+in GitLab 14.7, and is planned for removal in GitLab 15.0.
 
 Application tracing in GitLab is a way to measure an application's performance and
 health while it's running. After configuring your application to enable tracing, you
@@ -83,7 +83,7 @@ microservices-based distributed systems - and displays results within GitLab.
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485)
-for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
+in GitLab 14.7, and is planned for removal in GitLab 15.0.
 
 Developers need to troubleshoot application changes in development, and incident
 responders need aggregated, real-time logs when troubleshooting problems with

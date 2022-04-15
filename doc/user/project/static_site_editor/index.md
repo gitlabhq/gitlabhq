@@ -17,7 +17,7 @@ description: "The static site editor enables users to edit content on static web
 WARNING:
 This feature is in its end-of-life process. It is
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77246)
-for use in GitLab 14.7, and is planned for
+in GitLab 14.7, and is planned for
 [removal](https://gitlab.com/groups/gitlab-org/-/epics/7351) in GitLab 14.10.
 Users should instead use the [Web Editor](../repository/web_editor.md) or [Web IDE](../web_ide/index.md). [Removal instructions](#remove-the-static-site-editor) for existing projects are included on this page.
 

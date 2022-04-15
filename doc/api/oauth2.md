@@ -323,7 +323,7 @@ puts access_token.token
 
 WARNING:
 Implicit grant flow is inherently insecure and the IETF has removed it in [OAuth 2.1](https://oauth.net/2.1/).
-It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) for use in GitLab 14.0, and is planned for
+It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) in GitLab 14.0, and is planned for
 [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/344609) in GitLab 15.0.
 
 We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce)

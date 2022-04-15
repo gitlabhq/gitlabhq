@@ -126,7 +126,7 @@ class SessionsController < Devise::SessionsController
       flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
       flash.delete :recaptcha_error
 
-      respond_with_navigational(resource) { render :new }
+      redirect_to new_user_session_path
     end
   end
 

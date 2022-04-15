@@ -34,8 +34,16 @@ RSpec.shared_examples 'ZenTao menu with CE version' do
         expect(subject.link).to eq zentao_integration.url
       end
 
-      it 'contains only open ZenTao item' do
-        expect(subject.renderable_items.map(&:item_id)).to match_array [:open_zentao]
+      it 'renders external-link icon' do
+        expect(subject.sprite_icon).to eq 'external-link'
+      end
+
+      it 'renders ZenTao menu' do
+        expect(subject.title).to eq s_('ZentaoIntegration|ZenTao')
+      end
+
+      it 'does not contain items' do
+        expect(subject.renderable_items.count).to eq 0
       end
     end
   end

@@ -12,7 +12,7 @@ WARNING:
 The Container Network Security and Container Host Security features are in their end-of-life
 processes. They're
 [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
-for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
 in GitLab 15.0.
 
 GitLab makes it straightforward to protect applications deployed in [connected Kubernetes clusters](index.md).

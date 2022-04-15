@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/348909)
-for use in GitLab 14.9, and is planned for removal in GitLab 15.0.
+in GitLab 14.9, and is planned for removal in GitLab 15.0.
 
 GitLab provides administrators insights into the health of their GitLab instance.
 

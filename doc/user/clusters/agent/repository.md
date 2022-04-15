@@ -167,7 +167,7 @@ To remove an agent from the UI:
 
 WARNING:
 Cilium integration is in its end-of-life process. It's [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
-for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
 in GitLab 15.0.
 
 The agent for Kubernetes also provides an integration with Cilium. This integration provides a simple way to

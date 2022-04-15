@@ -117,7 +117,7 @@ This example shows reviewers and approval rules in a merge request sidebar:
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/357271)
-for use in GitLab 14.10, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/357271) in GitLab 15.0.
+in GitLab 14.10, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/357271) in GitLab 15.0.
 Use [attention requests](../index.md#request-attention-to-a-merge-request) instead.
 
 After a reviewer completes their [merge request reviews](../../../discussions/index.md),

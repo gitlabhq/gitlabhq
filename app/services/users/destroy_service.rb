@@ -64,6 +64,10 @@ module Users
       # This ensures we delete records in batches.
       user.destroy_dependent_associations_in_batches(exclude: [:snippets])
 
+      if Feature.enabled?(:nullify_in_batches_on_user_deletion, default_enabled: :yaml)
+        user.nullify_dependent_associations_in_batches
+      end
+
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
       user_data = user.destroy
       namespace.destroy
