@@ -1461,6 +1461,9 @@ msgstr[1] ""
 msgid "1-9 contributions"
 msgstr ""
 
+msgid "1. Effective June 1, 2022, all free tier public projects will be %{minutes_quota_link}."
+msgstr ""
+
 msgid "10-19 contributions"
 msgstr ""
 
@@ -1471,6 +1474,9 @@ msgid "192.168.0.0/24 or 2001:0DB8:1234::/48"
 msgstr ""
 
 msgid "1st contribution!"
+msgstr ""
+
+msgid "2. Before July 1, 2022, all free tier public open source projects will need to %{enrollment_link} to continue to receive GitLab Ultimate benefits."
 msgstr ""
 
 msgid "20-29 contributions"
@@ -7075,6 +7081,9 @@ msgid "Changes suppressed. Click to show."
 msgstr ""
 
 msgid "Changes the title to \"%{title_param}\"."
+msgstr ""
+
+msgid "Changes to free tier public projects"
 msgstr ""
 
 msgid "Changes to the title have not been saved"
@@ -28280,6 +28289,9 @@ msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
 msgstr ""
 
 msgid "Please use this form to report to the admin users who create spam issues, comments or behave inappropriately."
+msgstr ""
+
+msgid "Please visit the %{faq_link} for more information."
 msgstr ""
 
 msgid "Please wait a moment, this page will automatically refresh when ready."

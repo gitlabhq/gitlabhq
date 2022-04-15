@@ -73,7 +73,7 @@ RSpec.describe BulkImportWorker do
 
         expect { subject.perform(bulk_import.id) }
           .to change(BulkImports::Tracker, :count)
-          .by(BulkImports::Groups::Stage.new(bulk_import).pipelines.size * 2)
+          .by(BulkImports::Groups::Stage.new(entity_1).pipelines.size * 2)
 
         expect(entity_1.trackers).not_to be_empty
         expect(entity_2.trackers).not_to be_empty

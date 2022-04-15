@@ -1,0 +1,130 @@
+# This file contains revisions to be ignored by git blame.
+# These revisions are expected to be formatting-only changes.
+#
+# Calling `git blame --ignore-revs-file .git-blame-ignore-revs` will
+# tell git blame to ignore changes made by these revisions when assigning
+# assigning blame, as if the change never happened.
+#
+# You can enable this as a default for your local repository by running
+# `git config blame.ignoreRevsFile .git-blame-ignore-revs`
+# This will probably be automatically picked by your IDE
+# (VSCode+GitLens and JetBrains products are confirmed to this)
+#
+# Important: if you are switching to the branch without this file,
+# `git blame` will fail with an error
+#
+# Guidelines:
+# - Only large automated refactorings are expected to be included in this file.
+#   Do not add new revision just because it feels unimportant
+# - When adding sinle revision use inline comment to link relevant issue/MR
+#   Example:
+##   d4a8b7307acc2dc8a8833ccfa65426ad28b3ffc9 # https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/60
+# - When adding multiple revisions precede each addition (this could be multiple revisions) with a link to
+#   line with word START and link to relevant issue/MR/epic and conclude with line END and link to the
+#   same issue/MR/epic
+#   Example:
+#   # START https://gitlab.com/gitlab-org/issues/12345
+#   6f0bd2d8a1e6cd2e794cd39976e9756e0c85ac66
+#   d53974df11dbc22cbea9dc7dcbc9896c25979a27
+#   ... <rest of the list>
+#   # END https://gitlab.com/gitlab-org/issues/12345
+# - Please append new lines to the end of the file, no matter of real chronological
+#   order of revisions
+# - Since this is using hashes for reformatting it might be a good idea to update
+#   this file in separate MR when relevant changes already landed in master. By
+#   utilizing this manner you will be safe from random rebase/squash issues
+# - Only put full 40-character hashes on this list
+
+# START https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/60
+f2d28d7ab8525944fda634241a780006594fbe1a
+94cfbb0ce38e893edda33ebc069bfa616a08a961
+b69f448f0685ad96edc474f75a17e0278a6d6011
+52907ac20c3af337544bdf18023730b9ada4b157
+d4a8b7307acc2dc8a8833ccfa65426ad28b3ffc9
+468cb9f0a4b88bf686f3e78250834f7c9d31ff76
+a536349d1d219f0b79a7a711d37dd1c705e49128
+6f0bd2d8a1e6cd2e794cd39976e9756e0c85ac66
+d53974df11dbc22cbea9dc7dcbc9896c25979a27
+818537524d13469cbc7ac5cb89263378b4cddca4
+bcbbcb2e708868099301ad5039badfba2128d47b
+a4c662da544b38b7e593eb79f24b24c5cb2f205e
+9aa1f6207a91a76940b34c921ce89894fcd74a06
+66da09846a17435f332296f73af44919ff2cfb52
+216f795bab0e8fbf6023f22f6e54cc07514a04ec
+e820c22892d207e138bdff717100e5240f8ffd94
+2f8dbd483242575f9ceca0a2947c9b21e5ab59a0
+e7d50054818ada29751539f548ef72f46deca8bb
+00827a74cf3bfef985ed6046fb2d42f29cbb19ac
+333bad893e98068053c888f6b020632f1c6f472e
+85af3689eea96b4d9131d80d8c5c8936de520074
+325fb305ea395a7f44ae1eea0a3e77e46e10c2b6
+e37a6d7aa61039734025474ce901f2907283e239
+dff561fa8c50e9b96aec9800b6b88ad6c7a2777b
+19b0ba7265cfb154505f74b6856e73662829af2e
+7c1fa749efcd59e81b565d6803285f6bd4bcefaf
+5c23cb94c5d1aed2a4b02b7c1f3e5a53a0aa4760
+c35cc92c80969e7c87bbcda7db6cbd04f6719589
+280a79c0ec4c1383e49480f3028f5b2025a2a76b
+e94556e9f9a145374bf26feb5e1823dae8a4004d
+b6a8d9baf700dbb3f780b27d9a9820c9cb7a346c
+9180eaee4d58a9e91c5f960148290b5271ba870c
+0fdc1fc0380056836dff7aba9be3b1e4b531daea
+157e117fcb530436561e3fb8faba6f751dc19e91
+7cfe360c9e5460a595dfe729e81cf404c1106638
+e3aca8c8f8488c55a199fc28595709b393f5040b
+3b1593f2d53b735299381ad0878959cbc2fc9923
+39bb37cc0d18f620006d85dfdff7b9a54077708e
+cdc1a4a8eec43e6a3df05403af8d05ab6ea7a213
+87ad67fef574cd102887f3dde98917f3b2bbcab8
+99bff4450248457ba877dec0388241625fb0144b
+d1b6d05c08e0730463084acd1a387cd9d6acea8b
+557c22a8242d1d7ccf2228b9b3156e2aa0dd05aa
+7f4e951ce8073b50a245ebe216a8961c88846cfa
+7dae714f23f423ff362d73e0d16da7b3a6cd721f
+cfb368284545a4bd1e759cfe9e3e3bde54a1ec6f
+aa653d5a380d88493050b22d84df36ae6df2cddd
+96ed4677c602e8f9c83b28fbc0d802aa26527ab8
+72c11eb5a15735dc52dcd893e9112a10444d46e4
+b48e14b89b94a1a87affabd09bc603a67fc6bb01
+d46581c1fbcef34cfdd85c6c542fb4ac1b974861
+ef02363c9cd41a9ce41443661efed1c0399c5551
+075a78b319466aff9e94149c41c286544af91782
+9f4b4de2df17268732ae198d5f48c9b99d071a35
+0a8f575e365804239d29b45562ca6594b9da59e9
+c04bd24738b1775b963bba3f78b48007fccce37e
+1173c801ea53c9d814fdf27d878f73a1702eb4e9
+a2f5e7395004c255ecaadef30d7a6b5bf453d372
+80f1ea7e3f11063a4f15bdd4a2e4a1ca7f770d87
+0e6e345f3b4dcb7b51403bcd096e6d3d294743f4
+06ee932e0844fa4cc91c15d5ca581de262d7bedd
+b3ece842f7c05230f77055ad11e3c4a07c34e1e9
+5ebea3a48831351169e0a312e9d6985b31c9975b
+02fad0bc640f5f91c748d692c01d6221c9b03b6e
+16d4df3c7130b5a0995fdc685b272bef65ff84d5
+281cc7306ab92d2e053d0bb2d79e4f3646b980f6
+1877bf550016eac9ecac53ec498ec83bdd24339c
+7e9741c59d1e3612017925a7b7cf0946bbdd6eca
+b282f7dda6d7e93fcb0f000db8aa6634ac8d1b88
+81e82875704ffb35842534433216e797c41f89c3
+4914a729d17efbe250ac2cab2153f72caef3a7b7
+792e349390327fa11721e2f744cafec3b05f51f4
+8869ce0866823b229a863e435aa108c5d4fcf448
+a223014afe14686a4e18a826fd0bac9bdaaf969b
+482d756cf69e3f0dd5997ea0e58d35c0eb694e35
+4700ac1d1da533cfefd50bd640db77a12c458fda
+21fa9ca4832cfb57f791ff057e7c5987349aa964
+8b24c8d64d9328e0884725a2075a4a21faa76842
+86ce5406c3b60757f40d4c434b5ce7dfc602a643
+da4eea76b3cc1d68d4bfd2705bb86e904d1b54bc
+8ac8a1f21a21840b53175e9f4a423b9ffa083f71
+ed189d0e9925eb08f3eb444176fad2614a3a4f83
+6e183d5016afc50e60892c7f1cf79035619c2deb
+9b1d8b4c2897792be067e33442ebf3ce0961a5d0
+57da632154bfc193224d5a290b9c2b6cbd7fa0ad
+1e3190b0049ba1b502918dc018681808b9203803
+0e334037bf0f93ff6f7bc922c48fa97556f39808
+07f5bc94bd983e77361c9a5020f8f229da3a465a
+888002a62696ba66d8eb49f1dfe83a5a49bdf421
+c152d51445d9d9dd7c2c328ca8c407fa5438d16b
+26b68c70df73289210aa600fa3c1fe45f05afee4
+# END https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/60

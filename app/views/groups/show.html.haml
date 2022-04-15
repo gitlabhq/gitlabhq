@@ -8,6 +8,7 @@
 
 = render_if_exists 'shared/qrtly_reconciliation_alert', group: @group
 = render_if_exists 'shared/user_over_limit_free_plan_alert', source: @group
+= render_if_exists 'shared/minute_limit_banner', namespace: @group
 
 - if show_invite_banner?(@group)
   = content_for :group_invite_members_banner do

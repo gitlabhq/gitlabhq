@@ -579,6 +579,7 @@ The following variables allow configuration of global dependency scanning settin
 | `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
 | `DS_DEFAULT_ANALYZERS`      | ([**DEPRECATED - use `DS_EXCLUDED_ANALYZERS` instead**](https://gitlab.com/gitlab-org/gitlab/-/issues/287691)) Override the names of the official default images. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
+| `DS_IMAGE_SUFFIX`           | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354796) in GitLab 14.10. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SECURE_LOG_LEVEL`          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info`. |
 
@@ -658,6 +659,40 @@ If your private Maven repository requires login credentials,
 you can use the `MAVEN_CLI_OPTS` CI/CD variable.
 
 Read more on [how to use private Maven repositories](../index.md#using-private-maven-repositories).
+
+#### FIPS-enabled images
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354796) in GitLab 14.10.
+
+GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the Gemnasium images. You can therefore replace standard images with FIPS-enabled images.
+
+To use FIPS-enabled images, set the `DS_IMAGE_SUFFIX` to `-fips`,
+and set `DS_EXCLUDED_ANALYZERS` to `bundler-audit, retire.js`
+to exclude the analyzers that don't support FIPS.
+
+```yaml
+variables:
+  DS_IMAGE_SUFFIX: "-fips"
+  DS_EXCLUDED_ANALYZERS: "bundler-audit, retire.js"
+```
+
+If you want to execute `bundler-audit` or `retire.js` in your project pipeline, you can override the
+Gemnasium scanning jobs, and set `DS_IMAGE_SUFFIX` to `-fips` only for those jobs.
+
+```yaml
+gemnasium-dependency_scanning:
+  variables:
+    DS_IMAGE_SUFFIX: "-fips"
+
+gemnasium-maven-dependency_scanning:
+  variables:
+    DS_IMAGE_SUFFIX: "-fips"
+
+gemnasium-python-dependency_scanning:
+  variables:
+    DS_IMAGE_SUFFIX: "-fips"
+```
 
 ## Interacting with the vulnerabilities
 

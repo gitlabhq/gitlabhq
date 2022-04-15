@@ -172,8 +172,6 @@ subgraph "CNG-mirror pipeline"
      them in its [registry](https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry).
    - We use the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project so that the `CNG`, (Cloud
      Native GitLab), project's registry is not overloaded with a lot of transient Docker images.
-   - Note that the official CNG images are built by the `cloud-native-image`
-     job, which runs only for tags, and triggers itself a [`CNG`](https://gitlab.com/gitlab-org/build/CNG) pipeline.
 1. Once `review-build-cng` is done, the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job
    deploys the Review App using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/) to
    the [`review-apps`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps?project=gitlab-review-apps)

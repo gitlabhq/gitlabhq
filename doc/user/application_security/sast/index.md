@@ -132,6 +132,30 @@ The following analyzers have multi-project support:
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
 the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://docs.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
+### Supported distributions
+
+The default scanner images are build off a base Alpine image for size and maintainability.
+
+#### FIPS-enabled images
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+
+GitLab offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the images that are FIPS-enabled. To use the FIPS-enabled images, you can either:
+
+- Set the `SAST_IMAGE_SUFFIX` to `-fips`.
+- Add the `-fips` extension to the default image name.
+
+For example:
+
+```yaml
+variables:
+  SAST_IMAGE_SUFFIX: '-fips'
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+```
+
 ### Making SAST analyzers available to all GitLab tiers
 
 All open source (OSS) analyzers have been moved to the GitLab Free tier as of GitLab 13.3.

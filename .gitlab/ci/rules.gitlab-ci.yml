@@ -623,15 +623,6 @@
     - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
 
-#############
-# CNG rules #
-#############
-.cng:rules:
-  rules:
-    - <<: *if-dot-com-gitlab-org-and-security-tag
-      when: manual
-      allow_failure: true
-
 ######################
 # CI Templates Rules #
 ######################

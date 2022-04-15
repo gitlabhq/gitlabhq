@@ -14,15 +14,19 @@ class Gitlab::Seeder::TriageOps
     Sidekiq::Testing.inline! do
       puts "Ensuring required groups"
       ensure_group('gitlab-com')
+      ensure_group('gitlab-com/gl-security/appsec')
       ensure_group('gitlab-jh/jh-team')
       ensure_group('gitlab-org')
       ensure_group('gitlab-org/gitlab-core-team/community-members')
       ensure_group('gitlab-org/security')
+
       puts "Ensuring required projects"
       ensure_project('gitlab-org/gitlab')
       ensure_project('gitlab-org/security/gitlab')
+
       puts "Ensuring required bot user"
       ensure_bot_user
+
       puts "Setting up webhooks"
       ensure_webhook_for('gitlab-com')
       ensure_webhook_for('gitlab-org')

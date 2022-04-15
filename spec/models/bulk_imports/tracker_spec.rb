@@ -66,8 +66,8 @@ RSpec.describe BulkImports::Tracker, type: :model do
 
   describe '#pipeline_class' do
     it 'returns the pipeline class' do
-      bulk_import = create(:bulk_import)
-      pipeline_class = BulkImports::Groups::Stage.new(bulk_import).pipelines.first[1]
+      entity = create(:bulk_import_entity)
+      pipeline_class = BulkImports::Groups::Stage.new(entity).pipelines.first[1]
       tracker = create(:bulk_import_tracker, pipeline_name: pipeline_class)
 
       expect(tracker.pipeline_class).to eq(pipeline_class)

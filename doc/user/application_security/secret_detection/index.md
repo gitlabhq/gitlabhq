@@ -108,6 +108,30 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
+### Supported distributions
+
+The default scanner images are build off a base Alpine image for size and maintainability.
+
+#### FIPS-enabled images
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+
+GitLab offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the images that are FIPS-enabled. To use the FIPS-enabled images, you can either:
+
+- Set the `SAST_IMAGE_SUFFIX` to `-fips`.
+- Add the `-fips` extension to the default image name.
+
+For example:
+
+```yaml
+variables:
+  SECRET_DETECTION_IMAGE_SUFFIX: '-fips'
+
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+```
+
 ### Enable Secret Detection via an automatic merge request
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
