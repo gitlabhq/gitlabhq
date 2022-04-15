@@ -12,6 +12,7 @@ module Gitlab
             "gemnasium-maven" => 3,
             "gemnasium-python" => 3,
             "bandit" => 1,
+            "spotbugs" => 1,
             "semgrep" =>  2
           }.freeze
 

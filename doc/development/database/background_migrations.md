@@ -6,6 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Background migrations
 
+WARNING:
+Background migrations are strongly discouraged in favor of the new [batched background migrations framework](../batched_background_migrations.md).
+Please check that documentation and determine if that framework will suit your needs and fall back
+to these only if required.
+
 Background migrations should be used to perform data migrations whenever a
 migration exceeds [the time limits in our guidelines](../migration_style_guide.md#how-long-a-migration-should-take). For example, you can use background
 migrations to migrate data that's stored in a single JSON column
