@@ -26,8 +26,8 @@ The examples link to a search on GitLab.com to help you visualize the output.
 |---|---|
 [`“display bug”`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=%22display+bug%22&group_id=9970&project_id=278964) | Returns the **exact phrase** _display bug_ (stemming still applies). |
 [`bug -display`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+-display&group_id=9970&project_id=278964) | Results include _bug_, and **exclude** _display_. |
-[`bug \| display`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+display+%7C+banner&group_id=9970&project_id=278964) | Results include _bug_ **or** _display_. |
-[`bug \| (display +banner)`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+%7C+%28display+%2Bbanner%29&group_id=9970&project_id=278964) | Results include _bug_ **or** _display_ **and** _banner_. |
+[<code>bug &#124; display</code>](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+%7C+banner&group_id=9970&project_id=278964) | Results include _bug_ **or** _display_. |
+[<code>bug &#124; (display +banner)</code>](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+%7C+%28display+%2Bbanner%29&group_id=9970&project_id=278964) | Results include _bug_ **or** _display_ **and** _banner_. |
 | [`bug error 50*`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+error+50*&group_id=9970&project_id=278964) | `*` finds **partial matches**. Results include _bug_, _error_, and the partial _50_ (looking for any 500 errors, for example). |
 | [`bug \-display`](https://gitlab.com/search?snippets=&scope=blobs&repository_ref=&search=argument+%5C-last&group_id=9970&project_id=278964) | `\` **scapes symbols**. Results include _bug_ **and** _-display_. |
 

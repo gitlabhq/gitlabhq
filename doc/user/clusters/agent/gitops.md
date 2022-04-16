@@ -19,6 +19,8 @@ By combining GitLab, Kubernetes, and GitOps, you can have:
 - GitLab as the GitOps operator.
 - Kubernetes as the automation and convergence system.
 - GitLab CI/CD for Continuous Integration and the agent for Continuous Deployment.
+- Built-in automatic drift remediation.
+- Resource management with [server-side applies](https://kubernetes.io/docs/reference/using-api/server-side-apply/) for transparent multi-actor field management.
 
 This diagram shows the repositories and main actors in a GitOps deployment:
 
@@ -106,6 +108,21 @@ a Kubernetes SIG project. You can read more about the available annotations in t
 
 - [Learn more about apply sort ordering](https://github.com/kubernetes-sigs/cli-utils#apply-sort-ordering).
 - [Learn more about apply-time mutation](https://github.com/kubernetes-sigs/cli-utils#apply-time-mutation).
+
+## Automatic drift remediation
+
+Drift happens when the current configuration of an infrastructure resource differs from its expected configuration.
+Typically, this is caused by manually editing resources directly through the service that created the resource. Minimizing the
+risk of drift helps to ensure configuration consistency and successful operations.
+
+In GitLab, the agent for Kubernetes regularly compares the expected state from the `git` repository with
+the known state from the `cluster`. Deviations from the `git` state are fixed at every check. These checks
+happen automatically every 5 minutes. They are not configurable.
+
+The agent uses [server-side applies](https://kubernetes.io/docs/reference/using-api/server-side-apply/).
+As a result, every field in a resource can have different managers. Only fields managed by `git`
+are checked for drift. This facilitates the use of in-cluster controllers to modify resources like
+[Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/).
 
 ## Additional resources
 
