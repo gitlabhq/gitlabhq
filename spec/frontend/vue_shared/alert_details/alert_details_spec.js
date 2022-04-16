@@ -12,11 +12,16 @@ import AlertSummaryRow from '~/vue_shared/alert_details/components/alert_summary
 import { PAGE_CONFIG, SEVERITY_LEVELS } from '~/vue_shared/alert_details/constants';
 import createIssueMutation from '~/vue_shared/alert_details/graphql/mutations/alert_issue_create.mutation.graphql';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
+import MetricImagesTab from '~/vue_shared/components/metric_images/metric_images_tab.vue';
+import createStore from '~/vue_shared/components/metric_images/store/';
+import service from '~/vue_shared/alert_details/service';
 import mockAlerts from './mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
 const environmentName = 'Production';
 const environmentPath = '/fake/path';
+
+jest.mock('~/vue_shared/alert_details/service');
 
 describe('AlertDetails', () => {
   let environmentData = { name: environmentName, path: environmentPath };
@@ -67,9 +72,11 @@ describe('AlertDetails', () => {
           $route: { params: {} },
         },
         stubs: {
-          ...stubs,
           AlertSummaryRow,
+          'metric-images-tab': true,
+          ...stubs,
         },
+        store: createStore({}, service),
       }),
     );
   }
@@ -91,7 +98,7 @@ describe('AlertDetails', () => {
   const findEnvironmentName = () => wrapper.findByTestId('environmentName');
   const findEnvironmentPath = () => wrapper.findByTestId('environmentPath');
   const findDetailsTable = () => wrapper.findComponent(AlertDetailsTable);
-  const findMetricsTab = () => wrapper.findByTestId('metrics');
+  const findMetricsTab = () => wrapper.findComponent(MetricImagesTab);
 
   describe('Alert details', () => {
     describe('when alert is null', () => {
@@ -129,8 +136,21 @@ describe('AlertDetails', () => {
         expect(wrapper.findByTestId('startTimeItem').exists()).toBe(true);
         expect(wrapper.findByTestId('startTimeItem').props('time')).toBe(mockAlert.startedAt);
       });
+    });
 
-      it('renders the metrics tab', () => {
+    describe('Metrics tab', () => {
+      it('should mount without errors', () => {
+        mountComponent({
+          mountMethod: mount,
+          provide: {
+            canUpdate: true,
+            iid: '1',
+          },
+          stubs: {
+            MetricImagesTab,
+          },
+        });
+
         expect(findMetricsTab().exists()).toBe(true);
       });
     });
@@ -312,7 +332,9 @@ describe('AlertDetails', () => {
 
     describe('header', () => {
       const findHeader = () => wrapper.findByTestId('alert-header');
-      const stubs = { TimeAgoTooltip: { template: '<span>now</span>' } };
+      const stubs = {
+        TimeAgoTooltip: { template: '<span>now</span>' },
+      };
 
       describe('individual header fields', () => {
         describe.each`
