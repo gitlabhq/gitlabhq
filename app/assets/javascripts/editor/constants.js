@@ -12,6 +12,9 @@ export const EDITOR_TYPE_DIFF = 'vs.editor.IDiffEditor';
 export const EDITOR_CODE_INSTANCE_FN = 'createInstance';
 export const EDITOR_DIFF_INSTANCE_FN = 'createDiffInstance';
 
+export const EDITOR_TOOLBAR_LEFT_GROUP = 'left';
+export const EDITOR_TOOLBAR_RIGHT_GROUP = 'right';
+
 export const SOURCE_EDITOR_INSTANCE_ERROR_NO_EL = s__(
   'SourceEditor|"el" parameter is required for createInstance()',
 );

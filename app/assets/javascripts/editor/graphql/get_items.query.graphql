@@ -1,0 +1,5 @@
+query ToolbarItems {
+  items @client {
+    nodes
+  }
+}
