@@ -251,6 +251,7 @@ semgrep-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
+    SEARCH_MAX_DEPTH: 20
     SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
@@ -267,6 +268,7 @@ semgrep-sast:
         - '**/*.tsx'
         - '**/*.c'
         - '**/*.go'
+        - '**/*.java'
 
 sobelow-sast:
   extends: .sast-analyzer
