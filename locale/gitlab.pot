@@ -11146,6 +11146,9 @@ msgstr ""
 msgid "CycleAnalytics|%{selectedLabelsCount} selected (%{maxLabels} max)"
 msgstr ""
 
+msgid "CycleAnalytics|'%{name}' is collecting the data. This can take a few minutes."
+msgstr ""
+
 msgid "CycleAnalytics|Aggregation disabled"
 msgstr ""
 
@@ -11164,6 +11167,9 @@ msgstr ""
 msgid "CycleAnalytics|Custom value streams to measure your DevSecOps lifecycle"
 msgstr ""
 
+msgid "CycleAnalytics|Data is collecting and loading."
+msgstr ""
+
 msgid "CycleAnalytics|Date"
 msgstr ""
 
@@ -11171,6 +11177,9 @@ msgid "CycleAnalytics|Display chart filters"
 msgstr ""
 
 msgid "CycleAnalytics|Filter by stop date"
+msgstr ""
+
+msgid "CycleAnalytics|If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display."
 msgstr ""
 
 msgid "CycleAnalytics|Lead Time for Changes"

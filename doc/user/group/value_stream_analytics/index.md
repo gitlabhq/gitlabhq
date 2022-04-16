@@ -291,6 +291,9 @@ To create a value stream:
 
 ![New value stream](img/new_value_stream_v13_12.png "Creating a new value stream")
 
+NOTE:
+If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display.
+
 ### Create a value stream with stages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50229) in GitLab 13.7.
