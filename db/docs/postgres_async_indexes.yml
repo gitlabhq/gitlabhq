@@ -2,6 +2,8 @@
 table_name: postgres_async_indexes
 classes:
 - Gitlab::Database::AsyncIndexes::PostgresAsyncIndex
-feature_categories: 
+feature_categories:
 - database
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66478
+milestone: '14.2'

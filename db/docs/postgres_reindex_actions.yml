@@ -2,6 +2,8 @@
 table_name: postgres_reindex_actions
 classes:
 - Gitlab::Database::Reindexing::ReindexAction
-feature_categories: 
+feature_categories:
 - database
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43156
+milestone: '13.5'

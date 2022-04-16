@@ -4,4 +4,6 @@ classes:
 - Clusters::Integrations::Prometheus
 feature_categories:
 - incident_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59091
+milestone: '13.11'

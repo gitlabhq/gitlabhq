@@ -2,6 +2,8 @@
 table_name: coverage_fuzzing_corpuses
 classes:
 - AppSec::Fuzzing::Coverage::Corpus
-feature_categories: 
+feature_categories:
 - code_quality
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71704
+milestone: '14.4'

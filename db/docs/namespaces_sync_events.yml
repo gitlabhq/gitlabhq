@@ -4,4 +4,6 @@ classes:
 - Namespaces::SyncEvent
 feature_categories:
 - sharding
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75517
+milestone: '14.6'

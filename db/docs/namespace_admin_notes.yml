@@ -2,6 +2,8 @@
 table_name: namespace_admin_notes
 classes:
 - Namespace::AdminNote
-feature_categories: 
+feature_categories:
 - subgroups
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47825
+milestone: '13.11'

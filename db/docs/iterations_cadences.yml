@@ -4,4 +4,6 @@ classes:
 - Iterations::Cadence
 feature_categories:
 - team_planning
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50707
+milestone: '13.10'

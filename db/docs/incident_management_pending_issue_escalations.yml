@@ -3,6 +3,7 @@ table_name: incident_management_pending_issue_escalations
 classes:
 - IncidentManagement::PendingEscalations::Issue
 feature_categories:
-feature_categories: 
 - incident_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65209
+milestone: '14.3'

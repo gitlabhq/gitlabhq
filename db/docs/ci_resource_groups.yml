@@ -4,4 +4,6 @@ classes:
 - Ci::ResourceGroup
 feature_categories:
 - continuous_delivery
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20950
+milestone: '12.7'

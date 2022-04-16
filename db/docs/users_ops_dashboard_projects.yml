@@ -4,4 +4,6 @@ classes:
 - UsersOpsDashboardProject
 feature_categories:
 - release_orchestration
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7341
+milestone: '11.5'

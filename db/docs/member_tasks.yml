@@ -4,4 +4,6 @@ classes:
 - MemberTask
 feature_categories:
 - authentication_and_authorization
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69299
+milestone: '14.5'

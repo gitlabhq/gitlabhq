@@ -2,6 +2,8 @@
 table_name: packages_dependency_links
 classes:
 - Packages::DependencyLink
-feature_categories: 
+feature_categories:
 - package_registry
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20549
+milestone: '12.6'

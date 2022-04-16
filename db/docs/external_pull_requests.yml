@@ -4,4 +4,6 @@ classes:
 - ExternalPullRequest
 feature_categories:
 - continuous_integration
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/ca6a1f33f91a8cceadebfb9c4e9ac6afa340f71d
+milestone: '12.3'

@@ -2,8 +2,10 @@
 table_name: draft_notes
 classes:
 - DraftNote
-feature_categories: 
+feature_categories:
 - projects
 - source_code_management
 - team_planning
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213
+milestone: '11.4'

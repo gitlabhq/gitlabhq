@@ -4,4 +4,6 @@ classes:
 - GitlabSubscriptions::UpcomingReconciliation
 feature_categories:
 - purchase
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63054
+milestone: '14.0'

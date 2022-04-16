@@ -4,4 +4,6 @@ classes:
 - Security::OrchestrationPolicyConfiguration
 feature_categories:
 - security_orchestration
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53743
+milestone: '13.9'

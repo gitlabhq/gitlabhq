@@ -2,6 +2,8 @@
 table_name: issue_emails
 classes:
 - Issue::Email
-feature_categories: 
+feature_categories:
 - team_planning
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71749
+milestone: '14.6'

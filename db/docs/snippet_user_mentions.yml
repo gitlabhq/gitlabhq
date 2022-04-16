@@ -2,6 +2,8 @@
 table_name: snippet_user_mentions
 classes:
 - SnippetUserMention
-feature_categories: 
+feature_categories:
 - snippets
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19009
+milestone: '12.6'

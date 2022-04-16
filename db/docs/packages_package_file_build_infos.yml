@@ -2,6 +2,8 @@
 table_name: packages_package_file_build_infos
 classes:
 - Packages::PackageFileBuildInfo
-feature_categories: 
+feature_categories:
 - package_registry
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44348
+milestone: '13.6'

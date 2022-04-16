@@ -2,6 +2,8 @@
 table_name: geo_cache_invalidation_events
 classes:
 - Geo::CacheInvalidationEvent
-feature_categories: 
+feature_categories:
 - geo_replication
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7738
+milestone: '11.4'

@@ -2,6 +2,8 @@
 table_name: clusters_applications_ingress
 classes:
 - Clusters::Applications::Ingress
-feature_categories: 
+feature_categories:
 - kubernetes_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/d8223468ae2ae061020cc26336c51dc93cc75571
+milestone: '10.2'

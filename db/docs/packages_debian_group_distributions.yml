@@ -4,4 +4,6 @@ classes:
 - Packages::Debian::GroupDistribution
 feature_categories:
 - package_registry
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49405
+milestone: '13.8'

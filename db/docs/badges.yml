@@ -6,4 +6,6 @@ classes:
 - ProjectBadge
 feature_categories:
 - projects
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8fe880dc064e0e6cd10f7176ade7c312cfb37b90
+milestone: '10.6'

@@ -2,6 +2,8 @@
 table_name: system_note_metadata
 classes:
 - SystemNoteMetadata
-feature_categories: 
+feature_categories:
 - importers
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1c3c7fb25d972fc19d5b4bb371cb21094d81e478
+milestone: '9.1'

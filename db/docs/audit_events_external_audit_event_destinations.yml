@@ -2,6 +2,8 @@
 table_name: audit_events_external_audit_event_destinations
 classes:
 - AuditEvents::ExternalAuditEventDestination
-feature_categories: 
+feature_categories:
 - audit_events
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70706
+milestone: '14.4'

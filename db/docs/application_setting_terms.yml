@@ -4,4 +4,6 @@ classes:
 - ApplicationSetting::Term
 feature_categories:
 - authentication_and_authorization
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cf37bef287d7dd5d2dce3e2276489767b8c0671f
+milestone: '10.8'

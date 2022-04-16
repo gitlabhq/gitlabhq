@@ -2,6 +2,8 @@
 table_name: boards_epic_board_labels
 classes:
 - Boards::EpicBoardLabel
-feature_categories: 
+feature_categories:
 - team_planning
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48658
+milestone: '13.7'

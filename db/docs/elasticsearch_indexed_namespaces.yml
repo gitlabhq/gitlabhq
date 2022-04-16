@@ -4,4 +4,6 @@ classes:
 - ElasticsearchIndexedNamespace
 feature_categories:
 - global_search
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9861
+milestone: '11.10'

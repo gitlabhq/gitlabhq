@@ -2,6 +2,8 @@
 table_name: cluster_groups
 classes:
 - Clusters::Group
-feature_categories: 
+feature_categories:
 - kubernetes_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/0e15eec86d83cbdfefe17966bf5c02e4d419a34d
+milestone: '11.5'

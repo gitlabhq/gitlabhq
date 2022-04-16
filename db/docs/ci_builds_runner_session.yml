@@ -4,4 +4,6 @@ classes:
 - Ci::BuildRunnerSession
 feature_categories:
 - continuous_integration
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6208
+milestone: '11.1'

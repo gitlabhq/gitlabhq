@@ -2,6 +2,8 @@
 table_name: incident_management_timeline_events
 classes:
 - IncidentManagement::TimelineEvent
-feature_categories: 
+feature_categories:
 - incident_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74530
+milestone: '14.6'

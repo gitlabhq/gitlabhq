@@ -2,6 +2,8 @@
 table_name: ci_pipelines_config
 classes:
 - Ci::PipelineConfig
-feature_categories: 
+feature_categories:
 - continuous_integration
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21827
+milestone: '12.7'

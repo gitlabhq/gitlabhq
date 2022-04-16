@@ -2,6 +2,8 @@
 table_name: deployment_merge_requests
 classes:
 - DeploymentMergeRequest
-feature_categories: 
+feature_categories:
 - advanced_deployments
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18755
+milestone: '12.5'

@@ -4,4 +4,6 @@ classes:
 - BroadcastMessage
 feature_categories:
 - navigation
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/f1ecf53c1e55fbbc66cb2d7d12fb411cbfc2ace8
+milestone: '6.3'

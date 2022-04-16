@@ -2,6 +2,8 @@
 table_name: upload_states
 classes:
 - Geo::UploadState
-feature_categories: 
+feature_categories:
 - geo_replication
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65921
+milestone: '14.6'

@@ -4,4 +4,6 @@ classes:
 - Security::Scan
 feature_categories:
 - vulnerability_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23669
+milestone: '12.8'

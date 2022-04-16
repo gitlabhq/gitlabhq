@@ -4,4 +4,6 @@ classes:
 - DesignManagement::Version
 feature_categories:
 - design_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9801
+milestone: '11.10'

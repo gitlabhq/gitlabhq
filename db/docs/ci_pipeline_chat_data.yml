@@ -2,6 +2,8 @@
 table_name: ci_pipeline_chat_data
 classes:
 - Ci::PipelineChatData
-feature_categories: 
+feature_categories:
 - chatops
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466
+milestone: '10.6'

@@ -4,4 +4,6 @@ classes:
 - SoftwareLicensePolicy
 feature_categories:
 - license_compliance
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6246
+milestone: '11.2'

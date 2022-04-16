@@ -4,4 +4,6 @@ classes:
 - PrometheusMetric
 feature_categories:
 - metrics
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3799
+milestone: '9.3'

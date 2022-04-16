@@ -4,4 +4,6 @@ classes:
 - ResourceWeightEvent
 feature_categories:
 - team_planning
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21515
+milestone: '12.7'

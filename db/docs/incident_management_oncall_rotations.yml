@@ -4,4 +4,6 @@ classes:
 - IncidentManagement::OncallRotation
 feature_categories:
 - incident_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49058
+milestone: '13.7'

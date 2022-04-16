@@ -2,6 +2,8 @@
 table_name: packages_conan_file_metadata
 classes:
 - Packages::Conan::FileMetadatum
-feature_categories: 
+feature_categories:
 - package_registry
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16418
+milestone: '12.5'

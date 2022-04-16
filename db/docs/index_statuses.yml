@@ -4,4 +4,6 @@ classes:
 - IndexStatus
 feature_categories:
 - global_search
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/03370b017c7b120af7b53682714ffc325742fc98
+milestone: '8.4'

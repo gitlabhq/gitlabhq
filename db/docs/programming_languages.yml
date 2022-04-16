@@ -2,6 +2,8 @@
 table_name: programming_languages
 classes:
 - ProgrammingLanguage
-feature_categories: 
+feature_categories:
 - projects
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/79a5d76801a45696db629e1f543f2e1d6fa4784f
+milestone: '11.2'

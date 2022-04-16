@@ -4,4 +4,6 @@ classes:
 - ProjectImportState
 feature_categories:
 - importers
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/0ca479d1ce0eadfcdc0e29d0e18136f5790d5b2f
+milestone: '9.3'

@@ -4,4 +4,6 @@ classes:
 - MergeRequest::CleanupSchedule
 feature_categories:
 - code_review
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46758
+milestone: '13.6'

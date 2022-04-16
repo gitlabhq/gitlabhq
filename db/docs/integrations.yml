@@ -50,4 +50,6 @@ classes:
 - Integrations::Zentao
 feature_categories:
 - integrations
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64562
+milestone: '9.4'

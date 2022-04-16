@@ -4,4 +4,6 @@ classes:
 - Analytics::CycleAnalytics::ProjectValueStream
 feature_categories:
 - planning_analytics
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60925
+milestone: '13.12'

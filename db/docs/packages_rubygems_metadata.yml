@@ -2,6 +2,8 @@
 table_name: packages_rubygems_metadata
 classes:
 - Packages::Rubygems::Metadatum
-feature_categories: 
+feature_categories:
 - package_registry
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52639
+milestone: '13.9'

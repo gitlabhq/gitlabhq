@@ -4,4 +4,6 @@ classes:
 - GitlabSubscription
 feature_categories:
 - purchase
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7885
+milestone: '11.6'

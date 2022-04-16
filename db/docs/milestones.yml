@@ -4,4 +4,6 @@ classes:
 - Milestone
 feature_categories:
 - team_planning
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/23d950855d6d2524d00b1f0618c008e2529f06a4
+milestone: "<6.0"

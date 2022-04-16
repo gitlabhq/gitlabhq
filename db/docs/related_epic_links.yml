@@ -4,4 +4,6 @@ classes:
 - Epic::RelatedEpicLink
 feature_categories:
 - portfolio_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80499
+milestone: '14.9'

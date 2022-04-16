@@ -2,6 +2,8 @@
 table_name: packages_npm_metadata
 classes:
 - Packages::Npm::Metadatum
-feature_categories: 
+feature_categories:
 - package_registry
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73639
+milestone: '14.5'

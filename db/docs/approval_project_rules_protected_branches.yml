@@ -2,6 +2,8 @@
 table_name: approval_project_rules_protected_branches
 classes:
 - ApprovalProjectRulesProtectedBranch
-feature_categories: 
+feature_categories:
 - source_code_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22673
+milestone: '12.7'

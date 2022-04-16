@@ -2,6 +2,8 @@
 table_name: taggings
 classes:
 - ActsAsTaggableOn::Tagging
-feature_categories: 
+feature_categories:
 - runner
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b946da44695c9c8fe8867bb87bcdf801c52177d3
+milestone: "<6.0"

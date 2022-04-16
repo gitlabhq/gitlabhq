@@ -91,7 +91,7 @@ module IssuesHelper
     if !can?(current_user, :award_emoji, awardable)
       "disabled"
     elsif current_user && awards.find { |a| a.user_id == current_user.id }
-      "active"
+      "selected"
     else
       ""
     end

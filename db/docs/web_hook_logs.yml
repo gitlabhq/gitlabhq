@@ -2,6 +2,8 @@
 table_name: web_hook_logs
 classes:
 - WebHookLog
-feature_categories: 
+feature_categories:
 - integrations
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/330789c23c777d8ca646eba7c25f39cb7342cdee
+milestone: '9.3'

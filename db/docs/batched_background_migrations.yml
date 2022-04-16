@@ -4,4 +4,6 @@ classes:
 - Gitlab::Database::BackgroundMigration::BatchedMigration
 feature_categories:
 - database
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54628
+milestone: '13.10'

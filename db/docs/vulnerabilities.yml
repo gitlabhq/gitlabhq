@@ -4,4 +4,6 @@ classes:
 - Vulnerability
 feature_categories:
 - vulnerability_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16181
+milestone: '12.4'

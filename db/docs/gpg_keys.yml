@@ -4,4 +4,6 @@ classes:
 - GpgKey
 feature_categories:
 - source_code_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/fbf1fd1a204a24aef2b80473ec64a520ed2a2dfc
+milestone: '9.5'

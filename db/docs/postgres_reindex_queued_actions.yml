@@ -2,6 +2,8 @@
 table_name: postgres_reindex_queued_actions
 classes:
 - Gitlab::Database::Reindexing::QueuedAction
-feature_categories: 
+feature_categories:
 - database
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73480
+milestone: '14.5'

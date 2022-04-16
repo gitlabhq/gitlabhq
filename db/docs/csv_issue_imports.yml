@@ -2,6 +2,8 @@
 table_name: csv_issue_imports
 classes:
 - Issues::CsvImport
-feature_categories: 
+feature_categories:
 - importers
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44742
+milestone: '13.6'

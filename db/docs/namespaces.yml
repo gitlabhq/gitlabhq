@@ -7,4 +7,6 @@ classes:
 - Namespaces::UserNamespace
 feature_categories:
 - subgroups
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e29ccece332e57c9fb6c532a3680e3b457e3a301
+milestone: "<6.0"

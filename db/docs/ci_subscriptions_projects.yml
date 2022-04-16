@@ -2,6 +2,8 @@
 table_name: ci_subscriptions_projects
 classes:
 - Ci::Subscriptions::Project
-feature_categories: 
+feature_categories:
 - continuous_integration
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18678
+milestone: '12.5'

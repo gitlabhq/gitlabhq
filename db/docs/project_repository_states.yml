@@ -2,6 +2,8 @@
 table_name: project_repository_states
 classes:
 - ProjectRepositoryState
-feature_categories: 
+feature_categories:
 - source_code_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4428
+milestone: '10.6'

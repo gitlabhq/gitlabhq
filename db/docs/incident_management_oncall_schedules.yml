@@ -2,6 +2,8 @@
 table_name: incident_management_oncall_schedules
 classes:
 - IncidentManagement::OncallSchedule
-feature_categories: 
+feature_categories:
 - incident_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47407
+milestone: '13.7'

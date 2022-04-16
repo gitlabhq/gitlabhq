@@ -2,6 +2,8 @@
 table_name: compliance_management_frameworks
 classes:
 - ComplianceManagement::Framework
-feature_categories: 
+feature_categories:
 - compliance_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44098
+milestone: '13.5'

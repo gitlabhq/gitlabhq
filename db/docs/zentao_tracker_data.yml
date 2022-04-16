@@ -2,6 +2,8 @@
 table_name: zentao_tracker_data
 classes:
 - Integrations::ZentaoTrackerData
-feature_categories: 
+feature_categories:
 - integrations
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67938
+milestone: '14.2'

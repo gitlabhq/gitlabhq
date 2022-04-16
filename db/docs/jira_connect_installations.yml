@@ -4,4 +4,6 @@ classes:
 - JiraConnectInstallation
 feature_categories:
 - integrations
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9593
+milestone: '11.9'

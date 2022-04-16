@@ -35,7 +35,7 @@ module Resolvers
 
     def prepare_params(args, parent)
       return unless [:escalation_status_asc, :escalation_status_desc].include?(args[:sort])
-      return if Feature.enabled?(:incident_escalations, parent)
+      return if Feature.enabled?(:incident_escalations, parent, default_enabled: :yaml)
 
       args[:sort] = :created_desc # default for sort argument
     end

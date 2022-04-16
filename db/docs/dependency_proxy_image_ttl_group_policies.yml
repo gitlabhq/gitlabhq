@@ -4,4 +4,6 @@ classes:
 - DependencyProxy::ImageTtlGroupPolicy
 feature_categories:
 - dependency_proxy
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68809
+milestone: '14.3'

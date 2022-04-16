@@ -4,4 +4,6 @@ classes:
 - RemoteMirror
 feature_categories:
 - source_code_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/ab83917c25c5d1f7dd29c82c91c699008292bc1d
+milestone: '8.7'

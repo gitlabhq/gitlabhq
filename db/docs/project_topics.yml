@@ -2,6 +2,8 @@
 table_name: project_topics
 classes:
 - Projects::ProjectTopic
-feature_categories: 
+feature_categories:
 - projects
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67574
+milestone: '14.3'

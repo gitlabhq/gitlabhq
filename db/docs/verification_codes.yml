@@ -1,7 +1,8 @@
 ---
 table_name: verification_codes
 classes: []
-feature_categories: 
+feature_categories:
 - jihu
-description: A JiHu specific table for handling verification codes.
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71139
+milestone: '14.4'

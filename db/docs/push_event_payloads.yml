@@ -2,6 +2,8 @@
 table_name: push_event_payloads
 classes:
 - PushEventPayload
-feature_categories: 
+feature_categories:
 - source_code_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/0395c47193b3bbf6b4f060f28c9f632580313a35
+milestone: '9.5'

@@ -74,8 +74,8 @@ RSpec.describe IssuesHelper do
       expect(helper.award_state_class(awardable, AwardEmoji.all, build(:user))).to eq('disabled')
     end
 
-    it 'returns active string for author' do
-      expect(helper.award_state_class(awardable, AwardEmoji.all, upvote.user)).to eq('active')
+    it 'returns selected class for author' do
+      expect(helper.award_state_class(awardable, AwardEmoji.all, upvote.user)).to eq('selected')
     end
 
     it 'is blank for a user that has access to the awardable' do

@@ -2,6 +2,8 @@
 table_name: analytics_devops_adoption_snapshots
 classes:
 - Analytics::DevopsAdoption::Snapshot
-feature_categories: 
+feature_categories:
 - devops_reports
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47388
+milestone: '13.7'

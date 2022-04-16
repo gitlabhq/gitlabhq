@@ -4,4 +4,6 @@ classes:
 - ProjectAlias
 feature_categories:
 - source_code_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14108
+milestone: '12.1'

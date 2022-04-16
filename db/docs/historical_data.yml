@@ -4,4 +4,6 @@ classes:
 - HistoricalData
 feature_categories:
 - utilization
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/85c04a8aa654d1b7f898e55a113e50521bacaaf2
+milestone: '7.11'

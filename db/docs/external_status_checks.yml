@@ -4,4 +4,6 @@ classes:
 - MergeRequests::ExternalStatusCheck
 feature_categories:
 - source_code_management
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62186
+milestone: '14.0'

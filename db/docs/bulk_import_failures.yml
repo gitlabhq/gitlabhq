@@ -4,4 +4,6 @@ classes:
 - BulkImports::Failure
 feature_categories:
 - importers
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47526
+milestone: '13.7'

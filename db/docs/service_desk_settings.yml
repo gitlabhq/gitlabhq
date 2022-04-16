@@ -4,4 +4,6 @@ classes:
 - ServiceDeskSetting
 feature_categories:
 - service_desk
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19515
+milestone: '12.6'

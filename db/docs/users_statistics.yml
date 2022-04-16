@@ -4,4 +4,6 @@ classes:
 - UsersStatistics
 feature_categories:
 - product_analytics
-description: 
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26261
+milestone: '12.9'
