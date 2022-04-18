@@ -74,6 +74,18 @@ For more information about iteration cadences, you can refer to
 
 **Planned removal milestone: 16.0 (2023-04-22)**
 
+### Outdated indices of Advanced Search migrations
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+As Advanced Search migrations usually require support multiple code paths for a long period of time, it’s important to clean those up when we safely can. We use GitLab major version upgrades as a safe time to remove backward compatibility for indices that have not been fully migrated. See the [upgrade documentation](https://docs.gitlab.com/ee/update/index.html#upgrading-to-a-new-major-version) for details.
+
+**Planned removal milestone: 15.0 (2021-05-22)**
+
 ### Toggle notes confidentiality on APIs
 
 WARNING:
