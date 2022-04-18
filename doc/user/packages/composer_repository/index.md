@@ -171,6 +171,8 @@ When you publish:
 
 ## Install a Composer package
 
+> Authorization to [download a package archive](../../../api/packages/composer.md#download-a-package-archive) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331601) in GitLab 14.10.
+
 Install a package from the Package Registry so you can use it as a dependency.
 
 Prerequisites:
@@ -354,6 +356,8 @@ used to access them:
 
 ## Troubleshooting
 
+### Caching
+
 To improve performance, Composer caches files related to a package. Note that Composer doesn't remove data by
 itself. The cache grows as new packages are installed. If you encounter issues, clear the cache with
 this command:
@@ -361,6 +365,14 @@ this command:
 ```shell
 composer clearcache
 ```
+
+### Authorization requirement when using `composer install`
+
+In GitLab 14.9 and earlier, you did not require authorization to use `composer install` if you already had a generated `composer.lock`.
+If you committed your `composer.lock`, you could do a `composer install` in CI without setting up credentials.
+
+In GitLab 14.10 and later, authorization is required for the [downloading a package archive](../../../api/packages/composer.md#download-a-package-archive) endpoint.
+If you encounter a credentials prompt when you are using `composer install`, follow the instructions in the [install a composer package](#install-a-composer-package) section to create an `auth.json` file.
 
 ## Supported CLI commands
 

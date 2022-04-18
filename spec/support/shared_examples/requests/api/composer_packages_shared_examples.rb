@@ -163,11 +163,11 @@ RSpec.shared_examples 'rejects Composer access with unknown project id' do
     let(:project) { double(id: non_existing_record_id) }
 
     context 'as anonymous' do
-      it_behaves_like 'process Composer api request', :anonymous, :not_found
+      it_behaves_like 'process Composer api request', :anonymous, :unauthorized
     end
 
     context 'as authenticated user' do
-      subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
+      subject { get api(url), params: params, headers: basic_auth_header(user.username, personal_access_token.token) }
 
       it_behaves_like 'process Composer api request', :anonymous, :not_found
     end

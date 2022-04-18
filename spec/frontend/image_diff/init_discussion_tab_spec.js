@@ -11,23 +11,21 @@ describe('initDiscussionTab', () => {
     `);
   });
 
-  it('should pass canCreateNote as false to initImageDiff', (done) => {
+  it('should pass canCreateNote as false to initImageDiff', () => {
     jest
       .spyOn(initImageDiffHelper, 'initImageDiff')
       .mockImplementation((diffFileEl, canCreateNote) => {
         expect(canCreateNote).toEqual(false);
-        done();
       });
 
     initDiscussionTab();
   });
 
-  it('should pass renderCommentBadge as true to initImageDiff', (done) => {
+  it('should pass renderCommentBadge as true to initImageDiff', () => {
     jest
       .spyOn(initImageDiffHelper, 'initImageDiff')
       .mockImplementation((diffFileEl, canCreateNote, renderCommentBadge) => {
         expect(renderCommentBadge).toEqual(true);
-        done();
       });
 
     initDiscussionTab();

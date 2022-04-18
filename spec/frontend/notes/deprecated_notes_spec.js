@@ -561,7 +561,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     });
 
     describe('postComment', () => {
-      it('disables the submit button', (done) => {
+      it('disables the submit button', async () => {
         const $submitButton = $form.find('.js-comment-submit-button');
 
         expect($submitButton).not.toBeDisabled();
@@ -574,13 +574,8 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
           return [200, note];
         });
 
-        notes
-          .postComment(dummyEvent)
-          .then(() => {
-            expect($submitButton).not.toBeDisabled();
-          })
-          .then(done)
-          .catch(done.fail);
+        await notes.postComment(dummyEvent);
+        expect($submitButton).not.toBeDisabled();
       });
     });
 

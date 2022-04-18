@@ -22,8 +22,8 @@ describe('Admin statistics panel actions', () => {
         mock.onGet(/api\/(.*)\/application\/statistics/).replyOnce(200, mockStatistics);
       });
 
-      it('dispatches success with received data', (done) =>
-        testAction(
+      it('dispatches success with received data', () => {
+        return testAction(
           actions.fetchStatistics,
           null,
           state,
@@ -37,8 +37,8 @@ describe('Admin statistics panel actions', () => {
               ),
             },
           ],
-          done,
-        ));
+        );
+      });
     });
 
     describe('error', () => {
@@ -46,8 +46,8 @@ describe('Admin statistics panel actions', () => {
         mock.onGet(/api\/(.*)\/application\/statistics/).replyOnce(500);
       });
 
-      it('dispatches error', (done) =>
-        testAction(
+      it('dispatches error', () => {
+        return testAction(
           actions.fetchStatistics,
           null,
           state,
@@ -61,26 +61,26 @@ describe('Admin statistics panel actions', () => {
               payload: new Error('Request failed with status code 500'),
             },
           ],
-          done,
-        ));
+        );
+      });
     });
   });
 
   describe('requestStatistic', () => {
-    it('should commit the request mutation', (done) =>
-      testAction(
+    it('should commit the request mutation', () => {
+      return testAction(
         actions.requestStatistics,
         null,
         state,
         [{ type: types.REQUEST_STATISTICS }],
         [],
-        done,
-      ));
+      );
+    });
   });
 
   describe('receiveStatisticsSuccess', () => {
-    it('should commit received data', (done) =>
-      testAction(
+    it('should commit received data', () => {
+      return testAction(
         actions.receiveStatisticsSuccess,
         mockStatistics,
         state,
@@ -91,13 +91,13 @@ describe('Admin statistics panel actions', () => {
           },
         ],
         [],
-        done,
-      ));
+      );
+    });
   });
 
   describe('receiveStatisticsError', () => {
-    it('should commit error', (done) => {
-      testAction(
+    it('should commit error', () => {
+      return testAction(
         actions.receiveStatisticsError,
         500,
         state,
@@ -108,7 +108,6 @@ describe('Admin statistics panel actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });

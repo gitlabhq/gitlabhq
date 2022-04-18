@@ -254,7 +254,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/object_storage.md @axil
 /doc/administration/operations/ @axil
 /doc/administration/operations/moving_repositories.md @eread
-/doc/administration/operations/sidekiq_memory_killer.md @marcel.amirault
+/doc/administration/operations/sidekiq_memory_killer.md @marcia
 /doc/administration/package_information/ @axil
 /doc/administration/packages/ @claytoncornell
 /doc/administration/pages/index.md @aqualls

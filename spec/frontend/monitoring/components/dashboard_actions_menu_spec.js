@@ -109,7 +109,7 @@ describe('Actions menu', () => {
     describe('adding new metric from modal', () => {
       let origPage;
 
-      beforeEach((done) => {
+      beforeEach(() => {
         jest.spyOn(Tracking, 'event').mockReturnValue();
         createShallowWrapper();
 
@@ -118,7 +118,7 @@ describe('Actions menu', () => {
         origPage = document.body.dataset.page;
         document.body.dataset.page = 'projects:environments:metrics';
 
-        nextTick(done);
+        return nextTick();
       });
 
       afterEach(() => {

@@ -23,90 +23,82 @@ describe('RelatedMergeRequest store actions', () => {
   });
 
   describe('setInitialState', () => {
-    it('commits types.SET_INITIAL_STATE with given props', (done) => {
+    it('commits types.SET_INITIAL_STATE with given props', () => {
       const props = { a: 1, b: 2 };
 
-      testAction(
+      return testAction(
         actions.setInitialState,
         props,
         {},
         [{ type: types.SET_INITIAL_STATE, payload: props }],
         [],
-        done,
       );
     });
   });
 
   describe('requestData', () => {
-    it('commits types.REQUEST_DATA', (done) => {
-      testAction(actions.requestData, null, {}, [{ type: types.REQUEST_DATA }], [], done);
+    it('commits types.REQUEST_DATA', () => {
+      return testAction(actions.requestData, null, {}, [{ type: types.REQUEST_DATA }], []);
     });
   });
 
   describe('receiveDataSuccess', () => {
-    it('commits types.RECEIVE_DATA_SUCCESS with data', (done) => {
+    it('commits types.RECEIVE_DATA_SUCCESS with data', () => {
       const data = { a: 1, b: 2 };
 
-      testAction(
+      return testAction(
         actions.receiveDataSuccess,
         data,
         {},
         [{ type: types.RECEIVE_DATA_SUCCESS, payload: data }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveDataError', () => {
-    it('commits types.RECEIVE_DATA_ERROR', (done) => {
-      testAction(
+    it('commits types.RECEIVE_DATA_ERROR', () => {
+      return testAction(
         actions.receiveDataError,
         null,
         {},
         [{ type: types.RECEIVE_DATA_ERROR }],
         [],
-        done,
       );
     });
   });
 
   describe('fetchMergeRequests', () => {
     describe('for a successful request', () => {
-      it('should dispatch success action', (done) => {
+      it('should dispatch success action', () => {
         const data = { a: 1 };
         mock.onGet(`${state.apiEndpoint}?per_page=100`).replyOnce(200, data, { 'x-total': 2 });
 
-        testAction(
+        return testAction(
           actions.fetchMergeRequests,
           null,
           state,
           [],
           [{ type: 'requestData' }, { type: 'receiveDataSuccess', payload: { data, total: 2 } }],
-          done,
         );
       });
     });
 
     describe('for a failing request', () => {
-      it('should dispatch error action', (done) => {
+      it('should dispatch error action', async () => {
         mock.onGet(`${state.apiEndpoint}?per_page=100`).replyOnce(400);
 
-        testAction(
+        await testAction(
           actions.fetchMergeRequests,
           null,
           state,
           [],
           [{ type: 'requestData' }, { type: 'receiveDataError' }],
-          () => {
-            expect(createFlash).toHaveBeenCalledTimes(1);
-            expect(createFlash).toHaveBeenCalledWith({
-              message: expect.stringMatching('Something went wrong'),
-            });
-
-            done();
-          },
         );
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createFlash).toHaveBeenCalledWith({
+          message: expect.stringMatching('Something went wrong'),
+        });
       });
     });
   });

@@ -74,17 +74,13 @@ It picks reviewers and maintainers from the list at the
 page, with these behaviors:
 
 1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-    - Contains the string 'OOO', 'PTO', 'Parental Leave', or 'Friends and Family'.
+    - Contains the string `OOO`, `PTO`, `Parental Leave`, or `Friends and Family`.
     - GitLab user **Busy** indicator is set to `True`.
-    - Emoji is any of:
-      - 🌴 `:palm_tree:`
-      - 🏖️ `:beach:`, `:beach_umbrella:`, or `:beach_with_umbrella:`
-      - 🎡 `:ferris_wheel:`
-      - 🌡️ `:thermometer:`
-      - 🤒 `:face_with_thermometer:`
-      - 🔴 `:red_circle:`
-      - 💡 `:bulb:`
-      - 🌞 `:sun_with_face:`
+    - Emoji is from one of these categories:
+      - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`
+      - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
+      - **At capacity** - 🔴 `:red_circle:`
+      - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
 1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
@@ -92,11 +88,21 @@ page, with these behaviors:
    - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
    - Trainee maintainers with 🔵 `:large_blue_circle:` are four times as likely to be picked as other reviewers.
 1. People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
-   is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked. This applies to both reviewers and trainee maintainers.
+   is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
 1. It always picks the same reviewers and maintainers for the same
    branch name (unless their out-of-office (OOO) status changes, as in point 1). It
    removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
    that it can be stable for backport branches.
+
+The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette) contains:
+
+- Assignment events in the last 7 and 30 days.
+- Currently assigned merge requests per person.
+- Sorting by different criteria.
+- A manual reviewer roulette.
+- Local time information.
+
+For more information, review [the roulette README](https://gitlab.com/gitlab-org/gitlab-roulette).
 
 ### Approval guidelines
 

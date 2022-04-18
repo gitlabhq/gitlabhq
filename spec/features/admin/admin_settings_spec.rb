@@ -518,8 +518,8 @@ RSpec.describe 'Admin updates settings' do
         page.within('.as-spam') do
           fill_in 'reCAPTCHA site key', with: 'key'
           fill_in 'reCAPTCHA private key', with: 'key'
-          check 'Enable reCAPTCHA'
-          check 'Enable reCAPTCHA for login'
+          find('#application_setting_recaptcha_enabled').set(true)
+          find('#application_setting_login_recaptcha_protection_enabled').set(true)
           fill_in 'IP addresses per user', with: 15
           check 'Enable Spam Check via external API endpoint'
           fill_in 'URL of the external Spam Check endpoint', with: 'grpc://www.example.com/spamcheck'

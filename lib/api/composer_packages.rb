@@ -113,10 +113,6 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      before do
-        unauthorized_user_project!
-      end
-
       desc 'Composer packages endpoint for registering packages'
       namespace ':id/packages/composer' do
         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
@@ -150,8 +146,11 @@ module API
           requires :sha, type: String, desc: 'Shasum of current json'
           requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
         end
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
         get 'archives/*package_name' do
-          metadata = unauthorized_user_project
+          authorize_read_package!(authorized_user_project)
+
+          metadata = authorized_user_project
             .packages
             .composer
             .with_name(params[:package_name])
@@ -161,9 +160,9 @@ module API
 
           not_found! unless metadata
 
-          track_package_event('pull_package', :composer, project: unauthorized_user_project, namespace: unauthorized_user_project.namespace)
+          track_package_event('pull_package', :composer, project: authorized_user_project, namespace: authorized_user_project.namespace)
 
-          send_git_archive unauthorized_user_project.repository, ref: metadata.target_sha, format: 'zip', append_sha: true
+          send_git_archive authorized_user_project.repository, ref: metadata.target_sha, format: 'zip', append_sha: true
         end
       end
     end

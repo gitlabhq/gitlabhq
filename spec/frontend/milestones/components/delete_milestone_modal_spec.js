@@ -32,7 +32,7 @@ describe('delete_milestone_modal.vue', () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
-    it('deletes milestone and redirects to overview page', (done) => {
+    it('deletes milestone and redirects to overview page', async () => {
       const responseURL = `${TEST_HOST}/delete_milestone_modal.vue/milestoneOverview`;
       jest.spyOn(axios, 'delete').mockImplementation((url) => {
         expect(url).toBe(props.milestoneUrl);
@@ -48,19 +48,15 @@ describe('delete_milestone_modal.vue', () => {
         });
       });
 
-      vm.onSubmit()
-        .then(() => {
-          expect(redirectTo).toHaveBeenCalledWith(responseURL);
-          expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
-            milestoneUrl: props.milestoneUrl,
-            successful: true,
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      await vm.onSubmit();
+      expect(redirectTo).toHaveBeenCalledWith(responseURL);
+      expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
+        milestoneUrl: props.milestoneUrl,
+        successful: true,
+      });
     });
 
-    it('displays error if deleting milestone failed', (done) => {
+    it('displays error if deleting milestone failed', async () => {
       const dummyError = new Error('deleting milestone failed');
       dummyError.response = { status: 418 };
       jest.spyOn(axios, 'delete').mockImplementation((url) => {
@@ -73,17 +69,12 @@ describe('delete_milestone_modal.vue', () => {
         return Promise.reject(dummyError);
       });
 
-      vm.onSubmit()
-        .catch((error) => {
-          expect(error).toBe(dummyError);
-          expect(redirectTo).not.toHaveBeenCalled();
-          expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
-            milestoneUrl: props.milestoneUrl,
-            successful: false,
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      await expect(vm.onSubmit()).rejects.toEqual(dummyError);
+      expect(redirectTo).not.toHaveBeenCalled();
+      expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
+        milestoneUrl: props.milestoneUrl,
+        successful: false,
+      });
     });
   });
 

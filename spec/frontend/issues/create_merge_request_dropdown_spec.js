@@ -38,21 +38,16 @@ describe('CreateMergeRequestDropdown', () => {
   });
 
   describe('getRef', () => {
-    it('escapes branch names correctly', (done) => {
+    it('escapes branch names correctly', async () => {
       const endpoint = `${dropdown.refsPath}contains%23hash`;
       jest.spyOn(axios, 'get');
       axiosMock.onGet(endpoint).replyOnce({});
 
-      dropdown
-        .getRef('contains#hash')
-        .then(() => {
-          expect(axios.get).toHaveBeenCalledWith(
-            endpoint,
-            expect.objectContaining({ cancelToken: expect.anything() }),
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      await dropdown.getRef('contains#hash');
+      expect(axios.get).toHaveBeenCalledWith(
+        endpoint,
+        expect.objectContaining({ cancelToken: expect.anything() }),
+      );
     });
   });
 

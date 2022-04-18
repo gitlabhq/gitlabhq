@@ -20,10 +20,10 @@ jest.mock('~/api.js');
 
 describe('Actions Package details store', () => {
   describe('fetchPackageVersions', () => {
-    it('should fetch the package versions', (done) => {
+    it('should fetch the package versions', async () => {
       Api.projectPackage = jest.fn().mockResolvedValue({ data: packageEntity });
 
-      testAction(
+      await testAction(
         fetchPackageVersions,
         undefined,
         { packageEntity },
@@ -33,20 +33,14 @@ describe('Actions Package details store', () => {
           { type: types.SET_LOADING, payload: false },
         ],
         [],
-        () => {
-          expect(Api.projectPackage).toHaveBeenCalledWith(
-            packageEntity.project_id,
-            packageEntity.id,
-          );
-          done();
-        },
       );
+      expect(Api.projectPackage).toHaveBeenCalledWith(packageEntity.project_id, packageEntity.id);
     });
 
-    it("does not set the versions if they don't exist", (done) => {
+    it("does not set the versions if they don't exist", async () => {
       Api.projectPackage = jest.fn().mockResolvedValue({ data: { packageEntity, versions: null } });
 
-      testAction(
+      await testAction(
         fetchPackageVersions,
         undefined,
         { packageEntity },
@@ -55,20 +49,14 @@ describe('Actions Package details store', () => {
           { type: types.SET_LOADING, payload: false },
         ],
         [],
-        () => {
-          expect(Api.projectPackage).toHaveBeenCalledWith(
-            packageEntity.project_id,
-            packageEntity.id,
-          );
-          done();
-        },
       );
+      expect(Api.projectPackage).toHaveBeenCalledWith(packageEntity.project_id, packageEntity.id);
     });
 
-    it('should create flash on API error', (done) => {
+    it('should create flash on API error', async () => {
       Api.projectPackage = jest.fn().mockRejectedValue();
 
-      testAction(
+      await testAction(
         fetchPackageVersions,
         undefined,
         { packageEntity },
@@ -77,41 +65,31 @@ describe('Actions Package details store', () => {
           { type: types.SET_LOADING, payload: false },
         ],
         [],
-        () => {
-          expect(Api.projectPackage).toHaveBeenCalledWith(
-            packageEntity.project_id,
-            packageEntity.id,
-          );
-          expect(createFlash).toHaveBeenCalledWith({
-            message: FETCH_PACKAGE_VERSIONS_ERROR,
-            type: 'warning',
-          });
-          done();
-        },
       );
+      expect(Api.projectPackage).toHaveBeenCalledWith(packageEntity.project_id, packageEntity.id);
+      expect(createFlash).toHaveBeenCalledWith({
+        message: FETCH_PACKAGE_VERSIONS_ERROR,
+        type: 'warning',
+      });
     });
   });
 
   describe('deletePackage', () => {
-    it('should call Api.deleteProjectPackage', (done) => {
+    it('should call Api.deleteProjectPackage', async () => {
       Api.deleteProjectPackage = jest.fn().mockResolvedValue();
-      testAction(deletePackage, undefined, { packageEntity }, [], [], () => {
-        expect(Api.deleteProjectPackage).toHaveBeenCalledWith(
-          packageEntity.project_id,
-          packageEntity.id,
-        );
-        done();
-      });
+      await testAction(deletePackage, undefined, { packageEntity }, [], []);
+      expect(Api.deleteProjectPackage).toHaveBeenCalledWith(
+        packageEntity.project_id,
+        packageEntity.id,
+      );
     });
-    it('should create flash on API error', (done) => {
+    it('should create flash on API error', async () => {
       Api.deleteProjectPackage = jest.fn().mockRejectedValue();
 
-      testAction(deletePackage, undefined, { packageEntity }, [], [], () => {
-        expect(createFlash).toHaveBeenCalledWith({
-          message: DELETE_PACKAGE_ERROR_MESSAGE,
-          type: 'warning',
-        });
-        done();
+      await testAction(deletePackage, undefined, { packageEntity }, [], []);
+      expect(createFlash).toHaveBeenCalledWith({
+        message: DELETE_PACKAGE_ERROR_MESSAGE,
+        type: 'warning',
       });
     });
   });
@@ -119,37 +97,33 @@ describe('Actions Package details store', () => {
   describe('deletePackageFile', () => {
     const fileId = 'a_file_id';
 
-    it('should call Api.deleteProjectPackageFile and commit the right data', (done) => {
+    it('should call Api.deleteProjectPackageFile and commit the right data', async () => {
       const packageFiles = [{ id: 'foo' }, { id: fileId }];
       Api.deleteProjectPackageFile = jest.fn().mockResolvedValue();
-      testAction(
+      await testAction(
         deletePackageFile,
         fileId,
         { packageEntity, packageFiles },
         [{ type: types.UPDATE_PACKAGE_FILES, payload: [{ id: 'foo' }] }],
         [],
-        () => {
-          expect(Api.deleteProjectPackageFile).toHaveBeenCalledWith(
-            packageEntity.project_id,
-            packageEntity.id,
-            fileId,
-          );
-          expect(createFlash).toHaveBeenCalledWith({
-            message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
-            type: 'success',
-          });
-          done();
-        },
       );
+      expect(Api.deleteProjectPackageFile).toHaveBeenCalledWith(
+        packageEntity.project_id,
+        packageEntity.id,
+        fileId,
+      );
+      expect(createFlash).toHaveBeenCalledWith({
+        message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
+        type: 'success',
+      });
     });
-    it('should create flash on API error', (done) => {
+
+    it('should create flash on API error', async () => {
       Api.deleteProjectPackageFile = jest.fn().mockRejectedValue();
-      testAction(deletePackageFile, fileId, { packageEntity }, [], [], () => {
-        expect(createFlash).toHaveBeenCalledWith({
-          message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
-          type: 'warning',
-        });
-        done();
+      await testAction(deletePackageFile, fileId, { packageEntity }, [], []);
+      expect(createFlash).toHaveBeenCalledWith({
+        message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+        type: 'warning',
       });
     });
   });

@@ -375,8 +375,8 @@ describe('Job App', () => {
     });
 
     describe('sidebar', () => {
-      it('has no blank blocks', (done) => {
-        setupAndMount({
+      it('has no blank blocks', async () => {
+        await setupAndMount({
           jobData: {
             duration: null,
             finished_at: null,
@@ -387,17 +387,14 @@ describe('Job App', () => {
             tags: [],
             cancel_path: null,
           },
-        })
-          .then(() => {
-            const blocks = wrapper.findAll('.blocks-container > *').wrappers;
-            expect(blocks.length).toBeGreaterThan(0);
+        });
 
-            blocks.forEach((block) => {
-              expect(block.text().trim()).not.toBe('');
-            });
-          })
-          .then(done)
-          .catch(done.fail);
+        const blocks = wrapper.findAll('.blocks-container > *').wrappers;
+        expect(blocks.length).toBeGreaterThan(0);
+
+        blocks.forEach((block) => {
+          expect(block.text().trim()).not.toBe('');
+        });
       });
     });
   });

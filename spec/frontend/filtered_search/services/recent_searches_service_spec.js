@@ -18,53 +18,47 @@ describe('RecentSearchesService', () => {
       jest.spyOn(RecentSearchesService, 'isAvailable').mockReturnValue(true);
     });
 
-    it('should default to empty array', (done) => {
+    it('should default to empty array', () => {
       const fetchItemsPromise = service.fetch();
 
-      fetchItemsPromise
-        .then((items) => {
-          expect(items).toEqual([]);
-        })
-        .then(done)
-        .catch(done.fail);
+      return fetchItemsPromise.then((items) => {
+        expect(items).toEqual([]);
+      });
     });
 
-    it('should reject when unable to parse', (done) => {
+    it('should reject when unable to parse', () => {
       jest.spyOn(localStorage, 'getItem').mockReturnValue('fail');
       const fetchItemsPromise = service.fetch();
 
-      fetchItemsPromise
-        .then(done.fail)
+      return fetchItemsPromise
+        .then(() => {
+          throw new Error();
+        })
         .catch((error) => {
           expect(error).toEqual(expect.any(SyntaxError));
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
 
-    it('should reject when service is unavailable', (done) => {
+    it('should reject when service is unavailable', () => {
       RecentSearchesService.isAvailable.mockReturnValue(false);
 
-      service
+      return service
         .fetch()
-        .then(done.fail)
+        .then(() => {
+          throw new Error();
+        })
         .catch((error) => {
           expect(error).toEqual(expect.any(Error));
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
 
-    it('should return items from localStorage', (done) => {
+    it('should return items from localStorage', () => {
       jest.spyOn(localStorage, 'getItem').mockReturnValue('["foo", "bar"]');
       const fetchItemsPromise = service.fetch();
 
-      fetchItemsPromise
-        .then((items) => {
-          expect(items).toEqual(['foo', 'bar']);
-        })
-        .then(done)
-        .catch(done.fail);
+      return fetchItemsPromise.then((items) => {
+        expect(items).toEqual(['foo', 'bar']);
+      });
     });
 
     describe('if .isAvailable returns `false`', () => {
@@ -74,16 +68,16 @@ describe('RecentSearchesService', () => {
         jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {});
       });
 
-      it('should not call .getItem', (done) => {
-        RecentSearchesService.prototype
+      it('should not call .getItem', () => {
+        return RecentSearchesService.prototype
           .fetch()
-          .then(done.fail)
+          .then(() => {
+            throw new Error();
+          })
           .catch((err) => {
             expect(err).toEqual(new RecentSearchesServiceError());
             expect(localStorage.getItem).not.toHaveBeenCalled();
-          })
-          .then(done)
-          .catch(done.fail);
+          });
       });
     });
   });

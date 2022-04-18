@@ -38,35 +38,25 @@ describe('AjaxFilter', () => {
       dummyList.list.appendChild(dynamicList);
     });
 
-    it('calls onLoadingFinished after loading data', (done) => {
+    it('calls onLoadingFinished after loading data', async () => {
       ajaxSpy = (url) => {
         expect(url).toBe('dummy endpoint?dummy search key=');
         return Promise.resolve(dummyData);
       };
 
-      AjaxFilter.trigger()
-        .then(() => {
-          expect(dummyConfig.onLoadingFinished.mock.calls.length).toBe(1);
-        })
-        .then(done)
-        .catch(done.fail);
+      await AjaxFilter.trigger();
+      expect(dummyConfig.onLoadingFinished.mock.calls.length).toBe(1);
     });
 
-    it('does not call onLoadingFinished if Ajax call fails', (done) => {
+    it('does not call onLoadingFinished if Ajax call fails', async () => {
       const dummyError = new Error('My dummy is sick! :-(');
       ajaxSpy = (url) => {
         expect(url).toBe('dummy endpoint?dummy search key=');
         return Promise.reject(dummyError);
       };
 
-      AjaxFilter.trigger()
-        .then(done.fail)
-        .catch((error) => {
-          expect(error).toBe(dummyError);
-          expect(dummyConfig.onLoadingFinished.mock.calls.length).toBe(0);
-        })
-        .then(done)
-        .catch(done.fail);
+      await expect(AjaxFilter.trigger()).rejects.toEqual(dummyError);
+      expect(dummyConfig.onLoadingFinished.mock.calls.length).toBe(0);
     });
   });
 });
