@@ -20,7 +20,7 @@ Branch pipelines:
 - Run when you push a new commit to a branch.
 - Are the default type of pipeline.
 - Have access to [some predefined variables](../variables/predefined_variables.md).
-- Have access to [protected variables](../variables/index.md#protect-a-cicd-variable).
+- Have access to [protected variables](../variables/index.md#protect-a-cicd-variable) and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information.
 
 Merge request pipelines:
 
@@ -33,7 +33,7 @@ Merge request pipelines:
 - Do not run by default. The jobs in the CI/CD configuration file [must be configured](#prerequisites)
   to run in merge request pipelines.
 - Have access to [more predefined variables](#available-predefined-variables).
-- Do not have access to [protected variables](../variables/index.md#protect-a-cicd-variable).
+- Do not have access to [protected variables](../variables/index.md#protect-a-cicd-variable) or [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
 
 Both of these types of pipelines can appear on the **Pipelines** tab of a merge request.
 
