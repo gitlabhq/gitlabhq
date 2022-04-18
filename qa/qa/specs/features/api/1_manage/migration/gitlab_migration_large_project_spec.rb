@@ -155,7 +155,7 @@ module QA
       end
       # rubocop:enable RSpec/InstanceVariable
 
-      it "migrates large gitlab group via api" do
+      it "migrates large gitlab group via api", testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358842' do
         start = Time.now
 
         # trigger import and log imported group path

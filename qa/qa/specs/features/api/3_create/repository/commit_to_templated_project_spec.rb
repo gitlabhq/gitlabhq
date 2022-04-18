@@ -10,7 +10,7 @@ module QA
         end
       end
 
-      it 'commits via the api' do
+      it 'commits via the api', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/357234' do
         expect do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project

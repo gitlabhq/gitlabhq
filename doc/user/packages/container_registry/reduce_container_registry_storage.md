@@ -217,7 +217,23 @@ Valid values for `cadence` when using the API are:
 - `1month` (every month)
 - `3month` (every quarter)
 
-See the API documentation for further details: [Edit project](../../../api/projects.md#edit-project).
+Valid values for `keep_n` (number of tags kept per image name) when using the API are:
+
+- `1`
+- `5`
+- `10`
+- `25`
+- `50`
+- `100`
+
+Valid values for `older_than` (days until tags are automatically removed) when using the API are:
+
+- `7d`
+- `14d`
+- `30d`
+- `90d`
+
+See the API documentation for further details: [Edit project API](../../../api/projects.md#edit-project).
 
 ### Use with external container registries
 

@@ -738,10 +738,6 @@ QA/SelectorUsage:
   Exclude:
     - 'spec/rubocop/**/*_spec.rb'
 
-QA/DuplicateTestcaseLink:
-  # this cop is executed in static-analysis.gitlab-ci.yml since it cannot be run in parallel
-  Enabled: false
-
 Performance/ActiveRecordSubtransactions:
   Exclude:
     - 'spec/**/*.rb'

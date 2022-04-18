@@ -20,7 +20,7 @@ module QA
       it(
         'is not inheritable when forward:pipeline_variables is false',
         :aggregate_failures,
-        test_case: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358199'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358199'
       ) do
         visit_job_page('child1', 'child1_job')
         verify_job_log_does_not_show_variable_value
@@ -34,7 +34,7 @@ module QA
       it(
         'is not inheritable by default',
         :aggregate_failures,
-        test_case: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358200'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358200'
       ) do
         visit_job_page('child2', 'child2_job')
         verify_job_log_does_not_show_variable_value

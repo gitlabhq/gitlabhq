@@ -16,7 +16,7 @@ module QA
       end
 
       # Removing a runner via the UI is covered by `spec/features/runners_spec.rb``
-      it 'removes the runner' do
+      it 'removes the runner', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354828' do
         runners = nil
         expect { (runners = runner.list_of_runners(tag_list: runner_tags)).size }
           .to eventually_eq(1).within(max_duration: 10, sleep_interval: 1)

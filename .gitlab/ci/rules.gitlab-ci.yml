@@ -1373,6 +1373,10 @@
   rules:
     - changes: *code-backstage-qa-patterns
 
+.static-analysis:rules:ee-and-foss-qa:
+  rules:
+    - changes: *qa-patterns
+
 .static-analysis:rules:ee:
   rules:
     - <<: *if-not-ee

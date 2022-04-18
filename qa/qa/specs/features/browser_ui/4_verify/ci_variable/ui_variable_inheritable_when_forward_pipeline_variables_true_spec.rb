@@ -19,7 +19,7 @@ module QA
       it(
         'is inheritable when forward:pipeline_variables is true',
         :aggregate_failures,
-        test_case: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358197'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358197'
       ) do
         visit_job_page('child1', 'child1_job')
         verify_job_log_shows_variable_value

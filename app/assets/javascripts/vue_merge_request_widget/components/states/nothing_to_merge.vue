@@ -28,7 +28,7 @@ export default {
       api.trackRedisHllUserEvent('i_code_review_widget_nothing_merge_click_new_file');
     },
   },
-  ciHelpPage: helpPagePath('/ci/quick_start/index.html'),
+  ciHelpPage: helpPagePath('ci/quick_start/index.html'),
   safeHtmlConfig: { ADD_TAGS: ['use'] },
 };
 </script>

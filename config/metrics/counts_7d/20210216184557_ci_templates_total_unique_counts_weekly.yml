@@ -169,6 +169,7 @@ options:
   - p_ci_templates_qualys_iac_security
   - p_ci_templates_liquibase
   - p_ci_templates_matlab
+  - p_ci_templates_themekit
 distribution:
 - ce
 - ee

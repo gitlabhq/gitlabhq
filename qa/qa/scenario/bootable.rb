@@ -31,7 +31,7 @@ module QA
                 end
 
                 next
-              elsif opt.name == :count_examples_only
+              elsif opt.name == :count_examples_only || opt.name == :test_metadata_only
                 parser.on(opt.arg, opt.desc) do |value|
                   QA::Runtime::Env.dry_run = true
                   Runtime::Scenario.define(opt.name, value)
