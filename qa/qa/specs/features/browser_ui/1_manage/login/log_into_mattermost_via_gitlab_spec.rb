@@ -11,7 +11,7 @@ module QA
           Page::Mattermost::Login.perform(&:sign_in_using_oauth)
 
           Page::Mattermost::Main.perform do |mattermost|
-            expect(mattermost).to have_content(/(Welcome to: Mattermost|Logout GitLab Mattermost)/)
+            expect(mattermost).to have_content(/(GitLab Mattermost|What’s the name of your organization)/)
           end
         end
       end
