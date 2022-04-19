@@ -132,7 +132,7 @@ class Namespace < ApplicationRecord
 
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }
-  scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
+  scope :sort_by_type, -> { order(arel_table[:type].asc.nulls_first) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
   scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }

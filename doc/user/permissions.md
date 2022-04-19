@@ -169,6 +169,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Delete project                                                                                                                                      |          |          |           |            | ✓        |
 | [Projects](project/index.md):<br>Disable notification emails                                                                                                                         |          |          |           |            | ✓        |
 | [Projects](project/index.md):<br>Transfer project to another namespace                                                                                                               |          |          |           |            | ✓        |
+| [Projects](project/index.md): View [Usage Quotas](usage_quotas.md) page                                                                                                              |          |          |           | ✓          | ✓        |
 | [Repository](project/repository/index.md):<br>Pull project code                                                                                                                      | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓        |
 | [Repository](project/repository/index.md):<br>View project code                                                                                                                      | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓        |
 | [Repository](project/repository/index.md):<br>View a commit status                                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
@@ -395,7 +396,6 @@ The following table lists group permissions available for each role:
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |
-| View Usage quota data                                                                   |       | ✓        | ✓         | ✓          | ✓     |
 | Create and edit [group wiki](project/wiki/group.md) pages                               |       |          | ✓         | ✓          | ✓     |
 | Create project in group                                                                 |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
 | Create/edit/delete group milestones                                                     |       |          | ✓         | ✓          | ✓     |
@@ -425,7 +425,7 @@ The following table lists group permissions available for each role:
 | Share (invite) groups with groups                                                       |       |          |           |            | ✓     |
 | View 2FA status of members                                                              |       |          |           |            | ✓     |
 | View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (4) |
-| View [Usage Quotas](usage_quotas.md) Page                                               |       |          |           | ✓          | ✓ (4) |
+| View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (4) |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->

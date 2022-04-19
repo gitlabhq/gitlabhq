@@ -95,70 +95,82 @@ describe('apolloCaptchaLink', () => {
     return { operationName: 'operation', variables: {}, setContext: mockContext };
   }
 
-  it('successful responses are passed through', (done) => {
+  it('successful responses are passed through', () => {
     setupLink(SUCCESS_RESPONSE);
-    link.request(mockOperation()).subscribe((result) => {
-      expect(result).toEqual(SUCCESS_RESPONSE);
-      expect(mockLinkImplementation).toHaveBeenCalledTimes(1);
-      expect(waitForCaptchaToBeSolved).not.toHaveBeenCalled();
-      done();
+
+    return new Promise((resolve) => {
+      link.request(mockOperation()).subscribe((result) => {
+        expect(result).toEqual(SUCCESS_RESPONSE);
+        expect(mockLinkImplementation).toHaveBeenCalledTimes(1);
+        expect(waitForCaptchaToBeSolved).not.toHaveBeenCalled();
+        resolve();
+      });
     });
   });
 
-  it('non-spam related errors are passed through', (done) => {
+  it('non-spam related errors are passed through', () => {
     setupLink(NON_CAPTCHA_ERROR_RESPONSE);
-    link.request(mockOperation()).subscribe((result) => {
-      expect(result).toEqual(NON_CAPTCHA_ERROR_RESPONSE);
-      expect(mockLinkImplementation).toHaveBeenCalledTimes(1);
-      expect(mockContext).not.toHaveBeenCalled();
-      expect(waitForCaptchaToBeSolved).not.toHaveBeenCalled();
-      done();
+
+    return new Promise((resolve) => {
+      link.request(mockOperation()).subscribe((result) => {
+        expect(result).toEqual(NON_CAPTCHA_ERROR_RESPONSE);
+        expect(mockLinkImplementation).toHaveBeenCalledTimes(1);
+        expect(mockContext).not.toHaveBeenCalled();
+        expect(waitForCaptchaToBeSolved).not.toHaveBeenCalled();
+        resolve();
+      });
     });
   });
 
-  it('unresolvable spam errors are passed through', (done) => {
+  it('unresolvable spam errors are passed through', () => {
     setupLink(SPAM_ERROR_RESPONSE);
-    link.request(mockOperation()).subscribe((result) => {
-      expect(result).toEqual(SPAM_ERROR_RESPONSE);
-      expect(mockLinkImplementation).toHaveBeenCalledTimes(1);
-      expect(mockContext).not.toHaveBeenCalled();
-      expect(waitForCaptchaToBeSolved).not.toHaveBeenCalled();
-      done();
+    return new Promise((resolve) => {
+      link.request(mockOperation()).subscribe((result) => {
+        expect(result).toEqual(SPAM_ERROR_RESPONSE);
+        expect(mockLinkImplementation).toHaveBeenCalledTimes(1);
+        expect(mockContext).not.toHaveBeenCalled();
+        expect(waitForCaptchaToBeSolved).not.toHaveBeenCalled();
+        resolve();
+      });
     });
   });
 
   describe('resolvable spam errors', () => {
-    it('re-submits request with spam headers if the captcha modal was solved correctly', (done) => {
+    it('re-submits request with spam headers if the captcha modal was solved correctly', () => {
       waitForCaptchaToBeSolved.mockResolvedValue(CAPTCHA_RESPONSE);
       setupLink(CAPTCHA_ERROR_RESPONSE, SUCCESS_RESPONSE);
-      link.request(mockOperation()).subscribe((result) => {
-        expect(result).toEqual(SUCCESS_RESPONSE);
-        expect(waitForCaptchaToBeSolved).toHaveBeenCalledWith(CAPTCHA_SITE_KEY);
-        expect(mockContext).toHaveBeenCalledWith({
-          headers: {
-            'X-GitLab-Captcha-Response': CAPTCHA_RESPONSE,
-            'X-GitLab-Spam-Log-Id': SPAM_LOG_ID,
-          },
+      return new Promise((resolve) => {
+        link.request(mockOperation()).subscribe((result) => {
+          expect(result).toEqual(SUCCESS_RESPONSE);
+          expect(waitForCaptchaToBeSolved).toHaveBeenCalledWith(CAPTCHA_SITE_KEY);
+          expect(mockContext).toHaveBeenCalledWith({
+            headers: {
+              'X-GitLab-Captcha-Response': CAPTCHA_RESPONSE,
+              'X-GitLab-Spam-Log-Id': SPAM_LOG_ID,
+            },
+          });
+          expect(mockLinkImplementation).toHaveBeenCalledTimes(2);
+          resolve();
         });
-        expect(mockLinkImplementation).toHaveBeenCalledTimes(2);
-        done();
       });
     });
 
-    it('throws error if the captcha modal was not solved correctly', (done) => {
+    it('throws error if the captcha modal was not solved correctly', () => {
       const error = new UnsolvedCaptchaError();
       waitForCaptchaToBeSolved.mockRejectedValue(error);
 
       setupLink(CAPTCHA_ERROR_RESPONSE, SUCCESS_RESPONSE);
-      link.request(mockOperation()).subscribe({
-        next: done.catch,
-        error: (result) => {
-          expect(result).toEqual(error);
-          expect(waitForCaptchaToBeSolved).toHaveBeenCalledWith(CAPTCHA_SITE_KEY);
-          expect(mockContext).not.toHaveBeenCalled();
-          expect(mockLinkImplementation).toHaveBeenCalledTimes(1);
-          done();
-        },
+      return new Promise((resolve, reject) => {
+        link.request(mockOperation()).subscribe({
+          next: reject,
+          error: (result) => {
+            expect(result).toEqual(error);
+            expect(waitForCaptchaToBeSolved).toHaveBeenCalledWith(CAPTCHA_SITE_KEY);
+            expect(mockContext).not.toHaveBeenCalled();
+            expect(mockLinkImplementation).toHaveBeenCalledTimes(1);
+            resolve();
+          },
+        });
       });
     });
   });

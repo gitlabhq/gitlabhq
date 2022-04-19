@@ -19,8 +19,8 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
     Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
       attribute_name: 'last_repository_check_at',
       column_expression: Project.arel_table[:last_repository_check_at],
-      order_expression: Gitlab::Database.nulls_last_order('last_repository_check_at', :asc),
-      reversed_order_expression: Gitlab::Database.nulls_last_order('last_repository_check_at', :desc),
+      order_expression: Project.arel_table[:last_repository_check_at].asc.nulls_last,
+      reversed_order_expression: Project.arel_table[:last_repository_check_at].desc.nulls_last,
       order_direction: :asc,
       nullable: :nulls_last,
       distinct: false)
@@ -30,8 +30,8 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
     Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
       attribute_name: 'last_repository_check_at',
       column_expression: Project.arel_table[:last_repository_check_at],
-      order_expression: Gitlab::Database.nulls_last_order('last_repository_check_at', :desc),
-      reversed_order_expression: Gitlab::Database.nulls_last_order('last_repository_check_at', :asc),
+      order_expression: Project.arel_table[:last_repository_check_at].desc.nulls_last,
+      reversed_order_expression: Project.arel_table[:last_repository_check_at].asc.nulls_last,
       order_direction: :desc,
       nullable: :nulls_last,
       distinct: false)

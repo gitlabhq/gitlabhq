@@ -24,14 +24,12 @@ describe('Clusters store actions', () => {
       captureException.mockRestore();
     });
 
-    it('should report sentry error', (done) => {
+    it('should report sentry error', async () => {
       const sentryError = new Error('New Sentry Error');
       const tag = 'sentryErrorTag';
 
-      testAction(actions.reportSentryError, { error: sentryError, tag }, {}, [], [], () => {
-        expect(captureException).toHaveBeenCalledWith(sentryError);
-        done();
-      });
+      await testAction(actions.reportSentryError, { error: sentryError, tag }, {}, [], []);
+      expect(captureException).toHaveBeenCalledWith(sentryError);
     });
   });
 
@@ -62,10 +60,10 @@ describe('Clusters store actions', () => {
 
     afterEach(() => mock.restore());
 
-    it('should commit SET_CLUSTERS_DATA with received response', (done) => {
+    it('should commit SET_CLUSTERS_DATA with received response', () => {
       mock.onGet().reply(200, apiData, headers);
 
-      testAction(
+      return testAction(
         actions.fetchClusters,
         { endpoint: apiData.endpoint },
         {},
@@ -75,14 +73,13 @@ describe('Clusters store actions', () => {
           { type: types.SET_LOADING_CLUSTERS, payload: false },
         ],
         [],
-        () => done(),
       );
     });
 
-    it('should show flash on API error', (done) => {
+    it('should show flash on API error', async () => {
       mock.onGet().reply(400, 'Not Found');
 
-      testAction(
+      await testAction(
         actions.fetchClusters,
         { endpoint: apiData.endpoint },
         {},
@@ -100,13 +97,10 @@ describe('Clusters store actions', () => {
             },
           },
         ],
-        () => {
-          expect(createFlash).toHaveBeenCalledWith({
-            message: expect.stringMatching('error'),
-          });
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalledWith({
+        message: expect.stringMatching('error'),
+      });
     });
 
     describe('multiple api requests', () => {
@@ -128,8 +122,8 @@ describe('Clusters store actions', () => {
         pollStop.mockRestore();
       });
 
-      it('should stop polling after MAX Requests', (done) => {
-        testAction(
+      it('should stop polling after MAX Requests', async () => {
+        await testAction(
           actions.fetchClusters,
           { endpoint: apiData.endpoint },
           {},
@@ -139,47 +133,43 @@ describe('Clusters store actions', () => {
             { type: types.SET_LOADING_CLUSTERS, payload: false },
           ],
           [],
-          () => {
-            expect(pollRequest).toHaveBeenCalledTimes(1);
+        );
+        expect(pollRequest).toHaveBeenCalledTimes(1);
+        expect(pollStop).toHaveBeenCalledTimes(0);
+        jest.advanceTimersByTime(pollInterval);
+
+        return waitForPromises()
+          .then(() => {
+            expect(pollRequest).toHaveBeenCalledTimes(2);
             expect(pollStop).toHaveBeenCalledTimes(0);
             jest.advanceTimersByTime(pollInterval);
-
-            waitForPromises()
-              .then(() => {
-                expect(pollRequest).toHaveBeenCalledTimes(2);
-                expect(pollStop).toHaveBeenCalledTimes(0);
-                jest.advanceTimersByTime(pollInterval);
-              })
-              .then(() => waitForPromises())
-              .then(() => {
-                expect(pollRequest).toHaveBeenCalledTimes(MAX_REQUESTS);
-                expect(pollStop).toHaveBeenCalledTimes(0);
-                jest.advanceTimersByTime(pollInterval);
-              })
-              .then(() => waitForPromises())
-              .then(() => {
-                expect(pollRequest).toHaveBeenCalledTimes(MAX_REQUESTS + 1);
-                // Stops poll once it exceeds the MAX_REQUESTS limit
-                expect(pollStop).toHaveBeenCalledTimes(1);
-                jest.advanceTimersByTime(pollInterval);
-              })
-              .then(() => waitForPromises())
-              .then(() => {
-                // Additional poll requests are not made once pollStop is called
-                expect(pollRequest).toHaveBeenCalledTimes(MAX_REQUESTS + 1);
-                expect(pollStop).toHaveBeenCalledTimes(1);
-              })
-              .then(done)
-              .catch(done.fail);
-          },
-        );
+          })
+          .then(() => waitForPromises())
+          .then(() => {
+            expect(pollRequest).toHaveBeenCalledTimes(MAX_REQUESTS);
+            expect(pollStop).toHaveBeenCalledTimes(0);
+            jest.advanceTimersByTime(pollInterval);
+          })
+          .then(() => waitForPromises())
+          .then(() => {
+            expect(pollRequest).toHaveBeenCalledTimes(MAX_REQUESTS + 1);
+            // Stops poll once it exceeds the MAX_REQUESTS limit
+            expect(pollStop).toHaveBeenCalledTimes(1);
+            jest.advanceTimersByTime(pollInterval);
+          })
+          .then(() => waitForPromises())
+          .then(() => {
+            // Additional poll requests are not made once pollStop is called
+            expect(pollRequest).toHaveBeenCalledTimes(MAX_REQUESTS + 1);
+            expect(pollStop).toHaveBeenCalledTimes(1);
+          });
       });
 
-      it('should stop polling and report to Sentry when data is invalid', (done) => {
+      it('should stop polling and report to Sentry when data is invalid', async () => {
         const badApiResponse = { clusters: {} };
         mock.onGet().reply(200, badApiResponse, pollHeaders);
 
-        testAction(
+        await testAction(
           actions.fetchClusters,
           { endpoint: apiData.endpoint },
           {},
@@ -202,12 +192,9 @@ describe('Clusters store actions', () => {
               },
             },
           ],
-          () => {
-            expect(pollRequest).toHaveBeenCalledTimes(1);
-            expect(pollStop).toHaveBeenCalledTimes(1);
-            done();
-          },
         );
+        expect(pollRequest).toHaveBeenCalledTimes(1);
+        expect(pollStop).toHaveBeenCalledTimes(1);
       });
     });
   });

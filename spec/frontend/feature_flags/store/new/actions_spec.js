@@ -33,7 +33,7 @@ describe('Feature flags New Module Actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagSuccess ', (done) => {
+      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagSuccess ', () => {
         const actionParams = {
           name: 'name',
           description: 'description',
@@ -50,7 +50,7 @@ describe('Feature flags New Module Actions', () => {
         };
         mock.onPost(mockedState.endpoint, mapStrategiesToRails(actionParams)).replyOnce(200);
 
-        testAction(
+        return testAction(
           createFeatureFlag,
           actionParams,
           mockedState,
@@ -63,13 +63,12 @@ describe('Feature flags New Module Actions', () => {
               type: 'receiveCreateFeatureFlagSuccess',
             },
           ],
-          done,
         );
       });
     });
 
     describe('error', () => {
-      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagError ', (done) => {
+      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagError ', () => {
         const actionParams = {
           name: 'name',
           description: 'description',
@@ -88,7 +87,7 @@ describe('Feature flags New Module Actions', () => {
           .onPost(mockedState.endpoint, mapStrategiesToRails(actionParams))
           .replyOnce(500, { message: [] });
 
-        testAction(
+        return testAction(
           createFeatureFlag,
           actionParams,
           mockedState,
@@ -102,28 +101,26 @@ describe('Feature flags New Module Actions', () => {
               payload: { message: [] },
             },
           ],
-          done,
         );
       });
     });
   });
 
   describe('requestCreateFeatureFlag', () => {
-    it('should commit REQUEST_CREATE_FEATURE_FLAG mutation', (done) => {
-      testAction(
+    it('should commit REQUEST_CREATE_FEATURE_FLAG mutation', () => {
+      return testAction(
         requestCreateFeatureFlag,
         null,
         mockedState,
         [{ type: types.REQUEST_CREATE_FEATURE_FLAG }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveCreateFeatureFlagSuccess', () => {
-    it('should commit RECEIVE_CREATE_FEATURE_FLAG_SUCCESS mutation', (done) => {
-      testAction(
+    it('should commit RECEIVE_CREATE_FEATURE_FLAG_SUCCESS mutation', () => {
+      return testAction(
         receiveCreateFeatureFlagSuccess,
         null,
         mockedState,
@@ -133,20 +130,18 @@ describe('Feature flags New Module Actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('receiveCreateFeatureFlagError', () => {
-    it('should commit RECEIVE_CREATE_FEATURE_FLAG_ERROR mutation', (done) => {
-      testAction(
+    it('should commit RECEIVE_CREATE_FEATURE_FLAG_ERROR mutation', () => {
+      return testAction(
         receiveCreateFeatureFlagError,
         'There was an error',
         mockedState,
         [{ type: types.RECEIVE_CREATE_FEATURE_FLAG_ERROR, payload: 'There was an error' }],
         [],
-        done,
       );
     });
   });

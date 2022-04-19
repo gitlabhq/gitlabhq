@@ -228,8 +228,8 @@ class Packages::Package < ApplicationRecord
 
   def self.keyset_pagination_order(join_class:, column_name:, direction: :asc)
     join_table = join_class.table_name
-    asc_order_expression = Gitlab::Database.nulls_last_order("#{join_table}.#{column_name}", :asc)
-    desc_order_expression = Gitlab::Database.nulls_first_order("#{join_table}.#{column_name}", :desc)
+    asc_order_expression = join_class.arel_table[column_name].asc.nulls_last
+    desc_order_expression = join_class.arel_table[column_name].desc.nulls_first
     order_direction = direction == :asc ? asc_order_expression : desc_order_expression
     reverse_order_direction = direction == :asc ? desc_order_expression : asc_order_expression
     arel_order_classes = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::AREL_ORDER_CLASSES.invert

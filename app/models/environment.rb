@@ -66,10 +66,10 @@ class Environment < ApplicationRecord
   scope :stopped, -> { with_state(:stopped) }
 
   scope :order_by_last_deployed_at, -> do
-    order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
+    order(Arel::Nodes::Grouping.new(max_deployment_id_query).asc.nulls_first)
   end
   scope :order_by_last_deployed_at_desc, -> do
-    order(Gitlab::Database.nulls_last_order("(#{max_deployment_id_sql})", 'DESC'))
+    order(Arel::Nodes::Grouping.new(max_deployment_id_query).desc.nulls_last)
   end
   scope :order_by_name, -> { order('environments.name ASC') }
 
@@ -151,10 +151,11 @@ class Environment < ApplicationRecord
     find_by(id: id, slug: slug)
   end
 
-  def self.max_deployment_id_sql
-    Deployment.select(Deployment.arel_table[:id].maximum)
-    .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
-    .to_sql
+  def self.max_deployment_id_query
+    Arel.sql(
+      Deployment.select(Deployment.arel_table[:id].maximum)
+      .where(Deployment.arel_table[:environment_id].eq(arel_table[:id])).to_sql
+    )
   end
 
   def self.pluck_names

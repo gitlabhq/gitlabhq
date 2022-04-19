@@ -264,7 +264,6 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
         where(:nodes) do
           [
-            lazy { Issue.order(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) },
             lazy { Issue.order(Issue.arel_table[:relative_position].asc.nulls_last) }
           ]
         end
@@ -279,7 +278,6 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
         where(:nodes) do
           [
-            lazy { Issue.order(::Gitlab::Database.nulls_last_order('relative_position', 'DESC')) },
             lazy { Issue.order(Issue.arel_table[:relative_position].desc.nulls_last) }
 ]
         end
@@ -294,7 +292,6 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
         where(:nodes) do
           [
-            lazy { Issue.order(::Gitlab::Database.nulls_first_order('relative_position', 'ASC')).order(id: :asc) },
             lazy { Issue.order(Issue.arel_table[:relative_position].asc.nulls_first).order(id: :asc) }
 ]
         end
@@ -309,7 +306,6 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
         where(:nodes) do
           [
-            lazy { Issue.order(::Gitlab::Database.nulls_first_order('relative_position', 'DESC')).order(id: :asc) },
             lazy { Issue.order(Issue.arel_table[:relative_position].desc.nulls_first).order(id: :asc) }
 ]
         end

@@ -178,14 +178,14 @@ class Member < ApplicationRecord
     unscoped.from(distinct_members, :members)
   end
 
-  scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
-  scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
-  scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
-  scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
-  scope :order_recent_last_activity, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_activity_on', 'DESC')) }
-  scope :order_oldest_last_activity, -> { left_join_users.reorder(Gitlab::Database.nulls_first_order('users.last_activity_on', 'ASC')) }
-  scope :order_recent_created_user, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.created_at', 'DESC')) }
-  scope :order_oldest_created_user, -> { left_join_users.reorder(Gitlab::Database.nulls_first_order('users.created_at', 'ASC')) }
+  scope :order_name_asc, -> { left_join_users.reorder(User.arel_table[:name].asc.nulls_last) }
+  scope :order_name_desc, -> { left_join_users.reorder(User.arel_table[:name].desc.nulls_last) }
+  scope :order_recent_sign_in, -> { left_join_users.reorder(User.arel_table[:last_sign_in_at].desc.nulls_last) }
+  scope :order_oldest_sign_in, -> { left_join_users.reorder(User.arel_table[:last_sign_in_at].asc.nulls_last) }
+  scope :order_recent_last_activity, -> { left_join_users.reorder(User.arel_table[:last_activity_on].desc.nulls_last) }
+  scope :order_oldest_last_activity, -> { left_join_users.reorder(User.arel_table[:last_activity_on].asc.nulls_first) }
+  scope :order_recent_created_user, -> { left_join_users.reorder(User.arel_table[:created_at].desc.nulls_last) }
+  scope :order_oldest_created_user, -> { left_join_users.reorder(User.arel_table[:created_at].asc.nulls_first) }
 
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 

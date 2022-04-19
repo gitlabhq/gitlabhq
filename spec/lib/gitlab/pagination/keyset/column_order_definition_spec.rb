@@ -140,8 +140,8 @@ RSpec.describe Gitlab::Pagination::Keyset::ColumnOrderDefinition do
         described_class.new(
           attribute_name: :name,
           column_expression: Project.arel_table[:name],
-          order_expression: Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', :desc),
-          reversed_order_expression: Gitlab::Database.nulls_first_order('merge_request_metrics.merged_at', :asc),
+          order_expression: MergeRequest::Metrics.arel_table[:merged_at].desc.nulls_last,
+          reversed_order_expression: MergeRequest::Metrics.arel_table[:merged_at].asc.nulls_first,
           order_direction: :desc,
           nullable: :nulls_last, # null values are always last
           distinct: false
@@ -161,8 +161,8 @@ RSpec.describe Gitlab::Pagination::Keyset::ColumnOrderDefinition do
           described_class.new(
             attribute_name: :name,
             column_expression: Project.arel_table[:name],
-            order_expression: Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', :desc),
-            reversed_order_expression: Gitlab::Database.nulls_first_order('merge_request_metrics.merged_at', :asc),
+            order_expression: MergeRequest::Metrics.arel_table[:merged_at].desc.nulls_last,
+            reversed_order_expression: MergeRequest::Metrics.arel_table[:merged_at].asc.nulls_first,
             order_direction: :desc,
             nullable: true,
             distinct: false
@@ -175,8 +175,8 @@ RSpec.describe Gitlab::Pagination::Keyset::ColumnOrderDefinition do
           described_class.new(
             attribute_name: :name,
             column_expression: Project.arel_table[:name],
-            order_expression: Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', :desc),
-            reversed_order_expression: Gitlab::Database.nulls_first_order('merge_request_metrics.merged_at', :asc),
+            order_expression: MergeRequest::Metrics.arel_table[:merged_at].desc.nulls_last,
+            reversed_order_expression: MergeRequest::Metrics.arel_table[:merged_at].asc.nulls_first,
             order_direction: :desc,
             nullable: :nulls_last,
             distinct: true
@@ -191,8 +191,8 @@ RSpec.describe Gitlab::Pagination::Keyset::ColumnOrderDefinition do
       described_class.new(
         attribute_name: :name,
         column_expression: Project.arel_table[:name],
-        order_expression: Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', :desc),
-        reversed_order_expression: Gitlab::Database.nulls_first_order('merge_request_metrics.merged_at', :asc),
+        order_expression: MergeRequest::Metrics.arel_table[:merged_at].desc.nulls_last,
+        reversed_order_expression: MergeRequest::Metrics.arel_table[:merged_at].asc.nulls_first,
         order_direction: :desc,
         nullable: :nulls_last, # null values are always last
         distinct: false

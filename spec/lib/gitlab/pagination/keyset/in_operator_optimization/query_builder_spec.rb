@@ -121,8 +121,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: :relative_position,
           column_expression: Issue.arel_table[:relative_position],
-          order_expression: Gitlab::Database.nulls_last_order('relative_position', :desc),
-          reversed_order_expression: Gitlab::Database.nulls_first_order('relative_position', :asc),
+          order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
+          reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
           order_direction: :desc,
           nullable: :nulls_last,
           distinct: false

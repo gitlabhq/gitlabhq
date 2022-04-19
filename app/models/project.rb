@@ -2876,6 +2876,11 @@ class Project < ApplicationRecord
     Projects::RecordTargetPlatformsWorker.perform_async(id)
   end
 
+  def inactive?
+    (statistics || build_statistics).storage_size > ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes &&
+      last_activity_at < ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
+  end
+
   private
 
   # overridden in EE

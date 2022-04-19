@@ -650,14 +650,6 @@ module ProjectsHelper
     "You must enable HTTPS for all your domains first"
   end
 
-  def pages_https_only_label_class
-    if pages_https_only_disabled?
-      "list-label disabled"
-    else
-      "list-label"
-    end
-  end
-
   def filter_starrer_path(options = {})
     options = params.slice(:sort).merge(options).permit!
     "#{request.path}?#{options.to_param}"

@@ -27,9 +27,9 @@ describe('error tracking settings actions', () => {
       refreshCurrentPage.mockClear();
     });
 
-    it('should request and transform the project list', (done) => {
+    it('should request and transform the project list', async () => {
       mock.onGet(TEST_HOST).reply(() => [200, { projects: projectList }]);
-      testAction(
+      await testAction(
         actions.fetchProjects,
         null,
         state,
@@ -41,16 +41,13 @@ describe('error tracking settings actions', () => {
             payload: projectList.map(convertObjectPropsToCamelCase),
           },
         ],
-        () => {
-          expect(mock.history.get.length).toBe(1);
-          done();
-        },
       );
+      expect(mock.history.get.length).toBe(1);
     });
 
-    it('should handle a server error', (done) => {
+    it('should handle a server error', async () => {
       mock.onGet(`${TEST_HOST}.json`).reply(() => [400]);
-      testAction(
+      await testAction(
         actions.fetchProjects,
         null,
         state,
@@ -61,27 +58,23 @@ describe('error tracking settings actions', () => {
             type: 'receiveProjectsError',
           },
         ],
-        () => {
-          expect(mock.history.get.length).toBe(1);
-          done();
-        },
       );
+      expect(mock.history.get.length).toBe(1);
     });
 
-    it('should request projects correctly', (done) => {
-      testAction(
+    it('should request projects correctly', () => {
+      return testAction(
         actions.requestProjects,
         null,
         state,
         [{ type: types.SET_PROJECTS_LOADING, payload: true }, { type: types.RESET_CONNECT }],
         [],
-        done,
       );
     });
 
-    it('should receive projects correctly', (done) => {
+    it('should receive projects correctly', () => {
       const testPayload = [];
-      testAction(
+      return testAction(
         actions.receiveProjectsSuccess,
         testPayload,
         state,
@@ -91,13 +84,12 @@ describe('error tracking settings actions', () => {
           { type: types.SET_PROJECTS_LOADING, payload: false },
         ],
         [],
-        done,
       );
     });
 
-    it('should handle errors when receiving projects', (done) => {
+    it('should handle errors when receiving projects', () => {
       const testPayload = [];
-      testAction(
+      return testAction(
         actions.receiveProjectsError,
         testPayload,
         state,
@@ -107,7 +99,6 @@ describe('error tracking settings actions', () => {
           { type: types.SET_PROJECTS_LOADING, payload: false },
         ],
         [],
-        done,
       );
     });
   });
@@ -126,18 +117,16 @@ describe('error tracking settings actions', () => {
       mock.restore();
     });
 
-    it('should save the page', (done) => {
+    it('should save the page', async () => {
       mock.onPatch(TEST_HOST).reply(200);
-      testAction(actions.updateSettings, null, state, [], [{ type: 'requestSettings' }], () => {
-        expect(mock.history.patch.length).toBe(1);
-        expect(refreshCurrentPage).toHaveBeenCalled();
-        done();
-      });
+      await testAction(actions.updateSettings, null, state, [], [{ type: 'requestSettings' }]);
+      expect(mock.history.patch.length).toBe(1);
+      expect(refreshCurrentPage).toHaveBeenCalled();
     });
 
-    it('should handle a server error', (done) => {
+    it('should handle a server error', async () => {
       mock.onPatch(TEST_HOST).reply(400);
-      testAction(
+      await testAction(
         actions.updateSettings,
         null,
         state,
@@ -149,57 +138,50 @@ describe('error tracking settings actions', () => {
             payload: new Error('Request failed with status code 400'),
           },
         ],
-        () => {
-          expect(mock.history.patch.length).toBe(1);
-          done();
-        },
       );
+      expect(mock.history.patch.length).toBe(1);
     });
 
-    it('should request to save the page', (done) => {
-      testAction(
+    it('should request to save the page', () => {
+      return testAction(
         actions.requestSettings,
         null,
         state,
         [{ type: types.UPDATE_SETTINGS_LOADING, payload: true }],
         [],
-        done,
       );
     });
 
-    it('should handle errors when requesting to save the page', (done) => {
-      testAction(
+    it('should handle errors when requesting to save the page', () => {
+      return testAction(
         actions.receiveSettingsError,
         {},
         state,
         [{ type: types.UPDATE_SETTINGS_LOADING, payload: false }],
         [],
-        done,
       );
     });
   });
 
   describe('generic actions to update the store', () => {
     const testData = 'test';
-    it('should reset the `connect success` flag when updating the api host', (done) => {
-      testAction(
+    it('should reset the `connect success` flag when updating the api host', () => {
+      return testAction(
         actions.updateApiHost,
         testData,
         state,
         [{ type: types.UPDATE_API_HOST, payload: testData }, { type: types.RESET_CONNECT }],
         [],
-        done,
       );
     });
 
-    it('should reset the `connect success` flag when updating the token', (done) => {
-      testAction(
+    it('should reset the `connect success` flag when updating the token', () => {
+      return testAction(
         actions.updateToken,
         testData,
         state,
         [{ type: types.UPDATE_TOKEN, payload: testData }, { type: types.RESET_CONNECT }],
         [],
-        done,
       );
     });
 

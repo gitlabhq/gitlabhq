@@ -118,15 +118,15 @@ class Issue < ApplicationRecord
 
   scope :not_authored_by, ->(user) { where.not(author_id: user) }
 
-  scope :order_due_date_asc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
-  scope :order_due_date_desc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'DESC')) }
+  scope :order_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
+  scope :order_due_date_desc, -> { reorder(arel_table[:due_date].desc.nulls_last) }
   scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
   scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
   scope :order_severity_desc, -> { includes(:issuable_severity).order('issuable_severities.severity DESC NULLS LAST') }
-  scope :order_escalation_status_asc, -> { includes(:incident_management_issuable_escalation_status).order(::Gitlab::Database.nulls_last_order('incident_management_issuable_escalation_status.status')) }
-  scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(::Gitlab::Database.nulls_last_order('incident_management_issuable_escalation_status.status', 'DESC')) }
+  scope :order_escalation_status_asc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].asc.nulls_last).references(:incident_management_issuable_escalation_status) }
+  scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].desc.nulls_last).references(:incident_management_issuable_escalation_status) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, project: [:project_feature, :route, namespace: :route]) }
@@ -344,8 +344,8 @@ class Issue < ApplicationRecord
     Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
       attribute_name: 'relative_position',
       column_expression: arel_table[:relative_position],
-      order_expression: Gitlab::Database.nulls_last_order('issues.relative_position', 'ASC'),
-      reversed_order_expression: Gitlab::Database.nulls_last_order('issues.relative_position', 'DESC'),
+      order_expression: Issue.arel_table[:relative_position].asc.nulls_last,
+      reversed_order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
       order_direction: :asc,
       nullable: :nulls_last,
       distinct: false

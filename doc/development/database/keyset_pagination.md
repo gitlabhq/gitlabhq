@@ -166,7 +166,7 @@ These order objects can be defined in the model classes as normal ActiveRecord s
 Consider the following scope:
 
 ```ruby
-scope = Issue.where(project_id: 10).order(Gitlab::Database.nulls_last_order('relative_position', 'DESC'))
+scope = Issue.where(project_id: 10).order(Issue.arel_table[:relative_position].desc.nulls_last)
 # SELECT "issues".* FROM "issues" WHERE "issues"."project_id" = 10 ORDER BY relative_position DESC NULLS LAST
 
 scope.keyset_paginate # raises: Gitlab::Pagination::Keyset::UnsupportedScopeOrder: The order on the scope does not support keyset pagination
@@ -190,8 +190,8 @@ order = Gitlab::Pagination::Keyset::Order.build([
   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
     attribute_name: 'relative_position',
     column_expression: Issue.arel_table[:relative_position],
-    order_expression: Gitlab::Database.nulls_last_order('relative_position', 'DESC'),
-    reversed_order_expression: Gitlab::Database.nulls_first_order('relative_position', 'ASC'),
+    order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
+    reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
     nullable: :nulls_last,
     order_direction: :desc,
     distinct: false

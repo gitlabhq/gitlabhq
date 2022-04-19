@@ -329,15 +329,15 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :order_by_metric, ->(metric, direction) do
-    reverse_direction = { 'ASC' => 'DESC', 'DESC' => 'ASC' }
-    reversed_direction = reverse_direction[direction] || raise("Unknown sort direction was given: #{direction}")
+    column_expression = MergeRequest::Metrics.arel_table[metric]
+    column_expression_with_direction = direction == 'ASC' ? column_expression.asc : column_expression.desc
 
     order = Gitlab::Pagination::Keyset::Order.build([
       Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
         attribute_name: "merge_request_metrics_#{metric}",
-        column_expression: MergeRequest::Metrics.arel_table[metric],
-        order_expression: Gitlab::Database.nulls_last_order("merge_request_metrics.#{metric}", direction),
-        reversed_order_expression: Gitlab::Database.nulls_first_order("merge_request_metrics.#{metric}", reversed_direction),
+        column_expression: column_expression,
+        order_expression: column_expression_with_direction.nulls_last,
+        reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
         order_direction: direction,
         nullable: :nulls_last,
         distinct: false,

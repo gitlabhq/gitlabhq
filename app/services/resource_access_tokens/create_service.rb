@@ -75,7 +75,6 @@ module ResourceAccessTokens
     end
 
     def generate_email
-      # Default emaildomain need to be reworked. See gitlab-org/gitlab#260305
       email_pattern = "#{resource_type}#{resource.id}_bot%s@noreply.#{Gitlab.config.gitlab.host}"
 
       uniquify.string(-> (n) { Kernel.sprintf(email_pattern, n) }) do |s|

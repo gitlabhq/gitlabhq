@@ -120,18 +120,20 @@ describe('Pipelines table in Commits and Merge requests', () => {
       });
 
       describe('pipeline badge counts', () => {
-        it('should receive update-pipelines-count event', (done) => {
+        it('should receive update-pipelines-count event', () => {
           const element = document.createElement('div');
           document.body.appendChild(element);
 
-          element.addEventListener('update-pipelines-count', (event) => {
-            expect(event.detail.pipelineCount).toEqual(10);
-            done();
+          return new Promise((resolve) => {
+            element.addEventListener('update-pipelines-count', (event) => {
+              expect(event.detail.pipelineCount).toEqual(10);
+              resolve();
+            });
+
+            createComponent();
+
+            element.appendChild(wrapper.vm.$el);
           });
-
-          createComponent();
-
-          element.appendChild(wrapper.vm.$el);
         });
       });
     });

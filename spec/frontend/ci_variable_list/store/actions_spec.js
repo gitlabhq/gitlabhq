@@ -86,10 +86,10 @@ describe('CI variable list store actions', () => {
   });
 
   describe('deleteVariable', () => {
-    it('dispatch correct actions on successful deleted variable', (done) => {
+    it('dispatch correct actions on successful deleted variable', () => {
       mock.onPatch(state.endpoint).reply(200);
 
-      testAction(
+      return testAction(
         actions.deleteVariable,
         {},
         state,
@@ -99,16 +99,13 @@ describe('CI variable list store actions', () => {
           { type: 'receiveDeleteVariableSuccess' },
           { type: 'fetchVariables' },
         ],
-        () => {
-          done();
-        },
       );
     });
 
-    it('should show flash error and set error in state on delete failure', (done) => {
+    it('should show flash error and set error in state on delete failure', async () => {
       mock.onPatch(state.endpoint).reply(500, '');
 
-      testAction(
+      await testAction(
         actions.deleteVariable,
         {},
         state,
@@ -120,19 +117,16 @@ describe('CI variable list store actions', () => {
             payload: payloadError,
           },
         ],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalled();
     });
   });
 
   describe('updateVariable', () => {
-    it('dispatch correct actions on successful updated variable', (done) => {
+    it('dispatch correct actions on successful updated variable', () => {
       mock.onPatch(state.endpoint).reply(200);
 
-      testAction(
+      return testAction(
         actions.updateVariable,
         {},
         state,
@@ -142,16 +136,13 @@ describe('CI variable list store actions', () => {
           { type: 'receiveUpdateVariableSuccess' },
           { type: 'fetchVariables' },
         ],
-        () => {
-          done();
-        },
       );
     });
 
-    it('should show flash error and set error in state on update failure', (done) => {
+    it('should show flash error and set error in state on update failure', async () => {
       mock.onPatch(state.endpoint).reply(500, '');
 
-      testAction(
+      await testAction(
         actions.updateVariable,
         mockVariable,
         state,
@@ -163,19 +154,16 @@ describe('CI variable list store actions', () => {
             payload: payloadError,
           },
         ],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalled();
     });
   });
 
   describe('addVariable', () => {
-    it('dispatch correct actions on successful added variable', (done) => {
+    it('dispatch correct actions on successful added variable', () => {
       mock.onPatch(state.endpoint).reply(200);
 
-      testAction(
+      return testAction(
         actions.addVariable,
         {},
         state,
@@ -185,16 +173,13 @@ describe('CI variable list store actions', () => {
           { type: 'receiveAddVariableSuccess' },
           { type: 'fetchVariables' },
         ],
-        () => {
-          done();
-        },
       );
     });
 
-    it('should show flash error and set error in state on add failure', (done) => {
+    it('should show flash error and set error in state on add failure', async () => {
       mock.onPatch(state.endpoint).reply(500, '');
 
-      testAction(
+      await testAction(
         actions.addVariable,
         {},
         state,
@@ -206,19 +191,16 @@ describe('CI variable list store actions', () => {
             payload: payloadError,
           },
         ],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalled();
     });
   });
 
   describe('fetchVariables', () => {
-    it('dispatch correct actions on fetchVariables', (done) => {
+    it('dispatch correct actions on fetchVariables', () => {
       mock.onGet(state.endpoint).reply(200, { variables: mockData.mockVariables });
 
-      testAction(
+      return testAction(
         actions.fetchVariables,
         {},
         state,
@@ -230,29 +212,24 @@ describe('CI variable list store actions', () => {
             payload: prepareDataForDisplay(mockData.mockVariables),
           },
         ],
-        () => {
-          done();
-        },
       );
     });
 
-    it('should show flash error and set error in state on fetch variables failure', (done) => {
+    it('should show flash error and set error in state on fetch variables failure', async () => {
       mock.onGet(state.endpoint).reply(500);
 
-      testAction(actions.fetchVariables, {}, state, [], [{ type: 'requestVariables' }], () => {
-        expect(createFlash).toHaveBeenCalledWith({
-          message: 'There was an error fetching the variables.',
-        });
-        done();
+      await testAction(actions.fetchVariables, {}, state, [], [{ type: 'requestVariables' }]);
+      expect(createFlash).toHaveBeenCalledWith({
+        message: 'There was an error fetching the variables.',
       });
     });
   });
 
   describe('fetchEnvironments', () => {
-    it('dispatch correct actions on fetchEnvironments', (done) => {
+    it('dispatch correct actions on fetchEnvironments', () => {
       Api.environments = jest.fn().mockResolvedValue({ data: mockData.mockEnvironments });
 
-      testAction(
+      return testAction(
         actions.fetchEnvironments,
         {},
         state,
@@ -264,28 +241,17 @@ describe('CI variable list store actions', () => {
             payload: prepareEnvironments(mockData.mockEnvironments),
           },
         ],
-        () => {
-          done();
-        },
       );
     });
 
-    it('should show flash error and set error in state on fetch environments failure', (done) => {
+    it('should show flash error and set error in state on fetch environments failure', async () => {
       Api.environments = jest.fn().mockRejectedValue();
 
-      testAction(
-        actions.fetchEnvironments,
-        {},
-        state,
-        [],
-        [{ type: 'requestEnvironments' }],
-        () => {
-          expect(createFlash).toHaveBeenCalledWith({
-            message: 'There was an error fetching the environments information.',
-          });
-          done();
-        },
-      );
+      await testAction(actions.fetchEnvironments, {}, state, [], [{ type: 'requestEnvironments' }]);
+
+      expect(createFlash).toHaveBeenCalledWith({
+        message: 'There was an error fetching the environments information.',
+      });
     });
   });
 

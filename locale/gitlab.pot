@@ -13288,7 +13288,7 @@ msgstr ""
 msgid "Display source"
 msgstr ""
 
-msgid "Display time tracking in issues in total hours only."
+msgid "Display time tracking in issues in total hours only. %{link_start}What is time tracking?%{link_end}"
 msgstr ""
 
 msgid "Do not display content for customer experience improvement and offers from third parties"
@@ -42464,9 +42464,6 @@ msgid "What is repository mirroring?"
 msgstr ""
 
 msgid "What is squashing?"
-msgstr ""
-
-msgid "What is time tracking?"
 msgstr ""
 
 msgid "What is your job title? (optional)"

@@ -94,26 +94,28 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
 
   context "NULLS order given as as an Arel literal" do
     context 'when NULLS LAST order is given without a tie-breaker' do
-      let(:scope) { Project.order(::Gitlab::Database.nulls_last_order('created_at', 'ASC')) }
+      let(:scope) { Project.order(Project.arel_table[:created_at].asc.nulls_last) }
 
       it 'sets the column definition for created_at appropriately' do
         expect(column_definition.attribute_name).to eq('created_at')
       end
 
       it 'orders by primary key' do
-        expect(sql_with_order).to end_with('ORDER BY "projects".created_at ASC NULLS LAST, "projects"."id" DESC')
+        expect(sql_with_order)
+          .to end_with('ORDER BY "projects"."created_at" ASC NULLS LAST, "projects"."id" DESC')
       end
     end
 
     context 'when NULLS FIRST order is given with a tie-breaker' do
-      let(:scope) { Issue.order(::Gitlab::Database.nulls_first_order('relative_position', 'DESC')).order(id: :asc) }
+      let(:scope) { Issue.order(Issue.arel_table[:relative_position].desc.nulls_first).order(id: :asc) }
 
       it 'sets the column definition for created_at appropriately' do
         expect(column_definition.attribute_name).to eq('relative_position')
       end
 
       it 'orders by the given primary key' do
-        expect(sql_with_order).to end_with('ORDER BY "issues".relative_position DESC NULLS FIRST, "issues"."id" ASC')
+        expect(sql_with_order)
+          .to end_with('ORDER BY "issues"."relative_position" DESC NULLS FIRST, "issues"."id" ASC')
       end
     end
   end
@@ -159,8 +161,8 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
       where(:scope) do
         [
           lazy { Project.order(Arel.sql('projects.updated_at created_at Asc Nulls Last')) },
-          lazy { Project.order(::Gitlab::Database.nulls_first_order('created_at', 'ZZZ')) },
-          lazy { Project.order(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) }
+          lazy { Project.order(Arel.sql('projects.created_at ZZZ NULLS FIRST')) },
+          lazy { Project.order(Arel.sql('projects.relative_position ASC NULLS LAST')) }
         ]
       end
 

@@ -185,16 +185,6 @@ RSpec.describe Gitlab::Database do
     end
   end
 
-  describe '.nulls_last_order' do
-    it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column ASC NULLS LAST'}
-    it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC NULLS LAST'}
-  end
-
-  describe '.nulls_first_order' do
-    it { expect(described_class.nulls_first_order('column', 'ASC')).to eq 'column ASC NULLS FIRST'}
-    it { expect(described_class.nulls_first_order('column', 'DESC')).to eq 'column DESC NULLS FIRST'}
-  end
-
   describe '.db_config_for_connection' do
     context 'when the regular connection is used' do
       it 'returns db_config' do

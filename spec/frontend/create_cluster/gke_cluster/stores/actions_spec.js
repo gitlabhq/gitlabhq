@@ -14,53 +14,49 @@ import {
 
 describe('GCP Cluster Dropdown Store Actions', () => {
   describe('setProject', () => {
-    it('should set project', (done) => {
-      testAction(
+    it('should set project', () => {
+      return testAction(
         actions.setProject,
         selectedProjectMock,
         { selectedProject: {} },
         [{ type: 'SET_PROJECT', payload: selectedProjectMock }],
         [],
-        done,
       );
     });
   });
 
   describe('setZone', () => {
-    it('should set zone', (done) => {
-      testAction(
+    it('should set zone', () => {
+      return testAction(
         actions.setZone,
         selectedZoneMock,
         { selectedZone: '' },
         [{ type: 'SET_ZONE', payload: selectedZoneMock }],
         [],
-        done,
       );
     });
   });
 
   describe('setMachineType', () => {
-    it('should set machine type', (done) => {
-      testAction(
+    it('should set machine type', () => {
+      return testAction(
         actions.setMachineType,
         selectedMachineTypeMock,
         { selectedMachineType: '' },
         [{ type: 'SET_MACHINE_TYPE', payload: selectedMachineTypeMock }],
         [],
-        done,
       );
     });
   });
 
   describe('setIsValidatingProjectBilling', () => {
-    it('should set machine type', (done) => {
-      testAction(
+    it('should set machine type', () => {
+      return testAction(
         actions.setIsValidatingProjectBilling,
         true,
         { isValidatingProjectBilling: null },
         [{ type: 'SET_IS_VALIDATING_PROJECT_BILLING', payload: true }],
         [],
-        done,
       );
     });
   });
@@ -94,8 +90,8 @@ describe('GCP Cluster Dropdown Store Actions', () => {
     });
 
     describe('validateProjectBilling', () => {
-      it('checks project billing status from Google API', (done) => {
-        testAction(
+      it('checks project billing status from Google API', () => {
+        return testAction(
           actions.validateProjectBilling,
           true,
           {
@@ -110,7 +106,6 @@ describe('GCP Cluster Dropdown Store Actions', () => {
             { type: 'SET_PROJECT_BILLING_STATUS', payload: true },
           ],
           [{ type: 'setIsValidatingProjectBilling', payload: false }],
-          done,
         );
       });
     });

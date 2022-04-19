@@ -17,10 +17,14 @@ describe('Contributors store actions', () => {
       mock = new MockAdapter(axios);
     });
 
-    it('should commit SET_CHART_DATA with received response', (done) => {
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('should commit SET_CHART_DATA with received response', () => {
       mock.onGet().reply(200, chartData);
 
-      testAction(
+      return testAction(
         actions.fetchChartData,
         { endpoint },
         {},
@@ -30,30 +34,22 @@ describe('Contributors store actions', () => {
           { type: types.SET_LOADING_STATE, payload: false },
         ],
         [],
-        () => {
-          mock.restore();
-          done();
-        },
       );
     });
 
-    it('should show flash on API error', (done) => {
+    it('should show flash on API error', async () => {
       mock.onGet().reply(400, 'Not Found');
 
-      testAction(
+      await testAction(
         actions.fetchChartData,
         { endpoint },
         {},
         [{ type: types.SET_LOADING_STATE, payload: true }],
         [],
-        () => {
-          expect(createFlash).toHaveBeenCalledWith({
-            message: expect.stringMatching('error'),
-          });
-          mock.restore();
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalledWith({
+        message: expect.stringMatching('error'),
+      });
     });
   });
 });

@@ -98,7 +98,7 @@ describe('DiffLineNoteForm', () => {
     });
 
     describe('saveNoteForm', () => {
-      it('should call saveNote action with proper params', (done) => {
+      it('should call saveNote action with proper params', async () => {
         const saveDiffDiscussionSpy = jest
           .spyOn(wrapper.vm, 'saveDiffDiscussion')
           .mockReturnValue(Promise.resolve());
@@ -123,16 +123,11 @@ describe('DiffLineNoteForm', () => {
           lineRange,
         };
 
-        wrapper.vm
-          .handleSaveNote('note body')
-          .then(() => {
-            expect(saveDiffDiscussionSpy).toHaveBeenCalledWith({
-              note: 'note body',
-              formData,
-            });
-          })
-          .then(done)
-          .catch(done.fail);
+        await wrapper.vm.handleSaveNote('note body');
+        expect(saveDiffDiscussionSpy).toHaveBeenCalledWith({
+          note: 'note body',
+          formData,
+        });
       });
     });
   });

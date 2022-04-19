@@ -20,11 +20,11 @@ describe('error tracking actions', () => {
   });
 
   describe('startPolling', () => {
-    it('should start polling for data', (done) => {
+    it('should start polling for data', () => {
       const payload = { errors: [{ id: 1 }, { id: 2 }] };
 
       mock.onGet().reply(httpStatusCodes.OK, payload);
-      testAction(
+      return testAction(
         actions.startPolling,
         {},
         {},
@@ -35,16 +35,13 @@ describe('error tracking actions', () => {
           { type: types.SET_LOADING, payload: false },
         ],
         [{ type: 'stopPolling' }],
-        () => {
-          done();
-        },
       );
     });
 
-    it('should show flash on API error', (done) => {
+    it('should show flash on API error', async () => {
       mock.onGet().reply(httpStatusCodes.BAD_REQUEST);
 
-      testAction(
+      await testAction(
         actions.startPolling,
         {},
         {},
@@ -53,11 +50,8 @@ describe('error tracking actions', () => {
           { type: types.SET_LOADING, payload: false },
         ],
         [],
-        () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalledTimes(1);
     });
   });
 

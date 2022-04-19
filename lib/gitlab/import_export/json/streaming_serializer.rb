@@ -145,8 +145,8 @@ module Gitlab
           arel_order_classes = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::AREL_ORDER_CLASSES.invert
           reverse_direction = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::REVERSED_ORDER_DIRECTIONS[direction]
           reverse_nulls_position = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::REVERSED_NULL_POSITIONS[nulls_position]
-          order_expression = ::Gitlab::Database.nulls_order(column, direction, nulls_position)
-          reverse_order_expression = ::Gitlab::Database.nulls_order(column, reverse_direction, reverse_nulls_position)
+          order_expression = arel_table[column].public_send(direction).public_send(nulls_position) # rubocop:disable GitlabSecurity/PublicSend
+          reverse_order_expression = arel_table[column].public_send(reverse_direction).public_send(reverse_nulls_position) # rubocop:disable GitlabSecurity/PublicSend
 
           ::Gitlab::Pagination::Keyset::Order.build([
             ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(

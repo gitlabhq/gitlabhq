@@ -1,4 +1,4 @@
-= form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-localization-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-localization-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -11,13 +11,9 @@
 
     .form-group
       = f.label :time_tracking, _('Time tracking'), class: 'label-bold'
-      .form-check
-        = f.check_box :time_tracking_limit_to_hours, class: 'form-check-input'
-        = f.label :time_tracking_limit_to_hours, class: 'form-check-label' do
-          = _('Limit display of time tracking units to hours.')
-        .form-text.text-muted
-          = _('Display time tracking in issues in total hours only.')
-          = link_to _('What is time tracking?'), help_page_path('user/project/time_tracking.md'), target: '_blank', rel: 'noopener noreferrer'
+      - time_tracking_help_link = help_page_path('user/project/time_tracking.md')
+      - time_tracking_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: time_tracking_help_link }
+      = f.gitlab_ui_checkbox_component :time_tracking_limit_to_hours, _('Limit display of time tracking units to hours.'), help_text: _('Display time tracking in issues in total hours only. %{link_start}What is time tracking?%{link_end}').html_safe % { link_start: time_tracking_help_link_start, link_end: '</a>'.html_safe }
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
 
