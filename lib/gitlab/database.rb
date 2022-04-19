@@ -210,7 +210,7 @@ module Gitlab
     end
 
     def self.db_config_names
-      ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name)
+      ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name) - ['geo']
     end
 
     # This returns all matching schemas that a given connection can use

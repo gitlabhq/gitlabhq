@@ -235,6 +235,26 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.db_config_names' do
+    let(:expected) { %w[foo bar] }
+
+    it 'includes only main by default' do
+      allow(::ActiveRecord::Base).to receive(:configurations).and_return(
+        double(configs_for: %w[foo bar].map { |x| double(name: x) })
+      )
+
+      expect(described_class.db_config_names).to eq(expected)
+    end
+
+    it 'excludes geo when that is included' do
+      allow(::ActiveRecord::Base).to receive(:configurations).and_return(
+        double(configs_for: %w[foo bar geo].map { |x| double(name: x) })
+      )
+
+      expect(described_class.db_config_names).to eq(expected)
+    end
+  end
+
   describe '.gitlab_schemas_for_connection' do
     it 'does raise exception for invalid connection' do
       expect { described_class.gitlab_schemas_for_connection(:invalid) }.to raise_error /key not found: "unknown"/

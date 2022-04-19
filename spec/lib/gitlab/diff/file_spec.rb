@@ -51,6 +51,54 @@ RSpec.describe Gitlab::Diff::File do
     project.commit(branch_name).diffs.diff_files.first
   end
 
+  describe '#initialize' do
+    let(:commit) { project.commit("532c837") }
+
+    context 'when file is ipynb' do
+      let(:ipynb_semantic_diff) { false }
+      let(:rendered_diffs_viewer) { false }
+
+      before do
+        stub_feature_flags(ipynb_semantic_diff: ipynb_semantic_diff, rendered_diffs_viewer: rendered_diffs_viewer)
+      end
+
+      context 'when ipynb_semantic_diff is off, and rendered_viewer is off' do
+        it 'does not generate notebook diffs' do
+          expect(Gitlab::Diff::CustomDiff).not_to receive(:preprocess_before_diff)
+          expect(diff_file.rendered).to be_nil
+        end
+      end
+
+      context 'when ipynb_semantic_diff is off, and rendered_viewer is on' do
+        let(:rendered_diffs_viewer) { true }
+
+        it 'does not generate rendered diff' do
+          expect(Gitlab::Diff::CustomDiff).not_to receive(:preprocess_before_diff)
+          expect(diff_file.rendered).to be_nil
+        end
+      end
+
+      context 'when ipynb_semantic_diff is on, and rendered_viewer is off' do
+        let(:ipynb_semantic_diff) { true }
+
+        it 'transforms using custom diff CustomDiff' do
+          expect(Gitlab::Diff::CustomDiff).to receive(:preprocess_before_diff).and_call_original
+          expect(diff_file.rendered).to be_nil
+        end
+      end
+
+      context 'when ipynb_semantic_diff is on, and rendered_viewer is on' do
+        let(:ipynb_semantic_diff) { true }
+        let(:rendered_diffs_viewer) { true }
+
+        it 'transforms diff using NotebookDiffFile' do
+          expect(Gitlab::Diff::CustomDiff).not_to receive(:preprocess_before_diff)
+          expect(diff_file.rendered).not_to be_nil
+        end
+      end
+    end
+  end
+
   describe '#has_renderable?' do
     context 'file is ipynb' do
       let(:commit) { project.commit("532c837") }
@@ -100,6 +148,20 @@ RSpec.describe Gitlab::Diff::File do
       context 'when not modified' do
         it 'is nil' do
           expect(diff_file).to receive(:modified_file?).and_return(false)
+
+          expect(diff_file.rendered).to be_nil
+        end
+      end
+
+      context 'when semantic ipynb is off' do
+        before do
+          stub_feature_flags(ipynb_semantic_diff: false)
+        end
+
+        it 'returns nil' do
+          expect(diff_file).not_to receive(:modified_file?)
+          expect(diff_file).not_to receive(:ipynb?)
+          expect(diff).not_to receive(:too_large?)
 
           expect(diff_file.rendered).to be_nil
         end

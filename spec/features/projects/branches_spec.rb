@@ -199,14 +199,6 @@ RSpec.describe 'Branches' do
       project.add_maintainer(user)
     end
 
-    describe 'Initial branches page' do
-      it 'shows description for admin' do
-        visit project_branches_filtered_path(project, state: 'all')
-
-        expect(page).to have_content("Protected branches can be managed in project settings")
-      end
-    end
-
     it 'shows the merge request button' do
       visit project_branches_path(project)
 

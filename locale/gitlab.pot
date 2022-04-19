@@ -6262,9 +6262,6 @@ msgstr ""
 msgid "Branches|Please type the following to confirm:"
 msgstr ""
 
-msgid "Branches|Protected branches can be managed in %{project_settings_link}."
-msgstr ""
-
 msgid "Branches|Show active branches"
 msgstr ""
 
@@ -6320,9 +6317,6 @@ msgid "Branches|diverged from upstream"
 msgstr ""
 
 msgid "Branches|merged"
-msgstr ""
-
-msgid "Branches|project settings"
 msgstr ""
 
 msgid "Branches|protected"
@@ -9154,9 +9148,6 @@ msgstr ""
 msgid "Committed by"
 msgstr ""
 
-msgid "Commit…"
-msgstr ""
-
 msgid "Community forum"
 msgstr ""
 
@@ -10487,6 +10478,9 @@ msgid "Create branch"
 msgstr ""
 
 msgid "Create commit"
+msgstr ""
+
+msgid "Create commit..."
 msgstr ""
 
 msgid "Create common files more quickly, and standardize their format."

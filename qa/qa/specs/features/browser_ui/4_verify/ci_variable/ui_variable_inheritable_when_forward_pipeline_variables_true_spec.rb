@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  # Running with FF :ci_trigger_forward_variables
-  RSpec.describe 'Verify', :runner do
+  # TODO:
+  # Remove FF :ci_trigger_forward_variables
+  # when https://gitlab.com/gitlab-org/gitlab/-/issues/355572 is closed
+  RSpec.describe 'Verify', :runner, feature_flag: {
+    name: 'ci_trigger_forward_variables',
+    scope: :global
+  } do
     describe 'UI defined variable' do
       include_context 'variable inheritance test prep'
 

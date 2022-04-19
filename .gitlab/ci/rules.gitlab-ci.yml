@@ -883,6 +883,9 @@
       changes: *feature-flag-development-config-patterns
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *nodejs-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request

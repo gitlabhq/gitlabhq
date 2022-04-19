@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # TODO:
-  # Remove FF :ci_trigger_forward_variables
-  # when https://gitlab.com/gitlab-org/gitlab/-/issues/355572 is closed
-  RSpec.shared_context 'variable inheritance test prep', feature_flag: {
-    name: 'ci_trigger_forward_variables',
-    scope: :global
-  } do
+  RSpec.shared_context 'variable inheritance test prep' do
     let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
 
     let(:group) do
