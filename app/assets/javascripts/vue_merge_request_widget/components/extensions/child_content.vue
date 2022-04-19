@@ -55,19 +55,21 @@ export default {
     <div class="gl-display-flex">
       <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" class="gl-pl-0" />
       <div class="gl-w-full">
-        <div class="gl-flex-wrap gl-display-flex gl-w-full">
-          <div class="gl-mr-4 gl-display-flex gl-align-items-center">
-            <p v-safe-html="generateText(data.text)" class="gl-m-0"></p>
+        <div class="gl-display-flex gl-flex-nowrap">
+          <div class="gl-flex-wrap gl-display-flex gl-w-full">
+            <div class="gl-mr-4 gl-display-flex gl-align-items-center">
+              <p v-safe-html="generateText(data.text)" class="gl-m-0"></p>
+            </div>
+            <div v-if="data.link">
+              <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
+            </div>
+            <div v-if="data.supportingText">
+              <p v-safe-html="generateText(data.supportingText)" class="gl-m-0"></p>
+            </div>
+            <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
+              {{ data.badge.text }}
+            </gl-badge>
           </div>
-          <div v-if="data.link">
-            <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
-          </div>
-          <div v-if="data.supportingText">
-            <p v-safe-html="generateText(data.supportingText)" class="gl-m-0"></p>
-          </div>
-          <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
-            {{ data.badge.text }}
-          </gl-badge>
           <actions :widget="widgetLabel" :tertiary-buttons="data.actions" class="gl-ml-auto" />
         </div>
         <p

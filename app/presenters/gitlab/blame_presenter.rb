@@ -28,6 +28,10 @@ module Gitlab
       precalculate_data_by_commit!
     end
 
+    def first_line
+      blame.first_line
+    end
+
     def groups
       @groups ||= blame.groups
     end

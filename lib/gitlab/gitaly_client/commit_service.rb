@@ -315,11 +315,12 @@ module Gitlab
         response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color } }
       end
 
-      def raw_blame(revision, path)
+      def raw_blame(revision, path, range:)
         request = Gitaly::RawBlameRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
-          path: encode_binary(path)
+          path: encode_binary(path),
+          range: (encode_binary(range) if range)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request, timeout: GitalyClient.medium_timeout)

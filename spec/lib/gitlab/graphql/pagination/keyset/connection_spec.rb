@@ -77,6 +77,17 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       expect(decoded_cursor(cursor)).to eq('id' => project.id.to_s)
     end
 
+    context 'when SimpleOrderBuilder cannot build keyset paginated query' do
+      it 'increments the `old_keyset_pagination_usage` counter', :prometheus do
+        expect(Gitlab::Pagination::Keyset::SimpleOrderBuilder).to receive(:build).and_return([false, nil])
+
+        decoded_cursor(cursor)
+
+        counter = Gitlab::Metrics.registry.get(:old_keyset_pagination_usage)
+        expect(counter.get(model: 'Project')).to eq(1)
+      end
+    end
+
     context 'when an order is specified' do
       let(:nodes) { Project.order(:updated_at) }
 

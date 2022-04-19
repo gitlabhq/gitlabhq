@@ -2,11 +2,16 @@
 
 module Gitlab
   class Blame
-    attr_accessor :blob, :commit
+    attr_accessor :blob, :commit, :range
 
-    def initialize(blob, commit)
+    def initialize(blob, commit, range: nil)
       @blob = blob
       @commit = commit
+      @range = range
+    end
+
+    def first_line
+      range&.first || 1
     end
 
     def groups(highlight: true)
@@ -14,7 +19,7 @@ module Gitlab
       groups = []
       current_group = nil
 
-      i = 0
+      i = first_line - 1
       blame.each do |commit, line, previous_path|
         commit = Commit.new(commit, project)
         commit.lazy_author # preload author
@@ -37,7 +42,7 @@ module Gitlab
     private
 
     def blame
-      @blame ||= Gitlab::Git::Blame.new(repository, @commit.id, @blob.path)
+      @blame ||= Gitlab::Git::Blame.new(repository, @commit.id, @blob.path, range: range)
     end
 
     def highlighted_lines

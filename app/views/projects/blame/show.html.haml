@@ -22,7 +22,7 @@
 
     .table-responsive.file-content.blame.code{ class: user_color_scheme }
       %table
-        - current_line = 1
+        - current_line = @blame.first_line
         - @blame.groups.each do |blame_group|
           - commit_data = @blame.commit_data(blame_group[:commit])
           - line_count = blame_group[:lines].count

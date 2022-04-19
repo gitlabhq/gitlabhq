@@ -27,6 +27,14 @@ RSpec.describe Gitlab::BlamePresenter do
     end
   end
 
+  describe '#first_line' do
+    it 'delegates #first_line call to the blame' do
+      expect(blame).to receive(:first_line).at_least(:once).and_call_original
+
+      subject.first_line
+    end
+  end
+
   describe '#commit_data' do
     it 'has the data necessary to render the view' do
       commit = blame.groups.first[:commit]

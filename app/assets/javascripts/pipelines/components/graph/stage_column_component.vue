@@ -141,7 +141,9 @@ export default {
         class="gl-display-flex gl-justify-content-space-between gl-relative"
         :class="$options.titleClasses"
       >
-        <div>{{ formattedTitle }}</div>
+        <span :title="formattedTitle" class="gl-text-truncate gl-pr-3 gl-w-85p">
+          {{ formattedTitle }}
+        </span>
         <action-component
           v-if="hasAction && canUpdatePipeline"
           :action-icon="action.icon"
