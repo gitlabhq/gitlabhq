@@ -214,7 +214,7 @@ module API
         use :statistics_params
         use :with_custom_attributes
       end
-      get ":user_id/projects", feature_category: :projects do
+      get ":user_id/projects", feature_category: :projects, urgency: :default do
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -251,7 +251,8 @@ module API
         use :statistics_params
         use :with_custom_attributes
       end
-      get feature_category: :projects do
+      # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/211495
+      get feature_category: :projects, urgency: :low do
         present_projects load_projects
       end
 
@@ -340,7 +341,8 @@ module API
         optional :license, type: Boolean, default: false,
                            desc: 'Include project license data'
       end
-      get ":id", feature_category: :projects do
+      # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/357622
+      get ":id", feature_category: :projects, urgency: :default do
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,

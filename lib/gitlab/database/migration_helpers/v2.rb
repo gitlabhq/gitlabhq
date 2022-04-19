@@ -134,6 +134,8 @@ module Gitlab
         # batch_column_name - option is for tables without primary key, in this
         #        case another unique integer column can be used. Example: :user_id
         def rename_column_concurrently(table, old_column, new_column, type: nil, batch_column_name: :id)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
           setup_renamed_column(__callee__, table, old_column, new_column, type, batch_column_name)
 
           with_lock_retries do
@@ -181,6 +183,8 @@ module Gitlab
         #        case another unique integer column can be used. Example: :user_id
         #
         def undo_cleanup_concurrent_column_rename(table, old_column, new_column, type: nil, batch_column_name: :id)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
           setup_renamed_column(__callee__, table, new_column, old_column, type, batch_column_name)
 
           with_lock_retries do

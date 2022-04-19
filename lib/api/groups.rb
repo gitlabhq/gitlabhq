@@ -249,7 +249,8 @@ module API
         use :with_custom_attributes
         optional :with_projects, type: Boolean, default: true, desc: 'Omit project details'
       end
-      get ":id", feature_category: :subgroups do
+      # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357841
+      get ":id", feature_category: :subgroups, urgency: :low do
         group = find_group!(params[:id])
         group.preload_shared_group_links
 
@@ -300,7 +301,8 @@ module API
         use :with_custom_attributes
         use :optional_projects_params
       end
-      get ":id/projects", feature_category: :subgroups do
+      # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/211498
+      get ":id/projects", feature_category: :subgroups, urgency: :low do
         finder_options = {
           only_owned: !params[:with_shared],
           include_subgroups: params[:include_subgroups],
@@ -347,7 +349,7 @@ module API
         use :group_list_params
         use :with_custom_attributes
       end
-      get ":id/subgroups", feature_category: :subgroups do
+      get ":id/subgroups", feature_category: :subgroups, urgency: :low do
         groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups params, groups
       end

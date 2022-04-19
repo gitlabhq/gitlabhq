@@ -33,6 +33,9 @@ class UsersController < ApplicationController
 
   feature_category :snippets, [:snippets]
 
+  # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357914
+  urgency :low, [:show]
+
   def show
     respond_to do |format|
       format.html

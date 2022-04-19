@@ -73,10 +73,20 @@ class UserRecentEventsFinder
 
     return Event.none if users.empty?
 
-    if event_filter.filter == EventFilter::ALL
-      execute_optimized_multi(users)
+    if Feature.enabled?(:optimized_followed_users_queries, current_user)
+      query_builder_params = event_filter.in_operator_query_builder_params(users)
+
+      Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder
+        .new(**query_builder_params)
+        .execute
+        .limit(limit)
+        .offset(params[:offset] || 0)
     else
-      event_filter.apply_filter(Event.where(author: users).limit_recent(limit, params[:offset] || 0))
+      if event_filter.filter == EventFilter::ALL
+        execute_optimized_multi(users)
+      else
+        event_filter.apply_filter(Event.where(author: users).limit_recent(limit, params[:offset] || 0))
+      end
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

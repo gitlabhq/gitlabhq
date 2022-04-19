@@ -7,6 +7,7 @@ module API
     before { authenticate! }
 
     feature_category :authentication_and_authorization
+    urgency :low
 
     helpers ::API::Helpers::MembersHelpers
 

@@ -28,6 +28,19 @@ class CustomEmoji < ApplicationRecord
 
   alias_attribute :url, :file # this might need a change in https://gitlab.com/gitlab-org/gitlab/-/issues/230467
 
+  # Find custom emoji for the given resource.
+  # A resource can be either a Project or a Group, or anything responding to #root_ancestor.
+  # Usually it's the return value of #resource_parent on any model.
+  scope :for_resource, -> (resource) do
+    return none if resource.nil?
+
+    namespace = resource.root_ancestor
+
+    return none if namespace.nil? || Feature.disabled?(:custom_emoji, namespace)
+
+    namespace.custom_emoji
+  end
+
   private
 
   def valid_emoji_name

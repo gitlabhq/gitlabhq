@@ -24,11 +24,9 @@ module Gitlab
     end
 
     def valid_custom_emoji?(record, value)
-      namespace = record.try(:awardable).try(:namespace)
+      resource = record.try(:resource_parent)
 
-      return unless namespace
-
-      namespace.custom_emoji&.by_name(value.to_s)&.any?
+      CustomEmoji.for_resource(resource).by_name(value.to_s).any?
     end
   end
 end

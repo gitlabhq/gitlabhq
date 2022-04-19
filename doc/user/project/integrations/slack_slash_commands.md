@@ -18,7 +18,7 @@ For GitLab.com, use the [GitLab Slack app](gitlab_slack_application.md) instead.
 
 ## Configure GitLab and Slack
 
-Slack slash command [integrations](overview.md#accessing-integrations)
+Slack slash command integrations
 are scoped to a project.
 
 1. In GitLab, on the top bar, select **Menu > Projects** and find your project.

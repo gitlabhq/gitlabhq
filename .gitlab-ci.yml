@@ -93,6 +93,7 @@ variables:
   CHECK_PRECOMPILED_ASSETS: "true"
   FF_USE_FASTZIP: "true"
   SKIP_FLAKY_TESTS_AUTOMATICALLY: "true"
+  RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
 

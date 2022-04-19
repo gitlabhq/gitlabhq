@@ -692,6 +692,8 @@ module Gitlab
       # batch_column_name - option for tables without a primary key, in this case
       #            another unique integer column can be used. Example: :user_id
       def undo_cleanup_concurrent_column_type_change(table, column, old_type, type_cast_function: nil, batch_column_name: :id, limit: nil)
+        Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
         temp_column = "#{column}_for_type_change"
 
         # Using a descriptive name that includes orinal column's name risks
@@ -1639,7 +1641,9 @@ into similar problems in the future (e.g. when new tables are created).
           old_value = Arel::Nodes::NamedFunction.new(type_cast_function, [old_value])
         end
 
-        update_column_in_batches(table, new, old_value, batch_column_name: batch_column_name)
+        Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+          update_column_in_batches(table, new, old_value, batch_column_name: batch_column_name)
+        end
 
         add_not_null_constraint(table, new) unless old_col.null
 

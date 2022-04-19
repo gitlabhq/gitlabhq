@@ -199,6 +199,17 @@ cd /home/git/gitlab
 git diff origin/PREVIOUS_BRANCH:config/gitlab.yml.example origin/BRANCH:config/gitlab.yml.example
 ```
 
+#### New configuration options for `database.yml`
+
+There might be configuration options available for [`database.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database.yml.postgresql).
+View them with the command below and apply them manually to your current `database.yml`:
+
+```shell
+cd /home/git/gitlab
+
+git diff origin/PREVIOUS_BRANCH:config/database.yml.postgresql origin/BRANCH:config/database.yml.postgresql
+```
+
 #### NGINX configuration
 
 Ensure you're still up-to-date with the latest NGINX configuration changes:

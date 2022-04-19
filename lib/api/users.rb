@@ -99,7 +99,7 @@ module API
         use :optional_index_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get feature_category: :users do
+      get feature_category: :users, urgency: :default do
         authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
 
         unless current_user&.admin?
@@ -143,7 +143,7 @@ module API
         use :with_custom_attributes
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get ":id", feature_category: :users do
+      get ":id", feature_category: :users, urgency: :medium do
         forbidden!('Not authorized!') unless current_user
 
         unless current_user.admin?
@@ -168,7 +168,7 @@ module API
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
-      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users do
+      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users, urgency: :high do
         user = find_user(params[:user_id])
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -919,7 +919,7 @@ module API
         desc 'Get the currently authenticated user' do
           success Entities::UserPublic
         end
-        get feature_category: :users do
+        get feature_category: :users, urgency: :medium do
           entity =
             if current_user.admin?
               Entities::UserWithAdmin

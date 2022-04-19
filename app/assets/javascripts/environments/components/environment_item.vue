@@ -1,12 +1,20 @@
 <script>
-import { GlDropdown, GlTooltipDirective, GlIcon, GlLink, GlSprintf, GlBadge } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlTooltipDirective,
+  GlIcon,
+  GlLink,
+  GlSprintf,
+  GlBadge,
+  GlAvatar,
+  GlAvatarLink,
+} from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import eventHub from '../event_hub';
 import ActionsComponent from './environment_actions.vue';
@@ -41,7 +49,8 @@ export default {
     StopComponent,
     TerminalButtonComponent,
     TooltipOnTruncate,
-    UserAvatarLink,
+    GlAvatar,
+    GlAvatarLink,
     CiIcon,
   },
   directives: {
@@ -649,22 +658,27 @@ export default {
       class="table-section deployment-column d-none d-md-block"
       :class="tableData.deploy.spacing"
       role="gridcell"
-      data-testid="enviornment-deployment-id-cell"
+      data-testid="environment-deployment-id-cell"
     >
       <span v-if="shouldRenderDeploymentID" class="text-break-word">
         {{ deploymentInternalId }}
       </span>
 
-      <span v-if="!isFolder && deploymentHasUser" class="text-break-word">
+      <span
+        v-if="!isFolder && deploymentHasUser"
+        class="text-break-word gl-display-inline-flex gl-align-items-center"
+      >
         <gl-sprintf :message="s__('Environments|by %{avatar}')">
           <template #avatar>
-            <user-avatar-link
-              :link-href="deploymentUser.web_url"
-              :img-src="deploymentUser.avatar_url"
-              :img-alt="userImageAltDescription"
-              :tooltip-text="deploymentUser.username"
-              class="js-deploy-user-container float-none"
-            />
+            <gl-avatar-link :href="deploymentUser.web_url" class="gl-ml-2">
+              <gl-avatar
+                :src="deploymentUser.avatar_url"
+                :entity-name="deploymentUser.username"
+                :title="deploymentUser.username"
+                :alt="userImageAltDescription"
+                :size="24"
+              />
+            </gl-avatar-link>
           </template>
         </gl-sprintf>
       </span>
@@ -753,20 +767,24 @@ export default {
             <ci-icon class="gl-mr-2" :status="upcomingDeployment.deployable.status" />
           </gl-link>
         </div>
-        <div class="gl-display-flex">
-          <span v-if="upcomingDeployment.user" class="text-break-word">
-            <gl-sprintf :message="s__('Environments|by %{avatar}')">
-              <template #avatar>
-                <user-avatar-link
-                  :link-href="upcomingDeployment.user.web_url"
-                  :img-src="upcomingDeployment.user.avatar_url"
-                  :img-alt="upcomingDeploymentUserImageAltDescription"
-                  :tooltip-text="upcomingDeployment.user.username"
+        <span
+          v-if="upcomingDeployment.user"
+          class="text-break-word gl-display-inline-flex gl-align-items-center gl-mt-2"
+        >
+          <gl-sprintf :message="s__('Environments|by %{avatar}')">
+            <template #avatar>
+              <gl-avatar-link :href="upcomingDeployment.user.web_url" class="gl-ml-2">
+                <gl-avatar
+                  :src="upcomingDeployment.user.avatar_url"
+                  :alt="upcomingDeploymentUserImageAltDescription"
+                  :entity-name="upcomingDeployment.user.username"
+                  :title="upcomingDeployment.user.username"
+                  :size="24"
                 />
-              </template>
-            </gl-sprintf>
-          </span>
-        </div>
+              </gl-avatar-link>
+            </template>
+          </gl-sprintf>
+        </span>
       </div>
     </div>
 

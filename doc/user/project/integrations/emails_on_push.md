@@ -9,17 +9,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 By enabling this service, you receive email notifications for every change
 that is pushed to your project.
 
-From the [Integrations page](overview.md#accessing-integrations)
-select **Emails on push** service to activate and configure it.
+To enable emails on push:
 
-In the _Recipients_ area, provide a list of emails separated by spaces or newlines.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Emails on push**.
+1. In the **Recipients** section, provide a list of emails separated by spaces or newlines.
+1. Configure the following options:
 
-The following options are available:
-
-- **Push events** - Email is triggered when a push event is received.
-- **Tag push events** - Email is triggered when a tag is created and pushed.
-- **Send from committer** - Send notifications from the committer's email address if the domain matches the domain used by your GitLab instance (such as `user@gitlab.com`).
-- **Disable code diffs** - Don't include possibly sensitive code diffs in notification body.
+   - **Push events** - Email is triggered when a push event is received.
+   - **Tag push events** - Email is triggered when a tag is created and pushed.
+   - **Send from committer** - Send notifications from the committer's email address if the domain matches the domain used by your GitLab instance (such as `user@gitlab.com`).
+   - **Disable code diffs** - Don't include possibly sensitive code diffs in notification body.
 
 | Settings | Notification |
 | --- | --- |

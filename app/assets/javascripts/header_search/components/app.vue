@@ -112,6 +112,9 @@ export default {
             count: this.searchOptions.length,
           });
     },
+    headerSearchActivityDescriptor() {
+      return this.showDropdown ? 'is-active' : 'is-not-active';
+    },
   },
   methods: {
     ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
@@ -143,7 +146,8 @@ export default {
     v-outside="closeDropdown"
     role="search"
     :aria-label="$options.i18n.searchGitlab"
-    class="header-search gl-relative"
+    class="header-search gl-relative gl-rounded-base"
+    :class="headerSearchActivityDescriptor"
   >
     <gl-search-box-by-type
       id="search"

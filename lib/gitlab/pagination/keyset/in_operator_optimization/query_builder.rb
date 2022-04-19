@@ -120,7 +120,7 @@ module Gitlab
               .from(array_cte)
               .join(Arel.sql("LEFT JOIN LATERAL (#{initial_keyset_query.to_sql}) #{table_name} ON TRUE"))
 
-            order_by_columns.each { |column| q.where(column.column_expression.not_eq(nil)) }
+            order_by_columns.each { |c| q.where(c.column_expression.not_eq(nil)) unless c.column.nullable? }
 
             q.as('array_scope_lateral_query')
           end
@@ -200,7 +200,7 @@ module Gitlab
               .project([*order_by_columns.original_column_names_as_arel_string, Arel.sql('position')])
               .from("UNNEST(#{list(order_by_columns.array_aggregated_column_names)}) WITH ORDINALITY AS u(#{list(order_by_columns.original_column_names)}, position)")
 
-            order_by_columns.each { |column| q.where(Arel.sql(column.original_column_name).not_eq(nil)) } # ignore rows where all columns are NULL
+            order_by_columns.each { |c| q.where(Arel.sql(c.original_column_name).not_eq(nil)) unless c.column.nullable? } # ignore rows where all columns are NULL
 
             q.order(Arel.sql(order_by_without_table_references)).take(1)
           end

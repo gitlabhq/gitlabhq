@@ -37,27 +37,25 @@ Display name override is not enabled by default, you need to ask your administra
 ## Configure GitLab to send notifications to Mattermost
 
 After the Mattermost instance has an incoming webhook set up, you can set up GitLab
-to send the notifications.
+to send the notifications:
 
-Navigate to the [Integrations page](overview.md#accessing-integrations)
-and select the **Mattermost notifications** service. Select the GitLab events
-you want to generate notifications for.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Mattermost notifications**.
+1. Select the GitLab events to generate notifications for. For each event you select, input the Mattermost channel
+   to receive the notification. You do not need to add the hash sign (`#`).
+1. Fill in the integration configuration:
 
-For each event you select, input the Mattermost channel you want to receive the
-notification. You do not need to add the hash sign (`#`).
-
-Then fill in the integration configuration:
-
-- **Webhook**: The incoming webhook URL on Mattermost, similar to
-  `http://mattermost.example/hooks/5xo…`.
-- **Username**: Optional. The username shown in messages sent to Mattermost.
-  To change the bot's username, provide a value.
-- **Notify only broken pipelines**: If you enable the **Pipeline** event, and you want
-  notifications about failed pipelines only.
-- **Branches for which notifications are to be sent**: The branches to send notifications for.
-- **Labels to be notified**: Optional. Labels required for the issue or merge request
-  to trigger a notification. Leave blank to notify for all issues and merge requests.
-- **Labels to be notified behavior**: When you use the **Labels to be notified** filter,
-  messages are sent when an issue or merge request contains _any_ of the labels specified
-  in the filter. You can also choose to trigger messages only when the issue or merge request
-  contains _all_ the labels defined in the filter.
+   - **Webhook**: The incoming webhook URL on Mattermost, similar to
+     `http://mattermost.example/hooks/5xo…`.
+   - **Username**: Optional. The username shown in messages sent to Mattermost.
+     To change the bot's username, provide a value.
+   - **Notify only broken pipelines**: If you enable the **Pipeline** event, and you want
+     notifications about failed pipelines only.
+   - **Branches for which notifications are to be sent**: The branches to send notifications for.
+   - **Labels to be notified**: Optional. Labels required for the issue or merge request
+     to trigger a notification. Leave blank to notify for all issues and merge requests.
+   - **Labels to be notified behavior**: When you use the **Labels to be notified** filter,
+     messages are sent when an issue or merge request contains _any_ of the labels specified
+     in the filter. You can also choose to trigger messages only when the issue or merge request
+     contains _all_ the labels defined in the filter.

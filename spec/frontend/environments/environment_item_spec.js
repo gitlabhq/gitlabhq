@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import { format } from 'timeago.js';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
@@ -44,10 +45,16 @@ describe('Environment item', () => {
 
   const findAutoStop = () => wrapper.find('.js-auto-stop');
   const findUpcomingDeployment = () => wrapper.find('[data-testid="upcoming-deployment"]');
+  const findLastDeployment = () => wrapper.find('[data-testid="environment-deployment-id-cell"]');
   const findUpcomingDeploymentContent = () =>
     wrapper.find('[data-testid="upcoming-deployment-content"]');
   const findUpcomingDeploymentStatusLink = () =>
     wrapper.find('[data-testid="upcoming-deployment-status-link"]');
+  const findLastDeploymentAvatarLink = () => findLastDeployment().findComponent(GlAvatarLink);
+  const findLastDeploymentAvatar = () => findLastDeployment().findComponent(GlAvatar);
+  const findUpcomingDeploymentAvatarLink = () =>
+    findUpcomingDeployment().findComponent(GlAvatarLink);
+  const findUpcomingDeploymentAvatar = () => findUpcomingDeployment().findComponent(GlAvatar);
 
   afterEach(() => {
     wrapper.destroy();
@@ -79,9 +86,19 @@ describe('Environment item', () => {
 
       describe('With user information', () => {
         it('should render user avatar with link to profile', () => {
-          expect(wrapper.find('.js-deploy-user-container').props('linkHref')).toEqual(
-            environment.last_deployment.user.web_url,
-          );
+          const avatarLink = findLastDeploymentAvatarLink();
+          const avatar = findLastDeploymentAvatar();
+          const { username, avatar_url, web_url } = environment.last_deployment.user;
+
+          expect(avatarLink.attributes('href')).toBe(web_url);
+          expect(avatar.props()).toMatchObject({
+            src: avatar_url,
+            entityName: username,
+          });
+          expect(avatar.attributes()).toMatchObject({
+            title: username,
+            alt: `${username}'s avatar`,
+          });
         });
       });
 
@@ -108,9 +125,16 @@ describe('Environment item', () => {
       describe('When the envionment has an upcoming deployment', () => {
         describe('When the upcoming deployment has a deployable', () => {
           it('should render the build ID and user', () => {
-            expect(findUpcomingDeploymentContent().text()).toMatchInterpolatedText(
-              '#27 by upcoming-username',
-            );
+            const avatarLink = findUpcomingDeploymentAvatarLink();
+            const avatar = findUpcomingDeploymentAvatar();
+            const { username, avatar_url, web_url } = environment.upcoming_deployment.user;
+
+            expect(findUpcomingDeploymentContent().text()).toMatchInterpolatedText('#27 by');
+            expect(avatarLink.attributes('href')).toBe(web_url);
+            expect(avatar.props()).toMatchObject({
+              src: avatar_url,
+              entityName: username,
+            });
           });
 
           it('should render a status icon with a link and tooltip', () => {
@@ -139,10 +163,17 @@ describe('Environment item', () => {
             });
           });
 
-          it('should still renders the build ID and user', () => {
-            expect(findUpcomingDeploymentContent().text()).toMatchInterpolatedText(
-              '#27 by upcoming-username',
-            );
+          it('should still render the build ID and user avatar', () => {
+            const avatarLink = findUpcomingDeploymentAvatarLink();
+            const avatar = findUpcomingDeploymentAvatar();
+            const { username, avatar_url, web_url } = environment.upcoming_deployment.user;
+
+            expect(findUpcomingDeploymentContent().text()).toMatchInterpolatedText('#27 by');
+            expect(avatarLink.attributes('href')).toBe(web_url);
+            expect(avatar.props()).toMatchObject({
+              src: avatar_url,
+              entityName: username,
+            });
           });
 
           it('should not render the status icon', () => {
@@ -383,7 +414,7 @@ describe('Environment item', () => {
     });
 
     it('should hide non-folder properties', () => {
-      expect(wrapper.find('[data-testid="environment-deployment-id-cell"]').exists()).toBe(false);
+      expect(findLastDeployment().exists()).toBe(false);
       expect(wrapper.find('[data-testid="environment-build-cell"]').exists()).toBe(false);
     });
   });

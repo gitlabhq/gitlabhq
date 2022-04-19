@@ -59,6 +59,11 @@ FactoryBot.define do
       target { design }
     end
 
+    factory :design_updated_event, traits: [:has_design] do
+      action { :updated }
+      target { design }
+    end
+
     factory :project_created_event do
       project factory: :project
       action { :created }

@@ -1516,6 +1516,29 @@ svg.s16 {
 .header-search {
   width: 320px;
 }
+.header-search.is-not-active::after {
+  content: "/";
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 8px;
+  transform: translateY(calc(50% - 4px));
+  padding: 4px 5px;
+  font-size: 12px;
+  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
+    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
+  line-height: 1;
+  vertical-align: middle;
+  border-width: 0;
+  border-style: solid;
+  border-image: none;
+  border-radius: 3px;
+  box-shadow: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
 .search {
   margin: 0 8px;
 }
@@ -1853,6 +1876,10 @@ body.gl-dark .header-search input::placeholder {
 }
 body.gl-dark .header-search input:active::placeholder {
   color: #868686;
+}
+body.gl-dark .header-search.is-not-active::after {
+  color: #fafafa;
+  background-color: rgba(250, 250, 250, 0.2);
 }
 body.gl-dark .search form {
   background-color: rgba(250, 250, 250, 0.2);

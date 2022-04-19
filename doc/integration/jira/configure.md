@@ -22,7 +22,8 @@ Prerequisites:
 
 To configure your project:
 
-1. Go to your project and select [**Settings > Integrations**](../../user/project/integrations/overview.md#accessing-integrations).
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Jira**.
 1. Select **Enable integration**.
 1. Select **Trigger** actions. Your choice determines whether a mention of Jira issue

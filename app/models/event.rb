@@ -31,8 +31,9 @@ class Event < ApplicationRecord
   private_constant :ACTIONS
 
   WIKI_ACTIONS = [:created, :updated, :destroyed].freeze
-
   DESIGN_ACTIONS = [:created, :updated, :destroyed].freeze
+  TEAM_ACTIONS = [:joined, :left, :expired].freeze
+  ISSUE_ACTIONS = [:created, :updated, :closed, :reopened].freeze
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
     issue:          Issue,

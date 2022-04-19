@@ -1390,6 +1390,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
 
       it 'reverses the operations of cleanup_concurrent_column_type_change' do
+        expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_ddl_mode!)
+
         expect(model).to receive(:check_trigger_permissions!).with(:users)
 
         expect(model).to receive(:create_column_from).with(
@@ -1415,6 +1417,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
 
       it 'passes the type_cast_function, batch_column_name and limit' do
+        expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_ddl_mode!)
+
         expect(model).to receive(:column_exists?).with(:users, :other_batch_column).and_return(true)
         expect(model).to receive(:check_trigger_permissions!).with(:users)
 

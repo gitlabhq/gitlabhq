@@ -8,8 +8,7 @@ module Banzai
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
 
       def call
-        return doc unless context[:project]
-        return doc unless Feature.enabled?(:custom_emoji, context[:project])
+        return doc unless resource_parent
 
         doc.xpath('descendant-or-self::text()').each do |node|
           content = node.to_html
@@ -50,12 +49,12 @@ module Banzai
 
       def has_custom_emoji?
         strong_memoize(:has_custom_emoji) do
-          namespace&.custom_emoji&.any?
+          CustomEmoji.for_resource(resource_parent).any?
         end
       end
 
-      def namespace
-        context[:project].namespace.root_ancestor
+      def resource_parent
+        context[:project] || context[:group]
       end
 
       def custom_emoji_candidates
@@ -63,7 +62,8 @@ module Banzai
       end
 
       def all_custom_emoji
-        @all_custom_emoji ||= namespace.custom_emoji.by_name(custom_emoji_candidates).index_by(&:name)
+        @all_custom_emoji ||=
+          CustomEmoji.for_resource(resource_parent).by_name(custom_emoji_candidates).index_by(&:name)
       end
     end
   end

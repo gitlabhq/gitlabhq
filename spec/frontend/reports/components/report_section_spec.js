@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import mountComponent, { mountComponentWithSlots } from 'helpers/vue_mount_component_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import reportSection from '~/reports/components/report_section.vue';
 
 describe('Report section', () => {
@@ -9,6 +10,7 @@ describe('Report section', () => {
   let wrapper;
   const ReportSection = Vue.extend(reportSection);
   const findCollapseButton = () => wrapper.findByTestId('report-section-expand-button');
+  const findPopover = () => wrapper.findComponent(HelpPopover);
 
   const resolvedIssues = [
     {
@@ -267,6 +269,35 @@ describe('Report section', () => {
       expect(vm.$el.textContent.trim()).toContain('This is loading');
       expect(vm.$el.textContent.trim()).not.toContain('This is an error');
       expect(vm.$el.textContent.trim()).not.toContain('This is a success');
+    });
+  });
+
+  describe('help popover', () => {
+    describe('when popover options are defined', () => {
+      const options = {
+        title: 'foo',
+        content: 'bar',
+      };
+
+      beforeEach(() => {
+        createComponent({
+          popoverOptions: options,
+        });
+      });
+
+      it('popover is shown with options', () => {
+        expect(findPopover().props('options')).toEqual(options);
+      });
+    });
+
+    describe('when popover options are not defined', () => {
+      beforeEach(() => {
+        createComponent({ popoverOptions: {} });
+      });
+
+      it('popover is not shown', () => {
+        expect(findPopover().exists()).toBe(false);
+      });
     });
   });
 });
