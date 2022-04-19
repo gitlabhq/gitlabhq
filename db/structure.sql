@@ -12004,7 +12004,8 @@ CREATE TABLE broadcast_messages (
     target_path character varying(255),
     broadcast_type smallint DEFAULT 1 NOT NULL,
     dismissable boolean,
-    target_access_levels integer[] DEFAULT '{}'::integer[] NOT NULL
+    target_access_levels integer[] DEFAULT '{}'::integer[] NOT NULL,
+    theme smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE broadcast_messages_id_seq

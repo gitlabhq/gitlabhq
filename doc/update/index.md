@@ -446,6 +446,17 @@ that may remain stuck permanently in a **pending** state.
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
 - If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
   Updating to 14.7.4 or later will reset runner registration tokens for your groups and projects.
+- GitLab 14.7 introduced a change where Gitaly expects persistent files in the `/tmp` directory.
+  When using the `noatime` mount option on `/tmp` in a node running Gitaly, most Linux distributions
+  run into [an issue with Git server hooks getting deleted](https://gitlab.com/gitlab-org/gitaly/-/issues/4113).
+  These conditions are present in the default Amazon Linux configuration.
+
+  If your Linux distribution manages files in `/tmp` with the `tmpfiles.d` service, you
+  can override the behavior of `tmpfiles.d` for the Gitaly files and avoid this issue:
+
+  ```shell
+  sudo echo "x /tmp/gitaly-hooks-*" > /etc/tmpfiles.d/gitaly-workaround.conf
+  ```
 
 ### 14.6.0
 

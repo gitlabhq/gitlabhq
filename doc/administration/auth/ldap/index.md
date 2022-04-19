@@ -518,7 +518,7 @@ GitLab doesn't support TLS client authentication. Complete these steps on your L
 The TLS client authentication setting in your LDAP server cannot be mandatory and clients cannot be
 authenticated with the TLS protocol.
 
-## Deleting users
+## Users deleted from LDAP
 
 Users deleted from the LDAP server:
 
@@ -530,6 +530,16 @@ However, these users can continue to use Git with SSH until the next time the
 
 To delete the account immediately, you can manually
 [block the user](../../../user/admin_area/moderate_users.md#block-a-user).
+
+## Updating user email addresses
+
+Email addresses on the LDAP server are considered the source of truth for users when LDAP is used to sign in. Updating user email
+addresses must be done on the LDAP server that manages the user. The email address for GitLab is updated either:
+
+- When the user next signs in.
+- When the next [user sync](ldap_synchronization.md#user-sync) is run.
+
+The updated user's previous email address becomes the secondary email address to preserve that user's commit history.
 
 ## Google Secure LDAP
 

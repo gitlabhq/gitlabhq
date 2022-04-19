@@ -309,4 +309,16 @@ RSpec.describe Gitlab::OmniauthInitializer do
       subject.execute([conf])
     end
   end
+
+  describe '.full_host' do
+    subject { described_class.full_host.call({}) }
+
+    let(:base_url) { 'http://localhost/test' }
+
+    before do
+      allow(Settings).to receive(:gitlab).and_return({ 'base_url' => base_url })
+    end
+
+    it { is_expected.to eq(base_url) }
+  end
 end

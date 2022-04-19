@@ -143,11 +143,30 @@ describe('Repository last commit component', () => {
   });
 
   it('renders the signature HTML as returned by the backend', async () => {
-    factory(createCommitData({ signatureHtml: '<button>Verified</button>' }));
+    factory(
+      createCommitData({
+        signatureHtml: `<a
+        class="btn gpg-status-box valid"
+        data-content="signature-content"
+        data-html="true"
+        data-placement="top"
+        data-title="signature-title"
+        data-toggle="popover"
+        role="button"
+        tabindex="0"
+        >
+          Verified
+        </a>`,
+      }),
+    );
 
     await nextTick();
 
-    expect(vm.element).toMatchSnapshot();
+    expect(vm.find('.gpg-status-box').html()).toBe(
+      `<a class="btn gpg-status-box valid" data-content="signature-content" data-html="true" data-placement="top" data-title="signature-title" data-toggle="popover" role="button" tabindex="0">
+  Verified
+</a>`,
+    );
   });
 
   it('sets correct CSS class if the commit message is empty', async () => {

@@ -103,7 +103,7 @@ export default {
       >
         <div
           v-if="commit.signature_html"
-          v-safe-html:[$options.safeHtmlConfig]="commit.signature_html"
+          v-html="commit.signature_html /* eslint-disable-line vue/no-v-html */"
         ></div>
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"

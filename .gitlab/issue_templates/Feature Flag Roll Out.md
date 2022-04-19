@@ -119,10 +119,10 @@ To do so, follow these steps:
 - [ ] Create a merge request with the following changes. Ask for review and merge it.
     - [ ] Set the `default_enabled` attribute in [the feature flag definition](https://docs.gitlab.com/ee/development/feature_flags/#feature-flag-definition-and-validation) to `true`.
     - [ ] Create [a changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog).
-- [ ] Ensure that the default-enabling MR has been deployed to both production and canary.
-      If the merge request was deployed before [the code cutoff](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
+- [ ] Ensure that the default-enabling MR has been included in the release package.
+      If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.
-    - [ ] `/chatops run auto_deploy status <merge-commit-of-default-enabling-mr>`
+    - [ ] `/chatops run release check <merge-request-url> <milestone>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] Set the next milestone to this rollout issue for scheduling [the flag removal](#release-the-feature).
 - [ ] (Optional) You can [create a separate issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20Flag%20Cleanup) for scheduling the steps below to [Release the feature](#release-the-feature).
@@ -152,10 +152,10 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
     - [ ] Remove all references to the feature flag from the codebase.
     - [ ] Remove the YAML definitions for the feature from the repository.
     - [ ] Create [a changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog).
-- [ ] Ensure that the cleanup MR has been deployed to both production and canary.
-      If the merge request was deployed before [the code cutoff](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
+- [ ] Ensure that the cleanup MR has been included in the release package.
+      If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.
-    - [ ] `/chatops run auto_deploy status <merge-commit-of-cleanup-mr>`
+    - [ ] `/chatops run release check <merge-request-url> <milestone>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel:
     - [ ] `/chatops run feature delete <feature-flag-name> --dev`

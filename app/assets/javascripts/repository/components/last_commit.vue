@@ -171,7 +171,7 @@ export default {
         <div class="commit-actions flex-row">
           <div
             v-if="commit.signatureHtml"
-            v-safe-html:[$options.safeHtmlConfig]="commit.signatureHtml"
+            v-html="commit.signatureHtml /* eslint-disable-line vue/no-v-html */"
           ></div>
           <div v-if="commit.pipeline" class="ci-status-link">
             <gl-link

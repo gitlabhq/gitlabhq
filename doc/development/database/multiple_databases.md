@@ -112,9 +112,9 @@ already many such examples that need to be fixed in
 The following steps are the process to remove cross-database joins between
 `ci_*` and non `ci_*` tables:
 
-1. **{check-circle}** Add all failing specs to the [`cross-join-allowlist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/f5de89daeb468fc45e1e95a76d1b5297aa53da11/spec/support/database/cross-join-allowlist.yml)
+1. **{check-circle}** Add all failing specs to the [`cross-join-allowlist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/database/cross-join-allowlist.yml)
    file.
-1. **{dotted-circle}** Find the code that caused the spec failure and wrap the isolated code
+1. **{check-circle}** Find the code that caused the spec failure and wrap the isolated code
    in [`allow_cross_joins_across_databases`](#allowlist-for-existing-cross-joins).
    Link to a new issue assigned to the correct team to remove the specs from the
    `cross-join-allowlist.yml` file.

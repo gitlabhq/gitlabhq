@@ -1412,6 +1412,16 @@ while the equation for the theory of relativity is E = mc<sup>2</sup>.
 
 <!-- vale gitlab.Spelling = YES -->
 
+### Keyboard HTML tag
+
+The `<kbd>` element is used to identify text that represents user keyboard input. Text surrounded by `<kbd>` tags is typically displayed in the browser's default monospace font.
+
+```html
+Press <kbd>Enter</kbd> to go to the next page.
+```
+
+Press <kbd>Enter</kbd> to go to the next page.
+
 ### Tables
 
 Tables are not part of the core Markdown spec, but they are part of GitLab Flavored Markdown.

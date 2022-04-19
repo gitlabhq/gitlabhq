@@ -12,6 +12,15 @@ RSpec.describe 'dev rake tasks' do
   end
 
   describe 'setup' do
+    around do |example|
+      old_force_value = ENV['force']
+
+      # setup rake task sets the force env var, so reset it
+      example.run
+
+      ENV['force'] = old_force_value # rubocop:disable RSpec/EnvAssignment
+    end
+
     subject(:setup_task) { run_rake_task('dev:setup') }
 
     let(:connections) { Gitlab::Database.database_base_models.values.map(&:connection) }

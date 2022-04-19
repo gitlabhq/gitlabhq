@@ -1,20 +1,5 @@
-.broadcast-message.broadcast-banner-message.gl-alert-warning.js-broadcast-banner-message-preview.gl-mt-3{ style: broadcast_message_style(@broadcast_message), class: ('gl-display-none' unless @broadcast_message.banner? ) }
-  .gl-alert-container
-    = sprite_icon('bullhorn', css_class: 'vertical-align-text-top')
-    .js-broadcast-message-preview
-      .gl-alert-content
-        - if @broadcast_message.message.present?
-          = render_broadcast_message(@broadcast_message)
-        - else
-          = _('Your message here')
-.d-flex.justify-content-center
-  .broadcast-message.broadcast-notification-message.preview.js-broadcast-notification-message-preview.mt-2{ class: ('hidden' unless @broadcast_message.notification? ) }
-    = sprite_icon('bullhorn', css_class: 'vertical-align-text-top')
-    .js-broadcast-message-preview
-      - if @broadcast_message.message.present?
-        = render_broadcast_message(@broadcast_message)
-      - else
-        = _('Your message here')
+#broadcast-message-preview
+  = render 'preview'
 
 = gitlab_ui_form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form js-quick-submit js-requires-input'} do |f|
   = form_errors(@broadcast_message)
@@ -34,19 +19,10 @@
       = f.select :broadcast_type, broadcast_type_options, {}, class: 'form-control js-broadcast-message-type'
   .form-group.row.js-broadcast-message-background-color-form-group{ class: ('hidden' unless @broadcast_message.banner? ) }
     .col-sm-2.col-form-label
-      = f.label :color, _("Background color")
+      = f.label :theme, _("Theme")
     .col-sm-10
       .input-group
-        .input-group-prepend
-          .input-group-text.label-color-preview{ :style => 'background-color: ' + @broadcast_message.color + '; color: ' + @broadcast_message.font }
-            = '&nbsp;'.html_safe
-        = f.text_field :color, class: "form-control gl-form-input js-broadcast-message-color"
-      .form-text.text-muted
-        = _('Choose any color.')
-        %br
-        = _("Or you can choose one of the suggested colors below")
-
-      = render_suggested_colors
+        = f.select :theme, broadcast_theme_options, {}, class: 'form-control js-broadcast-message-theme'
 
   .form-group.row.js-broadcast-message-dismissable-form-group{ class: ('hidden' unless @broadcast_message.banner? ) }
     .col-sm-2.col-form-label.pt-0

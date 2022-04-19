@@ -45,8 +45,8 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   end
 
   def preview
-    broadcast_message = BroadcastMessage.new(broadcast_message_params)
-    render json: { message: render_broadcast_message(broadcast_message) }
+    @broadcast_message = BroadcastMessage.new(broadcast_message_params)
+    render partial: 'admin/broadcast_messages/preview'
   end
 
   protected
@@ -58,8 +58,8 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   def broadcast_message_params
     params.require(:broadcast_message).permit(%i(
       color
+      theme
       ends_at
-      font
       message
       starts_at
       target_path
