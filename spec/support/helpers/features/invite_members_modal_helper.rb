@@ -5,19 +5,22 @@ module Spec
     module Helpers
       module Features
         module InviteMembersModalHelper
-          def invite_member(name, role: 'Guest', expires_at: nil)
+          def invite_member(names, role: 'Guest', expires_at: nil, refresh: true)
             click_on 'Invite members'
 
             page.within invite_modal_selector do
-              find(member_dropdown_selector).set(name)
+              Array.wrap(names).each do |name|
+                find(member_dropdown_selector).set(name)
 
-              wait_for_requests
-              click_button name
+                wait_for_requests
+                click_button name
+              end
+
               choose_options(role, expires_at)
 
               click_button 'Invite'
 
-              page.refresh
+              page.refresh if refresh
             end
           end
 

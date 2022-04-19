@@ -187,36 +187,15 @@ describe('Api', () => {
     });
   });
 
-  describe('addGroupMembersByUserId', () => {
-    it('adds an existing User as a new Group Member by User ID', () => {
-      const groupId = 1;
-      const expectedUserId = 2;
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/1/members`;
-      const params = {
-        user_id: expectedUserId,
-        access_level: 10,
-        expires_at: undefined,
-      };
-
-      mock.onPost(expectedUrl).reply(200, {
-        id: expectedUserId,
-        state: 'active',
-      });
-
-      return Api.addGroupMembersByUserId(groupId, params).then(({ data }) => {
-        expect(data.id).toBe(expectedUserId);
-        expect(data.state).toBe('active');
-      });
-    });
-  });
-
-  describe('inviteGroupMembersByEmail', () => {
+  describe('inviteGroupMembers', () => {
     it('invites a new email address to create a new User and become a Group Member', () => {
       const groupId = 1;
       const email = 'email@example.com';
+      const userId = '1';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/1/invitations`;
       const params = {
         email,
+        userId,
         access_level: 10,
         expires_at: undefined,
       };
@@ -225,7 +204,7 @@ describe('Api', () => {
         status: 'success',
       });
 
-      return Api.inviteGroupMembersByEmail(groupId, params).then(({ data }) => {
+      return Api.inviteGroupMembers(groupId, params).then(({ data }) => {
         expect(data.status).toBe('success');
       });
     });
@@ -543,36 +522,15 @@ describe('Api', () => {
     });
   });
 
-  describe('addProjectMembersByUserId', () => {
-    it('adds an existing User as a new Project Member by User ID', () => {
-      const projectId = 1;
-      const expectedUserId = 2;
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/1/members`;
-      const params = {
-        user_id: expectedUserId,
-        access_level: 10,
-        expires_at: undefined,
-      };
-
-      mock.onPost(expectedUrl).reply(200, {
-        id: expectedUserId,
-        state: 'active',
-      });
-
-      return Api.addProjectMembersByUserId(projectId, params).then(({ data }) => {
-        expect(data.id).toBe(expectedUserId);
-        expect(data.state).toBe('active');
-      });
-    });
-  });
-
-  describe('inviteProjectMembersByEmail', () => {
+  describe('inviteProjectMembers', () => {
     it('invites a new email address to create a new User and become a Project Member', () => {
       const projectId = 1;
-      const expectedEmail = 'email@example.com';
+      const email = 'email@example.com';
+      const userId = '1';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/1/invitations`;
       const params = {
-        email: expectedEmail,
+        email,
+        userId,
         access_level: 10,
         expires_at: undefined,
       };
@@ -581,7 +539,7 @@ describe('Api', () => {
         status: 'success',
       });
 
-      return Api.inviteProjectMembersByEmail(projectId, params).then(({ data }) => {
+      return Api.inviteProjectMembers(projectId, params).then(({ data }) => {
         expect(data.status).toBe('success');
       });
     });

@@ -79,6 +79,16 @@ export default {
       required: false,
       default: '',
     },
+    searchButtonAttributes: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    searchInputAttributes: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     let selectedSortOption = this.sortOptions[0]?.sortDirection?.descending;
@@ -320,6 +330,8 @@ export default {
       :available-tokens="tokens"
       :history-items="filteredRecentSearches"
       :suggestions-list-class="suggestionsListClass"
+      :search-button-attributes="searchButtonAttributes"
+      :search-input-attributes="searchInputAttributes"
       class="flex-grow-1"
       @history-item-selected="handleHistoryItemSelected"
       @clear="onClear"

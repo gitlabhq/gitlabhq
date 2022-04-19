@@ -74,6 +74,7 @@ export default {
         v-for="note in notesInGutter"
         :key="note.id"
         :img-src="note.author.avatar_url"
+        :size="24"
         :tooltip-text="getTooltipText(note)"
         lazy
         class="diff-comment-avatar js-diff-comment-avatar"

@@ -198,3 +198,4 @@ module Gitlab
     end
   end
 end
+# rubocop:enable Rails/Output

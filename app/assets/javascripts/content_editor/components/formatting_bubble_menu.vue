@@ -3,6 +3,10 @@ import { GlButtonGroup } from '@gitlab/ui';
 import { BubbleMenu } from '@tiptap/vue-2';
 import { BUBBLE_MENU_TRACKING_ACTION } from '../constants';
 import trackUIControl from '../services/track_ui_control';
+import Code from '../extensions/code';
+import CodeBlockHighlight from '../extensions/code_block_highlight';
+import Diagram from '../extensions/diagram';
+import Frontmatter from '../extensions/frontmatter';
 import ToolbarButton from './toolbar_button.vue';
 
 export default {
@@ -16,6 +20,14 @@ export default {
     trackToolbarControlExecution({ contentType, value }) {
       trackUIControl({ action: BUBBLE_MENU_TRACKING_ACTION, property: contentType, value });
     },
+
+    shouldShow: ({ editor, from, to }) => {
+      if (from === to) return false;
+
+      const exclude = [Code.name, CodeBlockHighlight.name, Diagram.name, Frontmatter.name];
+
+      return !exclude.some((type) => editor.isActive(type));
+    },
   },
 };
 </script>
@@ -24,6 +36,7 @@ export default {
     data-testid="formatting-bubble-menu"
     class="gl-shadow gl-rounded-base"
     :editor="tiptapEditor"
+    :should-show="shouldShow"
   >
     <gl-button-group>
       <toolbar-button

@@ -10969,6 +10969,9 @@ msgstr ""
 msgid "CurrentUser|Start an Ultimate trial"
 msgstr ""
 
+msgid "Custom (%{language})"
+msgstr ""
+
 msgid "Custom Attributes"
 msgstr ""
 
@@ -11963,6 +11966,9 @@ msgid "Delete artifacts"
 msgstr ""
 
 msgid "Delete badge"
+msgstr ""
+
+msgid "Delete code block"
 msgstr ""
 
 msgid "Delete column"
@@ -16506,6 +16512,9 @@ msgstr ""
 msgid "Geo|Edit %{nodeType} site"
 msgstr ""
 
+msgid "Geo|Edit your search and try again."
+msgstr ""
+
 msgid "Geo|Failed"
 msgstr ""
 
@@ -16579,6 +16588,9 @@ msgid "Geo|Never"
 msgstr ""
 
 msgid "Geo|Next sync scheduled at"
+msgstr ""
+
+msgid "Geo|No Geo site found"
 msgstr ""
 
 msgid "Geo|No available replication slots"
@@ -20603,9 +20615,6 @@ msgid "Invite Members"
 msgstr ""
 
 msgid "Invite a group"
-msgstr ""
-
-msgid "Invite email has already been taken"
 msgstr ""
 
 msgid "Invite members"

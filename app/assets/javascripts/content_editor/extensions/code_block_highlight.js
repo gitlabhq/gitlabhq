@@ -1,30 +1,19 @@
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { textblockTypeInputRule } from '@tiptap/core';
-import { isFunction } from 'lodash';
+import codeBlockLanguageLoader from '../services/code_block_language_loader';
 
 const extractLanguage = (element) => element.getAttribute('lang');
-const backtickInputRegex = /^```([a-z]+)?[\s\n]$/;
-const tildeInputRegex = /^~~~([a-z]+)?[\s\n]$/;
-
-const loadLanguageFromInputRule = (languageLoader) => (match) => {
-  const language = match[1];
-
-  if (isFunction(languageLoader?.loadLanguages)) {
-    languageLoader.loadLanguages([language]);
-  }
-
-  return {
-    language,
-  };
-};
+export const backtickInputRegex = /^```([a-z]+)?[\s\n]$/;
+export const tildeInputRegex = /^~~~([a-z]+)?[\s\n]$/;
 
 export default CodeBlockLowlight.extend({
   isolating: true,
+  exitOnArrowDown: false,
 
   addOptions() {
     return {
       ...this.parent?.(),
-      languageLoader: {},
+      languageLoader: codeBlockLanguageLoader,
     };
   },
 
@@ -42,18 +31,28 @@ export default CodeBlockLowlight.extend({
   },
   addInputRules() {
     const { languageLoader } = this.options;
+    const getAttributes = (match) => languageLoader?.loadLanguageFromInputRule(match) || {};
 
     return [
       textblockTypeInputRule({
         find: backtickInputRegex,
         type: this.type,
-        getAttributes: loadLanguageFromInputRule(languageLoader),
+        getAttributes,
       }),
       textblockTypeInputRule({
         find: tildeInputRegex,
         type: this.type,
-        getAttributes: loadLanguageFromInputRule(languageLoader),
+        getAttributes,
       }),
+    ];
+  },
+  parseHTML() {
+    return [
+      ...(this.parent?.() || []),
+      {
+        tag: 'div.markdown-code-block',
+        skip: true,
+      },
     ];
   },
   renderHTML({ HTMLAttributes }) {
@@ -61,7 +60,7 @@ export default CodeBlockLowlight.extend({
       'pre',
       {
         ...HTMLAttributes,
-        class: `content-editor-code-block ${HTMLAttributes.class}`,
+        class: `content-editor-code-block ${gon.user_color_scheme} ${HTMLAttributes.class}`,
       },
       ['code', {}, 0],
     ];

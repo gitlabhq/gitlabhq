@@ -18,6 +18,8 @@ export default {
   name: 'MembersFilteredSearchBar',
   components: { FilteredSearchBar },
   availableTokens: AVAILABLE_FILTERED_SEARCH_TOKENS,
+  searchButtonAttributes: { 'data-qa-selector': 'search_button' },
+  searchInputAttributes: { 'data-qa-selector': 'search_bar_input' },
   inject: {
     namespace: {},
     sourceId: {},
@@ -127,8 +129,9 @@ export default {
     :recent-searches-storage-key="filteredSearchBar.recentSearchesStorageKey"
     :search-input-placeholder="filteredSearchBar.placeholder"
     :initial-filter-value="initialFilterValue"
+    :search-button-attributes="$options.searchButtonAttributes"
+    :search-input-attributes="$options.searchInputAttributes"
     data-testid="members-filtered-search-bar"
-    data-qa-selector="members_filtered_search_bar_content"
     @onFilter="handleFilter"
   />
 </template>

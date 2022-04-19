@@ -60,7 +60,7 @@ import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
 import createMarkdownDeserializer from './markdown_deserializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
-import CodeBlockLanguageLoader from './code_block_language_loader';
+import languageLoader from './code_block_language_loader';
 
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
@@ -86,7 +86,6 @@ export const createContentEditor = ({
 
   const eventHub = eventHubFactory();
 
-  const languageLoader = new CodeBlockLanguageLoader(lowlight);
   const builtInContentEditorExtensions = [
     Attachment.configure({ uploadsPath, renderMarkdown, eventHub }),
     Audio,

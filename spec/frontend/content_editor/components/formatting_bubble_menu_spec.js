@@ -9,7 +9,7 @@ import {
 } from '~/content_editor/constants';
 import { createTestEditor } from '../test_utils';
 
-describe('content_editor/components/top_toolbar', () => {
+describe('content_editor/components/formatting_bubble_menu', () => {
   let wrapper;
   let trackingSpy;
   let tiptapEditor;

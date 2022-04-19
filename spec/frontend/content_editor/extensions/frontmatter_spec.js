@@ -23,7 +23,7 @@ describe('content_editor/extensions/frontmatter', () => {
   });
 
   it('does not insert a frontmatter block when executing code block input rule', () => {
-    const expectedDoc = doc(codeBlock(''));
+    const expectedDoc = doc(codeBlock({ language: 'plaintext' }, ''));
     const inputRuleText = '``` ';
 
     triggerNodeInputRule({ tiptapEditor, inputRuleText });

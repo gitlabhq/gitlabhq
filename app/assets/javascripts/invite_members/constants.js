@@ -1,4 +1,4 @@
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 
 export const SEARCH_DELAY = 200;
 
@@ -14,9 +14,6 @@ export const GROUP_FILTERS = {
   DESCENDANT_GROUPS: 'descendant_groups',
 };
 
-export const API_MESSAGES = {
-  EMAIL_ALREADY_INVITED: __('Invite email has already been taken'),
-};
 export const USERS_FILTER_ALL = 'all';
 export const USERS_FILTER_SAML_PROVIDER_ID = 'saml_provider_id';
 export const TRIGGER_ELEMENT_BUTTON = 'button';

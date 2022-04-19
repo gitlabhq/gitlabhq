@@ -454,29 +454,6 @@ query ProjectTerraformStates {
 For those new to the GitLab GraphQL API, read
 [Getting started with GitLab GraphQL API](../../../api/graphql/getting_started.md).
 
-## Troubleshooting
+## Related topics
 
-### Unable to lock Terraform state files in CI jobs for `terraform apply` using a plan created in a previous job
-
-When passing `-backend-config=` to `terraform init`, Terraform persists these values inside the plan
-cache file. This includes the `password` value.
-
-As a result, to create a plan and later use the same plan in another CI job, you might get the error
-`Error: Error acquiring the state lock` errors when using `-backend-config=password=$CI_JOB_TOKEN`.
-This happens because the value of `$CI_JOB_TOKEN` is only valid for the duration of the current job.
-
-As a workaround, use [http backend configuration variables](https://www.terraform.io/docs/language/settings/backends/http.html#configuration-variables) in your CI job,
-which is what happens behind the scenes when following the
-[Get started using GitLab CI](#get-started-using-gitlab-ci) instructions.
-
-### Error: "address": required field is not set
-
-By default, we set `TF_ADDRESS` to `${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}`.
-If you don't set `TF_STATE_NAME` or `TF_ADDRESS` in your job, the job fails with the error message
-`Error: "address": required field is not set`.
-
-To resolve this, ensure that either `TF_ADDRESS` or `TF_STATE_NAME` is accessible in the
-job that returned the error:
-
-1. Configure the [CI/CD environment scope](../../../ci/variables/#add-a-cicd-variable-to-a-project) for the job.
-1. Set the job's [environment](../../../ci/yaml/#environment), matching the environment scope from the previous step.
+- [Troubleshooting GitLab-managed Terraform state](troubleshooting.md).

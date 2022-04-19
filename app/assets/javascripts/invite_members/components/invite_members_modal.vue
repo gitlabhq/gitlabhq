@@ -193,46 +193,28 @@ export default {
       this.invalidFeedbackMessage = '';
 
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
-      const promises = [];
-      const baseData = {
+
+      const apiAddByInvite = this.isProject
+        ? Api.inviteProjectMembers.bind(Api)
+        : Api.inviteGroupMembers.bind(Api);
+
+      const email = usersToInviteByEmail !== '' ? { email: usersToInviteByEmail } : {};
+      const userId = usersToAddById !== '' ? { user_id: usersToAddById } : {};
+
+      this.trackinviteMembersForTask();
+
+      apiAddByInvite(this.id, {
         format: 'json',
         expires_at: expiresAt,
         access_level: accessLevel,
         invite_source: this.source,
         tasks_to_be_done: this.tasksToBeDoneForPost,
         tasks_project_id: this.tasksProjectForPost,
-      };
-
-      if (usersToInviteByEmail !== '') {
-        const apiInviteByEmail = this.isProject
-          ? Api.inviteProjectMembersByEmail.bind(Api)
-          : Api.inviteGroupMembersByEmail.bind(Api);
-
-        promises.push(
-          apiInviteByEmail(this.id, {
-            ...baseData,
-            email: usersToInviteByEmail,
-          }),
-        );
-      }
-
-      if (usersToAddById !== '') {
-        const apiAddByUserId = this.isProject
-          ? Api.addProjectMembersByUserId.bind(Api)
-          : Api.addGroupMembersByUserId.bind(Api);
-
-        promises.push(
-          apiAddByUserId(this.id, {
-            ...baseData,
-            user_id: usersToAddById,
-          }),
-        );
-      }
-      this.trackinviteMembersForTask();
-
-      Promise.all(promises)
-        .then((responses) => {
-          const message = responseMessageFromSuccess(responses);
+        ...email,
+        ...userId,
+      })
+        .then((response) => {
+          const message = responseMessageFromSuccess(response);
 
           if (message) {
             this.showInvalidFeedbackMessage({

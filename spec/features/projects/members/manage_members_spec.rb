@@ -48,24 +48,6 @@ RSpec.describe 'Projects > Members > Manage members', :js do
     end
   end
 
-  it 'add user to project', :snowplow, :aggregate_failures do
-    visit_members_page
-
-    invite_member(user2.name, role: 'Reporter')
-
-    page.within find_member_row(user2) do
-      expect(page).to have_button('Reporter')
-    end
-
-    expect_snowplow_event(
-      category: 'Members::CreateService',
-      action: 'create_member',
-      label: 'project-members-page',
-      property: 'existing_user',
-      user: user1
-    )
-  end
-
   it 'uses ProjectMember access_level_roles for the invite members modal access option', :aggregate_failures do
     visit_members_page
 
@@ -104,24 +86,11 @@ RSpec.describe 'Projects > Members > Manage members', :js do
     expect(members_table).not_to have_content(other_user.name)
   end
 
-  it 'invite user to project', :snowplow, :aggregate_failures do
-    visit_members_page
-
-    invite_member('test@example.com', role: 'Reporter')
-
-    click_link 'Invited'
-
-    page.within find_invited_member_row('test@example.com') do
-      expect(page).to have_button('Reporter')
-    end
-
-    expect_snowplow_event(
-      category: 'Members::InviteService',
-      action: 'create_member',
-      label: 'project-members-page',
-      property: 'net_new_user',
-      user: user1
-    )
+  it_behaves_like 'inviting members', 'project-members-page' do
+    let_it_be(:entity) { project }
+    let_it_be(:members_page_path) { project_project_members_path(entity) }
+    let_it_be(:subentity) { project }
+    let_it_be(:subentity_members_page_path) { project_project_members_path(entity) }
   end
 
   describe 'member search results' do

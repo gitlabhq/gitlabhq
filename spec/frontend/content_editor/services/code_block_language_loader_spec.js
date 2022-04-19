@@ -1,4 +1,6 @@
-import CodeBlockLanguageBlocker from '~/content_editor/services/code_block_language_loader';
+import codeBlockLanguageBlocker from '~/content_editor/services/code_block_language_loader';
+import waitForPromises from 'helpers/wait_for_promises';
+import { backtickInputRegex } from '~/content_editor/extensions/code_block_highlight';
 
 describe('content_editor/services/code_block_language_loader', () => {
   let languageLoader;
@@ -12,7 +14,43 @@ describe('content_editor/services/code_block_language_loader', () => {
         .mockImplementation((language) => lowlight.languages.push(language)),
       registered: jest.fn().mockImplementation((language) => lowlight.languages.includes(language)),
     };
-    languageLoader = new CodeBlockLanguageBlocker(lowlight);
+    languageLoader = codeBlockLanguageBlocker;
+    languageLoader.lowlight = lowlight;
+  });
+
+  describe('findLanguageBySyntax', () => {
+    it.each`
+      syntax          | language
+      ${'javascript'} | ${{ syntax: 'javascript', label: 'Javascript' }}
+      ${'js'}         | ${{ syntax: 'javascript', label: 'Javascript' }}
+      ${'jsx'}        | ${{ syntax: 'javascript', label: 'Javascript' }}
+    `('returns a language by syntax and its variants', ({ syntax, language }) => {
+      expect(languageLoader.findLanguageBySyntax(syntax)).toMatchObject(language);
+    });
+
+    it('returns Custom (syntax) if the language does not exist', () => {
+      expect(languageLoader.findLanguageBySyntax('foobar')).toMatchObject({
+        syntax: 'foobar',
+        label: 'Custom (foobar)',
+      });
+    });
+
+    it('returns plaintext if no syntax is passed', () => {
+      expect(languageLoader.findLanguageBySyntax('')).toMatchObject({
+        syntax: 'plaintext',
+        label: 'Plain text',
+      });
+    });
+  });
+
+  describe('filterLanguages', () => {
+    it('filters languages by the given search term', () => {
+      expect(languageLoader.filterLanguages('ts')).toEqual([
+        { label: 'Device Tree', syntax: 'dts' },
+        { label: 'Kotlin', syntax: 'kotlin', variants: 'kt, kts' },
+        { label: 'TypeScript', syntax: 'typescript', variants: 'ts, tsx' },
+      ]);
+    });
   });
 
   describe('loadLanguages', () => {
@@ -53,6 +91,18 @@ describe('content_editor/services/code_block_language_loader', () => {
 
       expect(lowlight.registerLanguage).toHaveBeenCalledWith('javascript', expect.any(Function));
       expect(lowlight.registerLanguage).toHaveBeenCalledWith('ruby', expect.any(Function));
+    });
+  });
+
+  describe('loadLanguageFromInputRule', () => {
+    it('loads highlight.js language packages identified from the input rule', async () => {
+      const match = new RegExp(backtickInputRegex).exec('```js ');
+      const attrs = languageLoader.loadLanguageFromInputRule(match);
+
+      await waitForPromises();
+
+      expect(attrs).toEqual({ language: 'javascript' });
+      expect(lowlight.registerLanguage).toHaveBeenCalledWith('javascript', expect.any(Function));
     });
   });
 
