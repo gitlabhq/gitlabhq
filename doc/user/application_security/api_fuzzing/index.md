@@ -586,7 +586,8 @@ profile increases as the number of tests increases.
 | CI/CD variable                                              | Description |
 |-------------------------------------------------------------|-------------|
 | `SECURE_ANALYZERS_PREFIX`                                   | Specify the Docker registry base address from which to download the analyzer. |
-| `FUZZAPI_VERSION`                                           | Specify API Fuzzing container version. Defaults to `latest`. |
+| `FUZZAPI_VERSION`                                           | Specify API Fuzzing container version. Defaults to `1`. |
+| `FUZZAPI_IMAGE_SUFFIX`                                      | Specify a container image suffix. Defaults to none. |
 | `FUZZAPI_TARGET_URL`                                        | Base URL of API testing target. |
 | `FUZZAPI_CONFIG`                                            | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/276395) in GitLab 13.12, replaced with default `.gitlab/gitlab-api-fuzzing-config.yml`. API Fuzzing configuration file. |
 |[`FUZZAPI_PROFILE`](#api-fuzzing-profiles)                   | Configuration profile to use during testing. Defaults to `Quick-10`. |
@@ -920,7 +921,7 @@ def get_auth_response():
 # In our example, access token is retrieved from a given endpoint
 try:
 
-    # Performs a http request, response sample: 
+    # Performs a http request, response sample:
     # { "Token" : "b5638ae7-6e77-4585-b035-7d9de2e3f6b3" }
     response = get_auth_response()
 
@@ -950,7 +951,7 @@ except Exception as e:
     logging.error(f'Error, unknown error while retrieving access token. Error message: {e}')
     raise
 
-# computes object that holds overrides file content. 
+# computes object that holds overrides file content.
 # It uses data fetched from request
 overrides_data = {
     "headers": {

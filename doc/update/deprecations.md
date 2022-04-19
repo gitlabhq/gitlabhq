@@ -590,29 +590,6 @@ existing runners.
 
 **Planned removal milestone: 16.0 (2023-04-22)**
 
-### Reminder: support for NFS repository storage
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-As [announced](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#nfs-for-git-repository-storage-deprecated) at the
-release of GitLab 14.0, technical support for NFS storage for Git repositories is being removed. Please see our official
-[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for additional information.
-
-We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on
-[migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/#migrating-to-gitaly-cluster).
-
-Gitaly Cluster offers tremendous benefits for our customers such as:
-
-- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/praefect.html#configure-replication-factor)
-- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/#strong-consistency)
-- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/#distributed-reads)
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
 ### Request profiling
 
 WARNING:
@@ -1599,13 +1576,7 @@ This will result in the rename of the sub-chart: `gitlab/task-runner` to `gitlab
 
 ### NFS for Git repository storage
 
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/)), we have deprecated development (bugfixes, performance improvements, etc) for NFS for Git repository storage in GitLab 14.0. We will continue to provide technical support for NFS for Git repositories throughout 14.x, but we will remove all support for NFS in GitLab 15.0. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for further information.
+With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/)), we have deprecated development (bugfixes, performance improvements, etc) for NFS for Git repository storage in GitLab 14.0. We will continue to provide technical support for NFS for Git repositories throughout 14.x, but we will remove all support for NFS on November 22, 2022. This was originally planned for May 22, 2022, but in an effort to allow continued maturity of Gitaly Cluster, we have chosen to extend our deprecation of support date. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for further information.
 
 Gitaly Cluster offers tremendous benefits for our customers such as:
 
@@ -1615,7 +1586,7 @@ Gitaly Cluster offers tremendous benefits for our customers such as:
 
 We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 15.6 (2022-11-22)**
 
 ### OAuth implicit grant
 

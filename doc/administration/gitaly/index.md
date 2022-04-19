@@ -56,7 +56,7 @@ Before deploying Gitaly Cluster, please review:
 If you have:
 
 - Not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the service you are using. NFS is
-  supported in 14.x releases but is [deprecated](../../update/deprecations.md#reminder-support-for-nfs-repository-storage).
+  supported in 14.x releases but is [deprecated](../../update/deprecations.md#nfs-for-git-repository-storage).
 Support for storing Git repository data on NFS will end for all versions of GitLab with the release of 15.0.
 - Not yet migrated to Gitaly Cluster but want to migrate away from NFS, you have two options:
   - A sharded Gitaly instance.

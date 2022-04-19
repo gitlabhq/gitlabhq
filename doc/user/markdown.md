@@ -4,7 +4,9 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Flavored Markdown **(FREE)**
+# GitLab Flavored Markdown (GLFM) **(FREE)**
+
+> The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
 
 GitLab automatically renders Markdown content. For example, when you add a comment to an issue,
 you type the text in the Markdown language. When you save the issue, the text is rendered

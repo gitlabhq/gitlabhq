@@ -537,7 +537,9 @@ can be added, removed, and modified by creating a custom configuration.
 
 | CI/CD variable                                       | Description        |
 |------------------------------------------------------|--------------------|
-| `DAST_API_VERSION`                                    | Specify DAST API container version. Defaults to `latest`. |
+| `SECURE_ANALYZERS_PREFIX`                            | Specify the Docker registry base address from which to download the analyzer. |
+| `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `1`. |
+| `DAST_API_IMAGE_SUFFIX`                              | Specify a container image suffix. Defaults to none. |
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |
 |[`DAST_API_CONFIG`](#configuration-files)              | DAST API configuration file. Defaults to `.gitlab-dast-api.yml`. |
 |[`DAST_API_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
