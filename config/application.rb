@@ -517,6 +517,14 @@ module Gitlab
       end
     end
 
+    # We run the contents of active_record.clear_active_connections again
+    # because we connect to database from routes
+    # https://github.com/rails/rails/blob/fdf840f69a2e33d78a9d40b91d9b7fddb76711e9/activerecord/lib/active_record/railtie.rb#L308
+    initializer :clear_active_connections_again, after: :set_routes_reloader_hook do
+      ActiveRecord::Base.clear_active_connections!
+      ActiveRecord::Base.flush_idle_connections!
+    end
+
     # DO NOT PLACE ANY INITIALIZERS AFTER THIS.
     config.after_initialize do
       # on_master_start yields immediately in unclustered environments and runs

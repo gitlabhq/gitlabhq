@@ -46,6 +46,12 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
         expect { run_rake_task('gitlab:db:validate_config') }.not_to raise_error
       end
 
+      it 'always re-establishes ActiveRecord::Base connection to main config' do
+        run_rake_task('gitlab:db:validate_config')
+
+        expect(ActiveRecord::Base.connection_db_config.configuration_hash).to include(main_database_config) # rubocop: disable Database/MultipleDatabases
+      end
+
       it 'if GITLAB_VALIDATE_DATABASE_CONFIG is set' do
         stub_env('GITLAB_VALIDATE_DATABASE_CONFIG', '1')
         allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
@@ -76,6 +82,12 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
         allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
 
         expect { run_rake_task('gitlab:db:validate_config') }.to raise_error(match)
+      end
+
+      it 'always re-establishes ActiveRecord::Base connection to main config' do
+        expect { run_rake_task('gitlab:db:validate_config') }.to raise_error(match)
+
+        expect(ActiveRecord::Base.connection_db_config.configuration_hash).to include(main_database_config) # rubocop: disable Database/MultipleDatabases
       end
 
       it 'if GITLAB_VALIDATE_DATABASE_CONFIG=1' do

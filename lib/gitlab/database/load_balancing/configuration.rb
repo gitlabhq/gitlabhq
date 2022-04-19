@@ -78,15 +78,15 @@ module Gitlab
         end
 
         def primary_model_or_model_if_enabled
-          if force_no_sharing_primary_model?
+          if use_dedicated_connection?
             @model
           else
             @primary_model || @model
           end
         end
 
-        def force_no_sharing_primary_model?
-          return false unless @primary_model # Doesn't matter since we don't have an overriding primary model
+        def use_dedicated_connection?
+          return true unless @primary_model # We can only use dedicated connection, if re-use of connections is disabled
           return false unless ::Gitlab::SafeRequestStore.active?
 
           ::Gitlab::SafeRequestStore.fetch(:force_no_sharing_primary_model) do

@@ -6,7 +6,7 @@ namespace :gitlab do
   namespace :db do
     desc 'Validates `config/database.yml` to ensure a correct behavior is configured'
     task validate_config: :environment do
-      should_reconnect = ActiveRecord::Base.connection_pool.active_connection?
+      original_db_config = ActiveRecord::Base.connection_db_config
 
       # The include_replicas: is a legacy name to fetch all hidden entries (replica: true or database_tasks: false)
       # Once we upgrade to Rails 7.x this should be changed to `include_hidden: true`
@@ -97,9 +97,7 @@ namespace :gitlab do
       end
 
     ensure
-      if should_reconnect
-        ActiveRecord::Base.establish_connection(ActiveRecord::Tasks::DatabaseTasks.env.to_sym) # rubocop: disable Database/EstablishConnection
-      end
+      ActiveRecord::Base.establish_connection(original_db_config) # rubocop: disable Database/EstablishConnection
     end
 
     Rake::Task['db:migrate'].enhance(['gitlab:db:validate_config'])
