@@ -251,6 +251,7 @@ run tests:
     - coverage run -m pytest
     - coverage report
     - coverage xml
+  coverage: '/TOTAL.*\s([.\d]+)%/'
   artifacts:
     reports:
       cobertura: coverage.xml

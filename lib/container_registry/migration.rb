@@ -52,6 +52,7 @@ module ContainerRegistry
       #
       return 25 if Feature.enabled?(:container_registry_migration_phase2_capacity_25)
       return 10 if Feature.enabled?(:container_registry_migration_phase2_capacity_10)
+      return 2 if Feature.enabled?(:container_registry_migration_phase2_capacity_2)
       return 1 if Feature.enabled?(:container_registry_migration_phase2_capacity_1)
 
       0

@@ -20,6 +20,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
     stub_feature_flags(refactor_mr_widgets_extensions: false)
     stub_feature_flags(refactor_mr_widgets_extensions_user: false)
+    stub_feature_flags(refactor_mr_widget_test_summary: false)
   end
 
   context 'new merge request', :sidekiq_might_not_need_inline do

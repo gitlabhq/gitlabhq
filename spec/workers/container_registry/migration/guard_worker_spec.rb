@@ -32,50 +32,59 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
           end
         end
 
-        context 'migration is canceled' do
-          let(:migration_cancel_response) { { status: :ok } }
-
-          it 'will not abort the migration' do
+        shared_examples 'aborting the migration' do
+          it 'will abort the migration' do
             expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_migrations_count, 1)
             expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
             expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_ids, [stale_migration.id])
 
             expect { subject }
-                .to change(import_skipped_migrations, :count)
+                .to change(import_aborted_migrations, :count).by(1)
+                .and change { stale_migration.reload.migration_state }.to('import_aborted')
+                .and not_change { ongoing_migration.migration_state }
+          end
+        end
 
-            expect(stale_migration.reload.migration_state).to eq('import_skipped')
-            expect(stale_migration.reload.migration_skipped_reason).to eq('migration_canceled')
+        context 'migration is canceled' do
+          let(:migration_cancel_response) { { status: :ok } }
+
+          before do
+            stub_application_setting(container_registry_import_max_retries: 3)
+          end
+
+          context 'when the retry limit has been reached' do
+            before do
+              stale_migration.update_column(:migration_retries_count, 2)
+            end
+
+            it 'will not abort the migration' do
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_migrations_count, 1)
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_ids, [stale_migration.id])
+
+              expect { subject }
+                  .to change(import_skipped_migrations, :count)
+
+              expect(stale_migration.reload.migration_state).to eq('import_skipped')
+              expect(stale_migration.reload.migration_skipped_reason).to eq('migration_canceled')
+            end
+          end
+
+          context 'when the retry limit has not been reached' do
+            it_behaves_like 'aborting the migration'
           end
         end
 
         context 'migration cancelation fails with an error' do
           let(:migration_cancel_response) { { status: :error } }
 
-          it 'will abort the migration' do
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_migrations_count, 1)
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_ids, [stale_migration.id])
-
-            expect { subject }
-                .to change(import_aborted_migrations, :count).by(1)
-                .and change { stale_migration.reload.migration_state }.to('import_aborted')
-                .and not_change { ongoing_migration.migration_state }
-          end
+          it_behaves_like 'aborting the migration'
         end
 
         context 'migration receives bad request with a new status' do
           let(:migration_cancel_response) { { status: :bad_request, migration_state: :import_done } }
 
-          it 'will abort the migration' do
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_migrations_count, 1)
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_ids, [stale_migration.id])
-
-            expect { subject }
-                .to change(import_aborted_migrations, :count).by(1)
-                .and change { stale_migration.reload.migration_state }.to('import_aborted')
-                .and not_change { ongoing_migration.migration_state }
-          end
+          it_behaves_like 'aborting the migration'
         end
       end
 
@@ -96,7 +105,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
 
       context 'with pre_importing stale migrations' do
         let(:ongoing_migration) { create(:container_repository, :pre_importing) }
-        let(:stale_migration) { create(:container_repository, :pre_importing, migration_pre_import_started_at: 35.minutes.ago) }
+        let(:stale_migration) { create(:container_repository, :pre_importing, migration_pre_import_started_at: 11.minutes.ago) }
         let(:import_status) { 'test' }
 
         before do
@@ -128,7 +137,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
 
       context 'with pre_import_done stale migrations' do
         let(:ongoing_migration) { create(:container_repository, :pre_import_done) }
-        let(:stale_migration) { create(:container_repository, :pre_import_done, migration_pre_import_done_at: 35.minutes.ago) }
+        let(:stale_migration) { create(:container_repository, :pre_import_done, migration_pre_import_done_at: 11.minutes.ago) }
 
         before do
           allow(::ContainerRegistry::Migration).to receive(:max_step_duration).and_return(5.minutes)
@@ -151,7 +160,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
 
       context 'with importing stale migrations' do
         let(:ongoing_migration) { create(:container_repository, :importing) }
-        let(:stale_migration) { create(:container_repository, :importing, migration_import_started_at: 35.minutes.ago) }
+        let(:stale_migration) { create(:container_repository, :importing, migration_import_started_at: 11.minutes.ago) }
         let(:import_status) { 'test' }
 
         before do

@@ -24,15 +24,9 @@ class Key < ApplicationRecord
     length: { maximum: 5000 },
     format: { with: /\A(#{Gitlab::SSHPublicKey.supported_algorithms.join('|')})/ }
 
-  validates :fingerprint,
-    uniqueness: true,
-    presence: { message: 'cannot be generated' },
-    unless: -> { Gitlab::FIPS.enabled? }
-
   validates :fingerprint_sha256,
     uniqueness: true,
-    presence: { message: 'cannot be generated' },
-    if: -> { Gitlab::FIPS.enabled? }
+    presence: { message: 'cannot be generated' }
 
   validate :key_meets_restrictions
 

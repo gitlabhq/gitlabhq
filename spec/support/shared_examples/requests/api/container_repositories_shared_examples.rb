@@ -202,7 +202,13 @@ RSpec.shared_examples 'reconciling migration_state' do
     context "#{canceled_status} response" do
       let(:status) { canceled_status }
 
-      it_behaves_like 'enforcing states coherence to', 'import_skipped'
+      it_behaves_like 'enforcing states coherence to', 'import_skipped' do
+        it 'skips with migration_canceled_by_registry' do
+          subject
+
+          expect(repository.reload.migration_skipped_reason).to eq('migration_canceled_by_registry')
+        end
+      end
     end
   end
 end

@@ -83,8 +83,10 @@ module QuickActions
       args.map! { _1.gsub(/\\_/, '_') }
       usernames   = (args - ['me']).map { _1.delete_prefix('@') }
       found       = User.by_username(usernames).to_a.select { can?(:read_user, _1) }
-      found_names = found.map(&:username).to_set
-      missing     = args.reject { |arg| arg == 'me' || found_names.include?(arg.delete_prefix('@')) }.map { "'#{_1}'" }
+      found_names = found.map(&:username).map(&:downcase).to_set
+      missing     = args.reject do |arg|
+        arg == 'me' || found_names.include?(arg.downcase.delete_prefix('@'))
+      end.map { "'#{_1}'" }
 
       failed_parse(format(_("Failed to find users for %{missing}"), missing: missing.to_sentence)) if missing.present?
 

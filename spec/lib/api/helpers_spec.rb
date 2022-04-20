@@ -150,8 +150,8 @@ RSpec.describe API::Helpers do
 
     context 'when user is authenticated' do
       before do
-        subject.instance_variable_set(:@current_user, user)
-        subject.instance_variable_set(:@initial_current_user, user)
+        allow(subject).to receive(:current_user).and_return(user)
+        allow(subject).to receive(:initial_current_user).and_return(user)
       end
 
       context 'public project' do
@@ -167,8 +167,8 @@ RSpec.describe API::Helpers do
 
     context 'when user is not authenticated' do
       before do
-        subject.instance_variable_set(:@current_user, nil)
-        subject.instance_variable_set(:@initial_current_user, nil)
+        allow(subject).to receive(:current_user).and_return(nil)
+        allow(subject).to receive(:initial_current_user).and_return(nil)
       end
 
       context 'public project' do
@@ -181,57 +181,212 @@ RSpec.describe API::Helpers do
         it_behaves_like 'private project without access'
       end
     end
+
+    context 'support for IDs and paths as argument' do
+      let_it_be(:project) { create(:project) }
+
+      let(:user) { project.first_owner}
+
+      before do
+        allow(subject).to receive(:current_user).and_return(user)
+        allow(subject).to receive(:authorized_project_scope?).and_return(true)
+        allow(subject).to receive(:job_token_authentication?).and_return(false)
+        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      shared_examples 'project finder' do
+        context 'when project exists' do
+          it 'returns requested project' do
+            expect(subject.find_project!(existing_id)).to eq(project)
+          end
+
+          it 'returns nil' do
+            expect(subject).to receive(:render_api_error!).with('404 Project Not Found', 404)
+            expect(subject.find_project!(non_existing_id)).to be_nil
+          end
+        end
+      end
+
+      context 'when ID is used as an argument' do
+        let(:existing_id) { project.id }
+        let(:non_existing_id) { non_existing_record_id }
+
+        it_behaves_like 'project finder'
+      end
+
+      context 'when PATH is used as an argument' do
+        let(:existing_id) { project.full_path }
+        let(:non_existing_id) { 'something/else' }
+
+        it_behaves_like 'project finder'
+
+        context 'with an invalid PATH' do
+          let(:non_existing_id) { 'undefined' } # path without slash
+
+          it_behaves_like 'project finder'
+
+          it 'does not hit the database' do
+            expect(Project).not_to receive(:find_by_full_path)
+            expect(subject).to receive(:render_api_error!).with('404 Project Not Found', 404)
+
+            subject.find_project!(non_existing_id)
+          end
+        end
+      end
+    end
   end
 
-  describe '#find_project!' do
-    let_it_be(:project) { create(:project) }
+  describe '#find_group!' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
 
-    let(:user) { project.first_owner}
+    shared_examples 'private group without access' do
+      before do
+        group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+      end
 
-    before do
-      allow(subject).to receive(:current_user).and_return(user)
-      allow(subject).to receive(:authorized_project_scope?).and_return(true)
-      allow(subject).to receive(:job_token_authentication?).and_return(false)
-      allow(subject).to receive(:authenticate_non_public?).and_return(false)
+      it 'returns not found' do
+        expect(subject).to receive(:not_found!)
+
+        subject.find_group!(group.id)
+      end
     end
 
-    shared_examples 'project finder' do
-      context 'when project exists' do
-        it 'returns requested project' do
-          expect(subject.find_project!(existing_id)).to eq(project)
-        end
+    context 'when user is authenticated' do
+      before do
+        allow(subject).to receive(:current_user).and_return(user)
+        allow(subject).to receive(:initial_current_user).and_return(user)
+      end
 
-        it 'returns nil' do
-          expect(subject).to receive(:render_api_error!).with('404 Project Not Found', 404)
-          expect(subject.find_project!(non_existing_id)).to be_nil
+      context 'public group' do
+        it 'returns requested group' do
+          expect(subject.find_group!(group.id)).to eq(group)
+        end
+      end
+
+      context 'private group' do
+        it_behaves_like 'private group without access'
+      end
+    end
+
+    context 'when user is not authenticated' do
+      before do
+        allow(subject).to receive(:current_user).and_return(nil)
+        allow(subject).to receive(:initial_current_user).and_return(nil)
+      end
+
+      context 'public group' do
+        it 'returns requested group' do
+          expect(subject.find_group!(group.id)).to eq(group)
+        end
+      end
+
+      context 'private group' do
+        it_behaves_like 'private group without access'
+      end
+    end
+
+    context 'support for IDs and paths as arguments' do
+      let_it_be(:group) { create(:group) }
+
+      let(:user) { group.first_owner }
+
+      before do
+        allow(subject).to receive(:current_user).and_return(user)
+        allow(subject).to receive(:authorized_project_scope?).and_return(true)
+        allow(subject).to receive(:job_token_authentication?).and_return(false)
+        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      shared_examples 'group finder' do
+        context 'when group exists' do
+          it 'returns requested group' do
+            expect(subject.find_group!(existing_id)).to eq(group)
+          end
+
+          it 'returns nil' do
+            expect(subject).to receive(:render_api_error!).with('404 Group Not Found', 404)
+            expect(subject.find_group!(non_existing_id)).to be_nil
+          end
+        end
+      end
+
+      context 'when ID is used as an argument' do
+        let(:existing_id) { group.id }
+        let(:non_existing_id) { non_existing_record_id }
+
+        it_behaves_like 'group finder'
+      end
+
+      context 'when PATH is used as an argument' do
+        let(:existing_id) { group.full_path }
+        let(:non_existing_id) { 'something/else' }
+
+        it_behaves_like 'group finder'
+      end
+    end
+  end
+
+  describe '#find_group_by_full_path!' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
+
+    shared_examples 'private group without access' do
+      before do
+        group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      it 'returns not found' do
+        expect(subject).to receive(:not_found!)
+
+        subject.find_group_by_full_path!(group.full_path)
+      end
+    end
+
+    context 'when user is authenticated' do
+      before do
+        allow(subject).to receive(:current_user).and_return(user)
+        allow(subject).to receive(:initial_current_user).and_return(user)
+      end
+
+      context 'public group' do
+        it 'returns requested group' do
+          expect(subject.find_group_by_full_path!(group.full_path)).to eq(group)
+        end
+      end
+
+      context 'private group' do
+        it_behaves_like 'private group without access'
+
+        context 'with access' do
+          before do
+            group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+            group.add_developer(user)
+          end
+
+          it 'returns requested group with access' do
+            expect(subject.find_group_by_full_path!(group.full_path)).to eq(group)
+          end
         end
       end
     end
 
-    context 'when ID is used as an argument' do
-      let(:existing_id) { project.id }
-      let(:non_existing_id) { non_existing_record_id }
+    context 'when user is not authenticated' do
+      before do
+        allow(subject).to receive(:current_user).and_return(nil)
+        allow(subject).to receive(:initial_current_user).and_return(nil)
+      end
 
-      it_behaves_like 'project finder'
-    end
-
-    context 'when PATH is used as an argument' do
-      let(:existing_id) { project.full_path }
-      let(:non_existing_id) { 'something/else' }
-
-      it_behaves_like 'project finder'
-
-      context 'with an invalid PATH' do
-        let(:non_existing_id) { 'undefined' } # path without slash
-
-        it_behaves_like 'project finder'
-
-        it 'does not hit the database' do
-          expect(Project).not_to receive(:find_by_full_path)
-          expect(subject).to receive(:render_api_error!).with('404 Project Not Found', 404)
-
-          subject.find_project!(non_existing_id)
+      context 'public group' do
+        it 'returns requested group' do
+          expect(subject.find_group_by_full_path!(group.full_path)).to eq(group)
         end
+      end
+
+      context 'private group' do
+        it_behaves_like 'private group without access'
       end
     end
   end

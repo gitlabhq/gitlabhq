@@ -28,7 +28,7 @@ RSpec.describe ::Types::RangeInputType do
       values: {},
       object: nil
     )
-    instance = described_class[of_integer].new(context: context, defaults_used: [], ruby_kwargs: {})
+    instance = described_class[of_integer].new({}, context: context, defaults_used: [], ruby_kwargs: {})
 
     expect(instance).to be_a_kind_of(described_class)
     expect(instance).to be_a_kind_of(described_class[of_integer])

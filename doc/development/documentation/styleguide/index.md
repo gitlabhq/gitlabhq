@@ -1664,7 +1664,7 @@ pricing page. For example:
 
 You must assign a tier badge:
 
-- To all H1 topic headings.
+- To all H1 topic headings, except the pages under `doc/development/*`.
 - To topic headings that don't apply to the same tier as the H1.
 
 To add a tier badge to a heading, add the relevant tier badge

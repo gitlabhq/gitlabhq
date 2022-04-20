@@ -4413,6 +4413,9 @@ msgstr ""
 msgid "ApplicationSettings|Email restrictions for sign-ups"
 msgstr ""
 
+msgid "ApplicationSettings|Enable Slack application"
+msgstr ""
+
 msgid "ApplicationSettings|Enable domain denylist for sign ups"
 msgstr ""
 
@@ -4450,6 +4453,9 @@ msgid "ApplicationSettings|Send confirmation email on sign-up"
 msgstr ""
 
 msgid "ApplicationSettings|Sign-up enabled"
+msgstr ""
+
+msgid "ApplicationSettings|This option is only available on GitLab.com"
 msgstr ""
 
 msgid "ApplicationSettings|Upload denylist file"
@@ -31659,6 +31665,9 @@ msgstr ""
 msgid "Reports|Filename"
 msgstr ""
 
+msgid "Reports|Fixed"
+msgstr ""
+
 msgid "Reports|Full report"
 msgstr ""
 
@@ -31687,6 +31696,9 @@ msgid "Reports|Metrics reports failed to load results"
 msgstr ""
 
 msgid "Reports|Metrics reports: %{strong_start}%{numberOfChanges}%{strong_end} %{changes}"
+msgstr ""
+
+msgid "Reports|New"
 msgstr ""
 
 msgid "Reports|Scanner"
@@ -38794,9 +38806,6 @@ msgid "This namespace has already been taken! Please choose another one."
 msgstr ""
 
 msgid "This only applies to repository indexing operations."
-msgstr ""
-
-msgid "This option is only available on GitLab.com"
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."

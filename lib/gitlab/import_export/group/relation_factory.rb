@@ -30,6 +30,10 @@ module Gitlab
           update_group_references
         end
 
+        def invalid_relation?
+          @relation_name == :namespace_settings
+        end
+
         def update_group_references
           return unless self.class.existing_object_relations.include?(@relation_name)
           return unless @relation_hash['group_id']

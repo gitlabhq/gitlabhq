@@ -43,7 +43,8 @@ class ContainerRepository < ApplicationRecord
     migration_canceled: 4,
     not_found: 5,
     native_import: 6,
-    migration_forced_canceled: 7
+    migration_forced_canceled: 7,
+    migration_canceled_by_registry: 8
   }
 
   delegate :client, :gitlab_api_client, to: :registry
@@ -214,7 +215,7 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_skipped_at = Time.zone.now
     end
 
-    before_transition any => %i[import_done import_aborted] do |container_repository|
+    before_transition any => %i[import_done import_aborted import_skipped] do |container_repository|
       container_repository.run_after_commit do
         ::ContainerRegistry::Migration::EnqueuerWorker.perform_async
       end
@@ -328,7 +329,7 @@ class ContainerRepository < ApplicationRecord
     when 'import_canceled', 'pre_import_canceled'
       return if import_skipped?
 
-      skip_import(reason: :migration_canceled)
+      skip_import(reason: :migration_canceled_by_registry)
     when 'import_complete'
       finish_import
     when 'import_failed'
@@ -374,6 +375,10 @@ class ContainerRepository < ApplicationRecord
 
   def retried_too_many_times?
     migration_retries_count >= ContainerRegistry::Migration.max_retries
+  end
+
+  def nearing_or_exceeded_retry_limit?
+    migration_retries_count >= ContainerRegistry::Migration.max_retries - 1
   end
 
   def last_import_step_done_at

@@ -6,6 +6,7 @@ module ServicePing
     STAGING_BASE_URL = 'https://gitlab-services-version-gitlab-com-staging.gs-staging.gitlab.org'
     USAGE_DATA_PATH = 'usage_data'
     ERROR_PATH = 'usage_ping_errors'
+    METADATA_PATH = 'usage_ping_metadata'
 
     SubmissionError = Class.new(StandardError)
 
@@ -31,7 +32,7 @@ module ServicePing
           message: e.message,
           elapsed: (Time.current - start).round(1)
         }
-        submit_payload({ error: error_payload }, url: error_url)
+        submit_payload({ error: error_payload }, path: ERROR_PATH)
 
         usage_data = Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
         response = submit_usage_data_payload(usage_data)
@@ -48,21 +49,30 @@ module ServicePing
         raw_usage_data.update_version_metadata!(usage_data_id: version_usage_data_id)
         DevopsReportService.new(response).execute
       end
-    end
 
-    def url
-      URI.join(base_url, USAGE_DATA_PATH)
-    end
+      return unless Feature.enabled?(:measure_service_ping_metric_collection, default_enabled: :yaml)
 
-    def error_url
-      URI.join(base_url, ERROR_PATH)
+      submit_payload({ metadata: { metrics: metrics_collection_time(usage_data) } }, path: METADATA_PATH)
     end
 
     private
 
-    def submit_payload(payload, url: self.url)
+    def metrics_collection_time(payload, parents = [])
+      return [] unless payload.is_a?(Hash)
+
+      payload.flat_map do |key, metric_value|
+        key_path = parents.dup.append(key)
+        if metric_value.respond_to?(:duration)
+          { name: key_path.join('.'), time_elapsed: metric_value.duration }
+        else
+          metrics_collection_time(metric_value, key_path)
+        end
+      end
+    end
+
+    def submit_payload(payload, path: USAGE_DATA_PATH)
       Gitlab::HTTP.post(
-        url,
+        URI.join(base_url, path),
         body: payload.to_json,
         allow_local_requests: true,
         headers: { 'Content-type' => 'application/json' }

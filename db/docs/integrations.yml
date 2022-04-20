@@ -50,7 +50,8 @@ classes:
 - Integrations::Zentao
 feature_categories:
 - integrations
-description: Support 3rd party integrations: Jira, Slack, etc., formerly services table.
+description: |
+  Support 3rd party integrations: Jira, Slack, etc., formerly services table.
   https://gitlab.com/gitlab-org/gitlab/-/commit/1dab19d0d7b25cb5af27b8d10c8b615b2d38c2cf
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64562
 milestone: '9.4'

@@ -16,6 +16,7 @@ tree:
         - :board
     - members:
       - :user
+    - :namespace_settings
 
 included_attributes:
   user:
@@ -24,6 +25,8 @@ included_attributes:
     - :username
   author:
     - :name
+  namespace_settings:
+    - :prevent_sharing_groups_outside_hierarchy
 
 excluded_attributes:
   group:

@@ -308,7 +308,7 @@ module Gitlab
           Settings[component]['object_store']
         end
 
-        if config
+        if config.present?
           {
             enabled: alt_usage_data { Settings[component]['enabled'] },
             object_store: {
@@ -682,6 +682,17 @@ module Gitlab
 
         event_monthly_active_users(date_range)
           .merge!(ide_monthly_active_users(date_range))
+      end
+
+      def with_duration
+        return yield unless Feature.enabled?(:measure_service_ping_metric_collection, default_enabled: :yaml)
+
+        result = nil
+        duration = Benchmark.realtime do
+          result = yield
+        end
+
+        ::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator.new(result, duration)
       end
 
       private

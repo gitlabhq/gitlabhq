@@ -1208,20 +1208,6 @@ Runners that have never contacted the GitLab instance will also return `stale` i
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### `pipelines` fields in the Package GraphQL types
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `pipelines` fields in all Package-related GraphQL types. As of GitLab 14.6, the `pipelines` field is deprecated in [`Package`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#package) and [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype) due to scalability and performance concerns.
-
-In milestone 15.0, we will completely remove `pipelines` from `Package` and `PackageDetailsType`. You can follow and contribute to work on a replacement in the epic [GitLab-#7214](https://gitlab.com/groups/gitlab-org/-/epics/7214).
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
 ### `type` and `types` keyword in CI/CD configuration
 
 WARNING:
@@ -1334,16 +1320,16 @@ Prior to 14.5, if you did not define the `AuthenticationType`, GitLab Runner cho
 ### Package pipelines in API payload is paginated
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 16.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
 A request to the API for `/api/v4/projects/:id/packages` returns a paginated result of packages. Each package lists all of its pipelines in this response. This is a performance concern, as it's possible for a package to have hundreds or thousands of associated pipelines.
 
-In milestone 15.0, we will remove the `pipelines` attribute from the API response.
+In milestone 16.0, we will remove the `pipelines` attribute from the API response.
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 16.0 (2023-05-22)**
 
 ### REST and GraphQL API Runner status will not return `paused`
 

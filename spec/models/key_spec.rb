@@ -126,32 +126,22 @@ RSpec.describe Key, :mailer do
   context 'validation of uniqueness (based on fingerprint uniqueness)' do
     let(:user) { create(:user) }
 
-    shared_examples 'fingerprint uniqueness' do
-      it 'accepts the key once' do
-        expect(build(:rsa_key_4096, user: user)).to be_valid
-      end
-
-      it 'does not accept the exact same key twice' do
-        first_key = create(:rsa_key_4096, user: user)
-
-        expect(build(:key, user: user, key: first_key.key)).not_to be_valid
-      end
-
-      it 'does not accept a duplicate key with a different comment' do
-        first_key = create(:rsa_key_4096, user: user)
-        duplicate = build(:key, user: user, key: first_key.key)
-        duplicate.key << ' extra comment'
-
-        expect(duplicate).not_to be_valid
-      end
+    it 'accepts the key once' do
+      expect(build(:rsa_key_4096, user: user)).to be_valid
     end
 
-    context 'with FIPS mode off' do
-      it_behaves_like 'fingerprint uniqueness'
+    it 'does not accept the exact same key twice' do
+      first_key = create(:rsa_key_4096, user: user)
+
+      expect(build(:key, user: user, key: first_key.key)).not_to be_valid
     end
 
-    context 'with FIPS mode', :fips_mode do
-      it_behaves_like 'fingerprint uniqueness'
+    it 'does not accept a duplicate key with a different comment' do
+      first_key = create(:rsa_key_4096, user: user)
+      duplicate = build(:key, user: user, key: first_key.key)
+      duplicate.key << ' extra comment'
+
+      expect(duplicate).not_to be_valid
     end
   end
 

@@ -27811,9 +27811,9 @@ CREATE UNIQUE INDEX index_group_deploy_keys_group_on_group_deploy_key_and_group_
 
 CREATE INDEX index_group_deploy_keys_groups_on_group_deploy_key_id ON group_deploy_keys_groups USING btree (group_deploy_key_id);
 
-CREATE UNIQUE INDEX index_group_deploy_keys_on_fingerprint ON group_deploy_keys USING btree (fingerprint);
+CREATE INDEX index_group_deploy_keys_on_fingerprint ON group_deploy_keys USING btree (fingerprint);
 
-CREATE INDEX index_group_deploy_keys_on_fingerprint_sha256 ON group_deploy_keys USING btree (fingerprint_sha256);
+CREATE UNIQUE INDEX index_group_deploy_keys_on_fingerprint_sha256_unique ON group_deploy_keys USING btree (fingerprint_sha256);
 
 CREATE INDEX index_group_deploy_keys_on_user_id ON group_deploy_keys USING btree (user_id);
 
@@ -28051,9 +28051,9 @@ CREATE INDEX index_job_artifact_states_pending_verification ON ci_job_artifact_s
 
 CREATE INDEX index_keys_on_expires_at_and_id ON keys USING btree (date(timezone('UTC'::text, expires_at)), id) WHERE (expiry_notification_delivered_at IS NULL);
 
-CREATE UNIQUE INDEX index_keys_on_fingerprint ON keys USING btree (fingerprint);
+CREATE INDEX index_keys_on_fingerprint ON keys USING btree (fingerprint);
 
-CREATE INDEX index_keys_on_fingerprint_sha256 ON keys USING btree (fingerprint_sha256);
+CREATE UNIQUE INDEX index_keys_on_fingerprint_sha256_unique ON keys USING btree (fingerprint_sha256);
 
 CREATE INDEX index_keys_on_id_and_ldap_key_type ON keys USING btree (id) WHERE ((type)::text = 'LDAPKey'::text);
 

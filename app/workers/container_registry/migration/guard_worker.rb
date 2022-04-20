@@ -93,7 +93,7 @@ module ContainerRegistry
       end
 
       def long_running_migration_threshold
-        @threshold ||= 30.minutes.ago
+        @threshold ||= 10.minutes.ago
       end
 
       def cancel_long_running_migration(repository)
@@ -101,7 +101,11 @@ module ContainerRegistry
 
         case result[:status]
         when :ok
-          repository.skip_import(reason: :migration_canceled)
+          if repository.nearing_or_exceeded_retry_limit?
+            repository.skip_import(reason: :migration_canceled)
+          else
+            repository.abort_import
+          end
         when :bad_request
           repository.reconcile_import_status(result[:state]) do
             repository.abort_import

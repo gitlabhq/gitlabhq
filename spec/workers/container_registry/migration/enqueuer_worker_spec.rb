@@ -251,7 +251,19 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         expect(container_repository.migration_skipped_at).not_to be_nil
       end
 
-      it_behaves_like 're-enqueuing based on capacity', capacity_limit: 3
+      context 're-enqueuing' do
+        before do
+          # skipping will also re-enqueue, so we isolate the capacity behavior here
+          method = worker.method(:next_repository)
+          allow(worker).to receive(:next_repository) do
+            next_qualified_repository = method.call
+            allow(next_qualified_repository).to receive(:skip_import).and_return(true)
+            next_qualified_repository
+          end
+        end
+
+        it_behaves_like 're-enqueuing based on capacity', capacity_limit: 3
+      end
     end
 
     context 'when an error occurs' do

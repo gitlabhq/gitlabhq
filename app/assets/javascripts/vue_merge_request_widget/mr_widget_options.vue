@@ -195,6 +195,9 @@ export default {
     shouldRenderTestReport() {
       return Boolean(this.mr?.testResultsPath);
     },
+    shouldRenderRefactoredTestReport() {
+      return window.gon?.features?.refactorMrWidgetTestSummary;
+    },
     mergeError() {
       let { mergeError } = this.mr;
 
@@ -512,7 +515,7 @@ export default {
       }
     },
     registerTestReportExtension() {
-      if (this.shouldRenderTestReport && this.shouldShowExtension) {
+      if (this.shouldRenderTestReport && this.shouldRenderRefactoredTestReport) {
         registerExtension(testReportExtension);
       }
     },
@@ -588,7 +591,7 @@ export default {
       />
 
       <grouped-test-reports-app
-        v-if="mr.testResultsPath && !shouldShowExtension"
+        v-if="shouldRenderTestReport && !shouldRenderRefactoredTestReport"
         class="js-reports-container"
         :endpoint="mr.testResultsPath"
         :head-blob-path="mr.headBlobPath"

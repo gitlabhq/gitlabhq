@@ -58,21 +58,30 @@ RSpec.describe ContainerRegistry::Migration do
   describe '.capacity' do
     subject { described_class.capacity }
 
-    where(:ff_1_enabled, :ff_10_enabled, :ff_25_enabled, :expected_result) do
-      false | false | false | 0
-      true  | false | false | 1
-      true  | true  | false | 10
-      true  | true  | true  | 25
-      false | true  | false | 10
-      false | true  | true  | 25
-      false | false | true  | 25
-      true  | false | true  | 25
+    where(:ff_1_enabled, :ff_2_enabled, :ff_10_enabled, :ff_25_enabled, :expected_result) do
+      false | false | false | false | 0
+      true  | false | false | false | 1
+      false | true  | false | false | 2
+      true  | true  | false | false | 2
+      false | true  | true  | false | 10
+      false | true  | true  | true  | 25
+      false | true  | false | true  | 25
+      true  | true  | false | true  | 25
+      true  | true  | true  | true  | 25
+      true  | true  | true  | false | 10
+      true  | false | true  | false | 10
+      true  | false | true  | true  | 25
+      false | false | true  | false | 10
+      false | false | true  | true  | 25
+      false | false | false | true  | 25
+      true  | false | false | true  | 25
     end
 
     with_them do
       before do
         stub_feature_flags(
           container_registry_migration_phase2_capacity_1: ff_1_enabled,
+          container_registry_migration_phase2_capacity_2: ff_2_enabled,
           container_registry_migration_phase2_capacity_10: ff_10_enabled,
           container_registry_migration_phase2_capacity_25: ff_25_enabled
         )
