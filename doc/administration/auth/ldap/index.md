@@ -531,15 +531,18 @@ However, these users can continue to use Git with SSH until the next time the
 To delete the account immediately, you can manually
 [block the user](../../../user/admin_area/moderate_users.md#block-a-user).
 
-## Updating user email addresses
+## Update user email addresses
 
-Email addresses on the LDAP server are considered the source of truth for users when LDAP is used to sign in. Updating user email
-addresses must be done on the LDAP server that manages the user. The email address for GitLab is updated either:
+Email addresses on the LDAP server are considered the source of truth for users when LDAP is used to sign in. 
+
+Updating user email addresses must be done on the LDAP server that manages the user. The email address for GitLab is updated either:
 
 - When the user next signs in.
 - When the next [user sync](ldap_synchronization.md#user-sync) is run.
 
 The updated user's previous email address becomes the secondary email address to preserve that user's commit history.
+
+You can find more details on the expected behavior of user updates in our [LDAP troubleshooting section](ldap-troubleshooting.md#user-dn-orand-email-have-changed).
 
 ## Google Secure LDAP
 
