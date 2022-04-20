@@ -269,6 +269,9 @@ export default {
     renderAddToTreeDropdown() {
       return !this.isBlobPath && (this.canCollaborate || this.canCreateMrFromFork);
     },
+    newDirectoryPath() {
+      return joinPaths(this.newDirPath, this.currentPath);
+    },
   },
   methods: {
     isLast(i) {
@@ -332,7 +335,7 @@ export default {
       :commit-message="__('Add new directory')"
       :target-branch="selectedBranch"
       :original-branch="originalBranch"
-      :path="newDirPath"
+      :path="newDirectoryPath"
     />
   </nav>
 </template>

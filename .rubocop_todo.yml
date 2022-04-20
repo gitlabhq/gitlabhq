@@ -79,10 +79,6 @@ Performance/CollectionLiteralInLoop:
 Performance/ConstantRegexp:
   Enabled: false
 
-# Offense count: 121
-Performance/MethodObjectAsBlock:
-  Enabled: false
-
 # Offense count: 15209
 # Configuration parameters: Prefixes.
 # Prefixes: when, with, without

@@ -104,6 +104,7 @@ export default {
             this.setAppStatus(EDITOR_APP_STATUS_EMPTY);
           }
 
+          this.isNewCiConfigFile = false;
           if (!hasCIFile) {
             if (this.shouldSkipStartScreen) {
               this.setNewEmptyCiConfigFile();

@@ -1,0 +1,9 @@
+@import 'mixins_and_variables_and_functions';
+
+.file-tree-container {
+  @include gl-w-full;
+
+  @media (min-width: $breakpoint-md) {
+    width: 300px;
+  }
+}

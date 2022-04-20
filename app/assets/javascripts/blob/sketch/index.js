@@ -27,7 +27,7 @@ export default class SketchLoader {
   }
 
   getZipFile() {
-    return new JSZip.external.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       JSZipUtils.getBinaryContent(this.container.dataset.endpoint, (err, data) => {
         if (err) {
           reject(err);

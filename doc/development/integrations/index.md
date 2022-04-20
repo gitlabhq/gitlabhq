@@ -275,7 +275,7 @@ as described above in [Customize the frontend form](#customize-the-frontend-form
 our [usability guidelines](https://design.gitlab.com/usability/helping-users) for help text.
 
 For more detailed documentation, provide a page in `doc/user/project/integrations`,
-and link it from the [Integrations overview](../../user/project/integrations/overview.md).
+and link it from the [Integrations overview](../../user/project/integrations/index.md).
 
 You can also refer to our general [documentation guidelines](../documentation/index.md).
 

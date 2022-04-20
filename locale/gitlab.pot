@@ -265,11 +265,6 @@ msgid_plural "%d groups"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d group selected"
-msgid_plural "%d groups selected"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
@@ -382,11 +377,6 @@ msgstr[1] ""
 
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d shard selected"
-msgid_plural "%d shards selected"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -782,9 +772,6 @@ msgid "%{level_name} is not allowed in a %{group_level_name} group."
 msgstr ""
 
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
-msgstr ""
-
-msgid "%{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "%{link_start}Add a license%{link_end} that you have received from GitLab Inc."
@@ -2166,6 +2153,9 @@ msgstr ""
 msgid "Add approvers"
 msgstr ""
 
+msgid "Add attention request"
+msgstr ""
+
 msgid "Add bold text"
 msgstr ""
 
@@ -2584,12 +2574,6 @@ msgid "AdminArea|You’re about to stop all jobs. This will halt all current job
 msgstr ""
 
 msgid "AdminDashboard|Error loading the statistics. Please try again"
-msgstr ""
-
-msgid "AdminGeo|The URL of the primary site that is used internally by the secondary sites."
-msgstr ""
-
-msgid "AdminGeo|The URL of the secondary site that is used internally by the primary site."
 msgstr ""
 
 msgid "AdminLabels|Define your default set of project labels"
@@ -3721,9 +3705,6 @@ msgid "Allow subgroups to set up their own two-factor authentication rules"
 msgstr ""
 
 msgid "Allow this key to push to this repository"
-msgstr ""
-
-msgid "Allow this secondary site to replicate content on Object Storage"
 msgstr ""
 
 msgid "Allow use of licensed EE features"
@@ -5665,9 +5646,6 @@ msgstr ""
 msgid "Below you will find all the groups that are public."
 msgstr ""
 
-msgid "Beta"
-msgstr ""
-
 msgid "Bi-weekly code coverage"
 msgstr ""
 
@@ -7472,9 +7450,6 @@ msgid "Choose any color."
 msgstr ""
 
 msgid "Choose file…"
-msgstr ""
-
-msgid "Choose specific groups or storage shards"
 msgstr ""
 
 msgid "Choose the preferred Runner and populate the AWS CFT."
@@ -9647,9 +9622,6 @@ msgid "Container registry is not enabled on this GitLab instance. Ask an adminis
 msgstr ""
 
 msgid "Container repositories"
-msgstr ""
-
-msgid "Container repositories synchronization concurrency limit"
 msgstr ""
 
 msgid "Container repository"
@@ -14841,9 +14813,6 @@ msgstr ""
 msgid "Errors found on line %{line_number}: %{error_lines}. Please check if these lines have a requirement title."
 msgstr ""
 
-msgid "Errors:"
-msgstr ""
-
 msgid "Escalate this incident"
 msgstr ""
 
@@ -15915,6 +15884,9 @@ msgstr ""
 msgid "File Hooks (%{count})"
 msgstr ""
 
+msgid "File Tree"
+msgstr ""
+
 msgid "File added"
 msgstr ""
 
@@ -15940,9 +15912,6 @@ msgid "File renamed with no changes."
 msgstr ""
 
 msgid "File suppressed by a .gitattributes entry or the file's encoding is unsupported."
-msgstr ""
-
-msgid "File synchronization concurrency limit"
 msgstr ""
 
 msgid "File templates"
@@ -16422,6 +16391,16 @@ msgstr ""
 msgid "Geo sites"
 msgstr ""
 
+msgid "Geo|%d group selected"
+msgid_plural "%d groups selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Geo|%d shard selected"
+msgid_plural "%d shards selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Geo|%{boldStart}N/A%{boldEnd}: Geo does not verify this component yet. See the %{linkStart}data types we plan to support%{linkEnd}."
 msgstr ""
 
@@ -16455,6 +16434,9 @@ msgstr ""
 msgid "Geo|(%{timeAgo})"
 msgstr ""
 
+msgid "Geo|Add New Site"
+msgstr ""
+
 msgid "Geo|Add site"
 msgstr ""
 
@@ -16476,6 +16458,9 @@ msgstr ""
 msgid "Geo|All projects are being scheduled for reverify"
 msgstr ""
 
+msgid "Geo|Allow this secondary site to replicate content on Object Storage"
+msgstr ""
+
 msgid "Geo|Allowed Geo IP can't be blank"
 msgstr ""
 
@@ -16485,7 +16470,13 @@ msgstr ""
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
 msgstr ""
 
+msgid "Geo|Beta"
+msgstr ""
+
 msgid "Geo|Checksummed"
+msgstr ""
+
+msgid "Geo|Choose specific groups or storage shards"
 msgstr ""
 
 msgid "Geo|Connection timeout can't be blank"
@@ -16498,6 +16489,9 @@ msgid "Geo|Connection timeout should be between 1-120"
 msgstr ""
 
 msgid "Geo|Consult Geo troubleshooting information"
+msgstr ""
+
+msgid "Geo|Container repositories synchronization concurrency limit"
 msgstr ""
 
 msgid "Geo|Could not remove tracking entry for an existing project."
@@ -16521,10 +16515,19 @@ msgstr ""
 msgid "Geo|Edit %{nodeType} site"
 msgstr ""
 
+msgid "Geo|Edit Geo Site"
+msgstr ""
+
 msgid "Geo|Edit your search and try again."
 msgstr ""
 
+msgid "Geo|Errors:"
+msgstr ""
+
 msgid "Geo|Failed"
+msgstr ""
+
+msgid "Geo|File synchronization concurrency limit"
 msgstr ""
 
 msgid "Geo|Filter Geo sites"
@@ -16551,7 +16554,13 @@ msgstr ""
 msgid "Geo|Go to the primary site"
 msgstr ""
 
+msgid "Geo|Groups to synchronize"
+msgstr ""
+
 msgid "Geo|Healthy"
+msgstr ""
+
+msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "Geo|If you want to make changes, you must visit the primary site."
@@ -16564,6 +16573,9 @@ msgid "Geo|In sync"
 msgstr ""
 
 msgid "Geo|Internal URL"
+msgstr ""
+
+msgid "Geo|Internal URL (optional)"
 msgstr ""
 
 msgid "Geo|Last event ID from primary"
@@ -16590,7 +16602,19 @@ msgstr ""
 msgid "Geo|Learn more about Geo site statuses"
 msgstr ""
 
+msgid "Geo|Limit the number of concurrent operations this secondary site can run in the background."
+msgstr ""
+
 msgid "Geo|Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
+msgstr ""
+
+msgid "Geo|Minimum interval in days"
+msgstr ""
+
+msgid "Geo|Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
+msgstr ""
+
+msgid "Geo|Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "Geo|Never"
@@ -16608,6 +16632,9 @@ msgstr ""
 msgid "Geo|Not synced yet"
 msgstr ""
 
+msgid "Geo|Nothing found…"
+msgstr ""
+
 msgid "Geo|Nothing to checksum"
 msgstr ""
 
@@ -16615,6 +16642,9 @@ msgid "Geo|Nothing to synchronize"
 msgstr ""
 
 msgid "Geo|Nothing to verify"
+msgstr ""
+
+msgid "Geo|Object Storage replication"
 msgstr ""
 
 msgid "Geo|Offline"
@@ -16627,6 +16657,9 @@ msgid "Geo|Pending synchronization"
 msgstr ""
 
 msgid "Geo|Pending verification"
+msgstr ""
+
+msgid "Geo|Primary"
 msgstr ""
 
 msgid "Geo|Primary node"
@@ -16648,6 +16681,9 @@ msgid "Geo|Projects in certain storage shards"
 msgstr ""
 
 msgid "Geo|Queued"
+msgstr ""
+
+msgid "Geo|Re-verification interval"
 msgstr ""
 
 msgid "Geo|Redownload"
@@ -16692,6 +16728,9 @@ msgstr ""
 msgid "Geo|Replication summary"
 msgstr ""
 
+msgid "Geo|Repository synchronization concurrency limit"
+msgstr ""
+
 msgid "Geo|Resync"
 msgstr ""
 
@@ -16719,13 +16758,34 @@ msgstr ""
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
 msgstr ""
 
+msgid "Geo|Secondary"
+msgstr ""
+
 msgid "Geo|Secondary node"
 msgstr ""
 
 msgid "Geo|Secondary site"
 msgstr ""
 
+msgid "Geo|Select groups to replicate"
+msgstr ""
+
+msgid "Geo|Select shards to replicate"
+msgstr ""
+
 msgid "Geo|Selective (%{syncLabel})"
+msgstr ""
+
+msgid "Geo|Selective synchronization"
+msgstr ""
+
+msgid "Geo|Set verification limit and frequency."
+msgstr ""
+
+msgid "Geo|Set what should be replicated by this secondary site."
+msgstr ""
+
+msgid "Geo|Shards to synchronize"
 msgstr ""
 
 msgid "Geo|Site name can't be blank"
@@ -16761,6 +16821,12 @@ msgstr ""
 msgid "Geo|Synchronization status"
 msgstr ""
 
+msgid "Geo|The URL of the primary site that is used internally by the secondary sites. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "Geo|The URL of the secondary site that is used internally by the primary site. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "Geo|The database is currently %{db_lag} behind the primary site."
 msgstr ""
 
@@ -16776,6 +16842,12 @@ msgstr ""
 msgid "Geo|There was an error fetching the Geo Sites"
 msgstr ""
 
+msgid "Geo|There was an error fetching the Sites's Groups"
+msgstr ""
+
+msgid "Geo|There was an error saving this Geo Site"
+msgstr ""
+
 msgid "Geo|This will resync all %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
@@ -16789,6 +16861,9 @@ msgid "Geo|Tracking database entry will be removed. Are you sure?"
 msgstr ""
 
 msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
+msgstr ""
+
+msgid "Geo|Tuning settings"
 msgstr ""
 
 msgid "Geo|URL can't be blank"
@@ -16813,6 +16888,9 @@ msgid "Geo|Updated %{timeAgo}"
 msgstr ""
 
 msgid "Geo|Verification"
+msgstr ""
+
+msgid "Geo|Verification concurrency limit"
 msgstr ""
 
 msgid "Geo|Verification failed - %{error}"
@@ -18159,9 +18237,6 @@ msgstr ""
 msgid "Groups are the best way to manage projects and members."
 msgstr ""
 
-msgid "Groups to synchronize"
-msgstr ""
-
 msgid "GroupsDropdown|Frequently visited"
 msgstr ""
 
@@ -18906,9 +18981,6 @@ msgid "If disabled, a diverged local branch will not be automatically updated wi
 msgstr ""
 
 msgid "If disabled, only administrators can configure repository mirroring."
-msgstr ""
-
-msgid "If enabled, GitLab will handle Object Storage replication using Geo. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "If enabled, only protected branches will be mirrored."
@@ -20483,9 +20555,6 @@ msgid "Internal - The group and any internal projects can be viewed by any logge
 msgstr ""
 
 msgid "Internal - The project can be accessed by any logged in user except external users."
-msgstr ""
-
-msgid "Internal URL (optional)"
 msgstr ""
 
 msgid "Internal error occurred while delivering this webhook."
@@ -22631,9 +22700,6 @@ msgstr ""
 msgid "Limit sign in from multiple IP addresses"
 msgstr ""
 
-msgid "Limit the number of concurrent operations this secondary site can run in the background."
-msgstr ""
-
 msgid "Limit the number of inbound incident management alerts that can be sent to a project."
 msgstr ""
 
@@ -24442,9 +24508,6 @@ msgstr ""
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
 msgstr ""
 
-msgid "Minimum interval in days"
-msgstr ""
-
 msgid "Minutes"
 msgstr ""
 
@@ -24692,12 +24755,6 @@ msgid "Multiple uploaders found: %{uploader_types}"
 msgstr ""
 
 msgid "Multiplier to apply to polling intervals. Decimal values are supported. Defaults to 1."
-msgstr ""
-
-msgid "Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
-msgstr ""
-
-msgid "Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "My awesome group"
@@ -25762,9 +25819,6 @@ msgstr ""
 msgid "Notes|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr ""
 
-msgid "Nothing found…"
-msgstr ""
-
 msgid "Nothing to preview."
 msgstr ""
 
@@ -25978,9 +26032,6 @@ msgid "Number of shards"
 msgstr ""
 
 msgid "OK"
-msgstr ""
-
-msgid "Object Storage replication"
 msgstr ""
 
 msgid "Object does not exist on the server or you don't have permissions to access it"
@@ -27487,6 +27538,12 @@ msgstr ""
 msgid "PipelineCharts|Total:"
 msgstr ""
 
+msgid "PipelineEditorFileTree|Configuration files added with the include keyword"
+msgstr ""
+
+msgid "PipelineEditorFileTree|When you use the include keyword to add pipeline configuration from files in the project, those files will be listed here."
+msgstr ""
+
 msgid "PipelineEditorTutorial|Browse %{linkStart}CI/CD examples and templates%{linkEnd}"
 msgstr ""
 
@@ -28559,9 +28616,6 @@ msgid "Previous file in diff"
 msgstr ""
 
 msgid "Previous unresolved discussion"
-msgstr ""
-
-msgid "Primary"
 msgstr ""
 
 msgid "Primary Action"
@@ -30859,9 +30913,6 @@ msgstr ""
 msgid "Re-request review"
 msgstr ""
 
-msgid "Re-verification interval"
-msgstr ""
-
 msgid "Read documentation"
 msgstr ""
 
@@ -31875,9 +31926,6 @@ msgstr ""
 msgid "Repository storage"
 msgstr ""
 
-msgid "Repository synchronization concurrency limit"
-msgstr ""
-
 msgid "Repository update events"
 msgstr ""
 
@@ -31896,9 +31944,6 @@ msgstr ""
 msgid "Request a new one"
 msgstr ""
 
-msgid "Request attention"
-msgstr ""
-
 msgid "Request attention from %{users_sentence}."
 msgstr ""
 
@@ -31906,9 +31951,6 @@ msgid "Request attention from assignee or reviewer"
 msgstr ""
 
 msgid "Request attention from assignee(s) or reviewer(s)"
-msgstr ""
-
-msgid "Request attention to review"
 msgstr ""
 
 msgid "Request details"
@@ -33245,9 +33287,6 @@ msgstr ""
 msgid "Seats usage data is updated every day at 12:00pm UTC"
 msgstr ""
 
-msgid "Secondary"
-msgstr ""
-
 msgid "Secondary email:"
 msgstr ""
 
@@ -33488,9 +33527,6 @@ msgstr ""
 msgid "SecurityOrchestration|All policies"
 msgstr ""
 
-msgid "SecurityOrchestration|All scanners find"
-msgstr ""
-
 msgid "SecurityOrchestration|Allow all inbound traffic to all pods from all pods on ports 443/TCP."
 msgstr ""
 
@@ -33500,7 +33536,19 @@ msgstr ""
 msgid "SecurityOrchestration|An error occurred unassigning your security policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|An error occurred while fetching the scan result policies."
+msgstr ""
+
+msgid "SecurityOrchestration|Any scanner finds"
+msgstr ""
+
 msgid "SecurityOrchestration|Choose a project"
+msgstr ""
+
+msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
+msgstr ""
+
+msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Description"
@@ -33656,6 +33704,9 @@ msgstr ""
 msgid "SecurityOrchestration|Scan to be performed on every pipeline on the %{branches}"
 msgstr ""
 
+msgid "SecurityOrchestration|Security Approvals"
+msgstr ""
+
 msgid "SecurityOrchestration|Security policy project was linked successfully"
 msgstr ""
 
@@ -33717,6 +33768,9 @@ msgid "SecurityOrchestration|Use network policies to create firewall rules for n
 msgstr ""
 
 msgid "SecurityOrchestration|View policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|You don't have any security policies yet"
 msgstr ""
 
 msgid "SecurityOrchestration|a"
@@ -34196,9 +34250,6 @@ msgstr ""
 msgid "Select group or project"
 msgstr ""
 
-msgid "Select groups to replicate"
-msgstr ""
-
 msgid "Select health status"
 msgstr ""
 
@@ -34239,9 +34290,6 @@ msgid "Select projects"
 msgstr ""
 
 msgid "Select reviewer(s)"
-msgstr ""
-
-msgid "Select shards to replicate"
 msgstr ""
 
 msgid "Select source"
@@ -34290,9 +34338,6 @@ msgid "Selected projects"
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By %{link_open}@johnsmith%{link_close}\"). It will also associate and/or assign these issues and comments with the selected user."
-msgstr ""
-
-msgid "Selective synchronization"
 msgstr ""
 
 msgid "Self monitoring"
@@ -34691,16 +34736,10 @@ msgstr ""
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
-msgid "Set verification limit and frequency."
-msgstr ""
-
 msgid "Set weight"
 msgstr ""
 
 msgid "Set weight to %{weight}."
-msgstr ""
-
-msgid "Set what should be replicated by this secondary site."
 msgstr ""
 
 msgid "SetStatusModal|An indicator appears next to your name and avatar"
@@ -34799,9 +34838,6 @@ msgid "SeverityWidget|Severity: %{severity}"
 msgstr ""
 
 msgid "SeverityWidget|There was an error while updating severity."
-msgstr ""
-
-msgid "Shards to synchronize"
 msgstr ""
 
 msgid "Share"
@@ -36848,9 +36884,6 @@ msgstr ""
 msgid "Synced"
 msgstr ""
 
-msgid "Synchronization settings"
-msgstr ""
-
 msgid "Synchronize LDAP"
 msgstr ""
 
@@ -38235,9 +38268,6 @@ msgstr ""
 msgid "There was an error fetching the Geo Settings"
 msgstr ""
 
-msgid "There was an error fetching the Sites's Groups"
-msgstr ""
-
 msgid "There was an error fetching the deploy freezes."
 msgstr ""
 
@@ -38284,9 +38314,6 @@ msgid "There was an error resetting user pipeline minutes."
 msgstr ""
 
 msgid "There was an error retrieving the Jira users."
-msgstr ""
-
-msgid "There was an error saving this Geo Site"
 msgstr ""
 
 msgid "There was an error saving your changes."
@@ -40012,9 +40039,6 @@ msgstr ""
 msgid "Tuesday"
 msgstr ""
 
-msgid "Tuning settings"
-msgstr ""
-
 msgid "Turn off"
 msgstr ""
 
@@ -41471,9 +41495,6 @@ msgid "Various email settings."
 msgstr ""
 
 msgid "Various settings that affect GitLab performance."
-msgstr ""
-
-msgid "Verification concurrency limit"
 msgstr ""
 
 msgid "Verification status"

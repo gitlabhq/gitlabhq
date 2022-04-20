@@ -50,7 +50,7 @@ You can prevent merge requests from being merged if:
 This works for both:
 
 - GitLab CI/CD pipelines
-- Pipelines run from an [external CI integration](../integrations/overview.md#integrations-listing)
+- Pipelines run from an [external CI integration](../integrations/index.md#available-integrations)
 
 As a result, [disabling GitLab CI/CD pipelines](../../../ci/enable_or_disable_ci.md)
 does not disable this feature, as it is possible to use pipelines from external

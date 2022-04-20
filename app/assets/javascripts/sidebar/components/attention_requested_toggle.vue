@@ -5,9 +5,8 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 export default {
   i18n: {
-    attentionRequestedReviewer: __('Request attention to review'),
-    attentionRequestedAssignee: __('Request attention'),
-    removeAttentionRequested: __('Remove attention request'),
+    addAttentionRequest: __('Add attention request'),
+    removeAttentionRequest: __('Remove attention request'),
     attentionRequestedNoPermission: __('Attention requested'),
     noAttentionRequestedNoPermission: __('No attention request'),
   },
@@ -36,16 +35,14 @@ export default {
     tooltipTitle() {
       if (this.user.attention_requested) {
         if (this.user.can_update_merge_request) {
-          return this.$options.i18n.removeAttentionRequested;
+          return this.$options.i18n.removeAttentionRequest;
         }
 
         return this.$options.i18n.attentionRequestedNoPermission;
       }
 
       if (this.user.can_update_merge_request) {
-        return this.type === 'reviewer'
-          ? this.$options.i18n.attentionRequestedReviewer
-          : this.$options.i18n.attentionRequestedAssignee;
+        return this.$options.i18n.addAttentionRequest;
       }
 
       return this.$options.i18n.noAttentionRequestedNoPermission;

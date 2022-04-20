@@ -57,4 +57,4 @@ internal issue tracker, the internal issue is linked.
 
 ## Troubleshooting
 
-To see recent service hook deliveries, check [service hook logs](overview.md#troubleshooting-integrations).
+To see recent service hook deliveries, check [service hook logs](index.md#troubleshooting-integrations).

@@ -96,9 +96,9 @@ describe('Attention require toggle', () => {
 
   it.each`
     type          | attentionRequested | tooltip                                                           | canUpdateMergeRequest
-    ${'reviewer'} | ${true}            | ${AttentionRequestedToggle.i18n.removeAttentionRequested}         | ${true}
-    ${'reviewer'} | ${false}           | ${AttentionRequestedToggle.i18n.attentionRequestedReviewer}       | ${true}
-    ${'assignee'} | ${false}           | ${AttentionRequestedToggle.i18n.attentionRequestedAssignee}       | ${true}
+    ${'reviewer'} | ${true}            | ${AttentionRequestedToggle.i18n.removeAttentionRequest}           | ${true}
+    ${'reviewer'} | ${false}           | ${AttentionRequestedToggle.i18n.addAttentionRequest}              | ${true}
+    ${'assignee'} | ${false}           | ${AttentionRequestedToggle.i18n.addAttentionRequest}              | ${true}
     ${'reviewer'} | ${true}            | ${AttentionRequestedToggle.i18n.attentionRequestedNoPermission}   | ${false}
     ${'reviewer'} | ${false}           | ${AttentionRequestedToggle.i18n.noAttentionRequestedNoPermission} | ${false}
     ${'assignee'} | ${true}            | ${AttentionRequestedToggle.i18n.attentionRequestedNoPermission}   | ${false}

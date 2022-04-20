@@ -46,7 +46,7 @@ integration in GitLab.
 1. Select **Atlassian Bamboo**.
 1. Ensure the **Active** checkbox is selected.
 1. Enter the base URL of your Bamboo server. For example, `https://bamboo.example.com`.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](overview.md#ssl-verification).
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#manage-ssl-verification).
 1. Enter the [build key](#identify-the-bamboo-build-plan-build-key) from your Bamboo
    build plan.
 1. If necessary, enter a username and password for a Bamboo user that has
@@ -71,7 +71,7 @@ Bamboo. For example, `https://bamboo.example.com/browse/PROJ-PLAN`.
 ### Builds not triggered
 
 If builds are not triggered, ensure you entered the right GitLab IP address in
-Bamboo under **Trigger IP addresses**. Also check [service hook logs](overview.md#troubleshooting-integrations) for request failures.
+Bamboo under **Trigger IP addresses**. Also check [service hook logs](index.md#troubleshooting-integrations) for request failures.
 
 ### Advanced Atlassian Bamboo features not available in GitLab UI
 

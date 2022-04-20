@@ -28,6 +28,20 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## 15.0
+
+### Container registry authentication with htpasswd
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The Container Registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
+
+Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
+
 ## 14.9
 
 ### Integrated error tracking disabled by default

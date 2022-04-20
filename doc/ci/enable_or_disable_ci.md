@@ -31,7 +31,7 @@ If you disable GitLab CI/CD in a project:
 - Existing jobs and pipelines are not deleted. Re-enable CI/CD to access them again.
 
 The project or instance settings do not enable or disable pipelines run in an
-[external integration](../user/project/integrations/overview.md#integrations-listing).
+[external integration](../user/project/integrations/index.md#available-integrations).
 
 ## Enable CI/CD in a project
 

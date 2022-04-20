@@ -401,6 +401,39 @@ Backticks are more precise than quotes. For example, in this string:
 
 It's not clear whether the user should include the period in the string.
 
+### Inline code
+
+Inline code style is applied inline with regular text. Use inline code style:
+
+- For filenames or fragments of configuration files. For example, `.gitlab-ci.yml`, `CODEOWNERS`, and `only: [main]`.
+- For HTTP methods (`HTTP POST`) and HTTP status codes, both full (`404 File Not Found`) and abbreviated (`404`).
+  For example: Send a `DELETE` request to delete the runner. Send a `POST` request to create one.
+
+To apply inline code style, wrap the text in a single backtick (`` ` ``). For example, `this is inline code style`.
+
+### Code blocks
+
+Code block style separates code text from regular text. Use code block style for commands run in the command-line
+interface. Code block style is easier to copy and paste in a user's terminal window.
+
+To apply code block style, wrap the text in triple backticks (three `` ` ``) and add a syntax highlighting hint. For
+example:
+
+````plaintext
+```plaintext
+This is codeblock style
+```
+````
+
+When using code block style:
+
+- Use quadruple backticks (four `` ` ``) to apply code block style when the code block you are styling has triple
+  backticks in it. For example, when illustrating code block style.
+- Add a blank line above and below code blocks.
+- Syntax highlight hints are required for code blocks. See the
+  [list of supported languages and lexers](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
+  for available syntax highlighters. Use `plaintext` if no better hint is available.
+
 ## Lists
 
 - Always start list items with a capital letter, unless they're parameters or
@@ -1165,80 +1198,6 @@ different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for
 `/help`, because the GitLab Markdown processor doesn't support iframes. It's
 hidden on the documentation site, but is displayed by `/help`.
-
-## Code blocks
-
-- Always wrap code added to a sentence in inline code blocks (`` ` ``).
-  For example, `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, or `only: [main]`.
-  File names, commands, entries, and anything that refers to code should be
-  added to code blocks. To make things easier for the user, always add a full
-  code block for things that can be useful to copy and paste, as they can do it
-  with the button on code blocks.
-- HTTP methods (`HTTP POST`) and HTTP status codes, both full (`404 File Not Found`)
-  and abbreviated (`404`), should be wrapped in inline code blocks when used in sentences.
-  For example: Send a `DELETE` request to delete the runner. Send a `POST` request to create one.
-- Add a blank line above and below code blocks.
-- When providing a shell command and its output, prefix the shell command with `$`
-  and leave a blank line between the command and the output.
-- When providing a command without output, don't prefix the shell command with `$`.
-- If you need to include triple backticks inside a code block, use four backticks
-  for the code block fences instead of three.
-- For regular fenced code blocks, always use a highlighting class corresponding to
-  the language for better readability. Examples:
-
-  ````markdown
-  ```ruby
-  Ruby code
-  ```
-
-  ```javascript
-  JavaScript code
-  ```
-
-  ```markdown
-  [Markdown code example](example.md)
-  ```
-
-  ```plaintext
-  Code or text for which no specific highlighting class is available.
-  ```
-  ````
-
-Syntax highlighting is required for fenced code blocks added to the GitLab
-documentation. Refer to this table for the most common language classes,
-or check the [complete list](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
-of available language classes:
-
-| Preferred language tags | Language aliases and notes                                                   |
-|-------------------------|------------------------------------------------------------------------------|
-| `asciidoc`              |                                                                              |
-| `dockerfile`            | Alias: `docker`.                                                             |
-| `elixir`                |                                                                              |
-| `erb`                   |                                                                              |
-| `golang`                | Alias: `go`.                                                                 |
-| `graphql`               |                                                                              |
-| `haml`                  |                                                                              |
-| `html`                  |                                                                              |
-| `ini`                   | For some simple configuration files that are not in TOML format.             |
-| `javascript`            | Alias `js`.                                                                  |
-| `json`                  |                                                                              |
-| `markdown`              | Alias: `md`.                                                                 |
-| `mermaid`               |                                                                              |
-| `nginx`                 |                                                                              |
-| `perl`                  |                                                                              |
-| `php`                   |                                                                              |
-| `plaintext`             | Examples with no defined language, such as output from shell commands or API calls. If a code block has no language, it defaults to `plaintext`. Alias: `text`.|
-| `prometheus`            | Prometheus configuration examples.                                           |
-| `python`                |                                                                              |
-| `ruby`                  | Alias: `rb`.                                                                 |
-| `shell`                 | Aliases: `bash` or `sh`.                                                     |
-| `sql`                   |                                                                              |
-| `toml`                  | Runner configuration examples, and other TOML-formatted configuration files. |
-| `typescript`            | Alias: `ts`.                                                                 |
-| `xml`                   |                                                                              |
-| `yaml`                  | Alias: `yml`.                                                                |
-
-For a complete reference on code blocks, see the [Kramdown guide](https://about.gitlab.com/handbook/markdown-guide/#code-blocks).
 
 ## GitLab SVG icons
 

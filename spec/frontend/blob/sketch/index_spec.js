@@ -1,7 +1,17 @@
-import JSZip from 'jszip';
 import SketchLoader from '~/blob/sketch';
+import waitForPromises from 'helpers/wait_for_promises';
 
-jest.mock('jszip');
+jest.mock('jszip', () => {
+  return {
+    loadAsync: jest.fn().mockResolvedValue({
+      files: {
+        'previews/preview.png': {
+          async: jest.fn().mockResolvedValue('foo'),
+        },
+      },
+    }),
+  };
+});
 
 describe('Sketch viewer', () => {
   beforeEach(() => {
@@ -9,12 +19,11 @@ describe('Sketch viewer', () => {
   });
 
   describe('with error message', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       jest.spyOn(SketchLoader.prototype, 'getZipFile').mockImplementation(
         () =>
           new Promise((resolve, reject) => {
             reject();
-            done();
           }),
       );
 
@@ -35,26 +44,12 @@ describe('Sketch viewer', () => {
   });
 
   describe('success', () => {
-    beforeEach((done) => {
-      const loadAsyncMock = {
-        files: {
-          'previews/preview.png': {
-            async: jest.fn(),
-          },
-        },
-      };
-
-      loadAsyncMock.files['previews/preview.png'].async.mockImplementation(
-        () =>
-          new Promise((resolve) => {
-            resolve('foo');
-            done();
-          }),
-      );
-
+    beforeEach(() => {
       jest.spyOn(SketchLoader.prototype, 'getZipFile').mockResolvedValue();
-      jest.spyOn(JSZip, 'loadAsync').mockResolvedValue(loadAsyncMock);
-      return new SketchLoader(document.getElementById('js-sketch-viewer'));
+      // eslint-disable-next-line no-new
+      new SketchLoader(document.getElementById('js-sketch-viewer'));
+
+      return waitForPromises();
     });
 
     it('does not render error message', () => {

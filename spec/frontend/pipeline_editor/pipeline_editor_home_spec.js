@@ -6,6 +6,7 @@ import CiEditorHeader from '~/pipeline_editor/components/editor/ci_editor_header
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
 import PipelineEditorDrawer from '~/pipeline_editor/components/drawer/pipeline_editor_drawer.vue';
 import PipelineEditorFileNav from '~/pipeline_editor/components/file_nav/pipeline_editor_file_nav.vue';
+import PipelineEditorFileTree from '~/pipeline_editor/components/file_tree/container.vue';
 import BranchSwitcher from '~/pipeline_editor/components/file_nav/branch_switcher.vue';
 import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
@@ -47,8 +48,10 @@ describe('Pipeline editor home wrapper', () => {
   const findFileNav = () => wrapper.findComponent(PipelineEditorFileNav);
   const findModal = () => wrapper.findComponent(GlModal);
   const findPipelineEditorDrawer = () => wrapper.findComponent(PipelineEditorDrawer);
+  const findPipelineEditorFileTree = () => wrapper.findComponent(PipelineEditorFileTree);
   const findPipelineEditorHeader = () => wrapper.findComponent(PipelineEditorHeader);
   const findPipelineEditorTabs = () => wrapper.findComponent(PipelineEditorTabs);
+  const findFileTreeBtn = () => wrapper.findByTestId('file-tree-toggle');
   const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
 
   afterEach(() => {
@@ -228,6 +231,56 @@ describe('Pipeline editor home wrapper', () => {
       await nextTick();
 
       expect(findPipelineEditorDrawer().props('isVisible')).toBe(false);
+    });
+  });
+
+  describe('file tree', () => {
+    const toggleFileTree = async () => {
+      findFileTreeBtn().vm.$emit('click');
+      await nextTick();
+    };
+
+    describe('with pipelineEditorFileTree feature flag OFF', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('hides the file tree', () => {
+        expect(findFileTreeBtn().exists()).toBe(false);
+        expect(findPipelineEditorFileTree().exists()).toBe(false);
+      });
+    });
+
+    describe('with pipelineEditorFileTree feature flag ON', () => {
+      beforeEach(() => {
+        createComponent({
+          glFeatures: {
+            pipelineEditorFileTree: true,
+          },
+          stubs: {
+            GlButton,
+            PipelineEditorFileNav,
+          },
+        });
+      });
+
+      it('shows button toggle', () => {
+        expect(findFileTreeBtn().exists()).toBe(true);
+      });
+
+      it('hides the file tree by default', () => {
+        expect(findPipelineEditorFileTree().exists()).toBe(false);
+      });
+
+      it('toggles the drawer on button click', async () => {
+        await toggleFileTree();
+
+        expect(findPipelineEditorFileTree().exists()).toBe(true);
+
+        await toggleFileTree();
+
+        expect(findPipelineEditorFileTree().exists()).toBe(false);
+      });
     });
   });
 });

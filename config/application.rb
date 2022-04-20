@@ -287,6 +287,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/pipeline_schedules.css"
     config.assets.precompile << "page_bundles/pipelines.css"
+    config.assets.precompile << "page_bundles/pipeline_editor.css"
     config.assets.precompile << "page_bundles/productivity_analytics.css"
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
     config.assets.precompile << "page_bundles/project.css"
@@ -485,6 +486,19 @@ module Gitlab
       Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
         load_config_initializer(initializer)
       end
+    end
+
+    # We know Rails closes database connections in the
+    # active_record.clear_active_connections initializer, so only log database
+    # connections opened after that.
+    initializer :start_logging_new_postgresql_connections, after: :finisher_hook do
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.warn_on_new_connection = true
+    end
+
+    # It is legitimate to open database connections after initializers so stop
+    # logging
+    initializer :stop_logging_new_postgresql_connections, after: :set_routes_reloader_hook do
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.warn_on_new_connection = false
     end
 
     # Load JH initializers under JH. Load ordering is:
