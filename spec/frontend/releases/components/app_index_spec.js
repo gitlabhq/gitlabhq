@@ -1,50 +1,87 @@
-import { shallowMount } from '@vue/test-utils';
-import { merge } from 'lodash';
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { getParameterByName } from '~/lib/utils/url_utility';
-import AppIndex from '~/releases/components/app_index.vue';
+import { cloneDeep } from 'lodash';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import originalAllReleasesQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/all_releases.query.graphql.json';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
+import createFlash from '~/flash';
+import { historyPushState } from '~/lib/utils/common_utils';
+import ReleasesIndexApp from '~/releases/components/app_index.vue';
+import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
+import ReleasesEmptyState from '~/releases/components/releases_empty_state.vue';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
+import { PAGE_SIZE, CREATED_ASC, DEFAULT_SORT } from '~/releases/constants';
+
+Vue.use(VueApollo);
+
+jest.mock('~/flash');
+
+let mockQueryParams;
+jest.mock('~/lib/utils/common_utils', () => ({
+  ...jest.requireActual('~/lib/utils/common_utils'),
+  historyPushState: jest.fn(),
+}));
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
-  getParameterByName: jest.fn(),
+  getParameterByName: jest
+    .fn()
+    .mockImplementation((parameterName) => mockQueryParams[parameterName]),
 }));
 
-Vue.use(Vuex);
-
 describe('app_index.vue', () => {
-  let wrapper;
-  let fetchReleasesSpy;
-  let urlParams;
+  const projectPath = 'project/path';
+  const newReleasePath = 'path/to/new/release/page';
+  const before = 'beforeCursor';
+  const after = 'afterCursor';
 
-  const createComponent = (storeUpdates) => {
-    wrapper = shallowMount(AppIndex, {
-      store: new Vuex.Store({
-        modules: {
-          index: merge(
-            {
-              namespaced: true,
-              actions: {
-                fetchReleases: fetchReleasesSpy,
-              },
-              state: {
-                isLoading: true,
-                releases: [],
-              },
-            },
-            storeUpdates,
-          ),
-        },
-      }),
+  let wrapper;
+  let allReleases;
+  let singleRelease;
+  let noReleases;
+  let queryMock;
+
+  const createComponent = ({
+    singleResponse = Promise.resolve(singleRelease),
+    fullResponse = Promise.resolve(allReleases),
+  } = {}) => {
+    const apolloProvider = createMockApollo([
+      [
+        allReleasesQuery,
+        queryMock.mockImplementation((vars) => {
+          return vars.first === 1 ? singleResponse : fullResponse;
+        }),
+      ],
+    ]);
+
+    wrapper = shallowMountExtended(ReleasesIndexApp, {
+      apolloProvider,
+      provide: {
+        newReleasePath,
+        projectPath,
+      },
     });
   };
 
   beforeEach(() => {
-    fetchReleasesSpy = jest.fn();
-    getParameterByName.mockImplementation((paramName) => urlParams[paramName]);
+    mockQueryParams = {};
+
+    allReleases = cloneDeep(originalAllReleasesQueryResponse);
+
+    singleRelease = cloneDeep(originalAllReleasesQueryResponse);
+    singleRelease.data.project.releases.nodes.splice(
+      1,
+      singleRelease.data.project.releases.nodes.length,
+    );
+
+    noReleases = cloneDeep(originalAllReleasesQueryResponse);
+    noReleases.data.project.releases.nodes = [];
+
+    queryMock = jest.fn();
   });
 
   afterEach(() => {
@@ -52,120 +89,221 @@ describe('app_index.vue', () => {
   });
 
   // Finders
-  const findLoadingIndicator = () => wrapper.find(ReleaseSkeletonLoader);
-  const findEmptyState = () => wrapper.find('[data-testid="empty-state"]');
-  const findSuccessState = () => wrapper.find('[data-testid="success-state"]');
-  const findPagination = () => wrapper.find(ReleasesPagination);
-  const findSortControls = () => wrapper.find(ReleasesSort);
-  const findNewReleaseButton = () => wrapper.find('[data-testid="new-release-button"]');
-
-  // Expectations
-  const expectLoadingIndicator = (shouldExist) => {
-    it(`${shouldExist ? 'renders' : 'does not render'} a loading indicator`, () => {
-      expect(findLoadingIndicator().exists()).toBe(shouldExist);
-    });
-  };
-
-  const expectEmptyState = (shouldExist) => {
-    it(`${shouldExist ? 'renders' : 'does not render'} an empty state`, () => {
-      expect(findEmptyState().exists()).toBe(shouldExist);
-    });
-  };
-
-  const expectSuccessState = (shouldExist) => {
-    it(`${shouldExist ? 'renders' : 'does not render'} the success state`, () => {
-      expect(findSuccessState().exists()).toBe(shouldExist);
-    });
-  };
-
-  const expectPagination = (shouldExist) => {
-    it(`${shouldExist ? 'renders' : 'does not render'} the pagination controls`, () => {
-      expect(findPagination().exists()).toBe(shouldExist);
-    });
-  };
-
-  const expectNewReleaseButton = (shouldExist) => {
-    it(`${shouldExist ? 'renders' : 'does not render'} the "New release" button`, () => {
-      expect(findNewReleaseButton().exists()).toBe(shouldExist);
-    });
-  };
+  const findLoadingIndicator = () => wrapper.findComponent(ReleaseSkeletonLoader);
+  const findEmptyState = () => wrapper.findComponent(ReleasesEmptyState);
+  const findNewReleaseButton = () => wrapper.findByText(ReleasesIndexApp.i18n.newRelease);
+  const findAllReleaseBlocks = () => wrapper.findAllComponents(ReleaseBlock);
+  const findPagination = () => wrapper.findComponent(ReleasesPagination);
+  const findSort = () => wrapper.findComponent(ReleasesSort);
 
   // Tests
-  describe('on startup', () => {
-    it.each`
-      before                  | after
-      ${null}                 | ${null}
-      ${'before_param_value'} | ${null}
-      ${null}                 | ${'after_param_value'}
+  describe('component states', () => {
+    // These need to be defined as functions, since `singleRelease` and
+    // `allReleases` are generated in a `beforeEach`, and therefore
+    // aren't available at test definition time.
+    const getInProgressResponse = () => new Promise(() => {});
+    const getErrorResponse = () => Promise.reject(new Error('Oops!'));
+    const getSingleRequestLoadedResponse = () => Promise.resolve(singleRelease);
+    const getFullRequestLoadedResponse = () => Promise.resolve(allReleases);
+    const getLoadedEmptyResponse = () => Promise.resolve(noReleases);
+
+    const toDescription = (bool) => (bool ? 'does' : 'does not');
+
+    describe.each`
+      description                                                       | singleResponseFn                  | fullResponseFn                  | loadingIndicator | emptyState | flashMessage | releaseCount | pagination
+      ${'both requests loading'}                                        | ${getInProgressResponse}          | ${getInProgressResponse}        | ${true}          | ${false}   | ${false}     | ${0}         | ${false}
+      ${'both requests failed'}                                         | ${getErrorResponse}               | ${getErrorResponse}             | ${false}         | ${false}   | ${true}      | ${0}         | ${false}
+      ${'both requests loaded'}                                         | ${getSingleRequestLoadedResponse} | ${getFullRequestLoadedResponse} | ${false}         | ${false}   | ${false}     | ${2}         | ${true}
+      ${'both requests loaded with no results'}                         | ${getLoadedEmptyResponse}         | ${getLoadedEmptyResponse}       | ${false}         | ${true}    | ${false}     | ${0}         | ${false}
+      ${'single request loading, full request loaded'}                  | ${getInProgressResponse}          | ${getFullRequestLoadedResponse} | ${false}         | ${false}   | ${false}     | ${2}         | ${true}
+      ${'single request loading, full request failed'}                  | ${getInProgressResponse}          | ${getErrorResponse}             | ${true}          | ${false}   | ${true}      | ${0}         | ${false}
+      ${'single request loaded, full request loading'}                  | ${getSingleRequestLoadedResponse} | ${getInProgressResponse}        | ${true}          | ${false}   | ${false}     | ${1}         | ${false}
+      ${'single request loaded, full request failed'}                   | ${getSingleRequestLoadedResponse} | ${getErrorResponse}             | ${false}         | ${false}   | ${true}      | ${1}         | ${false}
+      ${'single request failed, full request loading'}                  | ${getErrorResponse}               | ${getInProgressResponse}        | ${true}          | ${false}   | ${false}     | ${0}         | ${false}
+      ${'single request failed, full request loaded'}                   | ${getErrorResponse}               | ${getFullRequestLoadedResponse} | ${false}         | ${false}   | ${false}     | ${2}         | ${true}
+      ${'single request loaded with no results, full request loading'}  | ${getLoadedEmptyResponse}         | ${getInProgressResponse}        | ${true}          | ${false}   | ${false}     | ${0}         | ${false}
+      ${'single request loading, full request loadied with no results'} | ${getInProgressResponse}          | ${getLoadedEmptyResponse}       | ${false}         | ${true}    | ${false}     | ${0}         | ${false}
     `(
-      'calls fetchRelease with the correct parameters based on the curent query parameters: before: $before, after: $after',
-      ({ before, after }) => {
-        urlParams = { before, after };
+      '$description',
+      ({
+        singleResponseFn,
+        fullResponseFn,
+        loadingIndicator,
+        emptyState,
+        flashMessage,
+        releaseCount,
+        pagination,
+      }) => {
+        beforeEach(() => {
+          createComponent({
+            singleResponse: singleResponseFn(),
+            fullResponse: fullResponseFn(),
+          });
+        });
 
-        createComponent();
+        it(`${toDescription(loadingIndicator)} render a loading indicator`, async () => {
+          await waitForPromises();
+          expect(findLoadingIndicator().exists()).toBe(loadingIndicator);
+        });
 
-        expect(fetchReleasesSpy).toHaveBeenCalledTimes(1);
-        expect(fetchReleasesSpy).toHaveBeenCalledWith(expect.anything(), urlParams);
+        it(`${toDescription(emptyState)} render an empty state`, () => {
+          expect(findEmptyState().exists()).toBe(emptyState);
+        });
+
+        it(`${toDescription(flashMessage)} show a flash message`, async () => {
+          await waitForPromises();
+          if (flashMessage) {
+            expect(createFlash).toHaveBeenCalledWith({
+              message: ReleasesIndexApp.i18n.errorMessage,
+              captureError: true,
+              error: expect.any(Error),
+            });
+          } else {
+            expect(createFlash).not.toHaveBeenCalled();
+          }
+        });
+
+        it(`renders ${releaseCount} release(s)`, () => {
+          expect(findAllReleaseBlocks()).toHaveLength(releaseCount);
+        });
+
+        it(`${toDescription(pagination)} render the pagination controls`, () => {
+          expect(findPagination().exists()).toBe(pagination);
+        });
+
+        it('does render the "New release" button', () => {
+          expect(findNewReleaseButton().exists()).toBe(true);
+        });
+
+        it('does render the sort controls', () => {
+          expect(findSort().exists()).toBe(true);
+        });
       },
     );
   });
 
-  describe('when the request to fetch releases has not yet completed', () => {
+  describe('URL parameters', () => {
+    describe('when the URL contains no query parameters', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('makes a request with the correct GraphQL query parameters', () => {
+        expect(queryMock).toHaveBeenCalledTimes(2);
+
+        expect(queryMock).toHaveBeenCalledWith({
+          first: 1,
+          fullPath: projectPath,
+          sort: DEFAULT_SORT,
+        });
+
+        expect(queryMock).toHaveBeenCalledWith({
+          first: PAGE_SIZE,
+          fullPath: projectPath,
+          sort: DEFAULT_SORT,
+        });
+      });
+    });
+
+    describe('when the URL contains a "before" query parameter', () => {
+      beforeEach(() => {
+        mockQueryParams = { before };
+        createComponent();
+      });
+
+      it('makes a request with the correct GraphQL query parameters', () => {
+        expect(queryMock).toHaveBeenCalledTimes(1);
+
+        expect(queryMock).toHaveBeenCalledWith({
+          before,
+          last: PAGE_SIZE,
+          fullPath: projectPath,
+          sort: DEFAULT_SORT,
+        });
+      });
+    });
+
+    describe('when the URL contains an "after" query parameter', () => {
+      beforeEach(() => {
+        mockQueryParams = { after };
+        createComponent();
+      });
+
+      it('makes a request with the correct GraphQL query parameters', () => {
+        expect(queryMock).toHaveBeenCalledTimes(2);
+
+        expect(queryMock).toHaveBeenCalledWith({
+          after,
+          first: 1,
+          fullPath: projectPath,
+          sort: DEFAULT_SORT,
+        });
+
+        expect(queryMock).toHaveBeenCalledWith({
+          after,
+          first: PAGE_SIZE,
+          fullPath: projectPath,
+          sort: DEFAULT_SORT,
+        });
+      });
+    });
+
+    describe('when the URL contains both "before" and "after" query parameters', () => {
+      beforeEach(() => {
+        mockQueryParams = { before, after };
+        createComponent();
+      });
+
+      it('ignores the "before" parameter and behaves as if only the "after" parameter was provided', () => {
+        expect(queryMock).toHaveBeenCalledTimes(2);
+
+        expect(queryMock).toHaveBeenCalledWith({
+          after,
+          first: 1,
+          fullPath: projectPath,
+          sort: DEFAULT_SORT,
+        });
+
+        expect(queryMock).toHaveBeenCalledWith({
+          after,
+          first: PAGE_SIZE,
+          fullPath: projectPath,
+          sort: DEFAULT_SORT,
+        });
+      });
+    });
+  });
+
+  describe('New release button', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    expectLoadingIndicator(true);
-    expectEmptyState(false);
-    expectSuccessState(false);
-    expectPagination(false);
+    it('renders the new release button with the correct href', () => {
+      expect(findNewReleaseButton().attributes().href).toBe(newReleasePath);
+    });
   });
 
-  describe('when the request fails', () => {
+  describe('pagination', () => {
     beforeEach(() => {
-      createComponent({
-        state: {
-          isLoading: false,
-          hasError: true,
-        },
-      });
+      mockQueryParams = { before };
+      createComponent();
     });
 
-    expectLoadingIndicator(false);
-    expectEmptyState(false);
-    expectSuccessState(false);
-    expectPagination(true);
-  });
+    it('requeries the GraphQL endpoint when a pagination button is clicked', async () => {
+      expect(queryMock.mock.calls).toEqual([[expect.objectContaining({ before })]]);
 
-  describe('when the request succeeds but returns no releases', () => {
-    beforeEach(() => {
-      createComponent({
-        state: {
-          isLoading: false,
-        },
-      });
+      mockQueryParams = { after };
+      findPagination().vm.$emit('next', after);
+
+      await nextTick();
+
+      expect(queryMock.mock.calls).toEqual([
+        [expect.objectContaining({ before })],
+        [expect.objectContaining({ after })],
+        [expect.objectContaining({ after })],
+      ]);
     });
-
-    expectLoadingIndicator(false);
-    expectEmptyState(true);
-    expectSuccessState(false);
-    expectPagination(true);
-  });
-
-  describe('when the request succeeds and includes at least one release', () => {
-    beforeEach(() => {
-      createComponent({
-        state: {
-          isLoading: false,
-          releases: [{}],
-        },
-      });
-    });
-
-    expectLoadingIndicator(false);
-    expectEmptyState(false);
-    expectSuccessState(true);
-    expectPagination(true);
   });
 
   describe('sorting', () => {
@@ -173,59 +311,88 @@ describe('app_index.vue', () => {
       createComponent();
     });
 
-    it('renders the sort controls', () => {
-      expect(findSortControls().exists()).toBe(true);
+    it(`sorts by ${DEFAULT_SORT} by default`, () => {
+      expect(queryMock.mock.calls).toEqual([
+        [expect.objectContaining({ sort: DEFAULT_SORT })],
+        [expect.objectContaining({ sort: DEFAULT_SORT })],
+      ]);
     });
 
-    it('calls the fetchReleases store method when the sort is updated', () => {
-      fetchReleasesSpy.mockClear();
+    it('requeries the GraphQL endpoint and updates the URL when the sort is changed', async () => {
+      findSort().vm.$emit('input', CREATED_ASC);
 
-      findSortControls().vm.$emit('sort:changed');
+      await nextTick();
 
-      expect(fetchReleasesSpy).toHaveBeenCalledTimes(1);
+      expect(queryMock.mock.calls).toEqual([
+        [expect.objectContaining({ sort: DEFAULT_SORT })],
+        [expect.objectContaining({ sort: DEFAULT_SORT })],
+        [expect.objectContaining({ sort: CREATED_ASC })],
+        [expect.objectContaining({ sort: CREATED_ASC })],
+      ]);
+
+      // URL manipulation is tested in more detail in the `describe` block below
+      expect(historyPushState).toHaveBeenCalled();
+    });
+
+    it('does not requery the GraphQL endpoint or update the URL if the sort is updated to the same value', async () => {
+      findSort().vm.$emit('input', DEFAULT_SORT);
+
+      await nextTick();
+
+      expect(queryMock.mock.calls).toEqual([
+        [expect.objectContaining({ sort: DEFAULT_SORT })],
+        [expect.objectContaining({ sort: DEFAULT_SORT })],
+      ]);
+
+      expect(historyPushState).not.toHaveBeenCalled();
     });
   });
 
-  describe('"New release" button', () => {
-    describe('when the user is allowed to create releases', () => {
-      const newReleasePath = 'path/to/new/release/page';
+  describe('sorting + pagination interaction', () => {
+    const nonPaginationQueryParam = 'nonPaginationQueryParam';
 
-      beforeEach(() => {
-        createComponent({ state: { newReleasePath } });
-      });
-
-      expectNewReleaseButton(true);
-
-      it('renders the button with the correct href', () => {
-        expect(findNewReleaseButton().attributes('href')).toBe(newReleasePath);
-      });
-    });
-
-    describe('when the user is not allowed to create releases', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      expectNewReleaseButton(false);
-    });
-  });
-
-  describe("when the browser's back button is pressed", () => {
     beforeEach(() => {
-      urlParams = {
-        before: 'before_param_value',
-      };
-
-      createComponent();
-
-      fetchReleasesSpy.mockClear();
-
-      window.dispatchEvent(new PopStateEvent('popstate'));
+      historyPushState.mockImplementation((newUrl) => {
+        mockQueryParams = Object.fromEntries(new URL(newUrl).searchParams);
+      });
     });
 
-    it('calls the fetchRelease store method with the parameters from the URL query', () => {
-      expect(fetchReleasesSpy).toHaveBeenCalledTimes(1);
-      expect(fetchReleasesSpy).toHaveBeenCalledWith(expect.anything(), urlParams);
-    });
+    describe.each`
+      queryParamsBefore                      | paramName   | paramInitialValue
+      ${{ before, nonPaginationQueryParam }} | ${'before'} | ${before}
+      ${{ after, nonPaginationQueryParam }}  | ${'after'}  | ${after}
+    `(
+      'when the URL contains a "$paramName" pagination cursor',
+      ({ queryParamsBefore, paramName, paramInitialValue }) => {
+        beforeEach(async () => {
+          mockQueryParams = queryParamsBefore;
+          createComponent();
+
+          findSort().vm.$emit('input', CREATED_ASC);
+
+          await nextTick();
+        });
+
+        it(`resets the page's "${paramName}" pagination cursor when the sort is changed`, () => {
+          const firstRequestVariables = queryMock.mock.calls[0][0];
+          // Might be request #2 or #3, depending on the pagination direction
+          const mostRecentRequestVariables =
+            queryMock.mock.calls[queryMock.mock.calls.length - 1][0];
+
+          expect(firstRequestVariables[paramName]).toBe(paramInitialValue);
+          expect(mostRecentRequestVariables[paramName]).toBeUndefined();
+        });
+
+        it(`updates the URL to not include the "${paramName}" URL query parameter`, () => {
+          expect(historyPushState).toHaveBeenCalledTimes(1);
+
+          const updatedUrlQueryParams = Object.fromEntries(
+            new URL(historyPushState.mock.calls[0][0]).searchParams,
+          );
+
+          expect(updatedUrlQueryParams[paramName]).toBeUndefined();
+        });
+      },
+    );
   });
 });

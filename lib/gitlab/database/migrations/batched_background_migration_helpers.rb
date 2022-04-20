@@ -84,7 +84,7 @@ module Gitlab
             FROM #{connection.quote_table_name(batch_table_name)}
           SQL
 
-          migration_status = batch_max_value.nil? ? :finished : :active
+          status_event = batch_max_value.nil? ? :finish : :execute
           batch_max_value ||= batch_min_value
 
           migration = Gitlab::Database::BackgroundMigration::BatchedMigration.new(
@@ -98,7 +98,7 @@ module Gitlab
             batch_class_name: batch_class_name,
             batch_size: batch_size,
             sub_batch_size: sub_batch_size,
-            status: migration_status
+            status_event: status_event
           )
 
           # Below `BatchedMigration` attributes were introduced after the

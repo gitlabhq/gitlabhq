@@ -1,0 +1,9 @@
+---
+table_name: group_deploy_tokens
+classes:
+- GroupDeployToken
+feature_categories:
+- secrets_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23460
+milestone: '12.8'

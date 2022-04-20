@@ -1,0 +1,9 @@
+---
+table_name: plans
+classes:
+- Plan
+feature_categories:
+- purchase
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/39ca951a0f28d147d4689379bbe48a9c14d55d9f
+milestone: '9.5'

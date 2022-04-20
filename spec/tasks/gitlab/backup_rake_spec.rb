@@ -199,18 +199,25 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         end
 
         it 'logs the progress to log file' do
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "[SKIPPED]")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... [SKIPPED]")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "done").exactly(9).times
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... done")
 
           backup_tasks.each do |task|
             run_rake_task("gitlab:backup:#{task}:create")
@@ -228,19 +235,19 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       db_backup_error = Backup::DatabaseBackupError.new(config, db_file_name)
 
       where(:backup_class, :rake_task, :error) do
-        Backup::Database     | 'gitlab:backup:db:create'        | db_backup_error
-        Backup::Builds       | 'gitlab:backup:builds:create'    | file_backup_error
-        Backup::Uploads      | 'gitlab:backup:uploads:create'   | file_backup_error
-        Backup::Artifacts    | 'gitlab:backup:artifacts:create' | file_backup_error
-        Backup::Pages        | 'gitlab:backup:pages:create'     | file_backup_error
-        Backup::Lfs          | 'gitlab:backup:lfs:create'       | file_backup_error
-        Backup::Registry     | 'gitlab:backup:registry:create'  | file_backup_error
+        Backup::Database | 'gitlab:backup:db:create'        | db_backup_error
+        Backup::Files    | 'gitlab:backup:builds:create'    | file_backup_error
+        Backup::Files    | 'gitlab:backup:uploads:create'   | file_backup_error
+        Backup::Files    | 'gitlab:backup:artifacts:create' | file_backup_error
+        Backup::Files    | 'gitlab:backup:pages:create'     | file_backup_error
+        Backup::Files    | 'gitlab:backup:lfs:create'       | file_backup_error
+        Backup::Files    | 'gitlab:backup:registry:create'  | file_backup_error
       end
 
       with_them do
         before do
-          expect_next_instance_of(backup_class) do |instance|
-            expect(instance).to receive(:dump).and_raise(error)
+          allow_next_instance_of(backup_class) do |instance|
+            allow(instance).to receive(:dump).and_raise(error)
           end
         end
 
@@ -408,25 +415,12 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         create(:project, :repository)
       end
 
-      it 'has defaults' do
-        expect(::Backup::Repositories).to receive(:new)
-          .with(anything, strategy: anything, max_concurrency: 1, max_storage_concurrency: 1)
-          .and_call_original
-
-        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
-      end
-
       it 'passes through concurrency environment variables' do
-        # The way concurrency is handled will change with the `gitaly_backup`
-        # feature flag. For now we need to check that both ways continue to
-        # work. This will be cleaned up in the rollout issue.
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/333034
-
         stub_env('GITLAB_BACKUP_MAX_CONCURRENCY', 5)
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
         expect(::Backup::Repositories).to receive(:new)
-          .with(anything, strategy: anything, max_concurrency: 5, max_storage_concurrency: 2)
+          .with(anything, strategy: anything)
           .and_call_original
         expect(::Backup::GitalyBackup).to receive(:new).with(anything, max_parallelism: 5, storage_parallelism: 2, incremental: false).and_call_original
 

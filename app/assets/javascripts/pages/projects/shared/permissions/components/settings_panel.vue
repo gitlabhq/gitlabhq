@@ -9,7 +9,6 @@ import {
   featureAccessLevelMembers,
   featureAccessLevelEveryone,
   featureAccessLevel,
-  featureAccessLevelNone,
   CVE_ID_REQUEST_BUTTON_I18N,
   featureAccessLevelDescriptions,
 } from '../constants';
@@ -225,8 +224,6 @@ export default {
     },
 
     operationsFeatureAccessLevelOptions() {
-      if (!this.operationsEnabled) return [featureAccessLevelNone];
-
       return this.featureAccessLevelOptions.filter(
         ([value]) => value <= this.operationsAccessLevel,
       );
@@ -249,10 +246,6 @@ export default {
         }
       }
       return options;
-    },
-
-    metricsOptionsDropdownDisabled() {
-      return this.operationsFeatureAccessLevelOptions.length < 2 || !this.operationsEnabled;
     },
 
     operationsEnabled() {
@@ -391,6 +384,15 @@ export default {
         toggleHiddenClassBySelector('.merge-requests-feature', true);
       else if (oldValue === featureAccessLevel.NOT_ENABLED)
         toggleHiddenClassBySelector('.merge-requests-feature', false);
+    },
+
+    operationsAccessLevel(value, oldValue) {
+      if (value < oldValue) {
+        // sub-features cannot have more permissive access level
+        this.metricsDashboardAccessLevel = Math.min(this.metricsDashboardAccessLevel, value);
+      } else if (oldValue === 0) {
+        this.metricsDashboardAccessLevel = value;
+      }
     },
   },
 
@@ -590,7 +592,9 @@ export default {
           :help-path="packagesHelpPath"
           :label="$options.i18n.packagesLabel"
           :help-text="
-            s__('ProjectSettings|Every project can have its own space to store its packages.')
+            s__(
+              'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
+            )
           "
         >
           <gl-toggle

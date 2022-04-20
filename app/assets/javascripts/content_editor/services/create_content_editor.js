@@ -1,5 +1,6 @@
 import { Editor } from '@tiptap/vue-2';
 import { isFunction } from 'lodash';
+import { lowlight } from 'lowlight/lib/core';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import Attachment from '../extensions/attachment';
@@ -14,6 +15,7 @@ import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
+import Diagram from '../extensions/diagram';
 import Division from '../extensions/division';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
@@ -58,6 +60,7 @@ import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
 import createMarkdownDeserializer from './markdown_deserializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
+import languageLoader from './code_block_language_loader';
 
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
@@ -91,12 +94,13 @@ export const createContentEditor = ({
     BulletList,
     Code,
     ColorChip,
-    CodeBlockHighlight,
+    CodeBlockHighlight.configure({ lowlight, languageLoader }),
     DescriptionItem,
     DescriptionList,
     Details,
     DetailsContent,
     Document,
+    Diagram,
     Division,
     Dropcursor,
     Emoji,
@@ -105,7 +109,7 @@ export const createContentEditor = ({
     FootnoteDefinition,
     FootnoteReference,
     FootnotesSection,
-    Frontmatter,
+    Frontmatter.configure({ lowlight }),
     Gapcursor,
     HardBreak,
     Heading,
@@ -144,5 +148,5 @@ export const createContentEditor = ({
   const serializer = createMarkdownSerializer({ serializerConfig });
   const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-  return new ContentEditor({ tiptapEditor, serializer, eventHub, deserializer });
+  return new ContentEditor({ tiptapEditor, serializer, eventHub, deserializer, languageLoader });
 };

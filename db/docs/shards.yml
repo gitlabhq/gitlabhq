@@ -1,0 +1,9 @@
+---
+table_name: shards
+classes:
+- Shard
+feature_categories:
+- gitaly
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/f760c1cd17881c8aef3a33a3b43db54673db8111
+milestone: '10.5'

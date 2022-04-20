@@ -2,11 +2,16 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import issuableAssigneesSubscription from '~/sidebar/queries/issuable_assignees.subscription.graphql';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import getIssueAssigneesQuery from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
-import Mock, { issuableQueryResponse, subscriptionNullResponse } from './mock_data';
+import Mock, {
+  issuableQueryResponse,
+  subscriptionNullResponse,
+  subscriptionResponse,
+} from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -20,7 +25,6 @@ describe('Assignees Realtime', () => {
 
   const createComponent = ({
     issuableType = 'issue',
-    issuableId = 1,
     subscriptionHandler = subscriptionInitialHandler,
   } = {}) => {
     fakeApollo = createMockApollo([
@@ -30,7 +34,6 @@ describe('Assignees Realtime', () => {
     wrapper = shallowMount(AssigneesRealtime, {
       propsData: {
         issuableType,
-        issuableId,
         queryVariables: {
           issuableIid: '1',
           projectPath: 'path/to/project',
@@ -60,11 +63,23 @@ describe('Assignees Realtime', () => {
     });
   });
 
-  it('calls the subscription with correct variable for issue', () => {
+  it('calls the subscription with correct variable for issue', async () => {
     createComponent();
+    await waitForPromises();
 
     expect(subscriptionInitialHandler).toHaveBeenCalledWith({
       issuableId: 'gid://gitlab/Issue/1',
     });
+  });
+
+  it('emits an `assigneesUpdated` event on subscription response', async () => {
+    createComponent({
+      subscriptionHandler: jest.fn().mockResolvedValue(subscriptionResponse),
+    });
+    await waitForPromises();
+
+    expect(wrapper.emitted('assigneesUpdated')).toEqual([
+      [{ id: '1', assignees: subscriptionResponse.data.issuableAssigneesUpdated.assignees.nodes }],
+    ]);
   });
 });

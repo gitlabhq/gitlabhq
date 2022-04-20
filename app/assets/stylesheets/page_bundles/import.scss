@@ -1,17 +1,21 @@
 @import 'mixins_and_variables_and_functions';
 
+.import-jobs-from-col {
+  width: 37%;
+}
+
+
 .import-jobs-to-col {
-  width: 39%;
+  width: 37%;
 }
 
 .import-jobs-status-col {
-  width: 15%;
+  width: 25%;
 }
 
 .import-jobs-cta-col {
   width: 1%;
 }
-
 
 .import-entities-target-select {
   &.disabled {

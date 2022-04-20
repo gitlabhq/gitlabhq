@@ -1,10 +1,14 @@
 <script>
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import { GlAvatarLink, GlAvatar, GlTooltipDirective } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
-    UserAvatarLink,
+    GlAvatarLink,
+    GlAvatar,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -22,15 +26,11 @@ export default {
 </script>
 <template>
   <div class="pipeline-triggerer" data-testid="pipeline-triggerer">
-    <user-avatar-link
-      v-if="user"
-      :link-href="user.path"
-      :img-src="user.avatar_url"
-      :img-size="32"
-      :tooltip-text="user.name"
-      class="gl-ml-3 js-pipeline-url-user"
-    />
-    <span v-else class="gl-ml-3 js-pipeline-url-api api">
+    <gl-avatar-link v-if="user" v-gl-tooltip :href="user.path" :title="user.name" class="gl-ml-3">
+      <gl-avatar :size="32" :src="user.avatar_url" />
+    </gl-avatar-link>
+
+    <span v-else class="gl-ml-3">
       {{ s__('Pipelines|API') }}
     </span>
   </div>

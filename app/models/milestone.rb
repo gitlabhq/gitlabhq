@@ -31,7 +31,7 @@ class Milestone < ApplicationRecord
   end
 
   scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
-  scope :reorder_by_due_date_asc, -> { reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
+  scope :reorder_by_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
   scope :with_api_entity_associations, -> { preload(project: [:project_feature, :route, namespace: :route]) }
   scope :order_by_dates_and_title, -> { order(due_date: :asc, start_date: :asc, title: :asc) }
 
@@ -116,15 +116,15 @@ class Milestone < ApplicationRecord
       when 'due_date_asc'
         reorder_by_due_date_asc
       when 'due_date_desc'
-        reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
+        reorder(arel_table[:due_date].desc.nulls_last)
       when 'name_asc'
         reorder(Arel::Nodes::Ascending.new(arel_table[:title].lower))
       when 'name_desc'
         reorder(Arel::Nodes::Descending.new(arel_table[:title].lower))
       when 'start_date_asc'
-        reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
+        reorder(arel_table[:start_date].asc.nulls_last)
       when 'start_date_desc'
-        reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
+        reorder(arel_table[:start_date].desc.nulls_last)
       else
         order_by(method)
       end

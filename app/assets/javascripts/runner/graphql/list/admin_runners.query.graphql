@@ -1,11 +1,12 @@
 #import "~/runner/graphql/list/list_item.fragment.graphql"
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getRunners(
   $before: String
   $after: String
   $first: Int
   $last: Int
+  $paused: Boolean
   $status: CiRunnerStatus
   $type: CiRunnerType
   $tagList: [String!]
@@ -17,6 +18,7 @@ query getRunners(
     after: $after
     first: $first
     last: $last
+    paused: $paused
     status: $status
     type: $type
     tagList: $tagList

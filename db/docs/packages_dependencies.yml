@@ -1,0 +1,9 @@
+---
+table_name: packages_dependencies
+classes:
+- Packages::Dependency
+feature_categories:
+- package_registry
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20549
+milestone: '12.6'

@@ -43,7 +43,9 @@ export default {
             message: s__(
               'Integrations|You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}',
             ),
-            linkUrl: helpPagePath('integration/jira_development_panel.html', { anchor: 'usage' }),
+            linkUrl: helpPagePath('integration/jira_development_panel.html', {
+              anchor: 'use-the-integration',
+            }),
             variant: 'success',
           });
 

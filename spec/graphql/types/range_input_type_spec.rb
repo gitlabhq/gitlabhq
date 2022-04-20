@@ -24,7 +24,7 @@ RSpec.describe ::Types::RangeInputType do
 
   it 'follows expected subtyping relationships for instances' do
     context = GraphQL::Query::Context.new(
-      query: double('query', schema: nil),
+      query: GraphQL::Query.new(GitlabSchema),
       values: {},
       object: nil
     )

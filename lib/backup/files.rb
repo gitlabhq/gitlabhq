@@ -9,19 +9,18 @@ module Backup
 
     DEFAULT_EXCLUDE = 'lost+found'
 
-    attr_reader :name, :excludes
+    attr_reader :excludes
 
-    def initialize(progress, name, app_files_dir, excludes: [])
+    def initialize(progress, app_files_dir, excludes: [])
       super(progress)
 
-      @name = name
       @app_files_dir = app_files_dir
       @excludes = [DEFAULT_EXCLUDE].concat(excludes)
     end
 
     # Copy files from public/files to backup/files
     override :dump
-    def dump(backup_tarball)
+    def dump(backup_tarball, backup_id)
       FileUtils.mkdir_p(Gitlab.config.backup.path)
       FileUtils.rm_f(backup_tarball)
 
@@ -55,7 +54,7 @@ module Backup
 
     override :restore
     def restore(backup_tarball)
-      backup_existing_files_dir
+      backup_existing_files_dir(backup_tarball)
 
       cmd_list = [%w[gzip -cd], %W[#{tar} --unlink-first --recursive-unlink -C #{app_files_realpath} -xf -]]
       status_list, output = run_pipeline!(cmd_list, in: backup_tarball)
@@ -73,11 +72,13 @@ module Backup
       end
     end
 
-    def backup_existing_files_dir
+    def backup_existing_files_dir(backup_tarball)
+      name = File.basename(backup_tarball, '.tar.gz')
+
       timestamped_files_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}.#{Time.now.to_i}")
       if File.exist?(app_files_realpath)
         # Move all files in the existing repos directory except . and .. to
-        # repositories.old.<timestamp> directory
+        # repositories.<timestamp> directory
         FileUtils.mkdir_p(timestamped_files_path, mode: 0700)
         files = Dir.glob(File.join(app_files_realpath, "*"), File::FNM_DOTMATCH) - [File.join(app_files_realpath, "."), File.join(app_files_realpath, "..")]
         begin

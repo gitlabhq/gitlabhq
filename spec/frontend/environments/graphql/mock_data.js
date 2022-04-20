@@ -543,6 +543,7 @@ export const resolvedEnvironment = {
   externalUrl: 'https://example.org',
   environmentType: 'review',
   nameWithoutType: 'hello',
+  tier: 'development',
   lastDeployment: {
     id: 78,
     iid: 24,
@@ -551,6 +552,7 @@ export const resolvedEnvironment = {
     status: 'success',
     createdAt: '2022-01-07T15:47:27.415Z',
     deployedAt: '2022-01-07T15:47:32.450Z',
+    tierInYaml: 'staging',
     tag: false,
     isLast: true,
     user: {

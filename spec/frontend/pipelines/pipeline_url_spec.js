@@ -1,5 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineUrlComponent from '~/pipelines/components/pipelines_list/pipeline_url.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { mockPipeline, mockPipelineBranch, mockPipelineTag } from './mock_data';
 
 const projectPath = 'test/test';
@@ -55,6 +56,30 @@ describe('Pipeline Url Component', () => {
     expect(findCommitTitle(commitWrapper).exists()).toBe(true);
     expect(findRefName().exists()).toBe(true);
     expect(findCommitShortSha().exists()).toBe(true);
+  });
+
+  describe('commit user avatar', () => {
+    it('renders when commit author exists', () => {
+      const pipelineBranch = mockPipelineBranch();
+      const { avatar_url, name, path } = pipelineBranch.pipeline.commit.author;
+      createComponent(pipelineBranch);
+
+      const component = wrapper.findComponent(UserAvatarLink);
+      expect(component.exists()).toBe(true);
+      expect(component.props()).toMatchObject({
+        imgSize: 16,
+        imgSrc: avatar_url,
+        imgAlt: name,
+        linkHref: path,
+        tooltipText: name,
+      });
+    });
+
+    it('does not render when commit author does not exist', () => {
+      createComponent();
+
+      expect(wrapper.findComponent(UserAvatarLink).exists()).toBe(false);
+    });
   });
 
   it('should render commit icon tooltip', () => {

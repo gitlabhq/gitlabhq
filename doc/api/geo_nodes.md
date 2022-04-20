@@ -75,7 +75,7 @@ Example response:
 
 WARNING:
 The `web_geo_projects_url` attribute is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80106)
-for use in GitLab 14.9.
+in GitLab 14.9.
 
 ## Retrieve configuration about all Geo nodes
 
@@ -147,7 +147,7 @@ Example response:
 
 WARNING:
 The `web_geo_projects_url` attribute is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80106)
-for use in GitLab 14.9.
+in GitLab 14.9.
 
 ## Retrieve configuration about a specific Geo node
 
@@ -249,7 +249,7 @@ Example response:
 
 WARNING:
 The `web_geo_projects_url` attribute is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80106)
-for use in GitLab 14.9.
+in GitLab 14.9.
 
 ## Delete a Geo node
 

@@ -20,7 +20,7 @@ In addition to this page, the following resources can help you craft and contrib
 
 ## Source files and rendered web locations
 
-Documentation for GitLab, GitLab Runner, Omnibus GitLab, and Charts is published to <https://docs.gitlab.com>. Documentation for GitLab is also published within the application at `/help` on the domain of the GitLab instance.
+Documentation for GitLab, GitLab Runner, GitLab Operator, Omnibus GitLab, and Charts is published to <https://docs.gitlab.com>. Documentation for GitLab is also published within the application at `/help` on the domain of the GitLab instance.
 At `/help`, only help for your current edition and version is included. Help for other versions is available at <https://docs.gitlab.com/archives/>.
 
 The source of the documentation exists within the codebase of each GitLab application in the following repository locations:
@@ -31,6 +31,7 @@ The source of the documentation exists within the codebase of each GitLab applic
 | [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/) | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) |
 | [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc) |
 | [Charts](https://gitlab.com/gitlab-org/charts/gitlab) | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
+| [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator) | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) |
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 

@@ -1,5 +1,5 @@
 import Mousetrap from 'mousetrap';
-import findAndFollowLink from '../../lib/utils/navigation_utility';
+import findAndFollowLink from '~/lib/utils/navigation_utility';
 import { keysFor, EDIT_WIKI_PAGE } from './keybindings';
 import ShortcutsNavigation from './shortcuts_navigation';
 

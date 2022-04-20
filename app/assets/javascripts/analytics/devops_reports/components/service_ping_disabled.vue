@@ -43,7 +43,7 @@ export default {
           {{ s__('ServicePing|Turn on service ping to review instance-level analytics.') }}
         </p>
 
-        <gl-button category="primary" variant="success" :href="primaryButtonPath">
+        <gl-button category="primary" variant="confirm" :href="primaryButtonPath">
           {{ s__('ServicePing|Turn on service ping') }}
         </gl-button>
       </template>

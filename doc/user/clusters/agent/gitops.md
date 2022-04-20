@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Using a GitOps workflow for Kubernetes **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
 
 With GitOps, you can manage containerized clusters and applications from a Git repository that:
 
@@ -18,6 +19,8 @@ By combining GitLab, Kubernetes, and GitOps, you can have:
 - GitLab as the GitOps operator.
 - Kubernetes as the automation and convergence system.
 - GitLab CI/CD for Continuous Integration and the agent for Continuous Deployment.
+- Built-in automatic drift remediation.
+- Resource management with [server-side applies](https://kubernetes.io/docs/reference/using-api/server-side-apply/) for transparent multi-actor field management.
 
 This diagram shows the repositories and main actors in a GitOps deployment:
 
@@ -89,6 +92,37 @@ gitops:
 | `prune_timeout` | Determines whether to wait for all resources to be fully deleted after pruning, and if so, how long to wait. Default is 3600 seconds (1 hour). |
 | `prune_propagation_policy` | The deletion propagation policy that [should be used for pruning](https://github.com/kubernetes/apimachinery/blob/44113beed5d39f1b261a12ec398a356e02358307/pkg/apis/meta/v1/types.go#L456-L470). Can be: `orphan`, `background`, or `foreground`. Default is `foreground`. |
 | `inventory_policy` | Determines whether an inventory object can take over objects that belong to another inventory object or don't belong to any inventory object. This is done by determining if the apply/prune operation can go through for a resource based on comparison of the `inventory-id` value in the package and the `owning-inventory` annotation (`config.k8s.io/owning-inventory`) [in the live object](https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/inventory/policy.go#L12-L66). Can be: `must_match`, `adopt_if_no_inventory`, or `adopt_all`. Default is `must_match`. |
+
+## GitOps annotations
+
+The GitLab agent for Kubernetes has annotations you can use to:
+
+- **Sort resources**: Apply or delete resources in a specific order.
+- **Use apply-time mutation**: Dynamically substitute fields from one resource configuration to another.
+
+The agent has [default sorting](https://github.com/kubernetes-sigs/cli-utils/blob/d7d63f4b62897f584ca9e02b6faf4d2f327a9b09/pkg/ordering/sort.go#L74),
+but with annotations, you can fine-tune the order and apply time-value injection.
+
+To provide the GitOps functionality, the GitLab agent for Kubernetes uses the [`cli-utils` library](https://github.com/kubernetes-sigs/cli-utils/),
+a Kubernetes SIG project. You can read more about the available annotations in the [`cli-utils` documentation](https://github.com/kubernetes-sigs/cli-utils/blob/master/README.md#apply-sort-ordering).
+
+- [Learn more about apply sort ordering](https://github.com/kubernetes-sigs/cli-utils#apply-sort-ordering).
+- [Learn more about apply-time mutation](https://github.com/kubernetes-sigs/cli-utils#apply-time-mutation).
+
+## Automatic drift remediation
+
+Drift happens when the current configuration of an infrastructure resource differs from its expected configuration.
+Typically, this is caused by manually editing resources directly through the service that created the resource. Minimizing the
+risk of drift helps to ensure configuration consistency and successful operations.
+
+In GitLab, the agent for Kubernetes regularly compares the expected state from the `git` repository with
+the known state from the `cluster`. Deviations from the `git` state are fixed at every check. These checks
+happen automatically every 5 minutes. They are not configurable.
+
+The agent uses [server-side applies](https://kubernetes.io/docs/reference/using-api/server-side-apply/).
+As a result, every field in a resource can have different managers. Only fields managed by `git`
+are checked for drift. This facilitates the use of in-cluster controllers to modify resources like
+[Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/).
 
 ## Additional resources
 

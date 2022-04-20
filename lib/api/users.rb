@@ -89,6 +89,7 @@ module API
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         optional :without_projects, type: Boolean, default: false, desc: 'Filters only users without projects'
         optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'Filters only non internal users'
+        optional :without_project_bots, type: Boolean, default: false, desc: 'Filters users without project bots'
         optional :admins, type: Boolean, default: false, desc: 'Filters only admin users'
         all_or_none_of :extern_uid, :provider
 
@@ -98,7 +99,7 @@ module API
         use :optional_index_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get feature_category: :users do
+      get feature_category: :users, urgency: :default do
         authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
 
         unless current_user&.admin?
@@ -120,8 +121,11 @@ module API
         users = reorder_users(users)
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
-        users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
-        users = users.preload(:identities, :webauthn_registrations) if entity == Entities::UserWithAdmin
+
+        if entity == Entities::UserWithAdmin
+          users = users.preload(:identities, :u2f_registrations, :webauthn_registrations, :namespace)
+        end
+
         users, options = with_custom_attributes(users, { with: entity, current_user: current_user })
 
         users = users.preload(:user_detail)
@@ -139,7 +143,7 @@ module API
         use :with_custom_attributes
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get ":id", feature_category: :users do
+      get ":id", feature_category: :users, urgency: :medium do
         forbidden!('Not authorized!') unless current_user
 
         unless current_user.admin?
@@ -164,7 +168,7 @@ module API
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
-      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users do
+      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users, urgency: :high do
         user = find_user(params[:user_id])
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -915,7 +919,7 @@ module API
         desc 'Get the currently authenticated user' do
           success Entities::UserPublic
         end
-        get feature_category: :users do
+        get feature_category: :users, urgency: :medium do
           entity =
             if current_user.admin?
               Entities::UserWithAdmin
@@ -1090,7 +1094,7 @@ module API
         requires :credit_card_mask_number, type: String, desc: 'The last 4 digits of credit card number'
         requires :credit_card_type, type: String, desc: 'The credit card network name'
       end
-      put ":user_id/credit_card_validation", feature_category: :users do
+      put ":user_id/credit_card_validation", feature_category: :purchase do
         authenticated_as_admin!
 
         user = find_user(params[:user_id])

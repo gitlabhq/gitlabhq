@@ -140,7 +140,7 @@ module Gitlab
           text.start_with?(BINARY_NOTICE_PATTERN)
         end
       end
-      def initialize(raw_diff, expanded: true)
+      def initialize(raw_diff, expanded: true, replace_invalid_utf8_chars: true)
         @expanded = expanded
 
         case raw_diff
@@ -157,6 +157,8 @@ module Gitlab
         else
           raise "Invalid raw diff type: #{raw_diff.class}"
         end
+
+        encode_diff_to_utf8(replace_invalid_utf8_chars)
       end
 
       def to_hash
@@ -226,6 +228,13 @@ module Gitlab
       end
 
       private
+
+      def encode_diff_to_utf8(replace_invalid_utf8_chars)
+        return unless Feature.enabled?(:convert_diff_to_utf8_with_replacement_symbol, default_enabled: :yaml)
+        return unless replace_invalid_utf8_chars && !detect_binary?(@diff)
+
+        @diff = Gitlab::EncodingHelper.encode_utf8_with_replacement_character(@diff)
+      end
 
       def init_from_hash(hash)
         raw_diff = hash.symbolize_keys

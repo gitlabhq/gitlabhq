@@ -1,0 +1,9 @@
+---
+table_name: protected_branch_unprotect_access_levels
+classes:
+- ProtectedBranch::UnprotectAccessLevel
+feature_categories:
+- source_code_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5103
+milestone: '10.7'

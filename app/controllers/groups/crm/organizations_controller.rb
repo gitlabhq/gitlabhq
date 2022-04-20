@@ -10,6 +10,10 @@ class Groups::Crm::OrganizationsController < Groups::ApplicationController
     render action: "index"
   end
 
+  def edit
+    render action: "index"
+  end
+
   private
 
   def authorize_read_crm_organization!

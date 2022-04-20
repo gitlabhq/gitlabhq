@@ -135,10 +135,22 @@ RSpec.describe Projects::CreateService, '#execute' do
       create_project(user, opts)
     end
 
-    it 'builds associated project settings' do
+    it 'creates associated project settings' do
       project = create_project(user, opts)
 
-      expect(project.project_setting).to be_new_record
+      expect(project.project_setting).to be_persisted
+    end
+
+    context 'create_project_settings feature flag is disabled' do
+      before do
+        stub_feature_flags(create_project_settings: false)
+      end
+
+      it 'builds associated project settings' do
+        project = create_project(user, opts)
+
+        expect(project.project_setting).to be_new_record
+      end
     end
 
     it_behaves_like 'storing arguments in the application context' do
@@ -375,6 +387,18 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(experiment(:combined_registration)).to track(:import_project).on_next_instance
 
       imported_project
+    end
+
+    describe 'import scheduling' do
+      context 'when project import type is gitlab project migration' do
+        it 'does not schedule project import' do
+          opts[:import_type] = 'gitlab_project_migration'
+
+          project = create_project(user, opts)
+
+          expect(project.import_state.status).to eq('none')
+        end
+      end
     end
   end
 

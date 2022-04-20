@@ -3,13 +3,16 @@
 class ProjectMemberPolicy < BasePolicy
   delegate { @subject.project }
 
-  condition(:target_is_owner, scope: :subject) { @subject.user == @subject.project.owner }
+  condition(:target_is_holder_of_the_personal_namespace, scope: :subject) do
+    @subject.project.personal_namespace_holder?(@subject.user)
+  end
+
   condition(:target_is_self) { @user && @subject.user == @user }
   condition(:project_bot) { @subject.user&.project_bot? }
 
   rule { anonymous }.prevent_all
 
-  rule { target_is_owner }.policy do
+  rule { target_is_holder_of_the_personal_namespace }.policy do
     prevent :update_project_member
     prevent :destroy_project_member
   end

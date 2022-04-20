@@ -17,12 +17,13 @@ export default {
     GlTab,
     GlTabs,
     HighlightBar,
-    MetricsTab: () => import('ee_component/issues/show/components/incidents/metrics_tab.vue'),
     TimelineTab: () =>
       import('ee_component/issues/show/components/incidents/timeline_events_tab.vue'),
+    IncidentMetricTab: () =>
+      import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['fullPath', 'iid', 'uploadMetricsFeatureAvailable'],
+  inject: ['fullPath', 'iid'],
   apollo: {
     alert: {
       query: getAlert,
@@ -52,7 +53,7 @@ export default {
       return this.$apollo.queries.alert.loading;
     },
     incidentTabEnabled() {
-      return this.glFeatures.incidentTimelineEvents && this.glFeatures.incidentTimelineEventTab;
+      return this.glFeatures.incidentTimelineEvents && this.glFeatures.incidentTimeline;
     },
   },
   mounted() {
@@ -63,18 +64,37 @@ export default {
       const { category, action } = trackIncidentDetailsViewsOptions;
       Tracking.event(category, action);
     },
+    handleTabChange(tabIndex) {
+      const parent = document.querySelector('.js-issue-details');
+
+      if (parent !== null) {
+        const itemsToHide = parent.querySelectorAll('.js-issue-widgets');
+        const lineSeparator = parent.querySelector('.js-detail-page-description');
+
+        lineSeparator.classList.toggle('gl-border-b-0', tabIndex > 0);
+
+        itemsToHide.forEach(function hide(item) {
+          item.classList.toggle('gl-display-none', tabIndex > 0);
+        });
+      }
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <gl-tabs content-class="gl-reset-line-height" class="gl-mt-n3" data-testid="incident-tabs">
+    <gl-tabs
+      content-class="gl-reset-line-height"
+      class="gl-mt-n3"
+      data-testid="incident-tabs"
+      @input="handleTabChange"
+    >
       <gl-tab :title="s__('Incident|Summary')">
         <highlight-bar :alert="alert" />
         <description-component v-bind="$attrs" />
       </gl-tab>
-      <metrics-tab v-if="uploadMetricsFeatureAvailable" data-testid="metrics-tab" />
+      <incident-metric-tab />
       <gl-tab
         v-if="alert"
         class="alert-management-details"

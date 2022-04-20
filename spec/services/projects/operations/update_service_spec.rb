@@ -407,10 +407,11 @@ RSpec.describe Projects::Operations::UpdateService do
 
     context 'prometheus integration' do
       context 'prometheus params were passed into service' do
-        let(:prometheus_integration) do
-          build_stubbed(:prometheus_integration, project: project, properties: {
+        let!(:prometheus_integration) do
+          create(:prometheus_integration, :instance, properties: {
             api_url: "http://example.prometheus.com",
-            manual_configuration: "0"
+            manual_configuration: "0",
+            google_iap_audience_client_id: 123
           })
         end
 
@@ -424,21 +425,23 @@ RSpec.describe Projects::Operations::UpdateService do
         end
 
         it 'uses Project#find_or_initialize_integration to include instance defined defaults and pass them to Projects::UpdateService', :aggregate_failures do
-          project_update_service = double(Projects::UpdateService)
-
-          expect(project)
-            .to receive(:find_or_initialize_integration)
-            .with('prometheus')
-            .and_return(prometheus_integration)
           expect(Projects::UpdateService).to receive(:new) do |project_arg, user_arg, update_params_hash|
+            prometheus_attrs = update_params_hash[:prometheus_integration_attributes]
+
             expect(project_arg).to eq project
             expect(user_arg).to eq user
-            expect(update_params_hash[:prometheus_integration_attributes]).to include('properties' => { 'api_url' => 'http://new.prometheus.com', 'manual_configuration' => '1' })
-            expect(update_params_hash[:prometheus_integration_attributes]).not_to include(*%w(id project_id created_at updated_at))
-          end.and_return(project_update_service)
-          expect(project_update_service).to receive(:execute)
+            expect(prometheus_attrs).to have_key('encrypted_properties')
+            expect(prometheus_attrs.keys).not_to include(*%w(id project_id created_at updated_at properties))
+            expect(prometheus_attrs['encrypted_properties']).not_to eq(prometheus_integration.encrypted_properties)
+          end.and_call_original
 
-          subject.execute
+          expect { subject.execute }.to change(Integrations::Prometheus, :count).by(1)
+
+          expect(Integrations::Prometheus.last).to have_attributes(
+            api_url: 'http://new.prometheus.com',
+            manual_configuration: true,
+            google_iap_audience_client_id: 123
+          )
         end
       end
 

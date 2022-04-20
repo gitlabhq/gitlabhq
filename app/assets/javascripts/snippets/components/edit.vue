@@ -15,8 +15,8 @@ import TitleField from '~/vue_shared/components/form/title.vue';
 
 import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '../constants';
 import { getSnippetMixin } from '../mixins/snippets';
-import CreateSnippetMutation from '../mutations/createSnippet.mutation.graphql';
-import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
+import CreateSnippetMutation from '../mutations/create_snippet.mutation.graphql';
+import UpdateSnippetMutation from '../mutations/update_snippet.mutation.graphql';
 import { markBlobPerformance } from '../utils/blob';
 import { getErrorMessage } from '../utils/error';
 
@@ -238,9 +238,9 @@ export default {
           >
         </template>
         <template #append>
-          <gl-button type="cancel" data-testid="snippet-cancel-btn" :href="cancelButtonHref">{{
-            __('Cancel')
-          }}</gl-button>
+          <gl-button type="cancel" data-testid="snippet-cancel-btn" :href="cancelButtonHref">
+            {{ __('Cancel') }}
+          </gl-button>
         </template>
       </form-footer-actions>
     </template>

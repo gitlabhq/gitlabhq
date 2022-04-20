@@ -7,6 +7,7 @@ export default () => ({
     endpoints: {},
     activeTab: null,
     mrMetadata: {},
+    failedToLoadMetadata: false,
   },
   actions,
   getters,

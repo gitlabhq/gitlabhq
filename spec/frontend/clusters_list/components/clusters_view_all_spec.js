@@ -1,24 +1,21 @@
-import { GlCard, GlLoadingIcon, GlButton, GlSprintf, GlBadge } from '@gitlab/ui';
+import { GlCard, GlLoadingIcon, GlSprintf, GlBadge } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ClustersViewAll from '~/clusters_list/components/clusters_view_all.vue';
 import Agents from '~/clusters_list/components/agents.vue';
 import Clusters from '~/clusters_list/components/clusters.vue';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import {
   AGENT,
   CERTIFICATE_BASED,
   AGENT_CARD_INFO,
   CERTIFICATE_BASED_CARD_INFO,
   MAX_CLUSTERS_LIST,
-  INSTALL_AGENT_MODAL_ID,
 } from '~/clusters_list/constants';
 import { sprintf } from '~/locale';
 
 Vue.use(Vuex);
 
-const addClusterPath = '/path/to/add/cluster';
 const defaultBranchName = 'default-branch';
 
 describe('ClustersViewAllComponent', () => {
@@ -32,11 +29,6 @@ describe('ClustersViewAllComponent', () => {
     defaultBranchName,
   };
 
-  const defaultProvide = {
-    addClusterPath,
-    canAddCluster: true,
-  };
-
   const entryData = {
     loadingClusters: false,
     totalClusters: 0,
@@ -46,37 +38,20 @@ describe('ClustersViewAllComponent', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAgentsComponent = () => wrapper.findComponent(Agents);
   const findClustersComponent = () => wrapper.findComponent(Clusters);
-  const findInstallAgentButtonTooltip = () => wrapper.findByTestId('install-agent-button-tooltip');
-  const findConnectExistingClusterButtonTooltip = () =>
-    wrapper.findByTestId('connect-existing-cluster-button-tooltip');
   const findCardsContainer = () => wrapper.findByTestId('clusters-cards-container');
   const findAgentCardTitle = () => wrapper.findByTestId('agent-card-title');
   const findRecommendedBadge = () => wrapper.findComponent(GlBadge);
   const findClustersCardTitle = () => wrapper.findByTestId('clusters-card-title');
-  const findFooterButton = (line) => findCards().at(line).findComponent(GlButton);
-  const getTooltipText = (el) => {
-    const binding = getBinding(el, 'gl-tooltip');
-
-    return binding.value;
-  };
 
   const createStore = (initialState) =>
     new Vuex.Store({
       state: initialState,
     });
 
-  const createWrapper = ({ initialState = entryData, provideData } = {}) => {
+  const createWrapper = ({ initialState = entryData } = {}) => {
     wrapper = shallowMountExtended(ClustersViewAll, {
       store: createStore(initialState),
       propsData,
-      provide: {
-        ...defaultProvide,
-        ...provideData,
-      },
-      directives: {
-        GlModalDirective: createMockDirective(),
-        GlTooltip: createMockDirective(),
-      },
       stubs: { GlCard, GlSprintf },
     });
   };
@@ -138,24 +113,9 @@ describe('ClustersViewAllComponent', () => {
       expect(findAgentsComponent().props('defaultBranchName')).toBe(defaultBranchName);
     });
 
-    it('should show install new Agent button in the footer', () => {
-      expect(findFooterButton(0).exists()).toBe(true);
-      expect(findFooterButton(0).props('disabled')).toBe(false);
-    });
-
-    it('does not show tooltip for install new Agent button', () => {
-      expect(getTooltipText(findInstallAgentButtonTooltip().element)).toBe('');
-    });
-
     describe('when there are no agents', () => {
       it('should show the empty title', () => {
         expect(findAgentCardTitle().text()).toBe(AGENT_CARD_INFO.emptyTitle);
-      });
-
-      it('should render correct modal id for the agent link', () => {
-        const binding = getBinding(findFooterButton(0).element, 'gl-modal-directive');
-
-        expect(binding.value).toBe(INSTALL_AGENT_MODAL_ID);
       });
     });
 
@@ -191,22 +151,6 @@ describe('ClustersViewAllComponent', () => {
         });
       });
     });
-
-    describe('when the user cannot add clusters', () => {
-      beforeEach(() => {
-        createWrapper({ provideData: { canAddCluster: false } });
-      });
-
-      it('should disable the button', () => {
-        expect(findFooterButton(0).props('disabled')).toBe(true);
-      });
-
-      it('should show a tooltip explaining why the button is disabled', () => {
-        expect(getTooltipText(findInstallAgentButtonTooltip().element)).toBe(
-          AGENT_CARD_INFO.installAgentDisabledHint,
-        );
-      });
-    });
   });
 
   describe('clusters tab', () => {
@@ -214,42 +158,9 @@ describe('ClustersViewAllComponent', () => {
       expect(findClustersComponent().props('limit')).toBe(MAX_CLUSTERS_LIST);
     });
 
-    it('should pass the is-child-component prop', () => {
-      expect(findClustersComponent().props('isChildComponent')).toBe(true);
-    });
-
     describe('when there are no clusters', () => {
       it('should show the empty title', () => {
         expect(findClustersCardTitle().text()).toBe(CERTIFICATE_BASED_CARD_INFO.emptyTitle);
-      });
-
-      it('should show install new cluster button in the footer', () => {
-        expect(findFooterButton(1).exists()).toBe(true);
-        expect(findFooterButton(1).props('disabled')).toBe(false);
-      });
-
-      it('should render correct href for the button in the footer', () => {
-        expect(findFooterButton(1).attributes('href')).toBe(addClusterPath);
-      });
-
-      it('does not show tooltip for install new cluster button', () => {
-        expect(getTooltipText(findConnectExistingClusterButtonTooltip().element)).toBe('');
-      });
-    });
-
-    describe('when the user cannot add clusters', () => {
-      beforeEach(() => {
-        createWrapper({ provideData: { canAddCluster: false } });
-      });
-
-      it('should disable the button', () => {
-        expect(findFooterButton(1).props('disabled')).toBe(true);
-      });
-
-      it('should show a tooltip explaining why the button is disabled', () => {
-        expect(getTooltipText(findConnectExistingClusterButtonTooltip().element)).toBe(
-          CERTIFICATE_BASED_CARD_INFO.connectExistingClusterDisabledHint,
-        );
       });
     });
 

@@ -395,13 +395,13 @@ When no rules evaluate to true, the pipeline does not run.
 ```yaml
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /-draft$/
+    - if: $CI_COMMIT_TITLE =~ /-draft$/
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-In this example, pipelines run if the commit message does not have `-drafts` in it
+In this example, pipelines run if the commit title (first line of the commit message) does not end with `-draft`
 and the pipeline is for either:
 
 - A merge request
@@ -2484,8 +2484,10 @@ Use `changes` in pipelines with the following refs:
 - Paths to files.
 - Wildcard paths for single directories, for example `path/to/directory/*`, or a directory
   and all its subdirectories, for example `path/to/directory/**/*`.
-- Wildcard ([glob](https://en.wikipedia.org/wiki/Glob_(programming))) paths for all
+- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all
   files with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
+  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  for the supported syntax list.
 - Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
   For example `"*.json"` or `"**/*.json"`.
 
@@ -2620,9 +2622,11 @@ Multiple runners must exist, or a single runner must be configured to run multip
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Possible inputs**: An array of hashes of variables:
 
-- A numeric value from `2` to `50`.
+- The variable names can use only numbers, letters, and underscores (`_`).
+- The values must be either a string, or an array of strings.
+- The number of permutations cannot exceed 50.
 
 **Example of `parallel:matrix`**:
 
@@ -2692,18 +2696,19 @@ you can use this image from the GitLab Container Registry: `registry.gitlab.com/
 
 **Example of `release` keyword**:
 
-  ```yaml
-  release_job:
-    stage: release
-    image: registry.gitlab.com/gitlab-org/release-cli:latest
-    rules:
-      - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
-    script:
-      - echo "Running the release job."
-    release:
-      name: 'Release $CI_COMMIT_TAG'
-      description: 'Release created using the release-cli.'
-  ```
+```yaml
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
+  script:
+    - echo "Running the release job."
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Release created using the release-cli.'
+```
 
 This example creates a release:
 
@@ -3100,7 +3105,7 @@ to specific files.
 WARNING:
 You should use `rules: changes` only with **branch pipelines** or **merge request pipelines**.
 You can use `rules: changes` with other pipeline types, but `rules: changes` always
-evaluates to true when there is no Git `push` event. Tag pipelines, scheduled pipelines,
+evaluates to true when there is no Git `push` event. Tag pipelines, scheduled pipelines, manual pipelines,
 and so on do **not** have a Git `push` event associated with them. A `rules: changes` job
 is **always** added to those pipelines if there is no `if` that limits the job to
 branch or merge request pipelines.
@@ -3709,7 +3714,7 @@ and [multi-project pipelines](../pipelines/multi_project_pipelines.md).
 
 - `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
   in the trigger job are passed to downstream pipelines.
-- `pipeline_variables`: `true` or `false` (default). When `true`, [manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
+- `pipeline_variables`: `true` or `false` (default). When `true`, [manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable) and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are passed to downstream pipelines.
 
 **Example of `trigger:forward`**:

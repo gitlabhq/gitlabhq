@@ -1,0 +1,9 @@
+---
+table_name: geo_repository_created_events
+classes:
+- Geo::RepositoryCreatedEvent
+feature_categories:
+- geo_replication
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/f3eacf881659b7af97b7c7ba3289237ec6cdc1cb
+milestone: '10.0'

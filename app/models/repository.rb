@@ -2,6 +2,12 @@
 
 require 'securerandom'
 
+# Explicitly require licensee/license file in order to use Licensee::InvalidLicense class defined in
+# https://github.com/licensee/licensee/blob/v9.14.1/lib/licensee/license.rb#L6
+# The problem is that nested classes are not automatically preloaded which may lead to
+# uninitialized constant exception being raised: https://gitlab.com/gitlab-org/gitlab/-/issues/356658
+require 'licensee/license'
+
 class Repository
   REF_MERGE_REQUEST = 'merge-requests'
   REF_KEEP_AROUND = 'keep-around'
@@ -789,6 +795,12 @@ class Repository
   def create_file(user, path, content, **options)
     options[:actions] = [{ action: :create, file_path: path, content: content }]
 
+    execute_filemode = options.delete(:execute_filemode)
+
+    unless execute_filemode.nil?
+      options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
+    end
+
     multi_action(user, **options)
   end
 
@@ -797,6 +809,12 @@ class Repository
     action = previous_path && previous_path != path ? :move : :update
 
     options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
+
+    execute_filemode = options.delete(:execute_filemode)
+
+    unless execute_filemode.nil?
+      options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
+    end
 
     multi_action(user, **options)
   end
@@ -939,6 +957,10 @@ class Repository
         raw_repository.ancestor?(ancestor_id, descendant_id)
       end
     end
+  end
+
+  def clone_as_mirror(url, http_authorization_header: "")
+    import_repository(url, http_authorization_header: http_authorization_header, mirror: true)
   end
 
   def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, http_authorization_header: "")

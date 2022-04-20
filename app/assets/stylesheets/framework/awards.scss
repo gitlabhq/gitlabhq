@@ -244,9 +244,13 @@
 // above will be deprecated once all instances of "award emoji" are
 // migrated to Vue.
 
-.gl-button .award-emoji-block gl-emoji {
-  margin-top: -1px;
-  margin-bottom: -1px;
+.gl-button .award-emoji-block {
+  display: contents;
+
+  gl-emoji {
+    margin-top: -1px;
+    margin-bottom: -1px;
+  }
 }
 
 .add-reaction-button {

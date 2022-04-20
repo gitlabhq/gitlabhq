@@ -34,7 +34,6 @@ RSpec.describe Types::Repository::BlobType do
       :environment_external_url_for_route_map,
       :code_navigation_path,
       :project_blob_path_root,
-      :code_owners,
       :simple_viewer,
       :rich_viewer,
       :plain_data,
@@ -47,6 +46,6 @@ RSpec.describe Types::Repository::BlobType do
       :ide_fork_and_edit_path,
       :fork_and_view_path,
       :language
-    )
+    ).at_least
   end
 end

@@ -19,6 +19,12 @@ FactoryBot.define do
       user
     end
 
+    factory :personal_key_4096 do
+      user
+
+      key { SSHData::PrivateKey::RSA.generate(4096, unsafe_allow_small_key: true).public_key.openssh(comment: 'dummy@gitlab.com') }
+    end
+
     factory :another_key do
       factory :another_deploy_key, class: 'DeployKey'
     end
@@ -74,6 +80,8 @@ FactoryBot.define do
           qpPN5jAskkAUzOh5L/M+dmq2jNn03U9xwORCYPZj+fFM9bL99/0knsV0ypZDZyWH dummy@gitlab.com
         KEY
       end
+
+      factory :rsa_deploy_key_5120, class: 'DeployKey'
     end
 
     factory :rsa_key_8192 do

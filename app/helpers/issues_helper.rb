@@ -91,7 +91,7 @@ module IssuesHelper
     if !can?(current_user, :award_emoji, awardable)
       "disabled"
     elsif current_user && awards.find { |a| a.user_id == current_user.id }
-      "active"
+      "selected"
     else
       ""
     end
@@ -239,15 +239,19 @@ module IssuesHelper
     )
   end
 
+  def issues_form_data(project)
+    {
+      new_issue_path: new_project_issue_path(project)
+    }
+  end
+
   # Overridden in EE
   def scoped_labels_available?(parent)
     false
   end
 
   def award_emoji_issue_api_path(issue)
-    if Feature.enabled?(:improved_emoji_picker, issue.project, default_enabled: :yaml)
-      api_v4_projects_issues_award_emoji_path(id: issue.project.id, issue_iid: issue.iid)
-    end
+    api_v4_projects_issues_award_emoji_path(id: issue.project.id, issue_iid: issue.iid)
   end
 end
 

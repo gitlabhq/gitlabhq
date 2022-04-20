@@ -254,13 +254,13 @@ of records plucked. `MAX_PLUCK` defaults to `1_000` in `ApplicationRecord`.
 
 ## Inherit from ApplicationRecord
 
-Most models in the GitLab codebase should inherit from `ApplicationRecord`,
-rather than from `ActiveRecord::Base`. This allows helper methods to be easily
-added.
+Most models in the GitLab codebase should inherit from `ApplicationRecord`
+or `Ci::ApplicationRecord` rather than from `ActiveRecord::Base`. This allows
+helper methods to be easily added.
 
 An exception to this rule exists for models created in database migrations. As
 these should be isolated from application code, they should continue to subclass
-from `ActiveRecord::Base`.
+from `MigrationRecord` which is available only in migration context.
 
 ## Use UNIONs
 
@@ -376,7 +376,7 @@ Explicit column list definition:
 
 ```ruby
 # Good, the SELECT columns are consistent
-columns = User.cached_column_names # The helper returns fully qualified (table.column) column names (Arel)
+columns = User.cached_column_list # The helper returns fully qualified (table.column) column names (Arel)
 scope1 = User.select(*columns).where(id: [1, 2, 3]) # selects the columns explicitly
 scope2 = User.select(*columns).where(id: [10, 11, 12]) # uses SELECT users.*
 

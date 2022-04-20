@@ -1,0 +1,9 @@
+---
+table_name: uploads
+classes:
+- Upload
+feature_categories:
+- backup_restore
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/4c622b71fd284058deee483bf0009f8179b792bc
+milestone: '9.0'

@@ -133,7 +133,7 @@ export default {
     class="gl-h-full gl-display-flex! gl-border-solid gl-border-gray-100 gl-border-1"
     :class="flexDirection"
     :title="tooltipText"
-    data-qa-selector="child_pipeline"
+    data-qa-selector="linked_pipeline_container"
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"
   >
@@ -171,7 +171,7 @@ export default {
         :icon="expandedIcon"
         :aria-label="__('Expand pipeline')"
         data-testid="expand-pipeline-button"
-        data-qa-selector="expand_pipeline_button"
+        data-qa-selector="expand_linked_pipeline_button"
         @click="onClickLinkedPipeline"
       />
     </div>

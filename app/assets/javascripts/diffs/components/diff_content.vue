@@ -9,9 +9,9 @@ import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
-import NoteForm from '../../notes/components/note_form.vue';
-import eventHub from '../../notes/event_hub';
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import NoteForm from '~/notes/components/note_form.vue';
+import eventHub from '~/notes/event_hub';
+import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 import { getDiffMode } from '../store/utils';
 import DiffDiscussions from './diff_discussions.vue';
@@ -170,7 +170,6 @@ export default {
           <note-form
             v-if="diffFileCommentForm"
             ref="noteForm"
-            :is-editing="false"
             :save-button-title="__('Comment')"
             class="diff-comment-form new-note discussion-form discussion-form-container"
             @handleFormUpdateAddToReview="addToReview"

@@ -76,12 +76,11 @@ RSpec.describe Projects::StaticSiteEditorController do
           get :show, params: default_params
         end
 
-        it 'increases the views counter' do
-          expect(Gitlab::UsageDataCounters::StaticSiteEditorCounter).to have_received(:increment_views_count)
-        end
+        it 'redirects to the Web IDE' do
+          get :show, params: default_params
 
-        it 'renders the edit page' do
-          expect(response).to render_template(:show)
+          expected_path_regex = %r[-/ide/project/#{project.full_path}/edit/master/-/README.md]
+          expect(response).to redirect_to(expected_path_regex)
         end
 
         it 'assigns ref and path variables' do
@@ -94,62 +93,6 @@ RSpec.describe Projects::StaticSiteEditorController do
 
           it 'responds with 404 page' do
             expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-
-        context 'when invalid config file' do
-          let(:service_response) { ServiceResponse.error(message: 'invalid') }
-
-          it 'redirects to project page and flashes error message' do
-            expect(response).to redirect_to(project_path(project))
-            expect(controller).to set_flash[:alert].to('invalid')
-          end
-        end
-
-        context 'with a service response payload containing multiple data types' do
-          let(:data) do
-            {
-              a_string: 'string',
-              an_array: [
-                {
-                  foo: 'bar'
-                }
-              ],
-              an_integer: 123,
-              a_hash: {
-                a_deeper_hash: {
-                  foo: 'bar'
-                }
-              },
-              a_boolean: true,
-              a_nil: nil
-            }
-          end
-
-          let(:assigns_data) { assigns(:data) }
-
-          it 'leaves data values which are strings as strings' do
-            expect(assigns_data[:a_string]).to eq('string')
-          end
-
-          it 'leaves data values which are integers as integers' do
-            expect(assigns_data[:an_integer]).to eq(123)
-          end
-
-          it 'serializes data values which are booleans to JSON' do
-            expect(assigns_data[:a_boolean]).to eq('true')
-          end
-
-          it 'serializes data values which are arrays to JSON' do
-            expect(assigns_data[:an_array]).to eq('[{"foo":"bar"}]')
-          end
-
-          it 'serializes data values which are hashes to JSON' do
-            expect(assigns_data[:a_hash]).to eq('{"a_deeper_hash":{"foo":"bar"}}')
-          end
-
-          it 'serializes data values which are nil to an empty string' do
-            expect(assigns_data[:a_nil]).to eq('')
           end
         end
       end

@@ -3,22 +3,6 @@
 module Tooling
   module Danger
     module ProjectHelper
-      LOCAL_RULES ||= %w[
-        ci_config
-        database
-        documentation
-        duplicate_yarn_dependencies
-        eslint
-        gitaly
-        pajamas
-        pipeline
-        prettier
-        product_intelligence
-        utility_css
-        vue_shared_documentation
-        datateam
-      ].freeze
-
       CI_ONLY_RULES ||= %w[
         ce_ee_vue_templates
         ci_templates
@@ -30,8 +14,6 @@ module Tooling
         specs
         z_metadata
       ].freeze
-
-      MESSAGE_PREFIX = '==>'
 
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
@@ -180,20 +162,6 @@ module Tooling
         )}x => :none, # To reinstate roulette for documentation, set to `:docs`.
         %r{\.js\z} => :frontend
       }.freeze
-
-      def local_warning_message
-        "#{MESSAGE_PREFIX} Only the following Danger rules can be run locally: #{LOCAL_RULES.join(', ')}"
-      end
-      module_function :local_warning_message # rubocop:disable Style/AccessModifierDeclarations
-
-      def success_message
-        "#{MESSAGE_PREFIX} No Danger rule violations!"
-      end
-      module_function :success_message # rubocop:disable Style/AccessModifierDeclarations
-
-      def rule_names
-        helper.ci? ? LOCAL_RULES | CI_ONLY_RULES : LOCAL_RULES
-      end
 
       def file_lines(filename)
         read_file(filename).lines(chomp: true)

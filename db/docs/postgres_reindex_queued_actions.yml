@@ -1,0 +1,11 @@
+---
+table_name: postgres_reindex_queued_actions
+classes:
+- Gitlab::Database::Reindexing::QueuedAction
+feature_categories:
+- database
+description: >-
+  Contains a queue-like structure for reindexing actions.
+  Actions in this queue will be prioritized over regular reindexing actions.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73480
+milestone: '14.5'

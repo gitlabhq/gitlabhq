@@ -16,3 +16,5 @@ module Users
     end
   end
 end
+
+Users::RegistrationsBuildService.prepend_mod

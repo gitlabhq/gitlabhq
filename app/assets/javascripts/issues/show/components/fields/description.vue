@@ -1,5 +1,6 @@
 <script>
 import markdownField from '~/vue_shared/components/markdown/field.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import updateMixin from '../../mixins/update';
 
 export default {
@@ -8,8 +9,8 @@ export default {
   },
   mixins: [updateMixin],
   props: {
-    formState: {
-      type: Object,
+    value: {
+      type: String,
       required: true,
     },
     markdownPreviewPath: {
@@ -31,6 +32,11 @@ export default {
       default: true,
     },
   },
+  computed: {
+    quickActionsDocsPath() {
+      return helpPagePath('user/project/quick_actions');
+    },
+  },
   mounted() {
     this.$refs.textarea.focus();
   },
@@ -43,26 +49,26 @@ export default {
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
+      :quick-actions-docs-path="quickActionsDocsPath"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
-      :textarea-value="formState.description"
+      :textarea-value="value"
     >
       <template #textarea>
-        <!-- eslint-disable vue/no-mutating-props -->
         <textarea
           id="issue-description"
           ref="textarea"
-          v-model="formState.description"
+          :value="value"
           class="note-textarea js-gfm-input js-autosize markdown-area qa-description-textarea"
           dir="auto"
           data-supports-quick-actions="true"
           :aria-label="__('Description')"
           :placeholder="__('Write a comment or drag your files here…')"
+          @input="$emit('input', $event.target.value)"
           @keydown.meta.enter="updateIssuable"
           @keydown.ctrl.enter="updateIssuable"
         >
         </textarea>
-        <!-- eslint-enable vue/no-mutating-props -->
       </template>
     </markdown-field>
   </div>

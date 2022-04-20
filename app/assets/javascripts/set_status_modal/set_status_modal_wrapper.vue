@@ -19,10 +19,8 @@ import { __, s__, sprintf } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
 import { timeRanges } from '~/vue_shared/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import EmojiMenuInModal from './emoji_menu_in_modal';
 import { isUserBusy } from './utils';
 
-const emojiMenuClass = 'js-modal-status-emoji-menu';
 export const AVAILABILITY_STATUS = {
   BUSY: 'busy',
   NOT_SET: 'not_set',
@@ -83,7 +81,6 @@ export default {
       emoji: this.currentEmoji,
       emojiMenu: null,
       emojiTag: '',
-      isEmojiMenuVisible: false,
       message: this.currentMessage,
       modalId: 'set-user-status-modal',
       noEmoji: true,
@@ -105,17 +102,11 @@ export default {
   mounted() {
     this.$root.$emit(BV_SHOW_MODAL, this.modalId);
   },
-  beforeDestroy() {
-    if (this.emojiMenu) {
-      this.emojiMenu.destroy();
-    }
-  },
   methods: {
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
     setupEmojiListAndAutocomplete() {
-      const toggleEmojiMenuButtonSelector = '#set-user-status-modal .js-toggle-emoji-menu';
       const emojiAutocomplete = new GfmAutoComplete();
       emojiAutocomplete.setup($(this.$refs.statusMessageField), { emojis: true });
 
@@ -127,16 +118,6 @@ export default {
           this.noEmoji = this.emoji === '';
           this.defaultEmojiTag = Emoji.glEmojiTag(this.defaultEmoji);
 
-          if (!this.glFeatures.improvedEmojiPicker) {
-            this.emojiMenu = new EmojiMenuInModal(
-              Emoji,
-              toggleEmojiMenuButtonSelector,
-              emojiMenuClass,
-              this.setEmoji,
-              this.$refs.userStatusForm,
-            );
-          }
-
           this.setDefaultEmoji();
         })
         .catch(() =>
@@ -144,19 +125,6 @@ export default {
             message: __('Failed to load emoji list.'),
           }),
         );
-    },
-    showEmojiMenu(e) {
-      e.stopPropagation();
-      this.isEmojiMenuVisible = true;
-      this.emojiMenu.showEmojiMenu($(this.$refs.toggleEmojiMenuButton));
-    },
-    hideEmojiMenu() {
-      if (!this.isEmojiMenuVisible) {
-        return;
-      }
-
-      this.isEmojiMenuVisible = false;
-      this.emojiMenu.hideMenuElement($(`.${emojiMenuClass}`));
     },
     setDefaultEmoji() {
       const { emojiTag } = this;
@@ -173,16 +141,12 @@ export default {
         this.clearEmoji();
       }
     },
-    setEmoji(emoji, emojiTag) {
+    setEmoji(emoji) {
       this.emoji = emoji;
       this.noEmoji = false;
       this.clearEmoji();
 
-      if (this.glFeatures.improvedEmojiPicker) {
-        this.emojiTag = Emoji.glEmojiTag(this.emoji);
-      } else {
-        this.emojiTag = emojiTag;
-      }
+      this.emojiTag = Emoji.glEmojiTag(this.emoji);
     },
     clearEmoji() {
       if (this.emojiTag) {
@@ -194,7 +158,6 @@ export default {
       this.message = '';
       this.noEmoji = true;
       this.clearEmoji();
-      this.hideEmojiMenu();
     },
     removeStatus() {
       this.availability = false;
@@ -249,7 +212,6 @@ export default {
     :action-secondary="$options.actionSecondary"
     modal-class="set-user-status-modal"
     @shown="setupEmojiListAndAutocomplete"
-    @hide="hideEmojiMenu"
     @primary="setStatus"
     @secondary="removeStatus"
   >
@@ -264,7 +226,6 @@ export default {
         <div class="input-group gl-mb-5">
           <span class="input-group-prepend">
             <emoji-picker
-              v-if="glFeatures.improvedEmojiPicker"
               dropdown-class="gl-h-full"
               toggle-class="btn emoji-menu-toggle-button gl-px-4! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
               boundary="viewport"
@@ -283,27 +244,6 @@ export default {
                 </span>
               </template>
             </emoji-picker>
-            <button
-              v-else
-              ref="toggleEmojiMenuButton"
-              v-gl-tooltip.bottom.hover
-              :title="s__('SetStatusModal|Add status emoji')"
-              :aria-label="s__('SetStatusModal|Add status emoji')"
-              name="button"
-              type="button"
-              class="js-toggle-emoji-menu emoji-menu-toggle-button btn"
-              @click="showEmojiMenu"
-            >
-              <span v-safe-html:[$options.safeHtmlConfig]="emojiTag"></span>
-              <span
-                v-show="noEmoji"
-                class="js-no-emoji-placeholder no-emoji-placeholder position-relative"
-              >
-                <gl-icon name="slight-smile" class="award-control-icon-neutral" />
-                <gl-icon name="smiley" class="award-control-icon-positive" />
-                <gl-icon name="smile" class="award-control-icon-super-positive" />
-              </span>
-            </button>
           </span>
           <input
             ref="statusMessageField"
@@ -314,7 +254,6 @@ export default {
             name="user[status][message]"
             @keyup="setDefaultEmoji"
             @keyup.enter.prevent
-            @click="hideEmojiMenu"
           />
           <span v-show="isDirty" class="input-group-append">
             <button

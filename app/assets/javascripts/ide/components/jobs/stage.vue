@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlIcon, GlTooltipDirective, GlBadge } from '@gitlab/ui';
-import CiIcon from '../../../vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Item from './item.vue';
 
 export default {

@@ -2,20 +2,30 @@
 // keep parts that affect elements that can appear in emails;
 // omit Bootstrap Reboot since it adds unnecessary styles to every element.
 @import 'notify_base';
+
+// bootstrap variables, mixins, functions
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/mixins';
+
+// bootstrap styles
 @import 'bootstrap/scss/code';
+
+// @gitlab/ui variables, mixins, functions
 @import '@gitlab/ui/src/scss/variables';
 @import '@gitlab/ui/src/scss/utility-mixins/index';
-@import '@gitlab/ui/src/scss/components';
-@import 'bootstrap_migration';
-@import 'framework/common';
+
+// @gitlab/ui styles
+@import '@gitlab/ui/src/components/base/icon/icon';
+@import '@gitlab/ui/src/components/base/label/label';
+
+// gitlab styles
+@import 'bootstrap_migration_variables';
+@import 'bootstrap_migration_reset';
 @import 'framework/gfm';
 @import 'framework/kbd';
 @import 'framework/tables';
 @import 'framework/typography';
-@import 'framework/emojis';
 
 body {
   font-family: $regular-font;
@@ -26,11 +36,15 @@ a {
   text-decoration: none;
 }
 
-.content {
-  .md {
-    padding: 1rem 0;
-  }
+.gl-mb-5 {
+  @include gl-mb-5;
+}
 
+.gl-mt-5 {
+  @include gl-mt-5;
+}
+
+.content {
   hr {
     border: 1px solid #e1e1e1;
   }

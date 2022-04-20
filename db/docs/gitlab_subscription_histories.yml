@@ -1,0 +1,9 @@
+---
+table_name: gitlab_subscription_histories
+classes:
+- GitlabSubscriptionHistory
+feature_categories:
+- purchase
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19694
+milestone: '12.6'

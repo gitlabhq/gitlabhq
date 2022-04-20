@@ -9,12 +9,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in GitLab 13.4.
 > - Support for `grpcs` [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/7) in GitLab 13.6.
 > - Agent server [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300960) on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program in GitLab 13.10.
-> - The agent became available to every project on GitLab.com in GitLab 13.11.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the GitLab agent became available on GitLab.com.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 > - [Renamed](https://gitlab.com/groups/gitlab-org/-/epics/7167) from "GitLab Kubernetes Agent" to "GitLab agent for Kubernetes" in GitLab 14.6.
 
 You can connect your Kubernetes cluster with GitLab to deploy, manage,
-and monitor your cloud-native solutions. 
+and monitor your cloud-native solutions.
 
 To connect a Kubernetes cluster to GitLab, you must first [install an agent in your cluster](install/index.md).
 
@@ -43,8 +43,8 @@ This workflow is considered push-based, because GitLab is pushing requests from 
 GitLab supports the following Kubernetes versions. You can upgrade your
 Kubernetes version to a supported version at any time:
 
+- 1.21 (support ends on November 22, 2022)
 - 1.20 (support ends on July 22, 2022)
-- 1.19 (support ends on February 22, 2022)
 
 GitLab supports at least two production-ready Kubernetes minor
 versions at any given time. GitLab regularly reviews the supported versions and

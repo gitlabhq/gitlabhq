@@ -1,0 +1,9 @@
+---
+table_name: issue_search_data
+classes:
+- Issues::SearchData
+feature_categories:
+- global_search
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913
+milestone: '14.9'

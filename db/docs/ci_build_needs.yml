@@ -1,0 +1,9 @@
+---
+table_name: ci_build_needs
+classes:
+- Ci::BuildNeed
+feature_categories:
+- pipeline_authoring
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e7ee84aad4237eaa16f2aba75b4d2c7860625c9d
+milestone: '12.2'

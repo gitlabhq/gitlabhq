@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Merge request creation from fork', quarantine: {
-      only: { subdomain: %i[canary production] },
+      only: :production,
       issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/343801",
       type: :investigation
     } do

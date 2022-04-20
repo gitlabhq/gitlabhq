@@ -18,7 +18,7 @@ in GitLab 14.5. It is expected to be
 [turned off by default in 15.0](../../../update/deprecations.md#certificate-based-integration-with-kubernetes)
 and removed in GitLab 15.6.
 
-If you are using the certificate-based integration, you should move to another workflow as soon as possible. 
+If you are using the certificate-based integration, you should move to another workflow as soon as possible.
 
 As a general rule, to migrate clusters that rely on GitLab CI/CD,
 you can use the [CI/CD workflow](../../clusters/agent/ci_cd_tunnel.md).
@@ -60,7 +60,7 @@ To configure your Auto DevOps project to use the GitLab agent:
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
 1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
 1. Select the **Details** tab and disable the cluster.
-1. To activate the changes, on the left sidebar, select **CI/CD > Variables > Run pipeline**.
+1. To activate the changes, on the left sidebar, select **CI/CD > Pipelines** and then **Run pipeline**.
 
 For an example, [view this project](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service).
 
@@ -70,7 +70,11 @@ Follow the process for the [CI/CD workflow](../../clusters/agent/ci_cd_tunnel.md
 
 ## Migrate from GitLab Managed applications
 
-Follow the process to [migrate from GitLab Managed Apps to the cluster management project](../../clusters/migrating_from_gma_to_project_template.md).
+[GitLab Managed Apps (GMA)](../../clusters/applications.md#gitlab-managed-apps-deprecated) were deprecated in GitLab 14.0, and
+the agent for Kubernetes does not support them. To migrate from GMA to the agent, go through the following steps:
+
+1. [Migrate from GitLab Managed Apps to a cluster management project](../../clusters/migrating_from_gma_to_project_template.md).
+1. [Migrate the cluster management project to use the agent](../../clusters/management_project_template.md).
 
 ## Migrate a cluster management project
 

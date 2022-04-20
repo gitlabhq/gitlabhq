@@ -14,7 +14,7 @@ export default {
     body: __(
       'Create a new %{codeStart}.gitlab-ci.yml%{codeEnd} file at the root of the repository to get started.',
     ),
-    btnText: __('Create new CI/CD pipeline'),
+    btnText: __('Configure pipeline'),
   },
   inject: {
     emptyStateIllustrationPath: {

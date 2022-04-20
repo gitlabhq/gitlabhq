@@ -1,0 +1,9 @@
+---
+table_name: users_ops_dashboard_projects
+classes:
+- UsersOpsDashboardProject
+feature_categories:
+- release_orchestration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7341
+milestone: '11.5'

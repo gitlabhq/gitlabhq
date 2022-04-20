@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '#perform' do
-  subject { described_class.new.perform(job_record) }
+  subject { described_class.new(connection: connection, metrics: metrics_tracker).perform(job_record) }
 
+  let(:connection) { Gitlab::Database.database_base_models[:main].connection }
+  let(:metrics_tracker) { instance_double('::Gitlab::Database::BackgroundMigration::PrometheusMetrics', track: nil) }
   let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
   let_it_be(:pause_ms) { 250 }
@@ -18,6 +20,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   let(:job_instance) { double('job instance', batch_metrics: {}) }
+
+  around do |example|
+    Gitlab::Database::SharedModel.using_connection(connection) do
+      example.run
+    end
+  end
 
   before do
     allow(job_class).to receive(:new).and_return(job_instance)
@@ -78,86 +86,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     end
   end
 
-  context 'reporting prometheus metrics' do
-    let(:labels) { job_record.batched_migration.prometheus_labels }
-
-    before do
-      allow(job_instance).to receive(:perform)
-    end
-
-    it 'reports batch_size' do
-      expect(described_class.metrics[:gauge_batch_size]).to receive(:set).with(labels, job_record.batch_size)
-
-      subject
-    end
-
-    it 'reports sub_batch_size' do
-      expect(described_class.metrics[:gauge_sub_batch_size]).to receive(:set).with(labels, job_record.sub_batch_size)
-
-      subject
-    end
-
-    it 'reports interval' do
-      expect(described_class.metrics[:gauge_interval]).to receive(:set).with(labels, job_record.batched_migration.interval)
-
-      subject
-    end
-
-    it 'reports updated tuples (currently based on batch_size)' do
-      expect(described_class.metrics[:counter_updated_tuples]).to receive(:increment).with(labels, job_record.batch_size)
-
-      subject
-    end
-
-    it 'reports migrated tuples' do
-      count = double
-      expect(job_record.batched_migration).to receive(:migrated_tuple_count).and_return(count)
-      expect(described_class.metrics[:gauge_migrated_tuples]).to receive(:set).with(labels, count)
-
-      subject
-    end
-
-    it 'reports summary of query timings' do
-      metrics = { 'timings' => { 'update_all' => [1, 2, 3, 4, 5] } }
-
-      expect(job_instance).to receive(:batch_metrics).and_return(metrics)
-
-      metrics['timings'].each do |key, timings|
-        summary_labels = labels.merge(operation: key)
-        timings.each do |timing|
-          expect(described_class.metrics[:histogram_timings]).to receive(:observe).with(summary_labels, timing)
-        end
-      end
-
-      subject
-    end
-
-    it 'reports job duration' do
-      freeze_time do
-        expect(Time).to receive(:current).and_return(Time.zone.now - 5.seconds).ordered
-        allow(Time).to receive(:current).and_call_original
-
-        expect(described_class.metrics[:gauge_job_duration]).to receive(:set).with(labels, 5.seconds)
-
-        subject
-      end
-    end
-
-    it 'reports the total tuple count for the migration' do
-      expect(described_class.metrics[:gauge_total_tuple_count]).to receive(:set).with(labels, job_record.batched_migration.total_tuple_count)
-
-      subject
-    end
-
-    it 'reports last updated at timestamp' do
-      freeze_time do
-        expect(described_class.metrics[:gauge_last_update_time]).to receive(:set).with(labels, Time.current.to_i)
-
-        subject
-      end
-    end
-  end
-
   context 'when the migration job does not raise an error' do
     it 'marks the tracking record as succeeded' do
       expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
@@ -170,6 +98,13 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
         expect(reloaded_job_record).to be_succeeded
         expect(reloaded_job_record.finished_at).to eq(Time.current)
       end
+    end
+
+    it 'tracks metrics of the execution' do
+      expect(job_instance).to receive(:perform)
+      expect(metrics_tracker).to receive(:track).with(job_record)
+
+      subject
     end
   end
 
@@ -189,6 +124,13 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
           expect(reloaded_job_record.finished_at).to eq(Time.current)
         end
       end
+
+      it 'tracks metrics of the execution' do
+        expect(job_instance).to receive(:perform).and_raise(error_class)
+        expect(metrics_tracker).to receive(:track).with(job_record)
+
+        expect { subject }.to raise_error(error_class)
+      end
     end
 
     it_behaves_like 'an error is raised', RuntimeError.new('Something broke!')
@@ -203,7 +145,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       stub_const('Gitlab::BackgroundMigration::Foo', migration_class)
     end
 
-    let(:connection) { double(:connection) }
     let(:active_migration) { create(:batched_background_migration, :active, job_class_name: 'Foo') }
     let!(:job_record) { create(:batched_background_migration_job, batched_migration: active_migration) }
 
@@ -212,12 +153,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
       expect(job_instance).to receive(:perform)
 
-      described_class.new(connection: connection).perform(job_record)
+      subject
     end
   end
 
   context 'when the batched background migration inherits from BaseJob' do
-    let(:connection) { double(:connection) }
     let(:active_migration) { create(:batched_background_migration, :active, job_class_name: 'Foo') }
     let!(:job_record) { create(:batched_background_migration_job, batched_migration: active_migration) }
 
@@ -232,7 +172,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
       expect(job_instance).to receive(:perform)
 
-      described_class.new(connection: connection).perform(job_record)
+      subject
     end
   end
 end

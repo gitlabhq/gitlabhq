@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', :reliable do
     describe 'Reverting a commit' do
       let(:file_name) { "secret_file.md" }
 

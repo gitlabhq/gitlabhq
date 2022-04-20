@@ -3,7 +3,7 @@
 exports[`EmptyStateComponent should render content 1`] = `
 "<section class=\\"gl-display-flex empty-state gl-text-center gl-flex-direction-column\\">
   <div class=\\"gl-max-w-full\\">
-    <div class=\\"svg-250 svg-content\\"><img src=\\"/image.svg\\" alt=\\"\\" role=\\"img\\" class=\\"gl-max-w-full\\"></div>
+    <div class=\\"svg-250 svg-content\\"><img src=\\"/image.svg\\" alt=\\"\\" role=\\"img\\" class=\\"gl-max-w-full gl-dark-invert-keep-hue\\"></div>
   </div>
   <div class=\\"gl-max-w-full gl-m-auto\\">
     <div class=\\"gl-mx-auto gl-my-0 gl-p-5\\">

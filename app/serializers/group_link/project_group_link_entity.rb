@@ -4,18 +4,14 @@ module GroupLink
   class ProjectGroupLinkEntity < GroupLink::GroupLinkEntity
     include RequestAwareEntity
 
-    expose :can_update do |group_link|
-      can?(current_user, :admin_project_member, group_link.project)
-    end
-
-    expose :can_remove do |group_link|
-      can?(current_user, :admin_project_member, group_link.project)
+    expose :source do |group_link|
+      ProjectEntity.represent(group_link.shared_from, only: [:id, :full_name])
     end
 
     private
 
-    def current_user
-      options[:current_user]
+    def admin_permission_name
+      :admin_project_member
     end
   end
 end

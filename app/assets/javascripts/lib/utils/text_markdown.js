@@ -9,7 +9,10 @@ const LINK_TAG_PATTERN = '[{text}](url)';
 // a bullet point character (*+-) and an optional checkbox ([ ] [x])
 // OR a number with a . after it and an optional checkbox ([ ] [x])
 // followed by one or more whitespace characters
-const LIST_LINE_HEAD_PATTERN = /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl>\d+\.))( \[([x ])\])?\s)(?<content>.)?/;
+const LIST_LINE_HEAD_PATTERN = /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl>\d+\.))( \[([xX\s])\])?\s)(?<content>.)?/;
+
+// detect a horizontal rule that might be mistaken for a list item (not full pattern for an <hr>)
+const HR_PATTERN = /^((\s{0,3}-+\s*-+\s*-+\s*[\s-]*)|(\s{0,3}\*+\s*\*+\s*\*+\s*[\s*]*))$/;
 
 function selectedText(text, textarea) {
   return text.substring(textarea.selectionStart, textarea.selectionEnd);
@@ -381,15 +384,19 @@ function handleContinueList(e, textArea) {
 
     let itemToInsert;
 
+    // Behaviors specific to either `ol` or `ul`
     if (isOl) {
       const nextLine = lineAfter(textArea.value, textArea, false);
       const nextLineResult = nextLine.match(LIST_LINE_HEAD_PATTERN);
 
       itemToInsert = continueOlText(result, nextLineResult);
     } else {
-      // isUl
+      if (currentLine.match(HR_PATTERN)) return;
+
       itemToInsert = `${indent}${leader}`;
     }
+
+    itemToInsert = itemToInsert.replace(/\[x\]/i, '[ ]');
 
     e.preventDefault();
 

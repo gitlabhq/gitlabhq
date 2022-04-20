@@ -512,12 +512,8 @@ RSpec.describe ApplicationSetting do
     end
 
     context 'key restrictions' do
-      it 'supports all key types' do
-        expect(described_class::SUPPORTED_KEY_TYPES).to eq(Gitlab::SSHPublicKey.supported_types)
-      end
-
       it 'does not allow all key types to be disabled' do
-        described_class::SUPPORTED_KEY_TYPES.each do |type|
+        Gitlab::SSHPublicKey.supported_types.each do |type|
           setting["#{type}_key_restriction"] = described_class::FORBIDDEN_KEY_VALUE
         end
 
@@ -526,15 +522,23 @@ RSpec.describe ApplicationSetting do
       end
 
       where(:type) do
-        described_class::SUPPORTED_KEY_TYPES
+        Gitlab::SSHPublicKey.supported_types
       end
 
       with_them do
         let(:field) { :"#{type}_key_restriction" }
 
-        it { is_expected.to validate_presence_of(field) }
-        it { is_expected.to allow_value(*KeyRestrictionValidator.supported_key_restrictions(type)).for(field) }
-        it { is_expected.not_to allow_value(128).for(field) }
+        shared_examples 'key validations' do
+          it { is_expected.to validate_presence_of(field) }
+          it { is_expected.to allow_value(*KeyRestrictionValidator.supported_key_restrictions(type)).for(field) }
+          it { is_expected.not_to allow_value(128).for(field) }
+        end
+
+        it_behaves_like 'key validations'
+
+        context 'FIPS mode', :fips_mode do
+          it_behaves_like 'key validations'
+        end
       end
     end
 
@@ -1305,5 +1309,32 @@ RSpec.describe ApplicationSetting do
         expect(setting.static_objects_external_storage_auth_token).to be_nil
       end
     end
+  end
+
+  describe '#database_grafana_api_key' do
+    it 'is encrypted' do
+      subject.database_grafana_api_key = 'somesecret'
+
+      aggregate_failures do
+        expect(subject.encrypted_database_grafana_api_key).to be_present
+        expect(subject.encrypted_database_grafana_api_key_iv).to be_present
+        expect(subject.encrypted_database_grafana_api_key).not_to eq(subject.database_grafana_api_key)
+      end
+    end
+  end
+
+  context "inactive project deletion" do
+    it "validates that inactive_projects_send_warning_email_after_months is less than inactive_projects_delete_after_months" do
+      subject[:inactive_projects_delete_after_months] = 3
+      subject[:inactive_projects_send_warning_email_after_months] = 6
+
+      expect(subject).to be_invalid
+    end
+
+    it { is_expected.to validate_numericality_of(:inactive_projects_send_warning_email_after_months).is_greater_than(0) }
+
+    it { is_expected.to validate_numericality_of(:inactive_projects_delete_after_months).is_greater_than(0) }
+
+    it { is_expected.to validate_numericality_of(:inactive_projects_min_size_mb).is_greater_than_or_equal_to(0) }
   end
 end

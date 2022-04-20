@@ -92,8 +92,8 @@ To configure your Vault server:
      specified when the authentication method was configured.
    - `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted, default is `jwt`.
    - `VAULT_NAMESPACE` - Optional. The [Vault Enterprise namespace](https://www.vaultproject.io/docs/enterprise/namespaces) to use for reading secrets and authentication.
-     If no namespace is specified, Vault uses the `root` ("`/`") namespace. 
-     The setting is ignored by Vault Open Source. 
+     If no namespace is specified, Vault uses the `root` ("`/`") namespace.
+     The setting is ignored by Vault Open Source.
 
    NOTE:
    Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).

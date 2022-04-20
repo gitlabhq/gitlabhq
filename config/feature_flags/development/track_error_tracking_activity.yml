@@ -1,8 +1,0 @@
----
-name: track_error_tracking_activity
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82543
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355112
-milestone: '14.9'
-type: development
-group: group::respond
-default_enabled: false

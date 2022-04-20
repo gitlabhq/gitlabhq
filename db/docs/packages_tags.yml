@@ -1,0 +1,9 @@
+---
+table_name: packages_tags
+classes:
+- Packages::Tag
+feature_categories:
+- package_registry
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20636
+milestone: '12.7'

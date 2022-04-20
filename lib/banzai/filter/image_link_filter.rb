@@ -27,6 +27,13 @@ module Banzai
           # make sure the original non-proxied src carries over to the link
           link['data-canonical-src'] = img['data-canonical-src'] if img['data-canonical-src']
 
+          if img['data-diagram'] && img['data-diagram-src']
+            link['data-diagram'] = img['data-diagram']
+            link['data-diagram-src'] = img['data-diagram-src']
+            img.remove_attribute('data-diagram')
+            img.remove_attribute('data-diagram-src')
+          end
+
           link.children = if link_replaces_image
                             img['alt'] || img['data-src'] || img['src']
                           else

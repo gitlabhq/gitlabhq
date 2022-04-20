@@ -1,0 +1,9 @@
+---
+table_name: x509_commit_signatures
+classes:
+- CommitSignatures::X509CommitSignature
+feature_categories:
+- source_code_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17773
+milestone: '12.8'

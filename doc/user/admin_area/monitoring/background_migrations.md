@@ -185,3 +185,12 @@ The results from the query can be plugged into the command:
 ```shell
 sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[["id"]\, ["id_convert_to_bigint"]]']
 ```
+
+### The `BackfillNamespaceIdForNamespaceRoute` batched migration job fails
+
+In GitLab 14.8, the `BackfillNamespaceIdForNamespaceRoute` batched background migration job
+may fail to complete. When retried, a `500 Server Error` is returned. This issue was
+[resolved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82387) in GitLab 14.9. 
+
+To resolve this issue, [upgrade GitLab](../../../update/index.md) from 14.8 to 14.9.
+You can ignore the failed batch migration until after you update to GitLab 14.9.

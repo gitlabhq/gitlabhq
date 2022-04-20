@@ -22,8 +22,6 @@ module Gitlab
       def perform(start_id, end_id)
         eligible_mrs = MergeRequest.eligible.where(id: start_id..end_id).pluck(:id)
 
-        return if eligible_mrs.empty?
-
         eligible_mrs.each_slice(10) do |slice|
           MergeRequest.where(id: slice).update_all(draft: true)
         end

@@ -59,10 +59,8 @@ module ErrorTracking
       end
     end
 
-    def http_request
-      response = handle_request_exceptions do
-        yield
-      end
+    def http_request(&block)
+      response = handle_request_exceptions(&block)
 
       handle_response(response)
     end
@@ -86,9 +84,7 @@ module ErrorTracking
     end
 
     def handle_response(response)
-      unless response.code.between?(200, 204)
-        raise_error "Sentry response status code: #{response.code}"
-      end
+      raise_error "Sentry response status code: #{response.code}" unless response.code.between?(200, 204)
 
       { body: response.parsed_response, headers: response.headers }
     end

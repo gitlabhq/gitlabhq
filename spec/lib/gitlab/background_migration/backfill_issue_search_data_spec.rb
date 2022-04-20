@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillIssueSearchData do
+RSpec.describe Gitlab::BackgroundMigration::BackfillIssueSearchData, :migration, schema: 20220326161803 do
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:issue_search_data_table) { table(:issue_search_data) }

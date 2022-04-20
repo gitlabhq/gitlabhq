@@ -47,6 +47,15 @@ RSpec.describe Gitlab::Utils::DelegatorOverride::Validator do
 
       expect(validator.target_classes).to contain_exactly(target_class)
     end
+
+    it 'adds all descendants of the target' do
+      child_class1 = Class.new(target_class)
+      child_class2 = Class.new(target_class)
+      grandchild_class = Class.new(child_class2)
+      validator.add_target(target_class)
+
+      expect(validator.target_classes).to contain_exactly(target_class, child_class1, child_class2, grandchild_class)
+    end
   end
 
   describe '#expand_on_ancestors' do

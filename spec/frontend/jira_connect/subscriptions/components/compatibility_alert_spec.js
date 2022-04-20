@@ -29,7 +29,7 @@ describe('CompatibilityAlert', () => {
     createComponent({ mountFn: mount });
     expect(findLink().attributes()).toMatchObject({
       target: '_blank',
-      rel: 'noopener noreferrer',
+      rel: 'noopener',
     });
   });
 

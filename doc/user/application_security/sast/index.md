@@ -81,6 +81,7 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | Go                                                                                                                                                | [Semgrep](https://semgrep.dev)                                                                                | 14.4                                                                                    |
 | Groovy ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the     [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Ant, Maven, SBT)                                                  |
 | Helm Charts                                                                                                                                       | [Kubesec](https://github.com/controlplaneio/kubesec)                                                          | 13.1                                                                                    |
+| Java (any build system)                                                                                                                           | [Semgrep](https://semgrep.dev)                                                                                | 14.10                                                                                   |
 | Java ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/))   | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin     | 10.6 (Maven), 10.8 (Gradle) & 11.9 (Ant, SBT)                                           |
 | Java (Android)                                                                                                                                    | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                      | 13.5                                                                                    |
 | JavaScript                                                                                                                                        | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                              | 11.8                                                                                    |
@@ -132,6 +133,30 @@ The following analyzers have multi-project support:
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
 the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://docs.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
+### Supported distributions
+
+The default scanner images are build off a base Alpine image for size and maintainability.
+
+#### FIPS-enabled images
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+
+GitLab offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the images that are FIPS-enabled. To use the FIPS-enabled images, you can either:
+
+- Set the `SAST_IMAGE_SUFFIX` to `-fips`.
+- Add the `-fips` extension to the default image name.
+
+For example:
+
+```yaml
+variables:
+  SAST_IMAGE_SUFFIX: '-fips'
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+```
+
 ### Making SAST analyzers available to all GitLab tiers
 
 All open source (OSS) analyzers have been moved to the GitLab Free tier as of GitLab 13.3.
@@ -141,17 +166,17 @@ All open source (OSS) analyzers have been moved to the GitLab Free tier as of Gi
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                             | In Free             | In Ultimate        |
-|:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure SAST Scanners](#configuration)                                              | **{check-circle}**  | **{check-circle}** |
-| [Customize SAST Settings](#available-cicd-variables)                                   | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                                           | **{dotted-circle}** | **{check-circle}** |
-| [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
-| [Configure SAST in the UI](#configure-sast-in-the-ui)                                  | **{dotted-circle}** | **{check-circle}** |
-| [Customize SAST Rulesets](#customize-rulesets)                                         | **{dotted-circle}** | **{check-circle}** |
-| [False Positive Detection](#false-positive-detection)                                  | **{dotted-circle}** | **{check-circle}** |
+| Capability                                                      | In Free & Premium   | In Ultimate        |
+|:----------------------------------------------------------------|:--------------------|:-------------------|
+| [Configure SAST scanners](#configuration)                       | **{check-circle}**  | **{check-circle}** |
+| [Customize SAST settings](#available-cicd-variables)            | **{check-circle}**  | **{check-circle}** |
+| Download [JSON Report](#reports-json-format)                    | **{check-circle}**  | **{check-circle}** |
+| See new findings in merge request widget                        | **{dotted-circle}** | **{check-circle}** |
+| [Manage vulnerabilities](../vulnerabilities/index.md)           | **{dotted-circle}** | **{check-circle}** |
+| [Access the Security Dashboard](../security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
+| [Configure SAST in the UI](#configure-sast-in-the-ui)           | **{dotted-circle}** | **{check-circle}** |
+| [Customize SAST rulesets](#customize-rulesets)                  | **{dotted-circle}** | **{check-circle}** |
+| [Detect False Positives](#false-positive-detection)             | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -190,28 +215,28 @@ always take the latest SAST artifact available.
 ### Configure SAST in the UI
 
 You can enable and configure SAST in the UI, either with default settings, or with customizations.
-Use the method that best meets your needs.
+The method you can use depends on your GitLab license tier.
 
-- [Configure SAST in the UI with default settings](#configure-sast-in-the-ui-with-default-settings)
-- [Configure SAST in the UI with customizations](#configure-sast-in-the-ui-with-customizations)
+- [Configure SAST in the UI with default settings](#configure-sast-in-the-ui-with-default-settings).
+- [Configure SAST in the UI with customizations](#configure-sast-in-the-ui-with-customizations). **(ULTIMATE)**
 
 ### Configure SAST in the UI with default settings
 
 > [Introduced](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#security-configuration-page-for-all-users) in GitLab 13.9
 
-To enable and configure SAST with default settings:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance** > **Configuration**.
-1. In the SAST section, select `Enable via MR`.
-1. Review the draft MR that enables SAST with the default recommended settings in the
-   `.gitlab-ci.yml` file.
-1. Merge the MR to enable SAST. You should see SAST jobs run in that MR's pipeline.
-
 NOTE:
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
 configuration file. If you have a complex GitLab configuration file it may not be parsed
 successfully, and an error may occur.
+
+To enable and configure SAST with default settings:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance** > **Configuration**.
+1. In the SAST section, select **Configure with a merge request**.
+1. Review and merge the merge request to enable SAST.
+
+Pipelines now include a SAST job.
 
 ### Configure SAST in the UI with customizations **(ULTIMATE)**
 
@@ -219,27 +244,28 @@ successfully, and an error may occur.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab 13.4.
 > - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/3635) in GitLab 13.5.
 
+NOTE:
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file it may not be parsed
+successfully, and an error may occur.
+
 To enable and configure SAST with customizations:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
-1. If the project does not have a `.gitlab-ci.yml` file, select **Enable** in the Static Application
-   Security Testing (SAST) row, otherwise select **Configure**.
+1. If the project does not have a `.gitlab-ci.yml` file, select **Enable SAST** in the Static
+   Application Security Testing (SAST) row, otherwise select **Configure SAST**.
 1. Enter the custom SAST values.
 
    Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST
-   Configuration page, their values are left unchanged. Default values are inherited from the GitLab
-   SAST template.
+   Configuration page, their values are inherited from the GitLab SAST template.
 
 1. Optionally, expand the **SAST analyzers** section, select individual
    [SAST analyzers](analyzers.md) and enter custom analyzer values.
 1. Select **Create Merge Request**.
 1. Review and merge the merge request.
 
-NOTE:
-The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
-configuration file. If you have a complex GitLab configuration file it may not be parsed
-successfully, and an error may occur.
+Pipelines now include a SAST job.
 
 ### Overriding SAST jobs
 
@@ -399,7 +425,7 @@ and `value` of identifiers and then overridden:
 ```
 
 If a vulnerability is found with a type `CWE` with a value of `703` then
-the vulnerability severity is overwritten to `Critical`. 
+the vulnerability severity is overwritten to `Critical`.
 
 #### Synthesize a custom configuration
 
@@ -523,7 +549,7 @@ Several passthrouh types generate a configuration for the target analyzer:
     the configuration.
   - If there is a filename collision between files in both repositories, files
     from the `sast` repository overwrite files from the `myrules` repository,
-    as `sast-rules` has higher precedence.  
+    as `sast-rules` has higher precedence.
 - The `raw` entry creates a file named `insecure.yml` under `/sgrules`. The
   full path is `/sgrules/insecure.yml`.
 - The `url` entry fetches a configuration made available through a URL and
@@ -831,6 +857,7 @@ The following are Docker image-related CI/CD variables.
 | `SECURE_ANALYZERS_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SAST_EXCLUDED_ANALYZERS` | Names of default images that should never run. Read more about [customizing analyzers](analyzers.md).                                 |
 | `SAST_ANALYZER_IMAGE_TAG` | Override the default version of analyzer image. Read more about [pinning the analyzer image version](#pinning-to-minor-image-version).                                 |
+| `SAST_IMAGE_SUFFIX`       | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355518) in GitLab 14.10. |
 
 #### Vulnerability filters
 
@@ -936,7 +963,7 @@ To use SAST in an offline environment, you need:
 - A Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Configure certificate checking of packages (optional).
 
-GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+GitLab Runner has a [default `pull_policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
@@ -990,7 +1017,7 @@ Support for custom certificate authorities was introduced in the following versi
 | `phpcs-security-audit` | [v2.8.2](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit/-/releases/v2.8.2) |
 | `pmd-apex`             | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0)             |
 | `security-code-scan`   | [v2.7.3](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v2.7.3)   |
-| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)   |
+| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)              |
 | `sobelow`              | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0)              |
 | `spotbugs`             | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1)             |
 

@@ -10,7 +10,7 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
-import { CopyAsGFM } from '../../../behaviors/markdown/copy_as_gfm';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
 
 export default {
@@ -187,7 +187,7 @@ export default {
       <template #tabs-end>
         <div
           data-testid="md-header-toolbar"
-          :class="{ 'gl-display-none': previewMarkdown }"
+          :class="{ 'gl-display-none!': previewMarkdown }"
           class="md-header-toolbar gl-ml-auto gl-pb-3 gl-justify-content-center"
         >
           <toolbar-button

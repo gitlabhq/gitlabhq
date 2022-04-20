@@ -1,4 +1,4 @@
-import InputValidator from '../../../validators/input_validator';
+import InputValidator from '~/validators/input_validator';
 
 const errorMessageClass = 'gl-field-error';
 

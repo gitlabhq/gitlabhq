@@ -24,7 +24,7 @@ module Gitlab
         end
         execution_message do
           if params[:merge_request_diff_head_sha].blank?
-            _("Merge request diff sha parameter is required for the merge quick action.")
+            _("The `/merge` quick action requires the SHA of the head of the branch.")
           elsif params[:merge_request_diff_head_sha] != quick_action_target.diff_head_sha
             _("Branch has been updated since the merge was requested.")
           elsif preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
@@ -291,7 +291,7 @@ module Gitlab
         parse_params do |attention_param|
           extract_users(attention_param)
         end
-        command :attention do |users|
+        command :attention, :attn do |users|
           next if users.empty?
 
           users.each do |user|

@@ -50,7 +50,13 @@ or stop alert escalations by [updating the alert's status](alerts.md#update-an-a
 
 ### Escalating an incident
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
+
+FLAG:
+This feature is available by default. To disable it per project or for your entire
+instance, ask an administrator to [disable the feature flag](../../administration/feature_flags.md)
+named `incident_escalations`.
 
 For incidents, paging on-call responders is optional for each individual incident.
 To begin escalating the incident, [set the incident's escalation policy](incidents.md#change-escalation-policy).

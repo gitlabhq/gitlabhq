@@ -189,7 +189,7 @@ English language. Vale's configuration is stored in the
 [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) file located in the root
 directory of projects.
 
-Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/) that extend any of
+Vale supports creating [custom tests](https://docs.errata.ai/vale/styles) that extend any of
 several types of checks, which we store in the `.linting/vale/styles/gitlab` directory in the
 documentation directory of projects.
 
@@ -364,6 +364,35 @@ file for the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 
 To set up `lefthook` for documentation linting, see
 [Pre-push static analysis](../contributing/style_guides.md#pre-push-static-analysis-with-lefthook).
+
+#### Show Vale warnings on push
+
+By default, `lefthook` shows only Vale errors when pushing changes to a branch. The default branches
+have no Vale errors, so any errors listed here are introduced by commits to the branch.
+
+To also see the Vale warnings when pushing to a branch, set a local environment variable: `VALE_WARNINGS=true`.
+
+Enable Vale warnings on push to improve the documentation suite by:
+
+- Detecting warnings you might be introducing with your commits.
+- Identifying warnings that already exist in the page, which you can resolve to reduce technical debt.
+
+These warnings:
+
+- Don't stop the push from working.
+- Don't result in a broken pipeline.
+- Include all warnings for a file, not just warnings that are introduced by the commits.
+
+To enable Vale warnings on push:
+
+- Automatically, add `VALE_WARNINGS=true` to your shell configuration.
+- Manually, prepend `VALE_WARNINGS=true` to invocations of `lefthook`. For example:
+
+  ```shell
+  VALE_WARNINGS=true bundle exec lefthook run pre-push
+  ```
+
+You can also [configure your editor](#configure-editors) to show Vale warnings.
 
 ### Show subset of Vale alerts
 

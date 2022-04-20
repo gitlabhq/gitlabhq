@@ -90,7 +90,12 @@ module QA
         Page::Project::New.perform(&:click_blank_project_link)
 
         Page::Project::New.perform do |new_page|
-          new_page.choose_test_namespace unless @personal_namespace
+          if @personal_namespace
+            new_page.choose_namespace(@personal_namespace)
+          else
+            new_page.choose_test_namespace
+          end
+
           new_page.choose_name(@name)
           new_page.add_description(@description)
           new_page.set_visibility(@visibility)
@@ -105,7 +110,16 @@ module QA
       def fabricate_via_api!
         resource_web_url(api_get)
       rescue ResourceNotFoundError
-        super
+        response = super
+
+        # If a project is being imported, wait until it completes before we let the test continue.
+        # Otherwise we see Git repository errors
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/356101
+        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 5) do
+          %w[none finished].include?(reload!.api_resource[:import_status])
+        end
+
+        response
       end
 
       def api_get_path
@@ -295,13 +309,6 @@ module QA
         merge_requests.find { |mr| mr[:title] == title }
       end
 
-      def runners(tag_list: nil)
-        url = tag_list ? "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}" : api_runners_path
-        response = get(request_url(url, per_page: '100'))
-
-        parse_body(response)
-      end
-
       def registry_repositories
         response = get(request_url(api_registry_repositories_path))
         parse_body(response)
@@ -336,14 +343,15 @@ module QA
         parse_body(response)
       end
 
-      def pipelines
-        response = get(request_url(api_pipelines_path))
-        parse_body(response)
-      end
-
       def pipeline_schedules
         response = get(request_url(api_pipeline_schedules_path))
         parse_body(response)
+      end
+
+      def pipelines(auto_paginate: false, attempts: 0)
+        return parse_body(api_get_from(api_pipelines_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_pipelines_path, per_page: '100'), attempts: attempts)
       end
 
       def issues(auto_paginate: false, attempts: 0)
@@ -380,9 +388,7 @@ module QA
           api_resource[:import_status] == "finished"
         end
 
-        unless mirror_succeeded
-          raise "Mirroring failed with error: #{api_resource[:import_error]}"
-        end
+        raise "Mirroring failed with error: #{api_resource[:import_error]}" unless mirror_succeeded
       end
 
       def remove_via_api!

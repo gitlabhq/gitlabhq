@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { stubExperiments } from 'helpers/experimentation_helper';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
 import eventHub from '~/invite_members/event_hub';
@@ -26,7 +26,7 @@ describe('Learn GitLab Section Link', () => {
   });
 
   const createWrapper = (action = defaultAction, props = {}) => {
-    wrapper = shallowMount(LearnGitlabSectionLink, {
+    wrapper = mount(LearnGitlabSectionLink, {
       propsData: { action, value: { ...defaultProps, ...props } },
     });
   };
@@ -35,6 +35,8 @@ describe('Learn GitLab Section Link', () => {
     wrapper.find('[data-testid="invite-for-help-continuous-onboarding-experiment-link"]');
 
   const findUncompletedLink = () => wrapper.find('[data-testid="uncompleted-learn-gitlab-link"]');
+
+  const videoTutorialLink = () => wrapper.find('[data-testid="video-tutorial-link"]');
 
   it('renders no icon when not completed', () => {
     createWrapper(undefined, { completed: false });
@@ -128,6 +130,53 @@ describe('Learn GitLab Section Link', () => {
       });
 
       unmockTracking();
+    });
+  });
+
+  describe('video_tutorials_continuous_onboarding experiment', () => {
+    describe('when control', () => {
+      beforeEach(() => {
+        stubExperiments({ video_tutorials_continuous_onboarding: 'control' });
+        createWrapper('codeOwnersEnabled');
+      });
+
+      it('renders no video link', () => {
+        expect(videoTutorialLink().exists()).toBe(false);
+      });
+    });
+
+    describe('when candidate', () => {
+      beforeEach(() => {
+        stubExperiments({ video_tutorials_continuous_onboarding: 'candidate' });
+        createWrapper('codeOwnersEnabled');
+      });
+
+      it('renders video link with blank target', () => {
+        const videoLinkElement = videoTutorialLink();
+
+        expect(videoLinkElement.exists()).toBe(true);
+        expect(videoLinkElement.attributes('target')).toEqual('_blank');
+      });
+
+      it('tracks the click', () => {
+        const trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
+
+        videoTutorialLink().trigger('click');
+
+        expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_video_link', {
+          label: 'Add code owners',
+          property: 'Growth::Conversion::Experiment::LearnGitLab',
+          context: {
+            data: {
+              experiment: 'video_tutorials_continuous_onboarding',
+              variant: 'candidate',
+            },
+            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
+          },
+        });
+
+        unmockTracking();
+      });
     });
   });
 });

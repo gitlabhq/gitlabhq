@@ -26,4 +26,8 @@ class BaseContainerService
   def group_container?
     container.is_a?(::Group)
   end
+
+  def namespace_container?
+    container.is_a?(::Namespace)
+  end
 end

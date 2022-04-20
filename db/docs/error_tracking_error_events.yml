@@ -1,0 +1,9 @@
+---
+table_name: error_tracking_error_events
+classes:
+- ErrorTracking::ErrorEvent
+feature_categories:
+- error_tracking
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/2d1c197ab0bf10071cb52e579edd3808cb0adc21
+milestone: '14.1'

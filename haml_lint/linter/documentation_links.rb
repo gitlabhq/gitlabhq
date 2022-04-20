@@ -68,7 +68,15 @@ module HamlLint
         # Sometimes links are provided via data attributes in html tag
         return node.parsed_attributes.syntax_tree if node.type == :tag
 
-        node.parsed_script.syntax_tree
+        parse_script(node).syntax_tree
+      end
+
+      def parse_script(node)
+        # It's a workaround for cases for scripts ending with "do"
+        # For some reason they don't parse correctly
+        code = node.script.delete_suffix(' do')
+
+        HamlLint::ParsedRuby.new(HamlLint::RubyParser.new.parse(code))
       end
 
       def detect_path_to_file(link)

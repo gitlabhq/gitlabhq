@@ -2,6 +2,9 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 
 export default {
   inject: ['vscrollParent'],
+  model: {
+    prop: 'index',
+  },
   props: {
     index: {
       type: Number,
@@ -39,6 +42,7 @@ export default {
   methods: {
     scrollToIndex(index) {
       this.vscrollParent.scrollToItem(index);
+      this.$emit('update', -1);
 
       setTimeout(() => {
         handleLocationHash();

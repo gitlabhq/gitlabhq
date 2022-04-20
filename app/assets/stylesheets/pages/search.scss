@@ -45,6 +45,36 @@ input[type='checkbox']:hover {
     transition: border-color ease-in-out $default-transition-duration,
       background-color ease-in-out $default-transition-duration;
   }
+
+  &.is-not-active {
+    .btn.gl-clear-icon-button {
+      display: none;
+    }
+
+    &::after {
+      content: '/';
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      right: 8px;
+      transform: translateY(calc(50% - 4px));
+      padding: 4px 5px;
+      font-size: $gl-font-size-small;
+      font-family: $monospace-font;
+      line-height: 1;
+      vertical-align: middle;
+      border-width: 0;
+      border-style: solid;
+      border-image: none;
+      border-radius: 3px;
+      box-shadow: none;
+      white-space: pre-wrap;
+      // Safari
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: keep-all;
+    }
+  }
 }
 
 .header-search-dropdown-menu {

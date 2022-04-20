@@ -1,8 +1,8 @@
 import axios from 'axios';
 import Visibility from 'visibilityjs';
-import httpStatus from '../../../../lib/utils/http_status';
-import Poll from '../../../../lib/utils/poll';
-import { __ } from '../../../../locale';
+import httpStatus from '~/lib/utils/http_status';
+import Poll from '~/lib/utils/poll';
+import { __ } from '~/locale';
 import { rightSidebarViews } from '../../../constants';
 import service from '../../../services';
 import * as types from './mutation_types';

@@ -119,7 +119,7 @@ Actions that dismiss to-do items include:
 - Closing the issue or merge request
 - Adding or removing a label
 - Commenting on the issue
-- Resolving a [design discussion thread](project/issues/design_management.md#resolve-design-threads)
+- Resolving a [design discussion thread](project/issues/design_management.md#resolve-a-discussion-thread-on-a-design)
 
 If someone else closes, merges, or takes action on an issue, merge request, or
 epic, your to-do item remains pending.

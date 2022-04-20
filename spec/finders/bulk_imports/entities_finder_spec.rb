@@ -51,7 +51,7 @@ RSpec.describe BulkImports::EntitiesFinder do
     end
 
     context 'when status is specified' do
-      subject { described_class.new(user: user, status: 'failed') }
+      subject { described_class.new(user: user, params: { status: 'failed' }) }
 
       it 'returns a list of import entities filtered by status' do
         expect(subject.execute)
@@ -61,7 +61,7 @@ RSpec.describe BulkImports::EntitiesFinder do
       end
 
       context 'when invalid status is specified' do
-        subject { described_class.new(user: user, status: 'invalid') }
+        subject { described_class.new(user: user, params: { status: 'invalid' }) }
 
         it 'does not filter entities by status' do
           expect(subject.execute)
@@ -74,10 +74,36 @@ RSpec.describe BulkImports::EntitiesFinder do
     end
 
     context 'when bulk import and status are specified' do
-      subject { described_class.new(user: user, bulk_import: user_import_2, status: 'finished') }
+      subject { described_class.new(user: user, bulk_import: user_import_2, params: { status: 'finished' }) }
 
       it 'returns matched import entities' do
         expect(subject.execute).to contain_exactly(finished_entity_2)
+      end
+    end
+
+    context 'when order is specifed' do
+      subject { described_class.new(user: user, params: { sort: order }) }
+
+      context 'when order is specified as asc' do
+        let(:order) { :asc }
+
+        it 'returns entities sorted ascending' do
+          expect(subject.execute).to eq([
+            started_entity_1, finished_entity_1, failed_entity_1,
+            started_entity_2, finished_entity_2, failed_entity_2
+          ])
+        end
+      end
+
+      context 'when order is specified as desc' do
+        let(:order) { :desc }
+
+        it 'returns entities sorted descending' do
+          expect(subject.execute).to eq([
+            failed_entity_2, finished_entity_2, started_entity_2,
+            failed_entity_1, finished_entity_1, started_entity_1
+          ])
+        end
       end
     end
   end

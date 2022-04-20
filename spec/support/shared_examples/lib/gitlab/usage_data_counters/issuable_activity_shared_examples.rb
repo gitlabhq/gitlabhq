@@ -5,7 +5,7 @@ RSpec.shared_examples 'a daily tracked issuable event' do
     stub_application_setting(usage_ping_enabled: true)
   end
 
-  def count_unique(date_from:, date_to:)
+  def count_unique(date_from: 1.minute.ago, date_to: 1.minute.from_now)
     Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: action, start_date: date_from, end_date: date_to)
   end
 
@@ -14,6 +14,7 @@ RSpec.shared_examples 'a daily tracked issuable event' do
       expect(track_action(author: user1)).to be_truthy
       expect(track_action(author: user1)).to be_truthy
       expect(track_action(author: user2)).to be_truthy
+      expect(count_unique).to eq(2)
     end
   end
 

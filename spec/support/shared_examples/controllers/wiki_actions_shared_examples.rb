@@ -150,6 +150,7 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(response).to render_template('shared/wikis/diff')
         expect(assigns(:diffs)).to be_a(Gitlab::Diff::FileCollection::Base)
         expect(assigns(:diff_notes_disabled)).to be(true)
+        expect(assigns(:page).content).to be_empty
       end
     end
 
@@ -475,9 +476,13 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when page exists' do
       shared_examples 'deletes the page' do
         specify do
-          expect do
-            request
-          end.to change { wiki.list_pages.size }.by(-1)
+          aggregate_failures do
+            expect do
+              request
+            end.to change { wiki.list_pages.size }.by(-1)
+
+            expect(assigns(:page).content).to be_empty
+          end
         end
       end
 

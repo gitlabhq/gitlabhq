@@ -4,11 +4,13 @@ module Gitlab
   module Database
     module EachDatabase
       class << self
-        def each_database_connection(only: nil)
+        def each_database_connection(only: nil, include_shared: true)
           selected_names = Array.wrap(only)
           base_models = select_base_models(selected_names)
 
           base_models.each_pair do |connection_name, model|
+            next if !include_shared && Gitlab::Database.db_config_share_with(model.connection_db_config)
+
             connection = model.connection
 
             with_shared_connection(connection, connection_name) do

@@ -63,6 +63,7 @@ module Issues
 
       handle_assignee_changes(issue, old_assignees)
       handle_confidential_change(issue)
+      handle_label_changes(issue, old_labels)
       handle_added_labels(issue, old_labels)
       handle_milestone_change(issue)
       handle_added_mentions(issue, old_mentioned_users)

@@ -34,11 +34,9 @@ class Projects::BranchesController < Projects::ApplicationController
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           render
         end
-      rescue Gitlab::Git::CommandError => e
-        Gitlab::ErrorTracking.track_exception(e)
-
+      rescue Gitlab::Git::CommandError
         @gitaly_unavailable = true
-        render
+        render status: :service_unavailable
       end
       format.json do
         branches = BranchesFinder.new(@repository, params).execute

@@ -4,24 +4,32 @@ module BulkImports
   class EntityWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    idempotent!
+    deduplicate :until_executing
     data_consistency :always
-
     feature_category :importers
-
     sidekiq_options retry: false, dead: false
-
     worker_has_external_dependencies!
 
-    idempotent!
-    deduplicate :until_executed, including_scheduled: true
-
     def perform(entity_id, current_stage = nil)
-      return if stage_running?(entity_id, current_stage)
+      if stage_running?(entity_id, current_stage)
+        logger.info(
+          structured_payload(
+            entity_id: entity_id,
+            current_stage: current_stage,
+            message: 'Stage running'
+          )
+        )
+
+        return
+      end
 
       logger.info(
-        worker: self.class.name,
-        entity_id: entity_id,
-        current_stage: current_stage
+        structured_payload(
+          entity_id: entity_id,
+          current_stage: current_stage,
+          message: 'Stage starting'
+        )
       )
 
       next_pipeline_trackers_for(entity_id).each do |pipeline_tracker|
@@ -33,10 +41,11 @@ module BulkImports
       end
     rescue StandardError => e
       logger.error(
-        worker: self.class.name,
-        entity_id: entity_id,
-        current_stage: current_stage,
-        error_message: e.message
+        structured_payload(
+          entity_id: entity_id,
+          current_stage: current_stage,
+          message: e.message
+        )
       )
 
       Gitlab::ErrorTracking.track_exception(e, entity_id: entity_id)

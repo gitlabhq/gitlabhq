@@ -30,5 +30,32 @@ module GroupLink
 
       expose :shared_with_group, merge: true, using: GroupBasicEntity
     end
+
+    expose :can_update do |group_link, options|
+      can_admin_shared_from?(group_link, options)
+    end
+
+    expose :can_remove do |group_link, options|
+      can_admin_shared_from?(group_link, options)
+    end
+
+    expose :is_direct_member do |group_link, options|
+      direct_member?(group_link, options)
+    end
+
+    private
+
+    def current_user
+      options[:current_user]
+    end
+
+    def direct_member?(group_link, options)
+      group_link.shared_from == options[:source]
+    end
+
+    def can_admin_shared_from?(group_link, options)
+      direct_member?(group_link, options) &&
+        can?(current_user, admin_permission_name, group_link.shared_from)
+    end
   end
 end

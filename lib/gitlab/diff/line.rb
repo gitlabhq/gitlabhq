@@ -9,8 +9,8 @@ module Gitlab
       SERIALIZE_KEYS = %i(line_code rich_text text type index old_pos new_pos).freeze
 
       attr_reader :marker_ranges
-      attr_writer :text, :rich_text, :discussable
-      attr_accessor :index, :type, :old_pos, :new_pos, :line_code
+      attr_writer :text, :rich_text
+      attr_accessor :index, :old_pos, :new_pos, :line_code, :type
 
       def initialize(text, type, index, old_pos, new_pos, parent_file: nil, line_code: nil, rich_text: nil)
         @text = text
@@ -24,9 +24,7 @@ module Gitlab
         # When line code is not provided from cache store we build it
         # using the parent_file(Diff::File or Conflict::File).
         @line_code = line_code || calculate_line_code
-
         @marker_ranges = []
-        @discussable = true
       end
 
       def self.init_from_hash(hash)
@@ -81,15 +79,20 @@ module Gitlab
       end
 
       def added?
-        %w[new new-nonewline].include?(type)
+        %w[new new-nonewline new-nomappinginraw].include?(type)
       end
 
       def removed?
-        %w[old old-nonewline].include?(type)
+        %w[old old-nonewline old-nomappinginraw].include?(type)
       end
 
       def meta?
         %w[match new-nonewline old-nonewline].include?(type)
+      end
+
+      def has_mapping_in_raw?
+        # Used for rendered diff, when the displayed line doesn't have a matching line in the raw diff
+        !type&.ends_with?('nomappinginraw')
       end
 
       def match?
@@ -97,7 +100,7 @@ module Gitlab
       end
 
       def discussable?
-        @discussable && !meta?
+        has_mapping_in_raw? && !meta?
       end
 
       def suggestible?

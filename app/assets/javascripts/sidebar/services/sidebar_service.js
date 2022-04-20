@@ -1,10 +1,10 @@
-import sidebarDetailsIssueQuery from 'ee_else_ce/sidebar/queries/sidebarDetails.query.graphql';
+import sidebarDetailsIssueQuery from 'ee_else_ce/sidebar/queries/sidebar_details.query.graphql';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import reviewerRereviewMutation from '../queries/reviewer_rereview.mutation.graphql';
-import sidebarDetailsMRQuery from '../queries/sidebarDetailsMR.query.graphql';
+import sidebarDetailsMRQuery from '../queries/sidebar_details_mr.query.graphql';
 import toggleAttentionRequestedMutation from '../queries/toggle_attention_requested.mutation.graphql';
 
 const queries = {

@@ -40,6 +40,7 @@ export default {
     summary(data) {},     // Required: Level 1 summary text
     statusIcon(data) {},  // Required: Level 1 status icon
     tertiaryButtons() {}, // Optional: Level 1 action buttons
+    shouldCollapse() {}, // Optional: Add logic to determine if the widget can expand or not
   },
   methods: {
     fetchCollapsedData(props) {}, // Required: Fetches data required for collapsed state

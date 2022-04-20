@@ -7,6 +7,8 @@
   = render_if_exists 'shared/thanks_for_purchase_banner', plan_title: plan_title, quantity: params[:purchased_quantity].to_i
 
 = render_if_exists 'shared/qrtly_reconciliation_alert', group: @group
+= render_if_exists 'shared/user_over_limit_free_plan_alert', source: @group
+= render_if_exists 'shared/minute_limit_banner', namespace: @group
 
 - if show_invite_banner?(@group)
   = content_for :group_invite_members_banner do
@@ -37,16 +39,15 @@
     .scrolling-tabs-container.inner-page-scroll-tabs
       .fade-left= sprite_icon('chevron-lg-left', size: 12)
       .fade-right= sprite_icon('chevron-lg-right', size: 12)
-      %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs
-        %li.js-subgroups_and_projects-tab
-          = link_to group_path, data: { target: 'div#subgroups_and_projects', action: 'subgroups_and_projects', toggle: 'tab'} do
-            = _("Subgroups and projects")
-        %li.js-shared-tab
-          = link_to group_shared_path, data: { target: 'div#shared', action: 'shared', toggle: 'tab'} do
-            = _("Shared projects")
-        %li.js-archived-tab
-          = link_to group_archived_path, data: { target: 'div#archived', action: 'archived', toggle: 'tab'} do
-            = _("Archived projects")
+      -# `item_active` is set to `false` as the active state is set by `app/assets/javascripts/pages/groups/shared/group_details.js`
+      -# TODO: Replace this approach in https://gitlab.com/gitlab-org/gitlab/-/issues/23466
+      = gl_tabs_nav({ class: 'nav-links scrolling-tabs gl-display-flex gl-flex-grow-1 gl-flex-nowrap gl-border-0' }) do
+        = gl_tab_link_to group_path, item_active: false, tab_class: 'js-subgroups_and_projects-tab', data: { target: 'div#subgroups_and_projects', action: 'subgroups_and_projects', toggle: 'tab' } do
+          = _("Subgroups and projects")
+        = gl_tab_link_to group_shared_path, item_active: false, tab_class: 'js-shared-tab', data: { target: 'div#shared', action: 'shared', toggle: 'tab' } do
+          = _("Shared projects")
+        = gl_tab_link_to group_archived_path, item_active: false, tab_class: 'js-archived-tab', data: { target: 'div#archived', action: 'archived', toggle: 'tab' } do
+          = _("Archived projects")
 
     .nav-controls.d-block.d-md-flex
       .group-search

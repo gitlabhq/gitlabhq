@@ -5,6 +5,7 @@ import { INSTANCE_TYPE, PROJECT_TYPE } from '~/runner/constants';
 const mockId = '1';
 const mockShortSha = '2P6oDVDm';
 const mockDescription = 'runner-1';
+const mockIpAddress = '0.0.0.0';
 
 describe('RunnerTypeCell', () => {
   let wrapper;
@@ -18,6 +19,7 @@ describe('RunnerTypeCell', () => {
           id: `gid://gitlab/Ci::Runner/${mockId}`,
           shortSha: mockShortSha,
           description: mockDescription,
+          ipAddress: mockIpAddress,
           runnerType: INSTANCE_TYPE,
           ...runner,
         },
@@ -57,6 +59,10 @@ describe('RunnerTypeCell', () => {
 
   it('Displays the runner description', () => {
     expect(wrapper.text()).toContain(mockDescription);
+  });
+
+  it('Displays the runner ip address', () => {
+    expect(wrapper.text()).toContain(mockIpAddress);
   });
 
   it('Displays a custom slot', () => {

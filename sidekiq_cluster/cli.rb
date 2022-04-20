@@ -100,6 +100,11 @@ module Gitlab
 
         unless @dryrun
           @logger.info("Starting cluster with #{queue_groups.length} processes")
+
+          # Make sure we reset the metrics directory prior to:
+          # - starting a metrics server process
+          # - starting new workers
+          ::Prometheus::CleanupMultiprocDirService.new(@metrics_dir).execute
         end
 
         start_and_supervise_workers(queue_groups)
@@ -137,7 +142,7 @@ module Gitlab
           # and the metrics server died, restart it.
           if supervisor.alive && dead_pids.include?(metrics_server_pid)
             @logger.info('Sidekiq metrics server terminated, restarting...')
-            metrics_server_pid = restart_metrics_server(wipe_metrics_dir: false)
+            metrics_server_pid = restart_metrics_server
             all_pids = worker_pids + Array(metrics_server_pid)
           else
             # If a worker process died we'll just terminate the whole cluster.
@@ -154,15 +159,14 @@ module Gitlab
       def start_metrics_server
         return unless metrics_server_enabled?
 
-        restart_metrics_server(wipe_metrics_dir: true)
+        restart_metrics_server
       end
 
-      def restart_metrics_server(wipe_metrics_dir: false)
+      def restart_metrics_server
         @logger.info("Starting metrics server on port #{sidekiq_exporter_port}")
         MetricsServer.fork(
           'sidekiq',
           metrics_dir: @metrics_dir,
-          wipe_metrics_dir: wipe_metrics_dir,
           reset_signals: TERMINATE_SIGNALS + FORWARD_SIGNALS
         )
       end

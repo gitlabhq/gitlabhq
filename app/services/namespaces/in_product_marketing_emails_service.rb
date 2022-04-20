@@ -45,6 +45,11 @@ module Namespaces
       }
     }.freeze
 
+    def self.email_count_for_track(track)
+      interval_days = TRACKS.dig(track.to_sym, :interval_days)
+      interval_days&.count || 0
+    end
+
     def self.send_for_all_tracks_and_intervals
       TRACKS.each_key do |track|
         TRACKS[track][:interval_days].each do |interval|

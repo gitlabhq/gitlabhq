@@ -21,6 +21,56 @@ GitLab supports the following security policies:
 - [Scan Result Policy](scan-result-policies.md)
 - [Container Network Policy](#container-network-policy) (DEPRECATED)
 
+## Security policy project
+
+All security policies are stored as YAML in a separate security policy project that gets linked to
+the development project. This association can be a one-to-many relationship, allowing one security
+policy project to apply to multiple development projects. Linked projects are not required to be in
+the same group as the development projects to which they are linked.
+
+![Security Policy Project Linking Diagram](img/association_diagram.png)
+
+Although it is possible to have one project linked to itself and to serve as both the development
+project and the security policy project, this is not recommended. Keeping the security policy
+project separate from the development project allows for complete separation of duties between
+security/compliance teams and development teams.
+
+All security policies are stored in the `.gitlab/security-policies/policy.yml` YAML file inside the
+linked security policy project. The format for this YAML is specific to the type of policy that is
+stored there. Examples and schema information are available for the following policy types:
+
+- [Scan execution policy](scan-execution-policies.md#example-security-policies-project)
+- [Scan result policy](scan-result-policies.md#example-security-scan-result-policies-project)
+
+Policies created in this project are applied through a background job that runs once every 10
+minutes. Allow up to 10 minutes for any policy changes committed to this project to take effect.
+
+### Managing the linked security policy project
+
+NOTE:
+Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
+to select, edit, and unlink a security policy project.
+
+As a project owner, take the following steps to create or edit an association between your current
+project and a project that you would like to designate as the security policy project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Policies**.
+1. Select **Edit Policy Project**, and search for and select the
+   project you would like to link from the dropdown menu.
+1. Select **Save**.
+
+To unlink a security policy project, follow the same steps but instead select the trash can icon in
+the modal.
+
+![Security Policy Project](img/security_policy_project_v14_6.png)
+
+### Viewing the linked security policy project
+
+All users who have access to the project policy page and are not project owners will instead view a
+button linking out to the associated security policy project. If no security policy project has been
+associated then the linking button does not appear.
+
 ## Policy management
 
 The Policies page displays deployed
@@ -57,6 +107,7 @@ You can use the policy editor to create, edit, and delete policies:
 1. On the top bar, select **Menu > Projects** and find your group.
 1. On the left sidebar, select **Security & Compliance > Policies**.
    - To create a new policy, select **New policy** which is located in the **Policies** page's header.
+     You can then select which type of policy to create.
    - To edit an existing policy, select **Edit policy** in the selected policy drawer.
 
 The policy editor has two modes:
@@ -78,44 +129,12 @@ by the Rule mode, Rule mode is automatically
 disabled. If the YAML is incorrect, you must use YAML
 mode to fix your policy before Rule mode is available again.
 
-## Security Policies project
-
-NOTE:
-We recommend using the [Security Policies project](#security-policies-project)
-exclusively for managing policies for the project. Do not add your application's source code to such
-projects.
-
-The Security Policies feature is a repository to store policies. All security policies are stored in
-the `.gitlab/security-policies/policy.yml` YAML file. The format for this YAML is specific to the type of policy that is being stored there. Examples and schema information are available for the following policy types:
-
-- [Scan execution policy](scan-execution-policies.md#example-security-policies-project)
-- [Scan result policy](scan-result-policies.md#example-security-scan-result-policies-project)
-
-Policies created in this project are applied through a background job that runs once every 10
-minutes. Allow up to 10 minutes for any policy changes committed to this project to take effect.
-
-## Security Policy project selection
-
-NOTE:
-Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
-to select Security Policy Project.
-
-When the Security Policy project is created and policies are created within that repository, you
-must create an association between that project and the project you want to apply policies to:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Policies**.
-1. Select **Edit Policy Project**, and search for and select the
-   project you would like to link from the dropdown menu.
-1. Select **Save**.
-
-   ![Security Policy Project](img/security_policy_project_v14_6.png)
-
-### Unlink Security Policy projects
-
-Project owners can unlink Security Policy projects from development projects. To do this, follow
-the steps described in [Security Policy project selection](#security-policy-project-selection),
-but select the trash can icon in the modal.
+When you finish creating or editing your policy, save and apply it by selecting the
+**Configure with a merge request** button and then merging the resulting merge request. When you
+press this button, the policy YAML is validated and any resulting errors are displayed.
+Additionally, if you are a project owner and a security policy project has not been previously
+associated with this project, then a new project is created and associated automatically at the same
+time that the first policy merge request is created.
 
 ## Scan execution policies
 
@@ -132,7 +151,7 @@ See [Scan result policies](scan-result-policies.md).
 
 WARNING:
 Container Network Policy is in its end-of-life process. It's [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
-for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
 in GitLab 15.0.
 
 The **Container Network Policy** section provides packet flow metrics for

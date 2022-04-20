@@ -185,7 +185,7 @@ class WikiPage
   #       :content - The raw markup content.
   #       :format  - Optional symbol representing the
   #                  content format. Can be any type
-  #                  listed in the Wiki::MARKUPS
+  #                  listed in the Wiki::VALID_USER_MARKUPS
   #                  Hash.
   #       :message - Optional commit message to set on
   #                  the new page.
@@ -205,7 +205,7 @@ class WikiPage
   # attrs - Hash of attributes to be updated on the page.
   #        :content         - The raw markup content to replace the existing.
   #        :format          - Optional symbol representing the content format.
-  #                           See Wiki::MARKUPS Hash for available formats.
+  #                           See Wiki::VALID_USER_MARKUPS Hash for available formats.
   #        :message         - Optional commit message to set on the new version.
   #        :last_commit_sha - Optional last commit sha to validate the page unchanged.
   #        :title           - The Title (optionally including dir) to replace existing title
@@ -222,7 +222,7 @@ class WikiPage
 
     update_attributes(attrs)
 
-    if title.present? && title_changed? && wiki.find_page(title).present?
+    if title.present? && title_changed? && wiki.find_page(title, load_content: false).present?
       attributes[:title] = page.title
       raise PageRenameError, s_('WikiEdit|There is already a page with the same title in that path.')
     end

@@ -10,8 +10,8 @@ import httpStatusCodes from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import { __, s__, sprintf } from '../../locale';
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import { __, s__, sprintf } from '~/locale';
+import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -357,7 +357,13 @@ export default {
     }) {
       if (shouldConfirm && isDirty) {
         const msg = __('Are you sure you want to cancel editing this comment?');
-        const confirmed = await confirmAction(msg);
+        const confirmed = await confirmAction(msg, {
+          primaryBtnText: __('Cancel editing'),
+          primaryBtnVariant: 'danger',
+          secondaryBtnVariant: 'default',
+          secondaryBtnText: __('Continue editing'),
+          hideCancel: true,
+        });
         if (!confirmed) return;
       }
       this.$refs.noteBody.resetAutoSave();
@@ -432,6 +438,7 @@ export default {
           :created-at="note.created_at"
           :note-id="note.id"
           :is-confidential="note.confidential"
+          :noteable-type="noteableType"
         >
           <template #note-header-info>
             <slot name="note-header-info"></slot>

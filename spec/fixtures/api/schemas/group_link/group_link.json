@@ -5,7 +5,10 @@
     "created_at",
     "expires_at",
     "access_level",
-    "valid_roles"
+    "valid_roles",
+    "can_update",
+    "can_remove",
+    "is_direct_member"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -33,6 +36,9 @@
         "web_url": { "type": "string" }
       },
       "additionalProperties": false
-    }
+    },
+    "can_update": { "type": "boolean" },
+    "can_remove": { "type": "boolean" },
+    "is_direct_member": { "type": "boolean" }
   }
 }

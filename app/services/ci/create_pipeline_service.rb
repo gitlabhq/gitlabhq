@@ -14,6 +14,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Build::Associations,
                 Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
+                Gitlab::Ci::Pipeline::Chain::Limit::RateLimit,
                 Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy,
                 Gitlab::Ci::Pipeline::Chain::Skip,
                 Gitlab::Ci::Pipeline::Chain::Config::Content,

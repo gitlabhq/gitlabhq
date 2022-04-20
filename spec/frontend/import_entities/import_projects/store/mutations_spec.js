@@ -232,6 +232,35 @@ describe('import_projects store mutations', () => {
         updatedProjects[0].importStatus,
       );
     });
+
+    it('updates import stats of project', () => {
+      const repoId = 1;
+      state = {
+        repositories: [
+          { importedProject: { id: repoId, stats: {} }, importStatus: STATUSES.STARTED },
+        ],
+      };
+      const newStats = {
+        fetched: {
+          label: 10,
+        },
+        imported: {
+          label: 1,
+        },
+      };
+
+      const updatedProjects = [
+        {
+          id: repoId,
+          importStatus: STATUSES.FINISHED,
+          stats: newStats,
+        },
+      ];
+
+      mutations[types.RECEIVE_JOBS_SUCCESS](state, updatedProjects);
+
+      expect(state.repositories[0].importedProject.stats).toStrictEqual(newStats);
+    });
   });
 
   describe(`${types.REQUEST_NAMESPACES}`, () => {

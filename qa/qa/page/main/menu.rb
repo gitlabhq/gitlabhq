@@ -45,6 +45,14 @@ module QA
           element :search_term_field
         end
 
+        view 'app/views/layouts/_header_search.html.haml' do
+          element :search_box
+        end
+
+        view 'app/assets/javascripts/header_search/components/app.vue' do
+          element :search_term_field
+        end
+
         def go_to_groups
           within_groups_menu do
             click_element(:menu_item_link, title: 'Your groups')
@@ -146,6 +154,7 @@ module QA
         end
 
         def search_for(term)
+          click_element(:search_box)
           fill_element :search_term_field, "#{term}\n"
         end
 

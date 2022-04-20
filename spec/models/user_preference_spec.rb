@@ -5,6 +5,48 @@ require 'spec_helper'
 RSpec.describe UserPreference do
   let(:user_preference) { create(:user_preference) }
 
+  describe 'validations' do
+    describe 'diffs_deletion_color and diffs_addition_color' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(color: [
+        '#000000',
+        '#123456',
+        '#abcdef',
+        '#AbCdEf',
+        '#ffffff',
+        '#fFfFfF',
+        '#000',
+        '#123',
+        '#abc',
+        '#AbC',
+        '#fff',
+        '#fFf',
+        ''
+      ])
+
+      with_them do
+        it { is_expected.to allow_value(color).for(:diffs_deletion_color) }
+        it { is_expected.to allow_value(color).for(:diffs_addition_color) }
+      end
+
+      where(color: [
+        '#1',
+        '#12',
+        '#1234',
+        '#12345',
+        '#1234567',
+        '123456',
+        '#12345x'
+      ])
+
+      with_them do
+        it { is_expected.not_to allow_value(color).for(:diffs_deletion_color) }
+        it { is_expected.not_to allow_value(color).for(:diffs_addition_color) }
+      end
+    end
+  end
+
   describe 'notes filters global keys' do
     it 'contains expected values' do
       expect(UserPreference::NOTES_FILTERS.keys).to match_array([:all_notes, :only_comments, :only_activity])

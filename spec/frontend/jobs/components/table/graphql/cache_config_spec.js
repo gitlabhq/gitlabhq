@@ -33,6 +33,26 @@ describe('jobs/components/table/graphql/cache_config', () => {
       );
     });
 
+    it('should not add to existing cache if the incoming elements are the same', () => {
+      // simulate that this is the last page
+      const finalExistingCache = {
+        ...CIJobConnectionExistingCache,
+        pageInfo: {
+          hasNextPage: false,
+        },
+      };
+
+      const res = cacheConfig.typePolicies.CiJobConnection.merge(
+        CIJobConnectionExistingCache,
+        finalExistingCache,
+        {
+          args: firstLoadArgs,
+        },
+      );
+
+      expect(res.nodes).toHaveLength(CIJobConnectionExistingCache.nodes.length);
+    });
+
     it('should contain the pageInfo key as part of the result', () => {
       const res = cacheConfig.typePolicies.CiJobConnection.merge({}, CIJobConnectionIncomingCache, {
         args: firstLoadArgs,

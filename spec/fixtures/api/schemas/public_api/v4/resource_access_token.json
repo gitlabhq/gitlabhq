@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "user_id",
+    "active",
+    "created_at",
+    "expires_at",
+    "revoked",
+    "access_level",
+    "scopes",
+    "last_used_at"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "user_id": { "type": "integer" },
+    "active": { "type": "boolean" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": ["string", "null"], "format": "date" },
+    "revoked": { "type": "boolean" },
+    "access_level": { "type": "integer" },
+    "scopes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "last_used_at": { "type": ["string", "null"], "format": "date-time" }
+  },
+  "additionalProperties": false
+}

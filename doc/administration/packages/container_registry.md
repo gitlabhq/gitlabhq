@@ -903,6 +903,10 @@ You can also [run cleanup on a schedule](../../user/packages/container_registry/
 
 ## Container Registry garbage collection
 
+NOTE:
+Retention policies within your object storage provider, such as Amazon S3 Lifecycle, may prevent
+objects from being properly deleted.
+
 Container Registry can use considerable amounts of disk space. To clear up
 some unused layers, the registry includes a garbage collect command.
 

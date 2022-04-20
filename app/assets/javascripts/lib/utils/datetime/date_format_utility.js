@@ -2,7 +2,7 @@ import dateFormat from 'dateformat';
 import { isString, mapValues, reduce, isDate, unescape } from 'lodash';
 import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { sanitize } from '~/lib/dompurify';
-import { s__, n__, __, sprintf } from '../../../locale';
+import { s__, n__, __, sprintf } from '~/locale';
 
 /**
  * Returns i18n month names array.
@@ -385,4 +385,24 @@ export const formatTimeAsSummary = ({ seconds, hours, days, minutes, weeks, mont
     return unescape(sanitize(s__('ValueStreamAnalytics|&lt;1m'), { ALLOWED_TAGS: [] }));
   }
   return '-';
+};
+
+export const durationTimeFormatted = (duration) => {
+  const date = new Date(duration * 1000);
+
+  let hh = date.getUTCHours();
+  let mm = date.getUTCMinutes();
+  let ss = date.getSeconds();
+
+  if (hh < 10) {
+    hh = `0${hh}`;
+  }
+  if (mm < 10) {
+    mm = `0${mm}`;
+  }
+  if (ss < 10) {
+    ss = `0${ss}`;
+  }
+
+  return `${hh}:${mm}:${ss}`;
 };

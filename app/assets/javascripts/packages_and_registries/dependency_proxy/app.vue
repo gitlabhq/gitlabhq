@@ -1,13 +1,18 @@
 <script>
 import {
   GlAlert,
+  GlDropdown,
+  GlDropdownItem,
   GlEmptyState,
   GlFormGroup,
   GlFormInputGroup,
+  GlModal,
+  GlModalDirective,
   GlSkeletonLoader,
   GlSprintf,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { __, s__, n__, sprintf } from '~/locale';
+import Api from '~/api';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ManifestsList from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
@@ -22,16 +27,22 @@ import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency
 export default {
   components: {
     GlAlert,
+    GlDropdown,
+    GlDropdownItem,
     GlEmptyState,
     GlFormGroup,
     GlFormInputGroup,
+    GlModal,
     GlSkeletonLoader,
     GlSprintf,
     ClipboardButton,
     TitleArea,
     ManifestsList,
   },
-  inject: ['groupPath', 'dependencyProxyAvailable', 'noManifestsIllustration'],
+  directives: {
+    GlModalDirective,
+  },
+  inject: ['groupPath', 'groupId', 'dependencyProxyAvailable', 'noManifestsIllustration'],
   i18n: {
     proxyNotAvailableText: s__(
       'DependencyProxy|Dependency Proxy feature is limited to public groups for now.',
@@ -41,6 +52,20 @@ export default {
     blobCountAndSize: s__('DependencyProxy|Contains %{count} blobs of images (%{size})'),
     pageTitle: s__('DependencyProxy|Dependency Proxy'),
     noManifestTitle: s__('DependencyProxy|There are no images in the cache'),
+    deleteCacheAlertMessageSuccess: s__(
+      'DependencyProxy|All items in the cache are scheduled for removal.',
+    ),
+    clearCache: s__('DependencyProxy|Clear cache'),
+  },
+  confirmClearCacheModal: 'confirm-clear-cache-modal',
+  modalButtons: {
+    primary: {
+      text: s__('DependencyProxy|Clear cache'),
+      attributes: [{ variant: 'danger' }],
+    },
+    secondary: {
+      text: __('Cancel'),
+    },
   },
   links: {
     DEPENDENCY_PROXY_DOCS_PATH,
@@ -48,6 +73,8 @@ export default {
   data() {
     return {
       group: {},
+      showDeleteCacheAlert: false,
+      deleteCacheAlertMessage: '',
     };
   },
   apollo: {
@@ -80,6 +107,33 @@ export default {
     manifests() {
       return this.group.dependencyProxyManifests.nodes;
     },
+    modalTitleWithCount() {
+      return sprintf(
+        n__(
+          'Clear %{count} image from cache?',
+          'Clear %{count} images from cache?',
+          this.group.dependencyProxyBlobCount,
+        ),
+        {
+          count: this.group.dependencyProxyBlobCount,
+        },
+      );
+    },
+    modalConfirmationMessageWithCount() {
+      return sprintf(
+        n__(
+          'You are about to clear %{count} image from the cache. Once you confirm, the next time a pipeline runs it must pull an image or tag from Docker Hub. Are you sure?',
+          'You are about to clear %{count} images from the cache. Once you confirm, the next time a pipeline runs it must pull an image or tag from Docker Hub. Are you sure?',
+          this.group.dependencyProxyBlobCount,
+        ),
+        {
+          count: this.group.dependencyProxyBlobCount,
+        },
+      );
+    },
+    showDeleteDropdown() {
+      return this.group.dependencyProxyBlobCount > 0;
+    },
   },
   methods: {
     fetchNextPage() {
@@ -103,13 +157,47 @@ export default {
         },
       });
     },
+    async submit() {
+      try {
+        await Api.deleteDependencyProxyCacheList(this.groupId);
+
+        this.deleteCacheAlertMessage = this.$options.i18n.deleteCacheAlertMessageSuccess;
+        this.showDeleteCacheAlert = true;
+      } catch (err) {
+        this.deleteCacheAlertMessage = err;
+        this.showDeleteCacheAlert = true;
+      }
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <title-area :title="$options.i18n.pageTitle" :info-messages="infoMessages" />
+    <gl-alert
+      v-if="showDeleteCacheAlert"
+      data-testid="delete-cache-alert"
+      @dismiss="showDeleteCacheAlert = false"
+    >
+      {{ deleteCacheAlertMessage }}
+    </gl-alert>
+    <title-area :title="$options.i18n.pageTitle" :info-messages="infoMessages">
+      <template v-if="showDeleteDropdown" #right-actions>
+        <gl-dropdown
+          icon="ellipsis_v"
+          text="More actions"
+          :text-sr-only="true"
+          category="tertiary"
+          no-caret
+        >
+          <gl-dropdown-item
+            v-gl-modal-directive="$options.confirmClearCacheModal"
+            variant="danger"
+            >{{ $options.i18n.clearCache }}</gl-dropdown-item
+          >
+        </gl-dropdown>
+      </template>
+    </title-area>
     <gl-alert
       v-if="!dependencyProxyAvailable"
       :dismissible="false"
@@ -159,5 +247,15 @@ export default {
         :title="$options.i18n.noManifestTitle"
       />
     </div>
+
+    <gl-modal
+      :modal-id="$options.confirmClearCacheModal"
+      :title="modalTitleWithCount"
+      :action-primary="$options.modalButtons.primary"
+      :action-secondary="$options.modalButtons.secondary"
+      @primary="submit"
+    >
+      {{ modalConfirmationMessageWithCount }}
+    </gl-modal>
   </div>
 </template>

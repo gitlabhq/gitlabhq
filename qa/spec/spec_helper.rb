@@ -20,6 +20,7 @@ RSpec.configure do |config|
 
   config.add_formatter QA::Support::Formatters::ContextFormatter
   config.add_formatter QA::Support::Formatters::QuarantineFormatter
+  config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
   config.add_formatter QA::Support::Formatters::TestStatsFormatter if QA::Runtime::Env.export_metrics?
 
   config.before(:suite) do |suite|
@@ -77,7 +78,17 @@ RSpec.configure do |config|
 
     # If any tests failed, leave the resources behind to help troubleshoot, otherwise remove them.
     # Do not remove the shared resource on live environments
-    QA::Resource::ReusableCollection.remove_all_via_api! if !suite.reporter.failed_examples.present? && !QA::Runtime::Env.running_on_dot_com?
+    begin
+      next if suite.reporter.failed_examples.present?
+      next unless QA::Runtime::Scenario.attributes.include?(:gitlab_address)
+      next if QA::Runtime::Env.running_on_dot_com?
+
+      QA::Resource::ReusableCollection.remove_all_via_api!
+    rescue QA::Resource::Errors::InternalServerError => e
+      # Temporarily prevent this error from failing jobs while the cause is investigated
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/354387
+      QA::Runtime::Logger.debug(e.message)
+    end
   end
 
   config.append_after(:suite) do
@@ -104,6 +115,9 @@ RSpec.configure do |config|
 
   # show exception that triggers a retry if verbose_retry is set to true
   config.display_try_failure_messages = true
+
+  # This option allows to use shorthand aliases for adding :focus metadata - fit, fdescribe and fcontext
+  config.filter_run_when_matching :focus
 
   if ENV['CI'] && !QA::Runtime::Env.disable_rspec_retry?
     non_quarantine_retries = QA::Runtime::Env.ci_project_name =~ /staging|canary|production/ ? 3 : 2

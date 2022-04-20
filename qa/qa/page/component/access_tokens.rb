@@ -19,7 +19,7 @@ module QA
           end
 
           base.view 'app/views/shared/tokens/_scopes_form.html.haml' do
-            element :api_checkbox, '#{scope}_checkbox' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
+            element :api_label, '#{scope}_label' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
           end
 
           base.view 'app/views/shared/access_tokens/_created_container.html.haml' do
@@ -36,7 +36,7 @@ module QA
         end
 
         def check_api
-          check_element(:api_checkbox)
+          click_element(:api_label)
         end
 
         def click_create_token_button

@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ProjectFeature do
   using RSpec::Parameterized::TableSyntax
 
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   it { is_expected.to belong_to(:project) }
 
@@ -242,4 +242,95 @@ RSpec.describe ProjectFeature do
       end
     end
   end
+
+  # rubocop:disable Gitlab/FeatureAvailableUsage
+  describe '#feature_available?' do
+    let(:features) { ProjectFeature::FEATURES }
+
+    context 'when features are disabled' do
+      it 'returns false' do
+        update_all_project_features(project, features, ProjectFeature::DISABLED)
+
+        features.each do |feature|
+          expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
+        end
+      end
+    end
+
+    context 'when features are enabled only for team members' do
+      it 'returns false when user is not a team member' do
+        update_all_project_features(project, features, ProjectFeature::PRIVATE)
+
+        features.each do |feature|
+          expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
+        end
+      end
+
+      it 'returns true when user is a team member' do
+        project.add_developer(user)
+
+        update_all_project_features(project, features, ProjectFeature::PRIVATE)
+
+        features.each do |feature|
+          expect(project.feature_available?(feature.to_sym, user)).to eq(true)
+        end
+      end
+
+      it 'returns true when user is a member of project group' do
+        group = create(:group)
+        project = create(:project, namespace: group)
+        group.add_developer(user)
+
+        update_all_project_features(project, features, ProjectFeature::PRIVATE)
+
+        features.each do |feature|
+          expect(project.feature_available?(feature.to_sym, user)).to eq(true)
+        end
+      end
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns true if user is an admin' do
+          user.update_attribute(:admin, true)
+
+          update_all_project_features(project, features, ProjectFeature::PRIVATE)
+
+          features.each do |feature|
+            expect(project.feature_available?(feature.to_sym, user)).to eq(true)
+          end
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns false when user is an admin' do
+          user.update_attribute(:admin, true)
+
+          update_all_project_features(project, features, ProjectFeature::PRIVATE)
+
+          features.each do |feature|
+            expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
+          end
+        end
+      end
+    end
+
+    context 'when feature is enabled for everyone' do
+      it 'returns true' do
+        expect(project.feature_available?(:issues, user)).to eq(true)
+      end
+    end
+
+    context 'when feature has any other value' do
+      it 'returns true' do
+        project.project_feature.update_attribute(:issues_access_level, 200)
+
+        expect(project.feature_available?(:issues)).to eq(true)
+      end
+    end
+
+    def update_all_project_features(project, features, value)
+      project_feature_attributes = features.to_h { |f| ["#{f}_access_level", value] }
+      project.project_feature.update!(project_feature_attributes)
+    end
+  end
+  # rubocop:enable Gitlab/FeatureAvailableUsage
 end

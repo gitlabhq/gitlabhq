@@ -49,7 +49,7 @@ module QA
           error_code = 404 if Nokogiri::HTML.parse(page.html).xpath("//img").map { |t| t[:alt] }.first.eql?('404')
 
           # 500 error page in header surrounded by newlines, try to match
-          five_hundred_test = Nokogiri::HTML.parse(page.html).xpath("//h1").map.first
+          five_hundred_test = Nokogiri::HTML.parse(page.html).xpath("//h1/text()").map.first
           unless five_hundred_test.nil?
             error_code = 500 if five_hundred_test.text.include?('500')
           end
@@ -61,6 +61,39 @@ module QA
           end
         end
 
+        # Log request errors triggered from async api calls from the browser
+        #
+        # If any errors are found in the session, log them
+        # using QA::Runtime::Logger
+        # @param [Capybara::Session] page
+        def log_request_errors(page)
+          return if QA::Runtime::Browser.blank_page?
+
+          url = page.driver.browser.current_url
+          QA::Runtime::Logger.debug "Fetching API error cache for #{url}"
+
+          cache = page.execute_script <<~JS
+            return !(typeof(Interceptor)==="undefined") ? Interceptor.getCache() : null;
+          JS
+
+          return unless cache&.dig('errors')
+
+          grouped_errors = group_errors(cache['errors'])
+
+          errors = grouped_errors.map do |error_metadata, request_id_string|
+            "#{error_metadata} -- #{request_id_string}"
+          end
+
+          unless errors.nil? || errors.empty?
+            QA::Runtime::Logger.error "Interceptor Api Errors\n#{errors.join("\n")}"
+          end
+
+          # clear the cache after logging the errors
+          page.execute_script <<~JS
+            Interceptor && Interceptor.saveCache({});
+          JS
+        end
+
         def error_report_for(logs)
           logs
               .map(&:message)
@@ -69,6 +102,16 @@ module QA
 
         def logs(page)
           page.driver.browser.manage.logs.get(:browser)
+        end
+
+        private
+
+        def group_errors(errors)
+          errors.each_with_object({}) do |error, memo|
+            url = error['url']&.split('?')&.first || 'Unknown url'
+            key = "[#{error['status']}] #{error['method']} #{url}"
+            memo[key] = "Correlation Id: #{error.dig('headers', 'x-request-id') || 'Correlation Id not found'}"
+          end
         end
       end
     end

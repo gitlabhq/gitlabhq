@@ -37,14 +37,24 @@ module ContainerRegistry
     class << self
       private
 
-      def with_dummy_client(return_value_if_disabled: nil)
+      def with_dummy_client(return_value_if_disabled: nil, token_config: { type: :full_access_token, path: nil })
         registry_config = Gitlab.config.registry
         unless registry_config.enabled && registry_config.api_url.present?
           return return_value_if_disabled
         end
 
-        token = Auth::ContainerRegistryAuthenticationService.access_token([], [])
-        yield new(registry_config.api_url, token: token)
+        yield new(registry_config.api_url, token: token_from(token_config))
+      end
+
+      def token_from(config)
+        case config[:type]
+        when :full_access_token
+          Auth::ContainerRegistryAuthenticationService.access_token([], [])
+        when :nested_repositories_token
+          return unless config[:path]
+
+          Auth::ContainerRegistryAuthenticationService.pull_nested_repositories_access_token(config[:path])
+        end
       end
     end
 

@@ -36,6 +36,11 @@ export default {
       required: false,
       default: 0,
     },
+    failedToLoadMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     batchSuggestionsCount() {
@@ -80,6 +85,7 @@ export default {
       :help-page-path="helpPagePath"
       :default-commit-message="defaultCommitMessage"
       :inapplicable-reason="suggestion.inapplicable_reason"
+      :failed-to-load-metadata="failedToLoadMetadata"
       @apply="applySuggestion"
       @applyBatch="applySuggestionBatch"
       @addToBatch="addSuggestionToBatch"

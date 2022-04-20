@@ -40,6 +40,7 @@ describe('Pipeline editor tabs component', () => {
         ciConfigData: mockLintResponse,
         ciFileContent: mockCiYml,
         isNewCiConfigFile: true,
+        showDrawer: false,
         ...props,
       },
       data() {

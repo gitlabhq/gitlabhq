@@ -1,0 +1,9 @@
+---
+table_name: chat_names
+classes:
+- ChatName
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/c60437786bfe43344b4a5eb040437f73f37c6396
+milestone: '8.14'

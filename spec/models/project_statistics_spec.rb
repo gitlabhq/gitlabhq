@@ -35,7 +35,8 @@ RSpec.describe ProjectStatistics do
         build_artifacts_size: 1.exabyte,
         snippets_size: 1.exabyte,
         pipeline_artifacts_size: 512.petabytes - 1,
-        uploads_size: 512.petabytes
+        uploads_size: 512.petabytes,
+        container_registry_size: 8.exabytes - 1
       )
 
       statistics.reload
@@ -49,6 +50,7 @@ RSpec.describe ProjectStatistics do
       expect(statistics.snippets_size).to eq(1.exabyte)
       expect(statistics.pipeline_artifacts_size).to eq(512.petabytes - 1)
       expect(statistics.uploads_size).to eq(512.petabytes)
+      expect(statistics.container_registry_size).to eq(8.exabytes - 1)
     end
   end
 

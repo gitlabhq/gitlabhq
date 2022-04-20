@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'gitlab'
+
+# This script is used to confirm that AppSec has approved upstream JiHu contributions
+#
+# It will error if the approval is missing from the MR when it is run.
+
+gitlab_token = ENV.fetch('PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE')
+gitlab_endpoint = ENV.fetch('CI_API_V4_URL')
+mr_project_path = ENV['CI_MERGE_REQUEST_PROJECT_PATH']
+mr_iid = ENV['CI_MERGE_REQUEST_IID']
+approval_label = "sec-planning::complete"
+
+warn "WARNING: CI_MERGE_REQUEST_PROJECT_PATH is missing." if mr_project_path.to_s.empty?
+warn "WARNING: CI_MERGE_REQUEST_IID is missing." if mr_iid.to_s.empty?
+
+unless mr_project_path && mr_iid
+  warn "ERROR: Exiting as this does not appear to be a merge request pipeline."
+  exit
+end
+
+Gitlab.configure do |config|
+  config.endpoint       = gitlab_endpoint
+  config.private_token  = gitlab_token
+end
+
+if Gitlab.merge_request(mr_project_path, mr_iid).labels.include?(approval_label)
+  puts 'INFO: No action required.'
+else
+  abort('ERROR: This merge request has not been approved by application security and is required prior to merge.')
+end

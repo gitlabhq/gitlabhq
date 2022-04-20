@@ -161,24 +161,6 @@ module Gitlab
       end
     end
 
-    def self.nulls_order(field, direction = :asc, nulls_order = :nulls_last)
-      raise ArgumentError unless [:nulls_last, :nulls_first].include?(nulls_order)
-      raise ArgumentError unless [:asc, :desc].include?(direction)
-
-      case nulls_order
-      when :nulls_last then nulls_last_order(field, direction)
-      when :nulls_first then nulls_first_order(field, direction)
-      end
-    end
-
-    def self.nulls_last_order(field, direction = 'ASC')
-      Arel.sql("#{field} #{direction} NULLS LAST")
-    end
-
-    def self.nulls_first_order(field, direction = 'ASC')
-      Arel.sql("#{field} #{direction} NULLS FIRST")
-    end
-
     def self.random
       "RANDOM()"
     end
@@ -228,7 +210,7 @@ module Gitlab
     end
 
     def self.db_config_names
-      ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name)
+      ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name) - ['geo']
     end
 
     # This returns all matching schemas that a given connection can use
@@ -236,13 +218,16 @@ module Gitlab
     # This does not look at literal connection names, but rather compares
     # models that are holders for a given db_config_name
     def self.gitlab_schemas_for_connection(connection)
-      connection_name = self.db_config_name(connection)
-      primary_model = self.database_base_models.fetch(connection_name)
+      db_name = self.db_config_name(connection)
+      primary_model = self.database_base_models.fetch(db_name.to_sym)
 
-      self.schemas_to_base_models
-        .select { |_, models| models.include?(primary_model) }
-        .keys
-        .map!(&:to_sym)
+      self.schemas_to_base_models.select do |_, child_models|
+        child_models.any? do |child_model|
+          child_model == primary_model || \
+            # The model might indicate a child connection, ensure that this is enclosed in a `db_config`
+            self.database_base_models[self.db_config_share_with(child_model.connection_db_config)] == primary_model
+        end
+      end.keys.map!(&:to_sym)
     end
 
     def self.db_config_for_connection(connection)
@@ -269,6 +254,17 @@ module Gitlab
     def self.db_config_name(connection)
       db_config = db_config_for_connection(connection)
       db_config&.name || 'unknown'
+    end
+
+    # Currently the database configuration can only be shared with `main:`
+    # If the `database_tasks: false` is being used
+    # This is to be refined: https://gitlab.com/gitlab-org/gitlab/-/issues/356580
+    def self.db_config_share_with(db_config)
+      if db_config.database_tasks?
+        nil # no sharing
+      else
+        'main' # share with `main:`
+      end
     end
 
     def self.read_only?

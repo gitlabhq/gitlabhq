@@ -1,5 +1,4 @@
 import { GlDropdown, GlLoadingIcon, GlDropdownSectionHeader } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
@@ -14,6 +13,7 @@ import groupRecentBoardsQuery from '~/boards/graphql/group_recent_boards.query.g
 import projectRecentBoardsQuery from '~/boards/graphql/project_recent_boards.query.graphql';
 import defaultStore from '~/boards/stores';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import {
   mockGroupBoardResponse,
   mockProjectBoardResponse,
@@ -60,7 +60,7 @@ describe('BoardsSelector', () => {
     searchBoxInput.trigger('input');
   };
 
-  const getDropdownItems = () => wrapper.findAll('.js-dropdown-item');
+  const getDropdownItems = () => wrapper.findAllByTestId('dropdown-item');
   const getDropdownHeaders = () => wrapper.findAllComponents(GlDropdownSectionHeader);
   const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
@@ -100,21 +100,21 @@ describe('BoardsSelector', () => {
       [groupRecentBoardsQuery, groupRecentBoardsQueryHandlerSuccess],
     ]);
 
-    wrapper = mount(BoardsSelector, {
+    wrapper = mountExtended(BoardsSelector, {
       store,
       apolloProvider: fakeApollo,
       propsData: {
         throttleDuration,
+      },
+      attachTo: document.body,
+      provide: {
+        fullPath: '',
         boardBaseUrl: `${TEST_HOST}/board/base/url`,
         hasMissingBoards: false,
         canAdminBoard: true,
         multipleIssueBoardsAvailable: true,
         scopedIssueBoardFeatureEnabled: true,
         weights: [],
-      },
-      attachTo: document.body,
-      provide: {
-        fullPath: '',
       },
     });
   };

@@ -4,13 +4,10 @@ import { s__ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import MultilineCommentForm from '../../notes/components/multiline_comment_form.vue';
-import {
-  commentLineOptions,
-  formatLineRange,
-} from '../../notes/components/multiline_comment_utils';
-import noteForm from '../../notes/components/note_form.vue';
-import autosave from '../../notes/mixins/autosave';
+import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
+import { commentLineOptions, formatLineRange } from '~/notes/components/multiline_comment_utils';
+import noteForm from '~/notes/components/note_form.vue';
+import autosave from '~/notes/mixins/autosave';
 import {
   DIFF_NOTE_TYPE,
   INLINE_DIFF_LINES_KEY,
@@ -221,7 +218,6 @@ export default {
     </div>
     <note-form
       ref="noteForm"
-      :is-editing="false"
       :line-code="line.line_code"
       :line="line"
       :lines="commentLines"

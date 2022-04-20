@@ -1,0 +1,18 @@
+---
+description: Docs link under the deployment target select visited from new project creation form
+category: projects:new
+action: visit_docs
+label_description: new_project_deployment_target
+product_section: ops
+product_stage: configure
+product_group: group::configure
+milestone: "14.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84224
+distributions:
+- ce
+- ee
+tiers: 
+- free
+- premium
+- ultimate
+

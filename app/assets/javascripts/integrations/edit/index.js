@@ -1,8 +1,11 @@
 import Vue from 'vue';
+import { GlToast } from '@gitlab/ui';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 
 import IntegrationForm from './components/integration_form.vue';
 import { createStore } from './store';
+
+Vue.use(GlToast);
 
 function parseBooleanInData(data) {
   const result = {};
@@ -19,7 +22,6 @@ function parseDatasetToProps(data) {
     commentDetail,
     projectKey,
     upgradePlanPath,
-    editProjectPath,
     learnMorePath,
     triggerEvents,
     sections,
@@ -49,7 +51,6 @@ function parseDatasetToProps(data) {
     showJiraVulnerabilitiesIntegration,
     enableJiraIssues,
     enableJiraVulnerabilities,
-    gitlabIssuesEnabled,
   } = parseBooleanInData(booleanAttributes);
 
   return {
@@ -78,9 +79,7 @@ function parseDatasetToProps(data) {
       initialEnableJiraVulnerabilities: enableJiraVulnerabilities,
       initialVulnerabilitiesIssuetype: vulnerabilitiesIssuetype,
       initialProjectKey: projectKey,
-      gitlabIssuesEnabled,
       upgradePlanPath,
-      editProjectPath,
     },
     learnMorePath,
     triggerEvents: JSON.parse(triggerEvents),

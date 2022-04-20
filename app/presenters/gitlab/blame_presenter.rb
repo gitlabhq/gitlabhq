@@ -21,19 +21,23 @@ module Gitlab
       :project_blame_link,
       :time_ago_tooltip)
 
-    def initialize(subject, **attributes)
+    def initialize(blame, **attributes)
       super
 
       @commits = {}
       precalculate_data_by_commit!
     end
 
+    def first_line
+      blame.first_line
+    end
+
     def groups
       @groups ||= blame.groups
     end
 
-    def commit_data(commit)
-      @commits[commit.id] ||= get_commit_data(commit)
+    def commit_data(commit, previous_path = nil)
+      @commits[commit.id] ||= get_commit_data(commit, previous_path)
     end
 
     private
@@ -44,25 +48,25 @@ module Gitlab
     # to avoid recalculating it multiple times.
     # For such files, it could significantly improve the performance of the Blame.
     def precalculate_data_by_commit!
-      groups.each { |group| commit_data(group[:commit]) }
+      groups.each { |group| commit_data(group[:commit], group[:previous_path]) }
     end
 
-    def get_commit_data(commit)
+    def get_commit_data(commit, previous_path = nil)
       CommitData.new.tap do |data|
         data.author_avatar = author_avatar(commit, size: 36, has_tooltip: false, lazy: true)
         data.age_map_class = age_map_class(commit.committed_date, project_duration)
         data.commit_link = link_to commit.title, project_commit_path(project, commit.id), class: "cdark", title: commit.title
         data.commit_author_link = commit_author_link(commit, avatar: false)
-        data.project_blame_link = project_blame_link(commit)
+        data.project_blame_link = project_blame_link(commit, previous_path)
         data.time_ago_tooltip = time_ago_with_tooltip(commit.committed_date)
       end
     end
 
-    def project_blame_link(commit)
+    def project_blame_link(commit, previous_path = nil)
       previous_commit_id = commit.parent_id
-      return unless previous_commit_id
+      return unless previous_commit_id && !previous_path.nil?
 
-      link_to project_blame_path(project, tree_join(previous_commit_id, path)),
+      link_to project_blame_path(project, tree_join(previous_commit_id, previous_path)),
         title: _('View blame prior to this change'),
         aria: { label: _('View blame prior to this change') },
         class: 'version-link',

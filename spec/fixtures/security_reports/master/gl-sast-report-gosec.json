@@ -1,0 +1,68 @@
+{
+  "version": "14.0.4",
+  "vulnerabilities": [
+    {
+      "id": "2e5656ff30e2e7cc93c36b4845c8a689ddc47fdbccf45d834c67442fbaa89be0",
+      "category": "sast",
+      "name": "Key Exchange without Entity Authentication",
+      "message": "Use of ssh InsecureIgnoreHostKey should be audited",
+      "description": "The software performs a key exchange with an actor without verifying the identity of that actor.",
+      "cve": "og.go:8:7: func foo() {\n8: \t_ = ssh.InsecureIgnoreHostKey()\n9: }\n:CWE-322",
+      "severity": "Medium",
+      "confidence": "High",
+      "raw_source_code_extract": "7: func foo() {\n8: \t_ = ssh.InsecureIgnoreHostKey()\n9: }\n",
+      "scanner": {
+        "id": "gosec",
+        "name": "Gosec"
+      },
+      "location": {
+        "file": "og.go",
+        "start_line": 8
+      },
+      "identifiers": [
+        {
+          "type": "gosec_rule_id",
+          "name": "Gosec Rule ID G106",
+          "value": "G106"
+        },
+        {
+          "type": "CWE",
+          "name": "CWE-322",
+          "value": "322",
+          "url": "https://cwe.mitre.org/data/definitions/322.html"
+        }
+      ],
+      "tracking": {
+        "type": "source",
+        "items": [
+          {
+            "file": "og.go",
+            "line_start": 8,
+            "line_end": 8,
+            "signatures": [
+              {
+                "algorithm": "scope_offset",
+                "value": "og.go|foo[0]:1"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "scan": {
+    "scanner": {
+      "id": "gosec",
+      "name": "Gosec",
+      "url": "https://github.com/securego/gosec",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "2.10.0"
+    },
+    "type": "sast",
+    "start_time": "2022-03-15T20:33:12",
+    "end_time": "2022-03-15T20:33:17",
+    "status": "success"
+  }
+}

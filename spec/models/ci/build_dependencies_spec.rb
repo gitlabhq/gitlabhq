@@ -14,7 +14,7 @@ RSpec.describe Ci::BuildDependencies do
   end
 
   let!(:build) { create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, stage: 'build') }
-  let!(:rspec_test) { create(:ci_build, pipeline: pipeline, name: 'rspec', stage_idx: 1, stage: 'test') }
+  let!(:rspec_test) { create(:ci_build, :success, pipeline: pipeline, name: 'rspec', stage_idx: 1, stage: 'test') }
   let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, stage: 'test') }
   let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, stage: 'deploy') }
 
@@ -48,7 +48,7 @@ RSpec.describe Ci::BuildDependencies do
             project.add_developer(user)
           end
 
-          let!(:retried_job) { Ci::Build.retry(rspec_test, user) }
+          let!(:retried_job) { Ci::RetryJobService.new(rspec_test.project, user).execute(rspec_test)[:job] }
 
           it 'contains the retried job instead of the original one' do
             is_expected.to contain_exactly(build, retried_job, rubocop_test)

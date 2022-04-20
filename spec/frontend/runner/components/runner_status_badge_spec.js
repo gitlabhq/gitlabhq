@@ -7,6 +7,8 @@ import {
   STATUS_OFFLINE,
   STATUS_STALE,
   STATUS_NEVER_CONTACTED,
+  I18N_NEVER_CONTACTED_TOOLTIP,
+  I18N_STALE_NEVER_CONTACTED_TOOLTIP,
 } from '~/runner/constants';
 
 describe('RunnerTypeBadge', () => {
@@ -59,7 +61,7 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe('never contacted');
     expect(findBadge().props('variant')).toBe('muted');
-    expect(getTooltip().value).toMatch('This runner has never contacted');
+    expect(getTooltip().value).toBe(I18N_NEVER_CONTACTED_TOOLTIP);
   });
 
   it('renders offline state', () => {
@@ -72,9 +74,7 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe('offline');
     expect(findBadge().props('variant')).toBe('muted');
-    expect(getTooltip().value).toBe(
-      'No recent contact from this runner; last contact was 1 day ago',
-    );
+    expect(getTooltip().value).toBe('Runner is offline; last contact was 1 day ago');
   });
 
   it('renders stale state', () => {
@@ -87,7 +87,20 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe('stale');
     expect(findBadge().props('variant')).toBe('warning');
-    expect(getTooltip().value).toBe('No contact from this runner in over 3 months');
+    expect(getTooltip().value).toBe('Runner is stale; last contact was 1 year ago');
+  });
+
+  it('renders stale state with no contact time', () => {
+    createComponent({
+      runner: {
+        contactedAt: null,
+        status: STATUS_STALE,
+      },
+    });
+
+    expect(wrapper.text()).toBe('stale');
+    expect(findBadge().props('variant')).toBe('warning');
+    expect(getTooltip().value).toBe(I18N_STALE_NEVER_CONTACTED_TOOLTIP);
   });
 
   describe('does not fail when data is missing', () => {
@@ -100,7 +113,7 @@ describe('RunnerTypeBadge', () => {
       });
 
       expect(wrapper.text()).toBe('online');
-      expect(getTooltip().value).toBe('Runner is online; last contact was n/a');
+      expect(getTooltip().value).toBe('Runner is online; last contact was never');
     });
 
     it('status is missing', () => {

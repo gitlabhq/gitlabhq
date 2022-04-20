@@ -1,0 +1,9 @@
+---
+table_name: allowed_email_domains
+classes:
+- AllowedEmailDomain
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14800
+milestone: '12.2'

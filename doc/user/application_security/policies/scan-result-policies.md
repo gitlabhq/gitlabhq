@@ -65,7 +65,7 @@ This rule enforces the defined actions based on the information provided.
 | `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. |
 | `vulnerabilities_allowed`  | `integer` | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels`  | `array` of `string` | `info`, `unknown`, `low`, `medium`, `high`, `critical`| The severity levels for this rule to consider. |
-| `vulnerability_states`  | `array` of `string` | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed` | The vulnerability states for this rule to consider when the target branch is set to the default branch. |
+| `vulnerability_states`  | `array` of `string` | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed` | The vulnerability states for this rule to consider when the target branch is set to the default branch. The `newly_detected` state considers all newly detected vulnerabilities regardless of their status or dismissal. The other states consider findings that match the selected state and already exist in the default branch. |
 
 ## `require_approval` action type
 
@@ -90,8 +90,8 @@ Requirements and limitations:
 
 ## Example security scan result policies project
 
-You can use this example in a `.gitlab/security-policies/policy.yml`, as described in
-[Security policies project](index.md#security-policies-project):
+You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
+[security policy project](index.md#security-policy-project):
 
 ```yaml
 ---

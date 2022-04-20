@@ -6,7 +6,6 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
-import CleanupPolicyEnabledAlert from '~/packages_and_registries/shared/components/cleanup_policy_enabled_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import DeleteImage from '~/packages_and_registries/container_registry/explorer/components/delete_image.vue';
 import CliCommands from '~/packages_and_registries/shared/components/cli_commands.vue';
@@ -58,7 +57,6 @@ describe('List Page', () => {
   const findPersistedSearch = () => wrapper.findComponent(PersistedSearch);
   const findEmptySearchMessage = () => wrapper.find('[data-testid="emptySearch"]');
   const findDeleteImage = () => wrapper.findComponent(DeleteImage);
-  const findCleanupAlert = () => wrapper.findComponent(CleanupPolicyEnabledAlert);
 
   const fireFirstSortUpdate = () => {
     findPersistedSearch().vm.$emit('update', { sort: 'UPDATED_DESC', filters: [] });
@@ -509,35 +507,6 @@ describe('List Page', () => {
     it('send an event when the deletion starts', () => {
       findDeleteImage().vm.$emit('start');
       testTrackingCall('confirm_delete');
-    });
-  });
-
-  describe('cleanup is on alert', () => {
-    it('exist when showCleanupPolicyOnAlert is true and has the correct props', async () => {
-      mountComponent({
-        config: {
-          showCleanupPolicyOnAlert: true,
-          projectPath: 'foo',
-          isGroupPage: false,
-          cleanupPoliciesSettingsPath: 'bar',
-        },
-      });
-
-      await waitForApolloRequestRender();
-
-      expect(findCleanupAlert().exists()).toBe(true);
-      expect(findCleanupAlert().props()).toMatchObject({
-        projectPath: 'foo',
-        cleanupPoliciesSettingsPath: 'bar',
-      });
-    });
-
-    it('is hidden when showCleanupPolicyOnAlert is false', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findCleanupAlert().exists()).toBe(false);
     });
   });
 });

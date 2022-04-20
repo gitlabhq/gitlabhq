@@ -30,32 +30,12 @@ namespace :gitlab do
     # In production, we might want to prevent ourselves from shooting
     # ourselves in the foot, so let's only do this in a test or
     # development environment.
-    terminate_all_connections unless Rails.env.production?
+    Rake::Task["dev:terminate_all_connections"].invoke unless Rails.env.production?
 
     Rake::Task["db:reset"].invoke
     Rake::Task["db:seed_fu"].invoke
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".color(:red)
     exit 1
-  end
-
-  # If there are any clients connected to the DB, PostgreSQL won't let
-  # you drop the database. It's possible that Sidekiq, Puma, or
-  # some other client will be hanging onto a connection, preventing
-  # the DROP DATABASE from working. To workaround this problem, this
-  # method terminates all the connections so that a subsequent DROP
-  # will work.
-  def self.terminate_all_connections
-    cmd = <<~SQL
-      SELECT pg_terminate_backend(pg_stat_activity.pid)
-      FROM pg_stat_activity
-      WHERE datname = current_database()
-        AND pid <> pg_backend_pid();
-    SQL
-
-    Gitlab::Database::EachDatabase.each_database_connection do |connection|
-      connection.execute(cmd)
-    rescue ActiveRecord::NoDatabaseError
-    end
   end
 end

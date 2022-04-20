@@ -30,6 +30,12 @@ RSpec.describe Ci::Bridge do
     expect(bridge).to have_one(:downstream_pipeline)
   end
 
+  describe '#retryable?' do
+    it 'returns false' do
+      expect(bridge.retryable?).to eq(false)
+    end
+  end
+
   describe '#tags' do
     it 'only has a bridge tag' do
       expect(bridge.tags).to eq [:bridge]
@@ -279,6 +285,26 @@ RSpec.describe Ci::Bridge do
         it 'uses the pipeline variable' do
           expect(bridge.downstream_variables).to contain_exactly(
             { key: 'BRIDGE', value: 'new value' }
+          )
+        end
+      end
+
+      context 'when the pipeline runs from a pipeline schedule' do
+        let(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
+        let(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
+
+        let(:options) do
+          { trigger: { project: 'my/project', forward: { pipeline_variables: true } } }
+        end
+
+        before do
+          pipeline_schedule.variables.create!(key: 'schedule_var_key', value: 'schedule var value')
+        end
+
+        it 'adds the schedule variable' do
+          expect(bridge.downstream_variables).to contain_exactly(
+            { key: 'BRIDGE', value: 'cross' },
+            { key: 'schedule_var_key', value: 'schedule var value' }
           )
         end
       end

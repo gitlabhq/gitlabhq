@@ -26,6 +26,7 @@ export const receivePackagesListSuccess = ({ commit }, { data, headers }) => {
 export const requestPackagesList = ({ dispatch, state }, params = {}) => {
   dispatch('setLoading', true);
 
+  // eslint-disable-next-line camelcase
   const { page = DEFAULT_PAGE, per_page = DEFAULT_PAGE_SIZE } = params;
   const { sort, orderBy } = state.sorting;
   const type = state.config.forceTerraform

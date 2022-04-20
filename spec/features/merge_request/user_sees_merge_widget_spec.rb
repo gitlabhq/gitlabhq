@@ -17,6 +17,9 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     project.add_maintainer(user)
     project_only_mwps.add_maintainer(user)
     sign_in(user)
+
+    stub_feature_flags(refactor_mr_widgets_extensions: false)
+    stub_feature_flags(refactor_mr_widgets_extensions_user: false)
   end
 
   context 'new merge request', :sidekiq_might_not_need_inline do

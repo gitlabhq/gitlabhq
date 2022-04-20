@@ -53,7 +53,7 @@
                 = _('Gitaly Servers')
 
       = nav_link(controller: admin_analytics_nav_links) do
-        = link_to admin_dev_ops_report_path, data: { qa_selector: 'admin_analytics_link' }, class: 'has-sub-items' do
+        = link_to admin_dev_ops_reports_path, data: { qa_selector: 'admin_analytics_link' }, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('chart')
           %span.nav-item-name
@@ -61,12 +61,12 @@
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_analytics_submenu_content' } }
           = nav_link(controller: admin_analytics_nav_links, html_options: { class: "fly-out-top-item" }) do
-            = link_to admin_dev_ops_report_path do
+            = link_to admin_dev_ops_reports_path do
               %strong.fly-out-top-item-name
                 = _('Analytics')
           %li.divider.fly-out-top-item
           = nav_link(controller: :dev_ops_report) do
-            = link_to admin_dev_ops_report_path, title: _('DevOps Reports') do
+            = link_to admin_dev_ops_reports_path, title: _('DevOps Reports') do
               %span
                 = _('DevOps Reports')
           = nav_link(controller: :usage_trends) do
@@ -269,11 +269,10 @@
               = link_to metrics_and_profiling_admin_application_settings_path, title: _('Metrics and profiling'), class: 'qa-admin-settings-metrics-and-profiling-item' do
                 %span
                   = _('Metrics and profiling')
-            - if Feature.enabled?(:admin_application_settings_service_usage_data_center, default_enabled: :yaml)
-              = nav_link(path: ['application_settings#service_usage_data']) do
-                = link_to service_usage_data_admin_application_settings_path, title: _('Service usage data') do
-                  %span
-                    = _('Service usage data')
+            = nav_link(path: ['application_settings#service_usage_data']) do
+              = link_to service_usage_data_admin_application_settings_path, title: _('Service usage data') do
+                %span
+                  = _('Service usage data')
             = nav_link(path: 'application_settings#network') do
               = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_item' } do
                 %span

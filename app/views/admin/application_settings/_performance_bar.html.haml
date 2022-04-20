@@ -1,12 +1,11 @@
-= form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-performance-bar-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-performance-bar-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      .form-check
-        = f.check_box :performance_bar_enabled, class: 'form-check-input', data: { qa_selector: 'enable_performance_bar_checkbox'}
-        = f.label :performance_bar_enabled, class: 'form-check-label' do
-          = _("Allow non-administrators access to the performance bar")
+      = f.gitlab_ui_checkbox_component :performance_bar_enabled,
+        s_("Allow non-administrators access to the performance bar"),
+        checkbox_options: { data: { qa_selector: 'enable_performance_bar_checkbox' } }
     .form-group
       = f.label :performance_bar_allowed_group_path, _('Allow access to members of the following group'), class: 'label-bold'
       = f.text_field :performance_bar_allowed_group_path, class: 'form-control gl-form-input', placeholder: 'my-org/my-group', value: @application_setting.performance_bar_allowed_group&.full_path

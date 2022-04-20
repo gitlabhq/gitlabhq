@@ -22,9 +22,9 @@ want to configure.
 
 ## Integrations listing
 
-Click on the service links to see further configuration instructions and details.
+Click on the integration links to see further configuration instructions and details.
 
-| Service                                                   | Description                                                                                  | Service hooks          |
+| Integration                                               | Description                                                                                  | Integration hooks      |
 | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------- |
 | [Asana](asana.md)                                         | Add commit messages as comments to Asana tasks.                                              | **{dotted-circle}** No |
 | Assembla                                                  | Manage projects.                                                                             | **{dotted-circle}** No |
@@ -69,7 +69,7 @@ Click on the service links to see further configuration instructions and details
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17874) in GitLab 12.4.
 
-If a single push includes changes to more than three branches or tags, services
+If a single push includes changes to more than three branches or tags, integrations
 supported by `push_hooks` and `tag_push_hooks` events aren't executed.
 
 The number of branches or tags supported can be changed via
@@ -89,12 +89,12 @@ By default, the SSL certificate for outgoing HTTP requests is verified based on
 an internal list of Certificate Authorities. This means the certificate cannot
 be self-signed.
 
-You can turn off SSL verification in the configuration settings for [webhooks](webhooks.md#configure-a-webhook)
+You can turn off SSL verification in the configuration settings for [webhooks](webhooks.md#configure-a-webhook-in-gitlab)
 and some integrations.
 
 ## Troubleshooting integrations
 
-Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing) above. Learn more about [troubleshooting service hooks](webhooks.md#troubleshoot-webhooks).
+Some integrations use hooks for integration with external applications. To confirm which ones use integration hooks, see the [integrations listing](#integrations-listing) above. Learn more about [troubleshooting integration hooks](webhooks.md#troubleshoot-webhooks).
 
 ### Uninitialized repositories
 

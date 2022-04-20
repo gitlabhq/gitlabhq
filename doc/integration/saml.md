@@ -730,6 +730,11 @@ Refer to the documentation for your SAML Identity Provider for information on ho
 
 The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML.
 
+## Link SAML identity for an existing user
+
+A user can manually link their SAML identity to an existing GitLab account by following the steps in
+[Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
+
 ## Configuring Group SAML on a self-managed GitLab instance **(PREMIUM SELF)**
 
 For information on the GitLab.com implementation, please see the [SAML SSO for GitLab.com groups page](../user/group/saml_sso).
@@ -785,7 +790,7 @@ documentation on how to use SAML to sign in to GitLab.
 Examples:
 
 - [ADFS (Active Directory Federation Services)](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
-- [Auth0](https://auth0.com/docs/configure/saml-configuration/configure-auth0-saml-identity-provider)
+- [Auth0](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/configure-auth0-saml-identity-provider)
 - [PingOne by Ping Identity](http://docs.pingidentity.com/bundle/pingoneforenterprise/page/xsh1564020480660-1.html)
 
 GitLab provides the following setup notes for guidance only.

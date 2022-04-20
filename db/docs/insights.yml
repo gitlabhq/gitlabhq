@@ -1,0 +1,9 @@
+---
+table_name: insights
+classes:
+- Insight
+feature_categories:
+- value_stream_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9665
+milestone: '11.9'

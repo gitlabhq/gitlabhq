@@ -9,7 +9,7 @@ module API
 
     before { authenticate! }
 
-    feature_category :not_owned
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
     METADATA_QUERY = <<~EOF
       {

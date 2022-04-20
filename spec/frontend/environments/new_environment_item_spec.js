@@ -73,6 +73,34 @@ describe('~/environments/components/new_environment_item.vue', () => {
     expect(name.text()).toHaveLength(80);
   });
 
+  describe('tier', () => {
+    it('displays the tier of the environment when defined in yaml', () => {
+      wrapper = createWrapper({ apolloProvider: createApolloProvider() });
+
+      const tier = wrapper.findByTitle(s__('Environment|Deployment tier'));
+
+      expect(tier.text()).toBe(resolvedEnvironment.lastDeployment.tierInYaml);
+    });
+
+    it('does not display the tier if not defined in yaml', () => {
+      const environment = {
+        ...resolvedEnvironment,
+        lastDeployment: {
+          ...resolvedEnvironment.lastDeployment,
+          tierInYaml: null,
+        },
+      };
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      const tier = wrapper.findByTitle(s__('Environment|Deployment tier'));
+
+      expect(tier.exists()).toBe(false);
+    });
+  });
+
   describe('url', () => {
     it('shows a link for the url if one is present', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });

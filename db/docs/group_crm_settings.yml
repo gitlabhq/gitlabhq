@@ -1,0 +1,9 @@
+---
+table_name: group_crm_settings
+classes:
+- Group::CrmSettings
+feature_categories:
+- subgroups
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76983
+milestone: '14.7'

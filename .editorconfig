@@ -16,3 +16,6 @@ charset = utf-8
 
 [*.{md,markdown,js.snap}]
 trim_trailing_whitespace = false
+
+[*.rb]
+max_line_length = 120

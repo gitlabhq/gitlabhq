@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Enablement
+group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -31,8 +31,8 @@ could result in loading unexpected code or associations which may cause unintend
 side effects or failures during upgrades.
 
 ```ruby
-class SomeMigration < Gitlab::Database::Migration[1.0]
-  class Services < ActiveRecord::Base
+class SomeMigration < Gitlab::Database::Migration[2.0]
+  class Services < MigrationRecord
     self.table_name = 'services'
     self.inheritance_column = :_type_disabled
   end

@@ -6,12 +6,12 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Form from '~/crm/components/form.vue';
-import routes from '~/crm/routes';
-import createContactMutation from '~/crm/components/queries/create_contact.mutation.graphql';
-import updateContactMutation from '~/crm/components/queries/update_contact.mutation.graphql';
-import getGroupContactsQuery from '~/crm/components/queries/get_group_contacts.query.graphql';
-import createOrganizationMutation from '~/crm/components/queries/create_organization.mutation.graphql';
-import getGroupOrganizationsQuery from '~/crm/components/queries/get_group_organizations.query.graphql';
+import routes from '~/crm/contacts/routes';
+import createContactMutation from '~/crm/contacts/components/graphql/create_contact.mutation.graphql';
+import updateContactMutation from '~/crm/contacts/components/graphql/update_contact.mutation.graphql';
+import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
+import createOrganizationMutation from '~/crm/organizations/components/graphql/create_organization.mutation.graphql';
+import getGroupOrganizationsQuery from '~/crm/organizations/components/graphql/get_group_organizations.query.graphql';
 import {
   createContactMutationErrorResponse,
   createContactMutationResponse,
@@ -101,6 +101,11 @@ describe('Reusable form component', () => {
         { name: 'phone', label: 'Phone' },
         { name: 'description', label: 'Description' },
       ],
+      getQuery: {
+        query: getGroupContactsQuery,
+        variables: { groupFullPath: 'flightjs' },
+      },
+      getQueryNodePath: 'group.contacts',
       ...propsData,
     });
   };
@@ -108,13 +113,8 @@ describe('Reusable form component', () => {
   const mountContactCreate = () => {
     const propsData = {
       title: 'New contact',
-      successMessage: 'Contact has been added',
+      successMessage: 'Contact has been added.',
       buttonLabel: 'Create contact',
-      getQuery: {
-        query: getGroupContactsQuery,
-        variables: { groupFullPath: 'flightjs' },
-      },
-      getQueryNodePath: 'group.contacts',
       mutation: createContactMutation,
       additionalCreateParams: { groupId: 'gid://gitlab/Group/26' },
     };
@@ -124,14 +124,9 @@ describe('Reusable form component', () => {
   const mountContactUpdate = () => {
     const propsData = {
       title: 'Edit contact',
-      successMessage: 'Contact has been updated',
+      successMessage: 'Contact has been updated.',
       mutation: updateContactMutation,
-      existingModel: {
-        id: 'gid://gitlab/CustomerRelations::Contact/12',
-        firstName: 'First',
-        lastName: 'Last',
-        email: 'email@example.com',
-      },
+      existingId: 'gid://gitlab/CustomerRelations::Contact/12',
     };
     mountContact({ propsData });
   };
@@ -143,6 +138,11 @@ describe('Reusable form component', () => {
         { name: 'defaultRate', label: 'Default rate', input: { type: 'number', step: '0.01' } },
         { name: 'description', label: 'Description' },
       ],
+      getQuery: {
+        query: getGroupOrganizationsQuery,
+        variables: { groupFullPath: 'flightjs' },
+      },
+      getQueryNodePath: 'group.organizations',
       ...propsData,
     });
   };
@@ -150,13 +150,8 @@ describe('Reusable form component', () => {
   const mountOrganizationCreate = () => {
     const propsData = {
       title: 'New organization',
-      successMessage: 'Organization has been added',
+      successMessage: 'Organization has been added.',
       buttonLabel: 'Create organization',
-      getQuery: {
-        query: getGroupOrganizationsQuery,
-        variables: { groupFullPath: 'flightjs' },
-      },
-      getQueryNodePath: 'group.organizations',
       mutation: createOrganizationMutation,
       additionalCreateParams: { groupId: 'gid://gitlab/Group/26' },
     };
@@ -167,17 +162,17 @@ describe('Reusable form component', () => {
     [FORM_CREATE_CONTACT]: {
       mountFunction: mountContactCreate,
       mutationErrorResponse: createContactMutationErrorResponse,
-      toastMessage: 'Contact has been added',
+      toastMessage: 'Contact has been added.',
     },
     [FORM_UPDATE_CONTACT]: {
       mountFunction: mountContactUpdate,
       mutationErrorResponse: updateContactMutationErrorResponse,
-      toastMessage: 'Contact has been updated',
+      toastMessage: 'Contact has been updated.',
     },
     [FORM_CREATE_ORG]: {
       mountFunction: mountOrganizationCreate,
       mutationErrorResponse: createOrganizationMutationErrorResponse,
-      toastMessage: 'Organization has been added',
+      toastMessage: 'Organization has been added.',
     },
   };
   const asTestParams = (...keys) => keys.map((name) => [name, forms[name]]);

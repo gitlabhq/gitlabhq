@@ -1,0 +1,8 @@
+---
+name: ci_secure_files_read_only
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84089
+rollout_issue_url: 
+milestone: '14.10'
+type: ops
+group: group::incubation
+default_enabled: false

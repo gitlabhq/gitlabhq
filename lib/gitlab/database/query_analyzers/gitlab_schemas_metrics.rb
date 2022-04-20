@@ -27,9 +27,15 @@ module Gitlab
             # to reduce amount of labels sort schemas used
             gitlab_schemas = gitlab_schemas.to_a.sort.join(",")
 
+            # Temporary feature to observe relation of `gitlab_schemas` to `db_config_name`
+            # depending on primary model
+            ci_dedicated_primary_connection = ::Ci::ApplicationRecord.connection_class? &&
+              ::Ci::ApplicationRecord.load_balancer.configuration.use_dedicated_connection?
+
             schemas_metrics.increment({
               gitlab_schemas: gitlab_schemas,
-              db_config_name: db_config_name
+              db_config_name: db_config_name,
+              ci_dedicated_primary_connection: ci_dedicated_primary_connection
             })
           end
 

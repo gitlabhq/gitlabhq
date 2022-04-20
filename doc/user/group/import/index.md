@@ -138,9 +138,9 @@ migrated:
 In a [rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
 you can find the failure or error messages for the group import attempt using:
 
-```shell
+```ruby
 # Get relevant import records
-import = BulkImports::Entity.where(namespace_id: Group.id).bulk_import
+import = BulkImports::Entity.where(namespace_id: Group.id).map(&:bulk_import)
 
 # Alternative lookup by user
 import = BulkImport.where(user_id: User.find(...)).last
@@ -153,4 +153,19 @@ entities.map(&:failures).flatten
 
 # Alternative failure lookup by status
 entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :status)
+```
+
+### Stale imports
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352985) in GitLab 14.10.
+
+When troubleshooting group migration, an import may not complete because the import workers took
+longer than 8 hours to execute. In this case, the `status` of either a `BulkImport` or
+`BulkImport::Entity` is `3` (`timeout`):
+
+```ruby
+# Get relevant import records
+import = BulkImports::Entity.where(namespace_id: Group.id).map(&:bulk_import)
+
+import.status #=> 3 means that the import timed out.
 ```

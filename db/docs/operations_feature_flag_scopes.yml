@@ -1,0 +1,8 @@
+---
+table_name: operations_feature_flag_scopes
+classes: []
+feature_categories:
+- feature_flags
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9110
+milestone: '11.8'

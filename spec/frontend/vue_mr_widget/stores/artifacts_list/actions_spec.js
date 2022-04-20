@@ -22,27 +22,25 @@ describe('Artifacts App Store Actions', () => {
   });
 
   describe('setEndpoint', () => {
-    it('should commit SET_ENDPOINT mutation', (done) => {
-      testAction(
+    it('should commit SET_ENDPOINT mutation', () => {
+      return testAction(
         setEndpoint,
         'endpoint.json',
         mockedState,
         [{ type: types.SET_ENDPOINT, payload: 'endpoint.json' }],
         [],
-        done,
       );
     });
   });
 
   describe('requestArtifacts', () => {
-    it('should commit REQUEST_ARTIFACTS mutation', (done) => {
-      testAction(
+    it('should commit REQUEST_ARTIFACTS mutation', () => {
+      return testAction(
         requestArtifacts,
         null,
         mockedState,
         [{ type: types.REQUEST_ARTIFACTS }],
         [],
-        done,
       );
     });
   });
@@ -62,7 +60,7 @@ describe('Artifacts App Store Actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestArtifacts and receiveArtifactsSuccess ', (done) => {
+      it('dispatches requestArtifacts and receiveArtifactsSuccess ', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, [
           {
             text: 'result.txt',
@@ -72,7 +70,7 @@ describe('Artifacts App Store Actions', () => {
           },
         ]);
 
-        testAction(
+        return testAction(
           fetchArtifacts,
           null,
           mockedState,
@@ -96,7 +94,6 @@ describe('Artifacts App Store Actions', () => {
               type: 'receiveArtifactsSuccess',
             },
           ],
-          done,
         );
       });
     });
@@ -106,8 +103,8 @@ describe('Artifacts App Store Actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
       });
 
-      it('dispatches requestArtifacts and receiveArtifactsError ', (done) => {
-        testAction(
+      it('dispatches requestArtifacts and receiveArtifactsError ', () => {
+        return testAction(
           fetchArtifacts,
           null,
           mockedState,
@@ -120,45 +117,41 @@ describe('Artifacts App Store Actions', () => {
               type: 'receiveArtifactsError',
             },
           ],
-          done,
         );
       });
     });
   });
 
   describe('receiveArtifactsSuccess', () => {
-    it('should commit RECEIVE_ARTIFACTS_SUCCESS mutation with 200', (done) => {
-      testAction(
+    it('should commit RECEIVE_ARTIFACTS_SUCCESS mutation with 200', () => {
+      return testAction(
         receiveArtifactsSuccess,
         { data: { summary: {} }, status: 200 },
         mockedState,
         [{ type: types.RECEIVE_ARTIFACTS_SUCCESS, payload: { summary: {} } }],
         [],
-        done,
       );
     });
 
-    it('should not commit RECEIVE_ARTIFACTS_SUCCESS mutation with 204', (done) => {
-      testAction(
+    it('should not commit RECEIVE_ARTIFACTS_SUCCESS mutation with 204', () => {
+      return testAction(
         receiveArtifactsSuccess,
         { data: { summary: {} }, status: 204 },
         mockedState,
         [],
         [],
-        done,
       );
     });
   });
 
   describe('receiveArtifactsError', () => {
-    it('should commit RECEIVE_ARTIFACTS_ERROR mutation', (done) => {
-      testAction(
+    it('should commit RECEIVE_ARTIFACTS_ERROR mutation', () => {
+      return testAction(
         receiveArtifactsError,
         null,
         mockedState,
         [{ type: types.RECEIVE_ARTIFACTS_ERROR }],
         [],
-        done,
       );
     });
   });

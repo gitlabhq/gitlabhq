@@ -76,7 +76,7 @@ module Ci
       unknown_statuses = params[:scope] - ::CommitStatus::AVAILABLE_STATUSES
       raise ArgumentError, 'Scope contains invalid value(s)' unless unknown_statuses.empty?
 
-      builds.where(status: params[:scope]) # rubocop: disable CodeReuse/ActiveRecord
+      builds.with_statuses(params[:scope])
     end
 
     def jobs_by_type(relation, type)

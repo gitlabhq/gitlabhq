@@ -67,12 +67,17 @@ RSpec.describe API::Internal::ContainerRegistry::Migration do
 
             it_behaves_like 'returning an error', with_message: "Couldn't transition from pre_importing to importing"
           end
-        end
 
-        context 'with repository in importing migration state' do
-          let(:repository) { create(:container_repository, :importing) }
+          context 'with repository in importing migration state' do
+            let(:repository) { create(:container_repository, :importing) }
 
-          it_behaves_like 'returning an error', with_message: "Couldn't transition from pre_importing to importing"
+            it 'returns ok and does not update the migration state' do
+              expect { subject }
+                .not_to change { repository.reload.migration_state }
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
         end
       end
 
@@ -101,7 +106,7 @@ RSpec.describe API::Internal::ContainerRegistry::Migration do
         context 'with repository in pre_importing migration state' do
           let(:repository) { create(:container_repository, :pre_importing) }
 
-          it_behaves_like 'returning an error', with_message: "Couldn't transition from importing to import_done"
+          it_behaves_like 'updating the repository migration status', from: 'pre_importing', to: 'import_done'
         end
       end
 

@@ -9,7 +9,7 @@ import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { getDiffMode } from '~/diffs/store/utils';
 import { diffViewerModes } from '~/ide/constants';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
-import { isCollapsed } from '../../diffs/utils/diff_file';
+import { isCollapsed } from '~/diffs/utils/diff_file';
 
 const FIRST_CHAR_REGEX = /^(\+|-| )/;
 

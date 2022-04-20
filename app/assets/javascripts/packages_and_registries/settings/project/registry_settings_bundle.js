@@ -20,7 +20,6 @@ export default () => {
     adminSettingsPath,
     tagsRegexHelpPagePath,
     helpPagePath,
-    showCleanupPolicyOnAlert,
   } = el.dataset;
   return new Vue({
     el,
@@ -35,7 +34,6 @@ export default () => {
       adminSettingsPath,
       tagsRegexHelpPagePath,
       helpPagePath,
-      showCleanupPolicyOnAlert: parseBoolean(showCleanupPolicyOnAlert),
     },
     render(createElement) {
       return createElement('registry-settings-app', {});

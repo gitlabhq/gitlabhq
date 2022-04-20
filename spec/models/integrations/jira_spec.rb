@@ -187,7 +187,7 @@ RSpec.describe Integrations::Jira do
     subject(:integration) { described_class.create!(params) }
 
     it 'does not store data into properties' do
-      expect(integration.properties).to be_nil
+      expect(integration.properties).to be_empty
     end
 
     it 'stores data in data_fields correctly' do

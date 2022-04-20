@@ -57,16 +57,16 @@ module Ci
       end
     end
 
-    def self.retry(bridge, current_user)
-      raise NotImplementedError
-    end
-
     def self.with_preloads
       preload(
         :metadata,
         downstream_pipeline: [project: [:route, { namespace: :route }]],
         project: [:namespace]
       )
+    end
+
+    def retryable?
+      false
     end
 
     def inherit_status_from_downstream!(pipeline)
@@ -274,7 +274,8 @@ module Ci
 
       # The order of this list refers to the priority of the variables
       downstream_yaml_variables(expand_variables) +
-        downstream_pipeline_variables(expand_variables)
+        downstream_pipeline_variables(expand_variables) +
+        downstream_pipeline_schedule_variables(expand_variables)
     end
 
     def downstream_yaml_variables(expand_variables)
@@ -289,6 +290,15 @@ module Ci
       return [] unless forward_pipeline_variables?
 
       pipeline.variables.to_a.map do |variable|
+        { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+      end
+    end
+
+    def downstream_pipeline_schedule_variables(expand_variables)
+      return [] unless forward_pipeline_variables?
+      return [] unless pipeline.pipeline_schedule
+
+      pipeline.pipeline_schedule.variables.to_a.map do |variable|
         { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
       end
     end

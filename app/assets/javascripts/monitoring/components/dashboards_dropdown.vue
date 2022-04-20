@@ -48,8 +48,8 @@ export default {
     },
 
     filteredDashboards() {
-      return this.allDashboards.filter(({ display_name = '' }) =>
-        display_name.toLowerCase().includes(this.searchTerm.toLowerCase()),
+      return this.allDashboards.filter(({ display_name: displayName = '' }) =>
+        displayName.toLowerCase().includes(this.searchTerm.toLowerCase()),
       );
     },
     shouldShowNoMsgContainer() {

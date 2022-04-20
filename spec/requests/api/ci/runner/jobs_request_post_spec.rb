@@ -216,7 +216,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'ruby:2.7', 'entrypoint' => '/bin/sh', 'ports' => [] })
+            expect(json_response['image']).to eq({ 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [] })
             expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
                                                        'alias' => nil, 'command' => nil, 'ports' => [], 'variables' => nil },
                                                      { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',
@@ -611,6 +611,40 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
           end
 
+          context 'when job has code coverage report' do
+            let(:job) do
+              create(:ci_build, :pending, :queued, :coverage_report_cobertura,
+                     pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
+            end
+
+            let(:expected_artifacts) do
+              [
+                {
+                  'name' => 'cobertura-coverage.xml',
+                  'paths' => ['cobertura.xml'],
+                  'when' => 'always',
+                  'expire_in' => '7d',
+                  "artifact_type" => "cobertura",
+                  "artifact_format" => "gzip"
+                }
+              ]
+            end
+
+            it 'returns job with the correct artifact specification', :aggregate_failures do
+              request_job info: { platform: :darwin, features: { upload_multiple_artifacts: true } }
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(response.headers['Content-Type']).to eq('application/json')
+              expect(response.headers).not_to have_key('X-GitLab-Last-Update')
+              expect(runner.reload.platform).to eq('darwin')
+              expect(json_response['id']).to eq(job.id)
+              expect(json_response['token']).to eq(job.token)
+              expect(json_response['job_info']).to eq(expected_job_info)
+              expect(json_response['git_info']).to eq(expected_git_info)
+              expect(json_response['artifacts']).to eq(expected_artifacts)
+            end
+          end
+
           context 'when triggered job is available' do
             let(:expected_variables) do
               [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },
@@ -819,11 +853,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             subject { request_job(id: job.id) }
 
             it_behaves_like 'storing arguments in the application context for the API' do
-              let(:expected_params) { { user: user.username, project: project.full_path, client_id: "user/#{user.id}" } }
+              let(:expected_params) { { user: user.username, project: project.full_path, client_id: "runner/#{runner.id}", job_id: job.id, pipeline_id: job.pipeline_id } }
             end
 
-            it_behaves_like 'not executing any extra queries for the application context', 3 do
-              # Extra queries: User, Project, Route
+            it_behaves_like 'not executing any extra queries for the application context', 4 do
+              # Extra queries: User, Project, Route, Runner
               let(:subject_proc) { proc { request_job(id: job.id) } }
             end
           end

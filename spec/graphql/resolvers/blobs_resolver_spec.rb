@@ -75,10 +75,9 @@ RSpec.describe Resolvers::BlobsResolver do
           let(:ref) { 'ma:in' }
 
           it 'raises an ArgumentError' do
-            expect { resolve_blobs }.to raise_error(
-              Gitlab::Graphql::Errors::ArgumentError,
-              'Ref is not valid'
-            )
+            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'Ref is not valid') do
+              resolve_blobs
+            end
           end
         end
 
@@ -86,10 +85,9 @@ RSpec.describe Resolvers::BlobsResolver do
           let(:ref) { '' }
 
           it 'raises an ArgumentError' do
-            expect { resolve_blobs }.to raise_error(
-              Gitlab::Graphql::Errors::ArgumentError,
-              'Ref is not valid'
-            )
+            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'Ref is not valid') do
+              resolve_blobs
+            end
           end
         end
       end

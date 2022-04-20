@@ -70,7 +70,7 @@ module Gitlab
       def system_usage_data
         issues_created_manually_from_alerts = count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue))
 
-        counts = {
+        {
           counts: {
             assignee_lists: count(List.assignee),
             ci_builds: count(::Ci::Build),
@@ -166,12 +166,6 @@ module Gitlab
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
         }
-
-        if Feature.disabled?(:merge_service_ping_instrumented_metrics, default_enabled: :yaml)
-          counts[:counts][:boards] = add_metric('CountBoardsMetric', time_frame: 'all')
-        end
-
-        counts
       end
       # rubocop: enable Metrics/AbcSize
 
@@ -513,7 +507,6 @@ module Gitlab
         {
           deploy_keys: distinct_count(::DeployKey.where(time_period), :user_id),
           keys: distinct_count(::Key.regular_keys.where(time_period), :user_id),
-          merge_requests: distinct_count(::MergeRequest.where(time_period), :author_id),
           projects_with_disable_overriding_approvers_per_merge_request: count(::Project.where(time_period.merge(disable_overriding_approvers_per_merge_request: true))),
           projects_without_disable_overriding_approvers_per_merge_request: count(::Project.where(time_period.merge(disable_overriding_approvers_per_merge_request: [false, nil]))),
           remote_mirrors: distinct_count(::Project.with_remote_mirrors.where(time_period), :creator_id),
@@ -801,14 +794,9 @@ module Gitlab
         sent_emails = count(Users::InProductMarketingEmail.group(:track, :series))
         clicked_emails = count(Users::InProductMarketingEmail.where.not(cta_clicked_at: nil).group(:track, :series))
 
-        Users::InProductMarketingEmail.tracks.keys.each_with_object({}) do |track, result|
+        Users::InProductMarketingEmail::ACTIVE_TRACKS.keys.each_with_object({}) do |track, result|
+          series_amount = Namespaces::InProductMarketingEmailsService.email_count_for_track(track)
           # rubocop: enable UsageData/LargeTable:
-          series_amount =
-            if track.to_sym == Namespaces::InviteTeamEmailService::TRACK
-              0
-            else
-              Namespaces::InProductMarketingEmailsService::TRACKS[track.to_sym][:interval_days].count
-            end
 
           0.upto(series_amount - 1).map do |series|
             # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.

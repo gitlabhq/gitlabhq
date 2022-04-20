@@ -8,10 +8,14 @@ module QA
 
         def self.included(base)
           super
+
+          base.view 'app/assets/javascripts/lib/utils/confirm_via_gl_modal/confirm_modal.vue' do
+            element :confirm_ok_button
+          end
         end
 
         def fill_confirmation_text(text)
-          fill_element :confirm_input, text
+          fill_element(:confirm_input, text)
         end
 
         def wait_for_confirm_button_enabled
@@ -22,7 +26,11 @@ module QA
 
         def confirm_transfer
           wait_for_confirm_button_enabled
-          click_element :confirm_button
+          click_element(:confirm_button)
+        end
+
+        def click_confirmation_ok_button
+          click_element(:confirm_ok_button)
         end
       end
     end

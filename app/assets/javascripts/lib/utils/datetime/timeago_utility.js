@@ -1,5 +1,5 @@
 import * as timeago from 'timeago.js';
-import { languageCode, s__, createDateTimeFormat } from '../../../locale';
+import { languageCode, s__, createDateTimeFormat } from '~/locale';
 import { formatDate } from './date_format_utility';
 
 /**
@@ -70,8 +70,41 @@ const memoizedLocale = () => {
   };
 };
 
+/**
+ * Registers timeago time duration
+ */
+const memoizedLocaleDuration = () => {
+  const cache = [];
+
+  const durations = [
+    () => [s__('Duration|%s seconds')],
+    () => [s__('Duration|%s seconds')],
+    () => [s__('Duration|1 minute')],
+    () => [s__('Duration|%s minutes')],
+    () => [s__('Duration|1 hour')],
+    () => [s__('Duration|%s hours')],
+    () => [s__('Duration|1 day')],
+    () => [s__('Duration|%s days')],
+    () => [s__('Duration|1 week')],
+    () => [s__('Duration|%s weeks')],
+    () => [s__('Duration|1 month')],
+    () => [s__('Duration|%s months')],
+    () => [s__('Duration|1 year')],
+    () => [s__('Duration|%s years')],
+  ];
+
+  return (_, index) => {
+    if (cache[index]) {
+      return cache[index];
+    }
+    cache[index] = durations[index] && durations[index]();
+    return cache[index];
+  };
+};
+
 timeago.register(timeagoLanguageCode, memoizedLocale());
 timeago.register(`${timeagoLanguageCode}-remaining`, memoizedLocaleRemaining());
+timeago.register(`${timeagoLanguageCode}-duration`, memoizedLocaleDuration());
 
 let memoizedFormatter = null;
 
@@ -132,4 +165,17 @@ export const timeFor = (time, expiredLabel) => {
     return expiredLabel || s__('Timeago|Past due');
   }
   return timeago.format(time, `${timeagoLanguageCode}-remaining`).trim();
+};
+
+/**
+ * Returns a duration of time given an amount.
+ *
+ * @param {number} milliseconds - Duration in milliseconds.
+ * @returns {string} A formatted duration, e.g. "10 minutes".
+ */
+export const duration = (milliseconds) => {
+  const now = new Date();
+  return timeago
+    .format(now.getTime() - Math.abs(milliseconds), `${timeagoLanguageCode}-duration`)
+    .trim();
 };

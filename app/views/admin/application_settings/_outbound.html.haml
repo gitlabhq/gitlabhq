@@ -1,16 +1,13 @@
-= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-outbound-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-outbound-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      .form-check
-        = f.check_box :allow_local_requests_from_web_hooks_and_services, class: 'form-check-input', data: { qa_selector: 'allow_requests_from_services_checkbox' }
-        = f.label :allow_local_requests_from_web_hooks_and_services, class: 'form-check-label' do
-          = s_('OutboundRequests|Allow requests to the local network from web hooks and services')
-      .form-check
-        = f.check_box :allow_local_requests_from_system_hooks, class: 'form-check-input'
-        = f.label :allow_local_requests_from_system_hooks, class: 'form-check-label' do
-          = s_('OutboundRequests|Allow requests to the local network from system hooks')
+      = f.gitlab_ui_checkbox_component :allow_local_requests_from_web_hooks_and_services,
+          s_('OutboundRequests|Allow requests to the local network from web hooks and services'),
+          checkbox_options: { data: { qa_selector: 'allow_requests_from_services_checkbox' } }
+      = f.gitlab_ui_checkbox_component :allow_local_requests_from_system_hooks,
+          s_('OutboundRequests|Allow requests to the local network from system hooks')
 
     .form-group
       = f.label :outbound_local_requests_allowlist_raw, class: 'label-bold' do
@@ -21,11 +18,8 @@
         = link_to _('Learn more.'), help_page_path('security/webhooks.md', anchor: 'allowlist-for-local-requests'), target: '_blank', rel: 'noopener noreferrer'
 
     .form-group
-      .form-check
-        = f.check_box :dns_rebinding_protection_enabled, class: 'form-check-input'
-        = f.label :dns_rebinding_protection_enabled, class: 'form-check-label' do
-          = s_('OutboundRequests|Enforce DNS rebinding attack protection')
-        %span.form-text.text-muted
-          = s_('OutboundRequests|Resolve IP addresses once and uses them to submit requests.')
+      = f.gitlab_ui_checkbox_component :dns_rebinding_protection_enabled,
+          s_('OutboundRequests|Enforce DNS rebinding attack protection'),
+          help_text: _('OutboundRequests|Resolve IP addresses once and uses them to submit requests.')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

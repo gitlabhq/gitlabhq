@@ -1,10 +1,11 @@
-import { GlButton, GlModal } from '@gitlab/ui';
+import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RemoveAvatar from '~/admin/topics/components/remove_avatar.vue';
 
 const modalID = 'fake-id';
 const path = 'topic/path/1';
+const name = 'Topic 1';
 
 jest.mock('lodash/uniqueId', () => () => 'fake-id');
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -16,9 +17,13 @@ describe('RemoveAvatar', () => {
     wrapper = shallowMount(RemoveAvatar, {
       provide: {
         path,
+        name,
       },
       directives: {
         GlModal: createMockDirective(),
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
@@ -55,8 +60,8 @@ describe('RemoveAvatar', () => {
       const modal = findModal();
 
       expect(modal.exists()).toBe(true);
-      expect(modal.props('title')).toBe('Confirm remove avatar');
-      expect(modal.text()).toBe('Avatar will be removed. Are you sure?');
+      expect(modal.props('title')).toBe('Remove topic avatar');
+      expect(modal.text()).toBe(`Topic avatar for ${name} will be removed. This cannot be undone.`);
     });
 
     it('contains the correct modal ID', () => {

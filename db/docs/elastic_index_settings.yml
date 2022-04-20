@@ -1,0 +1,9 @@
+---
+table_name: elastic_index_settings
+classes:
+- Elastic::IndexSetting
+feature_categories:
+- global_search
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56344
+milestone: '13.11'

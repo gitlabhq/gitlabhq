@@ -9,6 +9,13 @@ module Types
     field_class Types::BaseField
     edge_type_class Types::BaseEdge
 
+    def self.authorize(*args)
+      raise 'Cannot redefine authorize' if @authorize_args && args.any?
+
+      @authorize_args = args.freeze if args.any?
+      @authorize_args || (superclass.respond_to?(:authorize) ? superclass.authorize : nil)
+    end
+
     def self.accepts(*types)
       @accepts ||= []
       @accepts += types

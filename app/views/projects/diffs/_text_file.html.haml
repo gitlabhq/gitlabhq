@@ -12,6 +12,8 @@
         - case line.type
         - when 'match'
           = diff_match_line line.old_pos, line.new_pos, text: line.text
+        - when 'old-nomappinginraw', 'new-nomappinginraw', 'unchanged-nomappinginraw'
+          = diff_nomappinginraw_line line, %w[old_line diff-line-num], %w[new_line diff-line-num], %w[line_content]
         - when 'old-nonewline', 'new-nonewline'
           %td.old_line.diff-line-num
           %td.new_line.diff-line-num

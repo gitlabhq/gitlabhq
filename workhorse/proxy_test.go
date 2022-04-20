@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"regexp"
 	"testing"
 	"time"
@@ -31,10 +32,17 @@ func newProxy(url string, rt http.RoundTripper, opts ...func(*proxy.Proxy)) *pro
 }
 
 func TestProxyRequest(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
+	inboundURL, err := url.Parse("https://explicitly.set.host/url/path")
+	require.NoError(t, err, "parse inbound url")
+
+	urlRegexp := regexp.MustCompile(fmt.Sprintf(`%s\z`, inboundURL.Path))
+	ts := testhelper.TestServerWithHandler(urlRegexp, func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "POST", r.Method, "method")
 		require.Equal(t, "test", r.Header.Get("Custom-Header"), "custom header")
 		require.Equal(t, testVersion, r.Header.Get("Gitlab-Workhorse"), "version header")
+		require.Equal(t, inboundURL.Host, r.Host, "sent host header")
+		require.Empty(t, r.Header.Get("X-Forwarded-Host"), "X-Forwarded-Host header")
+		require.Empty(t, r.Header.Get("Forwarded"), "Forwarded header")
 
 		require.Regexp(
 			t,
@@ -52,7 +60,7 @@ func TestProxyRequest(t *testing.T) {
 		fmt.Fprint(w, "RESPONSE")
 	})
 
-	httpRequest, err := http.NewRequest("POST", ts.URL+"/url/path", bytes.NewBufferString("REQUEST"))
+	httpRequest, err := http.NewRequest("POST", inboundURL.String(), bytes.NewBufferString("REQUEST"))
 	require.NoError(t, err)
 	httpRequest.Header.Set("Custom-Header", "test")
 
@@ -62,6 +70,32 @@ func TestProxyRequest(t *testing.T) {
 	testhelper.RequireResponseBody(t, w, "RESPONSE")
 
 	require.Equal(t, "test", w.Header().Get("Custom-Response-Header"), "custom response header")
+}
+
+func TestProxyWithForcedTargetHostHeader(t *testing.T) {
+	var tsUrl *url.URL
+	inboundURL, err := url.Parse("https://explicitly.set.host/url/path")
+	require.NoError(t, err, "parse upstream url")
+
+	urlRegexp := regexp.MustCompile(fmt.Sprintf(`%s\z`, inboundURL.Path))
+	ts := testhelper.TestServerWithHandler(urlRegexp, func(w http.ResponseWriter, r *http.Request) {
+		require.Equal(t, tsUrl.Host, r.Host, "upstream host header")
+		require.Equal(t, inboundURL.Host, r.Header.Get("X-Forwarded-Host"), "X-Forwarded-Host header")
+		require.Equal(t, fmt.Sprintf("host=%s", inboundURL.Host), r.Header.Get("Forwarded"), "Forwarded header")
+
+		_, err := w.Write([]byte(`ok`))
+		require.NoError(t, err, "write ok response")
+	})
+	tsUrl, err = url.Parse(ts.URL)
+	require.NoError(t, err, "parse testserver URL")
+
+	httpRequest, err := http.NewRequest("POST", inboundURL.String(), nil)
+	require.NoError(t, err)
+
+	w := httptest.NewRecorder()
+	testProxy := newProxy(ts.URL, nil, proxy.WithForcedTargetHostHeader())
+	testProxy.ServeHTTP(w, httpRequest)
+	testhelper.RequireResponseBody(t, w, "ok")
 }
 
 func TestProxyWithCustomHeaders(t *testing.T) {

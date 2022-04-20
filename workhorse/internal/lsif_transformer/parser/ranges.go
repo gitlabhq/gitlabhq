@@ -130,11 +130,16 @@ func (r *Ranges) Serialize(f io.Writer, rangeIds []Id, docs map[Id]string) error
 }
 
 func (r *Ranges) Close() error {
-	return combineErrors(
+	for _, err := range []error{
 		r.Cache.Close(),
 		r.References.Close(),
 		r.Hovers.Close(),
-	)
+	} {
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (r *Ranges) definitionPathFor(docs map[Id]string, refId Id) string {

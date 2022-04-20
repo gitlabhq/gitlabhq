@@ -1,0 +1,9 @@
+---
+table_name: merge_request_diff_files
+classes:
+- MergeRequestDiffFile
+feature_categories:
+- code_review
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9a73b634ab4220f68a8296ccb582a68293874489
+milestone: '9.4'

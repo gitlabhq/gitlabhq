@@ -1,5 +1,6 @@
 <script>
 import { GlAvatar } from '@gitlab/ui';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
   components: {
@@ -31,12 +32,13 @@ export default {
       return this.alt ?? this.projectName;
     },
   },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
 <template>
   <gl-avatar
-    shape="rect"
+    :shape="$options.AVATAR_SHAPE_OPTION_RECT"
     :entity-name="projectName"
     :src="projectAvatarUrl"
     :alt="avatarAlt"

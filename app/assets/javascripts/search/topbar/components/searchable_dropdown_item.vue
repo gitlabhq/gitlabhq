@@ -2,6 +2,7 @@
 import { GlDropdownItem, GlAvatar, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
   name: 'SearchableDropdownItem',
@@ -46,6 +47,7 @@ export default {
       return highlight(this.item[this.name], this.searchText);
     },
   },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
@@ -61,7 +63,7 @@ export default {
         :src="item.avatar_url"
         :entity-id="item.id"
         :entity-name="item[name]"
-        shape="rect"
+        :shape="$options.AVATAR_SHAPE_OPTION_RECT"
         :size="32"
       />
       <div class="gl-display-flex gl-flex-direction-column">

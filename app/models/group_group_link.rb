@@ -16,6 +16,19 @@ class GroupGroupLink < ApplicationRecord
   scope :non_guests, -> { where('group_access > ?', Gitlab::Access::GUEST) }
   scope :preload_shared_with_groups, -> { preload(:shared_with_group) }
 
+  scope :distinct_on_shared_with_group_id_with_group_access, -> do
+    distinct_group_links = select('DISTINCT ON (shared_with_group_id) *')
+    .order('shared_with_group_id, group_access DESC, expires_at DESC, created_at ASC')
+
+    unscoped.from(distinct_group_links, :group_group_links)
+  end
+
+  alias_method :shared_from, :shared_group
+
+  def self.search(query)
+    joins(:shared_with_group).merge(Group.search(query))
+  end
+
   def self.access_options
     Gitlab::Access.options_with_owner
   end

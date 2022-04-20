@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import initVueAlerts from '~/vue_alerts';
-import NoEmojiValidator from '../../../emoji/no_emoji_validator';
+import NoEmojiValidator from '~/emoji/no_emoji_validator';
 import LengthValidator from './length_validator';
 import OAuthRememberMe from './oauth_remember_me';
 import preserveUrlFragment from './preserve_url_fragment';

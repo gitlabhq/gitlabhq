@@ -2,9 +2,9 @@
 import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_options';
 import { sprintf, __ } from '~/locale';
-import defaultSortableConfig from '~/sortable/sortable_config';
+import { defaultSortableOptions } from '~/sortable/constants';
+import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { toggleFormEventPrefix, DraggableItemTypes } from '../constants';
@@ -121,7 +121,7 @@ export default {
     },
     treeRootOptions() {
       const options = {
-        ...defaultSortableConfig,
+        ...defaultSortableOptions,
         fallbackOnBody: false,
         group: 'board-list',
         tag: 'ul',
@@ -287,7 +287,7 @@ export default {
       :data-board-type="list.listType"
       :class="{ 'bg-danger-100': boardItemsSizeExceedsMax }"
       draggable=".board-card"
-      class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-2 js-board-list"
+      class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-2"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"

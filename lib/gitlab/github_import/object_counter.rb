@@ -24,6 +24,8 @@ module Gitlab
 
           increment_project_counter(project, object_type, operation, integer)
           increment_global_counter(object_type, operation, integer)
+
+          project.import_state&.expire_etag_cache
         end
 
         def summary(project)

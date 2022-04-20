@@ -199,7 +199,7 @@ To set a limit on how long these sessions are valid:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.7. [Feature flag ff_limit_ssh_key_lifetime](https://gitlab.com/gitlab-org/gitlab/-/issues/347408) removed.
 
 Users can optionally specify a lifetime for
-[SSH keys](../../../ssh/index.md).
+[SSH keys](../../ssh.md).
 This lifetime is not a requirement, and can be set to any arbitrary number of days.
 
 SSH keys are user credentials to access GitLab.

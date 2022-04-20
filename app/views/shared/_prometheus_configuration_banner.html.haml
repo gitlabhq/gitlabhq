@@ -1,0 +1,27 @@
+- header_tag = local_assigns.fetch(:header_tag)
+- info_well_classes = local_assigns.fetch(:info_well_classes, '')
+- integration = local_assigns.fetch(:integration)
+
+= content_tag(header_tag, s_('PrometheusService|Prometheus cluster integration'))
+
+- if integration.manual_configuration?
+  .info-well{ class: info_well_classes }
+    = s_('PrometheusService|To use a Prometheus installed on a cluster, deactivate the manual configuration.')
+- else
+  .container-fluid
+    .row
+      - if integration.prometheus_available?
+        .col-sm-2
+          .svg-container
+            = image_tag 'illustrations/monitoring/getting_started.svg'
+        .col-sm-10
+          %p.text-success.gl-mt-3
+            = s_('PrometheusService|You have a cluster with the Prometheus integration enabled.')
+          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn gl-button btn-default'
+      - else
+        .col-sm-2
+          = image_tag 'illustrations/monitoring/loading.svg'
+        .col-sm-10
+          %p.gl-mt-3
+            = s_('PrometheusService|Configure GitLab to query a Prometheus installed in one of your clusters.')
+          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn gl-button btn-confirm'

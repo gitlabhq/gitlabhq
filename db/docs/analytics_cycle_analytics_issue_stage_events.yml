@@ -1,0 +1,9 @@
+---
+table_name: analytics_cycle_analytics_issue_stage_events
+classes:
+- Analytics::CycleAnalytics::IssueStageEvent
+feature_categories:
+- value_stream_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68950
+milestone: '14.3'

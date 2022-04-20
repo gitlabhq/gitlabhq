@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-include ImportExport::CommonUtil
 
 RSpec.describe Gitlab::ImportExport::VersionChecker do
+  include ImportExport::CommonUtil
+
   let!(:shared) { Gitlab::ImportExport::Shared.new(nil) }
 
   describe 'bundle a project Git repo' do

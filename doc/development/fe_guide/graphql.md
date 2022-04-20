@@ -264,9 +264,15 @@ Read more about [Vue Apollo](https://github.com/vuejs/vue-apollo) in the [Vue Ap
 
 ### Local state with Apollo
 
-It is possible to manage an application state with Apollo by passing
-in a resolvers object when creating the default client. The default state can be set by writing
-to the cache after setting up the default client. In the example below, we are using query with `@client` Apollo directive to write the initial data to Apollo cache and then get this state in the Vue component:
+It is possible to manage an application state with Apollo by using [client-site resolvers](#using-client-side-resolvers)
+or [type policies with reactive variables](#using-type-policies-with-reactive-variables) when creating your default
+client.
+
+#### Using client-side resolvers
+
+The default state can be set by writing to the cache after setting up the default client. In the
+example below, we are using query with `@client` Apollo directive to write the initial data to
+Apollo cache and then get this state in the Vue component:
 
 ```javascript
 // user.query.graphql
@@ -322,7 +328,7 @@ export default {
 
 Along with creating local data, we can also extend existing GraphQL types with `@client` fields. This is extremely helpful when we need to mock an API response for fields not yet added to our GraphQL API.
 
-#### Mocking API response with local Apollo cache
+##### Mocking API response with local Apollo cache
 
 Using local Apollo Cache is helpful when we have a need to mock some GraphQL API responses, queries, or mutations locally (such as when they're still not added to our actual API).
 
@@ -383,6 +389,108 @@ const defaultClient = createDefaultClient(resolvers);
 For each attempt to fetch a version, our client fetches `id` and `sha` from the remote API endpoint. It then assigns our hardcoded values to the `author` and `createdAt` version properties. With this data, frontend developers are able to work on their UI without being blocked by backend. When the response is added to the API, our custom local resolver can be removed. The only change to the query/fragment is to remove the `@client` directive.
 
 Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.app/guide/local-state.html#local-state).
+
+#### Using type policies with reactive variables
+
+Apollo Client 3 offers an alternative to [client-side resolvers](#using-client-side-resolvers) by using
+[reactive variables to store client state](https://www.apollographql.com/docs/react/local-state/reactive-variables/).
+
+**NOTE:**
+We are still learning the best practices for both **type policies** and **reactive vars**.
+Take a moment to improve this guide or [leave a comment](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/100)
+if you use it!
+
+In the example below we define a `@client` query and its `typedefs`: 
+
+```javascript
+// ./graphql/typedefs.graphql
+extend type Query {
+  localData: String!
+}
+```
+
+```javascript
+// ./graphql/get_local_data.query.graphql
+query getLocalData {
+  localData @client
+}
+```
+
+Similar to resolvers, your `typePolicies` will execute when the `@client` query is used. However,
+using `makeVar` will trigger every relevant active Apollo query to reactively update when the state
+mutates.
+
+```javascript
+// ./graphql/local_state.js
+
+import { makeVar } from '@apollo/client/core';
+import typeDefs from './typedefs.graphql';
+
+export const createLocalState = () => {
+  // set an initial value
+  const localDataVar = makeVar('');
+
+  const cacheConfig = {
+    typePolicies: {
+      Query: {
+        fields: {
+          localData() {
+            // obtain current value
+            // triggers when `localDataVar` is updated
+            return localDataVar();
+          },
+        },
+      },
+    },
+  };
+
+  // methods that update local state
+  const localMutations = {
+    setLocalData(newData) {
+      localDataVar(newData);
+    },
+    clearData() {
+      localDataVar('');
+    },
+  };
+
+  return {
+    cacheConfig,
+    typeDefs,
+    localMutations,
+  };
+};
+```
+
+Pass the cache config to your Apollo Client:
+
+```javascript
+// index.js
+
+// ...
+import createDefaultClient from '~/lib/graphql';
+import { createLocalState } from './graphql/local_state';
+
+const { cacheConfig, typeDefs, localMutations } = createLocalState();
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient({}, { cacheConfig, typeDefs }),
+});
+
+return new Vue({
+  el,
+  apolloProvider,
+  provide: {
+    // inject local state mutations to your app
+    localMutations,
+  },
+  render(h) {
+    return h(MyApp);
+  },
+});
+```
+
+Wherever used, the local query will update as the state updates thanks to the **reactive variable**.
 
 ### Using with Vuex
 
@@ -583,7 +691,7 @@ we want to fetch after or before a given endpoint.
 For example, here we're fetching 10 designs after a cursor (let us call this `projectQuery`):
 
 ```javascript
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query {
   project(fullPath: "root/my-project") {
@@ -606,7 +714,7 @@ query {
 }
 ```
 
-Note that we are using the [`pageInfo.fragment.graphql`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/graphql_shared/fragments/pageInfo.fragment.graphql) to populate the `pageInfo` information.
+Note that we are using the [`page_info.fragment.graphql`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/graphql_shared/fragments/page_info.fragment.graphql) to populate the `pageInfo` information.
 
 #### Using `fetchMore` method in components
 
@@ -869,7 +977,7 @@ You'd then be able to retrieve the data without providing any pagination-specifi
 Here's an example of a query using the `@connection` directive:
 
 ```graphql
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query DastSiteProfiles($fullPath: ID!, $after: String, $before: String, $first: Int, $last: Int) {
   project(fullPath: $fullPath) {

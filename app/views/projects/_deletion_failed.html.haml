@@ -1,7 +1,9 @@
 - project = local_assigns.fetch(:project)
 - return unless project.delete_error.present?
 
-= render 'shared/global_alert', variant: :warning, dismissible: false, alert_class: 'project-deletion-failed-message' do
+= render Pajamas::AlertComponent.new(variant: :warning,
+  dismissible: false,
+  alert_class: 'project-deletion-failed-message') do
   .gl-alert-body
     This project was scheduled for deletion, but failed with the following message:
     = project.delete_error

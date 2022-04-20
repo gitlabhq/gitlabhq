@@ -22,7 +22,7 @@ module QA
 
       it(
         'can create merge request',
-        test_case: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349130'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349130'
       ) do
         Page::Project::PipelineEditor::New.perform(&:create_new_ci)
 

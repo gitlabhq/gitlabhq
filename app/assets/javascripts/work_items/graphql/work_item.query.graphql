@@ -1,16 +1,7 @@
-#import './widget.fragment.graphql'
+#import "./work_item.fragment.graphql"
 
-query WorkItem($id: ID!) {
+query workItem($id: ID!) {
   workItem(id: $id) {
-    id
-    title
-    workItemType {
-      id
-    }
-    widgets @client {
-      nodes {
-        ...WidgetBase
-      }
-    }
+    ...WorkItem
   }
 }

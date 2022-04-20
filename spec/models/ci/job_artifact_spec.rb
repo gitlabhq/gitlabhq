@@ -279,6 +279,15 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  describe '.order_expired_asc' do
+    let_it_be(:first_artifact) { create(:ci_job_artifact, expire_at: 2.days.ago) }
+    let_it_be(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
+
+    it 'returns ordered artifacts' do
+      expect(described_class.order_expired_asc).to eq([first_artifact, second_artifact])
+    end
+  end
+
   describe '.for_project' do
     it 'returns artifacts only for given project(s)', :aggregate_failures do
       artifact1 = create(:ci_job_artifact)
@@ -698,10 +707,6 @@ RSpec.describe Ci::JobArtifact do
       non-zero default values. Also, remember to update the plan limits documentation (doc/administration/instance_limits.md)
       when changes or new entries are made.
     MSG
-  end
-
-  it_behaves_like 'it has loose foreign keys' do
-    let(:factory_name) { :ci_job_artifact }
   end
 
   context 'loose foreign key on ci_job_artifacts.project_id' do

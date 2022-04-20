@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '../../locale';
+import { __ } from '~/locale';
 
 export default {
   i18n: {

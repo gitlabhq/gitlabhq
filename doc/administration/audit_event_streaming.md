@@ -23,11 +23,11 @@ GitLab can stream a single event more than once to the same destination. Use the
 ## Add a new event streaming destination
 
 WARNING:
-Event streaming destinations will receive **all** audit event data, which could include sensitive information. Make sure you trust the destination endpoint.
+Event streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust the destination endpoint.
 
-### Add event streaming destination using GitLab UI
+### Use the GitLab UI
 
-Users with at least the Owner role of a group can add event streaming destinations for it:
+Users with at least the Owner role for a group can add event streaming destinations for it:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**
@@ -41,10 +41,10 @@ Event streaming is enabled if:
 - No warning is shown.
 - The added endpoint is displayed in the UI.
 
-### Add event streaming destination using the API
+### Use the API
 
-To enable event streaming, a group owner must add a new event streaming destination using the `externalAuditEventDestinationCreate` mutation
-in the GraphQL API.
+To enable event streaming and add a destination, users with at least the Owner role for a group must use the
+`externalAuditEventDestinationCreate` mutation in the GraphQL API.
 
 ```graphql
 mutation {
@@ -66,19 +66,24 @@ Event streaming is enabled if:
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
 
-## List currently enabled streaming destinations
+## List streaming destinations
 
-### List currently enabled streaming destination using GitLab UI
+Users with at least the Owner role for a group can list event streaming destinations.
 
-Users with at least the Owner role of a group can list event streaming destinations:
+### Use the GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336411) in GitLab 14.9.
+
+Users with at least the Owner role for a group can list event streaming destinations:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**
 1. On the main area, select **Streams** tab.
 
-### List currently enabled streaming destinations using the API
+### Use the API
 
-Group owners can view a list of event streaming destinations at any time using the `externalAuditEventDestinations` query type.
+Users with at least the Owner role for a group can view a list of event streaming destinations at any time using the
+`externalAuditEventDestinations` query type.
 
 ```graphql
 query {
@@ -97,27 +102,34 @@ query {
 
 If the resulting list is empty, then audit event streaming is not enabled for that group.
 
-## Delete currently enabled streaming destination
+## Delete streaming destinations
 
-Group Owners can delete event streaming destinations at any time using the `deleteAuditEventDestinations` mutation type.
+Users with at least the Owner role for a group can delete event streaming destinations using the
+`deleteAuditEventDestinations` mutation type.
 
-### Delete currently enabled streaming using GitLab UI
+When the last destination is successfully deleted, event streaming is disabled for the group.
 
-Uses with at least the Owner role of a group can delete event streaming destination.
+### Use the GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336411) in GitLab 14.9.
+
+Users with at least the Owner role for a group can delete event streaming destinations.
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**
 1. On the main area, select **Streams** tab.
 1. Select **{remove}** at the right side of each item.
 
-The external streaming destination is delete when:
+The external streaming destination is deleted when:
 
 - No warning is shown.
 - The deleted endpoint is not displayed in the UI.
 
-### Delete currently enabled streaming using the API
+### Use the API
 
-You can delete an event streaming destination by specifying an ID. Get the required ID by [listing the details](audit_event_streaming.md#list-currently-enabled-streaming-destinations-using-the-api) of event streaming destinations.
+Delete an event streaming destination by specifying an ID. Get the required ID by
+[listing the details](audit_event_streaming.md#use-the-api-1) of event
+streaming destinations.
 
 ```graphql
 
@@ -134,8 +146,6 @@ Destination is deleted if:
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
 
-When the last destination is successfully deleted, event streaming is disabled for the group.
-
 ## Verify event authenticity
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345424) in GitLab 14.8.
@@ -144,7 +154,7 @@ Each streaming destination has a unique verification token (`verificationToken`)
 token is generated when the event destination is created and cannot be changed.
 
 Each streamed event contains a random alphanumeric identifier for the `X-Gitlab-Event-Streaming-Token` HTTP header that can be verified against
-the destination's value when [listing streaming destinations](#list-currently-enabled-streaming-destinations).
+the destination's value when [listing streaming destinations](#list-streaming-destinations).
 
 ## Audit event streaming on Git operations
 
@@ -155,7 +165,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 
 Streaming audit events can be sent when signed-in users push or pull a project's remote Git repositories:
 
-- [Using SSH](../ssh/index.md).
+- [Using SSH](../user/ssh.md).
 - Using HTTP or HTTPS.
 - Using the **Download** button (**{download}**) in GitLab UI.
 
@@ -163,9 +173,9 @@ Audit events are not captured for users that are not signed in. For example, whe
 
 To configure streaming audit events for Git operations, see [Add a new event streaming destination](#add-a-new-event-streaming-destination).
 
-### Request headers
+### Headers
 
-Request headers are formatted as follows:
+Headers are formatted as follows:
 
 ```plaintext
 POST /logs HTTP/1.1
@@ -174,7 +184,7 @@ Content-Type: application/x-www-form-urlencoded
 X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 ```
 
-### Example responses for SSH events
+### Example payloads for SSH events
 
 Fetch:
 
@@ -236,7 +246,7 @@ Push:
 }
 ```
 
-### Example responses for HTTP and HTTPS events
+### Example payloads for HTTP and HTTPS events
 
 Fetch:
 
@@ -298,7 +308,7 @@ Push:
 }
 ```
 
-### Example responses for events from GitLab UI download button
+### Example payloads for events from GitLab UI download button
 
 Fetch:
 
@@ -333,9 +343,9 @@ Fetch:
 
 Stream audit events that relate to merge approval actions performed within a project.
 
-### Request headers
+### Headers
 
-Request headers are formatted as follows:
+Headers are formatted as follows:
 
 ```plaintext
 POST /logs HTTP/1.1
@@ -344,7 +354,7 @@ Content-Type: application/x-www-form-urlencoded
 X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 ```
 
-### Example request body 
+### Example payload
 
 ```json
 {

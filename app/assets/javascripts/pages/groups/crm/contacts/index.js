@@ -1,3 +1,3 @@
-import initCrmContactsApp from '~/crm/contacts_bundle';
+import initCrmContactsApp from '~/crm/contacts/bundle';
 
 initCrmContactsApp();

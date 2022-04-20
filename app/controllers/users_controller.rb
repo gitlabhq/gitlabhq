@@ -27,7 +27,14 @@ class UsersController < ApplicationController
     check_rate_limit!(:username_exists, scope: request.ip)
   end
 
-  feature_category :users
+  feature_category :users, [:show, :activity, :groups, :projects, :contributed, :starred,
+                            :followers, :following, :calendar, :calendar_activities,
+                            :exists, :activity, :follow, :unfollow, :ssh_keys, :gpg_keys]
+
+  feature_category :snippets, [:snippets]
+
+  # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357914
+  urgency :low, [:show]
 
   def show
     respond_to do |format|

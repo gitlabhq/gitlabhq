@@ -85,7 +85,7 @@ describe('Markdown field component', () => {
   describe('mounted', () => {
     const previewHTML = `
     <p>markdown preview</p>
-    <video src="${FIXTURES_PATH}/static/mock-video.mp4" muted="muted"></video>
+    <video src="${FIXTURES_PATH}/static/mock-video.mp4"></video>
   `;
     let previewLink;
     let writeLink;
@@ -99,6 +99,21 @@ describe('Markdown field component', () => {
 
     it('renders textarea inside backdrop', () => {
       expect(subject.find('.zen-backdrop textarea').element).not.toBeNull();
+    });
+
+    it('renders referenced commands on markdown preview', async () => {
+      axiosMock
+        .onPost(markdownPreviewPath)
+        .reply(200, { references: { users: [], commands: 'test command' } });
+
+      previewLink = getPreviewLink();
+      previewLink.vm.$emit('click', { target: {} });
+
+      await axios.waitFor(markdownPreviewPath);
+      const referencedCommands = subject.find('[data-testid="referenced-commands"]');
+
+      expect(referencedCommands.exists()).toBe(true);
+      expect(referencedCommands.text()).toContain('test command');
     });
 
     describe('markdown preview', () => {

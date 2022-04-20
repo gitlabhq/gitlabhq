@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346540)
-for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
+in GitLab 14.7, and is planned for removal in GitLab 15.0.
 
 Tracing provides insight into the performance and health of a deployed application, tracking each
 function or microservice that handles a given request. Tracing makes it easy to understand the

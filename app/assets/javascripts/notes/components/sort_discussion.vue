@@ -57,6 +57,7 @@ export default {
       :value="sortDirection"
       :storage-key="storageKey"
       :persist="persistSortOrder"
+      as-string
       @input="setDiscussionSortDirection({ direction: $event })"
     />
     <gl-dropdown :text="dropdownText" class="js-dropdown-text full-width-mobile">

@@ -1,4 +1,4 @@
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Component from '~/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue';
@@ -6,6 +6,7 @@ import {
   CONTAINER_REGISTRY_TITLE,
   LIST_INTRO_TEXT,
   EXPIRATION_POLICY_DISABLED_TEXT,
+  SET_UP_CLEANUP,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
@@ -21,6 +22,7 @@ describe('registry_header', () => {
   const findCommandsSlot = () => wrapper.find('[data-testid="commands-slot"]');
   const findImagesCountSubHeader = () => wrapper.find('[data-testid="images-count"]');
   const findExpirationPolicySubHeader = () => wrapper.find('[data-testid="expiration-policy"]');
+  const findSetupCleanUpLink = () => wrapper.findComponent(GlLink);
 
   const mountComponent = async (propsData, slots) => {
     wrapper = shallowMount(Component, {
@@ -88,6 +90,7 @@ describe('registry_header', () => {
           });
 
           const text = findExpirationPolicySubHeader();
+
           expect(text.exists()).toBe(true);
           expect(text.props()).toMatchObject({
             text: EXPIRATION_POLICY_DISABLED_TEXT,
@@ -100,12 +103,17 @@ describe('registry_header', () => {
           await mountComponent({
             expirationPolicy: { enabled: true },
             expirationPolicyHelpPagePath: 'foo',
+            showCleanupPolicyLink: true,
             imagesCount: 1,
           });
 
           const text = findExpirationPolicySubHeader();
+          const cleanupLink = findSetupCleanUpLink();
+
           expect(text.exists()).toBe(true);
           expect(text.props('text')).toBe('Expiration policy will run in ');
+          expect(cleanupLink.exists()).toBe(true);
+          expect(cleanupLink.text()).toBe(SET_UP_CLEANUP);
         });
         it('when the expiration policy is completely disabled', async () => {
           await mountComponent({

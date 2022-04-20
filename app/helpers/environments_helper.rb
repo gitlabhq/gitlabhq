@@ -92,7 +92,7 @@ module EnvironmentsHelper
       return path if request.path.include?(path)
     end
 
-    environment_metrics_path(environment)
+    project_metrics_dashboard_path(project, environment: environment)
   end
 
   def project_and_environment_metrics_data(project, environment)

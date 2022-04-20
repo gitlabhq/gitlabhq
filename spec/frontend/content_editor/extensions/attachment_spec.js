@@ -1,7 +1,10 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
 import Attachment from '~/content_editor/extensions/attachment';
 import Image from '~/content_editor/extensions/image';
+import Audio from '~/content_editor/extensions/audio';
+import Video from '~/content_editor/extensions/video';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
 import { VARIANT_DANGER } from '~/flash';
@@ -14,6 +17,23 @@ const PROJECT_WIKI_ATTACHMENT_IMAGE_HTML = `<p data-sourcepos="1:1-1:27" dir="au
     <img alt="test-file" class="lazy" data-src="/group1/project1/-/wikis/test-file.png" data-canonical-src="test-file.png">
   </a>
 </p>`;
+
+const PROJECT_WIKI_ATTACHMENT_VIDEO_HTML = `<p data-sourcepos="1:1-1:132" dir="auto">
+  <span class="media-container video-container">
+    <video src="/group1/project1/-/wikis/test-file.mp4" controls="true" data-setup="{}" data-title="test-file" width="400" preload="metadata" data-canonical-src="test-file.mp4">
+    </video>
+    <a href="/himkp/test/-/wikis/test-file.mp4" target="_blank" rel="noopener noreferrer" title="Download 'test-file'" data-canonical-src="test-file.mp4">test-file</a>
+  </span>
+</p>`;
+
+const PROJECT_WIKI_ATTACHMENT_AUDIO_HTML = `<p data-sourcepos="3:1-3:74" dir="auto">
+  <span class="media-container audio-container">
+    <audio src="/himkp/test/-/wikis/test-file.mp3" controls="true" data-setup="{}" data-title="test-file" data-canonical-src="test-file.mp3">
+    </audio>
+    <a href="/himkp/test/-/wikis/test-file.mp3" target="_blank" rel="noopener noreferrer" title="Download 'test-file'" data-canonical-src="test-file.mp3">test-file</a>
+  </span>
+</p>`;
+
 const PROJECT_WIKI_ATTACHMENT_LINK_HTML = `<p data-sourcepos="1:1-1:26" dir="auto">
   <a href="/group1/project1/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a>
 </p>`;
@@ -23,6 +43,8 @@ describe('content_editor/extensions/attachment', () => {
   let doc;
   let p;
   let image;
+  let audio;
+  let video;
   let loading;
   let link;
   let renderMarkdown;
@@ -31,15 +53,18 @@ describe('content_editor/extensions/attachment', () => {
 
   const uploadsPath = '/uploads/';
   const imageFile = new File(['foo'], 'test-file.png', { type: 'image/png' });
+  const audioFile = new File(['foo'], 'test-file.mp3', { type: 'audio/mpeg' });
+  const videoFile = new File(['foo'], 'test-file.mp4', { type: 'video/mp4' });
   const attachmentFile = new File(['foo'], 'test-file.zip', { type: 'application/zip' });
 
   const expectDocumentAfterTransaction = ({ number, expectedDoc, action }) => {
     return new Promise((resolve) => {
       let counter = 1;
-      const handleTransaction = () => {
+      const handleTransaction = async () => {
         if (counter === number) {
           expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
           tiptapEditor.off('update', handleTransaction);
+          await waitForPromises();
           resolve();
         }
 
@@ -60,18 +85,22 @@ describe('content_editor/extensions/attachment', () => {
         Loading,
         Link,
         Image,
+        Audio,
+        Video,
         Attachment.configure({ renderMarkdown, uploadsPath, eventHub }),
       ],
     });
 
     ({
-      builders: { doc, p, image, loading, link },
+      builders: { doc, p, image, audio, video, loading, link },
     } = createDocBuilder({
       tiptapEditor,
       names: {
         loading: { markType: Loading.name },
         image: { nodeType: Image.name },
         link: { nodeType: Link.name },
+        audio: { nodeType: Audio.name },
+        video: { nodeType: Video.name },
       },
     }));
 
@@ -103,17 +132,22 @@ describe('content_editor/extensions/attachment', () => {
       tiptapEditor.commands.setContent(initialDoc.toJSON());
     });
 
-    describe('when the file has image mime type', () => {
-      const base64EncodedFile = 'data:image/png;base64,Zm9v';
+    describe.each`
+      nodeType   | mimeType        | html                                  | file         | mediaType
+      ${'image'} | ${'image/png'}  | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML} | ${imageFile} | ${(attrs) => image(attrs)}
+      ${'audio'} | ${'audio/mpeg'} | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML} | ${audioFile} | ${(attrs) => audio(attrs)}
+      ${'video'} | ${'video/mp4'}  | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML} | ${videoFile} | ${(attrs) => video(attrs)}
+    `('when the file has $nodeType mime type', ({ mimeType, html, file, mediaType }) => {
+      const base64EncodedFile = `data:${mimeType};base64,Zm9v`;
 
       beforeEach(() => {
-        renderMarkdown.mockResolvedValue(PROJECT_WIKI_ATTACHMENT_IMAGE_HTML);
+        renderMarkdown.mockResolvedValue(html);
       });
 
       describe('when uploading succeeds', () => {
         const successResponse = {
           link: {
-            markdown: '![test-file](test-file.png)',
+            markdown: `![test-file](${file.name})`,
           },
         };
 
@@ -121,21 +155,21 @@ describe('content_editor/extensions/attachment', () => {
           mock.onPost().reply(httpStatus.OK, successResponse);
         });
 
-        it('inserts an image with src set to the encoded image file and uploading true', async () => {
-          const expectedDoc = doc(p(image({ uploading: true, src: base64EncodedFile })));
+        it('inserts a media content with src set to the encoded content and uploading true', async () => {
+          const expectedDoc = doc(p(mediaType({ uploading: true, src: base64EncodedFile })));
 
           await expectDocumentAfterTransaction({
             number: 1,
             expectedDoc,
-            action: () => tiptapEditor.commands.uploadAttachment({ file: imageFile }),
+            action: () => tiptapEditor.commands.uploadAttachment({ file }),
           });
         });
 
-        it('updates the inserted image with canonicalSrc when upload is successful', async () => {
+        it('updates the inserted content with canonicalSrc when upload is successful', async () => {
           const expectedDoc = doc(
             p(
-              image({
-                canonicalSrc: 'test-file.png',
+              mediaType({
+                canonicalSrc: file.name,
                 src: base64EncodedFile,
                 alt: 'test-file',
                 uploading: false,
@@ -146,7 +180,7 @@ describe('content_editor/extensions/attachment', () => {
           await expectDocumentAfterTransaction({
             number: 2,
             expectedDoc,
-            action: () => tiptapEditor.commands.uploadAttachment({ file: imageFile }),
+            action: () => tiptapEditor.commands.uploadAttachment({ file }),
           });
         });
       });
@@ -162,17 +196,19 @@ describe('content_editor/extensions/attachment', () => {
           await expectDocumentAfterTransaction({
             number: 2,
             expectedDoc,
-            action: () => tiptapEditor.commands.uploadAttachment({ file: imageFile }),
+            action: () => tiptapEditor.commands.uploadAttachment({ file }),
           });
         });
 
-        it('emits an alert event that includes an error message', (done) => {
-          tiptapEditor.commands.uploadAttachment({ file: imageFile });
+        it('emits an alert event that includes an error message', () => {
+          tiptapEditor.commands.uploadAttachment({ file });
 
-          eventHub.$on('alert', ({ message, variant }) => {
-            expect(variant).toBe(VARIANT_DANGER);
-            expect(message).toBe('An error occurred while uploading the image. Please try again.');
-            done();
+          return new Promise((resolve) => {
+            eventHub.$on('alert', ({ message, variant }) => {
+              expect(variant).toBe(VARIANT_DANGER);
+              expect(message).toBe('An error occurred while uploading the file. Please try again.');
+              resolve();
+            });
           });
         });
       });
@@ -243,13 +279,12 @@ describe('content_editor/extensions/attachment', () => {
           });
         });
 
-        it('emits an alert event that includes an error message', (done) => {
+        it('emits an alert event that includes an error message', () => {
           tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
 
           eventHub.$on('alert', ({ message, variant }) => {
             expect(variant).toBe(VARIANT_DANGER);
             expect(message).toBe('An error occurred while uploading the file. Please try again.');
-            done();
           });
         });
       });

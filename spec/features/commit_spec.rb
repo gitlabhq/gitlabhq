@@ -33,6 +33,10 @@ RSpec.describe 'Commit' do
       it "reports the correct number of total changes" do
         expect(page).to have_content("Changes #{commit.diffs.size}")
       end
+
+      it 'renders diff stats', :js do
+        expect(page).to have_selector(".diff-stats")
+      end
     end
 
     describe "pagination" do

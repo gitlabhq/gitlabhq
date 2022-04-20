@@ -428,3 +428,25 @@ The GitLab Conan repository supports the following Conan CLI commands:
   packages you have permission to view.
 - `conan info`: View the information on a given package from the Package Registry.
 - `conan remove`: Delete the package from the Package Registry.
+
+## Troubleshooting
+
+### Make output verbose
+
+For more verbose output when troubleshooting a Conan issue:
+
+```shell
+export CONAN_TRACE_FILE=/tmp/conan_trace.log # Or SET in windows
+conan <command>
+```
+
+You can find more logging tips in the [Conan documentation](https://docs.conan.io/en/latest/mastering/logging.html).
+
+### SSL Errors
+
+If you are using a self-signed certificate, there are two methods to manage SSL errors with Conan:
+
+- Use the `conan remote` command to disable the SSL verification.
+- Append your server `crt` file to the `cacert.pem` file.
+
+Read more about this in the [Conan Documentation](https://docs.conan.io/en/latest/howtos/use_tls_certificates.html).

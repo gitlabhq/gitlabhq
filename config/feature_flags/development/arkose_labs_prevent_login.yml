@@ -1,0 +1,8 @@
+---
+name: arkose_labs_prevent_login
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358838
+milestone: '14.10'
+type: development
+group: group::antiabuse
+default_enabled: false

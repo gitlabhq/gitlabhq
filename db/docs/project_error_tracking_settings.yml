@@ -1,0 +1,9 @@
+---
+table_name: project_error_tracking_settings
+classes:
+- ErrorTracking::ProjectErrorTrackingSetting
+feature_categories:
+- error_tracking
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/f40b5860d76a8ea5d964260834a6e83516b0f1fd
+milestone: '11.7'

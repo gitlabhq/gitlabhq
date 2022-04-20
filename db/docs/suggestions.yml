@@ -1,0 +1,9 @@
+---
+table_name: suggestions
+classes:
+- Suggestion
+feature_categories:
+- code_review
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/23d6fbf1c016aba0374b9675f621d97f52d1abb9
+milestone: '11.6'

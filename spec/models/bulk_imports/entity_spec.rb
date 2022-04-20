@@ -151,7 +151,7 @@ RSpec.describe BulkImports::Entity, type: :model do
 
   describe '.all_human_statuses' do
     it 'returns all human readable entity statuses' do
-      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed')
+      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed', 'timeout')
     end
   end
 
@@ -179,7 +179,7 @@ RSpec.describe BulkImports::Entity, type: :model do
         entity = create(:bulk_import_entity, :group_entity)
         entity.create_pipeline_trackers!
 
-        expect(entity.trackers.count).to eq(BulkImports::Groups::Stage.new(entity.bulk_import).pipelines.count)
+        expect(entity.trackers.count).to eq(BulkImports::Groups::Stage.new(entity).pipelines.count)
         expect(entity.trackers.map(&:pipeline_name)).to include(BulkImports::Groups::Pipelines::GroupPipeline.to_s)
       end
     end
@@ -189,7 +189,7 @@ RSpec.describe BulkImports::Entity, type: :model do
         entity = create(:bulk_import_entity, :project_entity)
         entity.create_pipeline_trackers!
 
-        expect(entity.trackers.count).to eq(BulkImports::Projects::Stage.new(entity.bulk_import).pipelines.count)
+        expect(entity.trackers.count).to eq(BulkImports::Projects::Stage.new(entity).pipelines.count)
         expect(entity.trackers.map(&:pipeline_name)).to include(BulkImports::Projects::Pipelines::ProjectPipeline.to_s)
       end
     end

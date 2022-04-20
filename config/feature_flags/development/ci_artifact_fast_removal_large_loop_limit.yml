@@ -1,8 +1,0 @@
----
-name: ci_artifact_fast_removal_large_loop_limit
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76504
-rollout_issue_url:
-milestone: '14.6'
-type: development
-group: group::pipeline execution
-default_enabled: false

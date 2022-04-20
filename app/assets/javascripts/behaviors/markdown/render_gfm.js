@@ -26,7 +26,7 @@ $.fn.renderGFM = function renderGFM() {
 
   const mrPopoverElements = this.find('.gfm-merge_request').get();
   if (mrPopoverElements.length) {
-    import(/* webpackChunkName: 'MrPopoverBundle' */ '../../mr_popover')
+    import(/* webpackChunkName: 'MrPopoverBundle' */ '~/mr_popover')
       .then(({ default: initMRPopovers }) => {
         initMRPopovers(mrPopoverElements);
       })

@@ -1,0 +1,9 @@
+---
+table_name: geo_reset_checksum_events
+classes:
+- Geo::ResetChecksumEvent
+feature_categories:
+- geo_replication
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7394
+milestone: '11.4'

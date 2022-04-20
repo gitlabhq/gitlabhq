@@ -27,17 +27,25 @@ module Gitlab
               strong_memoize(:content) { fetch_local_content }
             end
 
+            def metadata
+              super.merge(
+                type: :file,
+                location: masked_location,
+                extra: { project: masked_project_name, ref: masked_ref_name }
+              )
+            end
+
             private
 
             def validate_content!
               if !can_access_local_content?
-                errors.push("Project `#{project_name}` not found or access denied!")
+                errors.push("Project `#{masked_project_name}` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.")
               elsif sha.nil?
-                errors.push("Project `#{project_name}` reference `#{ref_name}` does not exist!")
+                errors.push("Project `#{masked_project_name}` reference `#{masked_ref_name}` does not exist!")
               elsif content.nil?
-                errors.push("Project `#{project_name}` file `#{masked_location}` does not exist!")
+                errors.push("Project `#{masked_project_name}` file `#{masked_location}` does not exist!")
               elsif content.blank?
-                errors.push("Project `#{project_name}` file `#{masked_location}` is empty!")
+                errors.push("Project `#{masked_project_name}` file `#{masked_location}` is empty!")
               end
             end
 
@@ -75,6 +83,18 @@ module Gitlab
                 parent_pipeline: context.parent_pipeline,
                 variables: context.variables
               }
+            end
+
+            def masked_project_name
+              strong_memoize(:masked_project_name) do
+                context.mask_variables_from(project_name)
+              end
+            end
+
+            def masked_ref_name
+              strong_memoize(:masked_ref_name) do
+                context.mask_variables_from(ref_name)
+              end
             end
           end
         end

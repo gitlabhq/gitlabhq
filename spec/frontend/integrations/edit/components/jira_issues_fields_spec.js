@@ -10,7 +10,6 @@ describe('JiraIssuesFields', () => {
   let wrapper;
 
   const defaultProps = {
-    editProjectPath: '/edit',
     showJiraIssuesIntegration: true,
     showJiraVulnerabilitiesIntegration: true,
     upgradePlanPath: 'https://gitlab.com',
@@ -46,7 +45,6 @@ describe('JiraIssuesFields', () => {
   const findPremiumUpgradeCTA = () => wrapper.findByTestId('premium-upgrade-cta');
   const findUltimateUpgradeCTA = () => wrapper.findByTestId('ultimate-upgrade-cta');
   const findJiraForVulnerabilities = () => wrapper.findByTestId('jira-for-vulnerabilities');
-  const findConflictWarning = () => wrapper.findByTestId('conflict-warning-text');
   const setEnableCheckbox = async (isEnabled = true) =>
     findEnableCheckbox().vm.$emit('input', isEnabled);
 
@@ -75,10 +73,9 @@ describe('JiraIssuesFields', () => {
         });
 
         if (showJiraIssuesIntegration) {
-          it('renders checkbox and input field', () => {
+          it('renders enable checkbox', () => {
             expect(findEnableCheckbox().exists()).toBe(true);
             expect(findEnableCheckboxDisabled()).toBeUndefined();
-            expect(findProjectKey().exists()).toBe(true);
           });
 
           it('does not render the Premium CTA', () => {
@@ -98,9 +95,8 @@ describe('JiraIssuesFields', () => {
             });
           }
         } else {
-          it('does not render checkbox and input field', () => {
+          it('does not render enable checkbox', () => {
             expect(findEnableCheckbox().exists()).toBe(false);
-            expect(findProjectKey().exists()).toBe(false);
           });
 
           it('renders the Premium CTA', () => {
@@ -122,12 +118,8 @@ describe('JiraIssuesFields', () => {
         createComponent({ props: { initialProjectKey: '' } });
       });
 
-      it('renders disabled project_key input', () => {
-        const projectKey = findProjectKey();
-
-        expect(projectKey.exists()).toBe(true);
-        expect(projectKey.attributes('disabled')).toBe('disabled');
-        expect(projectKey.attributes('required')).toBeUndefined();
+      it('does not render project_key input', () => {
+        expect(findProjectKey().exists()).toBe(false);
       });
 
       // As per https://vuejs.org/v2/guide/forms.html#Checkbox-1,
@@ -137,43 +129,21 @@ describe('JiraIssuesFields', () => {
       });
 
       describe('when isInheriting = true', () => {
-        it('disables checkbox and sets input as readonly', () => {
+        it('disables checkbox', () => {
           createComponent({ isInheriting: true });
 
           expect(findEnableCheckboxDisabled()).toBe('disabled');
-          expect(findProjectKey().attributes('readonly')).toBe('readonly');
         });
       });
 
       describe('on enable issues', () => {
-        it('enables project_key input as required', async () => {
+        it('renders project_key input as required', async () => {
           await setEnableCheckbox(true);
 
-          expect(findProjectKey().attributes('disabled')).toBeUndefined();
+          expect(findProjectKey().exists()).toBe(true);
           expect(findProjectKey().attributes('required')).toBe('required');
         });
       });
-    });
-
-    it('contains link to editProjectPath', () => {
-      createComponent();
-
-      expect(wrapper.find(`a[href="${defaultProps.editProjectPath}"]`).exists()).toBe(true);
-    });
-
-    describe('GitLab issues warning', () => {
-      it.each`
-        gitlabIssuesEnabled | scenario
-        ${true}             | ${'displays conflict warning'}
-        ${false}            | ${'does not display conflict warning'}
-      `(
-        '$scenario when `gitlabIssuesEnabled` is `$gitlabIssuesEnabled`',
-        ({ gitlabIssuesEnabled }) => {
-          createComponent({ props: { gitlabIssuesEnabled } });
-
-          expect(findConflictWarning().exists()).toBe(gitlabIssuesEnabled);
-        },
-      );
     });
 
     describe('Vulnerabilities creation', () => {

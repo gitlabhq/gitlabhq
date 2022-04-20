@@ -1,4 +1,4 @@
-import AccessorUtilities from '../../lib/utils/accessor';
+import AccessorUtilities from '~/lib/utils/accessor';
 import RecentSearchesServiceError from './recent_searches_service_error';
 
 class RecentSearchesService {

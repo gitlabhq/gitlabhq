@@ -15,11 +15,19 @@ RSpec.describe 'Blob shortcuts', :js do
   end
 
   shared_examples "quotes the selected text" do
-    it "quotes the selected text", :quarantine do
-      select_element('.note-text')
+    it 'quotes the selected text in main comment form', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/356388' do
+      select_element('#notes-list .note:first-child .note-text')
       find('body').native.send_key('r')
 
       expect(find('.js-main-target-form .js-vue-comment-form').value).to include(note_text)
+    end
+
+    it 'quotes the selected text in the discussion reply form', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/356388' do
+      find('#notes-list .note:first-child .js-reply-button').click
+      select_element('#notes-list .note:first-child .note-text')
+      find('body').native.send_key('r')
+
+      expect(find('#notes-list .note:first-child .js-vue-markdown-field .js-gfm-input').value).to include(note_text)
     end
   end
 

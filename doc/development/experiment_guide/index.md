@@ -64,8 +64,8 @@ We recommend the following workflow:
 1. **If the experiment is a success**, designers add the new icon or illustration to the Pajamas UI kit as part of the cleanup process.
    Engineers can then add it to the [SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/) and modify the implementation based on the
    [Frontend Development Guidelines](../fe_guide/icons.md#usage-in-hamlrails-2).
-   
-## Turn off all experiments 
+
+## Turn off all experiments
 
 When there is a case on GitLab.com (SaaS) that necessitates turning off all experiments, we have this control.
 

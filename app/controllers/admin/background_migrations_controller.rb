@@ -6,8 +6,8 @@ class Admin::BackgroundMigrationsController < Admin::ApplicationController
   def index
     @relations_by_tab = {
       'queued' => batched_migration_class.queued.queue_order,
-      'failed' => batched_migration_class.failed.queue_order,
-      'finished' => batched_migration_class.finished.queue_order.reverse_order
+      'failed' => batched_migration_class.with_status(:failed).queue_order,
+      'finished' => batched_migration_class.with_status(:finished).queue_order.reverse_order
     }
 
     @current_tab = @relations_by_tab.key?(params[:tab]) ? params[:tab] : 'queued'
@@ -17,14 +17,14 @@ class Admin::BackgroundMigrationsController < Admin::ApplicationController
 
   def pause
     migration = batched_migration_class.find(params[:id])
-    migration.paused!
+    migration.pause!
 
     redirect_back fallback_location: { action: 'index' }
   end
 
   def resume
     migration = batched_migration_class.find(params[:id])
-    migration.active!
+    migration.execute!
 
     redirect_back fallback_location: { action: 'index' }
   end

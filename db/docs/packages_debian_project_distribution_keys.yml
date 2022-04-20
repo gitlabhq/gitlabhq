@@ -1,0 +1,9 @@
+---
+table_name: packages_debian_project_distribution_keys
+classes:
+- Packages::Debian::ProjectDistributionKey
+feature_categories:
+- package_registry
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60993
+milestone: '14.0'

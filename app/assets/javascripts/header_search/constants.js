@@ -20,6 +20,12 @@ export const GROUPS_CATEGORY = 'Groups';
 
 export const PROJECTS_CATEGORY = 'Projects';
 
+export const ISSUES_CATEGORY = 'Recent issues';
+
+export const MERGE_REQUEST_CATEGORY = 'Recent merge requests';
+
+export const RECENT_EPICS_CATEGORY = 'Recent epics';
+
 export const LARGE_AVATAR_PX = 32;
 
 export const SMALL_AVATAR_PX = 16;
@@ -27,6 +33,8 @@ export const SMALL_AVATAR_PX = 16;
 export const FIRST_DROPDOWN_INDEX = 0;
 
 export const SEARCH_BOX_INDEX = -1;
+
+export const SEARCH_SHORTCUTS_MIN_CHARACTERS = 2;
 
 export const SEARCH_INPUT_DESCRIPTION = 'search-input-description';
 

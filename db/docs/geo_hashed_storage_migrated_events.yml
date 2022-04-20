@@ -1,0 +1,9 @@
+---
+table_name: geo_hashed_storage_migrated_events
+classes:
+- Geo::HashedStorageMigratedEvent
+feature_categories:
+- geo_replication
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3066
+milestone: '10.2'

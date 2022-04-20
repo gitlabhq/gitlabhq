@@ -33,6 +33,7 @@ import {
   TH_CREATED_AT_TEST_ID,
   TH_INCIDENT_SLA_TEST_ID,
   TH_SEVERITY_TEST_ID,
+  TH_ESCALATION_STATUS_TEST_ID,
   TH_PUBLISHED_TEST_ID,
   INCIDENT_DETAILS_PATH,
   trackIncidentCreateNewOptions,
@@ -67,8 +68,11 @@ export default {
     {
       key: 'escalationStatus',
       label: s__('IncidentManagement|Status'),
-      thClass: `${thClass} gl-w-eighth gl-pointer-events-none`,
-      tdClass,
+      thClass: `${thClass} gl-w-eighth`,
+      tdClass: `${tdClass} sortable-cell`,
+      actualSortKey: 'ESCALATION_STATUS',
+      sortable: true,
+      thAttr: TH_ESCALATION_STATUS_TEST_ID,
     },
     {
       key: 'createdAt',
@@ -354,7 +358,7 @@ export default {
           :loading="redirecting"
           :disabled="redirecting"
           category="primary"
-          variant="success"
+          variant="confirm"
           :href="newIncidentPath"
           @click="navigateToCreateNewIncident"
         >
@@ -388,19 +392,24 @@ export default {
           </template>
 
           <template #cell(title)="{ item }">
-            <div :class="{ 'gl-display-flex gl-align-items-center': item.state === 'closed' }">
+            <div
+              :class="{
+                'gl-display-flex gl-align-items-center gl-max-w-full': item.state === 'closed',
+              }"
+            >
               <gl-link
-                v-gl-tooltip
-                :title="item.title"
                 data-testid="incident-link"
                 :href="showIncidentLink(item)"
+                class="gl-min-w-0"
               >
-                {{ item.title }}
+                <tooltip-on-truncate :title="item.title" class="gl-text-truncate gl-display-block">
+                  {{ item.title }}
+                </tooltip-on-truncate>
               </gl-link>
               <gl-icon
                 v-if="item.state === 'closed'"
                 name="issue-close"
-                class="gl-mx-1 gl-fill-blue-500 gl-flex-shrink-0"
+                class="gl-ml-2 gl-fill-blue-500 gl-flex-shrink-0"
                 :size="16"
                 data-testid="incident-closed"
               />

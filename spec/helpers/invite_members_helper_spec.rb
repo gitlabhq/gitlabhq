@@ -19,6 +19,7 @@ RSpec.describe InviteMembersHelper do
     it 'has expected common attributes' do
       attributes = {
         id: project.id,
+        root_id: project.root_ancestor.id,
         name: project.name,
         default_access_level: Gitlab::Access::GUEST,
         invalid_groups: project.related_group_ids,
@@ -35,6 +36,7 @@ RSpec.describe InviteMembersHelper do
     it 'has expected common attributes' do
       attributes = {
         id: project.id,
+        root_id: project.root_ancestor.id,
         name: project.name,
         default_access_level: Gitlab::Access::GUEST
       }

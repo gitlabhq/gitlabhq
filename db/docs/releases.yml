@@ -1,0 +1,9 @@
+---
+table_name: releases
+classes:
+- Release
+feature_categories:
+- release_orchestration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1c4d1c3bd69a6f9ec43cce4ab59de4ba47f73229
+milestone: '8.2'

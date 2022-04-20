@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
   # This prefixless path is required because Jira gets confused if we set it up with a path
   # More information: https://gitlab.com/gitlab-org/gitlab/issues/6752
-  scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+  scope path: '/login/oauth', controller: 'oauth/jira_dvcs/authorizations', as: :oauth_jira_dvcs do
     get :authorize, action: :new
     get :callback
     post :access_token
@@ -66,6 +66,7 @@ Rails.application.routes.draw do
     end
 
     Gitlab.ee do
+      resource :company, only: [:new, :create], controller: 'company'
       resources :groups, only: [:new, :create]
       resources :projects, only: [:new, :create]
       resources :groups_projects, only: [:new, :create] do
@@ -236,6 +237,7 @@ Rails.application.routes.draw do
     resources :clusters, only: [:index, :new, :show, :update, :destroy] do
       collection do
         get  :connect
+        get  :new_cluster_docs
         post :create_user
         post :create_gcp
         post :create_aws
@@ -323,7 +325,7 @@ Rails.application.routes.draw do
 
   root to: "root#index"
 
-  get '*unmatched_route', to: 'application#route_not_found'
+  get '*unmatched_route', to: 'application#route_not_found', format: false
 end
 
 Gitlab::Routing.add_helpers(TimeboxesRoutingHelper)

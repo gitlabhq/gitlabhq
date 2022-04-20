@@ -1,0 +1,10 @@
+---
+table_name: feature_gates
+classes:
+- Feature::FlipperGate
+- Flipper::Adapters::ActiveRecord::Gate
+feature_categories:
+- feature_flags
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/671284ba375109becbfa2a288032cdc7301b157b
+milestone: '9.3'

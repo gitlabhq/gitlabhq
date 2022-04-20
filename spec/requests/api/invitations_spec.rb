@@ -69,13 +69,31 @@ RSpec.describe API::Invitations do
           end
         end
 
-        it 'invites a new member' do
+        it 'adds a new member by email' do
           expect do
             post invitations_url(source, maintainer),
                  params: { email: email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(1)
+        end
+
+        it 'adds a new member by user_id' do
+          expect do
+            post invitations_url(source, maintainer),
+                 params: { user_id: stranger.id, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.non_invite.count }.by(1)
+        end
+
+        it 'adds new members with email and user_id' do
+          expect do
+            post invitations_url(source, maintainer),
+                 params: { email: email, user_id: stranger.id, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.invite.count }.by(1).and change { source.members.non_invite.count }.by(1)
         end
 
         it 'invites a list of new email addresses' do
@@ -87,6 +105,19 @@ RSpec.describe API::Invitations do
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(2)
+        end
+
+        it 'invites a list of new email addresses and user ids' do
+          expect do
+            stranger2 = create(:user)
+            email_list = [email, email2].join(',')
+            user_id_list = "#{stranger.id},#{stranger2.id}"
+
+            post invitations_url(source, maintainer),
+                 params: { email: email_list, user_id: user_id_list, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.invite.count }.by(2).and change { source.members.non_invite.count }.by(2)
         end
       end
 
@@ -235,27 +266,36 @@ RSpec.describe API::Invitations do
         expect(json_response['message'][developer.email]).to eq("User already exists in source")
       end
 
-      it 'returns 404 when the email is not valid' do
+      it 'returns 400 when the invite params of email and user_id are not sent' do
+        post invitations_url(source, maintainer),
+             params: { access_level: Member::MAINTAINER }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
+      end
+
+      it 'returns 400 when the email is blank' do
         post invitations_url(source, maintainer),
              params: { email: '', access_level: Member::MAINTAINER }
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['message']).to eq('Emails cannot be blank')
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
       end
 
-      it 'returns 404 when the email list is not a valid format' do
+      it 'returns 400 when the user_id is blank' do
+        post invitations_url(source, maintainer),
+             params: { user_id: '', access_level: Member::MAINTAINER }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
+      end
+
+      it 'returns 400 when the email list is not a valid format' do
         post invitations_url(source, maintainer),
              params: { email: 'email1@example.com,not-an-email', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('email contains an invalid email address')
-      end
-
-      it 'returns 400 when email is not given' do
-        post invitations_url(source, maintainer),
-             params: { access_level: Member::MAINTAINER }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when access_level is not given' do
@@ -278,11 +318,89 @@ RSpec.describe API::Invitations do
     it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
       let(:source) { project }
     end
+
+    it 'records queries', :request_store, :use_sql_query_cache do
+      post invitations_url(project, maintainer), params: { email: email, access_level: Member::DEVELOPER }
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(project, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
+      end
+
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+
+      unresolved_n_plus_ones = 44 # old 48 with 12 per new email, currently there are 11 queries added per email
+
+      expect do
+        post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+    end
+
+    it 'records queries with secondary emails', :request_store, :use_sql_query_cache do
+      create(:email, email: email, user: create(:user))
+
+      post invitations_url(project, maintainer), params: { email: email, access_level: Member::DEVELOPER }
+
+      create(:email, email: email2, user: create(:user))
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(project, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
+      end
+
+      create(:email, email: 'email4@example.com', user: create(:user))
+      create(:email, email: 'email6@example.com', user: create(:user))
+
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+
+      unresolved_n_plus_ones = 67 # currently there are 11 queries added per email
+
+      expect do
+        post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+    end
   end
 
   describe 'POST /groups/:id/invitations' do
     it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
       let(:source) { group }
+    end
+
+    it 'records queries', :request_store, :use_sql_query_cache do
+      post invitations_url(group, maintainer), params: { email: email, access_level: Member::DEVELOPER }
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(group, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
+      end
+
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+
+      unresolved_n_plus_ones = 36 # old 40 with 10 per new email, currently there are 9 queries added per email
+
+      expect do
+        post invitations_url(group, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+    end
+
+    it 'records queries with secondary emails', :request_store, :use_sql_query_cache do
+      create(:email, email: email, user: create(:user))
+
+      post invitations_url(group, maintainer), params: { email: email, access_level: Member::DEVELOPER }
+
+      create(:email, email: email2, user: create(:user))
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(group, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
+      end
+
+      create(:email, email: 'email4@example.com', user: create(:user))
+      create(:email, email: 'email6@example.com', user: create(:user))
+
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+
+      unresolved_n_plus_ones = 62 # currently there are 9 queries added per email
+
+      expect do
+        post invitations_url(group, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
     end
   end
 
@@ -313,23 +431,6 @@ RSpec.describe API::Invitations do
             expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
-      end
-
-      it 'avoids N+1 queries' do
-        invite_member_by_email(source, source_type, email, maintainer)
-
-        # Establish baseline
-        get invitations_url(source, maintainer)
-
-        control = ActiveRecord::QueryRecorder.new do
-          get invitations_url(source, maintainer)
-        end
-
-        invite_member_by_email(source, source_type, email2, maintainer)
-
-        expect do
-          get invitations_url(source, maintainer)
-        end.not_to exceed_query_limit(control)
       end
 
       it 'does not find confirmed members' do

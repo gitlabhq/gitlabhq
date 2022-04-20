@@ -109,20 +109,18 @@ export default {
         :key="user.id"
         :class="{
           'user-item': !showVerticalList,
+          'gl-display-inline-block': !showVerticalList,
+          'gl-display-grid gl-align-items-center': showVerticalList,
           'gl-mb-3': index !== users.length - 1 && showVerticalList,
         }"
-        class="gl-display-inline-block"
+        class="assignee-grid"
       >
-        <attention-requested-toggle
-          v-if="showVerticalList"
-          :user="user"
-          type="assignee"
-          @toggle-attention-requested="toggleAttentionRequested"
-        />
         <assignee-avatar-link
           :user="user"
           :issuable-type="issuableType"
           :tooltip-has-name="!showVerticalList"
+          class="gl-word-break-word"
+          data-css-area="user"
         >
           <div
             v-if="showVerticalList"
@@ -133,6 +131,14 @@ export default {
             <span>@{{ user.username }}</span>
           </div>
         </assignee-avatar-link>
+        <attention-requested-toggle
+          v-if="showVerticalList"
+          :user="user"
+          type="assignee"
+          class="gl-mr-2"
+          data-css-area="attention"
+          @toggle-attention-requested="toggleAttentionRequested"
+        />
       </div>
     </div>
     <div v-if="renderShowMoreSection" class="user-list-more gl-hover-text-blue-800">

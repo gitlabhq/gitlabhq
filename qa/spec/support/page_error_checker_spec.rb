@@ -238,6 +238,88 @@ RSpec.describe QA::Support::PageErrorChecker do
     end
   end
 
+  describe '::log_request_errors' do
+    let(:page_url) { 'https://baz.foo' }
+    let(:browser) { double('browser', current_url: page_url) }
+    let(:driver) { double('driver', browser: browser) }
+    let(:session) { double('session', driver: driver) }
+
+    before do
+      allow(Capybara).to receive(:current_session).and_return(session)
+    end
+
+    it 'logs from the error cache' do
+      error = {
+        'url' => 'https://foo.bar',
+        'status' => 500,
+        'method' => 'GET',
+        'headers' => { 'x-request-id' => '12345' }
+      }
+
+      expect(page).to receive(:driver).and_return(driver)
+      expect(page).to receive(:execute_script).and_return({ 'errors' => [error] })
+      expect(page).to receive(:execute_script)
+
+      expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
+      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR.chomp)
+        Interceptor Api Errors
+        [500] GET https://foo.bar -- Correlation Id: 12345
+      ERROR
+
+      QA::Support::PageErrorChecker.log_request_errors(page)
+    end
+
+    it 'removes duplicates' do
+      error = {
+        'url' => 'https://foo.bar',
+        'status' => 500,
+        'method' => 'GET',
+        'headers' => { 'x-request-id' => '12345' }
+      }
+      expect(page).to receive(:driver).and_return(driver)
+      expect(page).to receive(:execute_script).and_return({ 'errors' => [error, error, error] })
+      expect(page).to receive(:execute_script)
+
+      expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
+      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR.chomp).exactly(1).time
+        Interceptor Api Errors
+        [500] GET https://foo.bar -- Correlation Id: 12345
+      ERROR
+
+      QA::Support::PageErrorChecker.log_request_errors(page)
+    end
+
+    it 'chops the url query string' do
+      error = {
+        'url' => 'https://foo.bar?query={ sensitive-data: 12345 }',
+        'status' => 500,
+        'method' => 'GET',
+        'headers' => { 'x-request-id' => '12345' }
+      }
+      expect(page).to receive(:driver).and_return(driver)
+      expect(page).to receive(:execute_script).and_return({ 'errors' => [error] })
+      expect(page).to receive(:execute_script)
+
+      expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
+      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR.chomp)
+        Interceptor Api Errors
+        [500] GET https://foo.bar -- Correlation Id: 12345
+      ERROR
+
+      QA::Support::PageErrorChecker.log_request_errors(page)
+    end
+
+    it 'returns if cache is nil' do
+      expect(page).to receive(:driver).and_return(driver)
+      expect(page).to receive(:execute_script).and_return(nil)
+
+      expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
+      expect(QA::Runtime::Logger).not_to receive(:error)
+
+      QA::Support::PageErrorChecker.log_request_errors(page)
+    end
+  end
+
   describe '.logs' do
     before do
       logs_class = Class.new do

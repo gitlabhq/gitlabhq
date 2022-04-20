@@ -15,13 +15,14 @@ module Projects::AlertManagementHelper
     }
   end
 
-  def alert_management_detail_data(project, alert_id)
+  def alert_management_detail_data(current_user, project, alert_id)
     {
       'alert-id' => alert_id,
       'project-path' => project.full_path,
       'project-id' => project.id,
       'project-issues-path' => project_issues_path(project),
-      'page' => 'OPERATIONS'
+      'page' => 'OPERATIONS',
+      'can-update' => can?(current_user, :update_alert_management_alert, project).to_s
     }
   end
 

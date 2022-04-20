@@ -1,0 +1,9 @@
+---
+table_name: service_desk_settings
+classes:
+- ServiceDeskSetting
+feature_categories:
+- service_desk
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19515
+milestone: '12.6'

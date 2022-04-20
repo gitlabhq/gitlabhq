@@ -17,18 +17,16 @@
       = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
     .form-group
       = f.label :restricted_visibility_levels, class: 'label-bold'
-      - checkbox_name = 'application_setting[restricted_visibility_levels][]'
-      = hidden_field_tag(checkbox_name)
-      - restricted_level_checkboxes('restricted-visibility-help', checkbox_name, class: 'form-check-input').each do |level|
-        .form-check
-          = level
+      = hidden_field_tag 'application_setting[restricted_visibility_levels][]'
+      - restricted_level_checkboxes(f).each do |level|
+        = level
       %span.form-text.text-muted#restricted-visibility-help
         = _('Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.')
     .form-group
       = f.label :import_sources, class: 'label-bold'
       = hidden_field_tag 'application_setting[import_sources][]'
-      - import_sources_checkboxes('import-sources-help', class: 'form-check-input').each do |source|
-        .form-check= source
+      - import_sources_checkboxes(f).each do |source|
+        = source
       %span.form-text.text-muted#import-sources-help
         = _('Enabled sources for code import during project creation. OmniAuth must be configured for GitHub')
         = link_to sprite_icon('question-o'), help_page_path("integration/github")
@@ -40,10 +38,7 @@
     = render_if_exists 'admin/application_settings/ldap_access_setting', form: f
 
     .form-group
-      .form-check
-        = f.check_box :project_export_enabled, class: 'form-check-input'
-        = f.label :project_export_enabled, class: 'form-check-label' do
-          = _('Project export enabled')
+      = f.gitlab_ui_checkbox_component :project_export_enabled, s_('AdminSettings|Project export enabled')
 
     .form-group
       %label.label-bold= _('Enabled Git access protocols')
@@ -57,7 +52,7 @@
       %span.form-text.text-muted#custom_http_clone_url_root_help_block
         = _('Replaces the clone URL root.')
 
-    - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+    - Gitlab::SSHPublicKey.supported_types.each do |type|
       - field_name = :"#{type}_key_restriction"
       .form-group
         = f.label field_name, "#{type.upcase} SSH keys", class: 'label-bold'
@@ -65,9 +60,6 @@
 
     .form-group
       %label.label-bold= s_('AdminSettings|Feed token')
-      .form-check
-        = f.check_box :disable_feed_token, class: 'form-check-input'
-        = f.label :disable_feed_token, class: 'form-check-label' do
-          = s_('AdminSettings|Disable feed token')
+      = f.gitlab_ui_checkbox_component :disable_feed_token, s_('AdminSettings|Disable feed token')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

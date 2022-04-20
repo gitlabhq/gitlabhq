@@ -57,8 +57,9 @@ module QA
         }.freeze
 
         LICENSE_TYPE = {
-          license_file: 'license file',
-          cloud_license: 'cloud license'
+          legacy_license: 'legacy license',
+          online_cloud: 'online license',
+          offline_cloud: 'offline license'
         }.freeze
       end
     end

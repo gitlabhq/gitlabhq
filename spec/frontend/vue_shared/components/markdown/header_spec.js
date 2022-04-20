@@ -95,7 +95,7 @@ describe('Markdown field header component', () => {
   it('hides toolbar in preview mode', () => {
     createWrapper({ previewMarkdown: true });
 
-    expect(findToolbar().classes().includes('gl-display-none')).toBe(true);
+    expect(findToolbar().classes().includes('gl-display-none!')).toBe(true);
   });
 
   it('emits toggle markdown event when clicking preview tab', async () => {

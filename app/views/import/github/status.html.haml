@@ -7,4 +7,4 @@
 
 - paginatable = Feature.enabled?(:remove_legacy_github_client)
 
-= render 'import/githubish_status', provider: 'github', paginatable: paginatable
+= render 'import/githubish_status', provider: 'github', paginatable: paginatable, default_namespace: @namespace

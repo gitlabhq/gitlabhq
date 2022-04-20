@@ -1,12 +1,14 @@
 <script>
 import { GlBadge, GlLink } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { formatNumber } from '~/locale';
+import { fetchPolicies } from '~/lib/graphql';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
+import RunnerBulkDelete from '../components/runner_bulk_delete.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerName from '../components/runner_name.vue';
 import RunnerStats from '../components/stat/runner_stats.vue';
@@ -14,6 +16,7 @@ import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
 
+import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import {
@@ -37,7 +40,7 @@ import { captureException } from '../sentry_utils';
 
 const runnersCountSmartQuery = {
   query: runnersAdminCountQuery,
-  fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+  fetchPolicy: fetchPolicies.NETWORK_ONLY,
   update(data) {
     return data?.runners?.count;
   },
@@ -53,6 +56,7 @@ export default {
     GlLink,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
+    RunnerBulkDelete,
     RunnerList,
     RunnerName,
     RunnerStats,
@@ -60,6 +64,8 @@ export default {
     RunnerTypeTabs,
     RunnerActionsCell,
   },
+  mixins: [glFeatureFlagMixin()],
+  inject: ['localMutations'],
   props: {
     registrationToken: {
       type: String,
@@ -78,10 +84,7 @@ export default {
   apollo: {
     runners: {
       query: runnersAdminQuery,
-      // Runners can be updated by users directly in this list.
-      // A "cache and network" policy prevents outdated filtered
-      // results.
-      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
       variables() {
         return this.variables;
       },
@@ -176,12 +179,18 @@ export default {
     },
     searchTokens() {
       return [
+        pausedTokenConfig,
         statusTokenConfig,
         {
           ...tagTokenConfig,
           recentSuggestionsStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,
         },
       ];
+    },
+    isBulkDeleteEnabled() {
+      // Feature flag: admin_runners_bulk_delete
+      // Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/353981
+      return this.glFeatures.adminRunnersBulkDelete;
     },
   },
   watch: {
@@ -224,12 +233,28 @@ export default {
       }
       return '';
     },
+    refetchFilteredCounts() {
+      this.$apollo.queries.allRunnersCount.refetch();
+      this.$apollo.queries.instanceRunnersCount.refetch();
+      this.$apollo.queries.groupRunnersCount.refetch();
+      this.$apollo.queries.projectRunnersCount.refetch();
+    },
+    onToggledPaused() {
+      // When a runner is Paused, the tab count can
+      // become stale, refetch outdated counts.
+      this.refetchFilteredCounts();
+    },
     onDeleted({ message }) {
       this.$root.$toast?.show(message);
-      this.$apollo.queries.runners.refetch();
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
+    },
+    onChecked({ runner, isChecked }) {
+      this.localMutations.setRunnerChecked({
+        runner,
+        isChecked,
+      });
     },
   },
   filteredSearchNamespace: ADMIN_FILTERED_SEARCH_NAMESPACE,
@@ -279,7 +304,13 @@ export default {
       {{ __('No runners found') }}
     </div>
     <template v-else>
-      <runner-list :runners="runners.items" :loading="runnersLoading">
+      <runner-bulk-delete v-if="isBulkDeleteEnabled" />
+      <runner-list
+        :runners="runners.items"
+        :loading="runnersLoading"
+        :checkable="isBulkDeleteEnabled"
+        @checked="onChecked"
+      >
         <template #runner-name="{ runner }">
           <gl-link :href="runner.adminUrl">
             <runner-name :runner="runner" />
@@ -289,6 +320,7 @@ export default {
           <runner-actions-cell
             :runner="runner"
             :edit-url="runner.editAdminUrl"
+            @toggledPaused="onToggledPaused"
             @deleted="onDeleted"
           />
         </template>

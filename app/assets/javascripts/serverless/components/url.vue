@@ -1,5 +1,5 @@
 <script>
-import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
   components: {

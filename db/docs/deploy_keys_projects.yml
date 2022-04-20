@@ -1,0 +1,9 @@
+---
+table_name: deploy_keys_projects
+classes:
+- DeployKeysProject
+feature_categories:
+- continuous_delivery
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/a735ce2aa7da72242629a4452c33e7a1900fdd62
+milestone: "<6.0"

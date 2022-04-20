@@ -1,6 +1,8 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _("Members")
 
+= render_if_exists 'shared/user_over_limit_free_plan_alert', source: @project
+
 .row.gl-mt-3
   .col-lg-12
     - if can_invite_members_for_project?(@project)

@@ -9,7 +9,7 @@ import { __, sprintf } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { splitCamelCase } from '../../lib/utils/text_utility';
+import { splitCamelCase } from '~/lib/utils/text_utility';
 import ReplyButton from './note_actions/reply_button.vue';
 
 export default {
@@ -292,40 +292,18 @@ export default {
       class="line-resolve-btn note-action-button"
       @click="onResolve"
     />
-    <template v-if="canAwardEmoji">
-      <emoji-picker
-        v-if="glFeatures.improvedEmojiPicker"
-        toggle-class="note-action-button note-emoji-button gl-text-gray-600 gl-m-3 gl-p-0! gl-shadow-none! gl-bg-transparent!"
-        @click="setAwardEmoji"
-      >
-        <template #button-content>
-          <gl-icon class="link-highlight award-control-icon-neutral gl-m-0!" name="slight-smile" />
-          <gl-icon class="link-highlight award-control-icon-positive gl-m-0!" name="smiley" />
-          <gl-icon class="link-highlight award-control-icon-super-positive gl-m-0!" name="smile" />
-        </template>
-      </emoji-picker>
-      <gl-button
-        v-else
-        v-gl-tooltip
-        :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
-        class="note-action-button note-emoji-button add-reaction-button js-add-award js-note-emoji"
-        category="tertiary"
-        variant="default"
-        :title="$options.i18n.addReactionLabel"
-        :aria-label="$options.i18n.addReactionLabel"
-        data-position="right"
-      >
-        <span class="reaction-control-icon reaction-control-icon-neutral">
-          <gl-icon name="slight-smile" />
-        </span>
-        <span class="reaction-control-icon reaction-control-icon-positive">
-          <gl-icon name="smiley" />
-        </span>
-        <span class="reaction-control-icon reaction-control-icon-super-positive">
-          <gl-icon name="smile" />
-        </span>
-      </gl-button>
-    </template>
+    <emoji-picker
+      v-if="canAwardEmoji"
+      toggle-class="note-action-button note-emoji-button gl-text-gray-600 gl-m-3 gl-p-0! gl-shadow-none! gl-bg-transparent!"
+      data-testid="note-emoji-button"
+      @click="setAwardEmoji"
+    >
+      <template #button-content>
+        <gl-icon class="link-highlight award-control-icon-neutral gl-m-0!" name="slight-smile" />
+        <gl-icon class="link-highlight award-control-icon-positive gl-m-0!" name="smiley" />
+        <gl-icon class="link-highlight award-control-icon-super-positive gl-m-0!" name="smile" />
+      </template>
+    </emoji-picker>
     <reply-button
       v-if="showReply"
       ref="replyButton"

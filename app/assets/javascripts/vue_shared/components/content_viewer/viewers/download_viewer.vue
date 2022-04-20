@@ -1,6 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import { numberToHumanSize } from '../../../../lib/utils/number_utils';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 
 export default {
   components: {

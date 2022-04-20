@@ -99,7 +99,7 @@ POST /projects/:id/protected_environments
 
 ```shell
 curl --header 'Content-Type: application/json' --request POST \
-     --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' \
+     --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}], "approval_rules": [{"group_id": 134}, {"group_id": 135, "required_approvals": 2}]}' \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
@@ -110,8 +110,9 @@ curl --header 'Content-Type: application/json' --request POST \
 | `name`                          | string         | yes | The name of the environment. |
 | `deploy_access_levels`          | array          | yes | Array of access levels allowed to deploy, with each described by a hash. |
 | `required_approval_count` | integer        | no       | The number of approvals required to deploy to this environment. This is part of Deployment Approvals, which isn't yet available for use. For details, see [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343864). |
+| `approval_rules`                | array          | no  | Array of access levels allowed to approve, with each described by a hash. See [Multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules) for more information. |
 
-Elements in the `deploy_access_levels` array should be one of `user_id`, `group_id` or
+Elements in the `deploy_access_levels` and `approval_rules` array should be one of `user_id`, `group_id` or
 `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
 `{access_level: integer}`.
 Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md).
@@ -129,7 +130,23 @@ Example response:
          "group_id": 9899826
       }
    ],
-  "required_approval_count": 0
+  "required_approval_count": 0,
+  "approval_rules": [
+    {
+      "user_id": null,
+      "group_id": 134,
+      "access_level": null,
+      "access_level_description": "qa-group",
+      "required_approvals": 1
+    },
+    {
+      "user_id": null,
+      "group_id": 135,
+      "access_level": null,
+      "access_level_description": "security-group",
+      "required_approvals": 2
+    }
+  ]
 }
 ```
 

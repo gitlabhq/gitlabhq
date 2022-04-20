@@ -3,11 +3,20 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
+import {
+  getQueryHeaders,
+  toggleQueryPollingByVisibility,
+} from '~/pipelines/components/graph/utils';
+import { formatStages } from '../utils';
 import getLinkedPipelinesQuery from '../graphql/queries/get_linked_pipelines.query.graphql';
+import getPipelineStagesQuery from '../graphql/queries/get_pipeline_stages.query.graphql';
+import { COMMIT_BOX_POLL_INTERVAL } from '../constants';
 
 export default {
   i18n: {
     linkedPipelinesFetchError: __('There was a problem fetching linked pipelines.'),
+    stageConversionError: __('There was a problem handling the pipeline data.'),
+    stagesFetchError: __('There was a problem fetching the pipeline stages.'),
   },
   components: {
     GlLoadingIcon,
@@ -20,6 +29,9 @@ export default {
       default: '',
     },
     iid: {
+      default: '',
+    },
+    graphqlResourceEtag: {
       default: '',
     },
   },
@@ -48,10 +60,31 @@ export default {
         createFlash({ message: this.$options.i18n.linkedPipelinesFetchError });
       },
     },
+    pipelineStages: {
+      context() {
+        return getQueryHeaders(this.graphqlResourceEtag);
+      },
+      query: getPipelineStagesQuery,
+      pollInterval: COMMIT_BOX_POLL_INTERVAL,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.iid,
+        };
+      },
+      update({ project }) {
+        return project?.pipeline?.stages?.nodes || [];
+      },
+      error() {
+        createFlash({ message: this.$options.i18n.stagesFetchError });
+      },
+    },
   },
   data() {
     return {
+      formattedStages: [],
       pipeline: null,
+      pipelineStages: [],
     };
   },
   computed: {
@@ -64,6 +97,25 @@ export default {
     upstreamPipeline() {
       return this.pipeline?.upstream;
     },
+  },
+  watch: {
+    pipelineStages() {
+      // pipelineStages are from GraphQL
+      // stages are from REST
+      // we do this to use dropdown_path for fetching jobs on stage click
+      try {
+        this.formattedStages = formatStages(this.pipelineStages, this.stages);
+      } catch (error) {
+        createFlash({
+          message: this.$options.i18n.stageConversionError,
+          captureError: true,
+          error,
+        });
+      }
+    },
+  },
+  mounted() {
+    toggleQueryPollingByVisibility(this.$apollo.queries.pipelineStages);
   },
 };
 </script>
@@ -79,7 +131,7 @@ export default {
       />
 
       <pipeline-mini-graph
-        :stages="stages"
+        :stages="formattedStages"
         class="gl-display-inline"
         data-testid="commit-box-mini-graph"
       />

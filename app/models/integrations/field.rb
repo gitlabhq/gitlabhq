@@ -2,7 +2,7 @@
 
 module Integrations
   class Field
-    SENSITIVE_NAME = %r/token|key|password|passphrase|secret/.freeze
+    SECRET_NAME = %r/token|key|password|passphrase|secret/.freeze
 
     ATTRIBUTES = %i[
       section type placeholder required choices value checkbox_label
@@ -17,7 +17,7 @@ module Integrations
     def initialize(name:, type: 'text', api_only: false, **attributes)
       @name = name.to_s.freeze
 
-      attributes[:type] = SENSITIVE_NAME.match?(@name) ? 'password' : type
+      attributes[:type] = SECRET_NAME.match?(@name) ? 'password' : type
       attributes[:api_only] = api_only
       @attributes = attributes.freeze
     end
@@ -31,7 +31,7 @@ module Integrations
       value
     end
 
-    def sensitive?
+    def secret?
       @attributes[:type] == 'password'
     end
 

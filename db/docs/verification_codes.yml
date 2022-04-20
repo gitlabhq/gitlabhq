@@ -1,0 +1,8 @@
+---
+table_name: verification_codes
+classes: []
+feature_categories:
+- jihu
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71139
+milestone: '14.4'

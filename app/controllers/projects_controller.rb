@@ -39,9 +39,8 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:highlight_js, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:work_items, @project, default_enabled: :yaml)
+    push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
   end
 
   layout :determine_layout
@@ -57,7 +56,8 @@ class ProjectsController < Projects::ApplicationController
   feature_category :code_review, [:unfoldered_environment_names]
   feature_category :portfolio_management, [:planning_hierarchy]
 
-  urgency :low, [:refs]
+  # TODO: Set high urgency for #show https://gitlab.com/gitlab-org/gitlab/-/issues/334444
+  urgency :low, [:refs, :show]
   urgency :high, [:unfoldered_environment_names]
 
   def index
@@ -68,6 +68,13 @@ class ProjectsController < Projects::ApplicationController
   def new
     @namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
     return access_denied! if @namespace && !can?(current_user, :create_projects, @namespace)
+
+    @current_user_group =
+      if current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).count == 1
+        current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).first
+      else
+        nil
+      end
 
     @project = Project.new(namespace_id: @namespace&.id)
   end
@@ -82,13 +89,6 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
-      experiment(:new_project_sast_enabled, user: current_user).track(:created,
-        property: active_new_project_tab,
-        checked: Gitlab::Utils.to_boolean(project_params[:initialize_with_sast]),
-        project: @project,
-        namespace: @project.namespace
-      )
-
       redirect_to(
         project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
@@ -305,12 +305,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if find_tags && @repository.tag_count.nonzero?
-      tags = begin
-        TagsFinder.new(@repository, refs_params).execute
-      rescue Gitlab::Git::CommandError
-        []
-      end
-
+      tags = TagsFinder.new(@repository, refs_params).execute
       options['Tags'] = tags.take(100).map(&:name)
     end
 
@@ -321,6 +316,8 @@ class ProjectsController < Projects::ApplicationController
     end
 
     render json: options.to_json
+  rescue Gitlab::Git::CommandError
+    render json: { error: _('Unable to load refs') }, status: :service_unavailable
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -545,9 +542,9 @@ class ProjectsController < Projects::ApplicationController
   def check_export_rate_limit!
     prefixed_action = "project_#{params[:action]}".to_sym
 
-    project_scope = params[:action] == 'download_export' ? @project : nil
+    group_scope = params[:action] == 'download_export' ? @project.namespace : nil
 
-    check_rate_limit!(prefixed_action, scope: [current_user, project_scope].compact)
+    check_rate_limit!(prefixed_action, scope: [current_user, group_scope].compact)
   end
 
   def render_edit

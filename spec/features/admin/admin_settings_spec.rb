@@ -34,16 +34,16 @@ RSpec.describe 'Admin updates settings' do
 
       it 'uncheck all restricted visibility levels' do
         page.within('.as-visibility-access') do
-          find('#application_setting_visibility_level_0').set(false)
-          find('#application_setting_visibility_level_10').set(false)
-          find('#application_setting_visibility_level_20').set(false)
+          find('#application_setting_restricted_visibility_levels_0').set(false)
+          find('#application_setting_restricted_visibility_levels_10').set(false)
+          find('#application_setting_restricted_visibility_levels_20').set(false)
           click_button 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
-        expect(find('#application_setting_visibility_level_0')).not_to be_checked
-        expect(find('#application_setting_visibility_level_10')).not_to be_checked
-        expect(find('#application_setting_visibility_level_20')).not_to be_checked
+        expect(find('#application_setting_restricted_visibility_levels_0')).not_to be_checked
+        expect(find('#application_setting_restricted_visibility_levels_10')).not_to be_checked
+        expect(find('#application_setting_restricted_visibility_levels_20')).not_to be_checked
       end
 
       it 'modify import sources' do
@@ -311,7 +311,9 @@ RSpec.describe 'Admin updates settings' do
     end
 
     context 'CI/CD page' do
-      it 'change CI/CD settings' do
+      let_it_be(:default_plan) { create(:default_plan) }
+
+      it 'changes CI/CD settings' do
         visit ci_cd_admin_application_settings_path
 
         page.within('.as-ci-cd') do
@@ -327,6 +329,33 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.keep_latest_artifact).to be false
         expect(current_settings.suggest_pipeline_enabled).to be false
         expect(page).to have_content "Application settings saved successfully"
+      end
+
+      it 'changes CI/CD limits', :aggregate_failures do
+        visit ci_cd_admin_application_settings_path
+
+        page.within('.as-ci-cd') do
+          fill_in 'plan_limits_ci_pipeline_size', with: 10
+          fill_in 'plan_limits_ci_active_jobs', with: 20
+          fill_in 'plan_limits_ci_active_pipelines', with: 25
+          fill_in 'plan_limits_ci_project_subscriptions', with: 30
+          fill_in 'plan_limits_ci_pipeline_schedules', with: 40
+          fill_in 'plan_limits_ci_needs_size_limit', with: 50
+          fill_in 'plan_limits_ci_registered_group_runners', with: 60
+          fill_in 'plan_limits_ci_registered_project_runners', with: 70
+          click_button 'Save Default limits'
+        end
+
+        limits = default_plan.reload.limits
+        expect(limits.ci_pipeline_size).to eq(10)
+        expect(limits.ci_active_jobs).to eq(20)
+        expect(limits.ci_active_pipelines).to eq(25)
+        expect(limits.ci_project_subscriptions).to eq(30)
+        expect(limits.ci_pipeline_schedules).to eq(40)
+        expect(limits.ci_needs_size_limit).to eq(50)
+        expect(limits.ci_registered_group_runners).to eq(60)
+        expect(limits.ci_registered_project_runners).to eq(70)
+        expect(page).to have_content 'Application limits saved successfully'
       end
 
       context 'Runner Registration' do
@@ -421,7 +450,7 @@ RSpec.describe 'Admin updates settings' do
             visit ci_cd_admin_application_settings_path
 
             page.within('.as-registry') do
-              find('#application_setting_container_registry_expiration_policies_caching.form-check-input').click
+              find('#application_setting_container_registry_expiration_policies_caching').click
               click_button 'Save changes'
             end
 
@@ -489,8 +518,8 @@ RSpec.describe 'Admin updates settings' do
         page.within('.as-spam') do
           fill_in 'reCAPTCHA site key', with: 'key'
           fill_in 'reCAPTCHA private key', with: 'key'
-          check 'Enable reCAPTCHA'
-          check 'Enable reCAPTCHA for login'
+          find('#application_setting_recaptcha_enabled').set(true)
+          find('#application_setting_login_recaptcha_protection_enabled').set(true)
           fill_in 'IP addresses per user', with: 15
           check 'Enable Spam Check via external API endpoint'
           fill_in 'URL of the external Spam Check endpoint', with: 'grpc://www.example.com/spamcheck'
@@ -825,31 +854,45 @@ RSpec.describe 'Admin updates settings' do
       before do
         stub_usage_data_connections
         stub_database_flavor_check
-
-        visit service_usage_data_admin_application_settings_path
       end
 
-      it 'loads usage ping payload on click', :js do
-        expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
+      context 'when service data cached', :clean_gitlab_redis_cache do
+        before do
+          allow(Rails.cache).to receive(:exist?).with('usage_data').and_return(true)
 
-        expect(page).not_to have_content expected_payload_content
-
-        click_button('Preview payload')
-
-        wait_for_requests
-
-        expect(page).to have_button 'Hide payload'
-        expect(page).to have_content expected_payload_content
-      end
-
-      it 'generates usage ping payload on button click', :js do
-        expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
-          expect(instance).to receive(:usage_data).and_call_original
+          visit service_usage_data_admin_application_settings_path
         end
 
-        click_button('Download payload')
+        it 'loads usage ping payload on click', :js do
+          expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
 
-        wait_for_requests
+          expect(page).not_to have_content expected_payload_content
+
+          click_button('Preview payload')
+
+          wait_for_requests
+
+          expect(page).to have_button 'Hide payload'
+          expect(page).to have_content expected_payload_content
+        end
+
+        it 'generates usage ping payload on button click', :js do
+          expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
+            expect(instance).to receive(:usage_data).and_call_original
+          end
+
+          click_button('Download payload')
+
+          wait_for_requests
+        end
+      end
+
+      context 'when service data not cached' do
+        it 'renders missing cache information' do
+          visit service_usage_data_admin_application_settings_path
+
+          expect(page).to have_text('Service Ping payload not found in the application cache')
+        end
       end
     end
   end

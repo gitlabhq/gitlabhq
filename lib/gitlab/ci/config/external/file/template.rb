@@ -20,6 +20,14 @@ module Gitlab
               strong_memoize(:content) { fetch_template_content }
             end
 
+            def metadata
+              super.merge(
+                type: :template,
+                location: masked_location,
+                extra: {}
+              )
+            end
+
             private
 
             def validate_location!

@@ -45,12 +45,15 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template do
   end
 
   describe "#valid?" do
+    subject(:valid?) do
+      template_file.validate!
+      template_file.valid?
+    end
+
     context 'when is a valid template name' do
       let(:template) { 'Auto-DevOps.gitlab-ci.yml' }
 
-      it 'returns true' do
-        expect(template_file).to be_valid
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'with invalid template name' do
@@ -59,7 +62,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template do
       let(:context_params) { { project: project, sha: '12345', user: user, variables: variables } }
 
       it 'returns false' do
-        expect(template_file).not_to be_valid
+        expect(valid?).to be_falsy
         expect(template_file.error_message).to include('`xxxxxxxxxxxxxx.yml` is not a valid location!')
       end
     end
@@ -68,7 +71,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template do
       let(:template) { 'I-Do-Not-Have-This-Template.gitlab-ci.yml' }
 
       it 'returns false' do
-        expect(template_file).not_to be_valid
+        expect(valid?).to be_falsy
         expect(template_file.error_message).to include('Included file `I-Do-Not-Have-This-Template.gitlab-ci.yml` is empty or does not exist!')
       end
     end
@@ -110,5 +113,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template do
     it 'drops all parameters' do
       is_expected.to be_empty
     end
+  end
+
+  describe '#metadata' do
+    subject(:metadata) { template_file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: project.full_path,
+        context_sha: '12345',
+        type: :template,
+        location: template,
+        extra: {}
+      )
+    }
   end
 end

@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Harbor container registry integration **(FREE)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80999) in GitLab 14.9.
+
 Use Harbor as the container registry for your GitLab project.
 
 [Harbor](https://goharbor.io/) is an open source registry that can help you manage artifacts across cloud native compute platforms, like Kubernetes and Docker.
@@ -43,7 +45,7 @@ After the Harbor integration is activated:
 ## Secure your requests to the Harbor APIs
 
 For each API request through the Harbor integration, the credentials for your connection to the Harbor API use
-the `username:password` combination. The following are suggestions for safe use: 
+the `username:password` combination. The following are suggestions for safe use:
 
 - Use TLS on the Harbor APIs you connect to.
 - Follow the principle of least privilege (for access on Harbor) with your credentials.

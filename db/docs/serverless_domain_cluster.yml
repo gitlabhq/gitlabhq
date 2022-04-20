@@ -1,0 +1,9 @@
+---
+table_name: serverless_domain_cluster
+classes:
+- Serverless::DomainCluster
+feature_categories:
+- deployment_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19835
+milestone: '12.6'

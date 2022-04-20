@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf, __ } from '~/locale';
 import UserAvatarLink from './user_avatar_link.vue';
 
@@ -8,6 +9,7 @@ export default {
     UserAvatarLink,
     GlButton,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     items: {
       type: Array,
@@ -57,6 +59,9 @@ export default {
 
       return sprintf(__('%{count} more'), { count });
     },
+    imgCssClasses() {
+      return this.glFeatures.glAvatarForAllUserAvatars ? 'gl-mr-3' : '';
+    },
   },
   methods: {
     expand() {
@@ -80,6 +85,7 @@ export default {
       :img-alt="item.name"
       :tooltip-text="item.name"
       :img-size="imgSize"
+      :img-css-classes="imgCssClasses"
     />
     <template v-if="hasBreakpoint">
       <gl-button v-if="hasHiddenItems" variant="link" @click="expand">

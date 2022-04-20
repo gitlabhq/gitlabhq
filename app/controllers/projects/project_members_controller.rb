@@ -8,7 +8,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
-  feature_category :authentication_and_authorization
+  feature_category :projects
 
   def index
     @sort = params[:sort].presence || sort_value_name

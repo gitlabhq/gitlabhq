@@ -340,6 +340,7 @@ export default {
         :title="__('Copy file path')"
         :text="diffFile.file_path"
         :gfm="gfmCopyText"
+        size="small"
         data-testid="diff-file-copy-clipboard"
         category="tertiary"
         data-track-action="click_copy_file_button"
@@ -392,6 +393,7 @@ export default {
         />
         <gl-dropdown
           v-gl-tooltip.hover.focus="$options.i18n.optionsDropdownTitle"
+          size="small"
           right
           toggle-class="btn-icon js-diff-more-actions"
           class="gl-pt-0!"
@@ -400,7 +402,7 @@ export default {
           @hidden="setMoreActionsShown(false)"
         >
           <template #button-content>
-            <gl-icon name="ellipsis_v" class="mr-0" />
+            <gl-icon name="ellipsis_v" class="mr-0" :size="12" />
             <span class="sr-only">{{ $options.i18n.optionsDropdownTitle }}</span>
           </template>
           <gl-dropdown-item

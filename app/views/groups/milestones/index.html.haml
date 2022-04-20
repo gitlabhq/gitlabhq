@@ -1,23 +1,32 @@
 - page_title _("Milestones")
 - add_page_specific_style 'page_bundles/milestone'
 
-.top-area
-  = render 'shared/milestones_filter', counts: @milestone_states
+- if @milestone_states.any? { |name, count| count > 0 }
+  .top-area
+    = render 'shared/milestones_filter', counts: @milestone_states
 
-  .nav-controls
-    = render 'shared/milestones/search_form'
-    = render 'shared/milestones_sort_dropdown'
-    - if can?(current_user, :admin_milestone, @group)
-      = link_to _('New milestone'), new_group_milestone_path(@group), class: "btn gl-button btn-confirm", data: { qa_selector: "new_group_milestone_link" }
+    .nav-controls
+      = render 'shared/milestones/search_form'
+      = render 'shared/milestones_sort_dropdown'
+      - if can?(current_user, :admin_milestone, @group)
+        = link_to _('New milestone'), new_group_milestone_path(@group), class: "btn gl-button btn-confirm", data: { qa_selector: "new_group_milestone_link" }
 
-- if @milestones.blank?
-  = render 'shared/empty_states/milestones'
+  - if @milestones.blank?
+    = render 'shared/empty_states/milestones_tab', learn_more_path: help_page_path('user/project/milestones/index') do
+      - if can?(current_user, :admin_milestone, @group)
+        .text-center
+          = link_to _('New milestone'), new_group_milestone_path(@group), class: "btn gl-button btn-confirm", data: { qa_selector: "new_group_milestone_link" }
+  - else
+    .milestones
+      %ul.content-list
+        - @milestones.each do |milestone|
+          - if milestone.project_milestone?
+            = render 'projects/milestones/milestone', milestone: milestone
+          - else
+            = render 'milestone', milestone: milestone
+      = paginate @milestones, theme: "gitlab"
 - else
-  .milestones
-    %ul.content-list
-      - @milestones.each do |milestone|
-        - if milestone.project_milestone?
-          = render 'projects/milestones/milestone', milestone: milestone
-        - else
-          = render 'milestone', milestone: milestone
-    = paginate @milestones, theme: "gitlab"
+  = render 'shared/empty_states/milestones', learn_more_path: help_page_path('user/project/milestones/index') do
+    - if can?(current_user, :admin_milestone, @group)
+      .text-center
+        = link_to _('New milestone'), new_group_milestone_path(@group), class: "btn gl-button btn-confirm", data: { qa_selector: "new_group_milestone_link" }

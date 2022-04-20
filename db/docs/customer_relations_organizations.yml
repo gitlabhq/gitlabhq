@@ -1,0 +1,9 @@
+---
+table_name: customer_relations_organizations
+classes:
+- CustomerRelations::Organization
+feature_categories:
+- subgroups
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67551
+milestone: '14.2'

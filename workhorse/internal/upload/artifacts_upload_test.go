@@ -66,7 +66,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 		if r.Method != "POST" {
 			t.Fatal("Expected POST request")
 		}
-		if opts.IsLocal() {
+		if opts.IsLocalTempFile() {
 			if r.FormValue("file.path") == "" {
 				t.Fatal("Expected file to be present")
 				return

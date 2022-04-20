@@ -35,120 +35,6 @@ RSpec.describe Groups::GroupLinksController do
     end
   end
 
-  describe '#create' do
-    let(:shared_with_group_id) { shared_with_group.id }
-    let(:shared_group_access) { GroupGroupLink.default_access }
-
-    subject do
-      post(:create,
-           params: { group_id: shared_group,
-                     shared_with_group_id: shared_with_group_id,
-                     shared_group_access: shared_group_access })
-    end
-
-    shared_examples 'creates group group link' do
-      it 'links group with selected group' do
-        expect { subject }.to change { shared_with_group.shared_groups.include?(shared_group) }.from(false).to(true)
-      end
-
-      it 'redirects to group links page' do
-        subject
-
-        expect(response).to(redirect_to(group_group_members_path(shared_group)))
-      end
-
-      it 'allows access for group member' do
-        expect { subject }.to(
-          change { group_member.can?(:read_group, shared_group) }.from(false).to(true))
-      end
-    end
-
-    context 'when user has correct access to both groups' do
-      before do
-        shared_with_group.add_developer(user)
-        shared_group.add_owner(user)
-      end
-
-      context 'when default access level is requested' do
-        include_examples 'creates group group link'
-      end
-
-      context 'when owner access is requested' do
-        let(:shared_group_access) { Gitlab::Access::OWNER }
-
-        before do
-          shared_with_group.add_owner(group_member)
-        end
-
-        include_examples 'creates group group link'
-
-        it 'allows admin access for group member' do
-          expect { subject }.to(
-            change { group_member.can?(:admin_group, shared_group) }.from(false).to(true))
-        end
-      end
-
-      it 'updates project permissions', :sidekiq_inline do
-        expect { subject }.to change { group_member.can?(:read_project, project) }.from(false).to(true)
-      end
-
-      context 'when shared with group id is not present' do
-        let(:shared_with_group_id) { nil }
-
-        it 'redirects to group links page' do
-          subject
-
-          expect(response).to(redirect_to(group_group_members_path(shared_group)))
-          expect(flash[:alert]).to eq('Please select a group.')
-        end
-      end
-
-      context 'when link is not persisted in the database' do
-        before do
-          allow(::Groups::GroupLinks::CreateService).to(
-            receive_message_chain(:new, :execute)
-              .and_return({ status: :error,
-                            http_status: 409,
-                            message: 'error' }))
-        end
-
-        it 'redirects to group links page' do
-          subject
-
-          expect(response).to(redirect_to(group_group_members_path(shared_group)))
-          expect(flash[:alert]).to eq('error')
-        end
-      end
-    end
-
-    context 'when user does not have access to the group' do
-      before do
-        shared_group.add_owner(user)
-      end
-
-      it 'renders 404' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'when user does not have admin access to the shared group' do
-      before do
-        shared_with_group.add_developer(user)
-        shared_group.add_developer(user)
-      end
-
-      it 'renders 404' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    include_examples 'placeholder is passed as `id` parameter', :create
-  end
-
   describe '#update' do
     let!(:link) do
       create(:group_group_link, { shared_group: shared_group,
@@ -193,7 +79,8 @@ RSpec.describe Groups::GroupLinksController do
 
           subject
 
-          expect(json_response).to eq({ "expires_in" => "about 1 month", "expires_soon" => false })
+          expect(json_response).to eq({ "expires_in" => controller.helpers.time_ago_with_tooltip(expiry_date),
+                                        "expires_soon" => false })
         end
       end
 

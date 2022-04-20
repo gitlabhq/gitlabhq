@@ -18,6 +18,7 @@ class ProjectGroupLink < ApplicationRecord
   scope :in_group, -> (group_ids) { where(group_id: group_ids) }
 
   alias_method :shared_with_group, :group
+  alias_method :shared_from, :project
 
   def self.access_options
     Gitlab::Access.options

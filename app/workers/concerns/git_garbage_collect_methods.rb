@@ -121,8 +121,12 @@ module GitGarbageCollectMethods
     end.new(repository)
   end
 
+  # The option to enable/disable bitmaps has been removed in https://gitlab.com/gitlab-org/gitlab/-/issues/353777
+  # Now the options is always enabled
+  # This method and all the deprecated RPCs are going to be removed in
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/353779
   def bitmaps_enabled?
-    Gitlab::CurrentSettings.housekeeping_bitmaps_enabled
+    true
   end
 
   def flush_ref_caches(resource)

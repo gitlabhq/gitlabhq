@@ -195,7 +195,7 @@ RSpec.describe API::Lint do
         end
 
         context 'with invalid configuration' do
-          let(:yaml_content) { '{ image: "ruby:2.7",  services: ["postgres"] }' }
+          let(:yaml_content) { '{ image: "image:1.0",  services: ["postgres"] }' }
 
           it 'responds with errors about invalid configuration' do
             post api('/ci/lint', api_user), params: { content: yaml_content }
@@ -465,7 +465,7 @@ RSpec.describe API::Lint do
 
       context 'with invalid .gitlab-ci.yml content' do
         let(:yaml_content) do
-          { image: 'ruby:2.7', services: ['postgres'] }.deep_stringify_keys.to_yaml
+          { image: 'image:1.0', services: ['postgres'] }.deep_stringify_keys.to_yaml
         end
 
         before do
@@ -712,7 +712,7 @@ RSpec.describe API::Lint do
 
       context 'with invalid .gitlab-ci.yml content' do
         let(:yaml_content) do
-          { image: 'ruby:2.7', services: ['postgres'] }.deep_stringify_keys.to_yaml
+          { image: 'image:1.0', services: ['postgres'] }.deep_stringify_keys.to_yaml
         end
 
         context 'when running as dry run' do

@@ -1,0 +1,9 @@
+---
+table_name: ci_deleted_objects
+classes:
+- Ci::DeletedObject
+feature_categories:
+- build_artifacts
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44928
+milestone: '13.5'

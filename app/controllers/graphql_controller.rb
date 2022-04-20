@@ -32,6 +32,7 @@ class GraphqlController < ApplicationController
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :track_jetbrains_usage
+  before_action :track_gitlab_cli_usage
   before_action :disable_query_limiting
   before_action :limit_query_size
 
@@ -43,7 +44,7 @@ class GraphqlController < ApplicationController
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
 
   # The default feature category is overridden to read from request
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   # We don't know what the query is going to be, so we can't set a high urgency
   # See https://gitlab.com/groups/gitlab-org/-/epics/5841 for the work that will
@@ -140,6 +141,11 @@ class GraphqlController < ApplicationController
 
   def track_jetbrains_usage
     Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter
+      .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
+  end
+
+  def track_gitlab_cli_usage
+    Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter
       .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
   end
 

@@ -35,6 +35,8 @@ class Note < ApplicationRecord
     contact: :read_crm_contact
   }.freeze
 
+  NON_DIFF_NOTE_TYPES = ['Note', 'DiscussionNote', nil].freeze
+
   # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with notes.
   # See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10392/diffs#note_28719102
   alias_attribute :last_edited_by, :updated_by
@@ -97,6 +99,11 @@ class Note < ApplicationRecord
   validates :author, presence: true
   validates :discussion_id, presence: true, format: { with: /\A\h{40}\z/ }
 
+  validate :ensure_confidentiality_discussion_compliance
+  validate :ensure_noteable_can_have_confidential_note
+  validate :ensure_note_type_can_be_confidential
+  validate :ensure_confidentiality_not_changed, on: :update
+
   validate unless: [:for_commit?, :importing?, :skip_project_check?] do |note|
     unless note.noteable.try(:project) == note.project
       errors.add(:project, 'does not match noteable project')
@@ -121,6 +128,7 @@ class Note < ApplicationRecord
   scope :with_discussion_ids, ->(discussion_ids) { where(discussion_id: discussion_ids) }
   scope :with_suggestions, -> { joins(:suggestions) }
   scope :inc_author, -> { includes(:author) }
+  scope :inc_note_diff_file, -> { includes(:note_diff_file) }
   scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
   scope :inc_relations_for_view, -> do
     includes({ project: :group }, { author: :status }, :updated_by, :resolved_by, :award_emoji,
@@ -140,7 +148,7 @@ class Note < ApplicationRecord
 
   scope :diff_notes, -> { where(type: %w(LegacyDiffNote DiffNote)) }
   scope :new_diff_notes, -> { where(type: 'DiffNote') }
-  scope :non_diff_notes, -> { where(type: ['Note', 'DiscussionNote', nil]) }
+  scope :non_diff_notes, -> { where(type: NON_DIFF_NOTE_TYPES) }
 
   scope :with_associations, -> do
     # FYI noteable cannot be loaded for LegacyDiffNote for commits
@@ -457,7 +465,7 @@ class Note < ApplicationRecord
   # and all its notes and if we don't care about the discussion's resolvability status.
   def discussion
     strong_memoize(:discussion) do
-      full_discussion = self.noteable.notes.find_discussion(self.discussion_id) if part_of_discussion?
+      full_discussion = self.noteable.notes.find_discussion(self.discussion_id) if self.noteable && part_of_discussion?
       full_discussion || to_discussion
     end
   end
@@ -501,7 +509,15 @@ class Note < ApplicationRecord
     # Instead of calling touch which is throttled via ThrottledTouch concern,
     # we bump the updated_at column directly. This also prevents executing
     # after_commit callbacks that we don't need.
-    update_column(:updated_at, Time.current)
+    attributes_to_update = { updated_at: Time.current }
+
+    # Notes that were edited before the `last_edited_at` column was added, fall back to `updated_at` for the edit time.
+    # We copy this over to the correct column so we don't erroneously change the edit timestamp.
+    if updated_by_id.present? && read_attribute(:last_edited_at).blank?
+      attributes_to_update[:last_edited_at] = updated_at
+    end
+
+    update_columns(attributes_to_update)
   end
 
   def expire_etag_cache
@@ -716,6 +732,42 @@ class Note < ApplicationRecord
 
   def noteable_label_url_method
     for_merge_request? ? :project_merge_requests_url : :project_issues_url
+  end
+
+  def ensure_confidentiality_not_changed
+    return unless will_save_change_to_attribute?(:confidential)
+    return unless attribute_change_to_be_saved(:confidential).include?(true)
+
+    errors.add(:confidential, _('can not be changed for existing notes'))
+  end
+
+  def ensure_confidentiality_discussion_compliance
+    return if start_of_discussion?
+
+    if discussion.first_note.confidential? != confidential?
+      errors.add(:confidential, _('reply should have same confidentiality as top-level note'))
+    end
+
+  ensure
+    clear_memoization(:discussion)
+  end
+
+  def ensure_noteable_can_have_confidential_note
+    return unless confidential?
+    return if noteable_can_have_confidential_note?
+
+    errors.add(:confidential, _('can not be set for this resource'))
+  end
+
+  def ensure_note_type_can_be_confidential
+    return unless confidential?
+    return if NON_DIFF_NOTE_TYPES.include?(type)
+
+    errors.add(:confidential, _('can not be set for this type of note'))
+  end
+
+  def noteable_can_have_confidential_note?
+    for_issue?
   end
 end
 

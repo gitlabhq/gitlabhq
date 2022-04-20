@@ -12,16 +12,29 @@
         path: '-/milestones/new', label: 'New milestone',
         include_groups: true, type: :milestones
 
-.top-area
-  = render 'shared/milestones_filter', counts: @milestone_states
-  .nav-controls
-    = render 'shared/milestones/search_form'
+- if @milestone_states.any? { |name, count| count > 0 }
+  .top-area
+    = render 'shared/milestones_filter', counts: @milestone_states
+    .nav-controls
+      = render 'shared/milestones/search_form'
 
-- if @milestones.blank?
-  = render 'shared/empty_states/milestones'
+  - if @milestones.blank?
+    = render 'shared/empty_states/milestones_tab', active_tab: params[:state] do
+      - if current_user
+        .page-title-controls
+          = render 'shared/new_project_item_select',
+            path: '-/milestones/new', label: 'New milestone',
+            include_groups: true, type: :milestones
+  - else
+    .milestones
+      %ul.content-list
+        - @milestones.each do |milestone|
+          = render 'milestone', milestone: milestone
+      = paginate @milestones, theme: 'gitlab'
 - else
-  .milestones
-    %ul.content-list
-      - @milestones.each do |milestone|
-        = render 'milestone', milestone: milestone
-    = paginate @milestones, theme: 'gitlab'
+  = render 'shared/empty_states/milestones' do
+    - if current_user
+      .page-title-controls
+        = render 'shared/new_project_item_select',
+          path: '-/milestones/new', label: 'New milestone',
+          include_groups: true, type: :milestones

@@ -265,4 +265,14 @@ RSpec.describe Gitlab::EncodingHelper do
       end
     end
   end
+
+  describe '#unquote_path' do
+    it do
+      expect(described_class.unquote_path('unquoted')).to eq('unquoted')
+      expect(described_class.unquote_path('"quoted"')).to eq('quoted')
+      expect(described_class.unquote_path('"\\311\\240\\304\\253\\305\\247\\305\\200\\310\\247\\306\\200"')).to eq('ɠīŧŀȧƀ')
+      expect(described_class.unquote_path('"\\\\303\\\\251"')).to eq('\303\251')
+      expect(described_class.unquote_path('"\a\b\e\f\n\r\t\v\""')).to eq("\a\b\e\f\n\r\t\v\"")
+    end
+  end
 end

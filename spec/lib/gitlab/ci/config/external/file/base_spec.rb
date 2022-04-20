@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
     end
   end
 
-  subject { test_class.new(location, context) }
+  subject(:file) { test_class.new(location, context) }
 
   before do
     allow_any_instance_of(test_class)
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
       let(:location) { 'some-location' }
 
       it 'returns true' do
-        expect(subject).to be_matching
+        expect(file).to be_matching
       end
     end
 
@@ -40,40 +40,45 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
       let(:location) { nil }
 
       it 'returns false' do
-        expect(subject).not_to be_matching
+        expect(file).not_to be_matching
       end
     end
   end
 
   describe '#valid?' do
+    subject(:valid?) do
+      file.validate!
+      file.valid?
+    end
+
     context 'when location is not a string' do
       let(:location) { %w(some/file.txt other/file.txt) }
 
-      it { is_expected.not_to be_valid }
+      it { is_expected.to be_falsy }
     end
 
     context 'when location is not a YAML file' do
       let(:location) { 'some/file.txt' }
 
-      it { is_expected.not_to be_valid }
+      it { is_expected.to be_falsy }
     end
 
     context 'when location has not a valid naming scheme' do
       let(:location) { 'some/file/.yml' }
 
-      it { is_expected.not_to be_valid }
+      it { is_expected.to be_falsy }
     end
 
     context 'when location is a valid .yml extension' do
       let(:location) { 'some/file/config.yml' }
 
-      it { is_expected.to be_valid }
+      it { is_expected.to be_truthy }
     end
 
     context 'when location is a valid .yaml extension' do
       let(:location) { 'some/file/config.yaml' }
 
-      it { is_expected.to be_valid }
+      it { is_expected.to be_truthy }
     end
 
     context 'when there are YAML syntax errors' do
@@ -86,8 +91,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
       end
 
       it 'is not a valid file' do
-        expect(subject).not_to be_valid
-        expect(subject.error_message).to eq('Included file `some/file/xxxxxxxxxxxxxxxx.yml` does not have valid YAML syntax!')
+        expect(valid?).to be_falsy
+        expect(file.error_message).to eq('Included file `some/file/xxxxxxxxxxxxxxxx.yml` does not have valid YAML syntax!')
       end
     end
   end
@@ -103,8 +108,56 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
       end
 
       it 'does expand hash to include the template' do
-        expect(subject.to_hash).to include(:before_script)
+        expect(file.to_hash).to include(:before_script)
       end
+    end
+  end
+
+  describe '#metadata' do
+    let(:location) { 'some/file/config.yml' }
+
+    subject(:metadata) { file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: nil,
+        context_sha: 'HEAD'
+      )
+    }
+  end
+
+  describe '#eql?' do
+    let(:location) { 'some/file/config.yml' }
+
+    subject(:eql) { file.eql?(other_file) }
+
+    context 'when the other file has the same params' do
+      let(:other_file) { test_class.new(location, context) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when the other file has not the same params' do
+      let(:other_file) { test_class.new('some/other/file', context) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#hash' do
+    let(:location) { 'some/file/config.yml' }
+
+    subject(:filehash) { file.hash }
+
+    context 'with a project' do
+      let(:project) { create(:project) }
+      let(:context_params) { { project: project, sha: 'HEAD', variables: variables } }
+
+      it { is_expected.to eq([location, project.full_path, 'HEAD'].hash) }
+    end
+
+    context 'without a project' do
+      it { is_expected.to eq([location, nil, 'HEAD'].hash) }
     end
   end
 end

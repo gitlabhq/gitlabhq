@@ -1,3 +1,3 @@
 %p
-  Merge request #{merge_request_reference_link(@merge_request)}
-  was #{@mr_status} by #{sanitize_name(@updated_by.name)}
+  = sprintf(s_('Notify|Merge request %{merge_request} was %{mr_status} by %{updated_by}'),
+    { merge_request: merge_request_reference_link(@merge_request), mr_status: @mr_status, updated_by: sanitize_name(@updated_by.name) }).html_safe

@@ -14,7 +14,6 @@ module QA
             element :wiki_content_textarea
             element :wiki_message_textbox
             element :wiki_submit_button
-            element :try_new_editor_container
             element :editing_mode_button
           end
 

@@ -10,7 +10,7 @@ module Gitlab
           @pipeline = pipeline
           @instance_variables_builder = Builder::Instance.new
           @project_variables_builder = Builder::Project.new(project)
-          @group_variables_builder = Builder::Group.new(project.group)
+          @group_variables_builder = Builder::Group.new(project&.group)
         end
 
         def scoped_variables(job, environment:, dependencies:)
@@ -24,11 +24,25 @@ module Gitlab
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
             variables.concat(secret_instance_variables)
-            variables.concat(secret_group_variables(environment: environment, ref: job.git_ref))
-            variables.concat(secret_project_variables(environment: environment, ref: job.git_ref))
+            variables.concat(secret_group_variables(environment: environment))
+            variables.concat(secret_project_variables(environment: environment))
             variables.concat(job.trigger_request.user_variables) if job.trigger_request
             variables.concat(pipeline.variables)
-            variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
+            variables.concat(pipeline_schedule_variables)
+          end
+        end
+
+        def config_variables
+          Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            break variables unless project
+
+            variables.concat(project.predefined_variables)
+            variables.concat(pipeline.predefined_variables)
+            variables.concat(secret_instance_variables)
+            variables.concat(secret_group_variables(environment: nil))
+            variables.concat(secret_project_variables(environment: nil))
+            variables.concat(pipeline.variables)
+            variables.concat(pipeline_schedule_variables)
           end
         end
 
@@ -75,21 +89,21 @@ module Gitlab
           end
         end
 
-        def secret_group_variables(environment:, ref:)
-          if memoize_secret_variables?
-            memoized_secret_group_variables(environment: environment)
-          else
-            return [] unless project.group
-
-            project.group.ci_variables_for(ref, project, environment: environment)
+        def secret_group_variables(environment:)
+          strong_memoize_with(:secret_group_variables, environment) do
+            group_variables_builder
+              .secret_variables(
+                environment: environment,
+                protected_ref: protected_ref?)
           end
         end
 
-        def secret_project_variables(environment:, ref:)
-          if memoize_secret_variables?
-            memoized_secret_project_variables(environment: environment)
-          else
-            project.ci_variables_for(ref: ref, environment: environment)
+        def secret_project_variables(environment:)
+          strong_memoize_with(:secret_project_variables, environment) do
+            project_variables_builder
+              .secret_variables(
+                environment: environment,
+                protected_ref: protected_ref?)
           end
         end
 
@@ -120,21 +134,15 @@ module Gitlab
           end
         end
 
-        def memoized_secret_project_variables(environment:)
-          strong_memoize_with(:secret_project_variables, environment) do
-            project_variables_builder
-              .secret_variables(
-                environment: environment,
-                protected_ref: protected_ref?)
-          end
-        end
+        def pipeline_schedule_variables
+          strong_memoize(:pipeline_schedule_variables) do
+            variables = if pipeline.pipeline_schedule
+                          pipeline.pipeline_schedule.job_variables
+                        else
+                          []
+                        end
 
-        def memoized_secret_group_variables(environment:)
-          strong_memoize_with(:secret_group_variables, environment) do
-            group_variables_builder
-              .secret_variables(
-                environment: environment,
-                protected_ref: protected_ref?)
+            Gitlab::Ci::Variables::Collection.new(variables)
           end
         end
 
@@ -147,14 +155,6 @@ module Gitlab
         def protected_ref?
           strong_memoize(:protected_ref) do
             project.protected_for?(pipeline.jobs_git_ref)
-          end
-        end
-
-        def memoize_secret_variables?
-          strong_memoize(:memoize_secret_variables) do
-            ::Feature.enabled?(:ci_variables_builder_memoize_secret_variables,
-              project,
-              default_enabled: :yaml)
           end
         end
 

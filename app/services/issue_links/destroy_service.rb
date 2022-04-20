@@ -2,6 +2,8 @@
 
 module IssueLinks
   class DestroyService < IssuableLinks::DestroyService
+    include IncidentManagement::UsageData
+
     private
 
     def permission_to_remove_relation?

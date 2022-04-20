@@ -1,0 +1,8 @@
+---
+name: execute_batched_migrations_on_schedule_ci_database
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83109
+rollout_issue_url:
+milestone: '14.9'
+type: ops
+group: group::database
+default_enabled: false

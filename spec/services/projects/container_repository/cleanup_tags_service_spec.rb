@@ -13,7 +13,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
   let(:tags) { %w[latest A Ba Bb C D E] }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) if user
 
     stub_container_registry_config(enabled: true)
 

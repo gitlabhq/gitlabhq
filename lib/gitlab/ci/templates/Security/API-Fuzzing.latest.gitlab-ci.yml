@@ -3,19 +3,36 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.latest.gitlab-ci.yml
 
+# To use this template, add the following to your .gitlab-ci.yml file:
+#
+# include:
+#   template: API-Fuzzing.latest.gitlab-ci.yml
+#
+# You also need to add a `fuzz` stage to your `stages:` configuration. A sample configuration for API Fuzzing:
+#
+# stages:
+#   - build
+#   - test
+#   - deploy
+#   - fuzz
+
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/api_fuzzing/
 #
-# Configure API fuzzing with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# Configure API Fuzzing with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/api_fuzzing/#available-cicd-variables
 
 variables:
-    FUZZAPI_VERSION: "1"
+    # Setting this variable affects all Security templates
+    # (SAST, Dependency Scanning, ...)
     SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+    #
+    FUZZAPI_VERSION: "1"
+    FUZZAPI_IMAGE_SUFFIX: ""
     FUZZAPI_IMAGE: api-fuzzing
 
 apifuzzer_fuzz:
     stage: fuzz
-    image: $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION
+    image: $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION$FUZZAPI_IMAGE_SUFFIX
     allow_failure: true
     rules:
         - if: $API_FUZZING_DISABLED
@@ -23,6 +40,10 @@ apifuzzer_fuzz:
         - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
                 $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
           when: never
+        - if: $CI_COMMIT_BRANCH &&
+              $CI_GITLAB_FIPS_MODE == "true"
+          variables:
+              FUZZAPI_IMAGE_SUFFIX: "-fips"
         - if: $CI_COMMIT_BRANCH
     script:
         - /peach/analyzer-fuzz-api

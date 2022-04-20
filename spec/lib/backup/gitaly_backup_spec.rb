@@ -25,11 +25,11 @@ RSpec.describe Backup::GitalyBackup do
     progress.close
   end
 
-  subject { described_class.new(progress, max_parallelism: max_parallelism, storage_parallelism: storage_parallelism, backup_id: backup_id) }
+  subject { described_class.new(progress, max_parallelism: max_parallelism, storage_parallelism: storage_parallelism) }
 
   context 'unknown' do
     it 'fails to start unknown' do
-      expect { subject.start(:unknown, destination) }.to raise_error(::Backup::Error, 'unknown backup type: unknown')
+      expect { subject.start(:unknown, destination, backup_id: backup_id) }.to raise_error(::Backup::Error, 'unknown backup type: unknown')
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe Backup::GitalyBackup do
 
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
 
-        subject.start(:create, destination)
+        subject.start(:create, destination, backup_id: backup_id)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
         subject.enqueue(project, Gitlab::GlRepository::WIKI)
         subject.enqueue(project, Gitlab::GlRepository::DESIGN)
@@ -65,7 +65,7 @@ RSpec.describe Backup::GitalyBackup do
         it 'passes parallel option through' do
           expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-parallel', '3', '-layout', 'pointer', '-id', backup_id).and_call_original
 
-          subject.start(:create, destination)
+          subject.start(:create, destination, backup_id: backup_id)
           subject.finish!
         end
       end
@@ -76,7 +76,7 @@ RSpec.describe Backup::GitalyBackup do
         it 'passes parallel option through' do
           expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-parallel-storage', '3', '-layout', 'pointer', '-id', backup_id).and_call_original
 
-          subject.start(:create, destination)
+          subject.start(:create, destination, backup_id: backup_id)
           subject.finish!
         end
       end
@@ -84,8 +84,14 @@ RSpec.describe Backup::GitalyBackup do
       it 'raises when the exit code not zero' do
         expect(subject).to receive(:bin_path).and_return(Gitlab::Utils.which('false'))
 
-        subject.start(:create, destination)
+        subject.start(:create, destination, backup_id: backup_id)
         expect { subject.finish! }.to raise_error(::Backup::Error, 'gitaly-backup exit status 1')
+      end
+
+      it 'raises when gitaly_backup_path is not set' do
+        stub_backup_setting(gitaly_backup_path: nil)
+
+        expect { subject.start(:create, destination, backup_id: backup_id) }.to raise_error(::Backup::Error, 'gitaly-backup binary not found and gitaly_backup_path is not configured')
       end
 
       context 'feature flag incremental_repository_backup disabled' do
@@ -102,7 +108,7 @@ RSpec.describe Backup::GitalyBackup do
 
           expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything).and_call_original
 
-          subject.start(:create, destination)
+          subject.start(:create, destination, backup_id: backup_id)
           subject.enqueue(project, Gitlab::GlRepository::PROJECT)
           subject.enqueue(project, Gitlab::GlRepository::WIKI)
           subject.enqueue(project, Gitlab::GlRepository::DESIGN)
@@ -146,7 +152,7 @@ RSpec.describe Backup::GitalyBackup do
       it 'passes through SSL envs' do
         expect(Open3).to receive(:popen2).with(ssl_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
 
-        subject.start(:create, destination)
+        subject.start(:create, destination, backup_id: backup_id)
         subject.finish!
       end
     end
@@ -171,7 +177,7 @@ RSpec.describe Backup::GitalyBackup do
 
       expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer').and_call_original
 
-      subject.start(:restore, destination)
+      subject.start(:restore, destination, backup_id: backup_id)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
       subject.enqueue(project, Gitlab::GlRepository::WIKI)
       subject.enqueue(project, Gitlab::GlRepository::DESIGN)
@@ -194,7 +200,7 @@ RSpec.describe Backup::GitalyBackup do
       it 'passes parallel option through' do
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-parallel', '3', '-layout', 'pointer').and_call_original
 
-        subject.start(:restore, destination)
+        subject.start(:restore, destination, backup_id: backup_id)
         subject.finish!
       end
     end
@@ -205,7 +211,7 @@ RSpec.describe Backup::GitalyBackup do
       it 'passes parallel option through' do
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-parallel-storage', '3', '-layout', 'pointer').and_call_original
 
-        subject.start(:restore, destination)
+        subject.start(:restore, destination, backup_id: backup_id)
         subject.finish!
       end
     end
@@ -224,7 +230,7 @@ RSpec.describe Backup::GitalyBackup do
 
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything).and_call_original
 
-        subject.start(:restore, destination)
+        subject.start(:restore, destination, backup_id: backup_id)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
         subject.enqueue(project, Gitlab::GlRepository::WIKI)
         subject.enqueue(project, Gitlab::GlRepository::DESIGN)
@@ -245,8 +251,14 @@ RSpec.describe Backup::GitalyBackup do
     it 'raises when the exit code not zero' do
       expect(subject).to receive(:bin_path).and_return(Gitlab::Utils.which('false'))
 
-      subject.start(:restore, destination)
+      subject.start(:restore, destination, backup_id: backup_id)
       expect { subject.finish! }.to raise_error(::Backup::Error, 'gitaly-backup exit status 1')
+    end
+
+    it 'raises when gitaly_backup_path is not set' do
+      stub_backup_setting(gitaly_backup_path: nil)
+
+      expect { subject.start(:restore, destination, backup_id: backup_id) }.to raise_error(::Backup::Error, 'gitaly-backup binary not found and gitaly_backup_path is not configured')
     end
   end
 end

@@ -36,7 +36,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
     modalclass=""
     modalid="fakeUniqueId"
     ok-variant="danger"
-    size="sm"
+    size="md"
     title-class="gl-text-red-500"
     titletag="h4"
   >

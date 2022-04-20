@@ -6,6 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Create a Google GKE cluster
 
+INFO:
+Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
+and in partnership with Google, GitLab is able to offer an additional $200 for new
+GCP accounts to get started with the GitLab integration with Google Kubernetes Engine.
+[Follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form)
+and apply for credit.
+
 Learn how to create a new cluster on Google Kubernetes Engine (GKE) through
 [Infrastructure as Code (IaC)](../../index.md). This process uses the Google
 and Kubernetes Terraform providers create GKE clusters. You connect the clusters to GitLab
@@ -48,10 +55,13 @@ with defaults for name, location, node count, and Kubernetes version.
 
 ## Register the agent
 
+FLAG:
+In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
 To create a GitLab agent for Kubernetes:
 
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select **Actions**.
+1. Select **Connect a cluster (agent)**.
 1. From the **Select an agent** dropdown list, select `gke-agent` and select **Register an agent**.
 1. GitLab generates a registration token for the agent. Securely store this secret token, as you will need it later.
 1. GitLab provides an address for the agent server (KAS), which you will also need later.

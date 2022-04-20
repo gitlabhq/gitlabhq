@@ -3,7 +3,7 @@
 class HelpController < ApplicationController
   skip_before_action :authenticate_user!, unless: :public_visibility_restricted?
   skip_before_action :check_two_factor_requirement
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   layout 'help'
 

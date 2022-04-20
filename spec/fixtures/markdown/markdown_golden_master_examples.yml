@@ -377,6 +377,34 @@
     </ol>
     </details>
 
+- name: diagram_kroki_nomnoml
+  markdown: |-
+    ```nomnoml
+      #stroke: #a86128
+      [<frame>Decorator pattern|
+        [<abstract>Component||+ operation()]
+        [Client] depends --> [Component]
+        [Decorator|- next: Component]
+        [Decorator] decorates -- [ConcreteComponent]
+        [Component] <:- [Decorator]
+        [Component] <:- [ConcreteComponent]
+      ]
+    ```
+  html: |-
+    <a class="no-attachment-icon" href="http://localhost:8000/nomnoml/svg/eNp1jbsOwjAMRfd-haUuIJQBBlRFVZb2L1CGkBqpgtpR6oEhH0_CW6hsts-9xwD1LJHPqKF2zX67ayqAQ3uKbkLTo-fohCMEJ4KRUoYFu2MuOS-m4ykwIUlKG-CAOT0yrdb2EewuY2YWBgxIwwxKmXx8dZ6h95ekgPAqGv4miuk-YnEVFfmIgr-Fzw6tVt-CZb7osdUNUAReJA==" target="_blank" rel="noopener noreferrer" data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,ICAjc3Ryb2tlOiAjYTg2MTI4CiAgWzxmcmFtZT5EZWNvcmF0b3IgcGF0dGVybnwKICAgIFs8YWJzdHJhY3Q+Q29tcG9uZW50fHwrIG9wZXJhdGlvbigpXQogICAgW0NsaWVudF0gZGVwZW5kcyAtLT4gW0NvbXBvbmVudF0KICAgIFtEZWNvcmF0b3J8LSBuZXh0OiBDb21wb25lbnRdCiAgICBbRGVjb3JhdG9yXSBkZWNvcmF0ZXMgLS0gW0NvbmNyZXRlQ29tcG9uZW50XQogICAgW0NvbXBvbmVudF0gPDotIFtEZWNvcmF0b3JdCiAgICBbQ29tcG9uZW50XSA8Oi0gW0NvbmNyZXRlQ29tcG9uZW50XQogIF0K"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="js-render-kroki lazy" data-src="http://localhost:8000/nomnoml/svg/eNp1jbsOwjAMRfd-haUuIJQBBlRFVZb2L1CGkBqpgtpR6oEhH0_CW6hsts-9xwD1LJHPqKF2zX67ayqAQ3uKbkLTo-fohCMEJ4KRUoYFu2MuOS-m4ykwIUlKG-CAOT0yrdb2EewuY2YWBgxIwwxKmXx8dZ6h95ekgPAqGv4miuk-YnEVFfmIgr-Fzw6tVt-CZb7osdUNUAReJA=="></a>
+
+- name: diagram_plantuml
+  markdown: |-
+    ```plantuml
+      Alice -> Bob: Authentication Request
+      Bob --> Alice: Authentication Response
+
+      Alice -> Bob: Another authentication Request
+      Alice <-- Bob: Another authentication Response
+    ```
+  html: |-
+    <a class="no-attachment-icon" href="http://localhost:8080/png/U9nJK73CoKnELT2rKt3AJx9IS2mjoKZDAybCJYp9pCzJ24ejB4qjBk5I0Cagw09LWPLZKLTSa9zNdCe5L8bcO5u-K6MHGY8kWo7ARNHr2QY7MW00AeWxTG00" target="_blank" rel="noopener noreferrer" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,ICBBbGljZSAtPiBCb2I6IEF1dGhlbnRpY2F0aW9uIFJlcXVlc3QKICBCb2IgLS0+IEFsaWNlOiBBdXRoZW50aWNhdGlvbiBSZXNwb25zZQoKICBBbGljZSAtPiBCb2I6IEFub3RoZXIgYXV0aGVudGljYXRpb24gUmVxdWVzdAogIEFsaWNlIDwtLSBCb2I6IEFub3RoZXIgYXV0aGVudGljYXRpb24gUmVzcG9uc2UK"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazy" data-src="http://localhost:8080/png/U9nJK73CoKnELT2rKt3AJx9IS2mjoKZDAybCJYp9pCzJ24ejB4qjBk5I0Cagw09LWPLZKLTSa9zNdCe5L8bcO5u-K6MHGY8kWo7ARNHr2QY7MW00AeWxTG00"></a>
+
 - name: div
   markdown: |-
     <div>plain text</div>

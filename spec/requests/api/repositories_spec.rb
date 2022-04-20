@@ -452,7 +452,7 @@ RSpec.describe API::Repositories do
 
       it "compare commits between different projects" do
         group = create(:group)
-        group.add_owner(current_user)
+        group.add_owner(current_user) if current_user
 
         forked_project = fork_project(project, current_user, repository: true, namespace: group)
         forked_project.repository.create_ref('refs/heads/improve/awesome', 'refs/heads/improve/more-awesome')

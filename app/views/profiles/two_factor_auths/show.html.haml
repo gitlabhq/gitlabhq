@@ -34,13 +34,15 @@
                 = _('To add the entry manually, provide the following details to the application on your phone.')
               %p.gl-mt-0.gl-mb-0
                 = _('Account: %{account}') % { account: @account_string }
-              %p.gl-mt-0.gl-mb-0{ data: { qa_selector: 'otp_secret_content' } }
+              %p.gl-mt-0.gl-mb-0.two-factor-secret{ data: { qa_selector: 'otp_secret_content' } }
                 = _('Key: %{key}') %{ key: current_user.otp_secret.scan(/.{4}/).join(' ') }
               %p.two-factor-new-manual-content
                 = _('Time based: Yes')
         = form_tag profile_two_factor_auth_path, method: :post do |f|
           - if @error
-            = render 'shared/global_alert', title: @error[:message], variant: :danger, dismissible: false do
+            = render Pajamas::AlertComponent.new(title: @error[:message],
+              variant: :danger,
+              dismissible: false) do
               .gl-alert-body
                 = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
 

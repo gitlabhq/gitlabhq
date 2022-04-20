@@ -7,14 +7,14 @@ RSpec::Matchers.define :require_graphql_authorizations do |*expected|
     if klass.respond_to?(:required_permissions)
       klass.required_permissions
     else
-      [klass.to_graphql.metadata[:authorize]]
+      Array.wrap(klass.authorize)
     end
   end
 
   match do |klass|
     actual = permissions_for(klass)
 
-    expect(actual).to match_array(expected)
+    expect(actual).to match_array(expected.compact)
   end
 
   failure_message do |klass|
@@ -213,16 +213,16 @@ RSpec::Matchers.define :have_graphql_resolver do |expected|
   match do |field|
     case expected
     when Method
-      expect(field.to_graphql.metadata[:type_class].resolve_proc).to eq(expected)
+      expect(field.type_class.resolve_proc).to eq(expected)
     else
-      expect(field.to_graphql.metadata[:type_class].resolver).to eq(expected)
+      expect(field.type_class.resolver).to eq(expected)
     end
   end
 end
 
 RSpec::Matchers.define :have_graphql_extension do |expected|
   match do |field|
-    expect(field.to_graphql.metadata[:type_class].extensions).to include(expected)
+    expect(field.type_class.extensions).to include(expected)
   end
 end
 

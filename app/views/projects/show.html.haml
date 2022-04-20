@@ -6,6 +6,8 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
+= render_if_exists 'shared/user_over_limit_free_plan_alert', source: @project
+= render_if_exists 'shared/minute_limit_banner', namespace: @project
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render "projects/last_push"

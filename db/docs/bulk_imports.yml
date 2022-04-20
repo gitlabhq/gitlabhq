@@ -1,0 +1,9 @@
+---
+table_name: bulk_imports
+classes:
+- BulkImport
+feature_categories:
+- importers
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42978
+milestone: '13.5'

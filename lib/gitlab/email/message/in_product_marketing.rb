@@ -7,7 +7,7 @@ module Gitlab
         UnknownTrackError = Class.new(StandardError)
 
         def self.for(track)
-          valid_tracks = [Namespaces::InviteTeamEmailService::TRACK, Namespaces::InProductMarketingEmailsService::TRACKS.keys].flatten
+          valid_tracks = Namespaces::InProductMarketingEmailsService::TRACKS.keys
           raise UnknownTrackError unless valid_tracks.include?(track)
 
           "Gitlab::Email::Message::InProductMarketing::#{track.to_s.classify}".constantize

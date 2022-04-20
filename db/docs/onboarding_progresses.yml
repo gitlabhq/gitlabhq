@@ -1,0 +1,9 @@
+---
+table_name: onboarding_progresses
+classes:
+- OnboardingProgress
+feature_categories:
+- onboarding
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50711
+milestone: '13.8'

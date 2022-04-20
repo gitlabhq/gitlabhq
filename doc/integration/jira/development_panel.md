@@ -4,25 +4,25 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Jira Development panel integration **(FREE)**
+# GitLab Jira development panel integration **(FREE)**
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
 
-With the Jira Development panel integration, you can reference Jira issues in GitLab.
+With the Jira development panel integration, you can reference Jira issues in GitLab.
 When configured, activity (such as pipeline, deployment, and feature flags) displays in the Jira issue's
-[Development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/).
-From the Development panel, you can open a detailed view and
+[development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/).
+From the development panel, you can open a detailed view and
 [take various actions](#use-the-integration), including creating a new merge request from a branch:
 
 ![Branch, Commit and Pull Requests links on Jira issue](img/jira_dev_panel_jira_setup_3.png)
 
-The information displayed in the Jira Development panel depends on where you mention the Jira issue ID:
+The information displayed in the Jira development panel depends on where you mention the Jira issue ID:
 
 | Your mention of Jira issue ID in GitLab context   | Automated effect in Jira issue                                                                         |
 |---------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| In a merge request title or description           | Link to the MR is displayed in Development panel.                                                      |
-| In a branch name                                  | Link to the branch is displayed in Development panel.                                                  |
-| In a commit message                               | Link to the commit is displayed in Development panel.                                                  |
+| In a merge request title or description           | Link to the MR is displayed in the development panel.                                                      |
+| In a branch name                                  | Link to the branch is displayed in the development panel.                                                  |
+| In a commit message                               | Link to the commit is displayed in the development panel.                                                  |
 | In a commit message with Jira [Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html) | Displays your custom comment or logged time spent and/or performs specified issue transition on merge. |
 
 This integration connects all GitLab projects to projects in the Jira instance in either:
@@ -61,8 +61,8 @@ an issue transition, or add a custom comment, read the Atlassian page
 ## Configure the integration
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of how to configure Jira Development panel integration, see
-[Agile Management - GitLab Jira Development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M).
+For an overview of how to configure the Jira development panel integration, see
+[Agile Management - GitLab Jira development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M).
 
 To simplify administration, we recommend that a GitLab group maintainer or group owner
 (or, if possible, instance administrator in the case of self-managed GitLab) set up the integration.
@@ -89,7 +89,7 @@ This integration is not supported on GitLab instances under a
 [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab).
 For example, `http://example.com/gitlab`.
 
-## Troubleshoot the Development Panel
+## Troubleshoot the development panel
 
 If you use Jira on your own server, go to the [Atlassian documentation](https://confluence.atlassian.com/jirakb/troubleshoot-the-development-panel-in-jira-server-574685212.html)
 for general troubleshooting information.

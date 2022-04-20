@@ -54,22 +54,23 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
   end
 
   describe "#valid?" do
+    subject(:valid?) do
+      remote_file.validate!
+      remote_file.valid?
+    end
+
     context 'when is a valid remote url' do
       before do
         stub_full_request(location).to_return(body: remote_file_content)
       end
 
-      it 'returns true' do
-        expect(remote_file.valid?).to be_truthy
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'with an irregular url' do
       let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
 
-      it 'returns false' do
-        expect(remote_file.valid?).to be_falsy
-      end
+      it { is_expected.to be_falsy }
     end
 
     context 'with a timeout' do
@@ -77,25 +78,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
         allow(Gitlab::HTTP).to receive(:get).and_raise(Timeout::Error)
       end
 
-      it 'is falsy' do
-        expect(remote_file.valid?).to be_falsy
-      end
+      it { is_expected.to be_falsy }
     end
 
     context 'when is not a yaml file' do
       let(:location) { 'https://asdasdasdaj48ggerexample.com' }
 
-      it 'is falsy' do
-        expect(remote_file.valid?).to be_falsy
-      end
+      it { is_expected.to be_falsy }
     end
 
     context 'with an internal url' do
       let(:location) { 'http://localhost:8080' }
 
-      it 'is falsy' do
-        expect(remote_file.valid?).to be_falsy
-      end
+      it { is_expected.to be_falsy }
     end
   end
 
@@ -142,7 +137,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
   end
 
   describe "#error_message" do
-    subject { remote_file.error_message }
+    subject(:error_message) do
+      remote_file.validate!
+      remote_file.error_message
+    end
 
     context 'when remote file location is not valid' do
       let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/?secret_file.yml' }
@@ -200,5 +198,23 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
     it 'drops all parameters' do
       is_expected.to be_empty
     end
+  end
+
+  describe '#metadata' do
+    before do
+      stub_full_request(location).to_return(body: remote_file_content)
+    end
+
+    subject(:metadata) { remote_file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: nil,
+        context_sha: '12345',
+        type: :remote,
+        location: 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml',
+        extra: {}
+      )
+    }
   end
 end

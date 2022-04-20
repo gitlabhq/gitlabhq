@@ -62,9 +62,9 @@ GitLab can use these to access the resource. More information about authenticati
 service account can be found at Google's documentation for
 [Authenticating from a service account](https://cloud.google.com/iap/docs/authentication-howto#authenticating_from_a_service_account).
 
-1. Navigate to the [Integrations page](overview.md#accessing-integrations) at
-   **Settings > Integrations**.
-1. Click the **Prometheus** service.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Prometheus**.
 1. For **API URL**, provide the domain name or IP address of your server, such as
    `http://prometheus.example.com/` or `http://192.0.2.1/`.
 1. (Optional) In **Google IAP Audience Client ID**, provide the Client ID of the
@@ -73,7 +73,7 @@ service account can be found at Google's documentation for
    Service Account credentials file that is authorized to access the Prometheus resource.
    The JSON key `token_credential_uri` is discarded to prevent
    [Server-side Request Forgery (SSRF)](https://www.hackerone.com/application-security/how-server-side-request-forgery-ssrf).
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ![Configure Prometheus Service](img/prometheus_manual_configuration_v13_2.png)
 
@@ -83,11 +83,12 @@ You can configure [Thanos](https://thanos.io/) as a drop-in replacement for Prom
 with GitLab. Use the domain name or IP address of the Thanos server you'd like
 to integrate with.
 
-1. Navigate to the [Integrations page](overview.md#accessing-integrations).
-1. Click the **Prometheus** service.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Prometheus**.
 1. Provide the domain name or IP address of your server, for example
    `http://thanos.example.com/` or `http://192.0.2.1/`.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ### Precedence with multiple Prometheus configurations
 

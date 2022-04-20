@@ -110,15 +110,34 @@ RSpec.describe Projects::AlertManagementHelper do
   describe '#alert_management_detail_data' do
     let(:alert_id) { 1 }
     let(:issues_path) { project_issues_path(project) }
+    let(:can_update_alert) { true }
+
+    before do
+      allow(helper)
+        .to receive(:can?)
+        .with(current_user, :update_alert_management_alert, project)
+        .and_return(can_update_alert)
+    end
 
     it 'returns detail page configuration' do
-      expect(helper.alert_management_detail_data(project, alert_id)).to eq(
+      expect(helper.alert_management_detail_data(current_user, project, alert_id)).to eq(
         'alert-id' => alert_id,
         'project-path' => project_path,
         'project-id' => project_id,
         'project-issues-path' => issues_path,
-        'page' => 'OPERATIONS'
+        'page' => 'OPERATIONS',
+        'can-update' => 'true'
       )
+    end
+
+    context 'when user cannot update alert' do
+      let(:can_update_alert) { false }
+
+      it 'shows error tracking enablement as disabled' do
+        expect(helper.alert_management_detail_data(current_user, project, alert_id)).to include(
+          'can-update' => 'false'
+        )
+      end
     end
   end
 end

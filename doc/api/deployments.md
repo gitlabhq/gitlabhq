@@ -265,7 +265,7 @@ Example response:
 }
 ```
 
-Deployments created by users on GitLab Premium or higher include the `approvals` and `pending_approval_count` properties:
+When the [unified approval setting](../ci/environments/deployment_approvals.md#unified-approval-setting) is configured, deployments created by users on GitLab Premium or higher include the `approvals` and `pending_approval_count` properties:
 
 ```json
 {
@@ -282,9 +282,52 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
         "web_url": "http://localhost:3000/project_6_bot"
       },
       "status": "approved",
-      "created_at": "2022-02-24T20:22:30.097Z"
+      "created_at": "2022-02-24T20:22:30.097Z",
+      "comment": "Looks good to me"
     }
   ],
+  ...
+}
+```
+
+When the [multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules) is configured, deployments created by users on GitLab Premium or higher include the `approval_summary` property:
+
+```json
+{
+  "approval_summary": {
+    "rules": [
+      {
+        "user_id": null,
+        "group_id": 134,
+        "access_level": null,
+        "access_level_description": "qa-group",
+        "required_approvals": 1,
+        "deployment_approvals": []
+      },
+      {
+        "user_id": null,
+        "group_id": 135,
+        "access_level": null,
+        "access_level_description": "security-group",
+        "required_approvals": 2,
+        "deployment_approvals": [
+          {
+            "user": {
+              "id": 100,
+              "username": "security-user-1",
+              "name": "security user-1",
+              "state": "active",
+              "avatar_url": "https://www.gravatar.com/avatar/e130fcd3a1681f41a3de69d10841afa9?s=80&d=identicon",
+              "web_url": "http://localhost:3000/security-user-1"
+            },
+            "status": "approved",
+            "created_at": "2022-04-11T03:37:03.058Z",
+            "comment": null
+          }
+        ]
+      }
+    ]
+  }
   ...
 }
 ```
@@ -342,20 +385,7 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
 {
   "status": "created",
   "pending_approval_count": 0,
-  "approvals": [
-    {
-      "user": {
-        "id": 49,
-        "username": "project_6_bot",
-        "name": "****",
-        "state": "active",
-        "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
-        "web_url": "http://localhost:3000/project_6_bot"
-      },
-      "status": "approved",
-      "created_at": "2022-02-24T20:22:30.097Z"
-    }
-  ],
+  "approvals": [],
   ...
 }
 ```
@@ -420,7 +450,8 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
         "web_url": "http://localhost:3000/project_6_bot"
       },
       "status": "approved",
-      "created_at": "2022-02-24T20:22:30.097Z"
+      "created_at": "2022-02-24T20:22:30.097Z",
+      "comment": "Looks good to me"
     }
   ],
   ...
@@ -466,9 +497,10 @@ POST /projects/:id/deployments/:deployment_id/approval
 | `deployment_id` | integer        | yes      | The ID of the deployment.                                                                                       |
 | `status`        | string         | yes      | The status of the approval (either `approved` or `rejected`).                                                   |
 | `comment`       | string         | no       | A comment to go with the approval                                                                               |
+| `represented_as`| string         | no       | The name of the User/Group/Role to use for the approval, when the user belongs to [multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules). |
 
 ```shell
-curl --data "status=approved&comment=Looks good to me" \
+curl --data "status=approved&comment=Looks good to me&represented_as=security" \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1/approval"
 ```
 
@@ -477,12 +509,12 @@ Example response:
 ```json
 {
   "user": {
-    "name": "Administrator",
-    "username": "root",
-    "id": 1,
+    "id": 100,
+    "username": "security-user-1",
+    "name": "security user-1",
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/root"
+    "avatar_url": "https://www.gravatar.com/avatar/e130fcd3a1681f41a3de69d10841afa9?s=80&d=identicon",
+    "web_url": "http://localhost:3000/security-user-1"
   },
   "status": "approved",
   "created_at": "2022-02-24T20:22:30.097Z",

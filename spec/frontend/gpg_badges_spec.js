@@ -40,30 +40,22 @@ describe('GpgBadges', () => {
     mock.restore();
   });
 
-  it('does not make a request if there is no container element', (done) => {
+  it('does not make a request if there is no container element', async () => {
     setFixtures('');
     jest.spyOn(axios, 'get').mockImplementation(() => {});
 
-    GpgBadges.fetch()
-      .then(() => {
-        expect(axios.get).not.toHaveBeenCalled();
-      })
-      .then(done)
-      .catch(done.fail);
+    await GpgBadges.fetch();
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
-  it('throws an error if the endpoint is missing', (done) => {
+  it('throws an error if the endpoint is missing', async () => {
     setFixtures('<div class="js-signature-container"></div>');
     jest.spyOn(axios, 'get').mockImplementation(() => {});
 
-    GpgBadges.fetch()
-      .then(() => done.fail('Expected error to be thrown'))
-      .catch((error) => {
-        expect(error.message).toBe('Missing commit signatures endpoint!');
-        expect(axios.get).not.toHaveBeenCalled();
-      })
-      .then(done)
-      .catch(done.fail);
+    await expect(GpgBadges.fetch()).rejects.toEqual(
+      new Error('Missing commit signatures endpoint!'),
+    );
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('fetches commit signatures', async () => {
@@ -104,31 +96,23 @@ describe('GpgBadges', () => {
     });
   });
 
-  it('displays a loading spinner', (done) => {
+  it('displays a loading spinner', async () => {
     mock.onGet(dummyUrl).replyOnce(200);
 
-    GpgBadges.fetch()
-      .then(() => {
-        expect(document.querySelector('.js-loading-gpg-badge:empty')).toBe(null);
-        const spinners = document.querySelectorAll('.js-loading-gpg-badge span.gl-spinner');
+    await GpgBadges.fetch();
+    expect(document.querySelector('.js-loading-gpg-badge:empty')).toBe(null);
+    const spinners = document.querySelectorAll('.js-loading-gpg-badge span.gl-spinner');
 
-        expect(spinners.length).toBe(1);
-        done();
-      })
-      .catch(done.fail);
+    expect(spinners.length).toBe(1);
   });
 
-  it('replaces the loading spinner', (done) => {
+  it('replaces the loading spinner', async () => {
     mock.onGet(dummyUrl).replyOnce(200, dummyResponse);
 
-    GpgBadges.fetch()
-      .then(() => {
-        expect(document.querySelector('.js-loading-gpg-badge')).toBe(null);
-        const parentContainer = document.querySelector('.parent-container');
+    await GpgBadges.fetch();
+    expect(document.querySelector('.js-loading-gpg-badge')).toBe(null);
+    const parentContainer = document.querySelector('.parent-container');
 
-        expect(parentContainer.innerHTML.trim()).toEqual(dummyBadgeHtml);
-        done();
-      })
-      .catch(done.fail);
+    expect(parentContainer.innerHTML.trim()).toEqual(dummyBadgeHtml);
   });
 });

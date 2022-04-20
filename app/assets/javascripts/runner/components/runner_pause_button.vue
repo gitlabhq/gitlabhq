@@ -24,6 +24,7 @@ export default {
       default: false,
     },
   },
+  emits: ['toggledPaused'],
   data() {
     return {
       updating: false,
@@ -83,6 +84,7 @@ export default {
         if (errors && errors.length) {
           throw new Error(errors.join(' '));
         }
+        this.$emit('toggledPaused');
       } catch (e) {
         this.onError(e);
       } finally {

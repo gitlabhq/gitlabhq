@@ -290,3 +290,42 @@ executed synchronously every time the given event is published.
 
 For complex conditions it's best to subscribe to all the events and then handle the logic
 in the `handle_event` method of the subscriber worker.
+
+## Testing
+
+The publisher's responsibility is to ensure that the event is published correctly.
+
+To test that an event has been published correctly, we can use the RSpec matcher `:publish_event`:
+
+```ruby
+it 'publishes a ProjectDeleted event with project id and namespace id' do
+  expected_data = { project_id: project.id, namespace_id: project.namespace_id }
+
+  # The matcher verifies that when the block is called, the block publishes the expected event and data.
+  expect { destroy_project(project, user, {}) }
+    .to publish_event(Projects::ProjectDeletedEvent)
+    .with(expected_data)
+end
+```
+
+The subscriber must ensure that a published event can be consumed correctly. For this purpose
+we have added helpers and shared examples to standardize the way we test subscribers:
+
+```ruby
+RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
+  let(:event) { Ci::PipelineCreatedEvent.new(data: ({ pipeline_id: pipeline.id })) }
+
+  # This shared example ensures that an event is published and correctly processed by
+  # the current subscriber (`described_class`).
+  it_behaves_like 'consumes the published event' do
+    let(:event) { event }
+  end
+  
+  it 'does something' do
+    # This helper directly executes `perform` ensuring that `handle_event` is called correctly.
+    consume_event(subscriber: described_class, event: event)
+
+    # run expectations
+  end
+end
+```

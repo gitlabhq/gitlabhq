@@ -121,7 +121,7 @@ describe('TaskList', () => {
   });
 
   describe('update', () => {
-    it('should disable task list items and make a patch request then enable them again', (done) => {
+    it('should disable task list items and make a patch request then enable them again', () => {
       const response = { data: { lock_version: 3 } };
       jest.spyOn(taskList, 'enableTaskListItems').mockImplementation(() => {});
       jest.spyOn(taskList, 'disableTaskListItems').mockImplementation(() => {});
@@ -156,20 +156,17 @@ describe('TaskList', () => {
 
       expect(taskList.onUpdate).toHaveBeenCalled();
 
-      update
-        .then(() => {
-          expect(taskList.disableTaskListItems).toHaveBeenCalledWith(event);
-          expect(axios.patch).toHaveBeenCalledWith(endpoint, patchData);
-          expect(taskList.enableTaskListItems).toHaveBeenCalledWith(event);
-          expect(taskList.onSuccess).toHaveBeenCalledWith(response.data);
-          expect(taskList.lockVersion).toEqual(response.data.lock_version);
-        })
-        .then(done)
-        .catch(done.fail);
+      return update.then(() => {
+        expect(taskList.disableTaskListItems).toHaveBeenCalledWith(event);
+        expect(axios.patch).toHaveBeenCalledWith(endpoint, patchData);
+        expect(taskList.enableTaskListItems).toHaveBeenCalledWith(event);
+        expect(taskList.onSuccess).toHaveBeenCalledWith(response.data);
+        expect(taskList.lockVersion).toEqual(response.data.lock_version);
+      });
     });
   });
 
-  it('should handle request error and enable task list items', (done) => {
+  it('should handle request error and enable task list items', () => {
     const response = { data: { error: 1 } };
     jest.spyOn(taskList, 'enableTaskListItems').mockImplementation(() => {});
     jest.spyOn(taskList, 'onUpdate').mockImplementation(() => {});
@@ -182,12 +179,9 @@ describe('TaskList', () => {
 
     expect(taskList.onUpdate).toHaveBeenCalled();
 
-    update
-      .then(() => {
-        expect(taskList.enableTaskListItems).toHaveBeenCalledWith(event);
-        expect(taskList.onError).toHaveBeenCalledWith(response.data);
-      })
-      .then(done)
-      .catch(done.fail);
+    return update.then(() => {
+      expect(taskList.enableTaskListItems).toHaveBeenCalledWith(event);
+      expect(taskList.onError).toHaveBeenCalledWith(response.data);
+    });
   });
 });

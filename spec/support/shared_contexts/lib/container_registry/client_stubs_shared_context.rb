@@ -8,8 +8,8 @@ RSpec.shared_context 'container registry client stubs' do
     end
   end
 
-  def stub_container_registry_gitlab_api_repository_details(client, path:, size_bytes:)
-    allow(client).to receive(:repository_details).with(path, with_size: true).and_return('size_bytes' => size_bytes)
+  def stub_container_registry_gitlab_api_repository_details(client, path:, size_bytes:, sizing: :self)
+    allow(client).to receive(:repository_details).with(path, sizing: sizing).and_return('size_bytes' => size_bytes)
   end
 
   def stub_container_registry_gitlab_api_network_error(client_method: :supports_gitlab_api?)

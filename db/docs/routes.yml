@@ -1,0 +1,11 @@
+---
+table_name: routes
+classes:
+- Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::Route
+- Route
+feature_categories:
+- projects
+- subgroups
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/83232be0e14cc8b35bf74532203a6e4371c15e70
+milestone: '9.0'

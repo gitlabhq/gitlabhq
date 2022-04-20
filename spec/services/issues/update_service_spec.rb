@@ -9,8 +9,8 @@ RSpec.describe Issues::UpdateService, :mailer do
   let_it_be(:guest) { create(:user) }
   let_it_be(:group) { create(:group, :public, :crm_enabled) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
-  let_it_be(:label) { create(:label, project: project) }
-  let_it_be(:label2) { create(:label, project: project) }
+  let_it_be(:label) { create(:label, title: 'a', project: project) }
+  let_it_be(:label2) { create(:label, title: 'b', project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:issue) do
@@ -1224,6 +1224,18 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         context 'without an escalation status record' do
+          it 'creates a new record' do
+            expect { update_issue(opts) }.to change(::IncidentManagement::IssuableEscalationStatus, :count).by(1)
+          end
+
+          it_behaves_like 'updates the escalation status record', :acknowledged
+        end
+
+        context 'with :incident_escalations feature flag disabled' do
+          before do
+            stub_feature_flags(incident_escalations: false)
+          end
+
           it_behaves_like 'does not change the status record'
         end
       end
@@ -1346,6 +1358,19 @@ RSpec.describe Issues::UpdateService, :mailer do
 
           update_issue(update_params)
         end
+      end
+    end
+
+    context 'labels are updated' do
+      let(:label_a) { label }
+      let(:label_b) { label2 }
+      let(:issuable) { issue }
+
+      it_behaves_like 'keeps issuable labels sorted after update'
+      it_behaves_like 'broadcasting issuable labels updates'
+
+      def update_issuable(update_params)
+        update_issue(update_params)
       end
     end
 

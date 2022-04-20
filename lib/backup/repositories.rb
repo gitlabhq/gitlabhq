@@ -6,50 +6,17 @@ module Backup
   class Repositories < Task
     extend ::Gitlab::Utils::Override
 
-    def initialize(progress, strategy:, max_concurrency: 1, max_storage_concurrency: 1)
+    def initialize(progress, strategy:)
       super(progress)
 
       @strategy = strategy
-      @max_concurrency = max_concurrency
-      @max_storage_concurrency = max_storage_concurrency
     end
 
     override :dump
-    def dump(path)
-      strategy.start(:create, path)
+    def dump(path, backup_id)
+      strategy.start(:create, path, backup_id: backup_id)
+      enqueue_consecutive
 
-      # gitaly-backup is designed to handle concurrency on its own. So we want
-      # to avoid entering the buggy concurrency code here when gitaly-backup
-      # is enabled.
-      if (max_concurrency <= 1 && max_storage_concurrency <= 1) || !strategy.parallel_enqueue?
-        return enqueue_consecutive
-      end
-
-      if max_concurrency < 1 || max_storage_concurrency < 1
-        puts "GITLAB_BACKUP_MAX_CONCURRENCY and GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY must have a value of at least 1".color(:red)
-        exit 1
-      end
-
-      check_valid_storages!
-
-      semaphore = Concurrent::Semaphore.new(max_concurrency)
-      errors = Queue.new
-
-      threads = Gitlab.config.repositories.storages.keys.map do |storage|
-        Thread.new do
-          Rails.application.executor.wrap do
-            enqueue_storage(storage, semaphore, max_storage_concurrency: max_storage_concurrency)
-          rescue StandardError => e
-            errors << e
-          end
-        end
-      end
-
-      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-        threads.each(&:join)
-      end
-
-      raise errors.pop unless errors.empty?
     ensure
       strategy.finish!
     end
@@ -66,26 +33,9 @@ module Backup
       restore_object_pools
     end
 
-    override :human_name
-    def human_name
-      _('repositories')
-    end
-
     private
 
-    attr_reader :strategy, :max_concurrency, :max_storage_concurrency
-
-    def check_valid_storages!
-      repository_storage_klasses.each do |klass|
-        if klass.excluding_repository_storage(Gitlab.config.repositories.storages.keys).exists?
-          raise Error, "repositories.storages in gitlab.yml does not include all storages used by #{klass}"
-        end
-      end
-    end
-
-    def repository_storage_klasses
-      [ProjectRepository, SnippetRepository]
-    end
+    attr_reader :strategy
 
     def enqueue_consecutive
       enqueue_consecutive_projects
@@ -102,50 +52,6 @@ module Backup
       Snippet.find_each(batch_size: 1000) { |snippet| enqueue_snippet(snippet) }
     end
 
-    def enqueue_storage(storage, semaphore, max_storage_concurrency:)
-      errors = Queue.new
-      queue = InterlockSizedQueue.new(1)
-
-      threads = Array.new(max_storage_concurrency) do
-        Thread.new do
-          Rails.application.executor.wrap do
-            while container = queue.pop
-              ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-                semaphore.acquire
-              end
-
-              begin
-                enqueue_container(container)
-              rescue StandardError => e
-                errors << e
-                break
-              ensure
-                semaphore.release
-              end
-            end
-          end
-        end
-      end
-
-      enqueue_records_for_storage(storage, queue, errors)
-
-      raise errors.pop unless errors.empty?
-    ensure
-      queue.close
-      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-        threads.each(&:join)
-      end
-    end
-
-    def enqueue_container(container)
-      case container
-      when Project
-        enqueue_project(container)
-      when Snippet
-        enqueue_snippet(container)
-      end
-    end
-
     def enqueue_project(project)
       strategy.enqueue(project, Gitlab::GlRepository::PROJECT)
       strategy.enqueue(project, Gitlab::GlRepository::WIKI)
@@ -156,30 +62,8 @@ module Backup
       strategy.enqueue(snippet, Gitlab::GlRepository::SNIPPET)
     end
 
-    def enqueue_records_for_storage(storage, queue, errors)
-      records_to_enqueue(storage).each do |relation|
-        relation.find_each(batch_size: 100) do |project|
-          break unless errors.empty?
-
-          queue.push(project)
-        end
-      end
-    end
-
-    def records_to_enqueue(storage)
-      [projects_in_storage(storage), snippets_in_storage(storage)]
-    end
-
-    def projects_in_storage(storage)
-      project_relation.id_in(ProjectRepository.for_repository_storage(storage).select(:project_id))
-    end
-
     def project_relation
       Project.includes(:route, :group, namespace: :owner)
-    end
-
-    def snippets_in_storage(storage)
-      Snippet.id_in(SnippetRepository.for_repository_storage(storage).select(:snippet_id))
     end
 
     def restore_object_pools
@@ -215,24 +99,6 @@ module Backup
       end
 
       Snippet.id_in(invalid_snippets).delete_all
-    end
-
-    class InterlockSizedQueue < SizedQueue
-      extend ::Gitlab::Utils::Override
-
-      override :pop
-      def pop(*)
-        ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-          super
-        end
-      end
-
-      override :push
-      def push(*)
-        ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-          super
-        end
-      end
     end
   end
 end

@@ -191,7 +191,8 @@ RSpec.describe 'New project', :js do
           click_link 'Create blank project'
         end
 
-        it 'selects the user namespace' do
+        it 'does not select the user namespace' do
+          click_on 'Pick a group or namespace'
           expect(page).to have_button user.username
         end
       end
@@ -326,6 +327,14 @@ RSpec.describe 'New project', :js do
           fill_in 'project_import_url', with: 'http://foo/bar'
           fill_in 'project_name', with: collision_project.name
 
+          click_on 'Create project'
+
+          expect(page).to have_content(
+            s_('ProjectsNew|Pick a group or namespace where you want to create this project.')
+          )
+
+          click_on 'Pick a group or namespace'
+          click_on user.username
           click_on 'Create project'
 
           expect(page).to have_css('#import-project-pane.active')

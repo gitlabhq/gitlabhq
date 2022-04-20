@@ -1,0 +1,9 @@
+---
+table_name: boards_epic_lists
+classes:
+- Boards::EpicList
+feature_categories:
+- portfolio_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49728
+milestone: '13.8'

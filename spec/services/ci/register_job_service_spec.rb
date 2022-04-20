@@ -103,6 +103,20 @@ module Ci
             pending_job.create_queuing_entry!
           end
 
+          context 'when build owner has been blocked' do
+            let(:user) { create(:user, :blocked) }
+
+            before do
+              pending_job.update!(user: user)
+            end
+
+            it 'does not pick the build and drops the build' do
+              expect(execute(shared_runner)).to be_falsey
+
+              expect(pending_job.reload).to be_user_blocked
+            end
+          end
+
           context 'for multiple builds' do
             let!(:project2) { create :project, shared_runners_enabled: true }
             let!(:pipeline2) { create :ci_pipeline, project: project2 }

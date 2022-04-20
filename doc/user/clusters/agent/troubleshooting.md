@@ -27,9 +27,8 @@ If you are a GitLab administrator, you can also view the [GitLab agent server lo
 }
 ```
 
-This error is shown if there are some connectivity issues between the address
-specified as `kas-address`, and your agent pod. To fix it, make sure that you
-specified the `kas-address` correctly.
+This error occurs when there are connectivity issues between the `kas-address`
+and your agent pod. To fix this issue, make sure the `kas-address` is accurate.
 
 ```json
 {
@@ -41,8 +40,8 @@ specified the `kas-address` correctly.
 }
 ```
 
-This error occurs if the `kas-address` doesn't include a trailing slash. To fix it, make sure that the
-`wss` or `ws` URL ends with a trailing slash, such as `wss://GitLab.host.tld:443/-/kubernetes-agent/`
+This error occurs when the `kas-address` doesn't include a trailing slash. To fix this issue, make sure that the
+`wss` or `ws` URL ends with a trailing slash, like `wss://GitLab.host.tld:443/-/kubernetes-agent/`
 or `ws://GitLab.host.tld:80/-/kubernetes-agent/`.
 
 ## ValidationError(Deployment.metadata)
@@ -58,9 +57,10 @@ or `ws://GitLab.host.tld:80/-/kubernetes-agent/`.
 }
 ```
 
-This error is shown if a manifest file is malformed, and Kubernetes can't
-create specified objects. Make sure that your manifest files are valid. You
-may try using them to create objects in Kubernetes directly for more troubleshooting.
+This error occurs when a manifest file is malformed and Kubernetes can't
+create the specified objects. Make sure that your manifest files are valid.
+
+For additional troubleshooting, try to use the manifest files to create objects in Kubernetes directly.
 
 ## Error while dialing failed to WebSocket dial: failed to send handshake request
 
@@ -73,15 +73,9 @@ may try using them to create objects in Kubernetes directly for more troubleshoo
 }
 ```
 
-This error is shown if you configured `wss` as `kas-address` on the agent side,
-but KAS on the server side is not available via `wss`. To fix it, make sure the
+This error occurs when you configured `wss` as `kas-address` on the agent side,
+but the agent server is not available at `wss`. To fix this issue, make sure the
 same schemes are configured on both sides.
-
-It's not possible to set the `grpc` scheme due to the issue
-[It is not possible to configure KAS to work with `grpc` without directly editing GitLab KAS deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/276888). To use `grpc` while the
-issue is in progress, directly edit the deployment with the
-`kubectl edit deployment gitlab-kas` command, and change `--listen-websocket=true` to `--listen-websocket=false`. After running that command, you should be able to use
-`grpc://gitlab-kas.<YOUR-NAMESPACE>:8150`.
 
 ## Decompressor is not installed for grpc-encoding
 
@@ -94,8 +88,8 @@ issue is in progress, directly edit the deployment with the
 }
 ```
 
-This error is shown if the version of the agent is newer that the version of KAS.
-To fix it, make sure that both `agentk` and KAS use the same versions.
+This error occurs when the version of the agent is newer that the version of the agent server (KAS).
+To fix it, make sure that both `agentk` and the agent server are the same version.
 
 ## Certificate signed by unknown authority
 
@@ -109,9 +103,11 @@ To fix it, make sure that both `agentk` and KAS use the same versions.
 }
 ```
 
-This error is shown if your GitLab instance is using a certificate signed by an internal CA that
-is unknown to the agent. One approach to fixing it is to present the CA certificate file to the agent
-via a Kubernetes `configmap` and mount the file in the agent `/etc/ssl/certs` directory from where it
+This error occurs when your GitLab instance is using a certificate signed by an internal
+certificate authority that is unknown to the agent.
+
+To fix this issue, you can present the CA certificate file to the agent
+by using a Kubernetes `configmap` and mount the file in the agent `/etc/ssl/certs` directory from where it
 will be picked up automatically.
 
 For example, if your internal CA certificate is `myCA.pem`:
@@ -153,7 +149,7 @@ Then in `resources.yml`:
             path: myCA.pem
 ```
 
-Alternatively, you can mount the certificate file at a different location and include it using the
+Alternatively, you can mount the certificate file at a different location and specify it for the
 `--ca-cert-file` agent parameter:
 
 ```yaml
@@ -188,5 +184,5 @@ Alternatively, you can mount the certificate file at a different location and in
 }
 ```
 
-This error is shown if the manifest project is not public. To fix it, make sure your manifest project is public or your manifest files
-are stored in the agent's configuration repository.
+This error occurs when the project where you keep your manifests is not public. To fix it, make sure your project is public or your manifest files
+are stored in the repository where the agent is configured.

@@ -37,6 +37,7 @@ class Project < ApplicationRecord
   include EachBatch
   include GitlabRoutingHelper
   include BulkMemberAccessLoad
+  include BulkUsersByEmailLoad
   include RunnerTokenExpirationInterval
   include BlocksUnsafeSerialization
 
@@ -382,7 +383,7 @@ class Project < ApplicationRecord
   has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
 
   has_many :import_failures, inverse_of: :project
-  has_many :jira_imports, -> { order 'jira_imports.created_at' }, class_name: 'JiraImportState', inverse_of: :project
+  has_many :jira_imports, -> { order(JiraImportState.arel_table[:created_at].asc) }, class_name: 'JiraImportState', inverse_of: :project
 
   has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult'
   has_many :ci_feature_usages, class_name: 'Projects::CiFeatureUsage'
@@ -545,8 +546,8 @@ class Project < ApplicationRecord
         .or(arel_table[:storage_version].eq(nil)))
   end
 
-  # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
-  scope :sorted_by_activity, -> { reorder(Arel.sql("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC")) }
+  scope :sorted_by_updated_asc, -> { reorder(self.arel_table['updated_at'].asc) }
+  scope :sorted_by_updated_desc, -> { reorder(self.arel_table['updated_at'].desc) }
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
@@ -655,7 +656,9 @@ class Project < ApplicationRecord
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
 
+  scope :created_by, -> (user) { where(creator: user) }
   scope :imported_from, -> (type) { where(import_type: type) }
+  scope :imported, -> { where.not(import_type: nil) }
   scope :with_tracing_enabled, -> { joins(:tracing_setting) }
   scope :with_enabled_error_tracking, -> { joins(:error_tracking_setting).where(project_error_tracking_settings: { enabled: true }) }
 
@@ -780,9 +783,9 @@ class Project < ApplicationRecord
         # pass a string to avoid AR adding the table name
         reorder('project_statistics.storage_size DESC, projects.id DESC')
       when 'latest_activity_desc'
-        reorder(self.arel_table['last_activity_at'].desc)
+        sorted_by_updated_desc
       when 'latest_activity_asc'
-        reorder(self.arel_table['last_activity_at'].asc)
+        sorted_by_updated_asc
       when 'stars_desc'
         sorted_by_stars_desc
       when 'stars_asc'
@@ -894,6 +897,18 @@ class Project < ApplicationRecord
 
   def parent_loaded?
     association(:namespace).loaded?
+  end
+
+  def personal_namespace_holder?(user)
+    return false unless personal?
+    return false unless user
+
+    # We do not want to use a check like `project.team.owner?(user)`
+    # here because that would depend upon the state of the `project_authorizations` cache,
+    # and also perform the check across multiple `owners` of the project, but our intention
+    # is to check if the user is the "holder" of the personal namespace, so need to make this
+    # check against only a single user (ie, namespace.owner).
+    namespace.owner == user
   end
 
   def project_setting
@@ -1045,6 +1060,17 @@ class Project < ApplicationRecord
   def container_registry_url
     if Gitlab.config.registry.enabled
       "#{Gitlab.config.registry.host_port}/#{full_path.downcase}"
+    end
+  end
+
+  def container_repositories_size
+    strong_memoize(:container_repositories_size) do
+      next unless Gitlab.com?
+      next 0 if container_repositories.empty?
+      next unless container_repositories.all_migrated?
+      next unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+
+      ContainerRegistry::GitlabApiClient.deduplicated_size(full_path)
     end
   end
 
@@ -1401,7 +1427,7 @@ class Project < ApplicationRecord
   end
 
   def last_activity_date
-    [last_activity_at, last_repository_updated_at, updated_at].compact.max
+    updated_at
   end
 
   def project_id
@@ -1469,7 +1495,7 @@ class Project < ApplicationRecord
   end
 
   def find_or_initialize_integration(name)
-    return if disabled_integrations.include?(name)
+    return if disabled_integrations.include?(name) || Integration.available_integration_names.exclude?(name)
 
     find_integration(integrations, name) || build_from_instance(name) || build_integration(name)
   end
@@ -1920,6 +1946,10 @@ class Project < ApplicationRecord
     Gitlab.config.pages.enabled
   end
 
+  def pages_show_onboarding?
+    !(pages_metadatum&.onboarding_complete || pages_metadatum&.deployed)
+  end
+
   def remove_private_deploy_keys
     exclude_keys_linked_to_other_projects = <<-SQL
       NOT EXISTS (
@@ -1933,6 +1963,10 @@ class Project < ApplicationRecord
     deploy_keys.where(public: false)
                .where(exclude_keys_linked_to_other_projects)
                .delete_all
+  end
+
+  def mark_pages_onboarding_complete
+    ensure_pages_metadatum.update!(onboarding_complete: true)
   end
 
   def mark_pages_as_deployed
@@ -1974,13 +2008,15 @@ class Project < ApplicationRecord
     ProjectCacheWorker.perform_async(self.id, [], [:repository_size])
     AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
 
+    enqueue_record_project_target_platforms
+
     # The import assigns iid values on its own, e.g. by re-using GitHub ids.
     # Flush existing InternalId records for this project for consistency reasons.
     # Those records are going to be recreated with the next normal creation
     # of a model instance (e.g. an Issue).
     InternalId.flush_records!(project: self)
 
-    import_state.finish
+    import_state&.finish
     update_project_counter_caches
     after_create_default_branch
     join_pool_repository
@@ -2827,6 +2863,22 @@ class Project < ApplicationRecord
 
   def pending_delete_or_hidden?
     pending_delete? || hidden?
+  end
+
+  def work_items_feature_flag_enabled?
+    group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self, default_enabled: :yaml)
+  end
+
+  def enqueue_record_project_target_platforms
+    return unless Gitlab.com?
+    return unless Feature.enabled?(:record_projects_target_platforms, self, default_enabled: :yaml)
+
+    Projects::RecordTargetPlatformsWorker.perform_async(id)
+  end
+
+  def inactive?
+    (statistics || build_statistics).storage_size > ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes &&
+      last_activity_at < ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
   end
 
   private

@@ -308,7 +308,7 @@ describe('Agents', () => {
     });
 
     it('displays an alert message', () => {
-      expect(findAlert().text()).toBe('An error occurred while loading your Agents');
+      expect(findAlert().text()).toBe('An error occurred while loading your agents');
     });
   });
 

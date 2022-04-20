@@ -9,7 +9,7 @@ RSpec.describe Users::SavedReplies::UpdateService do
     let_it_be(:other_saved_reply) { create(:saved_reply, user: current_user) }
     let_it_be(:saved_reply_from_other_user) { create(:saved_reply) }
 
-    subject { described_class.new(current_user: current_user, saved_reply: saved_reply, name: name, content: content).execute }
+    subject { described_class.new(saved_reply: saved_reply, name: name, content: content).execute }
 
     context 'when update fails' do
       let(:name) { other_saved_reply.name }

@@ -1,0 +1,9 @@
+---
+table_name: ci_unit_test_failures
+classes:
+- Ci::UnitTestFailure
+feature_categories:
+- code_testing
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56137
+milestone: '13.11'

@@ -1,0 +1,9 @@
+---
+table_name: environments
+classes:
+- Environment
+feature_categories:
+- continuous_delivery
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/907c0e6796b69f9577c147dd489cf55748c749ac
+milestone: '8.9'

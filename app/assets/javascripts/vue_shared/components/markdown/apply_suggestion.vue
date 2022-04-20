@@ -1,9 +1,9 @@
 <script>
-import { GlDropdown, GlDropdownForm, GlFormTextarea, GlButton } from '@gitlab/ui';
+import { GlDropdown, GlDropdownForm, GlFormTextarea, GlButton, GlAlert } from '@gitlab/ui';
 import { __, n__ } from '~/locale';
 
 export default {
-  components: { GlDropdown, GlDropdownForm, GlFormTextarea, GlButton },
+  components: { GlDropdown, GlDropdownForm, GlFormTextarea, GlButton, GlAlert },
   props: {
     disabled: {
       type: Boolean,
@@ -18,6 +18,11 @@ export default {
       type: Number,
       required: false,
       default: 0,
+    },
+    errorMessage: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -55,6 +60,9 @@ export default {
   >
     <gl-dropdown-form class="gl-px-4! gl-m-0!">
       <label for="commit-message">{{ __('Commit message') }}</label>
+      <gl-alert v-if="errorMessage" variant="danger" :dismissible="false" class="gl-mb-4">
+        {{ errorMessage }}
+      </gl-alert>
       <gl-form-textarea
         id="commit-message"
         ref="commitMessage"

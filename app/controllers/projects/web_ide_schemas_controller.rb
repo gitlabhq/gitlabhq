@@ -5,6 +5,8 @@ class Projects::WebIdeSchemasController < Projects::ApplicationController
 
   feature_category :web_ide
 
+  urgency :low
+
   def show
     return respond_422 unless branch_sha
 

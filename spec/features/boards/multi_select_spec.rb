@@ -72,7 +72,7 @@ RSpec.describe 'Multi Select Issue', :js do
 
       wait_for_requests
 
-      page.within(all('.js-board-list')[2]) do
+      page.within(all('.board-list')[2]) do
         expect(find('.board-card:nth-child(1)')).to have_content(issue1.title)
         expect(find('.board-card:nth-child(2)')).to have_content(issue2.title)
       end
@@ -87,7 +87,7 @@ RSpec.describe 'Multi Select Issue', :js do
 
       wait_for_requests
 
-      page.within(all('.js-board-list')[2]) do
+      page.within(all('.board-list')[2]) do
         expect(find('.board-card:nth-child(1)')).to have_content(issue1.title)
         expect(find('.board-card:nth-child(2)')).to have_content(issue2.title)
         expect(find('.board-card:nth-child(3)')).to have_content(issue3.title)
@@ -102,7 +102,7 @@ RSpec.describe 'Multi Select Issue', :js do
 
       wait_for_requests
 
-      page.within(all('.js-board-list')[1]) do
+      page.within(all('.board-list')[1]) do
         expect(find('.board-card:nth-child(1)')).to have_content(issue1.title)
         expect(find('.board-card:nth-child(2)')).to have_content(issue2.title)
         expect(find('.board-card:nth-child(3)')).to have_content(issue5.title)

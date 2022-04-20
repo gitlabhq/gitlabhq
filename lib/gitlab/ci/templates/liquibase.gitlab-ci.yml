@@ -1,0 +1,149 @@
+# This file is a template, and might need editing before it works on your project.
+# Here is a live project example that is using this template:
+# https://gitlab.com/szandany/h2
+
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/liquibase.gitlab-ci.yml
+
+# This template must be configured with CI/CD variables before it will work.
+# See https://www.liquibase.com/blog/secure-database-developer-flow-using-gitlab-pipelines
+# to learn how to configure the Liquibase template by using variables.
+# Be sure to add the variables before running pipelines with this template.
+# You may not want to run all the jobs in this template. You can comment out or delete the jobs you don't wish to use.
+
+# List of stages for jobs and their order of execution.
+stages:
+  - build
+  - test
+  - deploy
+  - compare
+
+
+# Helper functions to determine if the database is ready for deployments (function isUpToDate) or rollbacks (function isRollback) when tag is applied.
+.functions: &functions |
+  function isUpToDate(){
+    status=$(liquibase status --verbose)
+    if [[ $status == *'is up to date'* ]]; then
+      echo "database is already up to date" & exit 0
+    fi;
+  }
+
+  function isRollback(){
+    if [ -z "$TAG" ]; then
+      echo "No TAG provided, running any pending changes"
+    elif [[ "$(liquibase rollbackSQL $TAG)" ]]; then
+      liquibase --logLevel=info --logFile=${CI_JOB_NAME}_${CI_PIPELINE_ID}.log rollback $TAG && exit 0
+    else exit 0
+    fi;
+  }
+
+
+# This is a series of Liquibase commands that can be run while doing database migrations from Liquibase docs at https://docs.liquibase.com/commands/home.html
+.liquibase_job:
+  image: liquibase/liquibase:latest      # Using the Liquibase Docker Image at - https://hub.docker.com/r/liquibase/liquibase
+  before_script:
+    - liquibase --version
+    - *functions
+    - isRollback
+    - isUpToDate
+    - liquibase checks run
+    - liquibase update
+    - liquibase rollbackOneUpdate --force      # This is a Pro command. Try Pro free trial here - https://liquibase.org/try-liquibase-pro-free
+    - liquibase tag $CI_PIPELINE_ID
+    - liquibase --logFile=${CI_JOB_NAME}_${CI_PIPELINE_ID}.log --logLevel=info update
+    - liquibase history
+  artifacts:
+    paths:
+      - ${CI_JOB_NAME}_${CI_PIPELINE_ID}.log
+    expire_in: 1 week
+
+
+# This job runs in the build stage, which runs first.
+build-job:
+  extends: .liquibase_job
+  stage: build
+  environment:
+    name: DEV
+  script:
+    - echo "This job tested successfully with liquibase in DEV environment"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+
+# This job runs in the test stage. It only starts when the job in the build stage completes successfully.
+test-job:
+  extends: .liquibase_job
+  stage: test
+  environment:
+    name: TEST
+  script:
+    - echo "This job testsed successfully with liquibase in TEST environment"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+
+# This job runs in the deploy stage. It only starts when the jobs in the test stage completes successfully.
+deploy-prod:
+  extends: .liquibase_job
+  stage: deploy
+  environment:
+    name: PROD
+  script:
+    - echo "This job deployed successfully Liquibase in a production environment from the $CI_COMMIT_BRANCH branch."
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+
+# This job compares dev database with test database to detect any drifts in the pipeline. Learn more about comparing database with Liquibase here https://docs.liquibase.com/commands/diff.html
+DEV->TEST:
+  image: liquibase/liquibase:latest      # Using the Liquibase Docker Image
+  stage: compare
+  environment:
+    name: TEST
+  script:
+    - echo "Comparing databases DEV --> TEST"
+    - liquibase diff
+    - liquibase --outputFile=diff_between_DEV_TEST.json diff --format=json
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  artifacts:
+    paths:
+      - diff_between_DEV_TEST.json
+    expire_in: 1 week
+
+
+# This job compares test database with prod database to detect any drifts in the pipeline.
+TEST->PROD:
+  image: liquibase/liquibase:latest      # Using the Liquibase Docker Image
+  stage: compare
+  environment:
+    name: PROD
+  script:
+    - echo "Comparing databases TEST --> PROD"
+    - liquibase diff
+    - liquibase --outputFile=diff_between_TEST_PROD.json diff --format=json
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  artifacts:
+    paths:
+      - diff_between_TEST_PROD.json
+    expire_in: 1 week
+
+
+# This job creates a snapshot of prod database. You can use the snapshot file to run comparisons with the production database to investigate for any potential issues. https://www.liquibase.com/devsecops
+snapshot PROD:
+  image: liquibase/liquibase:latest      # Using the Liquibase Docker Image
+  stage: .post
+  environment:
+    name: PROD
+  script:
+    - echo "Snapshotting database PROD"
+    - liquibase --outputFile=snapshot_PROD_${CI_PIPELINE_ID}.json snapshot --snapshotFormat=json --log-level debug
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  artifacts:
+    paths:
+      - snapshot_PROD_${CI_PIPELINE_ID}.json
+    expire_in: 1 week

@@ -1,0 +1,9 @@
+---
+table_name: protected_branch_merge_access_levels
+classes:
+- ProtectedBranch::MergeAccessLevel
+feature_categories:
+- source_code_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081
+milestone: '8.11'

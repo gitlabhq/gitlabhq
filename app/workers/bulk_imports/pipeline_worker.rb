@@ -4,14 +4,11 @@ module BulkImports
   class PipelineWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    NDJSON_PIPELINE_PERFORM_DELAY = 10.seconds
+
     data_consistency :always
-
-    NDJSON_PIPELINE_PERFORM_DELAY = 1.minute
-
     feature_category :importers
-
     sidekiq_options retry: false, dead: false
-
     worker_has_external_dependencies!
 
     def perform(pipeline_tracker_id, stage, entity_id)
@@ -21,18 +18,20 @@ module BulkImports
 
       if pipeline_tracker.present?
         logger.info(
-          worker: self.class.name,
-          entity_id: pipeline_tracker.entity.id,
-          pipeline_name: pipeline_tracker.pipeline_name
+          structured_payload(
+            entity_id: pipeline_tracker.entity.id,
+            pipeline_name: pipeline_tracker.pipeline_name
+          )
         )
 
         run(pipeline_tracker)
       else
         logger.error(
-          worker: self.class.name,
-          entity_id: entity_id,
-          pipeline_tracker_id: pipeline_tracker_id,
-          message: 'Unstarted pipeline not found'
+          structured_payload(
+            entity_id: entity_id,
+            pipeline_tracker_id: pipeline_tracker_id,
+            message: 'Unstarted pipeline not found'
+          )
         )
       end
 
@@ -66,10 +65,11 @@ module BulkImports
     rescue BulkImports::NetworkError => e
       if e.retriable?(pipeline_tracker)
         logger.error(
-          worker: self.class.name,
-          entity_id: pipeline_tracker.entity.id,
-          pipeline_name: pipeline_tracker.pipeline_name,
-          message: "Retrying error: #{e.message}"
+          structured_payload(
+            entity_id: pipeline_tracker.entity.id,
+            pipeline_name: pipeline_tracker.pipeline_name,
+            message: "Retrying error: #{e.message}"
+          )
         )
 
         pipeline_tracker.update!(status_event: 'retry', jid: jid)
@@ -86,10 +86,11 @@ module BulkImports
       pipeline_tracker.update!(status_event: 'fail_op', jid: jid)
 
       logger.error(
-        worker: self.class.name,
-        entity_id: pipeline_tracker.entity.id,
-        pipeline_name: pipeline_tracker.pipeline_name,
-        message: exception.message
+        structured_payload(
+          entity_id: pipeline_tracker.entity.id,
+          pipeline_name: pipeline_tracker.pipeline_name,
+          message: exception.message
+        )
       )
 
       Gitlab::ErrorTracking.track_exception(

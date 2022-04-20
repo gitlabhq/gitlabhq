@@ -39,62 +39,60 @@ describe('Job State actions', () => {
   });
 
   describe('setJobEndpoint', () => {
-    it('should commit SET_JOB_ENDPOINT mutation', (done) => {
-      testAction(
+    it('should commit SET_JOB_ENDPOINT mutation', () => {
+      return testAction(
         setJobEndpoint,
         'job/872324.json',
         mockedState,
         [{ type: types.SET_JOB_ENDPOINT, payload: 'job/872324.json' }],
         [],
-        done,
       );
     });
   });
 
   describe('setJobLogOptions', () => {
-    it('should commit SET_JOB_LOG_OPTIONS mutation', (done) => {
-      testAction(
+    it('should commit SET_JOB_LOG_OPTIONS mutation', () => {
+      return testAction(
         setJobLogOptions,
         { pagePath: 'job/872324/trace.json' },
         mockedState,
         [{ type: types.SET_JOB_LOG_OPTIONS, payload: { pagePath: 'job/872324/trace.json' } }],
         [],
-        done,
       );
     });
   });
 
   describe('hideSidebar', () => {
-    it('should commit HIDE_SIDEBAR mutation', (done) => {
-      testAction(hideSidebar, null, mockedState, [{ type: types.HIDE_SIDEBAR }], [], done);
+    it('should commit HIDE_SIDEBAR mutation', () => {
+      return testAction(hideSidebar, null, mockedState, [{ type: types.HIDE_SIDEBAR }], []);
     });
   });
 
   describe('showSidebar', () => {
-    it('should commit HIDE_SIDEBAR mutation', (done) => {
-      testAction(showSidebar, null, mockedState, [{ type: types.SHOW_SIDEBAR }], [], done);
+    it('should commit SHOW_SIDEBAR mutation', () => {
+      return testAction(showSidebar, null, mockedState, [{ type: types.SHOW_SIDEBAR }], []);
     });
   });
 
   describe('toggleSidebar', () => {
     describe('when isSidebarOpen is true', () => {
-      it('should dispatch hideSidebar', (done) => {
-        testAction(toggleSidebar, null, mockedState, [], [{ type: 'hideSidebar' }], done);
+      it('should dispatch hideSidebar', () => {
+        return testAction(toggleSidebar, null, mockedState, [], [{ type: 'hideSidebar' }]);
       });
     });
 
     describe('when isSidebarOpen is false', () => {
-      it('should dispatch showSidebar', (done) => {
+      it('should dispatch showSidebar', () => {
         mockedState.isSidebarOpen = false;
 
-        testAction(toggleSidebar, null, mockedState, [], [{ type: 'showSidebar' }], done);
+        return testAction(toggleSidebar, null, mockedState, [], [{ type: 'showSidebar' }]);
       });
     });
   });
 
   describe('requestJob', () => {
-    it('should commit REQUEST_JOB mutation', (done) => {
-      testAction(requestJob, null, mockedState, [{ type: types.REQUEST_JOB }], [], done);
+    it('should commit REQUEST_JOB mutation', () => {
+      return testAction(requestJob, null, mockedState, [{ type: types.REQUEST_JOB }], []);
     });
   });
 
@@ -113,10 +111,10 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJob and receiveJobSuccess ', (done) => {
+      it('dispatches requestJob and receiveJobSuccess ', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 121212, name: 'karma' });
 
-        testAction(
+        return testAction(
           fetchJob,
           null,
           mockedState,
@@ -130,7 +128,6 @@ describe('Job State actions', () => {
               type: 'receiveJobSuccess',
             },
           ],
-          done,
         );
       });
     });
@@ -140,8 +137,8 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
       });
 
-      it('dispatches requestJob and receiveJobError ', (done) => {
-        testAction(
+      it('dispatches requestJob and receiveJobError ', () => {
+        return testAction(
           fetchJob,
           null,
           mockedState,
@@ -154,46 +151,50 @@ describe('Job State actions', () => {
               type: 'receiveJobError',
             },
           ],
-          done,
         );
       });
     });
   });
 
   describe('receiveJobSuccess', () => {
-    it('should commit RECEIVE_JOB_SUCCESS mutation', (done) => {
-      testAction(
+    it('should commit RECEIVE_JOB_SUCCESS mutation', () => {
+      return testAction(
         receiveJobSuccess,
         { id: 121232132 },
         mockedState,
         [{ type: types.RECEIVE_JOB_SUCCESS, payload: { id: 121232132 } }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveJobError', () => {
-    it('should commit RECEIVE_JOB_ERROR mutation', (done) => {
-      testAction(receiveJobError, null, mockedState, [{ type: types.RECEIVE_JOB_ERROR }], [], done);
+    it('should commit RECEIVE_JOB_ERROR mutation', () => {
+      return testAction(
+        receiveJobError,
+        null,
+        mockedState,
+        [{ type: types.RECEIVE_JOB_ERROR }],
+        [],
+      );
     });
   });
 
   describe('scrollTop', () => {
-    it('should dispatch toggleScrollButtons action', (done) => {
-      testAction(scrollTop, null, mockedState, [], [{ type: 'toggleScrollButtons' }], done);
+    it('should dispatch toggleScrollButtons action', () => {
+      return testAction(scrollTop, null, mockedState, [], [{ type: 'toggleScrollButtons' }]);
     });
   });
 
   describe('scrollBottom', () => {
-    it('should dispatch toggleScrollButtons action', (done) => {
-      testAction(scrollBottom, null, mockedState, [], [{ type: 'toggleScrollButtons' }], done);
+    it('should dispatch toggleScrollButtons action', () => {
+      return testAction(scrollBottom, null, mockedState, [], [{ type: 'toggleScrollButtons' }]);
     });
   });
 
   describe('requestJobLog', () => {
-    it('should commit REQUEST_JOB_LOG mutation', (done) => {
-      testAction(requestJobLog, null, mockedState, [{ type: types.REQUEST_JOB_LOG }], [], done);
+    it('should commit REQUEST_JOB_LOG mutation', () => {
+      return testAction(requestJobLog, null, mockedState, [{ type: types.REQUEST_JOB_LOG }], []);
     });
   });
 
@@ -212,13 +213,13 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJobLog, receiveJobLogSuccess and stopPollingJobLog when job is complete', (done) => {
+      it('dispatches requestJobLog, receiveJobLogSuccess and stopPollingJobLog when job is complete', () => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, {
           html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
           complete: true,
         });
 
-        testAction(
+        return testAction(
           fetchJobLog,
           null,
           mockedState,
@@ -239,7 +240,6 @@ describe('Job State actions', () => {
               type: 'stopPollingJobLog',
             },
           ],
-          done,
         );
       });
 
@@ -255,8 +255,8 @@ describe('Job State actions', () => {
           mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, jobLogPayload);
         });
 
-        it('dispatches startPollingJobLog', (done) => {
-          testAction(
+        it('dispatches startPollingJobLog', () => {
+          return testAction(
             fetchJobLog,
             null,
             mockedState,
@@ -266,14 +266,13 @@ describe('Job State actions', () => {
               { type: 'receiveJobLogSuccess', payload: jobLogPayload },
               { type: 'startPollingJobLog' },
             ],
-            done,
           );
         });
 
-        it('does not dispatch startPollingJobLog when timeout is non-empty', (done) => {
+        it('does not dispatch startPollingJobLog when timeout is non-empty', () => {
           mockedState.jobLogTimeout = 1;
 
-          testAction(
+          return testAction(
             fetchJobLog,
             null,
             mockedState,
@@ -282,7 +281,6 @@ describe('Job State actions', () => {
               { type: 'toggleScrollisInBottom', payload: true },
               { type: 'receiveJobLogSuccess', payload: jobLogPayload },
             ],
-            done,
           );
         });
       });
@@ -293,8 +291,8 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(500);
       });
 
-      it('dispatches requestJobLog and receiveJobLogError ', (done) => {
-        testAction(
+      it('dispatches requestJobLog and receiveJobLogError ', () => {
+        return testAction(
           fetchJobLog,
           null,
           mockedState,
@@ -304,7 +302,6 @@ describe('Job State actions', () => {
               type: 'receiveJobLogError',
             },
           ],
-          done,
         );
       });
     });
@@ -358,65 +355,58 @@ describe('Job State actions', () => {
       window.clearTimeout = origTimeout;
     });
 
-    it('should commit STOP_POLLING_JOB_LOG mutation ', (done) => {
+    it('should commit STOP_POLLING_JOB_LOG mutation ', async () => {
       const jobLogTimeout = 7;
 
-      testAction(
+      await testAction(
         stopPollingJobLog,
         null,
         { ...mockedState, jobLogTimeout },
         [{ type: types.SET_JOB_LOG_TIMEOUT, payload: 0 }, { type: types.STOP_POLLING_JOB_LOG }],
         [],
-      )
-        .then(() => {
-          expect(window.clearTimeout).toHaveBeenCalledWith(jobLogTimeout);
-        })
-        .then(done)
-        .catch(done.fail);
+      );
+      expect(window.clearTimeout).toHaveBeenCalledWith(jobLogTimeout);
     });
   });
 
   describe('receiveJobLogSuccess', () => {
-    it('should commit RECEIVE_JOB_LOG_SUCCESS mutation ', (done) => {
-      testAction(
+    it('should commit RECEIVE_JOB_LOG_SUCCESS mutation ', () => {
+      return testAction(
         receiveJobLogSuccess,
         'hello world',
         mockedState,
         [{ type: types.RECEIVE_JOB_LOG_SUCCESS, payload: 'hello world' }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveJobLogError', () => {
-    it('should commit stop polling job log', (done) => {
-      testAction(receiveJobLogError, null, mockedState, [], [{ type: 'stopPollingJobLog' }], done);
+    it('should commit stop polling job log', () => {
+      return testAction(receiveJobLogError, null, mockedState, [], [{ type: 'stopPollingJobLog' }]);
     });
   });
 
   describe('toggleCollapsibleLine', () => {
-    it('should commit TOGGLE_COLLAPSIBLE_LINE mutation ', (done) => {
-      testAction(
+    it('should commit TOGGLE_COLLAPSIBLE_LINE mutation ', () => {
+      return testAction(
         toggleCollapsibleLine,
         { isClosed: true },
         mockedState,
         [{ type: types.TOGGLE_COLLAPSIBLE_LINE, payload: { isClosed: true } }],
         [],
-        done,
       );
     });
   });
 
   describe('requestJobsForStage', () => {
-    it('should commit REQUEST_JOBS_FOR_STAGE mutation ', (done) => {
-      testAction(
+    it('should commit REQUEST_JOBS_FOR_STAGE mutation ', () => {
+      return testAction(
         requestJobsForStage,
         { name: 'deploy' },
         mockedState,
         [{ type: types.REQUEST_JOBS_FOR_STAGE, payload: { name: 'deploy' } }],
         [],
-        done,
       );
     });
   });
@@ -433,12 +423,12 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJobsForStage and receiveJobsForStageSuccess ', (done) => {
+      it('dispatches requestJobsForStage and receiveJobsForStageSuccess ', () => {
         mock
           .onGet(`${TEST_HOST}/jobs.json`)
           .replyOnce(200, { latest_statuses: [{ id: 121212, name: 'build' }], retried: [] });
 
-        testAction(
+        return testAction(
           fetchJobsForStage,
           { dropdown_path: `${TEST_HOST}/jobs.json` },
           mockedState,
@@ -453,7 +443,6 @@ describe('Job State actions', () => {
               type: 'receiveJobsForStageSuccess',
             },
           ],
-          done,
         );
       });
     });
@@ -463,8 +452,8 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/jobs.json`).reply(500);
       });
 
-      it('dispatches requestJobsForStage and receiveJobsForStageError', (done) => {
-        testAction(
+      it('dispatches requestJobsForStage and receiveJobsForStageError', () => {
+        return testAction(
           fetchJobsForStage,
           { dropdown_path: `${TEST_HOST}/jobs.json` },
           mockedState,
@@ -478,34 +467,31 @@ describe('Job State actions', () => {
               type: 'receiveJobsForStageError',
             },
           ],
-          done,
         );
       });
     });
   });
 
   describe('receiveJobsForStageSuccess', () => {
-    it('should commit RECEIVE_JOBS_FOR_STAGE_SUCCESS mutation ', (done) => {
-      testAction(
+    it('should commit RECEIVE_JOBS_FOR_STAGE_SUCCESS mutation ', () => {
+      return testAction(
         receiveJobsForStageSuccess,
         [{ id: 121212, name: 'karma' }],
         mockedState,
         [{ type: types.RECEIVE_JOBS_FOR_STAGE_SUCCESS, payload: [{ id: 121212, name: 'karma' }] }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveJobsForStageError', () => {
-    it('should commit RECEIVE_JOBS_FOR_STAGE_ERROR mutation ', (done) => {
-      testAction(
+    it('should commit RECEIVE_JOBS_FOR_STAGE_ERROR mutation ', () => {
+      return testAction(
         receiveJobsForStageError,
         null,
         mockedState,
         [{ type: types.RECEIVE_JOBS_FOR_STAGE_ERROR }],
         [],
-        done,
       );
     });
   });

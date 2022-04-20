@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { sprintf, s__ } from '../../../locale';
+import { sprintf, s__ } from '~/locale';
 
 export default {
   name: 'TimeTrackingHelpState',

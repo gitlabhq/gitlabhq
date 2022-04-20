@@ -32,6 +32,19 @@ class BroadcastMessage < ApplicationRecord
 
   after_commit :flush_redis_cache
 
+  enum theme: {
+    indigo: 0,
+    'light-indigo': 1,
+    blue: 2,
+    'light-blue': 3,
+    green: 4,
+    'light-green': 5,
+    red: 6,
+    'light-red': 7,
+    dark: 8,
+    light: 9
+  }, _default: 0, _prefix: true
+
   enum broadcast_type: {
     banner: 1,
     notification: 2

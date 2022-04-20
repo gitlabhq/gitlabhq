@@ -11,7 +11,7 @@ RSpec.describe Gitlab::WebIde::Config do
     let(:yml) do
       <<-EOS
         terminal:
-          image: ruby:2.7
+          image: image:1.0
           before_script:
             - gem install rspec
       EOS
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::WebIde::Config do
       it 'returns hash created from string' do
         hash = {
           terminal: {
-            image: 'ruby:2.7',
+            image: 'image:1.0',
             before_script: ['gem install rspec']
           }
         }

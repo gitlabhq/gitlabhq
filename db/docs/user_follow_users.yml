@@ -1,0 +1,9 @@
+---
+table_name: user_follow_users
+classes:
+- Users::UserFollowUser
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45451
+milestone: '13.9'

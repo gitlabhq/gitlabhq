@@ -1,0 +1,10 @@
+---
+table_name: events
+classes:
+- Event
+- PushEvent
+feature_categories:
+- value_stream_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/a847501fd2ffc1c4becc7d0d352d80168d9b3568
+milestone: "<6.0"

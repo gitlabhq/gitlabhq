@@ -76,13 +76,13 @@ To create a project in GitLab:
       - [custom template](#create-a-project-from-a-custom-template).  
       - [HIPAA audit protocol template](#create-a-project-from-the-hipaa-audit-protocol-template).
    - [Import a project](../../user/project/import/index.md)
-   from a different repository. Contact your GitLab administrator if this option is not available.
+     from a different repository. Contact your GitLab administrator if this option is not available.
    - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 
-- For a list of words that you cannot use as project names, see 
-[reserved project and group names](../../user/reserved_names.md).
-- For a list of characters that you cannot use in project and group names, see 
-[limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names).
+- For a list of words that you cannot use as project names, see
+  [reserved project and group names](../../user/reserved_names.md).
+- For a list of characters that you cannot use in project and group names, see
+  [limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names).
 
 ## Create a blank project
 
@@ -99,12 +99,12 @@ To create a blank project:
    - In the **Project description (optional)** field, enter the description of your project's dashboard.
    - In the **Project target (optional)** field, select your project's deployment target.
      This information helps GitLab better understand its users and their deployment requirements.
-   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for
-   users, change the **Visibility Level**.
+   - To modify the project's [viewing and access rights](../public_access.md) for
+     users, change the **Visibility Level**.
    - To create README file so that the Git repository is initialized, has a default branch, and
      can be cloned, select **Initialize repository with a README**.
    - To analyze the source code in the project for known security vulnerabilities,
-   select **Enable Static Application Security Testing (SAST)**.
+     select **Enable Static Application Security Testing (SAST)**.
 1. Select **Create project**.
 
 ## Create a project from a built-in template
@@ -132,13 +132,13 @@ To create a project from a built-in template:
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
    - In the **Project description (optional)** field, enter the description of your project's dashboard.
-   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users,
-      change the **Visibility Level**.
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
+     change the **Visibility Level**.
 1. Select **Create project**.
 
 ## Create a project from a custom template **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
 
 Custom project templates are available at:
 
@@ -158,8 +158,8 @@ Custom project templates are available at:
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
    - The description of your project's dashboard in the **Project description (optional)** field.
-   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users,
-      change the **Visibility Level**.
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
+     change the **Visibility Level**.
 1. Select **Create project**.
 
 ## Create a project from the HIPAA Audit Protocol template **(ULTIMATE)**
@@ -184,8 +184,8 @@ To create a project from the HIPAA Audit Protocol template:
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
    - In the **Project description (optional)** field, enter the description of your project's dashboard.
-   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users,
-      change the **Visibility Level**.
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
+     change the **Visibility Level**.
 1. Select **Create project**.
 
 ## Create a new project with Git push
@@ -206,8 +206,8 @@ used or renamed project, use the [UI](#create-a-project) or the [Projects API](.
 
 Prerequisites:
 
-- To push with SSH, you must have [an SSH key](../../ssh/index.md) that is
-[added to your GitLab account](../../ssh/index.md#add-an-ssh-key-to-your-gitlab-account).
+- To push with SSH, you must have [an SSH key](../ssh.md) that is
+  [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
   1. On the top bar, select **Menu > Projects**.
@@ -250,7 +250,7 @@ remote: The private project namespace/myproject was created.
 
 To view your new project, go to `https://gitlab.example.com/namespace/myproject`.
 Your project's visibility is set to **Private** by default. To change project visibility, adjust your
-[project's settings](../../public_access/public_access.md#change-project-visibility).
+[project's settings](../public_access.md#change-project-visibility).
 
 ## Star a project
 
@@ -299,7 +299,7 @@ To delete a project:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) in GitLab 14.9. [Feature flag `project_owners_list_project_pending_deletion`](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) removed.
 
 When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
-projects within that group are not deleted immediately, but only after a delay. 
+projects within that group are not deleted immediately, but only after a delay.
 
 To view a list of all projects that are pending deletion:
 
@@ -409,9 +409,9 @@ To disable fetching:
 1. Disable checksum queries in `GONOSUMDB`.
 
 - If the module name or its prefix is in `GOPRIVATE` or `GONOPROXY`, Go does not query module
-proxies.
+  proxies.
 - If the module name or its prefix is in `GONOPRIVATE` or `GONOSUMDB`, Go does not query
-Checksum databases.
+  Checksum databases.
 
 ### Fetch Go modules from Geo secondary sites
 

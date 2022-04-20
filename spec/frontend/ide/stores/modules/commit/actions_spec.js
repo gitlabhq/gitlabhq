@@ -57,40 +57,25 @@ describe('IDE commit module actions', () => {
   });
 
   describe('updateCommitMessage', () => {
-    it('updates store with new commit message', (done) => {
-      store
-        .dispatch('commit/updateCommitMessage', 'testing')
-        .then(() => {
-          expect(store.state.commit.commitMessage).toBe('testing');
-        })
-        .then(done)
-        .catch(done.fail);
+    it('updates store with new commit message', async () => {
+      await store.dispatch('commit/updateCommitMessage', 'testing');
+      expect(store.state.commit.commitMessage).toBe('testing');
     });
   });
 
   describe('discardDraft', () => {
-    it('resets commit message to blank', (done) => {
+    it('resets commit message to blank', async () => {
       store.state.commit.commitMessage = 'testing';
 
-      store
-        .dispatch('commit/discardDraft')
-        .then(() => {
-          expect(store.state.commit.commitMessage).not.toBe('testing');
-        })
-        .then(done)
-        .catch(done.fail);
+      await store.dispatch('commit/discardDraft');
+      expect(store.state.commit.commitMessage).not.toBe('testing');
     });
   });
 
   describe('updateCommitAction', () => {
-    it('updates store with new commit action', (done) => {
-      store
-        .dispatch('commit/updateCommitAction', '1')
-        .then(() => {
-          expect(store.state.commit.commitAction).toBe('1');
-        })
-        .then(done)
-        .catch(done.fail);
+    it('updates store with new commit action', async () => {
+      await store.dispatch('commit/updateCommitAction', '1');
+      expect(store.state.commit.commitAction).toBe('1');
     });
   });
 
@@ -139,34 +124,24 @@ describe('IDE commit module actions', () => {
       });
     });
 
-    it('updates commit message with short_id', (done) => {
-      store
-        .dispatch('commit/setLastCommitMessage', { short_id: '123' })
-        .then(() => {
-          expect(store.state.lastCommitMsg).toContain(
-            'Your changes have been committed. Commit <a href="http://testing/-/commit/123" class="commit-sha">123</a>',
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+    it('updates commit message with short_id', async () => {
+      await store.dispatch('commit/setLastCommitMessage', { short_id: '123' });
+      expect(store.state.lastCommitMsg).toContain(
+        'Your changes have been committed. Commit <a href="http://testing/-/commit/123" class="commit-sha">123</a>',
+      );
     });
 
-    it('updates commit message with stats', (done) => {
-      store
-        .dispatch('commit/setLastCommitMessage', {
-          short_id: '123',
-          stats: {
-            additions: '1',
-            deletions: '2',
-          },
-        })
-        .then(() => {
-          expect(store.state.lastCommitMsg).toBe(
-            'Your changes have been committed. Commit <a href="http://testing/-/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+    it('updates commit message with stats', async () => {
+      await store.dispatch('commit/setLastCommitMessage', {
+        short_id: '123',
+        stats: {
+          additions: '1',
+          deletions: '2',
+        },
+      });
+      expect(store.state.lastCommitMsg).toBe(
+        'Your changes have been committed. Commit <a href="http://testing/-/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
+      );
     });
   });
 
@@ -221,74 +196,49 @@ describe('IDE commit module actions', () => {
       });
     });
 
-    it('updates stores working reference', (done) => {
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(store.state.projects.abcproject.branches.main.workingReference).toBe(data.id);
-        })
-        .then(done)
-        .catch(done.fail);
+    it('updates stores working reference', async () => {
+      await store.dispatch('commit/updateFilesAfterCommit', {
+        data,
+        branch,
+      });
+      expect(store.state.projects.abcproject.branches.main.workingReference).toBe(data.id);
     });
 
-    it('resets all files changed status', (done) => {
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          store.state.openFiles.forEach((entry) => {
-            expect(entry.changed).toBeFalsy();
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+    it('resets all files changed status', async () => {
+      await store.dispatch('commit/updateFilesAfterCommit', {
+        data,
+        branch,
+      });
+      store.state.openFiles.forEach((entry) => {
+        expect(entry.changed).toBeFalsy();
+      });
     });
 
-    it('sets files commit data', (done) => {
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(f.lastCommitSha).toBe(data.id);
-        })
-        .then(done)
-        .catch(done.fail);
+    it('sets files commit data', async () => {
+      await store.dispatch('commit/updateFilesAfterCommit', {
+        data,
+        branch,
+      });
+      expect(f.lastCommitSha).toBe(data.id);
     });
 
-    it('updates raw content for changed file', (done) => {
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(f.raw).toBe(f.content);
-        })
-        .then(done)
-        .catch(done.fail);
+    it('updates raw content for changed file', async () => {
+      await store.dispatch('commit/updateFilesAfterCommit', {
+        data,
+        branch,
+      });
+      expect(f.raw).toBe(f.content);
     });
 
-    it('emits changed event for file', (done) => {
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.content.${f.key}`, {
-            content: f.content,
-            changed: false,
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+    it('emits changed event for file', async () => {
+      await store.dispatch('commit/updateFilesAfterCommit', {
+        data,
+        branch,
+      });
+      expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.content.${f.key}`, {
+        content: f.content,
+        changed: false,
+      });
     });
   });
 
@@ -349,138 +299,93 @@ describe('IDE commit module actions', () => {
         jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
       });
 
-      it('calls service', (done) => {
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(service.commit).toHaveBeenCalledWith('abcproject', {
-              branch: expect.anything(),
-              commit_message: 'testing 123',
-              actions: [
-                {
-                  action: commitActionTypes.update,
-                  file_path: expect.anything(),
-                  content: '\n',
-                  encoding: expect.anything(),
-                  last_commit_id: undefined,
-                  previous_path: undefined,
-                },
-              ],
-              start_sha: TEST_COMMIT_SHA,
-            });
-
-            done();
-          })
-          .catch(done.fail);
+      it('calls service', async () => {
+        await store.dispatch('commit/commitChanges');
+        expect(service.commit).toHaveBeenCalledWith('abcproject', {
+          branch: expect.anything(),
+          commit_message: 'testing 123',
+          actions: [
+            {
+              action: commitActionTypes.update,
+              file_path: expect.anything(),
+              content: '\n',
+              encoding: expect.anything(),
+              last_commit_id: undefined,
+              previous_path: undefined,
+            },
+          ],
+          start_sha: TEST_COMMIT_SHA,
+        });
       });
 
-      it('sends lastCommit ID when not creating new branch', (done) => {
+      it('sends lastCommit ID when not creating new branch', async () => {
         store.state.commit.commitAction = '1';
 
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(service.commit).toHaveBeenCalledWith('abcproject', {
-              branch: expect.anything(),
-              commit_message: 'testing 123',
-              actions: [
-                {
-                  action: commitActionTypes.update,
-                  file_path: expect.anything(),
-                  content: '\n',
-                  encoding: expect.anything(),
-                  last_commit_id: TEST_COMMIT_SHA,
-                  previous_path: undefined,
-                },
-              ],
-              start_sha: undefined,
-            });
-
-            done();
-          })
-          .catch(done.fail);
+        await store.dispatch('commit/commitChanges');
+        expect(service.commit).toHaveBeenCalledWith('abcproject', {
+          branch: expect.anything(),
+          commit_message: 'testing 123',
+          actions: [
+            {
+              action: commitActionTypes.update,
+              file_path: expect.anything(),
+              content: '\n',
+              encoding: expect.anything(),
+              last_commit_id: TEST_COMMIT_SHA,
+              previous_path: undefined,
+            },
+          ],
+          start_sha: undefined,
+        });
       });
 
-      it('sets last Commit Msg', (done) => {
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(store.state.lastCommitMsg).toBe(
-              'Your changes have been committed. Commit <a href="webUrl/-/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
-            );
-
-            done();
-          })
-          .catch(done.fail);
+      it('sets last Commit Msg', async () => {
+        await store.dispatch('commit/commitChanges');
+        expect(store.state.lastCommitMsg).toBe(
+          'Your changes have been committed. Commit <a href="webUrl/-/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
+        );
       });
 
-      it('adds commit data to files', (done) => {
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(store.state.entries[store.state.openFiles[0].path].lastCommitSha).toBe(
-              COMMIT_RESPONSE.id,
-            );
-
-            done();
-          })
-          .catch(done.fail);
+      it('adds commit data to files', async () => {
+        await store.dispatch('commit/commitChanges');
+        expect(store.state.entries[store.state.openFiles[0].path].lastCommitSha).toBe(
+          COMMIT_RESPONSE.id,
+        );
       });
 
-      it('resets stores commit actions', (done) => {
+      it('resets stores commit actions', async () => {
         store.state.commit.commitAction = COMMIT_TO_NEW_BRANCH;
 
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(store.state.commit.commitAction).not.toBe(COMMIT_TO_NEW_BRANCH);
-          })
-          .then(done)
-          .catch(done.fail);
+        await store.dispatch('commit/commitChanges');
+        expect(store.state.commit.commitAction).not.toBe(COMMIT_TO_NEW_BRANCH);
       });
 
-      it('removes all staged files', (done) => {
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(store.state.stagedFiles.length).toBe(0);
-          })
-          .then(done)
-          .catch(done.fail);
+      it('removes all staged files', async () => {
+        await store.dispatch('commit/commitChanges');
+        expect(store.state.stagedFiles.length).toBe(0);
       });
 
       describe('merge request', () => {
-        it('redirects to new merge request page', (done) => {
+        it('redirects to new merge request page', async () => {
           jest.spyOn(eventHub, '$on').mockImplementation();
 
           store.state.commit.commitAction = COMMIT_TO_NEW_BRANCH;
           store.state.commit.shouldCreateMR = true;
 
-          store
-            .dispatch('commit/commitChanges')
-            .then(() => {
-              expect(visitUrl).toHaveBeenCalledWith(
-                `webUrl/-/merge_requests/new?merge_request[source_branch]=${store.getters['commit/placeholderBranchName']}&merge_request[target_branch]=main&nav_source=webide`,
-              );
-
-              done();
-            })
-            .catch(done.fail);
+          await store.dispatch('commit/commitChanges');
+          expect(visitUrl).toHaveBeenCalledWith(
+            `webUrl/-/merge_requests/new?merge_request[source_branch]=${store.getters['commit/placeholderBranchName']}&merge_request[target_branch]=main&nav_source=webide`,
+          );
         });
 
-        it('does not redirect to new merge request page when shouldCreateMR is not checked', (done) => {
+        it('does not redirect to new merge request page when shouldCreateMR is not checked', async () => {
           jest.spyOn(eventHub, '$on').mockImplementation();
 
           store.state.commit.commitAction = COMMIT_TO_NEW_BRANCH;
           store.state.commit.shouldCreateMR = false;
 
-          store
-            .dispatch('commit/commitChanges')
-            .then(() => {
-              expect(visitUrl).not.toHaveBeenCalled();
-              done();
-            })
-            .catch(done.fail);
+          await store.dispatch('commit/commitChanges');
+          expect(visitUrl).not.toHaveBeenCalled();
         });
 
         it('does not redirect to merge request page if shouldCreateMR is checked, but branch is the default branch', async () => {
@@ -514,17 +419,11 @@ describe('IDE commit module actions', () => {
         });
       });
 
-      it('shows failed message', (done) => {
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            const alert = document.querySelector('.flash-container');
+      it('shows failed message', async () => {
+        await store.dispatch('commit/commitChanges');
+        const alert = document.querySelector('.flash-container');
 
-            expect(alert.textContent.trim()).toBe('failed message');
-
-            done();
-          })
-          .catch(done.fail);
+        expect(alert.textContent.trim()).toBe('failed message');
       });
     });
 
@@ -548,52 +447,37 @@ describe('IDE commit module actions', () => {
     });
 
     describe('first commit of a branch', () => {
-      it('commits TOGGLE_EMPTY_STATE mutation on empty repo', (done) => {
+      it('commits TOGGLE_EMPTY_STATE mutation on empty repo', async () => {
         jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
         jest.spyOn(store, 'commit');
 
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(store.commit.mock.calls).toEqual(
-              expect.arrayContaining([
-                ['TOGGLE_EMPTY_STATE', expect.any(Object), expect.any(Object)],
-              ]),
-            );
-            done();
-          })
-          .catch(done.fail);
+        await store.dispatch('commit/commitChanges');
+        expect(store.commit.mock.calls).toEqual(
+          expect.arrayContaining([['TOGGLE_EMPTY_STATE', expect.any(Object), expect.any(Object)]]),
+        );
       });
 
-      it('does not commmit TOGGLE_EMPTY_STATE mutation on existing project', (done) => {
+      it('does not commmit TOGGLE_EMPTY_STATE mutation on existing project', async () => {
         COMMIT_RESPONSE.parent_ids.push('1234');
         jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
         jest.spyOn(store, 'commit');
 
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(store.commit.mock.calls).not.toEqual(
-              expect.arrayContaining([
-                ['TOGGLE_EMPTY_STATE', expect.any(Object), expect.any(Object)],
-              ]),
-            );
-            done();
-          })
-          .catch(done.fail);
+        await store.dispatch('commit/commitChanges');
+        expect(store.commit.mock.calls).not.toEqual(
+          expect.arrayContaining([['TOGGLE_EMPTY_STATE', expect.any(Object), expect.any(Object)]]),
+        );
       });
     });
   });
 
   describe('toggleShouldCreateMR', () => {
-    it('commits both toggle and interacting with MR checkbox actions', (done) => {
-      testAction(
+    it('commits both toggle and interacting with MR checkbox actions', () => {
+      return testAction(
         actions.toggleShouldCreateMR,
         {},
         store.state,
         [{ type: mutationTypes.TOGGLE_SHOULD_CREATE_MR }],
         [],
-        done,
       );
     });
   });

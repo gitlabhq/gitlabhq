@@ -8,17 +8,21 @@ RSpec.describe Gitlab::DataBuilder::Note do
   let(:data) { described_class.build(note, user) }
   let(:fixed_time) { Time.at(1425600000) } # Avoid time precision errors
 
-  before do
-    expect(data).to have_key(:object_attributes)
-    expect(data[:object_attributes]).to have_key(:url)
-    expect(data[:object_attributes][:url])
-      .to eq(Gitlab::UrlBuilder.build(note))
-    expect(data[:object_kind]).to eq('note')
-    expect(data[:user]).to eq(user.hook_attrs)
+  shared_examples 'includes general data' do
+    specify do
+      expect(data).to have_key(:object_attributes)
+      expect(data[:object_attributes]).to have_key(:url)
+      expect(data[:object_attributes][:url])
+        .to eq(Gitlab::UrlBuilder.build(note))
+      expect(data[:object_kind]).to eq('note')
+      expect(data[:user]).to eq(user.hook_attrs)
+    end
   end
 
   describe 'When asking for a note on commit' do
     let(:note) { create(:note_on_commit, project: project) }
+
+    it_behaves_like 'includes general data'
 
     it 'returns the note and commit-specific data' do
       expect(data).to have_key(:commit)
@@ -30,6 +34,8 @@ RSpec.describe Gitlab::DataBuilder::Note do
 
   describe 'When asking for a note on commit diff' do
     let(:note) { create(:diff_note_on_commit, project: project) }
+
+    it_behaves_like 'includes general data'
 
     it 'returns the note and commit-specific data' do
       expect(data).to have_key(:commit)
@@ -51,21 +57,20 @@ RSpec.describe Gitlab::DataBuilder::Note do
       create(:note_on_issue, noteable: issue, project: project)
     end
 
-    it 'returns the note and issue-specific data' do
-      without_timestamps = lambda { |label| label.except('created_at', 'updated_at') }
-      hook_attrs = issue.reload.hook_attrs
+    it_behaves_like 'includes general data'
 
-      expect(data).to have_key(:issue)
-      expect(data[:issue].except('updated_at', 'labels'))
-        .to eq(hook_attrs.except('updated_at', 'labels'))
-      expect(data[:issue]['updated_at'])
-        .to be >= hook_attrs['updated_at']
-      expect(data[:issue]['labels'].map(&without_timestamps))
-        .to eq(hook_attrs['labels'].map(&without_timestamps))
+    it 'returns the note and issue-specific data' do
+      expect_next_instance_of(Gitlab::HookData::IssueBuilder) do |issue_data_builder|
+        expect(issue_data_builder).to receive(:build).and_return('Issue data')
+      end
+
+      expect(data[:issue]).to eq('Issue data')
     end
 
     context 'with confidential issue' do
       let(:issue) { create(:issue, project: project, confidential: true) }
+
+      it_behaves_like 'includes general data'
 
       it 'sets event_type to confidential_note' do
         expect(data[:event_type]).to eq('confidential_note')
@@ -77,10 +82,12 @@ RSpec.describe Gitlab::DataBuilder::Note do
   end
 
   describe 'When asking for a note on merge request' do
+    let(:label) { create(:label, project: project) }
     let(:merge_request) do
-      create(:merge_request, created_at: fixed_time,
+      create(:labeled_merge_request, created_at: fixed_time,
                              updated_at: fixed_time,
-                             source_project: project)
+                             source_project: project,
+                             labels: [label])
     end
 
     let(:note) do
@@ -88,12 +95,14 @@ RSpec.describe Gitlab::DataBuilder::Note do
                                      project: project)
     end
 
-    it 'returns the note and merge request data' do
-      expect(data).to have_key(:merge_request)
-      expect(data[:merge_request].except('updated_at'))
-        .to eq(merge_request.reload.hook_attrs.except('updated_at'))
-      expect(data[:merge_request]['updated_at'])
-        .to be >= merge_request.hook_attrs['updated_at']
+    it_behaves_like 'includes general data'
+
+    it 'returns the merge request data' do
+      expect_next_instance_of(Gitlab::HookData::MergeRequestBuilder) do |mr_data_builder|
+        expect(mr_data_builder).to receive(:build).and_return('MR data')
+      end
+
+      expect(data[:merge_request]).to eq('MR data')
     end
 
     include_examples 'project hook data'
@@ -101,9 +110,11 @@ RSpec.describe Gitlab::DataBuilder::Note do
   end
 
   describe 'When asking for a note on merge request diff' do
+    let(:label) { create(:label, project: project) }
     let(:merge_request) do
-      create(:merge_request, created_at: fixed_time, updated_at: fixed_time,
-                             source_project: project)
+      create(:labeled_merge_request, created_at: fixed_time, updated_at: fixed_time,
+                             source_project: project,
+                             labels: [label])
     end
 
     let(:note) do
@@ -111,12 +122,14 @@ RSpec.describe Gitlab::DataBuilder::Note do
                                           project: project)
     end
 
-    it 'returns the note and merge request diff data' do
-      expect(data).to have_key(:merge_request)
-      expect(data[:merge_request].except('updated_at'))
-        .to eq(merge_request.reload.hook_attrs.except('updated_at'))
-      expect(data[:merge_request]['updated_at'])
-        .to be >= merge_request.hook_attrs['updated_at']
+    it_behaves_like 'includes general data'
+
+    it 'returns the merge request data' do
+      expect_next_instance_of(Gitlab::HookData::MergeRequestBuilder) do |mr_data_builder|
+        expect(mr_data_builder).to receive(:build).and_return('MR data')
+      end
+
+      expect(data[:merge_request]).to eq('MR data')
     end
 
     include_examples 'project hook data'
@@ -133,6 +146,8 @@ RSpec.describe Gitlab::DataBuilder::Note do
       create(:note_on_project_snippet, noteable: snippet,
                                        project: project)
     end
+
+    it_behaves_like 'includes general data'
 
     it 'returns the note and project snippet data' do
       expect(data).to have_key(:snippet)

@@ -23,9 +23,9 @@ describe('Deploy Board', () => {
     });
 
   describe('with valid data', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       wrapper = createComponent();
-      nextTick(done);
+      return nextTick();
     });
 
     it('should render percentage with completion value provided', () => {
@@ -127,14 +127,14 @@ describe('Deploy Board', () => {
   });
 
   describe('with empty state', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       wrapper = createComponent({
         deployBoardData: {},
         isLoading: false,
         isEmpty: true,
         logsPath,
       });
-      nextTick(done);
+      return nextTick();
     });
 
     it('should render the empty state', () => {
@@ -146,14 +146,14 @@ describe('Deploy Board', () => {
   });
 
   describe('with loading state', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       wrapper = createComponent({
         deployBoardData: {},
         isLoading: true,
         isEmpty: false,
         logsPath,
       });
-      nextTick(done);
+      return nextTick();
     });
 
     it('should render loading spinner', () => {
@@ -163,7 +163,7 @@ describe('Deploy Board', () => {
 
   describe('has legend component', () => {
     let statuses = [];
-    beforeEach((done) => {
+    beforeEach(() => {
       wrapper = createComponent({
         isLoading: false,
         isEmpty: false,
@@ -171,7 +171,7 @@ describe('Deploy Board', () => {
         deployBoardData: deployBoardMockData,
       });
       ({ statuses } = wrapper.vm);
-      nextTick(done);
+      return nextTick();
     });
 
     it('with all the possible statuses', () => {

@@ -623,6 +623,7 @@ RSpec.describe 'Pipelines', :js do
 
         create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3, ref: 'master')
 
+        stub_feature_flags(pipeline_tabs_vue: false)
         visit project_pipeline_path(project, pipeline)
         wait_for_requests
       end

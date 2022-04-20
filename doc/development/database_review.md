@@ -125,7 +125,7 @@ the following preparations into account.
 test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slack channel and add the execution time to the MR description:
   - Execution time largely varies between `#database-lab` and GitLab.com, but an elevated execution time from `#database-lab`
     can give a hint that the execution on GitLab.com will also be considerably high.
-  - If the execution from `#database-lab` is longer than `1h`, the index should be moved to a [post-migration](post_deployment_migrations.md).
+  - If the execution from `#database-lab` is longer than `1h`, the index should be moved to a [post-migration](database/post_deployment_migrations.md).
     Keep in mind that in this case you may need to split the migration and the application changes in separate releases to ensure the index
     will be in place when the code that needs it will be deployed.
 - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
@@ -212,7 +212,7 @@ Include in the MR description:
 
 #### Preparation when removing columns, tables, indexes, or other structures
 
-- Follow the [guidelines on dropping columns](avoiding_downtime_in_migrations.md#dropping-columns).
+- Follow the [guidelines on dropping columns](database/avoiding_downtime_in_migrations.md#dropping-columns).
 - Generally it's best practice (but not a hard rule) to remove indexes and foreign keys in a post-deployment migration.
   - Exceptions include removing indexes and foreign keys for small tables.
 - If you're adding a composite index, another index might become redundant, so remove that in the same migration.
@@ -222,6 +222,7 @@ Include in the MR description:
 
 - Check migrations
   - Review relational modeling and design choices
+    - Consider [access patterns and data layout](database/layout_and_access_patterns.md) if new tables or columns are added.
   - Review migrations follow [database migration style guide](migration_style_guide.md),
     for example
     - [Check ordering of columns](ordering_table_columns.md)
@@ -235,8 +236,8 @@ Include in the MR description:
   - Check that the relevant version files under `db/schema_migrations` were added or removed.
   - Check queries timing (If any): In a single transaction, cumulative query time executed in a migration
     needs to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
-  - For column removals, make sure the column has been [ignored in a previous release](avoiding_downtime_in_migrations.md#dropping-columns)
-- Check [background migrations](background_migrations.md):
+  - For column removals, make sure the column has been [ignored in a previous release](database/avoiding_downtime_in_migrations.md#dropping-columns)
+- Check [background migrations](database/background_migrations.md):
   - Establish a time estimate for execution on GitLab.com. For historical purposes,
     it's highly recommended to include this estimation on the merge request description.
   - If a single `update` is below than `1s` the query can be placed
@@ -249,6 +250,8 @@ Include in the MR description:
     it's suggested to treat background migrations as post migrations:
     place them in `db/post_migrate` instead of `db/migrate`. Keep in mind
     that post migrations are executed post-deployment in production.
+  - If a migration [has tracking enabled](database/background_migrations.md#background-jobs-tracking),
+    ensure `mark_all_as_succeeded` is called even if no work is done.
 - Check [timing guidelines for migrations](migration_style_guide.md#how-long-a-migration-should-take)
 - Check migrations are reversible and implement a `#down` method
 - Check new table migrations:

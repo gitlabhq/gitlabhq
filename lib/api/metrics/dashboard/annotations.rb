@@ -12,7 +12,7 @@ module API
 
         ANNOTATIONS_SOURCES = [
           { class: ::Environment, resource: :environments, create_service_param_key: :environment },
-          { class: Clusters::Cluster, resource: :clusters, create_service_param_key: :cluster }
+          { class: ::Clusters::Cluster, resource: :clusters, create_service_param_key: :cluster }
         ].freeze
 
         ANNOTATIONS_SOURCES.each do |annotations_source|

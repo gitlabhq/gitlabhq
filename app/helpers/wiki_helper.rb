@@ -134,6 +134,20 @@ module WikiHelper
       current_user&.can?(:admin_project, container) &&
       !container.has_confluence?
   end
+
+  def wiki_page_render_api_endpoint(page)
+    expose_path(api_v4_projects_wikis_path(wiki_page_render_api_endpoint_params(page)))
+  end
+
+  def wiki_markup_hash_by_name_id
+    Wiki::VALID_USER_MARKUPS.map { |key, value| { value[:name] => key } }.reduce({}, :merge)
+  end
+
+  private
+
+  def wiki_page_render_api_endpoint_params(page)
+    { id: page.container.id, slug: ERB::Util.url_encode(page.slug), params: { version: page.version.id } }
+  end
 end
 
 WikiHelper.prepend_mod_with('WikiHelper')

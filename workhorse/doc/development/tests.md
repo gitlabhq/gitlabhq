@@ -1,17 +1,14 @@
+---
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
 # Testing your code
 
-Run the tests with:
+This document was moved to [another location](../../../doc/development/workhorse/index.md).
 
-```
-make clean test
-```
-
-## Coverage / what to test
-
-Each feature in GitLab Workhorse should have an integration test that
-verifies that the feature 'kicks in' on the right requests and leaves
-other requests unaffected. It is better to also have package-level tests
-for specific behavior but the high-level integration tests should have
-the first priority during development.
-
-It is OK if a feature is only covered by integration tests.
+<!-- This redirect file can be deleted after <2022-07-01>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

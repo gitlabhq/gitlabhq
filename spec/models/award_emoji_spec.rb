@@ -58,6 +58,43 @@ RSpec.describe AwardEmoji do
         end
       end
     end
+
+    context 'custom emoji' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:emoji) { create(:custom_emoji, name: 'partyparrot', namespace: group) }
+
+      before do
+        group.add_maintainer(user)
+      end
+
+      %i[issue merge_request note_on_issue snippet].each do |awardable_type|
+        let_it_be(:project) { create(:project, namespace: group) }
+        let(:awardable) { create(awardable_type, project: project) }
+
+        it "is accepted on #{awardable_type}" do
+          new_award = build(:award_emoji, user: user, awardable: awardable, name: emoji.name)
+
+          expect(new_award).to be_valid
+        end
+      end
+
+      it 'is accepted on subgroup issue' do
+        subgroup = create(:group, parent: group)
+        project = create(:project, namespace: subgroup)
+        issue = create(:issue, project: project)
+        new_award = build(:award_emoji, user: user, awardable: issue, name: emoji.name)
+
+        expect(new_award).to be_valid
+      end
+
+      it 'is not supported on personal snippet (yet)' do
+        snippet = create(:personal_snippet)
+        new_award = build(:award_emoji, user: snippet.author, awardable: snippet, name: 'null')
+
+        expect(new_award).not_to be_valid
+      end
+    end
   end
 
   describe 'scopes' do
@@ -207,6 +244,49 @@ RSpec.describe AwardEmoji do
         expect(merge_request).not_to receive(:update_column)
 
         award_emoji.destroy!
+      end
+    end
+  end
+
+  describe '#url' do
+    let_it_be(:custom_emoji) { create(:custom_emoji) }
+    let_it_be(:project) { create(:project, namespace: custom_emoji.group) }
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    def build_award(name)
+      build(:award_emoji, awardable: issue, name: name)
+    end
+
+    it 'is nil for built-in emoji' do
+      new_award = build_award('tada')
+
+      count = ActiveRecord::QueryRecorder.new do
+        expect(new_award.url).to be_nil
+      end.count
+      expect(count).to be_zero
+    end
+
+    it 'is nil for unrecognized emoji' do
+      new_award = build_award('null')
+
+      expect(new_award.url).to be_nil
+    end
+
+    it 'is set for custom emoji' do
+      new_award = build_award(custom_emoji.name)
+
+      expect(new_award.url).to eq(custom_emoji.url)
+    end
+
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(custom_emoji: false)
+      end
+
+      it 'does not query' do
+        new_award = build_award(custom_emoji.name)
+
+        expect(ActiveRecord::QueryRecorder.new { new_award.url }.count).to be_zero
       end
     end
   end

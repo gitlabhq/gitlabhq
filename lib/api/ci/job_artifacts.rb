@@ -28,7 +28,7 @@ module API
           requires :job,      type: String, desc: 'The name for the job'
         end
         route_setting :authentication, job_token_allowed: true
-        get ':id/jobs/artifacts/:ref_name/download',
+        get ':id/jobs/artifacts/:ref_name/download', urgency: :low,
           requirements: { ref_name: /.+/ } do
             authorize_download_artifacts!
 
@@ -87,7 +87,7 @@ module API
           requires :artifact_path, type: String, desc: 'Artifact path'
         end
         route_setting :authentication, job_token_allowed: true
-        get ':id/jobs/:job_id/artifacts/*artifact_path', format: false do
+        get ':id/jobs/:job_id/artifacts/*artifact_path', urgency: :low, format: false do
           authorize_download_artifacts!
 
           build = find_build!(params[:job_id])
@@ -100,7 +100,11 @@ module API
 
           bad_request! unless path.valid?
 
-          send_artifacts_entry(build.artifacts_file, path)
+          # This endpoint is being used for Artifact Browser feature that renders the content via pages.
+          # Since Content-Type is controlled by Rails and Workhorse, if a wrong
+          # content-type is sent, it could cause a regression on pages rendering.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/357078 for more information.
+          legacy_send_artifacts_entry(build.artifacts_file, path)
         end
 
         desc 'Keep the artifacts to prevent them from being deleted' do
@@ -140,8 +144,6 @@ module API
 
         desc 'Expire the artifacts files from a project'
         delete ':id/artifacts' do
-          not_found! unless Feature.enabled?(:bulk_expire_project_artifacts, default_enabled: :yaml)
-
           authorize_destroy_artifacts!
 
           ::Ci::JobArtifacts::DeleteProjectArtifactsService.new(project: user_project).execute

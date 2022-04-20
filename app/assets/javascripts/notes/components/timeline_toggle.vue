@@ -7,8 +7,8 @@ import { COMMENTS_ONLY_FILTER_VALUE, DESC } from '../constants';
 import notesEventHub from '../event_hub';
 import { trackToggleTimelineView } from '../utils';
 
-export const timelineEnabledTooltip = s__('Timeline|Turn timeline view off');
-export const timelineDisabledTooltip = s__('Timeline|Turn timeline view on');
+export const timelineEnabledTooltip = s__('Timeline|Turn recent updates view off');
+export const timelineDisabledTooltip = s__('Timeline|Turn recent updates view on');
 
 export default {
   components: {
@@ -49,7 +49,7 @@ export default {
   <gl-button
     v-gl-tooltip
     v-track-event="trackToggleTimelineView(timelineEnabled)"
-    icon="comments"
+    icon="history"
     :selected="timelineEnabled"
     :title="tooltip"
     :aria-label="tooltip"

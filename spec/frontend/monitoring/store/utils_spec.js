@@ -547,7 +547,7 @@ describe('parseEnvironmentsResponse', () => {
         {
           id: 1,
           name: 'env-1',
-          metrics_path: `${projectPath}/environments/1/metrics`,
+          metrics_path: `${projectPath}/-/metrics?environment=1`,
         },
       ],
     },
@@ -562,7 +562,7 @@ describe('parseEnvironmentsResponse', () => {
         {
           id: 12,
           name: 'env-12',
-          metrics_path: `${projectPath}/environments/12/metrics`,
+          metrics_path: `${projectPath}/-/metrics?environment=12`,
         },
       ],
     },

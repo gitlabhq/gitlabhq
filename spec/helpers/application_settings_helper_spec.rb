@@ -149,7 +149,7 @@ RSpec.describe ApplicationSettingsHelper do
     end
   end
 
-  describe '.storage_weights' do
+  describe '#storage_weights' do
     let(:application_setting) { build(:application_setting) }
 
     before do
@@ -158,12 +158,13 @@ RSpec.describe ApplicationSettingsHelper do
       stub_application_setting(repository_storages_weighted: { 'default' => 100, 'storage_1' => 50, 'storage_2' => nil })
     end
 
-    it 'returns storages correctly' do
-      expect(helper.storage_weights).to eq(OpenStruct.new(
-                                             default: 100,
-                                             storage_1: 50,
-                                             storage_2: 0
-                                           ))
+    it 'returns storage objects with assigned weights' do
+      expect(helper.storage_weights)
+        .to have_attributes(
+          default: 100,
+          storage_1: 50,
+          storage_2: 0
+        )
     end
   end
 

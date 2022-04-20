@@ -50,7 +50,7 @@ describe('Promote label modal', () => {
       vm.$destroy();
     });
 
-    it('redirects when a label is promoted', (done) => {
+    it('redirects when a label is promoted', () => {
       const responseURL = `${TEST_HOST}/dummy/endpoint`;
       jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(labelMockData.url);
@@ -65,39 +65,35 @@ describe('Promote label modal', () => {
         });
       });
 
-      vm.onSubmit()
-        .then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
-            labelUrl: labelMockData.url,
-            successful: true,
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      return vm.onSubmit().then(() => {
+        expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
+          labelUrl: labelMockData.url,
+          successful: true,
+        });
+      });
     });
 
-    it('displays an error if promoting a label failed', (done) => {
+    it('displays an error if promoting a label failed', () => {
       const dummyError = new Error('promoting label failed');
       dummyError.response = { status: 500 };
+
       jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(labelMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteLabelModal.requestStarted',
           labelMockData.url,
         );
+
         return Promise.reject(dummyError);
       });
 
-      vm.onSubmit()
-        .catch((error) => {
-          expect(error).toBe(dummyError);
-          expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
-            labelUrl: labelMockData.url,
-            successful: false,
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      return vm.onSubmit().catch((error) => {
+        expect(error).toBe(dummyError);
+        expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
+          labelUrl: labelMockData.url,
+          successful: false,
+        });
+      });
     });
   });
 });

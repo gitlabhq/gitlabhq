@@ -100,7 +100,6 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
       :trial        | true
       :team         | true
       :experience   | true
-      :invite_team  | false
     end
 
     with_them do

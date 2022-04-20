@@ -240,7 +240,7 @@ Activity history for projects and individuals' profiles was limited to one year 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14939) in GitLab 12.7.
 
-There is a limit when embedding metrics in GitLab Flavored Markdown (GFM) for performance reasons.
+There is a limit when embedding metrics in GitLab Flavored Markdown (GLFM) for performance reasons.
 
 - **Max limit**: 100 embeds.
 
@@ -382,6 +382,20 @@ Plan.default.actual_limits.update!(ci_active_jobs: 500)
 ```
 
 Set the limit to `0` to disable it.
+
+### Maximum time jobs can run
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16777) in GitLab 12.3.
+
+The default maximum time that jobs can run for is 60 minutes. Jobs that run for
+more than 60 minutes time out.
+
+You can change the maximum time a job can run before it times out:
+
+- At the project-level in the [project's CI/CD settings](../ci/pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
+  for a given project. This limit must be between 10 minutes and 1 month.
+- At the [runner level](../ci/runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+  This limit must be 10 minutes or longer.
 
 ### Maximum number of deployment jobs in a pipeline
 
@@ -858,7 +872,7 @@ See the [documentation about Snippets settings](snippets/index.md).
 
 ## Design Management limits
 
-See the [Design Management Limitations](../user/project/issues/design_management.md#limitations) section.
+See the limits in the [Add a design to an issue](../user/project/issues/design_management.md#add-a-design-to-an-issue) section.
 
 ## Push Event Limits
 
@@ -962,3 +976,16 @@ retarget merge requests pointing to the now-merged branch. To learn more, read
 ## CDN-based limits on GitLab.com
 
 In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are [not public](https://about.gitlab.com/handbook/communication/#not-public) because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.
+
+## Container Repository tag deletion limit
+
+Container repository tags are in the Container Registry and, as such, each tag deletion will trigger network requests to the Container Registry. Because of this, we limit the number of tags that a single API call can delete to 20.
+
+## Project-level Secure Files API limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8.
+
+The [secure files API](../api/secure_files.md) enforces the following limits:
+
+- Files must be smaller than 5 MB.
+- Projects cannot have more than 100 secure files.

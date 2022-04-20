@@ -16,3 +16,6 @@ require File.expand_path('config/initializers/01_active_record_database_tasks_co
 Gitlab::Application.load_tasks
 
 Knapsack.load_tasks if defined?(Knapsack)
+
+require 'gitlab-dangerfiles'
+Gitlab::Dangerfiles.load_tasks

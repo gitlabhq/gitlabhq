@@ -183,9 +183,12 @@ Redis version >= 2.0.0? ... yes
 Checking GitLab ... Finished
 ```
 
-## Rebuild authorized_keys file
+## Rebuild `authorized_keys` file
 
-In some case it is necessary to rebuild the `authorized_keys` file. To do this, run:
+In some cases it is necessary to rebuild the `authorized_keys` file,
+for example, if after an upgrade you receive `Permission denied (publickey)` when pushing [via SSH](../../ssh/index.md)
+and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs.md#gitlab-shelllog).
+To rebuild `authorized_keys`, run:
 
 **Omnibus Installation**
 

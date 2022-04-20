@@ -1,4 +1,4 @@
-import { GlTab, GlTabs } from '@gitlab/ui';
+import { GlTab, GlTabs, GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -33,6 +33,7 @@ const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
 const autoDevopsPath = '/autoDevopsPath';
 const gitlabCiHistoryPath = 'test/historyPath';
 const projectFullPath = 'namespace/project';
+const vulnerabilityTrainingDocsPath = 'user/application_security/vulnerabilities/index';
 
 useLocalStorageSpy();
 
@@ -55,6 +56,7 @@ describe('App component', () => {
           autoDevopsHelpPagePath,
           autoDevopsPath,
           projectFullPath,
+          vulnerabilityTrainingDocsPath,
           glFeatures: {
             secureVulnerabilityTraining,
           },
@@ -107,6 +109,7 @@ describe('App component', () => {
   const findUpgradeBanner = () => wrapper.findComponent(UpgradeBanner);
   const findAutoDevopsAlert = () => wrapper.findComponent(AutoDevopsAlert);
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
+  const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
 
   const securityFeaturesMock = [
     {
@@ -454,9 +457,14 @@ describe('App component', () => {
     });
 
     it('renders security training description', () => {
-      const vulnerabilityManagementTab = wrapper.findByTestId('vulnerability-management-tab');
+      expect(findVulnerabilityManagementTab().text()).toContain(i18n.securityTrainingDescription);
+    });
 
-      expect(vulnerabilityManagementTab.text()).toContain(i18n.securityTrainingDescription);
+    it('renders link to help docs', () => {
+      const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
+
+      expect(trainingLink.text()).toBe('Learn more about vulnerability training');
+      expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
     });
   });
 

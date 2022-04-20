@@ -40,28 +40,56 @@ RSpec.describe Projects::Pipelines::TestsController do
       let(:suite_name) { 'test' }
       let(:build_ids) { pipeline.latest_builds.pluck(:id) }
 
-      before do
-        build = main_pipeline.builds.last
-        build.update_column(:finished_at, 1.day.ago) # Just to be sure we are included in the report window
+      context 'when artifacts are expired' do
+        before do
+          pipeline.job_artifacts.first.update!(expire_at: Date.yesterday)
+        end
 
-        # The JUnit fixture for the given build has 3 failures.
-        # This service will create 1 test case failure record for each.
-        Ci::TestFailureHistoryService.new(main_pipeline).execute
+        it 'renders not_found errors', :aggregate_failures do
+          get_tests_show_json(build_ids)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['errors']).to eq('Test report artifacts have expired')
+        end
+
+        context 'when ci_test_report_artifacts_expired is disabled' do
+          before do
+            stub_feature_flags(ci_test_report_artifacts_expired: false)
+          end
+          it 'renders test suite', :aggregate_failures do
+            get_tests_show_json(build_ids)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['name']).to eq('test')
+          end
+        end
       end
 
-      it 'renders test suite data' do
-        get_tests_show_json(build_ids)
+      context 'when artifacts are not expired' do
+        before do
+          build = main_pipeline.builds.last
+          build.update_column(:finished_at, 1.day.ago) # Just to be sure we are included in the report window
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['name']).to eq('test')
+          # The JUnit fixture for the given build has 3 failures.
+          # This service will create 1 test case failure record for each.
+          Ci::TestFailureHistoryService.new(main_pipeline).execute
+        end
 
-        # Each test failure in this pipeline has a matching failure in the default branch
-        recent_failures = json_response['test_cases'].map { |tc| tc['recent_failures'] }
-        expect(recent_failures).to eq([
-          { 'count' => 1, 'base_branch' => 'master' },
-          { 'count' => 1, 'base_branch' => 'master' },
-          { 'count' => 1, 'base_branch' => 'master' }
-        ])
+        it 'renders test suite data', :aggregate_failures do
+          get_tests_show_json(build_ids)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq('test')
+          expect(json_response['artifacts_expired']).to be_falsey
+
+          # Each test failure in this pipeline has a matching failure in the default branch
+          recent_failures = json_response['test_cases'].map { |tc| tc['recent_failures'] }
+          expect(recent_failures).to eq([
+            { 'count' => 1, 'base_branch' => 'master' },
+            { 'count' => 1, 'base_branch' => 'master' },
+            { 'count' => 1, 'base_branch' => 'master' }
+          ])
+        end
       end
     end
 

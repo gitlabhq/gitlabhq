@@ -1,6 +1,8 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
 
+= render_if_exists 'shared/user_over_limit_free_plan_alert', source: @group
+
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap
@@ -25,5 +27,7 @@
     .js-group-members-list-app{ data: { members_data: group_members_app_data(@group,
                                                                              members: @members,
                                                                              invited: @invited_members,
-                                                                             access_requests: @requesters).to_json } }
+                                                                             access_requests: @requesters,
+                                                                             include_relations: @include_relations,
+                                                                             search: params[:search_groups]).to_json } }
       = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

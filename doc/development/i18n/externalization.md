@@ -786,7 +786,7 @@ The reasoning behind this is that in some languages words change depending on co
 in Japanese は is added to the subject of a sentence and を to the object. This is impossible to
 translate correctly if you extract individual words from the sentence.
 
-When in doubt, try to follow the best practices described in this [Mozilla Developer documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting).
+When in doubt, try to follow the best practices described in this [Mozilla Developer documentation](https://mozilla-l10n.github.io/documentation/localization/dev_best_practices.html#splitting-and-composing-sentences).
 
 ### Always pass string literals to the translation helpers
 

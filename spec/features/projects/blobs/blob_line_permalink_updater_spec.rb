@@ -39,7 +39,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
         find('#L3').click
         find("#L5").click
 
-        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: "LC5")))
+        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: "L5")))
       end
 
       it 'with initial fragment hash, changes fragment hash if line number clicked' do
@@ -50,7 +50,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
         find('#L3').click
         find("#L5").click
 
-        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: "LC5")))
+        expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: "L5")))
       end
     end
 
@@ -75,7 +75,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
         find('#L3').click
         find("#L5").click
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "LC5")))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "L5")))
       end
 
       it 'with initial fragment hash, changes fragment hash if line number clicked' do
@@ -86,7 +86,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
         find('#L3').click
         find("#L5").click
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "LC5")))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "L5")))
       end
     end
   end

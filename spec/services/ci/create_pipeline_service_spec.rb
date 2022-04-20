@@ -12,6 +12,10 @@ RSpec.describe Ci::CreatePipelineService do
 
   before do
     stub_ci_pipeline_to_return_yaml_file
+
+    # Disable rate limiting for pipeline creation
+    allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
+      .and_return(pipelines_create: { threshold: 0, interval: 1.minute })
   end
 
   describe '#execute' do
@@ -526,7 +530,7 @@ RSpec.describe Ci::CreatePipelineService do
           let(:ci_yaml) do
             <<-EOS
               image:
-                name: ruby:2.7
+                name: image:1.0
                 ports:
                   - 80
             EOS
@@ -538,12 +542,12 @@ RSpec.describe Ci::CreatePipelineService do
         context 'in the job image' do
           let(:ci_yaml) do
             <<-EOS
-              image: ruby:2.7
+              image: image:1.0
 
               test:
                 script: rspec
                 image:
-                  name: ruby:2.7
+                  name: image:1.0
                   ports:
                     - 80
             EOS
@@ -555,11 +559,11 @@ RSpec.describe Ci::CreatePipelineService do
         context 'in the service' do
           let(:ci_yaml) do
             <<-EOS
-              image: ruby:2.7
+              image: image:1.0
 
               test:
                 script: rspec
-                image: ruby:2.7
+                image: image:1.0
                 services:
                   - name: test
                     ports:

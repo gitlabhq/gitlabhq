@@ -6,6 +6,8 @@ module Gitlab
       class BatchedMigration < SharedModel
         JOB_CLASS_MODULE = 'Gitlab::BackgroundMigration'
         BATCH_CLASS_MODULE = "#{JOB_CLASS_MODULE}::BatchingStrategies"
+        MAXIMUM_FAILED_RATIO = 0.5
+        MINIMUM_JOBS = 50
 
         self.table_name = :batched_background_migrations
 
@@ -21,28 +23,60 @@ module Gitlab
         validate :validate_batched_jobs_status, if: -> { status_changed? && finished? }
 
         scope :queue_order, -> { order(id: :asc) }
-        scope :queued, -> { where(status: [:active, :paused]) }
+        scope :queued, -> { with_statuses(:active, :paused) }
+
+        # on_hold_until is a temporary runtime status which puts execution "on hold"
+        scope :executable, -> { with_status(:active).where('on_hold_until IS NULL OR on_hold_until < NOW()') }
+
         scope :for_configuration, ->(job_class_name, table_name, column_name, job_arguments) do
           where(job_class_name: job_class_name, table_name: table_name, column_name: column_name)
             .where("job_arguments = ?", job_arguments.to_json) # rubocop:disable Rails/WhereEquals
         end
 
-        enum status: {
-          paused: 0,
-          active: 1,
-          finished: 3,
-          failed: 4,
-          finalizing: 5
-        }
+        state_machine :status, initial: :paused do
+          state :paused, value: 0
+          state :active, value: 1
+          state :finished, value: 3
+          state :failed, value: 4
+          state :finalizing, value: 5
+
+          event :pause do
+            transition any => :paused
+          end
+
+          event :execute do
+            transition any => :active
+          end
+
+          event :finish do
+            transition any => :finished
+          end
+
+          event :failure do
+            transition any => :failed
+          end
+
+          event :finalize do
+            transition any => :finalizing
+          end
+
+          before_transition any => :active do |migration|
+            migration.started_at = Time.current if migration.respond_to?(:started_at)
+          end
+        end
 
         attribute :pause_ms, :integer, default: 100
+
+        def self.valid_status
+          state_machine.states.map(&:name)
+        end
 
         def self.find_for_configuration(job_class_name, table_name, column_name, job_arguments)
           for_configuration(job_class_name, table_name, column_name, job_arguments).first
         end
 
         def self.active_migration
-          active.queue_order.first
+          executable.queue_order.first
         end
 
         def self.successful_rows_counts(migrations)
@@ -74,11 +108,23 @@ module Gitlab
           batched_jobs.with_status(:failed).each_batch(of: 100) do |batch|
             self.class.transaction do
               batch.lock.each(&:split_and_retry!)
-              self.active!
+              self.execute!
             end
           end
 
-          self.active!
+          self.execute!
+        end
+
+        def should_stop?
+          return unless started_at
+
+          total_jobs = batched_jobs.created_since(started_at).count
+
+          return if total_jobs < MINIMUM_JOBS
+
+          failed_jobs = batched_jobs.with_status(:failed).created_since(started_at).count
+
+          failed_jobs.fdiv(total_jobs) > MAXIMUM_FAILED_RATIO
         end
 
         def next_min_value
@@ -134,6 +180,10 @@ module Gitlab
 
         def optimize!
           BatchOptimizer.new(self).optimize!
+        end
+
+        def hold!(until_time: 10.minutes.from_now)
+          update!(on_hold_until: until_time)
         end
 
         private

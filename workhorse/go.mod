@@ -28,7 +28,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/stretchr/testify v1.7.0
-	gitlab.com/gitlab-org/gitaly/v14 v14.9.0-rc1
+	gitlab.com/gitlab-org/gitaly/v14 v14.9.0-rc5.0.20220329111719-51da8bc17059
 	gitlab.com/gitlab-org/golang-archive-zip v0.1.1
 	gitlab.com/gitlab-org/labkit v1.6.0
 	gocloud.dev v0.23.0

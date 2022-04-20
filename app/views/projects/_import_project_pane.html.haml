@@ -1,10 +1,12 @@
 - active_tab = local_assigns.fetch(:active_tab, 'blank')
 - track_label = local_assigns.fetch(:track_label, 'import_project')
+- namespace_id = local_assigns.fetch(:destination_namespace_id, nil)
 
 .project-import
   .form-group.import-btn-container.clearfix
-    %h5
+    %h5.gl-display-flex
       = _("Import project from")
+      = link_to _('History'), import_history_index_path, class: 'gl-link gl-ml-auto gl-font-weight-normal'
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body', qa_selector: 'gitlab_import_button' } }
@@ -15,7 +17,7 @@
 
       - if github_import_enabled?
         %div
-          = link_to new_import_github_path, class: 'gl-button btn-default btn js-import-github js-import-project-btn', data: { platform: 'github', **tracking_attrs_data(track_label, 'click_button', 'github') } do
+          = link_to new_import_github_path(namespace_id: namespace_id), class: 'gl-button btn-default btn js-import-github js-import-project-btn', data: { platform: 'github', **tracking_attrs_data(track_label, 'click_button', 'github') } do
             .gl-button-icon
               = sprite_icon('github')
             GitHub
@@ -79,7 +81,7 @@
 
 
   .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
-    = form_for @project, html: { class: 'new_project gl-show-field-errors js-project-import' } do |f|
+    = gitlab_ui_form_for @project, html: { class: 'new_project gl-show-field-errors js-project-import' } do |f|
       %hr
       = render "shared/import_form", f: f
       = render 'projects/new_project_fields', f: f, project_name_id: "import-url-name", hide_init_with_readme: true, track_label: track_label

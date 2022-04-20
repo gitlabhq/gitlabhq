@@ -34,9 +34,9 @@ describe('merge conflicts actions', () => {
   describe('fetchConflictsData', () => {
     const conflictsPath = 'conflicts/path/mock';
 
-    it('on success dispatches setConflictsData', (done) => {
+    it('on success dispatches setConflictsData', () => {
       mock.onGet(conflictsPath).reply(200, {});
-      testAction(
+      return testAction(
         actions.fetchConflictsData,
         conflictsPath,
         {},
@@ -45,13 +45,12 @@ describe('merge conflicts actions', () => {
           { type: types.SET_LOADING_STATE, payload: false },
         ],
         [{ type: 'setConflictsData', payload: {} }],
-        done,
       );
     });
 
-    it('when data has type equal to error ', (done) => {
+    it('when data has type equal to error ', () => {
       mock.onGet(conflictsPath).reply(200, { type: 'error', message: 'error message' });
-      testAction(
+      return testAction(
         actions.fetchConflictsData,
         conflictsPath,
         {},
@@ -61,13 +60,12 @@ describe('merge conflicts actions', () => {
           { type: types.SET_LOADING_STATE, payload: false },
         ],
         [],
-        done,
       );
     });
 
-    it('when request fails ', (done) => {
+    it('when request fails ', () => {
       mock.onGet(conflictsPath).reply(400);
-      testAction(
+      return testAction(
         actions.fetchConflictsData,
         conflictsPath,
         {},
@@ -77,15 +75,14 @@ describe('merge conflicts actions', () => {
           { type: types.SET_LOADING_STATE, payload: false },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('setConflictsData', () => {
-    it('INTERACTIVE_RESOLVE_MODE updates the correct file ', (done) => {
+    it('INTERACTIVE_RESOLVE_MODE updates the correct file ', () => {
       decorateFiles.mockReturnValue([{ bar: 'baz' }]);
-      testAction(
+      return testAction(
         actions.setConflictsData,
         { files, foo: 'bar' },
         {},
@@ -96,7 +93,6 @@ describe('merge conflicts actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
@@ -105,24 +101,21 @@ describe('merge conflicts actions', () => {
     useMockLocationHelper();
     const resolveConflictsPath = 'resolve/conflicts/path/mock';
 
-    it('on success reloads the page', (done) => {
+    it('on success reloads the page', async () => {
       mock.onPost(resolveConflictsPath).reply(200, { redirect_to: 'hrefPath' });
-      testAction(
+      await testAction(
         actions.submitResolvedConflicts,
         resolveConflictsPath,
         {},
         [{ type: types.SET_SUBMIT_STATE, payload: true }],
         [],
-        () => {
-          expect(window.location.assign).toHaveBeenCalledWith('hrefPath');
-          done();
-        },
       );
+      expect(window.location.assign).toHaveBeenCalledWith('hrefPath');
     });
 
-    it('on errors shows flash', (done) => {
+    it('on errors shows flash', async () => {
       mock.onPost(resolveConflictsPath).reply(400);
-      testAction(
+      await testAction(
         actions.submitResolvedConflicts,
         resolveConflictsPath,
         {},
@@ -131,13 +124,10 @@ describe('merge conflicts actions', () => {
           { type: types.SET_SUBMIT_STATE, payload: false },
         ],
         [],
-        () => {
-          expect(createFlash).toHaveBeenCalledWith({
-            message: 'Failed to save merge conflicts resolutions. Please try again!',
-          });
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalledWith({
+        message: 'Failed to save merge conflicts resolutions. Please try again!',
+      });
     });
   });
 
@@ -193,9 +183,9 @@ describe('merge conflicts actions', () => {
   });
 
   describe('setViewType', () => {
-    it('commits the right mutation', (done) => {
+    it('commits the right mutation', async () => {
       const payload = 'viewType';
-      testAction(
+      await testAction(
         actions.setViewType,
         payload,
         {},
@@ -206,14 +196,11 @@ describe('merge conflicts actions', () => {
           },
         ],
         [],
-        () => {
-          expect(Cookies.set).toHaveBeenCalledWith('diff_view', payload, {
-            expires: 365,
-            secure: false,
-          });
-          done();
-        },
       );
+      expect(Cookies.set).toHaveBeenCalledWith('diff_view', payload, {
+        expires: 365,
+        secure: false,
+      });
     });
   });
 
@@ -252,8 +239,8 @@ describe('merge conflicts actions', () => {
   });
 
   describe('setFileResolveMode', () => {
-    it('INTERACTIVE_RESOLVE_MODE updates the correct file ', (done) => {
-      testAction(
+    it('INTERACTIVE_RESOLVE_MODE updates the correct file ', () => {
+      return testAction(
         actions.setFileResolveMode,
         { file: files[0], mode: INTERACTIVE_RESOLVE_MODE },
         { conflictsData: { files }, getFileIndex: () => 0 },
@@ -267,11 +254,10 @@ describe('merge conflicts actions', () => {
           },
         ],
         [],
-        done,
       );
     });
 
-    it('EDIT_RESOLVE_MODE updates the correct file ', (done) => {
+    it('EDIT_RESOLVE_MODE updates the correct file ', async () => {
       restoreFileLinesState.mockReturnValue([]);
       const file = {
         ...files[0],
@@ -280,7 +266,7 @@ describe('merge conflicts actions', () => {
         resolutionData: {},
         resolveMode: EDIT_RESOLVE_MODE,
       };
-      testAction(
+      await testAction(
         actions.setFileResolveMode,
         { file: files[0], mode: EDIT_RESOLVE_MODE },
         { conflictsData: { files }, getFileIndex: () => 0 },
@@ -294,17 +280,14 @@ describe('merge conflicts actions', () => {
           },
         ],
         [],
-        () => {
-          expect(restoreFileLinesState).toHaveBeenCalledWith(file);
-          done();
-        },
       );
+      expect(restoreFileLinesState).toHaveBeenCalledWith(file);
     });
   });
 
   describe('setPromptConfirmationState', () => {
-    it('updates the correct file ', (done) => {
-      testAction(
+    it('updates the correct file ', () => {
+      return testAction(
         actions.setPromptConfirmationState,
         { file: files[0], promptDiscardConfirmation: true },
         { conflictsData: { files }, getFileIndex: () => 0 },
@@ -318,7 +301,6 @@ describe('merge conflicts actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
@@ -333,11 +315,11 @@ describe('merge conflicts actions', () => {
       ],
     };
 
-    it('updates the correct file ', (done) => {
+    it('updates the correct file ', async () => {
       const marLikeMockReturn = { foo: 'bar' };
       markLine.mockReturnValue(marLikeMockReturn);
 
-      testAction(
+      await testAction(
         actions.handleSelected,
         { file, line: { id: 1, section: 'baz' } },
         { conflictsData: { files }, getFileIndex: () => 0 },
@@ -359,11 +341,8 @@ describe('merge conflicts actions', () => {
           },
         ],
         [],
-        () => {
-          expect(markLine).toHaveBeenCalledTimes(3);
-          done();
-        },
       );
+      expect(markLine).toHaveBeenCalledTimes(3);
     });
   });
 });

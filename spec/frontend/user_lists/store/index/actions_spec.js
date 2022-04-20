@@ -12,7 +12,7 @@ import {
 } from '~/user_lists/store/index/actions';
 import * as types from '~/user_lists/store/index/mutation_types';
 import createState from '~/user_lists/store/index/state';
-import { userList } from '../../../feature_flags/mock_data';
+import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api.js');
 
@@ -24,14 +24,13 @@ describe('~/user_lists/store/index/actions', () => {
   });
 
   describe('setUserListsOptions', () => {
-    it('should commit SET_USER_LISTS_OPTIONS mutation', (done) => {
-      testAction(
+    it('should commit SET_USER_LISTS_OPTIONS mutation', () => {
+      return testAction(
         setUserListsOptions,
         { page: '1', scope: 'all' },
         state,
         [{ type: types.SET_USER_LISTS_OPTIONS, payload: { page: '1', scope: 'all' } }],
         [],
-        done,
       );
     });
   });
@@ -42,8 +41,8 @@ describe('~/user_lists/store/index/actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestUserLists and receiveUserListsSuccess ', (done) => {
-        testAction(
+      it('dispatches requestUserLists and receiveUserListsSuccess ', () => {
+        return testAction(
           fetchUserLists,
           null,
           state,
@@ -57,16 +56,15 @@ describe('~/user_lists/store/index/actions', () => {
               type: 'receiveUserListsSuccess',
             },
           ],
-          done,
         );
       });
     });
 
     describe('error', () => {
-      it('dispatches requestUserLists and receiveUserListsError ', (done) => {
+      it('dispatches requestUserLists and receiveUserListsError ', () => {
         Api.fetchFeatureFlagUserLists.mockRejectedValue();
 
-        testAction(
+        return testAction(
           fetchUserLists,
           null,
           state,
@@ -79,21 +77,20 @@ describe('~/user_lists/store/index/actions', () => {
               type: 'receiveUserListsError',
             },
           ],
-          done,
         );
       });
     });
   });
 
   describe('requestUserLists', () => {
-    it('should commit RECEIVE_USER_LISTS_SUCCESS mutation', (done) => {
-      testAction(requestUserLists, null, state, [{ type: types.REQUEST_USER_LISTS }], [], done);
+    it('should commit RECEIVE_USER_LISTS_SUCCESS mutation', () => {
+      return testAction(requestUserLists, null, state, [{ type: types.REQUEST_USER_LISTS }], []);
     });
   });
 
   describe('receiveUserListsSuccess', () => {
-    it('should commit RECEIVE_USER_LISTS_SUCCESS mutation', (done) => {
-      testAction(
+    it('should commit RECEIVE_USER_LISTS_SUCCESS mutation', () => {
+      return testAction(
         receiveUserListsSuccess,
         { data: [userList], headers: {} },
         state,
@@ -104,20 +101,18 @@ describe('~/user_lists/store/index/actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('receiveUserListsError', () => {
-    it('should commit RECEIVE_USER_LISTS_ERROR mutation', (done) => {
-      testAction(
+    it('should commit RECEIVE_USER_LISTS_ERROR mutation', () => {
+      return testAction(
         receiveUserListsError,
         null,
         state,
         [{ type: types.RECEIVE_USER_LISTS_ERROR }],
         [],
-        done,
       );
     });
   });
@@ -132,14 +127,13 @@ describe('~/user_lists/store/index/actions', () => {
         Api.deleteFeatureFlagUserList.mockResolvedValue();
       });
 
-      it('should refresh the user lists', (done) => {
-        testAction(
+      it('should refresh the user lists', () => {
+        return testAction(
           deleteUserList,
           userList,
           state,
           [],
           [{ type: 'requestDeleteUserList', payload: userList }, { type: 'fetchUserLists' }],
-          done,
         );
       });
     });
@@ -149,8 +143,8 @@ describe('~/user_lists/store/index/actions', () => {
         Api.deleteFeatureFlagUserList.mockRejectedValue({ response: { data: 'some error' } });
       });
 
-      it('should dispatch receiveDeleteUserListError', (done) => {
-        testAction(
+      it('should dispatch receiveDeleteUserListError', () => {
+        return testAction(
           deleteUserList,
           userList,
           state,
@@ -162,15 +156,14 @@ describe('~/user_lists/store/index/actions', () => {
               payload: { list: userList, error: 'some error' },
             },
           ],
-          done,
         );
       });
     });
   });
 
   describe('receiveDeleteUserListError', () => {
-    it('should commit RECEIVE_DELETE_USER_LIST_ERROR with the given list', (done) => {
-      testAction(
+    it('should commit RECEIVE_DELETE_USER_LIST_ERROR with the given list', () => {
+      return testAction(
         receiveDeleteUserListError,
         { list: userList, error: 'mock error' },
         state,
@@ -181,22 +174,20 @@ describe('~/user_lists/store/index/actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('clearAlert', () => {
-    it('should commit RECEIVE_CLEAR_ALERT', (done) => {
+    it('should commit RECEIVE_CLEAR_ALERT', () => {
       const alertIndex = 3;
 
-      testAction(
+      return testAction(
         clearAlert,
         alertIndex,
         state,
         [{ type: 'RECEIVE_CLEAR_ALERT', payload: alertIndex }],
         [],
-        done,
       );
     });
   });

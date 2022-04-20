@@ -4,7 +4,7 @@ import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_
 import { statusTokenConfig } from '~/runner/components/search_tokens/status_token_config';
 import TagToken from '~/runner/components/search_tokens/tag_token.vue';
 import { tagTokenConfig } from '~/runner/components/search_tokens/tag_token_config';
-import { PARAM_KEY_STATUS, PARAM_KEY_TAG, STATUS_ACTIVE, INSTANCE_TYPE } from '~/runner/constants';
+import { PARAM_KEY_STATUS, PARAM_KEY_TAG, STATUS_ONLINE, INSTANCE_TYPE } from '~/runner/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
@@ -18,7 +18,7 @@ describe('RunnerList', () => {
   const mockDefaultSort = 'CREATED_DESC';
   const mockOtherSort = 'CONTACTED_DESC';
   const mockFilters = [
-    { type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } },
+    { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
     { type: 'filtered-search-term', value: { data: '' } },
   ];
 
@@ -113,7 +113,7 @@ describe('RunnerList', () => {
     });
 
     it('filter values are shown', () => {
-      expect(findGlFilteredSearch().props('value')).toEqual(mockFilters);
+      expect(findGlFilteredSearch().props('value')).toMatchObject(mockFilters);
     });
 
     it('sort option is selected', () => {

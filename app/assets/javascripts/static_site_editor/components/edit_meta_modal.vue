@@ -112,7 +112,6 @@ export default {
       v-model="mergeRequestMeta"
       :storage-key="$options.storageKey"
       :clear="clearStorage"
-      as-json
     />
     <edit-meta-controls
       ref="editMetaControls"

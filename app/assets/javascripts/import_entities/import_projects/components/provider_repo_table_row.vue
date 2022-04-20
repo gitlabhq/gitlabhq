@@ -69,6 +69,10 @@ export default {
       return getImportStatus(this.repo);
     },
 
+    stats() {
+      return this.repo.importedProject?.stats;
+    },
+
     importTarget() {
       return this.getImportTarget(this.repo.importSource.id);
     },
@@ -101,11 +105,11 @@ export default {
 
 <template>
   <tr
-    class="gl-h-11 gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100 gl-h-11"
+    class="gl-h-11 gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100 gl-h-11 gl-vertical-align-top"
     data-qa-selector="project_import_row"
     :data-qa-source-project="repo.importSource.fullName"
   >
-    <td class="gl-p-4">
+    <td class="gl-p-4 gl-vertical-align-top">
       <gl-link :href="repo.importSource.providerLink" target="_blank" data-testid="providerLink"
         >{{ repo.importSource.fullName }}
         <gl-icon v-if="repo.importSource.providerLink" name="external-link" />
@@ -156,10 +160,10 @@ export default {
       </template>
       <template v-else-if="repo.importedProject">{{ displayFullPath }}</template>
     </td>
-    <td class="gl-p-4" data-qa-selector="import_status_indicator">
-      <import-status :status="importStatus" />
+    <td class="gl-p-4 gl-vertical-align-top" data-qa-selector="import_status_indicator">
+      <import-status :status="importStatus" :stats="stats" />
     </td>
-    <td data-testid="actions">
+    <td data-testid="actions" class="gl-vertical-align-top gl-pt-4">
       <gl-button
         v-if="isFinished"
         class="btn btn-default"

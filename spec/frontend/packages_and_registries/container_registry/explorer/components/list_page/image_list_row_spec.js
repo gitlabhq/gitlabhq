@@ -10,6 +10,7 @@ import {
   LIST_DELETE_BUTTON_DISABLED,
   REMOVE_REPOSITORY_LABEL,
   IMAGE_DELETE_SCHEDULED_STATUS,
+  IMAGE_MIGRATING_STATE,
   SCHEDULED_STATUS,
   ROOT_IMAGE_TEXT,
 } from '~/packages_and_registries/container_registry/explorer/constants';
@@ -40,6 +41,9 @@ describe('Image List Row', () => {
       propsData: {
         item,
         ...props,
+      },
+      provide: {
+        config: {},
       },
       directives: {
         GlTooltip: createMockDirective(),
@@ -178,6 +182,12 @@ describe('Image List Row', () => {
         expect(findDeleteBtn().props('disabled')).toBe(state);
       },
     );
+
+    it('is disabled when migrationState is importing', () => {
+      mountComponent({ item: { ...item, migrationState: IMAGE_MIGRATING_STATE } });
+
+      expect(findDeleteBtn().props('disabled')).toBe(true);
+    });
   });
 
   describe('tags count', () => {

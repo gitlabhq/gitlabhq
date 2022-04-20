@@ -9,7 +9,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/flash';
-import { I18N_DELETE_RUNNER } from '~/runner/constants';
+import {
+  I18N_DELETE_RUNNER,
+  I18N_DELETE_DISABLED_MANY_PROJECTS,
+  I18N_DELETE_DISABLED_UNKNOWN_REASON,
+} from '~/runner/constants';
 
 import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import RunnerDeleteModal from '~/runner/components/runner_delete_modal.vue';
@@ -25,12 +29,15 @@ jest.mock('~/runner/sentry_utils');
 
 describe('RunnerDeleteButton', () => {
   let wrapper;
+  let apolloProvider;
+  let apolloCache;
   let runnerDeleteHandler;
 
-  const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
-  const getModal = () => getBinding(wrapper.element, 'gl-modal').value;
   const findBtn = () => wrapper.findComponent(GlButton);
   const findModal = () => wrapper.findComponent(RunnerDeleteModal);
+
+  const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
+  const getModal = () => getBinding(findBtn().element, 'gl-modal').value;
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     const { runner, ...propsData } = props;
@@ -38,13 +45,16 @@ describe('RunnerDeleteButton', () => {
     wrapper = mountFn(RunnerDeleteButton, {
       propsData: {
         runner: {
+          // We need typename so that cache.identify works
+          // eslint-disable-next-line no-underscore-dangle
+          __typename: mockRunner.__typename,
           id: mockRunner.id,
           shortSha: mockRunner.shortSha,
           ...runner,
         },
         ...propsData,
       },
-      apolloProvider: createMockApollo([[runnerDeleteMutation, runnerDeleteHandler]]),
+      apolloProvider,
       directives: {
         GlTooltip: createMockDirective(),
         GlModal: createMockDirective(),
@@ -67,6 +77,11 @@ describe('RunnerDeleteButton', () => {
         },
       });
     });
+    apolloProvider = createMockApollo([[runnerDeleteMutation, runnerDeleteHandler]]);
+    apolloCache = apolloProvider.defaultClient.cache;
+
+    jest.spyOn(apolloCache, 'evict');
+    jest.spyOn(apolloCache, 'gc');
 
     createComponent();
   });
@@ -86,6 +101,10 @@ describe('RunnerDeleteButton', () => {
 
   it('Displays a modal with the runner name', () => {
     expect(findModal().props('runnerName')).toBe(`#${mockRunnerId} (${mockRunner.shortSha})`);
+  });
+
+  it('Does not have tabindex when button is enabled', () => {
+    expect(wrapper.attributes('tabindex')).toBeUndefined();
   });
 
   it('Displays a modal when clicked', () => {
@@ -140,6 +159,13 @@ describe('RunnerDeleteButton', () => {
       expect(deleted[0][0].message).toMatch(`#${mockRunnerId}`);
       expect(deleted[0][0].message).toMatch(`${mockRunner.shortSha}`);
     });
+
+    it('evicts runner from apollo cache', () => {
+      expect(apolloCache.evict).toHaveBeenCalledWith({
+        id: apolloCache.identify(mockRunner),
+      });
+      expect(apolloCache.gc).toHaveBeenCalled();
+    });
   });
 
   describe('When update fails', () => {
@@ -190,6 +216,11 @@ describe('RunnerDeleteButton', () => {
       it('error is shown to the user', () => {
         expect(createAlert).toHaveBeenCalledTimes(1);
       });
+
+      it('does not evict runner from apollo cache', () => {
+        expect(apolloCache.evict).not.toHaveBeenCalled();
+        expect(apolloCache.gc).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -228,6 +259,31 @@ describe('RunnerDeleteButton', () => {
       it('The stale tooltip is removed', async () => {
         expect(getTooltip()).toBe('');
       });
+    });
+  });
+
+  describe.each`
+    reason                                     | runner                 | tooltip
+    ${'runner belongs to more than 1 project'} | ${{ projectCount: 2 }} | ${I18N_DELETE_DISABLED_MANY_PROJECTS}
+    ${'unknown reason'}                        | ${{}}                  | ${I18N_DELETE_DISABLED_UNKNOWN_REASON}
+  `('When button is disabled because $reason', ({ runner, tooltip }) => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          disabled: true,
+          runner,
+        },
+      });
+    });
+
+    it('Displays a disabled delete button', () => {
+      expect(findBtn().props('disabled')).toBe(true);
+    });
+
+    it(`Tooltip "${tooltip}" is shown`, () => {
+      // tabindex is required for a11y
+      expect(wrapper.attributes('tabindex')).toBe('0');
+      expect(getTooltip()).toBe(tooltip);
     });
   });
 });

@@ -66,7 +66,7 @@ RSpec.describe 'Group milestones' do
     context 'when no milestones' do
       it 'renders no milestones text' do
         visit group_milestones_path(group)
-        expect(page).to have_content('No milestones to show')
+        expect(page).to have_content('Use milestones to track issues and merge requests')
       end
     end
 

@@ -67,19 +67,8 @@ RSpec.describe 'User browses jobs' do
         expect(page.find('[data-testid="jobs-all-tab"] .badge').text).to include('0')
       end
 
-      it 'shows a tab for Pending jobs and count' do
-        expect(page.find('[data-testid="jobs-pending-tab"]').text).to include('Pending')
-        expect(page.find('[data-testid="jobs-pending-tab"] .badge').text).to include('0')
-      end
-
-      it 'shows a tab for Running jobs and count' do
-        expect(page.find('[data-testid="jobs-running-tab"]').text).to include('Running')
-        expect(page.find('[data-testid="jobs-running-tab"] .badge').text).to include('0')
-      end
-
       it 'shows a tab for Finished jobs and count' do
         expect(page.find('[data-testid="jobs-finished-tab"]').text).to include('Finished')
-        expect(page.find('[data-testid="jobs-finished-tab"] .badge').text).to include('0')
       end
 
       it 'updates the content when tab is clicked' do

@@ -203,7 +203,7 @@ The `assignee` and `assignee_id` keys are deprecated
 and contain the first assignee only.
 
 The `escalation_status` and `escalation_policy` fields are
-only available for issue types which support escalations,
+only available for issue types which [support escalations](../../../operations/incident_management/paging.md#paging),
 such as incidents.
 
 Request header:
@@ -538,6 +538,32 @@ Payload example:
     "iid": 1,
     "description": "Et voluptas corrupti assumenda temporibus. Architecto cum animi eveniet amet asperiores. Vitae numquam voluptate est natus sit et ad id.",
     "position": 0,
+    "labels": [
+      {
+        "id": 25,
+        "title": "Afterpod",
+        "color": "#3e8068",
+        "project_id": null,
+        "created_at": "2019-06-05T14:32:20.211Z",
+        "updated_at": "2019-06-05T14:32:20.211Z",
+        "template": false,
+        "description": null,
+        "type": "GroupLabel",
+        "group_id": 4
+      },
+      {
+        "id": 86,
+        "title": "Element",
+        "color": "#231afe",
+        "project_id": 4,
+        "created_at": "2019-06-05T14:32:20.637Z",
+        "updated_at": "2019-06-05T14:32:20.637Z",
+        "template": false,
+        "description": null,
+        "type": "ProjectLabel",
+        "group_id": null
+      }
+    ],
     "source":{
       "name":"Gitlab Test",
       "description":"Aut reprehenderit ut est.",

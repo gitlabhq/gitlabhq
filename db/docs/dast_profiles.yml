@@ -1,0 +1,9 @@
+---
+table_name: dast_profiles
+classes:
+- Dast::Profile
+feature_categories:
+- dynamic_application_security_testing
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51296
+milestone: '13.9'

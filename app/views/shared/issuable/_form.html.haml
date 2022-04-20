@@ -6,10 +6,9 @@
 = form_errors(issuable)
 
 - if @conflict
-  = render 'shared/global_alert',
-    variant: :danger,
+  = render Pajamas::AlertComponent.new(variant: :danger,
     dismissible: false,
-    alert_class: 'gl-mb-5' do
+    alert_class: 'gl-mb-5') do
     .gl-alert-body
       Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
       Please check out

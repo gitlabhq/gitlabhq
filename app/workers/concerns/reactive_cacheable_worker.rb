@@ -8,7 +8,10 @@ module ReactiveCacheableWorker
 
     sidekiq_options retry: 3
 
-    feature_category_not_owned!
+    # Feature category is different depending on the model that is using the
+    # reactive cache. Identified by the `related_class` attribute.
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
+
     loggable_arguments 0
 
     def self.context_for_arguments(arguments)

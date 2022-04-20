@@ -23,7 +23,7 @@ class CustomerRelations::Contact < ApplicationRecord
   validates :last_name, presence: true, length: { maximum: 255 }
   validates :email, length: { maximum: 255 }
   validates :description, length: { maximum: 1024 }
-  validates :email, uniqueness: { scope: :group_id }
+  validates :email, uniqueness: { case_sensitive: false, scope: :group_id }
   validate :validate_email_format
   validate :validate_root_group
 
@@ -42,13 +42,41 @@ class CustomerRelations::Contact < ApplicationRecord
   def self.find_ids_by_emails(group, emails)
     raise ArgumentError, "Cannot lookup more than #{MAX_PLUCK} emails" if emails.length > MAX_PLUCK
 
-    where(group: group, email: emails).pluck(:id)
+    where(group: group).where('lower(email) in (?)', emails.map(&:downcase)).pluck(:id)
   end
 
   def self.exists_for_group?(group)
     return false unless group
 
     exists?(group: group)
+  end
+
+  def self.move_to_root_group(group)
+    update_query = <<~SQL
+      UPDATE #{CustomerRelations::IssueContact.table_name}
+      SET contact_id = new_contacts.id
+      FROM #{table_name} AS existing_contacts
+      JOIN #{table_name} AS new_contacts ON new_contacts.group_id = :old_group_id AND LOWER(new_contacts.email) = LOWER(existing_contacts.email)
+      WHERE existing_contacts.group_id = :new_group_id AND contact_id = existing_contacts.id
+    SQL
+    connection.execute(sanitize_sql([
+      update_query,
+      old_group_id: group.root_ancestor.id,
+      new_group_id: group.id
+      ]))
+
+    dupes_query = <<~SQL
+      DELETE FROM #{table_name} AS existing_contacts
+      USING #{table_name} AS new_contacts
+      WHERE existing_contacts.group_id = :new_group_id AND new_contacts.group_id = :old_group_id AND LOWER(new_contacts.email) = LOWER(existing_contacts.email)
+    SQL
+    connection.execute(sanitize_sql([
+      dupes_query,
+      old_group_id: group.root_ancestor.id,
+      new_group_id: group.id
+      ]))
+
+    where(group: group).update_all(group_id: group.root_ancestor.id)
   end
 
   private

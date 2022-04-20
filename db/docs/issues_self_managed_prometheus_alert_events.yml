@@ -1,0 +1,8 @@
+---
+table_name: issues_self_managed_prometheus_alert_events
+classes: []
+feature_categories:
+- incident_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18046
+milestone: '12.4'

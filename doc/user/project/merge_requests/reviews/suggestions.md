@@ -108,6 +108,8 @@ For example, to customize the commit message to output
 **Addresses user_1's review**, set the custom text to
 `Addresses %{username}'s review`.
 
+For merge requests created from forks, GitLab uses the template defined in target project.
+
 NOTE:
 Custom commit messages for each applied suggestion is
 introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).

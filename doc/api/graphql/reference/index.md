@@ -628,6 +628,8 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsclientid"></a>`clientId` | [`String`](#string) | Delete jobs matching client_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationadminsidekiqqueuesdeletejobsfeaturecategory"></a>`featureCategory` | [`String`](#string) | Delete jobs matching feature_category in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobsjobid"></a>`jobId` | [`String`](#string) | Delete jobs matching job_id in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobspipelineid"></a>`pipelineId` | [`String`](#string) | Delete jobs matching pipeline_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsproject"></a>`project` | [`String`](#string) | Delete jobs matching project in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsqueuename"></a>`queueName` | [`String!`](#string) | Name of the queue to delete jobs from. |
 | <a id="mutationadminsidekiqqueuesdeletejobsrelatedclass"></a>`relatedClass` | [`String`](#string) | Delete jobs matching related_class in the context metadata. |
@@ -1456,7 +1458,7 @@ Input type: `CreateIssueInput`
 
 WARNING:
 **Deprecated** in 14.0.
-Use iterationCreate.
+Manual iteration management is deprecated. Only automatic iteration cadences will be supported in the future.
 
 Input type: `CreateIterationInput`
 
@@ -1468,7 +1470,7 @@ Input type: `CreateIterationInput`
 | <a id="mutationcreateiterationdescription"></a>`description` | [`String`](#string) | Description of the iteration. |
 | <a id="mutationcreateiterationduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationcreateiterationgrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
-| <a id="mutationcreateiterationiterationscadenceid"></a>`iterationsCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iterations cadence to be assigned to newly created iteration. |
+| <a id="mutationcreateiterationiterationscadenceid"></a>`iterationsCadenceId` **{warning-solid}** | [`IterationsCadenceID`](#iterationscadenceid) | **Deprecated:** `iterationCadenceId` is deprecated and will be removed in the future. This argument is ignored, because you can't create an iteration in a specific cadence. In the future only automatic iteration cadences will be allowed. Deprecated in 14.10. |
 | <a id="mutationcreateiterationprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
 | <a id="mutationcreateiterationstartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
 | <a id="mutationcreateiterationtitle"></a>`title` | [`String`](#string) | Title of the iteration. |
@@ -1806,8 +1808,9 @@ Input type: `DastScannerProfileCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdastscannerprofilecreatedastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Created scanner profile. |
 | <a id="mutationdastscannerprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastscannerprofilecreateid"></a>`id` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile. |
+| <a id="mutationdastscannerprofilecreateid"></a>`id` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in 14.10. |
 
 ### `Mutation.dastScannerProfileDelete`
 
@@ -1851,8 +1854,9 @@ Input type: `DastScannerProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdastscannerprofileupdatedastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Updated scanner profile. |
 | <a id="mutationdastscannerprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastscannerprofileupdateid"></a>`id` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile. |
+| <a id="mutationdastscannerprofileupdateid"></a>`id` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in 14.10. |
 
 ### `Mutation.dastSiteProfileCreate`
 
@@ -1877,8 +1881,9 @@ Input type: `DastSiteProfileCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdastsiteprofilecreatedastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Site Profile object. |
 | <a id="mutationdastsiteprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastsiteprofilecreateid"></a>`id` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile. |
+| <a id="mutationdastsiteprofilecreateid"></a>`id` **{warning-solid}** | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in 14.10. |
 
 ### `Mutation.dastSiteProfileDelete`
 
@@ -1923,8 +1928,9 @@ Input type: `DastSiteProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdastsiteprofileupdatedastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Site profile object. |
 | <a id="mutationdastsiteprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile. |
+| <a id="mutationdastsiteprofileupdateid"></a>`id` **{warning-solid}** | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in 14.10. |
 
 ### `Mutation.dastSiteTokenCreate`
 
@@ -2371,6 +2377,8 @@ Input type: `EnableDevopsAdoptionNamespaceInput`
 | <a id="mutationenabledevopsadoptionnamespaceerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.environmentsCanaryIngressUpdate`
+
+**Deprecated** This endpoint is planned to be removed along with certificate-based clusters. [See this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) for more information.
 
 Input type: `EnvironmentsCanaryIngressUpdateInput`
 
@@ -3209,6 +3217,10 @@ Input type: `IterationCadenceUpdateInput`
 
 ### `Mutation.iterationCreate`
 
+WARNING:
+**Deprecated** in 14.10.
+Manual iteration management is deprecated. Only automatic iteration cadences will be supported in the future.
+
 Input type: `iterationCreateInput`
 
 #### Arguments
@@ -3219,7 +3231,7 @@ Input type: `iterationCreateInput`
 | <a id="mutationiterationcreatedescription"></a>`description` | [`String`](#string) | Description of the iteration. |
 | <a id="mutationiterationcreateduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationiterationcreategrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
-| <a id="mutationiterationcreateiterationscadenceid"></a>`iterationsCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iterations cadence to be assigned to newly created iteration. |
+| <a id="mutationiterationcreateiterationscadenceid"></a>`iterationsCadenceId` **{warning-solid}** | [`IterationsCadenceID`](#iterationscadenceid) | **Deprecated:** `iterationCadenceId` is deprecated and will be removed in the future. This argument is ignored, because you can't create an iteration in a specific cadence. In the future only automatic iteration cadences will be allowed. Deprecated in 14.10. |
 | <a id="mutationiterationcreateprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
 | <a id="mutationiterationcreatestartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
 | <a id="mutationiterationcreatetitle"></a>`title` | [`String`](#string) | Title of the iteration. |
@@ -3233,6 +3245,10 @@ Input type: `iterationCreateInput`
 | <a id="mutationiterationcreateiteration"></a>`iteration` | [`Iteration`](#iteration) | Created iteration. |
 
 ### `Mutation.iterationDelete`
+
+WARNING:
+**Deprecated** in 14.10.
+Manual iteration management is deprecated. Only automatic iteration cadences will be supported in the future.
 
 Input type: `IterationDeleteInput`
 
@@ -4261,7 +4277,26 @@ Input type: `SavedReplyCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsavedreplycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsavedreplycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationsavedreplycreatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Updated saved reply. |
+| <a id="mutationsavedreplycreatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Saved reply after mutation. |
+
+### `Mutation.savedReplyDestroy`
+
+Input type: `SavedReplyDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsavedreplydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsavedreplydestroyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the saved reply. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsavedreplydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsavedreplydestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsavedreplydestroysavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Saved reply after mutation. |
 
 ### `Mutation.savedReplyUpdate`
 
@@ -4282,11 +4317,11 @@ Input type: `SavedReplyUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsavedreplyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationsavedreplyupdatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Updated saved reply. |
+| <a id="mutationsavedreplyupdatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Saved reply after mutation. |
 
 ### `Mutation.scanExecutionPolicyCommit`
 
-Commits the `policy_yaml` content to the assigned security policy project for the given project(`project_path`).
+Commits the `policy_yaml` content to the assigned security policy project for the given project (`full_path`).
 
 Input type: `ScanExecutionPolicyCommitInput`
 
@@ -4295,10 +4330,11 @@ Input type: `ScanExecutionPolicyCommitInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationscanexecutionpolicycommitclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationscanexecutionpolicycommitfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project. |
 | <a id="mutationscanexecutionpolicycommitname"></a>`name` | [`String`](#string) | Name of the policy. If the name is null, the `name` field from `policy_yaml` is used. |
 | <a id="mutationscanexecutionpolicycommitoperationmode"></a>`operationMode` | [`MutationOperationMode!`](#mutationoperationmode) | Changes the operation mode. |
 | <a id="mutationscanexecutionpolicycommitpolicyyaml"></a>`policyYaml` | [`String!`](#string) | YAML snippet of the policy. |
-| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
 
 #### Fields
 
@@ -4310,7 +4346,7 @@ Input type: `ScanExecutionPolicyCommitInput`
 
 ### `Mutation.securityPolicyProjectAssign`
 
-Assigns the specified project(`security_policy_project_id`) as security policy project for the given project(`project_path`). If the project already has a security policy project, this reassigns the project's security policy project with the given `security_policy_project_id`.
+Assigns the specified project(`security_policy_project_id`) as security policy project for the given project(`full_path`). If the project already has a security policy project, this reassigns the project's security policy project with the given `security_policy_project_id`.
 
 Input type: `SecurityPolicyProjectAssignInput`
 
@@ -4319,7 +4355,8 @@ Input type: `SecurityPolicyProjectAssignInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationsecuritypolicyprojectassignprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationsecuritypolicyprojectassignfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project. |
+| <a id="mutationsecuritypolicyprojectassignprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
 | <a id="mutationsecuritypolicyprojectassignsecuritypolicyprojectid"></a>`securityPolicyProjectId` | [`ProjectID!`](#projectid) | ID of the security policy project. |
 
 #### Fields
@@ -4331,7 +4368,7 @@ Input type: `SecurityPolicyProjectAssignInput`
 
 ### `Mutation.securityPolicyProjectCreate`
 
-Creates and assigns a security policy project for the given project(`project_path`).
+Creates and assigns a security policy project for the given project (`full_path`).
 
 Input type: `SecurityPolicyProjectCreateInput`
 
@@ -4340,7 +4377,8 @@ Input type: `SecurityPolicyProjectCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationsecuritypolicyprojectcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationsecuritypolicyprojectcreatefullpath"></a>`fullPath` | [`String`](#string) | Full path of the project. |
+| <a id="mutationsecuritypolicyprojectcreateprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
 
 #### Fields
 
@@ -4352,7 +4390,7 @@ Input type: `SecurityPolicyProjectCreateInput`
 
 ### `Mutation.securityPolicyProjectUnassign`
 
-Unassigns the security policy project for the given project(`project_path`).
+Unassigns the security policy project for the given project (`full_path`).
 
 Input type: `SecurityPolicyProjectUnassignInput`
 
@@ -4361,7 +4399,8 @@ Input type: `SecurityPolicyProjectUnassignInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectunassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationsecuritypolicyprojectunassignfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project. |
+| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
 
 #### Fields
 
@@ -4611,6 +4650,7 @@ Input type: `TodosMarkAllDoneInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodosmarkalldoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtodosmarkalldonetargetid"></a>`targetId` | [`TodoableID`](#todoableid) | Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. If argument is omitted, all pending to-do items of the current user are marked as done. |
 
 #### Fields
 
@@ -4922,11 +4962,11 @@ Input type: `UpdateIterationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateiterationdescription"></a>`description` | [`String`](#string) | Description of the iteration. |
-| <a id="mutationupdateiterationduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
+| <a id="mutationupdateiterationduedate"></a>`dueDate` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
 | <a id="mutationupdateiterationgrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the iteration. |
 | <a id="mutationupdateiterationid"></a>`id` | [`ID!`](#id) | Global ID of the iteration. |
-| <a id="mutationupdateiterationstartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
-| <a id="mutationupdateiterationtitle"></a>`title` | [`String`](#string) | Title of the iteration. |
+| <a id="mutationupdateiterationstartdate"></a>`startDate` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
+| <a id="mutationupdateiterationtitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
 
 #### Fields
 
@@ -4974,7 +5014,7 @@ Input type: `UpdateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationupdatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** No longer allowed to update confidentiality of notes. Deprecated in 14.10. |
 | <a id="mutationupdatenoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
 
 #### Fields
@@ -9317,6 +9357,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobduration"></a>`duration` | [`Int`](#int) | Duration of the job in seconds. |
 | <a id="cijobfinishedat"></a>`finishedAt` | [`Time`](#time) | When a job has finished running. |
 | <a id="cijobid"></a>`id` | [`JobID`](#jobid) | ID of the job. |
+| <a id="cijobkind"></a>`kind` | [`CiJobKind!`](#cijobkind) | Indicates the type of job. |
 | <a id="cijobmanualjob"></a>`manualJob` | [`Boolean`](#boolean) | Whether the job has a manual action. |
 | <a id="cijobname"></a>`name` | [`String`](#string) | Name of the job. |
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
@@ -9409,6 +9450,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunnertokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Runner token expiration time. |
+| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatusType`](#cirunnerupgradestatustype) | **Deprecated** in 14.10. This feature is in Alpha, and can be removed or changed at any point. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
@@ -9731,6 +9773,7 @@ A container repository.
 | <a id="containerrepositoryexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
 | <a id="containerrepositoryid"></a>`id` | [`ID!`](#id) | ID of the container repository. |
 | <a id="containerrepositorylocation"></a>`location` | [`String!`](#string) | URL of the container repository. |
+| <a id="containerrepositorymigrationstate"></a>`migrationState` | [`String!`](#string) | Migration state of the container repository. |
 | <a id="containerrepositoryname"></a>`name` | [`String!`](#string) | Name of the container repository. |
 | <a id="containerrepositorypath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositoryproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
@@ -9752,6 +9795,7 @@ Details of a container repository.
 | <a id="containerrepositorydetailsexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
 | <a id="containerrepositorydetailsid"></a>`id` | [`ID!`](#id) | ID of the container repository. |
 | <a id="containerrepositorydetailslocation"></a>`location` | [`String!`](#string) | URL of the container repository. |
+| <a id="containerrepositorydetailsmigrationstate"></a>`migrationState` | [`String!`](#string) | Migration state of the container repository. |
 | <a id="containerrepositorydetailsname"></a>`name` | [`String!`](#string) | Name of the container repository. |
 | <a id="containerrepositorydetailspath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositorydetailsproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
@@ -9981,6 +10025,7 @@ Input type for DastSiteProfile authentication.
 | <a id="dastsiteprofileauthenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether authentication is enabled. |
 | <a id="dastsiteprofileauthpassword"></a>`password` | [`String`](#string) | Redacted password to authenticate with on the target website. |
 | <a id="dastsiteprofileauthpasswordfield"></a>`passwordField` | [`String`](#string) | Name of password field at the sign-in HTML form. |
+| <a id="dastsiteprofileauthsubmitfield"></a>`submitField` | [`String`](#string) | Name or ID of sign-in submit button at the sign-in HTML form. |
 | <a id="dastsiteprofileauthurl"></a>`url` | [`String`](#string) | The URL of the page containing the sign-in HTML form on the target website. |
 | <a id="dastsiteprofileauthusername"></a>`username` | [`String`](#string) | Username to authenticate with on the target website. |
 | <a id="dastsiteprofileauthusernamefield"></a>`usernameField` | [`String`](#string) | Name of username field at the sign-in HTML form. |
@@ -10059,6 +10104,7 @@ Dependency proxy manifest.
 | <a id="dependencyproxymanifestid"></a>`id` | [`DependencyProxyManifestID!`](#dependencyproxymanifestid) | ID of the manifest. |
 | <a id="dependencyproxymanifestimagename"></a>`imageName` | [`String!`](#string) | Name of the image. |
 | <a id="dependencyproxymanifestsize"></a>`size` | [`String!`](#string) | Size of the manifest file. |
+| <a id="dependencyproxymanifeststatus"></a>`status` | [`DependencyProxyManifestStatus!`](#dependencyproxymanifeststatus) | Status of the manifest (default, pending_destruction, processing, error). |
 | <a id="dependencyproxymanifestupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 
 ### `DependencyProxySetting`
@@ -10381,7 +10427,6 @@ Snapshot.
 | <a id="devopsadoptionsnapshotrecordedat"></a>`recordedAt` | [`Time!`](#time) | Time the snapshot was recorded. |
 | <a id="devopsadoptionsnapshotrunnerconfigured"></a>`runnerConfigured` | [`Boolean!`](#boolean) | At least one runner was used. |
 | <a id="devopsadoptionsnapshotsastenabledcount"></a>`sastEnabledCount` | [`Int`](#int) | Total number of projects with enabled SAST. |
-| <a id="devopsadoptionsnapshotsecurityscansucceeded"></a>`securityScanSucceeded` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 14.1. Substituted with specific security metrics. Always false. |
 | <a id="devopsadoptionsnapshotstarttime"></a>`startTime` | [`Time!`](#time) | Start time for the snapshot where the data points were collected. |
 | <a id="devopsadoptionsnapshottotalprojectscount"></a>`totalProjectsCount` | [`Int`](#int) | Total number of projects. |
 | <a id="devopsadoptionsnapshotvulnerabilitymanagementusedcount"></a>`vulnerabilityManagementUsedCount` | [`Int`](#int) | Total number of projects with vulnerability management used at least once. |
@@ -11024,7 +11069,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `GeoNode.jobArtifactRegistries`
 
-Find Job Artifact registries on this Geo node Available only when feature flag `geo_job_artifact_replication` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Find Job Artifact registries on this Geo node.
 
 Returns [`JobArtifactRegistryConnection`](#jobartifactregistryconnection).
 
@@ -12590,7 +12635,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneeprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestassigneeprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
@@ -12820,7 +12865,7 @@ The author of the merge request.
 | <a id="mergerequestauthorprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestauthorprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
@@ -13067,7 +13112,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestparticipantprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
@@ -13315,7 +13360,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestreviewerprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
@@ -16020,6 +16065,7 @@ Represents a URL related to a security training.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="securitytrainingurlidentifier"></a>`identifier` | [`String`](#string) | Name of the vulnerability identifier. |
 | <a id="securitytrainingurlname"></a>`name` | [`String`](#string) | Name of the training provider. |
 | <a id="securitytrainingurlstatus"></a>`status` | [`TrainingUrlRequestStatus`](#trainingurlrequeststatus) | Status of the request to training provider. |
 | <a id="securitytrainingurlurl"></a>`url` | [`String`](#string) | URL of the link for security training content. |
@@ -16694,7 +16740,7 @@ Core represention of a GitLab user.
 | <a id="usercoreprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="usercoreprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="usercorepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
@@ -17736,6 +17782,13 @@ Values for YAML processor result.
 | <a id="ciconfigstatusinvalid"></a>`INVALID` | Configuration file is not valid. |
 | <a id="ciconfigstatusvalid"></a>`VALID` | Configuration file is valid. |
 
+### `CiJobKind`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobkindbridge"></a>`BRIDGE` | Bridge CI job connecting a parent and child pipeline. |
+| <a id="cijobkindbuild"></a>`BUILD` | Standard CI job. |
+
 ### `CiJobStatus`
 
 | Value | Description |
@@ -17791,6 +17844,14 @@ Values for sorting runners.
 | <a id="cirunnertypegroup_type"></a>`GROUP_TYPE` | A runner that is group type. |
 | <a id="cirunnertypeinstance_type"></a>`INSTANCE_TYPE` | A runner that is instance type. |
 | <a id="cirunnertypeproject_type"></a>`PROJECT_TYPE` | A runner that is project type. |
+
+### `CiRunnerUpgradeStatusType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cirunnerupgradestatustypeavailable"></a>`AVAILABLE` | An update is available for the runner. |
+| <a id="cirunnerupgradestatustypenot_available"></a>`NOT_AVAILABLE` | An update is not available for the runner. |
+| <a id="cirunnerupgradestatustyperecommended"></a>`RECOMMENDED` | An update is available and recommended for the runner. |
 
 ### `CodeQualityDegradationSeverity`
 
@@ -18038,6 +18099,15 @@ Weight of the data visualization palette.
 | <a id="datavisualizationweightenumweight_900"></a>`WEIGHT_900` | 900 weight. |
 | <a id="datavisualizationweightenumweight_950"></a>`WEIGHT_950` | 950 weight. |
 
+### `DependencyProxyManifestStatus`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dependencyproxymanifeststatusdefault"></a>`DEFAULT` | Dependency proxy manifest has a status of default. |
+| <a id="dependencyproxymanifeststatuserror"></a>`ERROR` | Dependency proxy manifest has a status of error. |
+| <a id="dependencyproxymanifeststatuspending_destruction"></a>`PENDING_DESTRUCTION` | Dependency proxy manifest has a status of pending_destruction. |
+| <a id="dependencyproxymanifeststatusprocessing"></a>`PROCESSING` | Dependency proxy manifest has a status of processing. |
+
 ### `DeploymentTier`
 
 All environment deployment tiers.
@@ -18096,6 +18166,7 @@ All supported DORA metric types.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="dorametrictypechange_failure_rate"></a>`CHANGE_FAILURE_RATE` | Change failure rate. |
 | <a id="dorametrictypedeployment_frequency"></a>`DEPLOYMENT_FREQUENCY` | Deployment frequency. |
 | <a id="dorametrictypelead_time_for_changes"></a>`LEAD_TIME_FOR_CHANGES` | Lead time for changes. |
 | <a id="dorametrictypetime_to_restore_service"></a>`TIME_TO_RESTORE_SERVICE` | Time to restore service. |
@@ -18279,6 +18350,8 @@ Values for sorting issues.
 | <a id="issuesortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="issuesortdue_date_asc"></a>`DUE_DATE_ASC` | Due date by ascending order. |
 | <a id="issuesortdue_date_desc"></a>`DUE_DATE_DESC` | Due date by descending order. |
+| <a id="issuesortescalation_status_asc"></a>`ESCALATION_STATUS_ASC` | Status from triggered to resolved. Defaults to `CREATED_DESC` if `incident_escalations` feature flag is disabled. |
+| <a id="issuesortescalation_status_desc"></a>`ESCALATION_STATUS_DESC` | Status from resolved to triggered. Defaults to `CREATED_DESC` if `incident_escalations` feature flag is disabled. |
 | <a id="issuesortlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | Label priority by ascending order. |
 | <a id="issuesortlabel_priority_desc"></a>`LABEL_PRIORITY_DESC` | Label priority by descending order. |
 | <a id="issuesortmilestone_due_asc"></a>`MILESTONE_DUE_ASC` | Milestone due date by ascending order. |
@@ -19044,6 +19117,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumgeo_migrate_hashed_storage"></a>`GEO_MIGRATE_HASHED_STORAGE` | Callout feature name for geo_migrate_hashed_storage. |
 | <a id="usercalloutfeaturenameenumgke_cluster_integration"></a>`GKE_CLUSTER_INTEGRATION` | Callout feature name for gke_cluster_integration. |
 | <a id="usercalloutfeaturenameenumgold_trial_billings"></a>`GOLD_TRIAL_BILLINGS` | Callout feature name for gold_trial_billings. |
+| <a id="usercalloutfeaturenameenumminute_limit_banner"></a>`MINUTE_LIMIT_BANNER` | Callout feature name for minute_limit_banner. |
 | <a id="usercalloutfeaturenameenumnew_user_signups_cap_reached"></a>`NEW_USER_SIGNUPS_CAP_REACHED` | Callout feature name for new_user_signups_cap_reached. |
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
@@ -20213,7 +20287,7 @@ Implementations:
 | <a id="userprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="userprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="userpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
@@ -20499,8 +20573,8 @@ Field that are available while modifying the custom mapping attributes for an HT
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="complianceviolationinputmergedafter"></a>`mergedAfter` | [`Date`](#date) | Merged date of merge requests merged after a compliance violation was created. |
-| <a id="complianceviolationinputmergedbefore"></a>`mergedBefore` | [`Date`](#date) | Merged date of merge requests merged before a compliance violation was created. |
+| <a id="complianceviolationinputmergedafter"></a>`mergedAfter` | [`Date`](#date) | Merge requests merged after this date (inclusive). |
+| <a id="complianceviolationinputmergedbefore"></a>`mergedBefore` | [`Date`](#date) | Merge requests merged before this date (inclusive). |
 | <a id="complianceviolationinputprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter compliance violations by project. |
 
 ### `DastProfileCadenceInput`
@@ -20538,6 +20612,7 @@ Input type for DastSiteProfile authentication.
 | <a id="dastsiteprofileauthinputenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether authentication is enabled. |
 | <a id="dastsiteprofileauthinputpassword"></a>`password` | [`String`](#string) | Password to authenticate with on the target website. |
 | <a id="dastsiteprofileauthinputpasswordfield"></a>`passwordField` | [`String`](#string) | Name of password field at the sign-in HTML form. |
+| <a id="dastsiteprofileauthinputsubmitfield"></a>`submitField` | [`String`](#string) | Name or ID of sign-in submit button at the sign-in HTML form. |
 | <a id="dastsiteprofileauthinputurl"></a>`url` | [`String`](#string) | The URL of the page containing the sign-in HTML form on the target website. |
 | <a id="dastsiteprofileauthinputusername"></a>`username` | [`String`](#string) | Username to authenticate with on the target website. |
 | <a id="dastsiteprofileauthinputusernamefield"></a>`usernameField` | [`String`](#string) | Name of username field at the sign-in HTML form. |

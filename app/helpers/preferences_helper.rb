@@ -82,6 +82,22 @@ module PreferencesHelper
     Gitlab::TabWidth.css_class_for_user(current_user)
   end
 
+  def user_diffs_colors
+    {
+      deletion: current_user&.diffs_deletion_color.presence,
+      addition: current_user&.diffs_addition_color.presence
+    }.compact
+  end
+
+  def custom_diff_color_classes
+    return if request.path == profile_preferences_path
+
+    classes = []
+    classes << 'diff-custom-addition-color' if current_user&.diffs_addition_color.presence
+    classes << 'diff-custom-deletion-color' if current_user&.diffs_deletion_color.presence
+    classes
+  end
+
   def language_choices
     options_for_select(
       selectable_locales_with_translation_level.sort,

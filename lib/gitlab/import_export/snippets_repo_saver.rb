@@ -4,6 +4,7 @@ module Gitlab
   module ImportExport
     class SnippetsRepoSaver
       include Gitlab::ImportExport::CommandLineUtil
+      include DurationMeasuring
 
       def initialize(current_user:, project:, shared:)
         @project = project
@@ -12,13 +13,15 @@ module Gitlab
       end
 
       def save
-        create_snippets_repo_directory
+        with_duration_measuring do
+          create_snippets_repo_directory
 
-        @project.snippets.find_each.all? do |snippet|
-          Gitlab::ImportExport::SnippetRepoSaver.new(project: @project,
-                                                     shared: @shared,
-                                                     repository: snippet.repository)
-                                                .save
+          @project.snippets.find_each.all? do |snippet|
+            Gitlab::ImportExport::SnippetRepoSaver.new(project: @project,
+                                                       shared: @shared,
+                                                       repository: snippet.repository)
+                                                  .save
+          end
         end
       end
 

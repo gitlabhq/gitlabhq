@@ -42,9 +42,9 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('setBaseConfig', () => {
-    it('commits SET_BASE_CONFIG', (done) => {
+    it('commits SET_BASE_CONFIG', () => {
       const options = { contextCommitsPath, mergeRequestIid, projectId };
-      testAction(
+      return testAction(
         setBaseConfig,
         options,
         {
@@ -59,62 +59,54 @@ describe('AddContextCommitsModalStoreActions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('setTabIndex', () => {
-    it('commits SET_TABINDEX', (done) => {
-      testAction(
+    it('commits SET_TABINDEX', () => {
+      return testAction(
         setTabIndex,
         { tabIndex: 1 },
         { tabIndex: 0 },
         [{ type: types.SET_TABINDEX, payload: { tabIndex: 1 } }],
         [],
-        done,
       );
     });
   });
 
   describe('setCommits', () => {
-    it('commits SET_COMMITS', (done) => {
-      testAction(
+    it('commits SET_COMMITS', () => {
+      return testAction(
         setCommits,
         { commits: [], silentAddition: false },
         { isLoadingCommits: false, commits: [] },
         [{ type: types.SET_COMMITS, payload: [] }],
         [],
-        done,
       );
     });
 
-    it('commits SET_COMMITS_SILENT', (done) => {
-      testAction(
+    it('commits SET_COMMITS_SILENT', () => {
+      return testAction(
         setCommits,
         { commits: [], silentAddition: true },
         { isLoadingCommits: true, commits: [] },
         [{ type: types.SET_COMMITS_SILENT, payload: [] }],
         [],
-        done,
       );
     });
   });
 
   describe('createContextCommits', () => {
-    it('calls API to create context commits', (done) => {
+    it('calls API to create context commits', async () => {
       mock.onPost(contextCommitEndpoint).reply(200, {});
 
-      testAction(createContextCommits, { commits: [] }, {}, [], [], done);
+      await testAction(createContextCommits, { commits: [] }, {}, [], []);
 
-      createContextCommits(
+      await createContextCommits(
         { state: { projectId, mergeRequestIid }, commit: () => null },
         { commits: [] },
-      )
-        .then(() => {
-          done();
-        })
-        .catch(done.fail);
+      );
     });
   });
 
@@ -126,9 +118,9 @@ describe('AddContextCommitsModalStoreActions', () => {
         )
         .reply(200, [dummyCommit]);
     });
-    it('commits FETCH_CONTEXT_COMMITS', (done) => {
+    it('commits FETCH_CONTEXT_COMMITS', () => {
       const contextCommit = { ...dummyCommit, isSelected: true };
-      testAction(
+      return testAction(
         fetchContextCommits,
         null,
         {
@@ -144,20 +136,18 @@ describe('AddContextCommitsModalStoreActions', () => {
           { type: 'setCommits', payload: { commits: [contextCommit], silentAddition: true } },
           { type: 'setSelectedCommits', payload: [contextCommit] },
         ],
-        done,
       );
     });
   });
 
   describe('setContextCommits', () => {
-    it('commits SET_CONTEXT_COMMITS', (done) => {
-      testAction(
+    it('commits SET_CONTEXT_COMMITS', () => {
+      return testAction(
         setContextCommits,
         { data: [] },
         { contextCommits: [], isLoadingContextCommits: false },
         [{ type: types.SET_CONTEXT_COMMITS, payload: { data: [] } }],
         [],
-        done,
       );
     });
   });
@@ -168,71 +158,66 @@ describe('AddContextCommitsModalStoreActions', () => {
         .onDelete('/api/v4/projects/gitlab-org%2Fgitlab/merge_requests/1/context_commits')
         .reply(204);
     });
-    it('calls API to remove context commits', (done) => {
-      testAction(
+    it('calls API to remove context commits', () => {
+      return testAction(
         removeContextCommits,
         { forceReload: false },
         { mergeRequestIid, projectId, toRemoveCommits: [] },
         [],
         [],
-        done,
       );
     });
   });
 
   describe('setSelectedCommits', () => {
-    it('commits SET_SELECTED_COMMITS', (done) => {
-      testAction(
+    it('commits SET_SELECTED_COMMITS', () => {
+      return testAction(
         setSelectedCommits,
         [dummyCommit],
         { selectedCommits: [] },
         [{ type: types.SET_SELECTED_COMMITS, payload: [dummyCommit] }],
         [],
-        done,
       );
     });
   });
 
   describe('setSearchText', () => {
-    it('commits SET_SEARCH_TEXT', (done) => {
+    it('commits SET_SEARCH_TEXT', () => {
       const searchText = 'Dummy Text';
-      testAction(
+      return testAction(
         setSearchText,
         searchText,
         { searchText: '' },
         [{ type: types.SET_SEARCH_TEXT, payload: searchText }],
         [],
-        done,
       );
     });
   });
 
   describe('setToRemoveCommits', () => {
-    it('commits SET_TO_REMOVE_COMMITS', (done) => {
+    it('commits SET_TO_REMOVE_COMMITS', () => {
       const commitId = 'abcde';
 
-      testAction(
+      return testAction(
         setToRemoveCommits,
         [commitId],
         { toRemoveCommits: [] },
         [{ type: types.SET_TO_REMOVE_COMMITS, payload: [commitId] }],
         [],
-        done,
       );
     });
   });
 
   describe('resetModalState', () => {
-    it('commits RESET_MODAL_STATE', (done) => {
+    it('commits RESET_MODAL_STATE', () => {
       const commitId = 'abcde';
 
-      testAction(
+      return testAction(
         resetModalState,
         null,
         { toRemoveCommits: [commitId] },
         [{ type: types.RESET_MODAL_STATE }],
         [],
-        done,
       );
     });
   });

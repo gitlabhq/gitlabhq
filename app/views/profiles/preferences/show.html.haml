@@ -8,7 +8,7 @@
 - Gitlab::Themes.each do |theme|
   = stylesheet_link_tag "themes/#{theme.css_filename}" if theme.css_filename
 
-= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
+= gitlab_ui_form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
   .row.gl-mt-3.js-preferences-form.js-search-settings-section
     .col-lg-4.application-theme#navigation-theme
       %h4.gl-mt-0
@@ -45,6 +45,19 @@
       %hr
 
   .row.js-preferences-form.js-search-settings-section
+    .col-lg-4.profile-settings-sidebar#diffs-colors
+      %h4.gl-mt-0
+        = s_('Preferences|Diff colors')
+      %p
+        = s_('Preferences|Customize the colors of removed and added lines in diffs.')
+    .col-lg-8
+      .form-group
+        #js-profile-preferences-diffs-colors-app{ data: user_diffs_colors }
+
+    .col-sm-12
+      %hr
+
+  .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#behavior
       %h4.gl-mt-0
         = s_('Preferences|Behavior')
@@ -74,27 +87,19 @@
         = f.select :project_view, project_view_choices, {}, class: 'select2'
         .form-text.text-muted
           = s_('Preferences|Choose what content you want to see on a project’s overview page.')
-      .form-group.form-check
-        = f.check_box :render_whitespace_in_code, class: 'form-check-input'
-        = f.label :render_whitespace_in_code, class: 'form-check-label' do
-          = s_('Preferences|Render whitespace characters in the Web IDE')
-      .form-group.form-check
-        = f.check_box :show_whitespace_in_diffs, class: 'form-check-input'
-        = f.label :show_whitespace_in_diffs, class: 'form-check-label' do
-          = s_('Preferences|Show whitespace changes in diffs')
-      .form-group.form-check
-        = f.check_box :view_diffs_file_by_file, class: 'form-check-input'
-        = f.label :view_diffs_file_by_file, class: 'form-check-label' do
-          = s_("Preferences|Show one file at a time on merge request's Changes tab")
-        .form-text.text-muted
-          = s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
-      .form-group.form-check
-        = f.check_box :markdown_surround_selection, class: 'form-check-input'
-        = f.label :markdown_surround_selection, class: 'form-check-label' do
-          = s_('Preferences|Surround text selection when typing quotes or brackets')
-        .form-text.text-muted
-          - supported_characters = %w(" ' ` \( [ { < * _).map {|char| "<code>#{char}</code>" }.join(', ')
-          = sprintf(s_( "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
+      .form-group
+        = f.gitlab_ui_checkbox_component :render_whitespace_in_code, s_('Preferences|Render whitespace characters in the Web IDE')
+      .form-group
+        = f.gitlab_ui_checkbox_component :show_whitespace_in_diffs, s_('Preferences|Show whitespace changes in diffs')
+      .form-group
+        = f.gitlab_ui_checkbox_component :view_diffs_file_by_file,
+          s_("Preferences|Show one file at a time on merge request's Changes tab"),
+          help_text: s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
+      .form-group
+        - supported_characters = %w(" ' ` &#40; [ { < * _).map {|char| "<code>#{char}</code>" }.join(', ')
+        = f.gitlab_ui_checkbox_component :markdown_surround_selection,
+          s_('Preferences|Surround text selection when typing quotes or brackets'),
+          help_text: sprintf(s_( "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
 
       .form-group
         = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
@@ -138,16 +143,12 @@
         = succeed '.' do
           = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'time-preferences'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
-      .form-group.form-check
-        = f.check_box :time_display_relative, class: 'form-check-input'
-        = f.label :time_display_relative, class: 'form-check-label' do
-          = s_('Preferences|Use relative times')
-        .form-text.text-muted
-          = s_('Preferences|For example: 30 minutes ago.')
+      .form-group
+        = f.gitlab_ui_checkbox_component :time_display_relative,
+          s_('Preferences|Use relative times'),
+          help_text: s_('Preferences|For example: 30 minutes ago.')
       - if Feature.enabled?(:user_time_settings)
-        .form-group.form-check
-          = f.check_box :time_format_in_24h, class: 'form-check-input'
-          = f.label :time_format_in_24h, class: 'form-check-label' do
-            = s_('Preferences|Display time in 24-hour format')
+        .form-group
+          = f.gitlab_ui_checkbox_component :time_format_in_24h, s_('Preferences|Display time in 24-hour format')
 
   #js-profile-preferences-app{ data: data_attributes }

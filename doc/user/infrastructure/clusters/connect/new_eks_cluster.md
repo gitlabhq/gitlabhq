@@ -48,10 +48,13 @@ This project provides you with:
 
 ## Register the agent
 
+FLAG:
+In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
 To create a GitLab agent for Kubernetes:
 
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select **Actions**.
+1. Select **Connect a cluster (agent)**.
 1. From the **Select an agent** dropdown list, select `eks-agent` and select **Register an agent**.
 1. GitLab generates a registration token for the agent. Securely store this secret token, as you will need it later.
 1. GitLab provides an address for the agent server (KAS), which you will also need later.

@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.1.
 > - The pre-configured `KUBECONFIG` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) the `ci_access` attribute in GitLab 14.3.
 > - The ability to authorize groups was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 > - Support for Omnibus installations was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5686) in GitLab 14.5.
@@ -69,6 +70,7 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
    ```
 
    - The Kubernetes projects must be in the same group hierarchy as the project where the agent's configuration is.
+   - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - You can authorize up to 100 projects.
 
 All CI/CD jobs now include a `KUBECONFIG` with contexts for every shared agent connection.
@@ -91,9 +93,11 @@ To authorize the agent to access all of the GitLab projects in a group or subgro
    ```
 
    - The Kubernetes projects must be in the same group hierarchy as the project where the agent's configuration is.
+   - You can install additional agents into the same cluster to accommodate additional hierarchies.
+   - All of the subgroups of an authorized group also have access to the same agent (without being specified individually). 
    - You can authorize up to 100 groups.
 
-All the projects that belong to the group are now authorized to access the agent.
+All the projects that belong to the group and its subgroups are now authorized to access the agent.
 All CI/CD jobs now include a `KUBECONFIG` with contexts for every shared agent connection.
 Choose the context to run `kubectl` commands from your CI/CD scripts.
 
@@ -123,7 +127,7 @@ Run `kubectl config get-contexts`.
 When you deploy to an environment that has both a [certificate-based
 cluster](../../infrastructure/clusters/index.md) (deprecated) and an agent connection:
 
-- The certificate-based cluster's context is called `gitlab-deploy`. This context 
+- The certificate-based cluster's context is called `gitlab-deploy`. This context
   is always selected by default.
 - In GitLab 14.9 and later, agent contexts are included in the
   `KUBECONFIG`. You can select them by using `kubectl config use-context

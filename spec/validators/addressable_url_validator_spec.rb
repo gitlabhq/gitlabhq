@@ -30,7 +30,7 @@ RSpec.describe AddressableUrlValidator do
 
     it 'allows urls with encoded CR or LF characters' do
       aggregate_failures do
-        valid_urls_with_CRLF.each do |url|
+        valid_urls_with_crlf.each do |url|
           validator.validate_each(badge, :link_url, url)
 
           expect(badge.errors).to be_empty
@@ -40,7 +40,7 @@ RSpec.describe AddressableUrlValidator do
 
     it 'does not allow urls with CR or LF characters' do
       aggregate_failures do
-        urls_with_CRLF.each do |url|
+        urls_with_crlf.each do |url|
           badge = build(:badge, link_url: 'http://www.example.com')
           validator.validate_each(badge, :link_url, url)
 

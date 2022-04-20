@@ -10,7 +10,7 @@ module ObjectStorage
     sidekiq_options retry: 3
     include ObjectStorageQueue
 
-    feature_category_not_owned!
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
     loggable_arguments 0, 1, 2, 3
 
     SanityCheckError = Class.new(StandardError)

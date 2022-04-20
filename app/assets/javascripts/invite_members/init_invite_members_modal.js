@@ -5,45 +5,47 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(GlToast);
 
-let initedInviteMembersModal;
+export default (function initInviteMembersModal() {
+  let inviteMembersModal;
 
-export default function initInviteMembersModal() {
-  if (initedInviteMembersModal) {
-    // if we already loaded this in another part of the dom, we don't want to do it again
-    // else we will stack the modals
-    return false;
-  }
+  return () => {
+    if (!inviteMembersModal) {
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/344955
+      // bug lying in wait here for someone to put group and project invite in same screen
+      // once that happens we'll need to mount these differently, perhaps split
+      // group/project to each mount one, with many ways to open it.
+      const el = document.querySelector('.js-invite-members-modal');
 
-  // https://gitlab.com/gitlab-org/gitlab/-/issues/344955
-  // bug lying in wait here for someone to put group and project invite in same screen
-  // once that happens we'll need to mount these differently, perhaps split
-  // group/project to each mount one, with many ways to open it.
-  const el = document.querySelector('.js-invite-members-modal');
+      if (!el) {
+        return false;
+      }
 
-  if (!el) {
-    return false;
-  }
-
-  initedInviteMembersModal = true;
-
-  return new Vue({
-    el,
-    name: 'InviteMembersModalRoot',
-    provide: {
-      newProjectPath: el.dataset.newProjectPath,
-    },
-    render: (createElement) =>
-      createElement(InviteMembersModal, {
-        props: {
-          ...el.dataset,
-          isProject: parseBoolean(el.dataset.isProject),
-          accessLevels: JSON.parse(el.dataset.accessLevels),
-          defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
-          tasksToBeDoneOptions: JSON.parse(el.dataset.tasksToBeDoneOptions || '[]'),
-          projects: JSON.parse(el.dataset.projects || '[]'),
-          usersFilter: el.dataset.usersFilter,
-          filterId: parseInt(el.dataset.filterId, 10),
+      inviteMembersModal = new Vue({
+        el,
+        name: 'InviteMembersModalRoot',
+        provide: {
+          name: el.dataset.name,
+          newProjectPath: el.dataset.newProjectPath,
+          newTrialRegistrationPath: el.dataset.newTrialRegistrationPath,
+          purchasePath: el.dataset.purchasePath,
+          freeUsersLimit: el.dataset.freeUsersLimit && parseInt(el.dataset.freeUsersLimit, 10),
+          membersCount: el.dataset.membersCount && parseInt(el.dataset.membersCount, 10),
         },
-      }),
-  });
-}
+        render: (createElement) =>
+          createElement(InviteMembersModal, {
+            props: {
+              ...el.dataset,
+              isProject: parseBoolean(el.dataset.isProject),
+              accessLevels: JSON.parse(el.dataset.accessLevels),
+              defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
+              tasksToBeDoneOptions: JSON.parse(el.dataset.tasksToBeDoneOptions || '[]'),
+              projects: JSON.parse(el.dataset.projects || '[]'),
+              usersFilter: el.dataset.usersFilter,
+              filterId: parseInt(el.dataset.filterId, 10),
+            },
+          }),
+      });
+    }
+    return inviteMembersModal;
+  };
+})();

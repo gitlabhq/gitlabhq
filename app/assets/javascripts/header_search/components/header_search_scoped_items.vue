@@ -1,5 +1,5 @@
 <script>
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
 
@@ -7,6 +7,7 @@ export default {
   name: 'HeaderSearchScopedItems',
   components: {
     GlDropdownItem,
+    GlDropdownDivider,
   },
   props: {
     currentFocusedOption: {
@@ -17,7 +18,7 @@ export default {
   },
   computed: {
     ...mapState(['search']),
-    ...mapGetters(['scopedSearchOptions']),
+    ...mapGetters(['scopedSearchOptions', 'autocompleteGroupedSearchOptions']),
   },
   methods: {
     isOptionFocused(option) {
@@ -53,5 +54,6 @@ export default {
         <span v-if="option.scope" class="gl-font-style-italic">{{ option.scope }}</span>
       </span>
     </gl-dropdown-item>
+    <gl-dropdown-divider v-if="autocompleteGroupedSearchOptions.length > 0" />
   </div>
 </template>

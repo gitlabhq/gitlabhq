@@ -218,16 +218,20 @@ module Ci
         pending.unstarted.order('created_at ASC').first
       end
 
-      def retry(build, current_user)
-        # rubocop: disable CodeReuse/ServiceClass
-        Ci::RetryBuildService
-          .new(build.project, current_user)
-          .execute(build)
-        # rubocop: enable CodeReuse/ServiceClass
-      end
-
       def with_preloads
         preload(:job_artifacts_archive, :job_artifacts, :tags, project: [:namespace])
+      end
+
+      def extra_accessors
+        []
+      end
+
+      def clone_accessors
+        %i[pipeline project ref tag options name
+           allow_failure stage stage_id stage_idx trigger_request
+           yaml_variables when environment coverage_regex
+           description tag_list protected needs_attributes
+           job_variables_attributes resource_group scheduling_type].freeze
       end
     end
 
@@ -351,7 +355,9 @@ module Ci
 
         if build.auto_retry_allowed?
           begin
-            Ci::Build.retry(build, build.user)
+            # rubocop: disable CodeReuse/ServiceClass
+            Ci::RetryJobService.new(build.project, build.user).execute(build)
+            # rubocop: enable CodeReuse/ServiceClass
           rescue Gitlab::Access::AccessDeniedError => ex
             Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{ex}"
           end
@@ -472,12 +478,6 @@ module Ci
       active? || created?
     end
 
-    def retryable?
-      return false if retried? || archived? || deployment_rejected?
-
-      success? || failed? || canceled?
-    end
-
     def retries_count
       pipeline.builds.retried.where(name: self.name).count
     end
@@ -504,7 +504,11 @@ module Ci
         if metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
         else
-          ExpandVariables.expand(environment, -> { simple_variables })
+          if ::Feature.enabled?(:ci_expand_environment_name_and_url, project, default_enabled: :yaml)
+            ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
+          else
+            ExpandVariables.expand(environment, -> { simple_variables })
+          end
         end
       end
     end

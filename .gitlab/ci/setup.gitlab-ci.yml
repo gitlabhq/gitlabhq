@@ -68,6 +68,15 @@ verify-tests-yml:
     - install_tff_gem
     - scripts/verify-tff-mapping
 
+verify-approvals:
+  extends:
+    - .setup:rules:jh-contribution
+  needs: []
+  script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+    - tooling/bin/find_app_sec_approval
+
 generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping

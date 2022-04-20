@@ -24,10 +24,6 @@ GitLab supports the following authorization flows:
   and is recommended for both client and server apps.
 - **Authorization code:** Secure and common flow. Recommended option for secure
   server-side apps.
-- **Implicit grant:** Originally designed for user-agent only apps, such as
-  single page web apps running on GitLab Pages.
-  The [Internet Engineering Task Force (IETF)](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-09#section-2.1.2)
-  recommends against Implicit grant flow.
 - **Resource owner password credentials:** To be used **only** for securely
   hosted, first-party services. GitLab recommends against use of this flow.
 
@@ -64,7 +60,7 @@ As OAuth 2.0 bases its security entirely on the transport layer, you should not 
 URIs. For more information, see the [OAuth 2.0 RFC](https://tools.ietf.org/html/rfc6749#section-3.1.2.1)
 and the [OAuth 2.0 Threat Model RFC](https://tools.ietf.org/html/rfc6819#section-4.4.2.1).
 These factors are particularly important when using the
-[Implicit grant flow](#implicit-grant-flow), where actual credentials are included in the `redirect_uri`.
+[Implicit grant flow](#implicit-grant-flow-deprecated), where actual credentials are included in the `redirect_uri`.
 
 In the following sections you can find detailed instructions on how to obtain
 authorization with each flow.
@@ -242,40 +238,6 @@ authorization request.
 
 You can now make requests to the API with the access token returned.
 
-### Implicit grant flow
-
-WARNING:
-Implicit grant flow is inherently insecure and the IETF has removed it in [OAuth 2.1](https://oauth.net/2.1/).
-It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) for use in GitLab 14.0, and is planned for
-[removal](https://gitlab.com/gitlab-org/gitlab/-/issues/344609) in GitLab 15.0.
-
-We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce)
-instead.
-
-Unlike the authorization code flow, the client receives an `access token`
-immediately as a result of the authorization request. The flow does not use the
-client secret or the authorization code, as the application
-code and storage is accessible on client browsers and mobile devices.
-
-To request the access token, you should redirect the user to the
-`/oauth/authorize` endpoint using `token` response type:
-
-```plaintext
-https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=token&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
-```
-
-This prompts the user to approve the applications access to their account
-based on the scopes specified in `REQUESTED_SCOPES` and then redirect back to
-the `REDIRECT_URI` you provided. The [scope parameter](../integration/oauth_provider.md#authorized-applications)
-   is a space-separated list of scopes you want to have access to (for example, `scope=read_user+profile`
-would request `read_user` and `profile` scopes). The redirect
-includes a fragment with `access_token` as well as token details in GET
-parameters, for example:
-
-```plaintext
-https://example.com/oauth/redirect#access_token=ABCDExyz123&state=YOUR_UNIQUE_STATE_HASH&token_type=bearer&expires_in=3600
-```
-
 ### Resource owner password credentials flow
 
 NOTE:
@@ -355,6 +317,40 @@ For testing, you can use the `oauth2` Ruby gem:
 client = OAuth2::Client.new('the_client_id', 'the_client_secret', :site => "https://example.com")
 access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
+```
+
+### Implicit grant flow (DEPRECATED)
+
+WARNING:
+Implicit grant flow is inherently insecure and the IETF has removed it in [OAuth 2.1](https://oauth.net/2.1/).
+It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) in GitLab 14.0, and is planned for
+[removal](https://gitlab.com/gitlab-org/gitlab/-/issues/344609) in GitLab 15.0.
+
+We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce)
+instead.
+
+Unlike the authorization code flow, the client receives an `access token`
+immediately as a result of the authorization request. The flow does not use the
+client secret or the authorization code, as the application
+code and storage is accessible on client browsers and mobile devices.
+
+To request the access token, you should redirect the user to the
+`/oauth/authorize` endpoint using `token` response type:
+
+```plaintext
+https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=token&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
+```
+
+This prompts the user to approve the applications access to their account
+based on the scopes specified in `REQUESTED_SCOPES` and then redirect back to
+the `REDIRECT_URI` you provided. The [scope parameter](../integration/oauth_provider.md#authorized-applications)
+   is a space-separated list of scopes you want to have access to (for example, `scope=read_user+profile`
+would request `read_user` and `profile` scopes). The redirect
+includes a fragment with `access_token` as well as token details in GET
+parameters, for example:
+
+```plaintext
+https://example.com/oauth/redirect#access_token=ABCDExyz123&state=YOUR_UNIQUE_STATE_HASH&token_type=bearer&expires_in=3600
 ```
 
 ## Access GitLab API with `access token`

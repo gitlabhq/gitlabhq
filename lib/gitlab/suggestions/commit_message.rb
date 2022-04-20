@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def message
-        project = suggestion_set.project
+        project = suggestion_set.target_project
         user_defined_message = @custom_message.presence || project.suggestion_commit_message.presence
         message = user_defined_message || DEFAULT_SUGGESTION_COMMIT_MESSAGE
 
@@ -37,8 +37,8 @@ module Gitlab
         'branch_name' => ->(user, suggestion_set) { suggestion_set.branch },
         'files_count' => ->(user, suggestion_set) { suggestion_set.file_paths.length },
         'file_paths' => ->(user, suggestion_set) { format_paths(suggestion_set.file_paths) },
-        'project_name' => ->(user, suggestion_set) { suggestion_set.project.name },
-        'project_path' => ->(user, suggestion_set) { suggestion_set.project.path },
+        'project_name' => ->(user, suggestion_set) { suggestion_set.target_project.name },
+        'project_path' => ->(user, suggestion_set) { suggestion_set.target_project.path },
         'user_full_name' => ->(user, suggestion_set) { user.name },
         'username' => ->(user, suggestion_set) { user.username },
         'suggestions_count' => ->(user, suggestion_set) { suggestion_set.suggestions.size }

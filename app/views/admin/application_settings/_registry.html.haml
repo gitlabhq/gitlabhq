@@ -1,4 +1,4 @@
-= form_for @application_setting, url: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -6,14 +6,13 @@
       = f.label :container_registry_token_expire_delay, _('Authorization token duration (minutes)'), class: 'label-bold'
       = f.number_field :container_registry_token_expire_delay, class: 'form-control gl-form-input'
     .form-group
-      .form-check
-        = f.check_box :container_expiration_policies_enable_historic_entries, class: 'form-check-input'
-        = f.label :container_expiration_policies_enable_historic_entries, class: 'form-check-label' do
-          = _("Enable container expiration and retention policies for projects created earlier than GitLab 12.7.")
-          = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'cleanup-policy')
-        .form-text.text-muted
-          = _("Existing projects will be able to use expiration policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project.")
-          = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'use-with-external-container-registries')
+      - label = _("Enable container expiration and retention policies for projects created earlier than GitLab 12.7.")
+      - label_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'cleanup-policy')
+      - help_text = _("Existing projects will be able to use expiration policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project.")
+      - help_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'use-with-external-container-registries')
+      = f.gitlab_ui_checkbox_component :container_expiration_policies_enable_historic_entries,
+        '%{label} %{label_link}'.html_safe % { label: label, label_link: label_link },
+        help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
     - if container_registry_expiration_policies_throttling?
       .form-group
         = f.label :container_registry_delete_tags_service_timeout, _('Cleanup policy maximum processing time (seconds)'), class: 'label-bold'
@@ -31,12 +30,9 @@
         .form-text.text-muted
           = _("The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0.")
       .form-group
-        .form-check
-          = f.check_box :container_registry_expiration_policies_caching, class: 'form-check-input'
-          = f.label :container_registry_expiration_policies_caching, class: 'form-check-label' do
-            = _("Enable container expiration caching.")
-          .form-text.text-muted
-            = _("When enabled, cleanup polices execute faster but put more load on Redis.")
-            = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'set-cleanup-limits-to-conserve-resources')
+        - help_text = _("When enabled, cleanup polices execute faster but put more load on Redis.")
+        - help_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'set-cleanup-limits-to-conserve-resources')
+        = f.gitlab_ui_checkbox_component :container_registry_expiration_policies_caching, _("Enable container expiration caching."),
+          help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

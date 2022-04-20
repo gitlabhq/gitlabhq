@@ -281,7 +281,7 @@ GET /projects/:id/approval_rules/:approval_rule_id
 WARNING:
 The Vulnerability-Check feature, including the Vulnerability-Check attributes listed here, is in its
 end-of-life process. It is [deprecated](../update/deprecations.md#vulnerability-check)
-for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
 [Security Approval Policies](../user/application_security/policies/#scan-result-policy-editor).
 
 You can create project approval rules using the following endpoint:
@@ -413,7 +413,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 WARNING:
 The Vulnerability-Check feature, including the Vulnerability-Check attributes listed here, is in its
 end-of-life process. It is [deprecated](../update/deprecations.md#vulnerability-check)
-for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
 [Security Approval Policies](../user/application_security/policies/#scan-result-policy-editor).
 
 You can update project approval rules using the following endpoint:
@@ -776,6 +776,82 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 ]
 ```
 
+### Get a single merge request level rule
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82767) in GitLab 14.10.
+
+You can request information about a single merge request approval rule using the following endpoint:
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
+```
+
+**Parameters:**
+
+| Attribute           | Type    | Required | Description                                                                  |
+|---------------------|---------|----------|------------------------------------------------------------------------------|
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `merge_request_iid`  | integer | yes      | The IID of a merge request.                                                            |
+| `approval_rule_id`   | integer | yes      | The ID of an approval rule.                                                 |
+
+```json
+{
+  "id": 1,
+  "name": "security",
+  "rule_type": "regular",
+  "eligible_approvers": [
+    {
+      "id": 5,
+      "name": "John Doe",
+      "username": "jdoe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/jdoe"
+    },
+    {
+      "id": 50,
+      "name": "Group Member 1",
+      "username": "group_member_1",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/group_member_1"
+    }
+  ],
+  "approvals_required": 3,
+  "source_rule": null,
+  "users": [
+    {
+      "id": 5,
+      "name": "John Doe",
+      "username": "jdoe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/jdoe"
+    }
+  ],
+  "groups": [
+    {
+      "id": 5,
+      "name": "group1",
+      "path": "group1",
+      "description": "",
+      "visibility": "public",
+      "lfs_enabled": false,
+      "avatar_url": null,
+      "web_url": "http://localhost/groups/group1",
+      "request_access_enabled": false,
+      "full_name": "group1",
+      "full_path": "group1",
+      "parent_id": null,
+      "ldap_cn": null,
+      "ldap_access": null
+    }
+  ],
+  "contains_hidden_groups": false,
+  "overridden": false
+}
+```
+
 ### Create merge request level rule
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
@@ -881,13 +957,13 @@ These are system generated rules.
 
 | Attribute            | Type    | Required | Description                                    |
 |----------------------|---------|----------|------------------------------------------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid`  | integer | yes      | The ID of MR                                   |
-| `approval_rule_id`   | integer | yes      | The ID of a approval rule                      |
-| `name`               | string  | yes      | The name of the approval rule                  |
-| `approvals_required` | integer | yes      | The number of required approvals for this rule |
-| `user_ids`           | Array   | no       | The ids of users as approvers                  |
-| `group_ids`          | Array   | no       | The ids of groups as approvers                 |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
+| `merge_request_iid`  | integer | yes      | The IID of a merge request.                     |
+| `approval_rule_id`   | integer | yes      | The ID of an approval rule.                     |
+| `name`               | string  | yes      | The name of the approval rule.                  |
+| `approvals_required` | integer | yes      | The number of required approvals for this rule. |
+| `user_ids`           | Array   | no       | The IDs of users as approvers.                  |
+| `group_ids`          | Array   | no       | The IDs of groups as approvers.                 |
 
 ```json
 {

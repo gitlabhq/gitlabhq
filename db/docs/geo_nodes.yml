@@ -1,0 +1,9 @@
+---
+table_name: geo_nodes
+classes:
+- GeoNode
+feature_categories:
+- geo_replication
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/5ab12ad02ed753dd933485094ba45512890f0b50
+milestone: '8.5'

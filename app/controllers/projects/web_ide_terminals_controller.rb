@@ -57,11 +57,13 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
   end
 
   def retry
-    return respond_422 unless build.retryable?
+    response = Ci::RetryJobService.new(build.project, current_user).execute(build)
 
-    new_build = Ci::Build.retry(build, current_user)
-
-    render_terminal(new_build)
+    if response.success?
+      render_terminal(response[:job])
+    else
+      respond_422
+    end
   end
 
   private

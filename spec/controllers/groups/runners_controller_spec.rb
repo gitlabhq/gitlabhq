@@ -17,7 +17,7 @@ RSpec.describe Groups::RunnersController do
     sign_in(user)
   end
 
-  describe '#index' do
+  describe '#index', :snowplow do
     context 'when user is owner' do
       before do
         group.add_owner(user)
@@ -30,6 +30,12 @@ RSpec.describe Groups::RunnersController do
         expect(response).to render_template(:index)
         expect(assigns(:group_runners_limited_count)).to be(2)
       end
+
+      it 'tracks the event' do
+        get :index, params: { group_id: group }
+
+        expect_snowplow_event(category: described_class.name, action: 'index', user: user, namespace: group)
+      end
     end
 
     context 'when user is not owner' do
@@ -41,6 +47,12 @@ RSpec.describe Groups::RunnersController do
         get :index, params: { group_id: group }
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'does not track the event' do
+        get :index, params: { group_id: group }
+
+        expect_no_snowplow_event
       end
     end
   end

@@ -8,6 +8,9 @@ module API
 
     feature_category :users
 
+    # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357839
+    urgency :low
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

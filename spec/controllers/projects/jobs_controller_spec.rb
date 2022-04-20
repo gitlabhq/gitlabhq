@@ -796,7 +796,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
           retried_build = Ci::Build.last
 
-          Ci::RetryBuildService.clone_accessors.each do |accessor|
+          Ci::Build.clone_accessors.each do |accessor|
             expect(job.read_attribute(accessor))
               .to eq(retried_build.read_attribute(accessor)),
               "Mismatched attribute on \"#{accessor}\". " \

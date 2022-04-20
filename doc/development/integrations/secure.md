@@ -327,6 +327,21 @@ You can find the schemas for these scanners here:
 - [Coverage Fuzzing](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json)
 - [Secret Detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
 
+### Retention period for vulnerabilities
+
+GitLab has the following retention policies for vulnerabilities on non-default branches. Vulnerabilities are no longer available:
+
+- When the related CI job artifact expires.
+- 90 days after the pipeline is created, even if the related CI job artifacts are locked.
+
+To view vulnerabilities, either:
+
+- Re-run the pipeline.
+- Download the related CI job artifacts if they are available.
+
+NOTE:
+This does not apply for the vulnerabilities existing on the default branch.
+
 ### Enable report validation
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9, and planned for removal in GitLab 15.0.

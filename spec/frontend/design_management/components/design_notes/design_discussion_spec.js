@@ -31,7 +31,6 @@ describe('Design discussions component', () => {
   const findReplyForm = () => wrapper.find(DesignReplyForm);
   const findRepliesWidget = () => wrapper.find(ToggleRepliesWidget);
   const findResolveButton = () => wrapper.find('[data-testid="resolve-button"]');
-  const findResolveIcon = () => wrapper.find('[data-testid="resolve-icon"]');
   const findResolvedMessage = () => wrapper.find('[data-testid="resolved-message"]');
   const findResolveLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findResolveCheckbox = () => wrapper.find('[data-testid="resolve-checkbox"]');
@@ -117,7 +116,7 @@ describe('Design discussions component', () => {
     });
 
     it('does not render an icon to resolve a thread', () => {
-      expect(findResolveIcon().exists()).toBe(false);
+      expect(findResolveButton().exists()).toBe(false);
     });
 
     it('does not render a checkbox in reply form', async () => {
@@ -147,7 +146,7 @@ describe('Design discussions component', () => {
     });
 
     it('renders a correct icon to resolve a thread', () => {
-      expect(findResolveIcon().props('name')).toBe('check-circle');
+      expect(findResolveButton().props('icon')).toBe('check-circle');
     });
 
     it('renders a checkbox with Resolve thread text in reply form', async () => {
@@ -203,7 +202,7 @@ describe('Design discussions component', () => {
     });
 
     it('renders a correct icon to resolve a thread', () => {
-      expect(findResolveIcon().props('name')).toBe('check-circle-filled');
+      expect(findResolveButton().props('icon')).toBe('check-circle-filled');
     });
 
     it('emit todo:toggle when discussion is resolved', async () => {

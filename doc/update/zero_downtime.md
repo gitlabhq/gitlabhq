@@ -13,16 +13,14 @@ there are the following requirements:
 - You can only upgrade one minor release at a time. So from 13.1 to 13.2, not to
    13.3. If you skip releases, database modifications may be run in the wrong
    sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
-- You have to use [post-deployment migrations](../development/post_deployment_migrations.md).
+- You have to use [post-deployment migrations](../development/database/post_deployment_migrations.md).
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
-- Multi-node GitLab instance. Single-node instances may experience brief interruptions
-  [as services restart (Puma in particular)](#single-node-deployment).
+- You have set up a multi-node GitLab instance. Single-node instances do not support zero-downtime upgrades.
 
 If you meet all the requirements above, follow these instructions in order. There are three sets of steps, depending on your deployment type:
 
 | Deployment type                                                 | Description                                       |
 | --------------------------------------------------------------- | ------------------------------------------------  |
-| [Single-node](#single-node-deployment)                          | GitLab CE/EE on a single node                     |
 | [Gitaly Cluster](#gitaly-cluster)                               | GitLab CE/EE using HA architecture for Gitaly Cluster             |
 | [Multi-node / PostgreSQL HA](#use-postgresql-ha)                | GitLab CE/EE using HA architecture for PostgreSQL |
 | [Multi-node / Redis HA](#use-redis-ha-using-sentinel)           | GitLab CE/EE using HA architecture for Redis |
@@ -86,80 +84,6 @@ major/minor release requires downtime. If a release includes any background
 migrations this could potentially lead to hours of downtime, depending on the
 size of your database. To work around this you must use PostgreSQL and
 meet the other online upgrade requirements mentioned above.
-
-## Single-node deployment
-
-WARNING:
-You can only upgrade one minor release at a time.
-
-Before following these instructions, note the following **important** information:
-
-- You can only upgrade one minor release at a time. So from 13.6 to 13.7, not to 13.8.
-  If you attempt more than one minor release, the upgrade may fail.
-- On single-node Omnibus deployments, updates with no downtime are not possible when
-  using Puma because Puma always requires a complete restart. This is because the
-  [phased restart](https://github.com/puma/puma/blob/master/README.md#clustered-mode)
-  feature of Puma does not work with the way it is configured in GitLab all-in-one
-  packages (cluster-mode with app preloading).
-- While it is possible to minimize downtime on a single-node instance by following
-  these instructions, **it is not possible to always achieve true zero downtime
-  updates**. Users may see some connections timeout or be refused for a few minutes,
-  depending on which services need to restart.
-- On Omnibus deployments, the `/etc/gitlab/gitlab.rb` configuration file must **not** have
-  `gitlab_rails['auto_migrate'] = true`.
-
-1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab.
-
-   ```shell
-   sudo touch /etc/gitlab/skip-auto-reconfigure
-   ```
-
-1. Update the GitLab package:
-
-   - For GitLab [Enterprise Edition](https://about.gitlab.com/pricing/):
-
-     ```shell
-     # Debian/Ubuntu
-     sudo apt-get update
-     sudo apt-get install gitlab-ee
-
-     # Centos/RHEL
-     sudo yum install gitlab-ee
-     ```
-
-   - For GitLab Community Edition:
-
-     ```shell
-     # Debian/Ubuntu
-     sudo apt-get update
-     sudo apt-get install gitlab-ce
-
-     # Centos/RHEL
-     sudo yum install gitlab-ce
-     ```
-
-1. To get the regular migrations and latest code in place, run
-
-   ```shell
-   sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure
-   ```
-
-1. Once the node is updated and `reconfigure` finished successfully, run post-deployment migrations with
-
-   ```shell
-   sudo gitlab-rake db:migrate
-   ```
-
-1. Hot reload `puma` and `sidekiq` services
-
-   ```shell
-   sudo gitlab-ctl hup puma
-   sudo gitlab-ctl restart sidekiq
-   ```
-
-If you do not want to run zero downtime upgrades in the future, make
-sure you remove `/etc/gitlab/skip-auto-reconfigure` after
-you've completed these steps.
 
 ## Multi-node / HA deployment
 

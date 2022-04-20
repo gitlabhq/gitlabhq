@@ -86,6 +86,10 @@ export default {
   },
   data() {
     return {
+      formData: {
+        title: this.formState.title,
+        description: this.formState.description,
+      },
       showOutdatedDescriptionWarning: false,
     };
   },
@@ -98,6 +102,14 @@ export default {
     },
     isIssueType() {
       return this.issuableType === IssuableType.Issue;
+    },
+  },
+  watch: {
+    formData: {
+      handler(value) {
+        this.$emit('updateForm', value);
+      },
+      deep: true,
     },
   },
   created() {
@@ -191,16 +203,17 @@ export default {
     >
     <div class="row gl-mb-3">
       <div class="col-12">
-        <issuable-title-field ref="title" :form-state="formState" />
+        <issuable-title-field ref="title" v-model="formData.title" />
       </div>
     </div>
     <div class="row">
       <div v-if="isIssueType" class="col-12 col-md-4 pr-md-0">
         <issuable-type-field ref="issue-type" />
       </div>
+
       <div v-if="hasIssuableTemplates" class="col-12 col-md-4 pl-md-2">
         <description-template-field
-          :form-state="formState"
+          v-model="formData.description"
           :issuable-templates="issuableTemplates"
           :project-path="projectPath"
           :project-id="projectId"
@@ -208,14 +221,16 @@ export default {
         />
       </div>
     </div>
+
     <description-field
       ref="description"
-      :form-state="formState"
+      v-model="formData.description"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
     />
+
     <edit-actions
       :endpoint="endpoint"
       :form-state="formState"

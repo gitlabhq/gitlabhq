@@ -13,7 +13,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   before_action :disable_query_limiting, only: [:usage_data]
 
-  feature_category :not_owned, [
+  feature_category :not_owned, [ # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
                      :general, :reporting, :metrics_and_profiling, :network,
                      :preferences, :update, :reset_health_check_token
                    ]
@@ -53,6 +53,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def service_usage_data
+    @service_ping_data_present = Rails.cache.exist?('usage_data')
   end
 
   def update

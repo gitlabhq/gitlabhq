@@ -56,7 +56,13 @@ module Deployments
     end
 
     def expanded_environment_url
-      ExpandVariables.expand(environment_url, -> { variables }) if environment_url
+      return unless environment_url
+
+      if ::Feature.enabled?(:ci_expand_environment_name_and_url, deployment.project, default_enabled: :yaml)
+        ExpandVariables.expand(environment_url, -> { variables.sort_and_expand_all })
+      else
+        ExpandVariables.expand(environment_url, -> { variables })
+      end
     end
 
     def environment_url

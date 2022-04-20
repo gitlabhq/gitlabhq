@@ -4,6 +4,10 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import ApplySuggestion from './apply_suggestion.vue';
 
+const APPLY_SUGGESTION_ERROR_MESSAGE = __(
+  'Unable to fully load the default commit message. You can still apply this suggestion and the commit message will be correct.',
+);
+
 export default {
   components: { GlBadge, GlIcon, GlButton, GlLoadingIcon, ApplySuggestion },
   directives: { 'gl-tooltip': GlTooltipDirective },
@@ -52,6 +56,11 @@ export default {
       required: false,
       default: 0,
     },
+    failedToLoadMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -93,6 +102,9 @@ export default {
       }
 
       return true;
+    },
+    applySuggestionErrorMessage() {
+      return this.failedToLoadMetadata ? APPLY_SUGGESTION_ERROR_MESSAGE : null;
     },
   },
   methods: {
@@ -171,6 +183,7 @@ export default {
         :disabled="isDisableButton"
         :default-commit-message="defaultCommitMessage"
         :batch-suggestions-count="batchSuggestionsCount"
+        :error-message="applySuggestionErrorMessage"
         class="gl-ml-3"
         @apply="apply"
       />

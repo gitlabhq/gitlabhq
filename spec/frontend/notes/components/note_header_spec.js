@@ -263,7 +263,7 @@ describe('NoteHeader component', () => {
   });
 
   describe('when author username link is hovered', () => {
-    it('toggles hover specific CSS classes on author name link', (done) => {
+    it('toggles hover specific CSS classes on author name link', async () => {
       createComponent({ author });
 
       const authorUsernameLink = wrapper.find({ ref: 'authorUsernameLink' });
@@ -271,19 +271,15 @@ describe('NoteHeader component', () => {
 
       authorUsernameLink.trigger('mouseenter');
 
-      nextTick(() => {
-        expect(authorNameLink.classes()).toContain('hover');
-        expect(authorNameLink.classes()).toContain('text-underline');
+      await nextTick();
+      expect(authorNameLink.classes()).toContain('hover');
+      expect(authorNameLink.classes()).toContain('text-underline');
 
-        authorUsernameLink.trigger('mouseleave');
+      authorUsernameLink.trigger('mouseleave');
 
-        nextTick(() => {
-          expect(authorNameLink.classes()).not.toContain('hover');
-          expect(authorNameLink.classes()).not.toContain('text-underline');
-
-          done();
-        });
-      });
+      await nextTick();
+      expect(authorNameLink.classes()).not.toContain('hover');
+      expect(authorNameLink.classes()).not.toContain('text-underline');
     });
   });
 
@@ -295,6 +291,14 @@ describe('NoteHeader component', () => {
     `('$condition icon indicator when isConfidential is $status', ({ status }) => {
       createComponent({ isConfidential: status });
       expect(findConfidentialIndicator().exists()).toBe(status);
+    });
+
+    it('shows confidential indicator tooltip for project context', () => {
+      createComponent({ isConfidential: true, noteableType: 'issue' });
+
+      expect(findConfidentialIndicator().attributes('title')).toBe(
+        'This comment is confidential and only visible to project members',
+      );
     });
   });
 });

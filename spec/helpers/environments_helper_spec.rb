@@ -20,7 +20,7 @@ RSpec.describe EnvironmentsHelper do
       expect(metrics_data).to include(
         'settings_path' => edit_project_integration_path(project, 'prometheus'),
         'clusters_path' => project_clusters_path(project),
-        'metrics_dashboard_base_path' => environment_metrics_path(environment),
+        'metrics_dashboard_base_path' => project_metrics_dashboard_path(project, environment: environment),
         'current_environment_name' => environment.name,
         'documentation_path' => help_page_path('administration/monitoring/prometheus/index.md'),
         'add_dashboard_documentation_path' => help_page_path('operations/metrics/dashboards/index.md', anchor: 'add-a-new-dashboard-to-your-project'),

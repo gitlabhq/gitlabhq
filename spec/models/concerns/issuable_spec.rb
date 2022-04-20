@@ -625,6 +625,16 @@ RSpec.describe Issuable do
     end
   end
 
+  describe "#labels_hook_attrs" do
+    let(:project) { create(:project) }
+    let(:label) { create(:label) }
+    let(:issue) { create(:labeled_issue, project: project, labels: [label]) }
+
+    it "returns a list of label hook attributes" do
+      expect(issue.labels_hook_attrs).to match_array([label.hook_attrs])
+    end
+  end
+
   describe '.labels_hash' do
     let(:feature_label) { create(:label, title: 'Feature') }
     let(:second_label) { create(:label, title: 'Second Label') }

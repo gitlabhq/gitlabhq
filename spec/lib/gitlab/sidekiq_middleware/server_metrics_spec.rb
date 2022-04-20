@@ -292,7 +292,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
         if category
           feature_category category
         else
-          feature_category_not_owned!
+          feature_category :not_owned
         end
 
         def perform

@@ -315,11 +315,12 @@ module Gitlab
         response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color } }
       end
 
-      def raw_blame(revision, path)
+      def raw_blame(revision, path, range:)
         request = Gitaly::RawBlameRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
-          path: encode_binary(path)
+          path: encode_binary(path),
+          range: (encode_binary(range) if range)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request, timeout: GitalyClient.medium_timeout)
@@ -466,7 +467,7 @@ module Gitlab
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
         request_params[:enforce_limits] = options.fetch(:limits, true)
         request_params[:collapse_diffs] = !options.fetch(:expanded, true)
-        request_params.merge!(Gitlab::Git::DiffCollection.limits(options).to_h)
+        request_params.merge!(Gitlab::Git::DiffCollection.limits(options))
 
         request = Gitaly::CommitDiffRequest.new(request_params)
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request, timeout: GitalyClient.medium_timeout)

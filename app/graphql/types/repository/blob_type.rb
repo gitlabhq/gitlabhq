@@ -101,10 +101,6 @@ module Types
             description: 'Web path to blob on an environment.',
             calls_gitaly: true
 
-      field :code_owners, [Types::UserType], null: true,
-            description: 'List of code owners for the blob.',
-            calls_gitaly: true
-
       field :file_type, GraphQL::Types::String, null: true,
             description: 'Expected format of the blob based on the extension.'
 

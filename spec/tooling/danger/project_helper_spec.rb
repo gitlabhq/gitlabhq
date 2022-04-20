@@ -276,40 +276,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
     end
   end
 
-  describe '.local_warning_message' do
-    it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: ci_config, database, documentation, duplicate_yarn_dependencies, eslint, gitaly, pajamas, pipeline, prettier, product_intelligence, utility_css, vue_shared_documentation, datateam')
-    end
-  end
-
-  describe '.success_message' do
-    it 'returns an informational success message' do
-      expect(described_class.success_message).to eq('==> No Danger rule violations!')
-    end
-  end
-
-  describe '#rule_names' do
-    context 'when running locally' do
-      before do
-        expect(fake_helper).to receive(:ci?).and_return(false)
-      end
-
-      it 'returns local only rules' do
-        expect(project_helper.rule_names).to match_array(described_class::LOCAL_RULES)
-      end
-    end
-
-    context 'when running under CI' do
-      before do
-        expect(fake_helper).to receive(:ci?).and_return(true)
-      end
-
-      it 'returns all rules' do
-        expect(project_helper.rule_names).to eq(described_class::LOCAL_RULES | described_class::CI_ONLY_RULES)
-      end
-    end
-  end
-
   describe '#file_lines' do
     let(:filename) { 'spec/foo_spec.rb' }
     let(:file_spy) { spy }

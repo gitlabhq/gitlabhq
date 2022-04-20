@@ -11,6 +11,9 @@ ci_builds:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: ci_runners
+    column: runner_id
+    on_delete: async_nullify
 ci_builds_metadata:
   - table: projects
     column: project_id
@@ -203,10 +206,6 @@ packages_package_file_build_infos:
 pages_deployments:
   - table: ci_builds
     column: ci_build_id
-    on_delete: async_nullify
-project_pages_metadata:
-  - table: ci_job_artifacts
-    column: artifacts_archive_id
     on_delete: async_nullify
 requirements_management_test_reports:
   - table: ci_builds

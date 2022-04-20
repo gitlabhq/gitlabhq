@@ -1,0 +1,9 @@
+mutation workItemCreateFromTask($input: WorkItemCreateFromTaskInput!) {
+  workItemCreateFromTask(input: $input) {
+    workItem {
+      id
+      descriptionHtml
+    }
+    errors
+  }
+}

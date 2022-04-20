@@ -2,8 +2,6 @@
 
 module IssuableLinks
   class CreateService < BaseService
-    include IncidentManagement::UsageData
-
     attr_reader :issuable, :current_user, :params
 
     def initialize(issuable, user, params)
@@ -25,7 +23,7 @@ module IssuableLinks
       end
 
       @errors = []
-      create_links
+      references = create_links
 
       if @errors.present?
         return error(@errors.join('. '), 422)
@@ -33,7 +31,7 @@ module IssuableLinks
 
       track_event
 
-      success
+      success(created_references: references)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -66,15 +64,19 @@ module IssuableLinks
     end
 
     def link_issuables(target_issuables)
-      target_issuables.each do |referenced_object|
+      target_issuables.map do |referenced_object|
         link = relate_issuables(referenced_object)
 
-        unless link.valid?
+        if link.valid?
+          after_create_for(link)
+        else
           @errors << _("%{ref} cannot be added: %{error}") % {
             ref: referenced_object.to_reference,
             error: link.errors.messages.values.flatten.to_sentence
           }
         end
+
+        link
       end
     end
 
@@ -140,6 +142,18 @@ module IssuableLinks
     end
 
     def set_link_type(_link)
+      # no-op
+    end
+
+    # Override on child classes to perform
+    # actions when the service is executed.
+    def track_event
+      # no-op
+    end
+
+    # Override on child classes to
+    # perform actions for each object created.
+    def after_create_for(_link)
       # no-op
     end
   end

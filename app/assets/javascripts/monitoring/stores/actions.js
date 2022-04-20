@@ -2,13 +2,13 @@ import * as Sentry from '@sentry/browser';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import { convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
-import { s__, sprintf } from '../../locale';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { s__, sprintf } from '~/locale';
 import { ENVIRONMENT_AVAILABLE_STATE, OVERVIEW_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
 import trackDashboardLoad from '../monitoring_tracking_helper';
-import getAnnotations from '../queries/getAnnotations.query.graphql';
-import getDashboardValidationWarnings from '../queries/getDashboardValidationWarnings.query.graphql';
-import getEnvironments from '../queries/getEnvironments.query.graphql';
+import getAnnotations from '../queries/get_annotations.query.graphql';
+import getDashboardValidationWarnings from '../queries/get_dashboard_validation_warnings.query.graphql';
+import getEnvironments from '../queries/get_environments.query.graphql';
 import { getDashboard, getPrometheusQueryData } from '../requests';
 
 import * as types from './mutation_types';
@@ -385,7 +385,7 @@ export const fetchDashboardValidationWarnings = ({ state, dispatch, getters }) =
         dashboardPath,
       },
     })
-    .then((resp) => resp.data?.project?.environments?.nodes?.[0]?.metricsDashboard)
+    .then((resp) => resp.data?.project?.environments?.nodes?.[0]?.metricsDashboard || undefined)
     .then(({ schemaValidationWarnings } = {}) => {
       const hasWarnings = schemaValidationWarnings && schemaValidationWarnings.length !== 0;
       /**

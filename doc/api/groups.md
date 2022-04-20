@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Authentication and Authorization
+group: Workspace
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -483,6 +483,8 @@ Example response:
 
 ## Details of a group
 
+> The `membership_lock` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
+
 Get all details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
 if the group is publicly accessible. With authentication, it returns the `runners_token`
@@ -715,6 +717,18 @@ the `marked_for_deletion_on` attribute:
 }
 ```
 
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+the `membership_lock` attribute:
+
+```json
+{
+  "id": 4,
+  "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
+  "membership_lock": false,
+  ...
+}
+```
+
 When adding the parameter `with_projects=false`, projects aren't returned.
 
 ```shell
@@ -795,24 +809,24 @@ Parameters:
 | ------------------------------------------------------- | ------- | -------- | ----------- |
 | `name`                                                  | string  | yes      | The name of the group. |
 | `path`                                                  | string  | yes      | The path of the group. |
-| `description`                                           | string  | no       | The group's description. |
-| `membership_lock` **(PREMIUM)**                         | boolean | no       | Prevent adding new members to projects within this group. |
-| `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
-| `share_with_group_lock`                                 | boolean | no       | Prevent sharing a project with another group within this group. |
-| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
-| `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
-| `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
-| `emails_disabled`                                       | boolean | no       | Disable email notifications |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
-| `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned |
-| `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
-| `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
-| `parent_id`                                             | integer | no       | The parent group ID for creating nested group. |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting. |
-| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `description`                                           | string  | no       | The group's description. |
+| `emails_disabled`                                       | boolean | no       | Disable email notifications. |
+| `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
+| `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
+| `parent_id`                                             | integer | no       | The parent group ID for creating nested group. |
+| `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
+| `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
+| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
+| `share_with_group_lock`                                 | boolean | no       | Prevent sharing a project with another group within this group. |
+| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
+| `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
+| `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
+| `membership_lock` **(PREMIUM)**                         | boolean | no       | Prevent adding new members to projects within this group. |
 | `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
+| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 
 ### Options for `default_branch_protection`
 
@@ -898,27 +912,27 @@ PUT /groups/:id
 | `id`                                                    | integer | yes      | The ID of the group. |
 | `name`                                                  | string  | no       | The name of the group. |
 | `path`                                                  | string  | no       | The path of the group. |
-| `description`                                           | string  | no       | The description of the group. |
-| `membership_lock` **(PREMIUM)**                         | boolean | no       | Prevent adding new members to projects within this group. |
-| `share_with_group_lock`                                 | boolean | no       | Prevent sharing a project with another group within this group. |
-| `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
-| `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
-| `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
-| `emails_disabled`                                       | boolean | no       | Disable email notifications |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
-| `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned |
-| `lfs_enabled` (optional)                                | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
-| `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
-| `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
-| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
-| `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces
-| `shared_runners_setting`                                | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
+| `description`                                           | string  | no       | The description of the group. |
+| `emails_disabled`                                       | boolean | no       | Disable email notifications. |
+| `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
+| `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
 | `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/index.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
+| `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
+| `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
+| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
+| `shared_runners_setting`                                | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
+| `share_with_group_lock`                                 | boolean | no       | Prevent sharing a project with another group within this group. |
+| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
+| `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
+| `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
+| `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
+| `membership_lock` **(PREMIUM)**                         | boolean | no       | Prevent adding new members to projects within this group. |
+| `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
+| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).

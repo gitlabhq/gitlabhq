@@ -7,6 +7,7 @@ variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+  SAST_IMAGE_SUFFIX: ""
 
   SAST_EXCLUDED_ANALYZERS: ""
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
@@ -101,7 +102,11 @@ flawfinder-sast:
     - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.c'
+        - '**/*.cc'
         - '**/*.cpp'
+        - '**/*.c++'
+        - '**/*.cp'
+        - '**/*.cxx'
 
 kubesec-sast:
   extends: .sast-analyzer
@@ -246,8 +251,9 @@ semgrep-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
+    SEARCH_MAX_DEPTH: 20
     SAST_ANALYZER_IMAGE_TAG: 2
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG"
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
     - if: $SAST_DISABLED
       when: never
@@ -262,6 +268,7 @@ semgrep-sast:
         - '**/*.tsx'
         - '**/*.c'
         - '**/*.go'
+        - '**/*.java'
 
 sobelow-sast:
   extends: .sast-analyzer

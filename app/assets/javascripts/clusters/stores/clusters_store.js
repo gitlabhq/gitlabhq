@@ -1,4 +1,4 @@
-import { parseBoolean } from '../../lib/utils/common_utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default class ClusterStore {
   constructor() {

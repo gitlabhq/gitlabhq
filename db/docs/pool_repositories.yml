@@ -1,0 +1,9 @@
+---
+table_name: pool_repositories
+classes:
+- PoolRepository
+feature_categories:
+- gitaly
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/fff7754186202cfcdeaa0962c28e5d43ddd705b7
+milestone: '11.6'

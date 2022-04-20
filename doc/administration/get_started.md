@@ -20,7 +20,7 @@ Authentication is the first step in making your installation secure.
     This one-time secret code is an additional safeguard that keeps intruders out, even if they have your password.
   - Add a backup email. If you lose access to your account, the GitLab Support team can help you more quickly.
   - Save or print your recovery codes. If you can't access your authentication device, you can use these recovery codes to sign in to your GitLab account.
-  - Add [an SSH key](../ssh/index.md) to your profile. You can generate new recovery codes as needed with SSH.
+  - Add [an SSH key](../user/ssh.md) to your profile. You can generate new recovery codes as needed with SSH.
   - Enable [personal access tokens](../user/profile/personal_access_tokens.md). When using 2FA, you can use these tokens to access the GitLab API.
 
 ## Projects and groups
@@ -62,9 +62,10 @@ You may need to import projects from external sources like GitHub, Bitbucket, or
 
 ### Popular project imports
 
-- [GitHub Enterprise to self-managed GitLab](../integration/github.md): Enabling OAuth makes it easier for developers to find and import their projects.
-- [Bitbucket Server](../user/project/import/bitbucket_server.md#limitations): There are certain data limitations.
-  For assistance with these data types, contact your GitLab account manager or GitLab Support about our professional migration services.
+- [GitHub Enterprise to self-managed GitLab](../integration/github.md)
+- [Bitbucket Server](../user/project/import/bitbucket_server.md)
+
+For assistance with these data types, contact your GitLab account manager or GitLab Support about our professional migration services.
 
 ## GitLab instance security
 

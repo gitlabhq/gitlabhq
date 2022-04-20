@@ -81,6 +81,22 @@ RSpec.describe ::Packages::PackagesFinder do
       it { is_expected.to match_array([conan_package, maven_package]) }
     end
 
+    context 'preload_pipelines' do
+      it 'preloads pipelines by default' do
+        expect(Packages::Package).to receive(:preload_pipelines).and_call_original
+        expect(subject).to match_array([maven_package, conan_package])
+      end
+
+      context 'set to false' do
+        let(:params) { { preload_pipelines: false } }
+
+        it 'does not preload pipelines' do
+          expect(Packages::Package).not_to receive(:preload_pipelines)
+          expect(subject).to match_array([maven_package, conan_package])
+        end
+      end
+    end
+
     it_behaves_like 'concerning versionless param'
     it_behaves_like 'concerning package statuses'
   end

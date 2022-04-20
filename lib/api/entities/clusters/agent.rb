@@ -5,7 +5,10 @@ module API
     module Clusters
       class Agent < Grape::Entity
         expose :id
+        expose :name
         expose :project, with: Entities::ProjectIdentity, as: :config_project
+        expose :created_at
+        expose :created_by_user_id
       end
     end
   end

@@ -6,12 +6,13 @@ module QA
       module Infrastructure
         module Kubernetes
           class Index < Page::Base
-            view 'app/assets/javascripts/clusters_list/components/clusters_view_all.vue' do
-              element :connect_existing_cluster_button
+            view 'app/assets/javascripts/clusters_list/components/clusters_actions.vue' do
+              element :clusters_actions_button
             end
 
             def connect_existing_cluster
-              click_link 'Connect existing cluster'
+              within_element(:clusters_actions_button) { click_button(class: 'dropdown-toggle-split') }
+              click_link 'Connect a cluster (certificate - deprecated)'
             end
 
             def has_cluster?(cluster)

@@ -21,10 +21,6 @@ module WikiActions
     before_action :load_sidebar, except: [:pages]
     before_action :set_content_class
 
-    before_action do
-      push_frontend_feature_flag(:wiki_switch_between_content_editor_raw_markdown, @group, default_enabled: :yaml)
-    end
-
     before_action only: [:show, :edit, :update] do
       @valid_encoding = valid_encoding?
     end
@@ -223,7 +219,7 @@ module WikiActions
 
   def page
     strong_memoize(:page) do
-      wiki.find_page(*page_params)
+      wiki.find_page(*page_params, load_content: load_content?)
     end
   end
 
@@ -309,6 +305,12 @@ module WikiActions
 
   def send_wiki_file_blob(wiki, file_blob)
     send_blob(wiki.repository, file_blob)
+  end
+
+  def load_content?
+    return false if %w[history destroy diff show].include?(params[:action])
+
+    true
   end
 end
 

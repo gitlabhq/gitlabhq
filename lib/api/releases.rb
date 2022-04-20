@@ -8,16 +8,48 @@ module API
       .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
     RELEASE_CLI_USER_AGENT = 'GitLab-release-cli'
 
-    before { authorize_read_releases! }
-
-    after { track_release_event }
-
     feature_category :release_orchestration
+
+    params do
+      requires :id, type: String, desc: 'The ID of a group'
+    end
+    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      before { authorize_read_group_releases! }
+
+      desc 'Get a list of releases for projects in this group.' do
+        success Entities::Release
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the group to get releases for'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                 desc: 'Return projects sorted in ascending and descending order by released_at'
+        optional :simple, type: Boolean, default: false,
+                 desc: 'Return only the ID, URL, name, and path of each project'
+
+        use :pagination
+      end
+      get ":id/releases" do
+        not_found! unless Feature.enabled?(:group_releases_finder_inoperator)
+
+        finder_options = {
+          sort: params[:sort]
+        }
+
+        strict_params = declared_params(include_missing: false)
+        releases = find_group_releases(finder_options)
+
+        present_group_releases(strict_params, releases)
+      end
+    end
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      before { authorize_read_releases! }
+
+      after { track_release_event }
+
       desc 'Get a project releases' do
         detail 'This feature was introduced in GitLab 11.7.'
         named 'get_releases'
@@ -162,6 +194,10 @@ module API
     end
 
     helpers do
+      def authorize_read_group_releases!
+        authorize! :read_release, user_group
+      end
+
       def authorize_create_release!
         authorize! :create_release, user_project
       end
@@ -219,6 +255,22 @@ module API
       def track_release_event
         Gitlab::Tracking.event(options[:for].name, options[:route_options][:named],
           project: user_project, user: current_user, **event_context)
+      end
+
+      def find_group_releases(finder_options)
+        ::Releases::GroupReleasesFinder
+          .new(user_group, current_user, finder_options)
+          .execute(preload: true)
+      end
+
+      def present_group_releases(params, releases)
+        options = {
+          with: params[:simple] ? Entities::BasicReleaseDetails : Entities::Release,
+          current_user: current_user
+        }
+
+        # GroupReleasesFinder has already ordered the data for us
+        present paginate(releases, skip_default_order: true), options
       end
     end
   end

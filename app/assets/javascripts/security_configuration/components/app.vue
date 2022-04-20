@@ -30,6 +30,7 @@ export const i18n = {
   securityTrainingDescription: s__(
     'SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.',
   ),
+  securityTrainingDoc: s__('SecurityConfiguration|Learn more about vulnerability training'),
 };
 
 export default {
@@ -50,7 +51,7 @@ export default {
     TrainingProviderList,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectFullPath'],
+  inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -143,7 +144,6 @@ export default {
     <local-storage-sync
       v-model="autoDevopsEnabledAlertDismissedProjects"
       :storage-key="$options.autoDevopsEnabledAlertStorageKey"
-      as-json
     />
 
     <user-callout-dismisser
@@ -261,6 +261,11 @@ export default {
           <template #description>
             <p>
               {{ $options.i18n.securityTrainingDescription }}
+            </p>
+            <p>
+              <gl-link :href="vulnerabilityTrainingDocsPath">{{
+                $options.i18n.securityTrainingDoc
+              }}</gl-link>
             </p>
           </template>
           <template #features>

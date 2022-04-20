@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::ResetDuplicateCiRunnersTokenEncryptedValuesOnProjects do
+RSpec.describe Gitlab::BackgroundMigration::ResetDuplicateCiRunnersTokenEncryptedValuesOnProjects, :migration, schema: 20220326161803 do # rubocop:disable Layout/LineLength
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
 

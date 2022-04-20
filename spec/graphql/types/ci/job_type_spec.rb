@@ -21,6 +21,7 @@ RSpec.describe Types::Ci::JobType do
       downstreamPipeline
       finished_at
       id
+      kind
       manual_job
       name
       needs

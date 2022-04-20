@@ -55,7 +55,7 @@ export default {
         {{ s__('Metrics|View documentation') }}
       </gl-button>
       <gl-button
-        variant="success"
+        variant="confirm"
         data-testid="create-dashboard-modal-repo-button"
         :href="projectPath"
       >

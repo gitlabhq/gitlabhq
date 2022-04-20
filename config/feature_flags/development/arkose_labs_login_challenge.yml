@@ -1,0 +1,8 @@
+---
+name: arkose_labs_login_challenge
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82751
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356171
+milestone: '14.10'
+type: development
+group: group::antiabuse
+default_enabled: false

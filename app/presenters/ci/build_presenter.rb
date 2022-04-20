@@ -2,7 +2,7 @@
 
 module Ci
   class BuildPresenter < ProcessablePresenter
-    presents ::Ci::Build
+    presents ::Ci::Build, as: :build
 
     def erased_by_user?
       # Build can be erased through API, therefore it does not have
@@ -34,7 +34,7 @@ module Ci
     end
 
     def tooltip_message
-      "#{subject.name} - #{detailed_status.status_tooltip}"
+      "#{build.name} - #{detailed_status.status_tooltip}"
     end
 
     def execute_in
@@ -48,7 +48,7 @@ module Ci
     end
 
     def detailed_status
-      @detailed_status ||= subject.detailed_status(user)
+      @detailed_status ||= build.detailed_status(user)
     end
   end
 end

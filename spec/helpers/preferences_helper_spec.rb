@@ -145,6 +145,67 @@ RSpec.describe PreferencesHelper do
     end
   end
 
+  describe '#user_diffs_colors' do
+    context 'with a user' do
+      it "returns user's diffs colors" do
+        stub_user(diffs_addition_color: '#123456', diffs_deletion_color: '#abcdef')
+
+        expect(helper.user_diffs_colors).to eq({ addition: '#123456', deletion: '#abcdef' })
+      end
+
+      it 'omits property if nil' do
+        stub_user(diffs_addition_color: '#123456', diffs_deletion_color: nil)
+
+        expect(helper.user_diffs_colors).to eq({ addition: '#123456' })
+      end
+
+      it 'omits property if blank' do
+        stub_user(diffs_addition_color: '', diffs_deletion_color: '#abcdef')
+
+        expect(helper.user_diffs_colors).to eq({ deletion: '#abcdef' })
+      end
+    end
+
+    context 'without a user' do
+      it 'returns no properties' do
+        stub_user
+
+        expect(helper.user_diffs_colors).to eq({})
+      end
+    end
+  end
+
+  describe '#custom_diff_color_classes' do
+    context 'with a user' do
+      it 'returns color classes' do
+        stub_user(diffs_addition_color: '#123456', diffs_deletion_color: '#abcdef')
+
+        expect(helper.custom_diff_color_classes)
+          .to match_array(%w[diff-custom-addition-color diff-custom-deletion-color])
+      end
+
+      it 'omits property if nil' do
+        stub_user(diffs_addition_color: '#123456', diffs_deletion_color: nil)
+
+        expect(helper.custom_diff_color_classes).to match_array(['diff-custom-addition-color'])
+      end
+
+      it 'omits property if blank' do
+        stub_user(diffs_addition_color: '', diffs_deletion_color: '#abcdef')
+
+        expect(helper.custom_diff_color_classes).to match_array(['diff-custom-deletion-color'])
+      end
+    end
+
+    context 'without a user' do
+      it 'returns no classes' do
+        stub_user
+
+        expect(helper.custom_diff_color_classes).to match_array([])
+      end
+    end
+  end
+
   describe '#language_choices' do
     include StubLanguagesTranslationPercentage
 

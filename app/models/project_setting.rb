@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectSetting < ApplicationRecord
-  include IgnorableColumns
-
-  ignore_column :show_diff_preview_in_email, remove_with: '14.10', remove_after: '2022-03-22'
+  ALLOWED_TARGET_PLATFORMS = %w(ios osx tvos watchos).freeze
 
   belongs_to :project, inverse_of: :project_setting
 
@@ -18,6 +16,9 @@ class ProjectSetting < ApplicationRecord
 
   validates :merge_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
   validates :squash_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
+  validates :target_platforms, inclusion: { in: ALLOWED_TARGET_PLATFORMS }
+
+  validate :validates_mr_default_target_self
 
   default_value_for(:legacy_open_source_license_available) do
     Feature.enabled?(:legacy_open_source_license_available, default_enabled: :yaml, type: :ops)
@@ -31,7 +32,9 @@ class ProjectSetting < ApplicationRecord
     %w[always never].include?(squash_option)
   end
 
-  validate :validates_mr_default_target_self
+  def target_platforms=(val)
+    super(val&.map(&:to_s)&.sort)
+  end
 
   private
 

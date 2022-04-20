@@ -131,7 +131,7 @@ module API
         environment = user_project.environments.find(params[:environment_id])
         authorize! :stop_environment, environment
 
-        environment.stop_with_action!(current_user)
+        environment.stop_with_actions!(current_user)
 
         status 200
         present environment, with: Entities::Environment, current_user: current_user

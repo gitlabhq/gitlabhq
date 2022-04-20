@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"regexp"
 	"testing"
 
@@ -18,21 +17,37 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
 
-func TestGetGeoProxyURLWhenGeoSecondary(t *testing.T) {
-	geoProxyURL, err := getGeoProxyURLGivenResponse(t, `{"geo_proxy_url":"http://primary"}`)
+func TestGetGeoProxyDataForResponses(t *testing.T) {
+	testCases := []struct {
+		desc              string
+		json              string
+		expectedError     bool
+		expectedURL       string
+		expectedExtraData string
+	}{
+		{"when Geo secondary", `{"geo_proxy_url":"http://primary","geo_proxy_extra_data":"geo-data"}`, false, "http://primary", "geo-data"},
+		{"when Geo secondary with explicit null data", `{"geo_proxy_url":"http://primary","geo_proxy_extra_data":null}`, false, "http://primary", ""},
+		{"when Geo secondary without extra data", `{"geo_proxy_url":"http://primary"}`, false, "http://primary", ""},
+		{"when Geo primary or no node", `{}`, false, "", ""},
+		{"for malformed request", `non-json`, true, "", ""},
+	}
 
-	require.NoError(t, err)
-	require.Equal(t, "http://primary", geoProxyURL.String())
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			geoProxyData, err := getGeoProxyDataGivenResponse(t, tc.json)
+
+			if tc.expectedError {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+				require.Equal(t, tc.expectedURL, geoProxyData.GeoProxyURL.String())
+				require.Equal(t, tc.expectedExtraData, geoProxyData.GeoProxyExtraData)
+			}
+		})
+	}
 }
 
-func TestGetGeoProxyURLWhenGeoPrimaryOrNonGeo(t *testing.T) {
-	geoProxyURL, err := getGeoProxyURLGivenResponse(t, "{}")
-
-	require.NoError(t, err)
-	require.Equal(t, "", geoProxyURL.String())
-}
-
-func getGeoProxyURLGivenResponse(t *testing.T, givenInternalApiResponse string) (*url.URL, error) {
+func getGeoProxyDataGivenResponse(t *testing.T, givenInternalApiResponse string) (*GeoProxyData, error) {
 	t.Helper()
 	ts := testRailsServer(regexp.MustCompile(`/api/v4/geo/proxy`), 200, givenInternalApiResponse)
 	defer ts.Close()
@@ -43,9 +58,9 @@ func getGeoProxyURLGivenResponse(t *testing.T, givenInternalApiResponse string) 
 
 	apiClient := NewAPI(backend, version, rt)
 
-	geoProxyURL, err := apiClient.GetGeoProxyURL()
+	geoProxyData, err := apiClient.GetGeoProxyData()
 
-	return geoProxyURL, err
+	return geoProxyData, err
 }
 
 func testRailsServer(url *regexp.Regexp, code int, body string) *httptest.Server {

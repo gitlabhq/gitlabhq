@@ -15,6 +15,10 @@ module Types
     field :image_name, GraphQL::Types::String, null: false, description: 'Name of the image.'
     field :size, GraphQL::Types::String, null: false, description: 'Size of the manifest file.'
     field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
+    field :status,
+          Types::DependencyProxy::ManifestTypeEnum,
+          null: false,
+          description: "Status of the manifest (#{::DependencyProxy::Manifest.statuses.keys.join(', ')})"
 
     def image_name
       object.file_name.chomp(File.extname(object.file_name))

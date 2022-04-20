@@ -12,7 +12,7 @@ module QA
             end
 
             def enable_performance_bar
-              check_element(:enable_performance_bar_checkbox)
+              check_element(:enable_performance_bar_checkbox, true)
               Capybara.current_session.driver.browser.manage.add_cookie(name: 'perf_bar_enabled', value: 'true')
             end
 

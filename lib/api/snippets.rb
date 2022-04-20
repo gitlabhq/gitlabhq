@@ -184,7 +184,7 @@ module API
       params do
         use :raw_file_params
       end
-      get ":id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
+      get ":id/files/:ref/:file_path/raw", urgency: :low, requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
         snippet = snippets.find_by_id(params.delete(:id))
         not_found!('Snippet') unless snippet&.repo_exists?
 
@@ -200,7 +200,7 @@ module API
       get ":id/user_agent_detail" do
         authenticated_as_admin!
 
-        snippet = Snippet.find_by_id!(params[:id])
+        snippet = Snippet.find(params[:id])
 
         break not_found!('UserAgentDetail') unless snippet.user_agent_detail
 

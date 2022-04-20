@@ -1,6 +1,7 @@
 import { GlAvatar } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerAssignedItem from '~/runner/components/runner_assigned_item.vue';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 const mockHref = '/group/project';
 const mockName = 'Project';
@@ -40,7 +41,7 @@ describe('RunnerAssignedItem', () => {
       alt: mockName,
       entityName: mockName,
       src: mockAvatarUrl,
-      shape: 'rect',
+      shape: AVATAR_SHAPE_OPTION_RECT,
       size: 48,
     });
   });

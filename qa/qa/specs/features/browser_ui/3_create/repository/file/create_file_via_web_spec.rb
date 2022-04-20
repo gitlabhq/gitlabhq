@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', :reliable do
     context 'File management' do
       file_name = 'QA Test - File name'
       file_content = 'QA Test - File content'

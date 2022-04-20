@@ -1,8 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import createFlash from '~/flash';
-import Api from '../../api';
-import { __ } from '../../locale';
+import Api from '~/api';
+import { __ } from '~/locale';
 import state from '../state';
 import Dropdown from './dropdown.vue';
 
@@ -87,7 +87,7 @@ export default {
     },
     showWarning() {
       if (this.warningText) {
-        this.warningText.classList.remove('hidden');
+        this.warningText.classList.remove('gl-display-none');
       }
 
       if (this.createBtn) {
@@ -120,7 +120,7 @@ export default {
         :selected-project="selectedProject"
         @click="selectProject"
       />
-      <p class="text-muted mt-1 mb-0">
+      <p class="gl-text-gray-600 gl-mt-1 gl-mb-0">
         <template v-if="projects.length">
           {{ $options.i18n.privateForkSelected }}
         </template>
@@ -134,7 +134,7 @@ export default {
         </template>
         <gl-link
           :href="helpPagePath"
-          class="w-auto p-0 d-inline-block text-primary bg-transparent"
+          class="gl-w-auto gl-p-0 gl-display-inline-block gl-bg-transparent"
           target="_blank"
         >
           <span class="sr-only">{{ $options.i18n.readMore }}</span>

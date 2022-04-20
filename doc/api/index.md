@@ -150,6 +150,10 @@ message with a status code of `401`:
 }
 ```
 
+NOTE:
+Deploy tokens can't be used with the GitLab public API. For details, see
+[Deploy Tokens](../user/project/deploy_tokens/index.md).
+
 ### OAuth2 tokens
 
 You can use an [OAuth2 token](oauth2.md) to authenticate with the API by passing

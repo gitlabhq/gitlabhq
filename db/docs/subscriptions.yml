@@ -1,0 +1,9 @@
+---
+table_name: subscriptions
+classes:
+- Subscription
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/410d25c8ca8afabb25e5f89b36e3cfd09ffe6f87
+milestone: '7.9'

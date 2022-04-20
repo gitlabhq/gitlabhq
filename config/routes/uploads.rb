@@ -38,6 +38,12 @@ scope path: :uploads do
   post ':model/authorize',
     to: 'uploads#authorize',
     constraints: { model: /personal_snippet|user/ }
+
+  # Alert Metric Images
+  get "-/system/:model/:mounted_as/:id/:filename",
+      to:           "uploads#show",
+      constraints:  { model: /alert_management_metric_image/, mounted_as: /file/, filename: %r{[^/]+} },
+      as: 'alert_metric_image_upload'
 end
 
 # Redirect old note attachments path to new uploads path.

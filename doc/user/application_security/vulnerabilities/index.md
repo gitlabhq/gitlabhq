@@ -28,7 +28,7 @@ On the vulnerability's page, you can:
 - [Create an issue](#create-an-issue-for-a-vulnerability).
 - [Link issues to the vulnerability](#linked-issues).
 - [Resolve a vulnerability](#resolve-a-vulnerability) if a solution is
-  available. 
+  available.
 - [View security training specific to the detected vulnerability](#view-security-training-for-a-vulnerability).
 
 ## Vulnerability status values

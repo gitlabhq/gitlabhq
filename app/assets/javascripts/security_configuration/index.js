@@ -25,6 +25,7 @@ export const initSecurityConfiguration = (el) => {
     gitlabCiHistoryPath,
     autoDevopsHelpPagePath,
     autoDevopsPath,
+    vulnerabilityTrainingDocsPath,
   } = el.dataset;
 
   const { augmentedSecurityFeatures, augmentedComplianceFeatures } = augmentFeatures(
@@ -41,6 +42,7 @@ export const initSecurityConfiguration = (el) => {
       upgradePath,
       autoDevopsHelpPagePath,
       autoDevopsPath,
+      vulnerabilityTrainingDocsPath,
     },
     render(createElement) {
       return createElement(SecurityConfigurationApp, {

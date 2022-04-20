@@ -142,7 +142,7 @@ To enable the Dangerfile on another existing GitLab project, complete the follow
 1. Create a `Dangerfile` with the following content:
 
     ```ruby
-    require_relative "lib/gitlab-dangerfiles"
+    require "gitlab-dangerfiles"
 
     Gitlab::Dangerfiles.for_project(self, &:import_defaults)
     ```
@@ -154,6 +154,8 @@ To enable the Dangerfile on another existing GitLab project, complete the follow
       - project: 'gitlab-org/quality/pipeline-common'
         file:
           - '/ci/danger-review.yml'
+        rules:
+          - if: '$CI_SERVER_HOST == "gitlab.com"'
     ```
 
 1. If your project is in the `gitlab-org` group, you don't need to set up any token as the `DANGER_GITLAB_API_TOKEN`

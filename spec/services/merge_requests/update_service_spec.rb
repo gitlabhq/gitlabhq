@@ -10,7 +10,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:label) { create(:label, project: project) }
+  let(:label) { create(:label, title: 'a', project: project) }
   let(:label2) { create(:label) }
   let(:milestone) { create(:milestone, project: project) }
 
@@ -1191,6 +1191,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
     it_behaves_like 'issuable record that supports quick actions' do
       let(:existing_merge_request) { create(:merge_request, source_project: project) }
       let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_merge_request) }
+    end
+
+    context 'labels are updated' do
+      let(:label_a) { label }
+      let(:label_b) { create(:label, title: 'b', project: project) }
+      let(:issuable) { merge_request }
+
+      it_behaves_like 'keeps issuable labels sorted after update'
+      it_behaves_like 'broadcasting issuable labels updates'
+
+      def update_issuable(update_params)
+        update_merge_request(update_params)
+      end
     end
   end
 end

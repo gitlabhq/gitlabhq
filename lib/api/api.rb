@@ -80,6 +80,10 @@ module API
       Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
     end
 
+    after do
+      Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
+    end
+
     # The locale is set to the current user's locale when `current_user` is loaded
     after { Gitlab::I18n.use_default_locale }
 
@@ -159,6 +163,7 @@ module API
       mount ::API::Admin::InstanceClusters
       mount ::API::Admin::PlanLimits
       mount ::API::Admin::Sidekiq
+      mount ::API::AlertManagementAlerts
       mount ::API::Appearance
       mount ::API::Applications
       mount ::API::Avatar
@@ -178,6 +183,7 @@ module API
       mount ::API::Ci::SecureFiles
       mount ::API::Ci::Triggers
       mount ::API::Ci::Variables
+      mount ::API::Clusters::Agents
       mount ::API::Commits
       mount ::API::CommitStatuses
       mount ::API::ContainerRegistryEvent
@@ -317,7 +323,7 @@ module API
       end
     end
 
-    route :any, '*path', feature_category: :not_owned do
+    route :any, '*path', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
       error!('404 Not Found', 404)
     end
   end

@@ -105,6 +105,104 @@ RSpec.describe Note do
         it { is_expected.to be_valid }
       end
     end
+
+    describe 'confidentiality' do
+      context 'for existing public note' do
+        let_it_be(:existing_note) { create(:note) }
+
+        it 'is not possible to change the note to confidential' do
+          existing_note.confidential = true
+
+          expect(existing_note).not_to be_valid
+          expect(existing_note.errors[:confidential]).to include('can not be changed for existing notes')
+        end
+
+        it 'is possible to change confidentiality from nil to false' do
+          existing_note.confidential = false
+
+          expect(existing_note).to be_valid
+        end
+      end
+
+      context 'for existing confidential note' do
+        let_it_be(:existing_note) { create(:note, confidential: true) }
+
+        it 'is not possible to change the note to public' do
+          existing_note.confidential = false
+
+          expect(existing_note).not_to be_valid
+          expect(existing_note.errors[:confidential]).to include('can not be changed for existing notes')
+        end
+      end
+
+      context 'for a new note' do
+        let_it_be(:noteable) { create(:issue) }
+
+        let(:note_params) { { confidential: true, noteable: noteable, project: noteable.project } }
+
+        subject { build(:note, **note_params) }
+
+        it 'allows to create a confidential note for an issue' do
+          expect(subject).to be_valid
+        end
+
+        context 'when noteable is not allowed to have confidential notes' do
+          let_it_be(:noteable) { create(:merge_request) }
+
+          it 'can not be set confidential' do
+            expect(subject).not_to be_valid
+            expect(subject.errors[:confidential]).to include('can not be set for this resource')
+          end
+        end
+
+        context 'when note type is not allowed to be confidential' do
+          let(:note_params) { { type: 'DiffNote', confidential: true, noteable: noteable, project: noteable.project } }
+
+          it 'can not be set confidential' do
+            expect(subject).not_to be_valid
+            expect(subject.errors[:confidential]).to include('can not be set for this type of note')
+          end
+        end
+
+        context 'when the note is a discussion note' do
+          let(:note_params) { { type: 'DiscussionNote', confidential: true, noteable: noteable, project: noteable.project } }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when replying to a note' do
+          let(:note_params) { { confidential: true, noteable: noteable, project: noteable.project } }
+
+          subject { build(:discussion_note, discussion_id: original_note.discussion_id, **note_params) }
+
+          context 'when the note is reply to a confidential note' do
+            let_it_be(:original_note) { create(:note, confidential: true, noteable: noteable, project: noteable.project) }
+
+            it { is_expected.to be_valid }
+          end
+
+          context 'when the note is reply to a public note' do
+            let_it_be(:original_note) { create(:note, noteable: noteable, project: noteable.project) }
+
+            it 'can not be set confidential' do
+              expect(subject).not_to be_valid
+              expect(subject.errors[:confidential]).to include('reply should have same confidentiality as top-level note')
+            end
+          end
+
+          context 'when reply note is public but discussion is confidential' do
+            let_it_be(:original_note) { create(:note, confidential: true, noteable: noteable, project: noteable.project) }
+
+            let(:note_params) { { noteable: noteable, project: noteable.project } }
+
+            it 'can not be set confidential' do
+              expect(subject).not_to be_valid
+              expect(subject.errors[:confidential]).to include('reply should have same confidentiality as top-level note')
+            end
+          end
+        end
+      end
+    end
   end
 
   describe 'callbacks' do
@@ -1169,8 +1267,8 @@ RSpec.describe Note do
   end
 
   describe "#discussion" do
-    let!(:note1) { create(:discussion_note_on_merge_request) }
-    let!(:note2) { create(:diff_note_on_merge_request, project: note1.project, noteable: note1.noteable) }
+    let_it_be(:note1) { create(:discussion_note_on_merge_request) }
+    let_it_be(:note2) { create(:diff_note_on_merge_request, project: note1.project, noteable: note1.noteable) }
 
     context 'when the note is part of a discussion' do
       subject { create(:discussion_note_on_merge_request, project: note1.project, noteable: note1.noteable, in_reply_to: note1) }
@@ -1653,6 +1751,29 @@ RSpec.describe Note do
       note.commands_changes = { emoji_award: {}, time_estimate: {}, spend_time: {}, target_project: build(:project) }
 
       expect(note.commands_changes.keys).to contain_exactly(:emoji_award, :time_estimate, :spend_time)
+    end
+  end
+
+  describe '#bump_updated_at', :freeze_time do
+    it 'sets updated_at to the current timestamp' do
+      note = create(:note, updated_at: 1.day.ago)
+
+      note.bump_updated_at
+      note.reload
+
+      expect(note.updated_at).to be_like_time(Time.current)
+    end
+
+    context 'with legacy edited note' do
+      it 'copies updated_at to last_edited_at before bumping the timestamp' do
+        note = create(:note, updated_at: 1.day.ago, updated_by: create(:user), last_edited_at: nil)
+
+        note.bump_updated_at
+        note.reload
+
+        expect(note.last_edited_at).to be_like_time(1.day.ago)
+        expect(note.updated_at).to be_like_time(Time.current)
+      end
     end
   end
 end

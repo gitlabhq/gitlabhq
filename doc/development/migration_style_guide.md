@@ -45,14 +45,14 @@ work it needs to perform and how long it takes to complete:
    One exception is a migration that takes longer but is absolutely critical for the application to operate correctly.
    For example, you might have indices that enforce unique tuples, or that are needed for query performance in critical parts of the application. In cases where the migration would be unacceptably slow, however, a better option might be to guard the feature with a [feature flag](feature_flags/index.md)
    and perform a post-deployment migration instead. The feature can then be turned on after the migration finishes.
-1. [**Post-deployment migrations.**](post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
+1. [**Post-deployment migrations.**](database/post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
    run _after_ new application code has been deployed (for GitLab.com after the production deployment has finished).
    They can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
    Common examples for schema changes that should run post-deploy include:
      - Clean-ups, like removing unused columns.
      - Adding non-critical indices on high-traffic tables.
      - Adding non-critical indices that take a long time to create.
-1. [**Background migrations.**](background_migrations.md) These aren't regular Rails migrations, but application code that is
+1. [**Background migrations.**](database/background_migrations.md) These aren't regular Rails migrations, but application code that is
    executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
    exceed the timing guidelines for post-deploy migrations. Background migrations should _not_ change the schema.
 
@@ -129,13 +129,13 @@ TARGET=12-9-stable-ee scripts/regenerate-schema
 
 ## Avoiding downtime
 
-The document ["Avoiding downtime in migrations"](avoiding_downtime_in_migrations.md) specifies
+The document ["Avoiding downtime in migrations"](database/avoiding_downtime_in_migrations.md) specifies
 various database operations, such as:
 
-- [dropping and renaming columns](avoiding_downtime_in_migrations.md#dropping-columns)
-- [changing column constraints and types](avoiding_downtime_in_migrations.md#changing-column-constraints)
-- [adding and dropping indexes, tables, and foreign keys](avoiding_downtime_in_migrations.md#adding-indexes)
-- [migrating `integer` primary keys to `bigint`](avoiding_downtime_in_migrations.md#migrating-integer-primary-keys-to-bigint)
+- [dropping and renaming columns](database/avoiding_downtime_in_migrations.md#dropping-columns)
+- [changing column constraints and types](database/avoiding_downtime_in_migrations.md#changing-column-constraints)
+- [adding and dropping indexes, tables, and foreign keys](database/avoiding_downtime_in_migrations.md#adding-indexes)
+- [migrating `integer` primary keys to `bigint`](database/avoiding_downtime_in_migrations.md#migrating-integer-primary-keys-to-bigint)
 
 and explains how to perform them without requiring downtime.
 
@@ -219,7 +219,7 @@ in that limit. Singular query timings should fit within the [standard limit](que
 In case you need to insert, update, or delete a significant amount of data, you:
 
 - Must disable the single transaction with `disable_ddl_transaction!`.
-- Should consider doing it in a [Background Migration](background_migrations.md).
+- Should consider doing it in a [Background Migration](database/background_migrations.md).
 
 ## Migration helpers and versioning
 
@@ -240,7 +240,7 @@ of migration helpers.
 In this example, we use version 1.0 of the migration class:
 
 ```ruby
-class TestMigration < Gitlab::Database::Migration[1.0]
+class TestMigration < Gitlab::Database::Migration[2.0]
   def change
   end
 end
@@ -253,7 +253,7 @@ version of migration helpers automatically.
 Migration helpers and versioning were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68986)
 in GitLab 14.3.
 For merge requests targeting previous stable branches, use the old format and still inherit from
-`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[1.0]`.
+`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[2.0]`.
 
 ## Retry mechanism when acquiring database locks
 
@@ -535,7 +535,7 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < Gitlab::Database::Migration[1.0]
+class MyMigration < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
@@ -586,7 +586,7 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < Gitlab::Database::Migration[1.0]
+class MyMigration < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
@@ -629,7 +629,7 @@ The easiest way to test for existence of an index by name is to use the
 be used with a name option. For example:
 
 ```ruby
-class MyMigration < Gitlab::Database::Migration[1.0]
+class MyMigration < Gitlab::Database::Migration[2.0]
   INDEX_NAME = 'index_name'
 
   def up
@@ -664,7 +664,7 @@ Here's an example where we add a new column with a foreign key
 constraint. Note it includes `index: true` to create an index for it.
 
 ```ruby
-class Migration < Gitlab::Database::Migration[1.0]
+class Migration < Gitlab::Database::Migration[2.0]
 
   def change
     add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
@@ -710,7 +710,7 @@ expensive and disruptive operation for larger tables, but in reality it's not.
 Take the following migration as an example:
 
 ```ruby
-class DefaultRequestAccessGroups < Gitlab::Database::Migration[1.0]
+class DefaultRequestAccessGroups < Gitlab::Database::Migration[2.0]
   def change
     change_column_default(:namespaces, :request_access_enabled, from: false, to: true)
   end
@@ -943,7 +943,7 @@ The Rails 5 natively supports `JSONB` (binary JSON) column type.
 Example migration adding this column:
 
 ```ruby
-class AddOptionsToBuildMetadata < Gitlab::Database::Migration[1.0]
+class AddOptionsToBuildMetadata < Gitlab::Database::Migration[2.0]
   def change
     add_column :ci_builds_metadata, :config_options, :jsonb
   end
@@ -975,7 +975,7 @@ Do not store `attr_encrypted` attributes as `:text` in the database; use
 efficient:
 
 ```ruby
-class AddSecretToSomething < Gitlab::Database::Migration[1.0]
+class AddSecretToSomething < Gitlab::Database::Migration[2.0]
   def change
     add_column :something, :encrypted_secret, :binary
     add_column :something, :encrypted_secret_iv, :binary
@@ -1033,8 +1033,8 @@ If you need more complex logic, you can define and use models local to a
 migration. For example:
 
 ```ruby
-class MyMigration < Gitlab::Database::Migration[1.0]
-  class Project < ActiveRecord::Base
+class MyMigration < Gitlab::Database::Migration[2.0]
+  class Project < MigrationRecord
     self.table_name = 'projects'
   end
 
@@ -1114,7 +1114,7 @@ by an integer. For example: `users` would turn into `users0`
 ## Using models in migrations (discouraged)
 
 The use of models in migrations is generally discouraged. As such models are
-[contraindicated for background migrations](background_migrations.md#isolation),
+[contraindicated for background migrations](database/background_migrations.md#isolation),
 the model needs to be declared in the migration.
 
 If using a model in the migrations, you should first
@@ -1132,8 +1132,8 @@ in a previous migration.
 It is important not to leave out the `User.reset_column_information` command, in order to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
 
 ```ruby
-class AddAndSeedMyColumn < Gitlab::Database::Migration[1.0]
-  class User < ActiveRecord::Base
+class AddAndSeedMyColumn < Gitlab::Database::Migration[2.0]
+  class User < MigrationRecord
     self.table_name = 'users'
   end
 

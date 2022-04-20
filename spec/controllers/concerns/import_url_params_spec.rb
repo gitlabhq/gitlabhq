@@ -55,4 +55,22 @@ RSpec.describe ImportUrlParams do
       end
     end
   end
+
+  context 'url with provided mixed credentials' do
+    let(:params) do
+      ActionController::Parameters.new(project: {
+        import_url: 'https://user@url.com',
+        import_url_user: '', import_url_password: 'password'
+      })
+    end
+
+    describe '#import_url_params' do
+      it 'returns import_url built from both url and hash credentials' do
+        expect(import_url_params).to eq(
+          import_url: 'https://user:password@url.com',
+          import_type: 'git'
+        )
+      end
+    end
+  end
 end

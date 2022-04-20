@@ -33,7 +33,7 @@ module Projects
           if deleted_tags.any? && @container_repository.delete_tag_by_digest(deleted_tags.each_value.first)
             success(deleted: deleted_tags.keys)
           else
-            error('could not delete tags')
+            error("could not delete tags: #{@tag_names.join(', ')}".truncate(1000))
           end
         end
 

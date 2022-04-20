@@ -42,6 +42,7 @@ const Api = {
   projectMergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   projectRunnersPath: '/api/:version/projects/:id/runners',
   projectProtectedBranchesPath: '/api/:version/projects/:id/protected_branches',
+  projectProtectedBranchesNamePath: '/api/:version/projects/:id/protected_branches/:name',
   projectSearchPath: '/api/:version/projects/:id/search',
   projectSharePath: '/api/:version/projects/:id/share',
   projectMilestonesPath: '/api/:version/projects/:id/milestones',
@@ -93,6 +94,7 @@ const Api = {
   notificationSettingsPath: '/api/:version/notification_settings',
   deployKeysPath: '/api/:version/deploy_keys',
   secureFilesPath: '/api/:version/projects/:project_id/secure_files',
+  dependencyProxyPath: '/api/:version/groups/:id/dependency_proxy/cache',
 
   group(groupId, callback = () => {}) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -154,13 +156,7 @@ const Api = {
     });
   },
 
-  addGroupMembersByUserId(id, data) {
-    const url = Api.buildUrl(this.groupMembersPath).replace(':id', encodeURIComponent(id));
-
-    return axios.post(url, data);
-  },
-
-  inviteGroupMembersByEmail(id, data) {
+  inviteGroupMembers(id, data) {
     const url = Api.buildUrl(this.groupInvitationsPath).replace(':id', encodeURIComponent(id));
 
     return axios.post(url, data);
@@ -234,7 +230,7 @@ const Api = {
 
     return axios
       .get(url, {
-        params: Object.assign(defaults, options),
+        params: { ...defaults, ...options },
       })
       .then(({ data, headers }) => {
         callback(data);
@@ -256,13 +252,7 @@ const Api = {
       .then(({ data }) => data);
   },
 
-  addProjectMembersByUserId(id, data) {
-    const url = Api.buildUrl(this.projectMembersPath).replace(':id', encodeURIComponent(id));
-
-    return axios.post(url, data);
-  },
-
-  inviteProjectMembersByEmail(id, data) {
+  inviteProjectMembers(id, data) {
     const url = Api.buildUrl(this.projectInvitationsPath).replace(':id', encodeURIComponent(id));
 
     return axios.post(url, data);
@@ -371,6 +361,14 @@ const Api = {
       .then(({ data }) => data);
   },
 
+  projectProtectedBranch(id, branchName) {
+    const url = Api.buildUrl(Api.projectProtectedBranchesNamePath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':name', branchName);
+
+    return axios.get(url).then(({ data }) => data);
+  },
+
   projectSearch(id, options = {}) {
     const url = Api.buildUrl(Api.projectSearchPath).replace(':id', encodeURIComponent(id));
 
@@ -445,7 +443,7 @@ const Api = {
   },
 
   // Return group projects list. Filtered by query
-  groupProjects(groupId, query, options, callback) {
+  groupProjects(groupId, query, options, callback = () => {}, useCustomErrorHandler = false) {
     const url = Api.buildUrl(Api.groupProjectsPath).replace(':id', groupId);
     const defaults = {
       search: query,
@@ -455,14 +453,21 @@ const Api = {
       .get(url, {
         params: { ...defaults, ...options },
       })
-      .then(({ data }) => (callback ? callback(data) : data))
-      .catch(() => {
+      .then(({ data, headers }) => {
+        callback(data);
+
+        return { data, headers };
+      })
+      .catch((error) => {
+        if (useCustomErrorHandler) {
+          throw error;
+        }
+
         createFlash({
           message: __('Something went wrong while fetching projects'),
         });
-        if (callback) {
-          callback();
-        }
+
+        callback();
       });
   },
 
@@ -991,6 +996,12 @@ const Api = {
     const result = await axios.get(url);
 
     return result;
+  },
+
+  deleteDependencyProxyCacheList(groupId, options = {}) {
+    const url = Api.buildUrl(this.dependencyProxyPath).replace(':id', groupId);
+
+    return axios.delete(url, { params: { ...options } });
   },
 };
 

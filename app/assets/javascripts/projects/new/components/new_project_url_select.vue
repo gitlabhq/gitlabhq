@@ -13,6 +13,7 @@ import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { s__ } from '~/locale';
 import searchNamespacesWhereUserCanCreateProjectsQuery from '../queries/search_namespaces_where_user_can_create_projects.query.graphql';
 import eventHub from '../event_hub';
 
@@ -43,14 +44,7 @@ export default {
       debounce: DEBOUNCE_DELAY,
     },
   },
-  inject: [
-    'namespaceFullPath',
-    'namespaceId',
-    'rootUrl',
-    'trackLabel',
-    'userNamespaceFullPath',
-    'userNamespaceId',
-  ],
+  inject: ['namespaceFullPath', 'namespaceId', 'rootUrl', 'trackLabel', 'userNamespaceId'],
   data() {
     return {
       currentUser: {},
@@ -62,10 +56,11 @@ export default {
             fullPath: this.namespaceFullPath,
           }
         : {
-            id: this.userNamespaceId,
-            fullPath: this.userNamespaceFullPath,
+            id: undefined,
+            fullPath: s__('ProjectsNew|Pick a group or namespace'),
           },
       shouldSkipQuery: true,
+      userNamespaceId: this.userNamespaceId,
     };
   },
   computed: {
@@ -91,6 +86,9 @@ export default {
     },
     hasNoMatches() {
       return !this.hasGroupMatches && !this.hasNamespaceMatches;
+    },
+    dropdownPlaceholderClass() {
+      return this.selectedNamespace.id ? '' : 'gl-text-gray-500!';
     },
   },
   created() {
@@ -130,11 +128,18 @@ export default {
 </script>
 
 <template>
-  <gl-button-group class="input-lg">
-    <gl-button class="gl-text-truncate" label :title="rootUrl">{{ rootUrl }}</gl-button>
+  <gl-button-group class="gl-w-full">
+    <gl-button
+      class="js-group-namespace-button gl-text-truncate gl-flex-grow-0!"
+      label
+      :title="rootUrl"
+      >{{ rootUrl }}</gl-button
+    >
+
     <gl-dropdown
       :text="selectedNamespace.fullPath"
-      toggle-class="gl-rounded-top-right-base! gl-rounded-bottom-right-base! gl-w-20"
+      class="js-group-namespace-dropdown gl-flex-grow-1"
+      :toggle-class="`gl-rounded-top-right-base! gl-rounded-bottom-right-base! gl-w-20 ${dropdownPlaceholderClass}`"
       data-qa-selector="select_namespace_dropdown"
       @show="track('activate_form_input', { label: trackLabel, property: 'project_path' })"
       @shown="handleDropdownShown"
@@ -166,11 +171,13 @@ export default {
       </template>
     </gl-dropdown>
 
+    <input type="hidden" name="project[selected_namespace_id]" :value="selectedNamespace.id" />
+
     <input
       id="project_namespace_id"
       type="hidden"
       name="project[namespace_id]"
-      :value="selectedNamespace.id"
+      :value="selectedNamespace.id || userNamespaceId"
     />
   </gl-button-group>
 </template>

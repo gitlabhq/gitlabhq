@@ -6,7 +6,8 @@ import {
 } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
-import { runnersData } from '../mock_data';
+import RunnerStatusPopover from '~/runner/components/runner_status_popover.vue';
+import { runnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
 
 const mockRunners = runnersData.data.runners.nodes;
 const mockActiveRunnersCount = mockRunners.length;
@@ -28,26 +29,38 @@ describe('RunnerList', () => {
         activeRunnersCount: mockActiveRunnersCount,
         ...props,
       },
+      provide: {
+        onlineContactTimeoutSecs,
+        staleTimeoutSecs,
+      },
       ...options,
     });
   };
-
-  beforeEach(() => {
-    createComponent({}, mountExtended);
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   it('Displays headers', () => {
+    createComponent(
+      {
+        stubs: {
+          RunnerStatusPopover: {
+            template: '<div/>',
+          },
+        },
+      },
+      mountExtended,
+    );
+
     const headerLabels = findHeaders().wrappers.map((w) => w.text());
+
+    expect(findHeaders().at(0).findComponent(RunnerStatusPopover).exists()).toBe(true);
 
     expect(headerLabels).toEqual([
       'Status',
       'Runner',
       'Version',
-      'IP',
       'Jobs',
       'Tags',
       'Last contact',
@@ -56,19 +69,23 @@ describe('RunnerList', () => {
   });
 
   it('Sets runner id as a row key', () => {
-    createComponent({});
+    createComponent();
 
     expect(findTable().attributes('primary-key')).toBe('id');
   });
 
   it('Displays a list of runners', () => {
+    createComponent({}, mountExtended);
+
     expect(findRows()).toHaveLength(4);
 
     expect(findSkeletonLoader().exists()).toBe(false);
   });
 
   it('Displays details of a runner', () => {
-    const { id, description, version, ipAddress, shortSha } = mockRunners[0];
+    const { id, description, version, shortSha } = mockRunners[0];
+
+    createComponent({}, mountExtended);
 
     // Badges
     expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
@@ -83,13 +100,41 @@ describe('RunnerList', () => {
 
     // Other fields
     expect(findCell({ fieldKey: 'version' }).text()).toBe(version);
-    expect(findCell({ fieldKey: 'ipAddress' }).text()).toBe(ipAddress);
     expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('0');
     expect(findCell({ fieldKey: 'tagList' }).text()).toBe('');
     expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));
 
     // Actions
     expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
+  });
+
+  describe('When the list is checkable', () => {
+    beforeEach(() => {
+      createComponent(
+        {
+          props: {
+            checkable: true,
+          },
+        },
+        mountExtended,
+      );
+    });
+
+    it('Displays a checkbox field', () => {
+      expect(findCell({ fieldKey: 'checkbox' }).find('input').exists()).toBe(true);
+    });
+
+    it('Emits a checked event', () => {
+      const checkbox = findCell({ fieldKey: 'checkbox' }).find('input');
+
+      checkbox.setChecked();
+
+      expect(wrapper.emitted('checked')).toHaveLength(1);
+      expect(wrapper.emitted('checked')[0][0]).toEqual({
+        isChecked: true,
+        runner: mockRunners[0],
+      });
+    });
   });
 
   describe('Scoped cell slots', () => {
@@ -155,6 +200,8 @@ describe('RunnerList', () => {
   it('Shows runner identifier', () => {
     const { id, shortSha } = mockRunners[0];
     const numericId = getIdFromGraphQLId(id);
+
+    createComponent({}, mountExtended);
 
     expect(findCell({ fieldKey: 'summary' }).text()).toContain(`#${numericId} (${shortSha})`);
   });

@@ -44,6 +44,15 @@ export default {
     },
   },
   computed: {
+    internalValue: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit('change', value);
+      },
+    },
+
     featureEnabled() {
       return this.value !== 0;
     },
@@ -68,10 +77,6 @@ export default {
         this.$emit('change', firstOptionValue);
       }
     },
-
-    selectOption(e) {
-      this.$emit('change', Number(e.target.value));
-    },
   },
 };
 </script>
@@ -93,15 +98,14 @@ export default {
     />
     <div class="select-wrapper gl-flex-grow-1">
       <select
+        v-model="internalValue"
         :disabled="displaySelectInput"
         class="form-control project-repo-select select-control"
-        @change="selectOption"
       >
         <option
           v-for="[optionValue, optionName] in displayOptions"
           :key="optionValue"
           :value="optionValue"
-          :selected="optionValue === value"
         >
           {{ optionName }}
         </option>

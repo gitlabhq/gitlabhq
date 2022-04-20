@@ -1,6 +1,7 @@
 <script>
 import { GlTokenSelector, GlAvatarLabeled } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import searchProjectTopics from '../queries/project_topics_search.query.graphql';
 
 export default {
@@ -65,6 +66,7 @@ export default {
       this.$emit('update', tokens);
     },
   },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 <template>
@@ -85,7 +87,7 @@ export default {
         :entity-name="dropdownItem.name"
         :label="dropdownItem.name"
         :size="32"
-        shape="rect"
+        :shape="$options.AVATAR_SHAPE_OPTION_RECT"
       />
     </template>
   </gl-token-selector>

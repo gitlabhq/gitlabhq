@@ -1,0 +1,8 @@
+---
+name: ci_project_mirrors_consistency_check
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81836
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356583
+milestone: '14.10'
+type: development
+group: group::sharding
+default_enabled: false

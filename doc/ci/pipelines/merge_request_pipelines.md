@@ -20,19 +20,20 @@ Branch pipelines:
 - Run when you push a new commit to a branch.
 - Are the default type of pipeline.
 - Have access to [some predefined variables](../variables/predefined_variables.md).
-- Have access to [protected variables](../variables/index.md#protect-a-cicd-variable).
+- Have access to [protected variables](../variables/index.md#protect-a-cicd-variable) and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
 
 Merge request pipelines:
 
 - Run when you:
-  - Create a new merge request.
+  - Create a new merge request from a source branch with one or more commits.
   - Push a new commit to the source branch for a merge request.
   - Select **Run pipeline** from the **Pipelines** tab in a merge request. This option
-    is only available when merge request pipelines are configured for the pipeline.
+    is only available when merge request pipelines are configured for the pipeline
+    and the source branch has at least one commit.
 - Do not run by default. The jobs in the CI/CD configuration file [must be configured](#prerequisites)
   to run in merge request pipelines.
 - Have access to [more predefined variables](#available-predefined-variables).
-- Do not have access to [protected variables](../variables/index.md#protect-a-cicd-variable).
+- Do not have access to [protected variables](../variables/index.md#protect-a-cicd-variable) or [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
 
 Both of these types of pipelines can appear on the **Pipelines** tab of a merge request.
 
@@ -147,7 +148,7 @@ a warning that you must accept before you can trigger the pipeline.
 Prerequisites:
 
 - You must be a member of the parent project and have at least the [Developer role](../../user/permissions.md).
-- The fork project must be [visible](../../public_access/public_access.md) to the
+- The fork project must be [visible](../../user/public_access.md) to the
   user running the pipeline. Otherwise, the **Pipelines** tab does not display
   in the merge request.
 

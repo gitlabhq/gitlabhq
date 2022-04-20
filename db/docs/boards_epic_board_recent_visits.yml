@@ -1,0 +1,9 @@
+---
+table_name: boards_epic_board_recent_visits
+classes:
+- Boards::EpicBoardRecentVisit
+feature_categories:
+- team_planning
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60720
+milestone: '13.12'

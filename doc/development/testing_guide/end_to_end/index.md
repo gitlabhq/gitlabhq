@@ -135,7 +135,7 @@ The [existing scenarios](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/doc
 that run in the downstream `gitlab-qa-mirror` pipeline include many tests, but there are times when you might want to run a
 test or a group of tests that are different than the groups in any of the existing scenarios.
 
-For example, when we [dequarantine](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#dequarantining-tests)
+For example, when we [dequarantine](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/debugging-qa-test-failures/#dequarantining-tests)
 a flaky test we first want to make sure that it's no longer flaky.
 We can do that using the `ce:custom-parallel` and `ee:custom-parallel` jobs.
 Both are manual jobs that you can configure using custom variables.
@@ -281,6 +281,7 @@ Continued reading:
 - [Flows](flows.md)
 - [RSpec metadata/tags](rspec_metadata_tests.md)
 - [Execution context selection](execution_context_selection.md)
+- [Troubleshooting](troubleshooting.md)
 
 ## Where can I ask for help?
 

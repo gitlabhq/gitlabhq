@@ -60,6 +60,22 @@ RSpec.describe Projects::CommitController do
       end
     end
 
+    context 'with valid page' do
+      it 'responds with 200' do
+        go(id: commit.id, page: 1)
+
+        expect(response).to be_ok
+      end
+    end
+
+    context 'with invalid page' do
+      it 'does not return an error' do
+        go(id: commit.id, page: ['invalid'])
+
+        expect(response).to be_ok
+      end
+    end
+
     it 'handles binary files' do
       go(id: TestEnv::BRANCH_SHA['binary-encoding'], format: 'html')
 
@@ -212,6 +228,21 @@ RSpec.describe Projects::CommitController do
       end
     end
 
+    context 'when the revert commit is missing' do
+      it 'renders the 404 page' do
+        post(:revert,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: '1234567890'
+            })
+
+        expect(response).not_to be_successful
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when the revert was successful' do
       it 'redirects to the commits page' do
         post(:revert,
@@ -262,6 +293,21 @@ RSpec.describe Projects::CommitController do
               namespace_id: project.namespace,
               project_id: project,
               id: master_pickable_commit.id
+            })
+
+        expect(response).not_to be_successful
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the cherry-pick commit is missing' do
+      it 'renders the 404 page' do
+        post(:cherry_pick,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: '1234567890'
             })
 
         expect(response).not_to be_successful

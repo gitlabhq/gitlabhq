@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::RemoveOccurrencePipelinesAndDuplicateVulnerabilitiesFindings do
+RSpec.describe Gitlab::BackgroundMigration::RemoveOccurrencePipelinesAndDuplicateVulnerabilitiesFindings, :migration, schema: 20220326161803 do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let(:users) { table(:users) }
   let(:user) { create_user! }

@@ -1,8 +1,7 @@
 - if registration_features_can_be_prompted?
-  = render 'shared/global_alert',
-    variant: :tip,
+  = render Pajamas::AlertComponent.new(variant: :tip,
     alert_class: 'gl-my-5',
-    dismissible: false do
+    dismissible: false) do
     .gl-alert-body
       = render 'shared/registration_features_discovery_message', feature_title: s_('RegistrationFeatures|send emails to users')
 
@@ -68,5 +67,3 @@
   = gl_loading_icon(size: 'lg', css_class: 'gl-my-7')
 
 = paginate_collection @users
-
-= render partial: 'admin/users/modals'

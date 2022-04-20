@@ -12,7 +12,10 @@ class FlushCounterIncrementsWorker
 
   sidekiq_options retry: 3
 
-  feature_category_not_owned!
+  # The increments in `ProjectStatistics` are owned by several teams depending
+  # on the counter
+  feature_category :not_owned # rubocop:disable Gitlab/AvoidFeatureCategoryNotOwned
+
   urgency :low
   deduplicate :until_executing, including_scheduled: true
 

@@ -1,0 +1,9 @@
+---
+table_name: ci_runner_namespaces
+classes:
+- Ci::RunnerNamespace
+feature_categories:
+- runner
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/0970e7b9608d6ada1c0fe45242ea092ea91068aa
+milestone: '10.8'

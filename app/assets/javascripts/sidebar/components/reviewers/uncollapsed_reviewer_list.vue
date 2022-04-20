@@ -94,28 +94,40 @@ export default {
     <div
       v-for="(user, index) in users"
       :key="user.id"
-      :class="{ 'gl-mb-3': index !== users.length - 1 }"
+      :class="{
+        'gl-mb-3': index !== users.length - 1,
+        'attention-requests': glFeatures.mrAttentionRequests,
+      }"
+      class="gl-display-grid gl-align-items-center reviewer-grid"
       data-testid="reviewer"
     >
-      <attention-requested-toggle
-        v-if="glFeatures.mrAttentionRequests"
+      <reviewer-avatar-link
         :user="user"
-        type="reviewer"
-        @toggle-attention-requested="toggleAttentionRequested"
-      />
-      <reviewer-avatar-link :user="user" :root-path="rootPath" :issuable-type="issuableType">
+        :root-path="rootPath"
+        :issuable-type="issuableType"
+        class="gl-word-break-word gl-mr-2"
+        data-css-area="user"
+      >
         <div class="gl-ml-3 gl-line-height-normal gl-display-grid">
           <span>{{ user.name }}</span>
           <span>@{{ user.username }}</span>
         </div>
       </reviewer-avatar-link>
+      <attention-requested-toggle
+        v-if="glFeatures.mrAttentionRequests"
+        :user="user"
+        type="reviewer"
+        class="gl-mr-2"
+        data-css-area="attention"
+        @toggle-attention-requested="toggleAttentionRequested"
+      />
       <gl-icon
         v-if="user.approved"
         v-gl-tooltip.left
         :size="16"
         :title="approvedByTooltipTitle(user)"
         name="status-success"
-        class="float-right gl-my-2 gl-ml-2 gl-text-green-500"
+        class="float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
         data-testid="re-approved"
       />
       <gl-icon

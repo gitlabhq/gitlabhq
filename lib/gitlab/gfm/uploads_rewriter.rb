@@ -37,7 +37,7 @@ module Gitlab
           if was_embedded?(markdown)
             moved_markdown
           else
-            moved_markdown.sub(/\A!/, "")
+            moved_markdown.delete_prefix('!')
           end
         end
       end

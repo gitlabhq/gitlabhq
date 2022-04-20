@@ -111,7 +111,7 @@ module Notes
     def track_event(note, user)
       track_note_creation_usage_for_issues(note) if note.for_issue?
       track_note_creation_usage_for_merge_requests(note) if note.for_merge_request?
-      track_usage_event(:incident_management_incident_comment, user.id) if note.for_issue? && note.noteable.incident?
+      track_incident_action(user, note.noteable, 'incident_comment') if note.for_issue?
 
       if Feature.enabled?(:notes_create_service_tracking, project)
         Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))

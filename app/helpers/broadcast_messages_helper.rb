@@ -25,23 +25,7 @@ module BroadcastMessagesHelper
   def broadcast_message(message, opts = {})
     return unless message.present?
 
-    render "shared/broadcast_message", { message: message, opts: opts }
-  end
-
-  def broadcast_message_style(broadcast_message)
-    return '' if broadcast_message.notification?
-
-    style = []
-
-    if broadcast_message.color.present?
-      style << "background-color: #{broadcast_message.color}"
-    end
-
-    if broadcast_message.font.present?
-      style << "color: #{broadcast_message.font}"
-    end
-
-    style.join('; ')
+    render "shared/broadcast_message", { message: message, **opts }
   end
 
   def broadcast_message_status(broadcast_message)
@@ -68,6 +52,10 @@ module BroadcastMessagesHelper
 
   def broadcast_type_options
     BroadcastMessage.broadcast_types.keys.map { |w| [w.humanize, w] }
+  end
+
+  def broadcast_theme_options
+    BroadcastMessage.themes.keys
   end
 
   def target_access_level_options

@@ -6,6 +6,14 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         class DiffFile < Gitlab::Diff::File
+          RENDERED_TIMEOUT_BACKGROUND = 10.seconds
+          RENDERED_TIMEOUT_FOREGROUND = 1.5.seconds
+          BACKGROUND_EXECUTION = 'background'
+          FOREGROUND_EXECUTION = 'foreground'
+          LOG_IPYNBDIFF_GENERATED = 'IPYNB_DIFF_GENERATED'
+          LOG_IPYNBDIFF_TIMEOUT = 'IPYNB_DIFF_TIMEOUT'
+          LOG_IPYNBDIFF_INVALID = 'IPYNB_DIFF_INVALID'
+
           attr_reader :source_diff
 
           delegate :repository, :diff_refs, :fallback_diff_refs, :unfolded, :unique_identifier,
@@ -52,14 +60,17 @@ module Gitlab
 
           def notebook_diff
             strong_memoize(:notebook_diff) do
-              Gitlab::AppLogger.info({ message: 'IPYNB_DIFF_GENERATED' })
-
-              IpynbDiff.diff(source_diff.old_blob&.data, source_diff.new_blob&.data,
-                             raise_if_invalid_nb: true,
-                             diffy_opts: { include_diff_info: true })
+              Timeout.timeout(timeout_time) do
+                IpynbDiff.diff(source_diff.old_blob&.data, source_diff.new_blob&.data,
+                               raise_if_invalid_nb: true, diffy_opts: { include_diff_info: true })&.tap do
+                  log_event(LOG_IPYNBDIFF_GENERATED)
+                end
+              end
+            rescue Timeout::Error => e
+              rendered_timeout.increment(source: Gitlab::Runtime.sidekiq? ? BACKGROUND_EXECUTION : FOREGROUND_EXECUTION)
+              log_event(LOG_IPYNBDIFF_TIMEOUT, e)
             rescue IpynbDiff::InvalidNotebookError, IpynbDiff::InvalidTokenError => e
-              Gitlab::ErrorTracking.log_exception(e)
-              nil
+              log_event(LOG_IPYNBDIFF_INVALID, e)
             end
           end
 
@@ -87,10 +98,7 @@ module Gitlab
             line.new_pos = removal_line_maps[line.old_pos] if line.new_pos == 0 && line.old_pos != 0
 
             # Lines that do not appear on the original diff should not be commentable
-
-            unless addition_line_maps[line.new_pos] || removal_line_maps[line.old_pos]
-              line.discussable = false
-            end
+            line.type = "#{line.type || 'unchanged'}-nomappinginraw" unless addition_line_maps[line.new_pos] || removal_line_maps[line.old_pos]
 
             line.line_code = line_code(line)
             line
@@ -113,11 +121,28 @@ module Gitlab
             additions = {}
 
             source_diff.highlighted_diff_lines.each do |line|
-              removals[line.old_pos] = line.new_pos
-              additions[line.new_pos] = line.old_pos
+              removals[line.old_pos] = line.new_pos unless source_diff.new_file?
+              additions[line.new_pos] = line.old_pos unless source_diff.deleted_file?
             end
 
             [removals, additions]
+          end
+
+          def rendered_timeout
+            @rendered_timeout ||= Gitlab::Metrics.counter(
+              :ipynb_semantic_diff_timeouts_total,
+              'Counts the times notebook diff rendering timed out'
+            )
+          end
+
+          def timeout_time
+            Gitlab::Runtime.sidekiq? ? RENDERED_TIMEOUT_BACKGROUND : RENDERED_TIMEOUT_FOREGROUND
+          end
+
+          def log_event(message, error = nil)
+            Gitlab::AppLogger.info({ message: message })
+            Gitlab::ErrorTracking.track_exception(error) if error
+            nil
           end
         end
       end

@@ -139,6 +139,23 @@ RSpec.describe Gitlab::UrlSanitizer do
         it { is_expected.to eq(credentials) }
       end
     end
+
+    context 'with mixed credentials' do
+      where(:url, :credentials, :result) do
+        'http://a@example.com'   | { password: 'd' } | { user: 'a', password: 'd' }
+        'http://a:b@example.com' | { password: 'd' } | { user: 'a', password: 'd' }
+        'http://:b@example.com'  | { password: 'd' } | { user: nil, password: 'd' }
+        'http://a@example.com'   | { user: 'c' }     | { user: 'c', password: nil }
+        'http://a:b@example.com' | { user: 'c' }     | { user: 'c', password: 'b' }
+        'http://a:b@example.com' | { user: '' }      | { user: 'a', password: 'b' }
+      end
+
+      with_them do
+        subject { described_class.new(url, credentials: credentials).credentials }
+
+        it { is_expected.to eq(result) }
+      end
+    end
   end
 
   describe '#user' do

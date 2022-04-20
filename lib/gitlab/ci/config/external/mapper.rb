@@ -48,8 +48,8 @@ module Gitlab
               .flat_map(&method(:expand_project_files))
               .flat_map(&method(:expand_wildcard_paths))
               .map(&method(:expand_variables))
-              .each(&method(:verify_duplicates!))
               .map(&method(:select_first_matching))
+              .each(&method(:verify!))
           end
 
           def normalize_location(location)
@@ -111,26 +111,6 @@ module Gitlab
             end
           end
 
-          def verify_duplicates!(location)
-            logger.instrument(:config_mapper_verify) do
-              verify_max_includes_and_add_location!(location)
-            end
-          end
-
-          def verify_max_includes_and_add_location!(location)
-            if expandset.count >= MAX_INCLUDES
-              raise TooManyIncludesError, "Maximum of #{MAX_INCLUDES} nested includes are allowed!"
-            end
-
-            # Scope location to context to allow support of
-            # relative includes
-            scoped_location = location.merge(
-              context_project: context.project,
-              context_sha: context.sha)
-
-            expandset.add(scoped_location)
-          end
-
           def select_first_matching(location)
             logger.instrument(:config_mapper_select) do
               select_first_matching_without_instrumentation(location)
@@ -145,6 +125,18 @@ module Gitlab
             raise AmbigiousSpecificationError, "Include `#{masked_location(location.to_json)}` needs to match exactly one accessor!" unless matching.one?
 
             matching.first
+          end
+
+          def verify!(location_object)
+            verify_max_includes!
+            location_object.validate!
+            expandset.add(location_object)
+          end
+
+          def verify_max_includes!
+            if expandset.count >= MAX_INCLUDES
+              raise TooManyIncludesError, "Maximum of #{MAX_INCLUDES} nested includes are allowed!"
+            end
           end
 
           def expand_variables(data)

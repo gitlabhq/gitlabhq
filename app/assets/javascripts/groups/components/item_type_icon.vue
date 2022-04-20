@@ -11,18 +11,13 @@ export default {
       type: String,
       required: true,
     },
-    isGroupOpen: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
   },
   computed: {
     iconClass() {
       if (this.itemType === ITEM_TYPE.GROUP) {
-        return this.isGroupOpen ? 'folder-open' : 'folder-o';
+        return 'subgroup';
       }
-      return 'bookmark';
+      return 'project';
     },
   },
 };

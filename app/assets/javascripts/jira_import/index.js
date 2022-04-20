@@ -20,6 +20,7 @@ export default function mountJiraImportApp() {
 
   return new Vue({
     el,
+    name: 'JiraImportRoot',
     apolloProvider,
     render(createComponent) {
       return createComponent(App, {

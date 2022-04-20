@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import IssuePlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { userDataMock } from '../../../notes/mock_data';
+import { userDataMock } from 'jest/notes/mock_data';
 
 Vue.use(Vuex);
 

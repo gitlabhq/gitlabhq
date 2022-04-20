@@ -1,8 +1,0 @@
----
-name: use_model_load_balancing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73631
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344797
-milestone: '14.5'
-type: development
-group: group::sharding
-default_enabled: false

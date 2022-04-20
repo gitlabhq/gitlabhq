@@ -2,6 +2,17 @@
 
 module ContainerRegistry
   module Migration
+    # Some container repositories do not have a plan associated with them, they will be imported with
+    # the free tiers
+    FREE_TIERS = ['free', 'early_adopter', nil].freeze
+    PREMIUM_TIERS = %w[premium bronze silver premium_trial].freeze
+    ULTIMATE_TIERS = %w[ultimate gold ultimate_trial].freeze
+    PLAN_GROUPS = {
+      'free' => FREE_TIERS,
+      'premium' => PREMIUM_TIERS,
+      'ultimate' => ULTIMATE_TIERS
+    }.freeze
+
     class << self
       delegate :container_registry_import_max_tags_count, to: ::Gitlab::CurrentSettings
       delegate :container_registry_import_max_retries, to: ::Gitlab::CurrentSettings
@@ -28,9 +39,9 @@ module ContainerRegistry
 
     def self.enqueue_waiting_time
       return 0 if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_fast)
-      return 6.hours if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_slow)
+      return 165.minutes if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_slow)
 
-      1.hour
+      45.minutes
     end
 
     def self.capacity
@@ -46,8 +57,12 @@ module ContainerRegistry
       0
     end
 
-    def self.target_plan
-      Plan.find_by_name(target_plan_name)
+    def self.target_plans
+      PLAN_GROUPS[target_plan_name]
+    end
+
+    def self.all_plans?
+      Feature.enabled?(:container_registry_migration_phase2_all_plans)
     end
   end
 end

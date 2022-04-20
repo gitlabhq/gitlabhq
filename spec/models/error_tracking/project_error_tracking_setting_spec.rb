@@ -8,6 +8,8 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
   let_it_be(:project) { create(:project) }
 
+  let(:sentry_client) { instance_double(ErrorTracking::SentryClient) }
+
   subject(:setting) { build(:project_error_tracking_setting, project: project) }
 
   describe 'Associations' do
@@ -48,7 +50,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
       expect(subject.errors.messages[:project]).to include('is a required field')
     end
 
-    context 'presence validations' do
+    describe 'presence validations' do
       using RSpec::Parameterized::TableSyntax
 
       valid_api_url = 'http://example.com/api/0/projects/org-slug/proj-slug/'
@@ -83,12 +85,12 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     describe 'after_save :create_client_key!' do
       subject { build(:project_error_tracking_setting, :integrated, project: project) }
 
-      context 'no client key yet' do
+      context 'without client key' do
         it 'creates a new client key' do
           expect { subject.save! }.to change { ErrorTracking::ClientKey.count }.by(1)
         end
 
-        context 'sentry backend' do
+        context 'with sentry backend' do
           before do
             subject.integrated = false
           end
@@ -98,7 +100,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
           end
         end
 
-        context 'feature disabled' do
+        context 'when feature disabled' do
           before do
             subject.enabled = false
           end
@@ -109,7 +111,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
         end
       end
 
-      context 'client key already exists' do
+      context 'when client key already exists' do
         let!(:client_key) { create(:error_tracking_client_key, project: project) }
 
         it 'does not create a new client key' do
@@ -122,13 +124,13 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
   describe '.extract_sentry_external_url' do
     subject { described_class.extract_sentry_external_url(sentry_url) }
 
-    describe 'when passing a URL' do
+    context 'when passing a URL' do
       let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
 
       it { is_expected.to eq('https://sentrytest.gitlab.com/sentry-org/sentry-project') }
     end
 
-    describe 'when passing nil' do
+    context 'when passing nil' do
       let(:sentry_url) { nil }
 
       it { is_expected.to be_nil }
@@ -159,23 +161,15 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
   describe '#list_sentry_issues' do
     let(:issues) { [:list, :of, :issues] }
-
-    let(:opts) do
-      { issue_status: 'unresolved', limit: 10 }
-    end
-
-    let(:result) do
-      subject.list_sentry_issues(**opts)
-    end
+    let(:result) { subject.list_sentry_issues(**opts) }
+    let(:opts) { { issue_status: 'unresolved', limit: 10 } }
 
     context 'when cached' do
-      let(:sentry_client) { spy(:sentry_client) }
-
       before do
         stub_reactive_cache(subject, issues, opts)
         synchronous_reactive_cache(subject)
 
-        expect(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(subject).to receive(:sentry_client).and_return(sentry_client)
       end
 
       it 'returns cached issues' do
@@ -195,8 +189,6 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
 
     context 'when sentry client raises ErrorTracking::SentryClient::Error' do
-      let(:sentry_client) { spy(:sentry_client) }
-
       before do
         synchronous_reactive_cache(subject)
 
@@ -214,14 +206,13 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
 
     context 'when sentry client raises ErrorTracking::SentryClient::MissingKeysError' do
-      let(:sentry_client) { spy(:sentry_client) }
-
       before do
         synchronous_reactive_cache(subject)
 
         allow(subject).to receive(:sentry_client).and_return(sentry_client)
         allow(sentry_client).to receive(:list_issues).with(opts)
-          .and_raise(ErrorTracking::SentryClient::MissingKeysError, 'Sentry API response is missing keys. key not found: "id"')
+          .and_raise(ErrorTracking::SentryClient::MissingKeysError,
+                     'Sentry API response is missing keys. key not found: "id"')
       end
 
       it 'returns error' do
@@ -233,8 +224,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
 
     context 'when sentry client raises ErrorTracking::SentryClient::ResponseInvalidSizeError' do
-      let(:sentry_client) { spy(:sentry_client) }
-      let(:error_msg) {"Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}."}
+      let(:error_msg) { "Sentry API response is too big. Limit is #{Gitlab::Utils::DeepSize.human_default_max_size}." }
 
       before do
         synchronous_reactive_cache(subject)
@@ -253,8 +243,6 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
 
     context 'when sentry client raises StandardError' do
-      let(:sentry_client) { spy(:sentry_client) }
-
       before do
         synchronous_reactive_cache(subject)
 
@@ -270,7 +258,6 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
   describe '#list_sentry_projects' do
     let(:projects) { [:list, :of, :projects] }
-    let(:sentry_client) { spy(:sentry_client) }
 
     it 'calls sentry client' do
       expect(subject).to receive(:sentry_client).and_return(sentry_client)
@@ -284,19 +271,17 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
   describe '#issue_details' do
     let(:issue) { build(:error_tracking_sentry_detailed_error) }
-    let(:sentry_client) { double('sentry_client', issue_details: issue) }
     let(:commit_id) { issue.first_release_version }
-
-    let(:result) do
-      subject.issue_details
-    end
+    let(:result) { subject.issue_details(opts) }
+    let(:opts) { { issue_id: 1 } }
 
     context 'when cached' do
       before do
         stub_reactive_cache(subject, issue, {})
         synchronous_reactive_cache(subject)
 
-        expect(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(sentry_client).to receive(:issue_details).with(opts).and_return(issue)
       end
 
       it { expect(result).to eq(issue: issue) }
@@ -314,15 +299,15 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
       end
 
       context 'when repo commit matches first relase version' do
-        let(:commit) { double('commit', id: commit_id) }
-        let(:repository) { double('repository', commit: commit) }
+        let(:commit) { instance_double(Commit, id: commit_id) }
+        let(:repository) { instance_double(Repository, commit: commit) }
 
         before do
-          expect(project).to receive(:repository).and_return(repository)
+          allow(project).to receive(:repository).and_return(repository)
         end
 
         it { expect(result[:issue].gitlab_commit).to eq(commit_id) }
-        it { expect(result[:issue].gitlab_commit_path).to eq("/#{project.namespace.path}/#{project.path}/-/commit/#{commit_id}") }
+        it { expect(result[:issue].gitlab_commit_path).to eq(project_commit_path(project, commit_id)) }
       end
     end
 
@@ -333,19 +318,15 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
   end
 
   describe '#update_issue' do
-    let(:opts) do
-      { status: 'resolved' }
+    let(:result) { subject.update_issue(**opts) }
+    let(:opts) { { issue_id: 1, params: {} } }
+
+    before do
+      allow(subject).to receive(:sentry_client).and_return(sentry_client)
     end
 
-    let(:result) do
-      subject.update_issue(**opts)
-    end
-
-    let(:sentry_client) { spy(:sentry_client) }
-
-    context 'successful call to sentry' do
+    context 'when sentry response is successful' do
       before do
-        allow(subject).to receive(:sentry_client).and_return(sentry_client)
         allow(sentry_client).to receive(:update_issue).with(opts).and_return(true)
       end
 
@@ -354,9 +335,8 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
       end
     end
 
-    context 'sentry raises an error' do
+    context 'when sentry raises an error' do
       before do
-        allow(subject).to receive(:sentry_client).and_return(sentry_client)
         allow(sentry_client).to receive(:update_issue).with(opts).and_raise(StandardError)
       end
 
@@ -366,7 +346,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
-  context 'slugs' do
+  describe 'slugs' do
     shared_examples_for 'slug from api_url' do |method, slug|
       context 'when api_url is correct' do
         before do
@@ -393,9 +373,9 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     it_behaves_like 'slug from api_url', :organization_slug, 'org-slug'
   end
 
-  context 'names from api_url' do
+  describe 'names from api_url' do
     shared_examples_for 'name from api_url' do |name, titleized_slug|
-      context 'name is present in DB' do
+      context 'when name is present in DB' do
         it 'returns name from DB' do
           subject[name] = 'Sentry name'
           subject.api_url = 'http://gitlab.com/api/0/projects/org-slug/project-slug'
@@ -404,7 +384,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
         end
       end
 
-      context 'name is null in DB' do
+      context 'when name is null in DB' do
         it 'titleizes and returns slug from api_url' do
           subject[name] = nil
           subject.api_url = 'http://gitlab.com/api/0/projects/org-slug/project-slug'

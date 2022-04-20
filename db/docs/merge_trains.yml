@@ -1,0 +1,9 @@
+---
+table_name: merge_trains
+classes:
+- MergeTrain
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/827fc3ccb9335aa29fba0fc532b70015ec4c5186
+milestone: '11.11'

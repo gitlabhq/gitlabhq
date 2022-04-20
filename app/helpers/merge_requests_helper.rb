@@ -185,7 +185,7 @@ module MergeRequestsHelper
       endpoint_metadata: @endpoint_metadata_url,
       endpoint_batch: diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params),
       endpoint_coverage: @coverage_path,
-      help_page_path: help_page_path('user/discussions/index.md', anchor: 'suggest-changes'),
+      help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
       project_path: project_path(merge_request.project),
@@ -203,9 +203,7 @@ module MergeRequestsHelper
   end
 
   def award_emoji_merge_request_api_path(merge_request)
-    if Feature.enabled?(:improved_emoji_picker, merge_request.project, default_enabled: :yaml)
-      api_v4_projects_merge_requests_award_emoji_path(id: merge_request.project.id, merge_request_iid: merge_request.iid)
-    end
+    api_v4_projects_merge_requests_award_emoji_path(id: merge_request.project.id, merge_request_iid: merge_request.iid)
   end
 
   private

@@ -1585,6 +1585,31 @@ RSpec.describe Ci::Build do
 
         it { is_expected.to eq('review/x') }
       end
+
+      context 'when environment name uses a nested variable' do
+        let(:yaml_variables) do
+          [
+            { key: 'ENVIRONMENT_NAME', value: '${CI_COMMIT_REF_NAME}' }
+          ]
+        end
+
+        let(:build) do
+          create(:ci_build,
+                 ref: 'master',
+                 yaml_variables: yaml_variables,
+                 environment: 'review/$ENVIRONMENT_NAME')
+        end
+
+        it { is_expected.to eq('review/master') }
+
+        context 'when the FF ci_expand_environment_name_and_url is disabled' do
+          before do
+            stub_feature_flags(ci_expand_environment_name_and_url: false)
+          end
+
+          it { is_expected.to eq('review/${CI_COMMIT_REF_NAME}') }
+        end
+      end
     end
 
     describe '#expanded_kubernetes_namespace' do
@@ -1951,90 +1976,6 @@ RSpec.describe Ci::Build do
       end
     end
 
-    describe '#retryable?' do
-      subject { build }
-
-      context 'when build is retryable' do
-        context 'when build is successful' do
-          before do
-            build.success!
-          end
-
-          it { is_expected.to be_retryable }
-        end
-
-        context 'when build is failed' do
-          before do
-            build.drop!
-          end
-
-          it { is_expected.to be_retryable }
-        end
-
-        context 'when build is canceled' do
-          before do
-            build.cancel!
-          end
-
-          it { is_expected.to be_retryable }
-        end
-      end
-
-      context 'when build is not retryable' do
-        context 'when build is running' do
-          before do
-            build.run!
-          end
-
-          it { is_expected.not_to be_retryable }
-        end
-
-        context 'when build is skipped' do
-          before do
-            build.skip!
-          end
-
-          it { is_expected.not_to be_retryable }
-        end
-
-        context 'when build is degenerated' do
-          before do
-            build.degenerate!
-          end
-
-          it { is_expected.not_to be_retryable }
-        end
-
-        context 'when a canceled build has been retried already' do
-          before do
-            project.add_developer(user)
-            build.cancel!
-            described_class.retry(build, user)
-          end
-
-          it { is_expected.not_to be_retryable }
-        end
-
-        context 'when deployment is rejected' do
-          before do
-            build.drop!(:deployment_rejected)
-          end
-
-          it { is_expected.not_to be_retryable }
-        end
-
-        context 'when build is waiting for deployment approval' do
-          subject { build_stubbed(:ci_build, :manual, environment: 'production') }
-
-          before do
-            create(:deployment, :blocked, deployable: subject)
-          end
-
-          it { is_expected.not_to be_retryable }
-        end
-      end
-    end
-
     describe '#action?' do
       before do
         build.update!(when: value)
@@ -2308,7 +2249,7 @@ RSpec.describe Ci::Build do
   describe '#options' do
     let(:options) do
       {
-        image: "ruby:2.7",
+        image: "image:1.0",
         services: ["postgres"],
         script: ["ls -a"]
       }
@@ -2319,7 +2260,7 @@ RSpec.describe Ci::Build do
     end
 
     it 'allows to access with symbolized keys' do
-      expect(build.options[:image]).to eq('ruby:2.7')
+      expect(build.options[:image]).to eq('image:1.0')
     end
 
     it 'rejects access with string keys' do
@@ -2358,22 +2299,10 @@ RSpec.describe Ci::Build do
     end
 
     context 'when build is retried' do
-      let!(:new_build) { described_class.retry(build, user) }
+      let!(:new_build) { Ci::RetryJobService.new(project, user).execute(build)[:job] }
 
       it 'does not return any of them' do
         is_expected.not_to include(build, new_build)
-      end
-    end
-
-    context 'when other build is retried' do
-      let!(:retried_build) { described_class.retry(other_build, user) }
-
-      before do
-        retried_build.success
-      end
-
-      it 'returns a retried build' do
-        is_expected.to contain_exactly(retried_build)
       end
     end
   end
@@ -3962,8 +3891,9 @@ RSpec.describe Ci::Build do
       subject { create(:ci_build, :running, options: { script: ["ls -al"], retry: 3 }, project: project, user: user) }
 
       it 'retries build and assigns the same user to it' do
-        expect(described_class).to receive(:retry)
-          .with(subject, user)
+        expect_next_instance_of(::Ci::RetryJobService) do |service|
+          expect(service).to receive(:execute).with(subject)
+        end
 
         subject.drop!
       end
@@ -3977,10 +3907,10 @@ RSpec.describe Ci::Build do
       end
 
       context 'when retry service raises Gitlab::Access::AccessDeniedError exception' do
-        let(:retry_service) { Ci::RetryBuildService.new(subject.project, subject.user) }
+        let(:retry_service) { Ci::RetryJobService.new(subject.project, subject.user) }
 
         before do
-          allow_any_instance_of(Ci::RetryBuildService)
+          allow_any_instance_of(Ci::RetryJobService)
             .to receive(:execute)
             .with(subject)
             .and_raise(Gitlab::Access::AccessDeniedError)

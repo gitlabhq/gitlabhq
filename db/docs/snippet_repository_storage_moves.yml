@@ -1,0 +1,9 @@
+---
+table_name: snippet_repository_storage_moves
+classes:
+- Snippets::RepositoryStorageMove
+feature_categories:
+- gitaly
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45990
+milestone: '13.6'

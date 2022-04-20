@@ -49,7 +49,11 @@ module Packages
       # rubocop:enable Metrics/CyclomaticComplexity
 
       def metadatum
-        Packages::Rubygems::Metadatum.safe_find_or_create_by!(package: package)
+        # safe_find_or_create_by! was originally called here.
+        # We merely switched to `find_or_create_by!`
+        # rubocop: disable CodeReuse/ActiveRecord
+        Packages::Rubygems::Metadatum.find_or_create_by!(package: package)
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

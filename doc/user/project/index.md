@@ -11,7 +11,7 @@ your codebase. You can also use projects to track issues, plan work,
 collaborate on code, and continuously build, test, and use
 built-in CI/CD to deploy your app.
 
-Projects can be available [publicly, internally, or privately](../../public_access/public_access.md).
+Projects can be available [publicly, internally, or privately](../public_access.md).
 GitLab does not limit the number of private projects you can create.
 
 ## Project features
@@ -35,7 +35,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
   - [Deploy tokens](deploy_tokens/index.md): Manage access to the repository and Container Registry.
 - [Web IDE](web_ide/index.md)
 - [CVE ID Requests](../application_security/cve_id_request.md): Request a CVE identifier to track a
-  vulnerability in your project. **(FREE SAAS)**
+  vulnerability in your project.
 
 **Issues and merge requests:**
 
@@ -83,7 +83,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
   - [Kubernetes cluster integration](../infrastructure/clusters/index.md): Connect your GitLab project
     with a Kubernetes cluster.
   - [Feature Flags](../../operations/feature_flags.md): Ship different features
-    by dynamically toggling functionality. **(PREMIUM)**
+    by dynamically toggling functionality.
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
   website.
 
@@ -92,8 +92,8 @@ Projects include the following [features](https://about.gitlab.com/features/):
 - [Wiki](wiki/index.md): Document your GitLab project in an integrated Wiki.
 - [Snippets](../snippets.md): Store, share and collaborate on code snippets.
 - [Value Stream Analytics](../analytics/value_stream_analytics.md): Review your development lifecycle.
-- [Insights](insights/index.md): Configure the insights that matter for your projects. **(ULTIMATE)**
-- [Security Dashboard](../application_security/security_dashboard/index.md) **(ULTIMATE)**
+- [Insights](insights/index.md): Configure the insights that matter for your projects.
+- [Security Dashboard](../application_security/security_dashboard/index.md)
 - [Syntax highlighting](highlighting.md): Customize
   your code blocks, overriding the default language choice.
 - [Badges](badges.md): Add an image to the **Project information** page.
@@ -102,9 +102,9 @@ Projects include the following [features](https://about.gitlab.com/features/):
   associated with a released version of your code.
 - [Package Registry](../packages/package_registry/index.md): Publish and install packages.
 - [Code owners](code_owners.md): Specify code owners for specific files.
-- [License Compliance](../compliance/license_compliance/index.md): Approve and deny licenses for projects. **(ULTIMATE)**
-- [Dependency List](../application_security/dependency_list/index.md): View project dependencies. **(ULTIMATE)**
-- [Requirements](requirements/index.md): Create criteria to check your products against. **(ULTIMATE)**
+- [License Compliance](../compliance/license_compliance/index.md): Approve and deny licenses for projects.
+- [Dependency List](../application_security/dependency_list/index.md): View project dependencies.
+- [Requirements](requirements/index.md): Create criteria to check your products against.
 - [Code Intelligence](code_intelligence.md): Navigate code.
 
 ## Project integrations

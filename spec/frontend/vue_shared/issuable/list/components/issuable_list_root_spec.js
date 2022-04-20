@@ -1,4 +1,9 @@
-import { GlAlert, GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlKeysetPagination,
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlPagination,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueDraggable from 'vuedraggable';
 

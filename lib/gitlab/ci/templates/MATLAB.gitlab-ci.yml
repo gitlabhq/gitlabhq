@@ -1,0 +1,96 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/MATLAB.gitlab-ci.yml
+
+# Use this template to run MATLAB and Simulink as part of your CI/CD pipeline. The template has three jobs:
+# - `command`: Run MATLAB scripts, functions, and statements.
+# - `test`: Run tests authored using the MATLAB unit testing framework or Simulink Test.
+# - `test_artifacts_job`: Run MATLAB and Simulink tests, and generate test and coverage artifacts.
+#
+# You can copy and paste one or more jobs in this template into your `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# - To run MATLAB and Simulink, MATLAB must be installed on the runner that will run the jobs.
+#   The runner will use the topmost MATLAB version on the system path.
+#   The build fails if the operating system cannot find MATLAB on the path.
+# - The jobs in this template use the `matlab -batch` syntax to start MATLAB. The `-batch` option is supported
+#   in MATLAB R2019a and later.
+
+# The `command` runs MATLAB scripts, functions, and statements. To use the job in your pipeline,
+# substitute `command` with the code you want to run.
+#
+command:
+  script: matlab -batch command
+
+# If the value of `command` is the name of a MATLAB script or function, do not specify the file extension.
+# For example, to run a script named `myscript.m` in the root of your repository, specify the `command` like this:
+#
+# "myscript"
+#
+# If you specify more than one script, function, or statement, use a comma or semicolon to separate them.
+# For example, to run `myscript.m` in a folder named `myfolder` located in the root of the repository,
+# you can specify the `command` like this:
+#
+# "addpath('myfolder'), myscript"
+#
+# MATLAB exits with exit code 0 if the specified script, function, or statement executes successfully without
+# error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the job to fail. To have the
+# job fail in certain conditions, use the [`assert`][1] or [`error`][2] functions.
+#
+# [1] https://www.mathworks.com/help/matlab/ref/assert.html
+# [2] https://www.mathworks.com/help/matlab/ref/error.html
+
+# The `test` runs the MATLAB and Simulink tests in your project. It calls the [`runtests`][3] function
+# to run the tests and then the [`assertSuccess`][4] method to fail the job if any of the tests fail.
+#
+test:
+  script: matlab -batch "results = runtests('IncludeSubfolders',true), assertSuccess(results);"
+
+# By default, the job includes any files in your [MATLAB Project][5] that have a `Test` label. If your repository
+# does not have a MATLAB project, then the job includes all tests in the root of your repository or in any of
+# its subfolders.
+#
+# [3] https://www.mathworks.com/help/matlab/ref/runtests.html
+# [4] https://www.mathworks.com/help/matlab/ref/matlab.unittest.testresult.assertsuccess.html
+# [5] https://www.mathworks.com/help/matlab/projects.html
+
+# The `test_artifacts_job` runs your tests and additionally generates test and coverage artifacts.
+# It uses the plugin classes in the [`matlab.unittest.plugins`][6] package to generate a JUnit test results
+# report and a Cobertura code coverage report. Like the `run_tests` job, this job runs all the tests in your
+# project and fails the build if any of the tests fail.
+#
+test_artifacts_job:
+  script: |
+    matlab -batch "
+    import matlab.unittest.TestRunner
+    import matlab.unittest.Verbosity
+    import matlab.unittest.plugins.CodeCoveragePlugin
+    import matlab.unittest.plugins.XMLPlugin
+    import matlab.unittest.plugins.codecoverage.CoberturaFormat
+
+    suite = testsuite(pwd,'IncludeSubfolders',true);
+
+    [~,~] = mkdir('artifacts');
+
+    runner = TestRunner.withTextOutput('OutputDetail',Verbosity.Detailed);
+    runner.addPlugin(XMLPlugin.producingJUnitFormat('artifacts/results.xml'))
+    runner.addPlugin(CodeCoveragePlugin.forFolder(pwd,'IncludingSubfolders',true, ...
+        'Producing',CoberturaFormat('artifacts/cobertura.xml')))
+
+    results = runner.run(suite)
+    assertSuccess(results);"
+
+  artifacts:
+    reports:
+      junit: "./artifacts/results.xml"
+      cobertura: "./artifacts/cobertura.xml"
+    paths:
+      - "./artifacts"
+
+# You can modify the contents of the `test_artifacts_job` depending on your goals. For more
+# information on how to customize the test runner and generate various test and coverage artifacts,
+# see [Generate Artifacts Using MATLAB Unit Test Plugins][7].
+#
+# [6] https://www.mathworks.com/help/matlab/ref/matlab.unittest.plugins-package.html
+# [7] https://www.mathworks.com/help/matlab/matlab_prog/generate-artifacts-using-matlab-unit-test-plugins.html

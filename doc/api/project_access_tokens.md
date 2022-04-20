@@ -20,7 +20,7 @@ GET projects/:id/access_tokens
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
@@ -44,9 +44,46 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
+## Get a project access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
+
+Get a [project access token](../user/project/settings/project_access_tokens.md) by ID.
+
+```plaintext
+GET projects/:id/access_tokens/:token_id
+```
+
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `token_id` | integer or string | yes | ID of the project access token |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>"
+```
+
+```json
+{
+   "user_id" : 141,
+   "scopes" : [
+      "api"
+   ],
+   "name" : "token",
+   "expires_at" : "2021-01-31",
+   "id" : 42,
+   "active" : true,
+   "created_at" : "2021-01-20T22:11:48.151Z",
+   "revoked" : false,
+   "access_level": 40,
+   "last_used_at": "2022-03-15T11:05:42.437Z"
+}
+```
+
 ## Create a project access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
+> - The `token` attribute was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
 
 Create a [project access token](../user/project/settings/project_access_tokens.md).
 
@@ -56,11 +93,11 @@ POST projects/:id/access_tokens
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
-| `name` | String | yes | The name of the project access token  |
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `name` | String | yes | Name of the project access token  |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token) |
 | `access_level` | Integer | no | A valid access level. Default value is 40 (Maintainer). Other allowed values are 10 (Guest), 20 (Reporter), and 30 (Developer). |
-| `expires_at` | Date | no | The token expires at midnight UTC on that date |
+| `expires_at` | Date | no | Token expires at midnight UTC on that date |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -99,8 +136,8 @@ DELETE projects/:id/access_tokens/:token_id
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | The ID of the project access token |
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `token_id` | integer or string | yes | ID of the project access token |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>"

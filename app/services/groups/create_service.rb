@@ -57,11 +57,6 @@ module Groups
     end
 
     def after_create_hook
-      if group.persisted? && group.root?
-        delay = Namespaces::InviteTeamEmailService::DELIVERY_DELAY_IN_MINUTES
-        Namespaces::InviteTeamEmailWorker.perform_in(delay, group.id, current_user.id)
-      end
-
       track_experiment_event
     end
 

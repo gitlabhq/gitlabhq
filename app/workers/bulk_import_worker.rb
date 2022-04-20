@@ -3,14 +3,11 @@
 class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  data_consistency :always
-
-  feature_category :importers
-
-  sidekiq_options retry: false, dead: false
-
   PERFORM_DELAY = 5.seconds
-  DEFAULT_BATCH_SIZE = 5
+
+  data_consistency :always
+  feature_category :importers
+  sidekiq_options retry: false, dead: false
 
   def perform(bulk_import_id)
     @bulk_import = BulkImport.find_by_id(bulk_import_id)
@@ -19,11 +16,10 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
     return if @bulk_import.finished? || @bulk_import.failed?
     return @bulk_import.fail_op! if all_entities_failed?
     return @bulk_import.finish! if all_entities_processed? && @bulk_import.started?
-    return re_enqueue if max_batch_size_exceeded? # Do not start more jobs if max allowed are already running
 
     @bulk_import.start! if @bulk_import.created?
 
-    created_entities.first(next_batch_size).each do |entity|
+    created_entities.find_each do |entity|
       entity.create_pipeline_trackers!
 
       BulkImports::ExportRequestWorker.perform_async(entity.id)
@@ -45,10 +41,6 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
     @entities ||= @bulk_import.entities
   end
 
-  def started_entities
-    entities.with_status(:started)
-  end
-
   def created_entities
     entities.with_status(:created)
   end
@@ -59,14 +51,6 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
 
   def all_entities_failed?
     entities.all? { |entity| entity.failed? }
-  end
-
-  def max_batch_size_exceeded?
-    started_entities.count >= DEFAULT_BATCH_SIZE
-  end
-
-  def next_batch_size
-    [DEFAULT_BATCH_SIZE - started_entities.count, 0].max
   end
 
   # A new BulkImportWorker job is enqueued to either

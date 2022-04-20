@@ -81,7 +81,6 @@ describe('issue_note_form component', () => {
     it('should show conflict message if note changes outside the component', async () => {
       wrapper.setProps({
         ...props,
-        isEditing: true,
         noteBody: 'Foo',
       });
 
@@ -109,6 +108,12 @@ describe('issue_note_form component', () => {
       expect(textarea.attributes('placeholder')).toEqual(
         'Write a comment or drag your files here…',
       );
+    });
+
+    it('should set data-supports-quick-actions to enable autocomplete', () => {
+      const textarea = wrapper.find('textarea');
+
+      expect(textarea.attributes('data-supports-quick-actions')).toBe('true');
     });
 
     it('should link to markdown docs', () => {
@@ -171,7 +176,6 @@ describe('issue_note_form component', () => {
       it('should be possible to cancel', async () => {
         wrapper.setProps({
           ...props,
-          isEditing: true,
         });
         await nextTick();
 
@@ -185,7 +189,6 @@ describe('issue_note_form component', () => {
       it('should be possible to update the note', async () => {
         wrapper.setProps({
           ...props,
-          isEditing: true,
         });
         await nextTick();
 

@@ -1,0 +1,9 @@
+---
+table_name: security_orchestration_policy_rule_schedules
+classes:
+- Security::OrchestrationPolicyRuleSchedule
+feature_categories:
+- security_orchestration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59842
+milestone: '13.12'

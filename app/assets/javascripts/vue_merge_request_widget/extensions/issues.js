@@ -48,6 +48,9 @@ export default {
         { text: 'Full report', href: this.conflictsDocsPath, target: '_blank' },
       ];
     },
+    shouldCollapse() {
+      return true;
+    },
   },
   methods: {
     // Fetches the collapsed data

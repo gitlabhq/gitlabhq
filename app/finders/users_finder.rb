@@ -47,6 +47,7 @@ class UsersFinder
     users = by_without_projects(users)
     users = by_custom_attributes(users)
     users = by_non_internal(users)
+    users = by_without_project_bots(users)
 
     order(users)
   end
@@ -54,7 +55,8 @@ class UsersFinder
   private
 
   def base_scope
-    User.all.order_id_desc
+    scope = current_user&.admin? ? User.all : User.without_forbidden_states
+    scope.order_id_desc
   end
 
   def by_username(users)
@@ -136,6 +138,12 @@ class UsersFinder
     return users unless params[:non_internal]
 
     users.non_internal
+  end
+
+  def by_without_project_bots(users)
+    return users unless params[:without_project_bots]
+
+    users.without_project_bot
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

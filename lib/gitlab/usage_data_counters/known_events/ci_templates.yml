@@ -219,6 +219,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_themekit
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_terraform
   category: ci_templates
   redis_slot: ci_templates
@@ -612,6 +616,14 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_cluster_image_scanning
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_liquibase
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_matlab
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly

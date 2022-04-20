@@ -47,14 +47,14 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
       click_on "1"
 
       # Scopes
-      check "api"
+      check "read_api"
       check "read_user"
 
       click_on "Create personal access token"
 
       expect(active_personal_access_tokens).to have_text(name)
       expect(active_personal_access_tokens).to have_text('in')
-      expect(active_personal_access_tokens).to have_text('api')
+      expect(active_personal_access_tokens).to have_text('read_api')
       expect(active_personal_access_tokens).to have_text('read_user')
       expect(created_personal_access_token).not_to be_empty
     end

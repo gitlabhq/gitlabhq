@@ -1,0 +1,9 @@
+---
+table_name: pages_domains
+classes:
+- PagesDomain
+feature_categories:
+- pages
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/807a5494fa543392ea7a996b479e577d41ff6344
+milestone: '8.5'

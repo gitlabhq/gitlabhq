@@ -1,0 +1,9 @@
+---
+table_name: project_alerting_settings
+classes:
+- Alerting::ProjectAlertingSetting
+feature_categories:
+- incident_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/39aa9458c282c1dabd3623698da5af3b9a6122a9
+milestone: '11.8'

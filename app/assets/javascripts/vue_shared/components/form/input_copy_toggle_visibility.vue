@@ -110,7 +110,7 @@ export default {
           v-gl-tooltip.hover="toggleVisibilityLabel"
           :aria-label="toggleVisibilityLabel"
           :icon="toggleVisibilityIcon"
-          @click="handleToggleVisibilityButtonClick"
+          @click.stop="handleToggleVisibilityButtonClick"
         />
         <clipboard-button
           v-if="showCopyButton"

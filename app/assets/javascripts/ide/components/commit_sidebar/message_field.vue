@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlPopover } from '@gitlab/ui';
-import { __, sprintf } from '../../../locale';
+import { __, sprintf } from '~/locale';
 import { MAX_TITLE_LENGTH, MAX_BODY_LENGTH } from '../../constants';
 
 export default {

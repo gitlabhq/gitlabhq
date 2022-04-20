@@ -1,0 +1,8 @@
+---
+table_name: external_status_checks_protected_branches
+classes: []
+feature_categories:
+- source_code_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62186
+milestone: '14.0'

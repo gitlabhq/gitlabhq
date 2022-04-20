@@ -1,65 +1,103 @@
 import { GlSorting, GlSortingItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
-import createStore from '~/releases/stores';
-import createIndexModule from '~/releases/stores/modules/index';
+import { RELEASED_AT_ASC, RELEASED_AT_DESC, CREATED_ASC, CREATED_DESC } from '~/releases/constants';
 
-Vue.use(Vuex);
-
-describe('~/releases/components/releases_sort.vue', () => {
+describe('releases_sort.vue', () => {
   let wrapper;
-  let store;
-  let indexModule;
-  const projectId = 8;
 
-  const createComponent = () => {
-    indexModule = createIndexModule({ projectId });
-
-    store = createStore({
-      modules: {
-        index: indexModule,
+  const createComponent = (valueProp = RELEASED_AT_ASC) => {
+    wrapper = shallowMountExtended(ReleasesSort, {
+      propsData: {
+        value: valueProp,
       },
-    });
-
-    store.dispatch = jest.fn();
-
-    wrapper = shallowMount(ReleasesSort, {
-      store,
       stubs: {
         GlSortingItem,
       },
     });
   };
 
-  const findReleasesSorting = () => wrapper.find(GlSorting);
-  const findSortingItems = () => wrapper.findAll(GlSortingItem);
-
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  beforeEach(() => {
-    createComponent();
+  const findSorting = () => wrapper.findComponent(GlSorting);
+  const findSortingItems = () => wrapper.findAllComponents(GlSortingItem);
+  const findReleasedDateItem = () =>
+    findSortingItems().wrappers.find((item) => item.text() === 'Released date');
+  const findCreatedDateItem = () =>
+    findSortingItems().wrappers.find((item) => item.text() === 'Created date');
+  const getSortingItemsInfo = () =>
+    findSortingItems().wrappers.map((item) => ({
+      label: item.text(),
+      active: item.attributes().active === 'true',
+    }));
+
+  describe.each`
+    valueProp           | text               | isAscending | items
+    ${RELEASED_AT_ASC}  | ${'Released date'} | ${true}     | ${[{ label: 'Released date', active: true }, { label: 'Created date', active: false }]}
+    ${RELEASED_AT_DESC} | ${'Released date'} | ${false}    | ${[{ label: 'Released date', active: true }, { label: 'Created date', active: false }]}
+    ${CREATED_ASC}      | ${'Created date'}  | ${true}     | ${[{ label: 'Released date', active: false }, { label: 'Created date', active: true }]}
+    ${CREATED_DESC}     | ${'Created date'}  | ${false}    | ${[{ label: 'Released date', active: false }, { label: 'Created date', active: true }]}
+  `('component states', ({ valueProp, text, isAscending, items }) => {
+    beforeEach(() => {
+      createComponent(valueProp);
+    });
+
+    it(`when the sort is ${valueProp}, provides the GlSorting with the props text="${text}" and isAscending=${isAscending}`, () => {
+      expect(findSorting().props()).toEqual(
+        expect.objectContaining({
+          text,
+          isAscending,
+        }),
+      );
+    });
+
+    it(`when the sort is ${valueProp}, renders the expected dropdown items`, () => {
+      expect(getSortingItemsInfo()).toEqual(items);
+    });
   });
 
-  it('has all the sortable items', () => {
-    expect(findSortingItems()).toHaveLength(wrapper.vm.sortOptions.length);
+  const clickReleasedDateItem = () => findReleasedDateItem().vm.$emit('click');
+  const clickCreatedDateItem = () => findCreatedDateItem().vm.$emit('click');
+  const clickSortDirectionButton = () => findSorting().vm.$emit('sortDirectionChange');
+
+  const releasedAtDropdownItemDescription = 'released at dropdown item';
+  const createdAtDropdownItemDescription = 'created at dropdown item';
+  const sortDirectionButtonDescription = 'sort direction button';
+
+  describe.each`
+    initialValueProp    | itemClickFn                 | itemToClickDescription               | emittedEvent
+    ${RELEASED_AT_ASC}  | ${clickReleasedDateItem}    | ${releasedAtDropdownItemDescription} | ${undefined}
+    ${RELEASED_AT_ASC}  | ${clickCreatedDateItem}     | ${createdAtDropdownItemDescription}  | ${CREATED_ASC}
+    ${RELEASED_AT_ASC}  | ${clickSortDirectionButton} | ${sortDirectionButtonDescription}    | ${RELEASED_AT_DESC}
+    ${RELEASED_AT_DESC} | ${clickReleasedDateItem}    | ${releasedAtDropdownItemDescription} | ${undefined}
+    ${RELEASED_AT_DESC} | ${clickCreatedDateItem}     | ${createdAtDropdownItemDescription}  | ${CREATED_DESC}
+    ${RELEASED_AT_DESC} | ${clickSortDirectionButton} | ${sortDirectionButtonDescription}    | ${RELEASED_AT_ASC}
+    ${CREATED_ASC}      | ${clickReleasedDateItem}    | ${releasedAtDropdownItemDescription} | ${RELEASED_AT_ASC}
+    ${CREATED_ASC}      | ${clickCreatedDateItem}     | ${createdAtDropdownItemDescription}  | ${undefined}
+    ${CREATED_ASC}      | ${clickSortDirectionButton} | ${sortDirectionButtonDescription}    | ${CREATED_DESC}
+    ${CREATED_DESC}     | ${clickReleasedDateItem}    | ${releasedAtDropdownItemDescription} | ${RELEASED_AT_DESC}
+    ${CREATED_DESC}     | ${clickCreatedDateItem}     | ${createdAtDropdownItemDescription}  | ${undefined}
+    ${CREATED_DESC}     | ${clickSortDirectionButton} | ${sortDirectionButtonDescription}    | ${CREATED_ASC}
+  `('input event', ({ initialValueProp, itemClickFn, itemToClickDescription, emittedEvent }) => {
+    beforeEach(() => {
+      createComponent(initialValueProp);
+      itemClickFn();
+    });
+
+    it(`emits ${
+      emittedEvent || 'nothing'
+    } when value prop is ${initialValueProp} and the ${itemToClickDescription} is clicked`, () => {
+      expect(wrapper.emitted().input?.[0]?.[0]).toEqual(emittedEvent);
+    });
   });
 
-  it('on sort change set sorting in vuex and emit event', () => {
-    findReleasesSorting().vm.$emit('sortDirectionChange');
-    expect(store.dispatch).toHaveBeenCalledWith('index/setSorting', { sort: 'asc' });
-    expect(wrapper.emitted('sort:changed')).toBeTruthy();
-  });
-
-  it('on sort item click set sorting and emit event', () => {
-    const item = findSortingItems().at(0);
-    const { orderBy } = wrapper.vm.sortOptions[0];
-    item.vm.$emit('click');
-    expect(store.dispatch).toHaveBeenCalledWith('index/setSorting', { orderBy });
-    expect(wrapper.emitted('sort:changed')).toBeTruthy();
+  describe('prop validation', () => {
+    it('validates that the `value` prop is one of the expected sort strings', () => {
+      expect(() => {
+        createComponent('not a valid value');
+      }).toThrow('Invalid prop: custom validator check failed');
+    });
   });
 });

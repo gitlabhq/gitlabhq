@@ -171,6 +171,7 @@ export default {
         data-testid="cancel-button"
         icon="cancel"
         :title="$options.CANCEL"
+        :aria-label="$options.CANCEL"
         :disabled="cancelBtnDisabled"
         @click="cancelJob()"
       />
@@ -182,6 +183,7 @@ export default {
           v-gl-modal-directive="$options.playJobModalId"
           icon="play"
           :title="$options.ACTIONS_START_NOW"
+          :aria-label="$options.ACTIONS_START_NOW"
           data-testid="play-scheduled"
         />
         <gl-modal
@@ -196,6 +198,7 @@ export default {
         <gl-button
           icon="time-out"
           :title="$options.ACTIONS_UNSCHEDULE"
+          :aria-label="$options.ACTIONS_UNSCHEDULE"
           :disabled="unscheduleBtnDisabled"
           data-testid="unschedule"
           @click="unscheduleJob()"
@@ -207,6 +210,7 @@ export default {
           v-if="manualJobPlayable"
           icon="play"
           :title="$options.ACTIONS_PLAY"
+          :aria-label="$options.ACTIONS_PLAY"
           :disabled="playManualBtnDisabled"
           data-testid="play"
           @click="playJob()"
@@ -215,6 +219,7 @@ export default {
           v-else-if="isRetryable"
           icon="repeat"
           :title="$options.ACTIONS_RETRY"
+          :aria-label="$options.ACTIONS_RETRY"
           :method="currentJobMethod"
           :disabled="retryBtnDisabled"
           data-testid="retry"
@@ -226,6 +231,7 @@ export default {
       v-if="shouldDisplayArtifacts"
       icon="download"
       :title="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
+      :aria-label="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
       :href="artifactDownloadPath"
       rel="nofollow"
       download

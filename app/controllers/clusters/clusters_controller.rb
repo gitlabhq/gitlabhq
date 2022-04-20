@@ -14,7 +14,7 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :authorize_create_cluster!, only: [:new, :connect, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :update_applications_status, only: [:cluster_status]
-  before_action :ensure_feature_enabled!, except: :index
+  before_action :ensure_feature_enabled!, except: [:index, :new_cluster_docs]
 
   helper_method :token_in_session
 
@@ -184,7 +184,7 @@ class Clusters::ClustersController < Clusters::BaseController
   def cluster_list
     return [] unless certificate_based_clusters_enabled?
 
-    finder = ClusterAncestorsFinder.new(clusterable.subject, current_user)
+    finder = ClusterAncestorsFinder.new(clusterable.__subject__, current_user)
     clusters = finder.execute
 
     @has_ancestor_clusters = finder.has_ancestor_clusters?
@@ -253,7 +253,7 @@ class Clusters::ClustersController < Clusters::BaseController
       ]).merge(
         provider_type: :gcp,
         platform_type: :kubernetes,
-        clusterable: clusterable.subject
+        clusterable: clusterable.__subject__
       )
   end
 
@@ -274,7 +274,7 @@ class Clusters::ClustersController < Clusters::BaseController
       ]).merge(
         provider_type: :aws,
         platform_type: :kubernetes,
-        clusterable: clusterable.subject
+        clusterable: clusterable.__subject__
       )
   end
 
@@ -291,7 +291,7 @@ class Clusters::ClustersController < Clusters::BaseController
       ]).merge(
         provider_type: :user,
         platform_type: :kubernetes,
-        clusterable: clusterable.subject
+        clusterable: clusterable.__subject__
       )
   end
 
@@ -313,7 +313,7 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def gcp_cluster
-    cluster = Clusters::BuildService.new(clusterable.subject).execute
+    cluster = Clusters::BuildService.new(clusterable.__subject__).execute
     cluster.build_provider_gcp
     @gcp_cluster = cluster.present(current_user: current_user)
   end
@@ -343,7 +343,7 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def user_cluster
-    cluster = Clusters::BuildService.new(clusterable.subject).execute
+    cluster = Clusters::BuildService.new(clusterable.__subject__).execute
     cluster.build_platform_kubernetes
     @user_cluster = cluster.present(current_user: current_user)
   end

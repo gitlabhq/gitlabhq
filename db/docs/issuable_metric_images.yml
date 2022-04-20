@@ -1,0 +1,9 @@
+---
+table_name: issuable_metric_images
+classes:
+- IssuableMetricImage
+feature_categories:
+- metrics
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46845
+milestone: '13.7'

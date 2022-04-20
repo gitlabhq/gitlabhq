@@ -102,7 +102,7 @@ export function initIssueApp(issueData, store) {
           isConfidential: this.getNoteableData?.confidential,
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
-          id: this.getNoteableData?.id,
+          issueId: this.getNoteableData?.id,
         },
       });
     },

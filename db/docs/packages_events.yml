@@ -1,0 +1,9 @@
+---
+table_name: packages_events
+classes:
+- Packages::Event
+feature_categories:
+- package_registry
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41846
+milestone: '13.5'

@@ -21,7 +21,7 @@ RSpec.describe "User deletes milestone", :js do
       click_button("Delete")
       click_button("Delete milestone")
 
-      expect(page).to have_content("No milestones to show")
+      expect(page).to have_content("Use milestones to track issues and merge requests over a fixed period of time")
 
       visit(activity_project_path(project))
 

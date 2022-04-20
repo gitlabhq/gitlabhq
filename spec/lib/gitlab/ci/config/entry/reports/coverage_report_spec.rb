@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Reports::CoverageReport do
   let(:entry) { described_class.new(config) }

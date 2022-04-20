@@ -827,35 +827,54 @@ A description of a field or argument is given using the `description:`
 keyword. For example:
 
 ```ruby
-field :id, GraphQL::Types::ID, description: 'ID of the resource.'
+field :id, GraphQL::Types::ID, description: 'ID of the issue.'
+field :confidential, GraphQL::Types::Boolean, description: 'Indicates the issue is confidential.'
+field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed.'
 ```
 
-Descriptions of fields and arguments are viewable to users through:
+You can view descriptions of fields and arguments in:
 
 - The [GraphiQL explorer](#graphiql).
 - The [static GraphQL API reference](../api/graphql/reference/index.md).
 
 ### Description style guide
 
-To ensure consistency, the following should be followed whenever adding or updating
-descriptions:
+#### Language and punctuation
 
-- Mention the name of the resource in the description. Example:
-  `'Labels of the issue'` (issue being the resource).
-- Use `"{x} of the {y}"` where possible. Example: `'Title of the issue'`.
-  Do not start descriptions with `The` or `A`, for consistency and conciseness.
-- Descriptions of `GraphQL::Types::Boolean` fields should answer the question: "What does
-  this field do?". Example: `'Indicates project has a Git repository'`.
-- Always include the word `"timestamp"` when describing an argument or
-  field of type `Types::TimeType`. This lets the reader know that the
-  format of the property is `Time`, rather than just `Date`.
-- Must end with a period (`.`).
+Use `{x} of the {y}` where possible, where `{x}` is the item you're describing,
+and `{y}` is the resource it applies to. For example:
 
-Example:
+```plaintext
+ID of the issue.
+```
+
+Do not start descriptions with `The` or `A`, for consistency and conciseness.
+
+End all descriptions with a period (`.`).
+
+#### Booleans
+
+For a boolean field (`GraphQL::Types::Boolean`), start with a verb that describes
+what it does. For example:
+
+```plaintext
+Indicates the issue is confidential.
+```
+
+If necessary, provide the default. For example:
+
+```plaintext
+Sets the issue to confidential. Default is false.
+```
+
+#### `Types::TimeType` field description
+
+For `Types::TimeType` GraphQL fields, include the word `timestamp`. This lets
+the reader know that the format of the property is `Time`, rather than just `Date`.
+
+For example:
 
 ```ruby
-field :id, GraphQL::Types::ID, description: 'ID of the issue.'
-field :confidential, GraphQL::Types::Boolean, description: 'Indicates the issue is confidential.'
 field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed.'
 ```
 
@@ -1782,8 +1801,8 @@ def ready?(**args)
 end
 ```
 
-In the future this may be able to be done using `InputUnions` if
-[this RFC](https://github.com/graphql/graphql-spec/blob/master/rfcs/InputUnion.md)
+In the future this may be able to be done using `OneOf Input Objects` if
+[this RFC](https://github.com/graphql/graphql-spec/pull/825)
 is merged.
 
 ## GitLab custom scalars

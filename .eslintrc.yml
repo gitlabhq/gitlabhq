@@ -93,6 +93,10 @@ rules:
           group: internal
       alphabetize:
         order: ignore
+  'no-restricted-syntax':
+    - error
+    - selector: ImportSpecifier[imported.name='GlSkeletonLoading']
+      message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
 overrides:
   - files:
     - '{,ee/,jh/}spec/frontend*/**/*'
@@ -107,6 +111,8 @@ overrides:
           message: 'Using $nextTick from a component instance is discouraged. Import nextTick directly from the Vue package.'
         - selector: Identifier[name='setImmediate']
           message: 'Prefer explicit waitForPromises (or equivalent), or jest.runAllTimers (or equivalent) to vague setImmediate calls.'
+        - selector: ImportSpecifier[imported.name='GlSkeletonLoading']
+          message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
   - files:
       - 'config/**/*'
       - 'scripts/**/*'

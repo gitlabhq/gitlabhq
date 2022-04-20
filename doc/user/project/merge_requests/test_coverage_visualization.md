@@ -28,7 +28,7 @@ between pipeline completion and the visualization loading on the page.
 
 For the coverage analysis to work, you have to provide a properly formatted
 [Cobertura XML](https://cobertura.github.io/cobertura/) report to
-[`artifacts:reports:cobertura`](../../../ci/yaml/artifacts_reports.md#artifactsreportscobertura).
+[`artifacts:reports:cobertura`](../../../ci/yaml/artifacts_reports.md#artifactsreportscobertura-deprecated).
 This format was originally developed for Java, but most coverage analysis frameworks
 for other languages have plugins to add support for it, like:
 
@@ -156,7 +156,9 @@ test:
     - npx nyc --reporter cobertura mocha
   artifacts:
     reports:
-      cobertura: coverage/cobertura-coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
 ```
 
 ### Java and Kotlin examples
@@ -324,18 +326,13 @@ run tests:
 The following [`.gitlab-ci.yml`](../../../ci/yaml/index.md) example for Go uses:
 
 - [`go test`](https://go.dev/doc/tutorial/add-a-test) to run tests.
-- [`gocover-cobertura`](https://github.com/t-yuki/gocover-cobertura) to convert Go's coverage profile into the Cobertura XML format.
+- [`gocover-cobertura`](https://github.com/boumenot/gocover-cobertura) to convert Go's coverage profile into the Cobertura XML format.
 
-This example assumes that [Go modules](https://go.dev/ref/mod) are being used.
-Using Go modules causes paths within the coverage profile to be prefixed with your
-project's module identifier, which can be found in the `go.mod` file. This
-prefix must be removed for GitLab to parse the Cobertura XML file correctly. You can use the following `sed` command to remove the prefix:
-
-```shell
-sed -i 's;filename=\"<YOUR_MODULE_ID>/;filename=\";g' coverage.xml
-```
-
-Replace the `gitlab.com/my-group/my-project` placeholder in the following example with your own module identifier to make it work.
+This example assumes that [Go modules](https://go.dev/ref/mod)
+are being used. Please note that the `-covermode count` option does not work with the `-race` flag.
+If you want to generate code coverage while also using the `-race` flag, you must switch to
+`-covermode atomic` which is slower than `-covermode count`. See [this blog post](https://go.dev/blog/cover)
+for more details.
 
 ```yaml
 run tests:
@@ -343,9 +340,9 @@ run tests:
   image: golang:1.17
   script:
     - go install
-    - go test . -coverprofile=coverage.txt -covermode count
-    - go run github.com/t-yuki/gocover-cobertura < coverage.txt > coverage.xml
-    - sed -i 's;filename=\"gitlab.com/my-group/my-project/;filename=\";g' coverage.xml
+    - go test ./... -coverprofile=coverage.txt -covermode count
+    - go get github.com/boumenot/gocover-cobertura
+    - go run github.com/boumenot/gocover-cobertura < coverage.txt > coverage.xml
   artifacts:
     reports:
       cobertura: coverage.xml

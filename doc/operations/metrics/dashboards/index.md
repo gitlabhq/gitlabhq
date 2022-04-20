@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
-for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
+in GitLab 14.7, and is planned for removal in GitLab 16.0.
 
 By default, all projects include a [GitLab-defined Prometheus dashboard](default.md), which
 includes a few key metrics, but you can also define your own custom dashboards.

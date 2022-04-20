@@ -11,6 +11,7 @@ link: https://about.gitlab.com/handbook/communication/#top-misused-terms
 level: warning
 ignorecase: true
 swap:
+  air(?:-| )?gapped: offline environment
   click: select
   code base: codebase
   config: configuration

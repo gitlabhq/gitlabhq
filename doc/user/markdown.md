@@ -4,7 +4,9 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Flavored Markdown **(FREE)**
+# GitLab Flavored Markdown (GLFM) **(FREE)**
+
+> The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
 
 GitLab automatically renders Markdown content. For example, when you add a comment to an issue,
 you type the text in the Markdown language. When you save the issue, the text is rendered
@@ -525,6 +527,7 @@ GitLab Flavored Markdown recognizes the following:
 | merge request                                                               | `!123`                        | `namespace/project!123`                 | `project!123`                  |
 | snippet                                                                     | `$123`                        | `namespace/project$123`                 | `project$123`                  |
 | [epic](group/epics/index.md)                                                | `&123`                        | `group1/subgroup&123`                   |                                |
+| [iteration](group/iterations/index.md)                                      | `*iteration:"iteration title"`|                                         |                                |
 | [vulnerability](application_security/vulnerabilities/index.md) <sup>1</sup> | `[vulnerability:123]`         | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
 | feature flag                                                                | `[feature_flag:123]`          | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`   |
 | label by ID                                                                 | `~123`                        | `namespace/project~123`                 | `project~123`                  |
@@ -819,7 +822,8 @@ Regardless of the tag names, the relative order of the reference tags determines
 numbering.
 
 <!--
-Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+The following codeblock uses HTML to skip the Vale ReferenceLinks test.
+Do not change it back to a markdown codeblock.
 -->
 
 <pre class="highlight"><code>A footnote reference tag looks like this: [^1]
@@ -926,7 +930,8 @@ ___
 Examples:
 
 <!--
-Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+The following codeblock uses HTML to skip the Vale ReferenceLinks test.
+Do not change it back to a markdown codeblock.
 -->
 
 <pre class="highlight"><code>Inline-style (hover to see title text):
@@ -1192,17 +1197,18 @@ A new line due to the previous backslash.
 You can create links two ways: inline-style and reference-style. For example:
 
 <!--
-Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+The following codeblock uses HTML to skip the Vale ReferenceLinks test.
+Do not change it back to a markdown codeblock.
 -->
 
 <pre class="highlight"><code>- This line shows an [inline-style link](https://www.google.com)
-- This line shows a [link to a repository file in the same directory](index.md)
-- This line shows a [relative link to a readme one directory higher](../index.md)
+- This line shows a [link to a repository file in the same directory](permissions.md)
+- This line shows a [relative link to a file one directory higher](../index.md)
 - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using header ID anchors:
 
-- This line links to [a section on a different Markdown page, using a "#" and the header ID](index.md#overview)
+- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-features-permissions)
 - This line links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
 
 Using references:
@@ -1219,13 +1225,13 @@ Some text to show that the reference links can follow later.
 </code></pre>
 
 - This line shows an [inline-style link](https://www.google.com)
-- This line shows a [link to a repository file in the same directory](index.md)
-- This line shows a [relative link to a README one directory higher](../index.md)
+- This line shows a [link to a repository file in the same directory](permissions.md)
+- This line shows a [relative link to a file one directory higher](../index.md)
 - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using header ID anchors:
 
-- This line links to [a section on a different Markdown page, using a "#" and the header ID](index.md#overview)
+- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-features-permissions)
 - This line links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
 
 Using references:
@@ -1405,6 +1411,16 @@ The formula for water is H<sub>2</sub>O
 while the equation for the theory of relativity is E = mc<sup>2</sup>.
 
 <!-- vale gitlab.Spelling = YES -->
+
+### Keyboard HTML tag
+
+The `<kbd>` element is used to identify text that represents user keyboard input. Text surrounded by `<kbd>` tags is typically displayed in the browser's default monospace font.
+
+```html
+Press <kbd>Enter</kbd> to go to the next page.
+```
+
+Press <kbd>Enter</kbd> to go to the next page.
 
 ### Tables
 

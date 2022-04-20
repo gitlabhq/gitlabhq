@@ -1,0 +1,9 @@
+---
+table_name: users_security_dashboard_projects
+classes:
+- UsersSecurityDashboardProject
+feature_categories:
+- vulnerability_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18708
+milestone: '12.5'

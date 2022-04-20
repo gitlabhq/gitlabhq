@@ -8,11 +8,10 @@
         = _('Git repository URL')
     = f.text_field :import_url, value: import_url.sanitized_url,
         autocomplete: 'off', class: 'form-control gl-form-input', placeholder: 'https://gitlab.company.com/group/project.git', required: true
-    = render 'shared/global_alert',
-      variant: :danger,
+    = render Pajamas::AlertComponent.new(variant: :danger,
       alert_class: 'gl-mt-3 js-import-url-error hide',
       dismissible: false,
-      close_button_class: 'js-close-2fa-enabled-success-alert' do
+      close_button_class: 'js-close-2fa-enabled-success-alert') do
       .gl-alert-body
         = s_('Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials.')
   .row

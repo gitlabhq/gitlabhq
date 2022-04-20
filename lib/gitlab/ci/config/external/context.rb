@@ -70,14 +70,18 @@ module Gitlab
             }
           end
 
-          def mask_variables_from(location)
-            variables.reduce(location.dup) do |loc, variable|
+          def mask_variables_from(string)
+            variables.reduce(string.dup) do |str, variable|
               if variable[:masked]
-                Gitlab::Ci::MaskSecret.mask!(loc, variable[:value])
+                Gitlab::Ci::MaskSecret.mask!(str, variable[:value])
               else
-                loc
+                str
               end
             end
+          end
+
+          def includes
+            expandset.map(&:metadata)
           end
 
           protected

@@ -82,11 +82,33 @@ RSpec.describe Import::GithubController do
         expect(controller).to redirect_to(new_import_url)
         expect(flash[:alert]).to eq('Access denied to your GitHub account.')
       end
+
+      it "includes namespace_id from session if it is present" do
+        namespace_id = 1
+        session[:namespace_id] = 1
+
+        get :callback, params: { state: valid_auth_state }
+
+        expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
+      end
     end
   end
 
   describe "POST personal_access_token" do
     it_behaves_like 'a GitHub-ish import controller: POST personal_access_token'
+
+    it 'passes namespace_id param as query param if it was present' do
+      namespace_id = 5
+      status_import_url = public_send("status_import_#{provider}_url", { namespace_id: namespace_id })
+
+      allow_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
+        allow(client).to receive(:user).and_return(true)
+      end
+
+      post :personal_access_token, params: { personal_access_token: 'some-token', namespace_id: 5 }
+
+      expect(controller).to redirect_to(status_import_url)
+    end
   end
 
   describe "GET status" do
@@ -258,7 +280,9 @@ RSpec.describe Import::GithubController do
 
         context 'when user input contains colons and spaces' do
           before do
-            allow(controller).to receive(:client_repos).and_return([])
+            allow_next_instance_of(Gitlab::GithubImport::Client) do |client|
+              allow(client).to receive(:search_repos_by_name).and_return(items: [])
+            end
           end
 
           it 'sanitizes user input' do
@@ -293,6 +317,22 @@ RSpec.describe Import::GithubController do
   end
 
   describe "GET realtime_changes" do
+    let(:user) { create(:user) }
+
     it_behaves_like 'a GitHub-ish import controller: GET realtime_changes'
+
+    before do
+      assign_session_token(provider)
+    end
+
+    it 'includes stats in response' do
+      create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
+
+      get :realtime_changes
+
+      expect(json_response[0]).to include('stats')
+      expect(json_response[0]['stats']).to include('fetched')
+      expect(json_response[0]['stats']).to include('imported')
+    end
   end
 end

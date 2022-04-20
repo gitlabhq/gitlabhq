@@ -1,6 +1,3 @@
-- label_class = local_assigns.fetch(:bold_label, false) ? 'font-weight-bold' : ''
-
 = form.gitlab_ui_checkbox_component :request_access_enabled,
     _('Allow users to request access (if visibility is public or internal)'),
-    label_options: { class: label_class },
     checkbox_options: { data: { qa_selector: 'request_access_checkbox' } }

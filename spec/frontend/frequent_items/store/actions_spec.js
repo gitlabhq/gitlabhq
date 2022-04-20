@@ -29,136 +29,126 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('setNamespace', () => {
-    it('should set namespace', (done) => {
-      testAction(
+    it('should set namespace', () => {
+      return testAction(
         actions.setNamespace,
         mockNamespace,
         mockedState,
         [{ type: types.SET_NAMESPACE, payload: mockNamespace }],
         [],
-        done,
       );
     });
   });
 
   describe('setStorageKey', () => {
-    it('should set storage key', (done) => {
-      testAction(
+    it('should set storage key', () => {
+      return testAction(
         actions.setStorageKey,
         mockStorageKey,
         mockedState,
         [{ type: types.SET_STORAGE_KEY, payload: mockStorageKey }],
         [],
-        done,
       );
     });
   });
 
   describe('requestFrequentItems', () => {
-    it('should request frequent items', (done) => {
-      testAction(
+    it('should request frequent items', () => {
+      return testAction(
         actions.requestFrequentItems,
         null,
         mockedState,
         [{ type: types.REQUEST_FREQUENT_ITEMS }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveFrequentItemsSuccess', () => {
-    it('should set frequent items', (done) => {
-      testAction(
+    it('should set frequent items', () => {
+      return testAction(
         actions.receiveFrequentItemsSuccess,
         mockFrequentProjects,
         mockedState,
         [{ type: types.RECEIVE_FREQUENT_ITEMS_SUCCESS, payload: mockFrequentProjects }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveFrequentItemsError', () => {
-    it('should set frequent items error state', (done) => {
-      testAction(
+    it('should set frequent items error state', () => {
+      return testAction(
         actions.receiveFrequentItemsError,
         null,
         mockedState,
         [{ type: types.RECEIVE_FREQUENT_ITEMS_ERROR }],
         [],
-        done,
       );
     });
   });
 
   describe('fetchFrequentItems', () => {
-    it('should dispatch `receiveFrequentItemsSuccess`', (done) => {
+    it('should dispatch `receiveFrequentItemsSuccess`', () => {
       mockedState.namespace = mockNamespace;
       mockedState.storageKey = mockStorageKey;
 
-      testAction(
+      return testAction(
         actions.fetchFrequentItems,
         null,
         mockedState,
         [],
         [{ type: 'requestFrequentItems' }, { type: 'receiveFrequentItemsSuccess', payload: [] }],
-        done,
       );
     });
 
-    it('should dispatch `receiveFrequentItemsError`', (done) => {
+    it('should dispatch `receiveFrequentItemsError`', () => {
       jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
       mockedState.namespace = mockNamespace;
       mockedState.storageKey = mockStorageKey;
 
-      testAction(
+      return testAction(
         actions.fetchFrequentItems,
         null,
         mockedState,
         [],
         [{ type: 'requestFrequentItems' }, { type: 'receiveFrequentItemsError' }],
-        done,
       );
     });
   });
 
   describe('requestSearchedItems', () => {
-    it('should request searched items', (done) => {
-      testAction(
+    it('should request searched items', () => {
+      return testAction(
         actions.requestSearchedItems,
         null,
         mockedState,
         [{ type: types.REQUEST_SEARCHED_ITEMS }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveSearchedItemsSuccess', () => {
-    it('should set searched items', (done) => {
-      testAction(
+    it('should set searched items', () => {
+      return testAction(
         actions.receiveSearchedItemsSuccess,
         mockSearchedProjects,
         mockedState,
         [{ type: types.RECEIVE_SEARCHED_ITEMS_SUCCESS, payload: mockSearchedProjects }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveSearchedItemsError', () => {
-    it('should set searched items error state', (done) => {
-      testAction(
+    it('should set searched items error state', () => {
+      return testAction(
         actions.receiveSearchedItemsError,
         null,
         mockedState,
         [{ type: types.RECEIVE_SEARCHED_ITEMS_ERROR }],
         [],
-        done,
       );
     });
   });
@@ -168,10 +158,10 @@ describe('Frequent Items Dropdown Store Actions', () => {
       gon.api_version = 'v4';
     });
 
-    it('should dispatch `receiveSearchedItemsSuccess`', (done) => {
+    it('should dispatch `receiveSearchedItemsSuccess`', () => {
       mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(200, mockSearchedProjects, {});
 
-      testAction(
+      return testAction(
         actions.fetchSearchedItems,
         null,
         mockedState,
@@ -183,45 +173,41 @@ describe('Frequent Items Dropdown Store Actions', () => {
             payload: { data: mockSearchedProjects, headers: {} },
           },
         ],
-        done,
       );
     });
 
-    it('should dispatch `receiveSearchedItemsError`', (done) => {
+    it('should dispatch `receiveSearchedItemsError`', () => {
       gon.api_version = 'v4';
       mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(500);
 
-      testAction(
+      return testAction(
         actions.fetchSearchedItems,
         null,
         mockedState,
         [],
         [{ type: 'requestSearchedItems' }, { type: 'receiveSearchedItemsError' }],
-        done,
       );
     });
   });
 
   describe('setSearchQuery', () => {
-    it('should commit query and dispatch `fetchSearchedItems` when query is present', (done) => {
-      testAction(
+    it('should commit query and dispatch `fetchSearchedItems` when query is present', () => {
+      return testAction(
         actions.setSearchQuery,
         { query: 'test' },
         mockedState,
         [{ type: types.SET_SEARCH_QUERY, payload: { query: 'test' } }],
         [{ type: 'fetchSearchedItems', payload: { query: 'test' } }],
-        done,
       );
     });
 
-    it('should commit query and dispatch `fetchFrequentItems` when query is empty', (done) => {
-      testAction(
+    it('should commit query and dispatch `fetchFrequentItems` when query is empty', () => {
+      return testAction(
         actions.setSearchQuery,
         null,
         mockedState,
         [{ type: types.SET_SEARCH_QUERY, payload: null }],
         [{ type: 'fetchFrequentItems' }],
-        done,
       );
     });
   });

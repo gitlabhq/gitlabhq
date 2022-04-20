@@ -44,6 +44,53 @@ RSpec.describe Ci::NamespaceMirror do
       end
     end
 
+    describe '.contains_traversal_ids' do
+      let!(:other_group1) { create(:group) }
+      let!(:other_group2) { create(:group, parent: other_group1) }
+      let!(:other_group3) { create(:group, parent: other_group2) }
+      let!(:other_group4) { create(:group) }
+
+      subject(:result) { described_class.contains_traversal_ids(all_traversal_ids) }
+
+      context 'when passing a top-level group' do
+        let(:all_traversal_ids) do
+          [
+            [other_group1.id]
+          ]
+        end
+
+        it 'returns only itself and children of that group' do
+          expect(result.map(&:namespace)).to contain_exactly(other_group1, other_group2, other_group3)
+        end
+      end
+
+      context 'when passing many levels of groups' do
+        let(:all_traversal_ids) do
+          [
+            [other_group2.parent_id, other_group2.id],
+            [other_group3.parent_id, other_group3.id],
+            [other_group4.id]
+          ]
+        end
+
+        it 'returns only the asked group' do
+          expect(result.map(&:namespace)).to contain_exactly(other_group2, other_group3, other_group4)
+        end
+      end
+
+      context 'when passing invalid data ' do
+        let(:all_traversal_ids) do
+          [
+            ["; UPDATE"]
+          ]
+        end
+
+        it 'data is properly sanitised' do
+          expect(result.to_sql).to include "((traversal_ids[1])) IN (('; UPDATE'))"
+        end
+      end
+    end
+
     describe '.by_namespace_id' do
       subject(:result) { described_class.by_namespace_id(group2.id) }
 

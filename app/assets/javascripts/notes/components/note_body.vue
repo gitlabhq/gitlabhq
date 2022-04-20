@@ -57,14 +57,15 @@ export default {
   computed: {
     ...mapGetters(['getDiscussion', 'suggestionsCount', 'getSuggestionsFilePaths']),
     ...mapGetters('diffs', ['suggestionCommitMessage']),
+    ...mapState({
+      batchSuggestionsInfo: (state) => state.notes.batchSuggestionsInfo,
+      failedToLoadMetadata: (state) => state.page.failedToLoadMetadata,
+    }),
     discussion() {
       if (!this.note.isDraft) return {};
 
       return this.getDiscussion(this.note.discussion_id);
     },
-    ...mapState({
-      batchSuggestionsInfo: (state) => state.notes.batchSuggestionsInfo,
-    }),
     noteBody() {
       return this.note.note;
     },
@@ -165,6 +166,7 @@ export default {
       :line-type="lineType"
       :help-page-path="helpPagePath"
       :default-commit-message="commitMessage"
+      :failed-to-load-metadata="failedToLoadMetadata"
       @apply="applySuggestion"
       @applyBatch="applySuggestionBatch"
       @addToBatch="addSuggestionToBatch"
@@ -174,7 +176,6 @@ export default {
     <note-form
       v-if="isEditing"
       ref="noteForm"
-      :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"
       :line="line"

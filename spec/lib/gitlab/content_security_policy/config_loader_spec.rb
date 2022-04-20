@@ -107,24 +107,8 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         stub_env('CUSTOMER_PORTAL_URL', customer_portal_url)
       end
 
-      context 'when in production' do
-        before do
-          allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
-        end
-
-        it 'does not add CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html http://localhost/-/sandbox/mermaid")
-        end
-      end
-
-      context 'when in development' do
-        before do
-          allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
-        end
-
-        it 'adds CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html http://localhost/-/sandbox/mermaid")
-        end
+      it 'adds CUSTOMER_PORTAL_URL to CSP' do
+        expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html http://localhost/-/sandbox/mermaid #{customer_portal_url}")
       end
     end
 

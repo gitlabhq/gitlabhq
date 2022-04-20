@@ -8,14 +8,15 @@ describe QA::Support::Formatters::TestStatsFormatter do
   include QA::Specs::Helpers::RSpec
   include ActiveSupport::Testing::TimeHelpers
 
-  let(:url) { "http://influxdb.net" }
-  let(:token) { "token" }
-  let(:ci_timestamp) { "2021-02-23T20:58:41Z" }
-  let(:ci_job_name) { "test-job 1/5" }
-  let(:ci_job_url) { "url" }
-  let(:ci_pipeline_url) { "url" }
-  let(:ci_pipeline_id) { "123" }
+  let(:url) { 'http://influxdb.net' }
+  let(:token) { 'token' }
+  let(:ci_timestamp) { '2021-02-23T20:58:41Z' }
+  let(:ci_job_name) { 'test-job 1/5' }
+  let(:ci_job_url) { 'url' }
+  let(:ci_pipeline_url) { 'url' }
+  let(:ci_pipeline_id) { '123' }
   let(:run_type) { 'staging-full' }
+  let(:smoke) { 'false' }
   let(:reliable) { 'false' }
   let(:quarantined) { 'false' }
   let(:influx_client) { instance_double('InfluxDB2::Client', create_write_api: influx_write_api) }
@@ -25,6 +26,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:ui_fabrication) { 0 }
   let(:api_fabrication) { 0 }
   let(:fabrication_resources) { {} }
+  let(:testcase) { 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234' }
 
   let(:influx_client_args) do
     {
@@ -42,14 +44,15 @@ describe QA::Support::Formatters::TestStatsFormatter do
         name: 'stats export spec',
         file_path: file_path.gsub('./qa/specs/features', ''),
         status: :passed,
+        smoke: smoke,
         reliable: reliable,
         quarantined: quarantined,
-        retried: "false",
-        job_name: "test-job",
-        merge_request: "false",
+        retried: 'false',
+        job_name: 'test-job',
+        merge_request: 'false',
         run_type: run_type,
         stage: stage.match(%r{\d{1,2}_(\w+)}).captures.first,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+        testcase: testcase
       },
       fields: {
         id: './spec/support/formatters/test_stats_formatter_spec.rb[1:1]',
@@ -78,12 +81,6 @@ describe QA::Support::Formatters::TestStatsFormatter do
   around do |example|
     RSpec::Core::Sandbox.sandboxed do |config|
       config.formatter = QA::Support::Formatters::TestStatsFormatter
-
-      config.append_after do |example|
-        example.metadata[:api_fabrication] = Thread.current[:api_fabrication]
-        example.metadata[:browser_ui_fabrication] = Thread.current[:browser_ui_fabrication]
-      end
-
       config.before(:context) { RSpec.current_example = nil }
 
       example.run
@@ -93,10 +90,11 @@ describe QA::Support::Formatters::TestStatsFormatter do
   before do
     allow(InfluxDB2::Client).to receive(:new).with(url, token, **influx_client_args) { influx_client }
     allow(QA::Tools::TestResourceDataProcessor).to receive(:resources) { fabrication_resources }
+    allow_any_instance_of(RSpec::Core::Example::ExecutionResult).to receive(:run_time).and_return(0) # rubocop:disable RSpec/AnyInstanceOf
   end
 
-  context "without influxdb variables configured" do
-    it "skips export without influxdb url" do
+  context 'without influxdb variables configured' do
+    it 'skips export without influxdb url' do
       stub_env('QA_INFLUXDB_URL', nil)
       stub_env('QA_INFLUXDB_TOKEN', nil)
 
@@ -105,7 +103,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       expect(influx_client).not_to have_received(:create_write_api)
     end
 
-    it "skips export without influxdb token" do
+    it 'skips export without influxdb token' do
       stub_env('QA_INFLUXDB_URL', url)
       stub_env('QA_INFLUXDB_TOKEN', nil)
 
@@ -138,6 +136,19 @@ describe QA::Support::Formatters::TestStatsFormatter do
       it 'exports data to influxdb with correct reliable tag' do
         run_spec do
           it('spec', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
+        end
+
+        expect(influx_write_api).to have_received(:write).once
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with smoke spec' do
+      let(:smoke) { 'true' }
+
+      it 'exports data to influxdb with correct smoke tag' do
+        run_spec do
+          it('spec', :smoke, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).once
@@ -210,16 +221,18 @@ describe QA::Support::Formatters::TestStatsFormatter do
     end
 
     context 'with fabrication runtimes' do
-      let(:ui_fabrication) { 10 }
       let(:api_fabrication) { 4 }
-
-      before do
-        Thread.current[:api_fabrication] = api_fabrication
-        Thread.current[:browser_ui_fabrication] = ui_fabrication
-      end
+      let(:ui_fabrication) { 10 }
+      let(:testcase) { nil }
 
       it 'exports data to influxdb with fabrication times' do
-        run_spec
+        run_spec do
+          # Main logic tracks fabrication time in thread local variable and injects it as metadata from
+          # global after hook defined in main spec_helper.
+          #
+          # Inject the values directly since we do not load e2e test spec_helper in unit tests
+          it('spec', api_fabrication: 4, browser_ui_fabrication: 10) {}
+        end
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])

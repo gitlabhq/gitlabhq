@@ -1,0 +1,12 @@
+{
+  "gitlab-ci-variables-object": {
+    "stage": "test",
+    "script": ["true"],
+    "variables": {
+      "DEPLOY_ENVIRONMENT": {
+        "value": "staging",
+        "description": "The deployment target. Change this variable to 'canary' or 'production' if needed."
+      }
+    }
+  }
+}

@@ -14,7 +14,7 @@ full list of reference architectures, see
 > - **High Availability:** Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
 > - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Performance tested daily with the [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance)**:
+> - **Validation and test results:** The Quality Engineering team does [regular smoke and performance tests](index.md#validation-and-test-results) to ensure the reference architectures remain compliant
 >   - **Test requests per second (RPS) rates:** API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)**
 
@@ -42,7 +42,7 @@ full list of reference architectures, see
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
-5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster). If Gitaly Sharded is desired, the same specs listed above for `Gitaly` should be used.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -1157,8 +1157,8 @@ are supported and can be added if needed.
 In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being designated the primary, and failover occurs automatically if the primary node goes down.
 
 NOTE:
-Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster).
-For implementations with Gitaly Sharded, the same Gitaly specs should be used. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
+Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
+For implementations with sharded Gitaly, use the same Gitaly specs. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
 
 The recommended cluster setup includes the following components:
 
@@ -1455,10 +1455,12 @@ To configure the Praefect nodes, on each one:
 ### Configure Gitaly
 
 The [Gitaly](../gitaly/index.md) server nodes that make up the cluster have
-requirements that are dependent on data, specifically the number of projects
-and those projects' sizes. It's recommended that a Gitaly Cluster stores
-no more than 5 TB of data on each node. Depending on your
-repository storage requirements, you may require additional Gitaly Clusters.
+requirements that are dependent on data and load.
+
+NOTE:
+The Reference Architecture specs have been designed with good headroom in mind
+but for Gitaly, increased specs or additional
+Gitaly Cluster arrays may be required for notably large data sets or load.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -1531,6 +1533,26 @@ On each node:
    # Recommended to be enabled for improved performance but can notably increase disk I/O
    # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
    gitaly['pack_objects_cache_enabled'] = true
+
+   # Configure the Consul agent
+   consul['enable'] = true
+   ## Enable service discovery for Prometheus
+   consul['monitoring_service_discovery'] = true
+
+   # START user configuration
+   # Please set the real values as explained in Required Information section
+   #
+   ## The IPs of the Consul server nodes
+   ## You can also use FQDNs and intermix them with IPs
+   consul['configuration'] = {
+      retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13),
+   }
+
+   # Set the network addresses that the exporters will listen on for monitoring
+   node_exporter['listen_address'] = '0.0.0.0:9100'
+   gitaly['prometheus_listen_addr'] = '0.0.0.0:9236'
+   #
+   # END user configuration
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective server:
@@ -1768,6 +1790,7 @@ To configure the Sidekiq nodes, on each one:
    # Object Storage
    ## This is an example for configuring Object Storage on GCP
    ## Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['enabled'] = true
    gitlab_rails['object_store']['connection'] = {
      'provider' => 'Google',
      'google_project' => '<gcp-project-name>',
@@ -1914,6 +1937,7 @@ On each node perform the following:
 
    # This is an example for configuring Object Storage on GCP
    # Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['enabled'] = true
    gitlab_rails['object_store']['connection'] = {
      'provider' => 'Google',
      'google_project' => '<gcp-project-name>',
@@ -2093,6 +2117,30 @@ To configure the Monitoring node:
       retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
    }
 
+   # Configure Prometheus to scrape services not covered by discovery
+   prometheus['scrape_configs'] = [
+      {
+         'job_name': 'pgbouncer',
+         'static_configs' => [
+            'targets' => [
+            "10.6.0.31:9188",
+            "10.6.0.32:9188",
+            "10.6.0.33:9188",
+            ],
+         ],
+      },
+      {
+         'job_name': 'praefect',
+         'static_configs' => [
+            'targets' => [
+            "10.6.0.131:9652",
+            "10.6.0.132:9652",
+            "10.6.0.133:9652",
+            ],
+         ],
+      },
+   ]
+
    # Nginx - For Grafana access
    nginx['enable'] = true
    ```
@@ -2119,7 +2167,7 @@ GitLab has been tested on a number of object storage providers:
 
 - [Amazon S3](https://aws.amazon.com/s3/)
 - [Google Cloud Storage](https://cloud.google.com/storage)
-- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
+- [Digital Ocean Spaces](http://www.digitalocean.com/products/spaces)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
@@ -2136,7 +2184,8 @@ There are two ways of specifying object storage configuration in GitLab:
 Starting with GitLab 13.2, consolidated object storage configuration is available. It simplifies your GitLab configuration since the connection details are shared across object types. Refer to [Consolidated object storage configuration](../object_storage.md#consolidated-object-storage-configuration) guide for instructions on how to set it up.
 
 GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared via NFS on any GitLab Rails and Sidekiq nodes.
-In GitLab 13.6 and later, it's recommended to switch to [Incremental logging](../job_logs.md#incremental-logging-architecture), which uses Redis instead of disk space for temporary caching of job logs.
+
+In GitLab 13.6 and later, it's also recommended to switch to [Incremental logging](../job_logs.md#incremental-logging-architecture), which uses Redis instead of disk space for temporary caching of job logs. This is required when no NFS node has been deployed.
 
 For configuring object storage in GitLab 13.1 and earlier, or for storage types not
 supported by consolidated configuration form, refer to the following guides based
@@ -2236,11 +2285,11 @@ use Google Cloud's Kubernetes Engine (GKE) and associated machine types, but the
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 
-| Service                                               | Nodes | Configuration           | GCP              | Allocatable CPUs and Memory |
-|-------------------------------------------------------|-------|-------------------------|------------------|-----------------------------|
-| Webservice                                            | 4     | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | 127.5 vCPU, 118 GB memory   |
-| Sidekiq                                               | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 15.5 vCPU, 50 GB memory     |
-| Supporting services such as NGINX, Prometheus         | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
+| Service                                       | Nodes | Configuration           | GCP             | AWS          | Min Allocatable CPUs and Memory |
+|-----------------------------------------------|-------|-------------------------|-----------------|--------------|---------------------------------|
+| Webservice                                    | 4     | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | `c5.9xlarge` | 127.5 vCPU, 118 GB memory       |
+| Sidekiq                                       | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 15.5 vCPU, 50 GB memory         |
+| Supporting services such as NGINX, Prometheus | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 7.75 vCPU, 25 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
@@ -2250,18 +2299,18 @@ future with further specific cloud provider details.
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
-| Service                                             | Nodes | Configuration           | GCP              |
-|-----------------------------------------------------|-------|-------------------------|------------------|
-| Consul<sup>1</sup>                                  | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| PostgreSQL<sup>1</sup>                              | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8`  |
-| PgBouncer<sup>1</sup>                               | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Internal load balancing node<sup>3</sup>            | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Redis/Sentinel - Cache<sup>2</sup>                  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Redis/Sentinel - Persistent<sup>2</sup>             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Gitaly<sup>5</sup>                                  | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` |
-| Praefect<sup>5</sup>                                | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Praefect PostgreSQL<sup>1</sup>                     | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Object storage<sup>4</sup>                          | n/a   | n/a                     | n/a              |
+| Service                                  | Nodes | Configuration         | GCP              | AWS          |
+|------------------------------------------|-------|-----------------------|------------------|--------------|
+| Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| PostgreSQL<sup>1</sup>                   | 3     | 8 vCPU, 30 GB memory  | `n1-standard-8`  | `m5.2xlarge` |
+| PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| Internal load balancing node<sup>3</sup> | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`  |
+| Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`  |
+| Gitaly<sup>5</sup>                       | 3     | 16 vCPU, 60 GB memory | `n1-standard-16` | `m5.4xlarge` |
+| Praefect<sup>5</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
+| Object storage<sup>4</sup>               | n/a   | n/a                   | n/a              | n/a          |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -2269,7 +2318,7 @@ services where applicable):
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
-5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster). If Gitaly Sharded is desired, the same specs listed above for `Gitaly` should be used.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:

@@ -43,12 +43,7 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   def logs_tree
-    tree_summary = ::Gitlab::TreeSummary.new(
-      @commit, @project, current_user,
-      path: @path, offset: permitted_params[:offset], limit: 25)
-
     respond_to do |format|
-      format.html { render_404 }
       format.json do
         logs, next_offset = tree_summary.fetch_logs
 
@@ -60,6 +55,13 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   private
+
+  def tree_summary
+    ::Gitlab::TreeSummary.new(
+      @commit, @project, current_user,
+      path: @path, offset: permitted_params[:offset], limit: 25
+    )
+  end
 
   def validate_ref_id
     return not_found if permitted_params[:id].present? && permitted_params[:id] !~ Gitlab::PathRegex.git_reference_regex

@@ -2,11 +2,11 @@
 import { uniqueId } from 'lodash';
 import Api from '~/api';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
+import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import { GROUP_FILTERS, GROUP_MODAL_LABELS } from '../constants';
 import eventHub from '../event_hub';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import GroupSelect from './group_select.vue';
-import InviteModalBase from './invite_modal_base.vue';
 
 export default {
   name: 'InviteMembersModal',
@@ -16,6 +16,10 @@ export default {
   },
   props: {
     id: {
+      type: String,
+      required: true,
+    },
+    rootId: {
       type: String,
       required: true,
     },
@@ -147,6 +151,8 @@ export default {
     :label-intro-text="labelIntroText"
     :label-search-field="$options.labels.searchField"
     :submit-disabled="inviteDisabled"
+    :new-group-to-invite="groupToBeSharedWith.id"
+    :root-group-id="rootId"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
     @reset="resetFields"
@@ -155,7 +161,6 @@ export default {
     <template #select>
       <group-select
         v-model="groupToBeSharedWith"
-        :access-levels="accessLevels"
         :groups-filter="groupSelectFilter"
         :parent-group-id="groupSelectParentId"
         :invalid-groups="invalidGroups"

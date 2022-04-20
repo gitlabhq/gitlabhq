@@ -118,9 +118,9 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
         expect(service).to receive(:execute).and_return([lfs_download_object])
       end
 
-      expect(Gitlab::GithubImport::ImportLfsObjectWorker)
-        .to receive(:perform_async)
-        .with(project.id, an_instance_of(Hash), an_instance_of(String))
+      expect(Gitlab::GithubImport::ImportLfsObjectWorker).to receive(:bulk_perform_in).with(1.second, [
+          [project.id, an_instance_of(Hash), an_instance_of(String)]
+        ], batch_size: 1000, batch_delay: 1.minute)
 
       waiter = importer.parallel_import
 

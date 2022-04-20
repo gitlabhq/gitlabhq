@@ -1,22 +1,3 @@
 # frozen_string_literal: true
-# rubocop:disable Style/SignalException
 
-CHANGED_FILES_MESSAGE = <<~MSG
-For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
-Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/development/usage_ping.html).
-
-For MR review guidelines, see the [Service Ping review guidelines](https://docs.gitlab.com/ee/development/usage_ping/review_guidelines.html) or the [Snowplow review guidelines](https://docs.gitlab.com/ee/development/snowplow/review_guidelines.html).
-
-%<changed_files>s
-
-MSG
-
-# exit if not matching files or if no product intelligence labels
-product_intelligence_paths_to_review = helper.changes_by_category[:product_intelligence]
-labels_to_add = product_intelligence.missing_labels
-
-return if product_intelligence_paths_to_review.empty? || product_intelligence.skip_review?
-
-warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(product_intelligence_paths_to_review)) unless product_intelligence.has_approved_label?
-
-helper.labels_to_add.concat(labels_to_add) unless labels_to_add.empty?
+product_intelligence.check!

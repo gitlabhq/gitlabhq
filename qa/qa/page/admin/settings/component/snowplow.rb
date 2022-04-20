@@ -31,11 +31,11 @@ module QA
             private
 
             def check_snowplow_enabled_checkbox
-              check_element(:snowplow_enabled_checkbox)
+              check_element(:snowplow_enabled_checkbox, true)
             end
 
             def uncheck_snowplow_enabled_checkbox
-              uncheck_element(:snowplow_enabled_checkbox)
+              uncheck_element(:snowplow_enabled_checkbox, true)
             end
 
             def click_save_changes_button

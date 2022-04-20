@@ -3,6 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Seeder do
+  describe Namespace do
+    subject { described_class }
+
+    it 'has not_mass_generated scope' do
+      expect { Namespace.not_mass_generated }.to raise_error(NoMethodError)
+
+      Gitlab::Seeder.quiet do
+        expect { Namespace.not_mass_generated }.not_to raise_error
+      end
+    end
+
+    it 'includes NamespaceSeed module' do
+      Gitlab::Seeder.quiet do
+        is_expected.to include_module(Gitlab::Seeder::NamespaceSeed)
+      end
+    end
+  end
+
   describe '.quiet' do
     let(:database_base_models) do
       {
@@ -48,6 +66,15 @@ RSpec.describe Gitlab::Seeder do
       end
 
       notification_service.new_note(note)
+    end
+  end
+
+  describe '.log_message' do
+    it 'prepends timestamp to the logged message' do
+      freeze_time do
+        message = "some message."
+        expect { described_class.log_message(message) }.to output(/#{Time.current}: #{message}/).to_stdout
+      end
     end
   end
 end

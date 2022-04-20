@@ -35,7 +35,7 @@ Vue component, but the integration of Source Editor is generally straightforward
    const editor = new SourceEditor({
      // Editor Options.
      // The list of all accepted options can be found at
-     // https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.editoroption.html
+     // https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.EditorOption.html
    });
    ```
 
@@ -56,19 +56,19 @@ An instance of Source Editor accepts the following configuration options:
 | `blobContent`  | `false` | `String`: The initial content to render in the editor. |
 | `extensions`   | `false` | `Array`: Extensions to use in this instance. |
 | `blobGlobalId` | `false` | `String`: An auto-generated property.<br>**Note:** This property may go away in the future. Do not pass `blobGlobalId` unless you know what you're doing.|
-| Editor Options | `false` | `Object(s)`: Any property outside of the list above is treated as an Editor Option for this particular instance. Use this field to override global Editor Options on the instance level. A full [index of Editor Options](https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.editoroption.html) is available. |
+| Editor Options | `false` | `Object(s)`: Any property outside of the list above is treated as an Editor Option for this particular instance. Use this field to override global Editor Options on the instance level. A full [index of Editor Options](https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.EditorOption.html) is available. |
 
 ## API
 
 The editor uses the same public API as
-[provided by Monaco editor](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html)
+[provided by Monaco editor](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html)
 with additional functions on the instance level:
 
 | Function              | Arguments | Description
 | --------------------- | ----- | ----- |
 | `updateModelLanguage` | `path`: String | Updates the instance's syntax highlighting to follow the extension of the passed `path`. Available only on the instance level.|
 | `use`                 | Array of objects | Array of extensions to apply to the instance. Accepts only the array of _objects_. You must fetch the extensions' ES6 modules must be fetched and resolved in your views or components before they are passed to `use`. This property is available on _instance_ (applies extension to this particular instance) and _global editor_ (applies the same extension to all instances) levels. |
-| Monaco Editor options | See [documentation](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html) | Default Monaco editor options |
+| Monaco Editor options | See [documentation](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html) | Default Monaco editor options |
 
 ## Tips
 
@@ -202,7 +202,7 @@ export default {
 
 In the code example, `this` refers to the instance. By referring to the instance,
 we can access the complete underlying
-[Monaco editor API](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html),
+[Monaco editor API](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html),
 which includes functions like `getValue()`.
 
 Now let's use our extension:

@@ -96,6 +96,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
       expect(new_record_1.reload).to have_attributes(status: 1, original: 'updated', renamed: 'updated')
       expect(new_record_2.reload).to have_attributes(status: 1, original: nil, renamed: nil)
     end
+
+    it 'requires the helper to run in ddl mode' do
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_ddl_mode!)
+
+      migration.public_send(operation, :_test_table, :original, :renamed)
+    end
   end
 
   describe '#rename_column_concurrently' do

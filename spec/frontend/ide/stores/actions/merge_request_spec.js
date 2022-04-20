@@ -63,56 +63,47 @@ describe('IDE store merge request actions', () => {
           mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(200, mockData);
         });
 
-        it('calls getProjectMergeRequests service method', (done) => {
-          store
-            .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
-            .then(() => {
-              expect(service.getProjectMergeRequests).toHaveBeenCalledWith(TEST_PROJECT, {
-                source_branch: 'bar',
-                source_project_id: TEST_PROJECT_ID,
-                state: 'opened',
-                order_by: 'created_at',
-                per_page: 1,
-              });
-
-              done();
-            })
-            .catch(done.fail);
+        it('calls getProjectMergeRequests service method', async () => {
+          await store.dispatch('getMergeRequestsForBranch', {
+            projectId: TEST_PROJECT,
+            branchId: 'bar',
+          });
+          expect(service.getProjectMergeRequests).toHaveBeenCalledWith(TEST_PROJECT, {
+            source_branch: 'bar',
+            source_project_id: TEST_PROJECT_ID,
+            state: 'opened',
+            order_by: 'created_at',
+            per_page: 1,
+          });
         });
 
-        it('sets the "Merge Request" Object', (done) => {
-          store
-            .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
-            .then(() => {
-              expect(store.state.projects.abcproject.mergeRequests).toEqual({
-                2: expect.objectContaining(mrData),
-              });
-              done();
-            })
-            .catch(done.fail);
+        it('sets the "Merge Request" Object', async () => {
+          await store.dispatch('getMergeRequestsForBranch', {
+            projectId: TEST_PROJECT,
+            branchId: 'bar',
+          });
+          expect(store.state.projects.abcproject.mergeRequests).toEqual({
+            2: expect.objectContaining(mrData),
+          });
         });
 
-        it('sets "Current Merge Request" object to the most recent MR', (done) => {
-          store
-            .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
-            .then(() => {
-              expect(store.state.currentMergeRequestId).toEqual('2');
-              done();
-            })
-            .catch(done.fail);
+        it('sets "Current Merge Request" object to the most recent MR', async () => {
+          await store.dispatch('getMergeRequestsForBranch', {
+            projectId: TEST_PROJECT,
+            branchId: 'bar',
+          });
+          expect(store.state.currentMergeRequestId).toEqual('2');
         });
 
-        it('does nothing if user cannot read MRs', (done) => {
+        it('does nothing if user cannot read MRs', async () => {
           store.state.projects[TEST_PROJECT].userPermissions[PERMISSION_READ_MR] = false;
 
-          store
-            .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
-            .then(() => {
-              expect(service.getProjectMergeRequests).not.toHaveBeenCalled();
-              expect(store.state.currentMergeRequestId).toBe('');
-            })
-            .then(done)
-            .catch(done.fail);
+          await store.dispatch('getMergeRequestsForBranch', {
+            projectId: TEST_PROJECT,
+            branchId: 'bar',
+          });
+          expect(service.getProjectMergeRequests).not.toHaveBeenCalled();
+          expect(store.state.currentMergeRequestId).toBe('');
         });
       });
 
@@ -122,15 +113,13 @@ describe('IDE store merge request actions', () => {
           mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(200, []);
         });
 
-        it('does not fail if there are no merge requests for current branch', (done) => {
-          store
-            .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'foo' })
-            .then(() => {
-              expect(store.state.projects[TEST_PROJECT].mergeRequests).toEqual({});
-              expect(store.state.currentMergeRequestId).toEqual('');
-              done();
-            })
-            .catch(done.fail);
+        it('does not fail if there are no merge requests for current branch', async () => {
+          await store.dispatch('getMergeRequestsForBranch', {
+            projectId: TEST_PROJECT,
+            branchId: 'foo',
+          });
+          expect(store.state.projects[TEST_PROJECT].mergeRequests).toEqual({});
+          expect(store.state.currentMergeRequestId).toEqual('');
         });
       });
     });
@@ -140,17 +129,18 @@ describe('IDE store merge request actions', () => {
         mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).networkError();
       });
 
-      it('flashes message, if error', (done) => {
-        store
-          .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
+      it('flashes message, if error', () => {
+        return store
+          .dispatch('getMergeRequestsForBranch', {
+            projectId: TEST_PROJECT,
+            branchId: 'bar',
+          })
           .catch(() => {
             expect(createFlash).toHaveBeenCalled();
             expect(createFlash.mock.calls[0][0].message).toBe(
               'Error fetching merge requests for bar',
             );
-          })
-          .then(done)
-          .catch(done.fail);
+          });
       });
     });
   });
@@ -165,29 +155,15 @@ describe('IDE store merge request actions', () => {
           .reply(200, { title: 'mergerequest' });
       });
 
-      it('calls getProjectMergeRequestData service method', (done) => {
-        store
-          .dispatch('getMergeRequestData', { projectId: TEST_PROJECT, mergeRequestId: 1 })
-          .then(() => {
-            expect(service.getProjectMergeRequestData).toHaveBeenCalledWith(TEST_PROJECT, 1);
-
-            done();
-          })
-          .catch(done.fail);
+      it('calls getProjectMergeRequestData service method', async () => {
+        await store.dispatch('getMergeRequestData', { projectId: TEST_PROJECT, mergeRequestId: 1 });
+        expect(service.getProjectMergeRequestData).toHaveBeenCalledWith(TEST_PROJECT, 1);
       });
 
-      it('sets the Merge Request Object', (done) => {
-        store
-          .dispatch('getMergeRequestData', { projectId: TEST_PROJECT, mergeRequestId: 1 })
-          .then(() => {
-            expect(store.state.currentMergeRequestId).toBe(1);
-            expect(store.state.projects[TEST_PROJECT].mergeRequests['1'].title).toBe(
-              'mergerequest',
-            );
-
-            done();
-          })
-          .catch(done.fail);
+      it('sets the Merge Request Object', async () => {
+        await store.dispatch('getMergeRequestData', { projectId: TEST_PROJECT, mergeRequestId: 1 });
+        expect(store.state.currentMergeRequestId).toBe(1);
+        expect(store.state.projects[TEST_PROJECT].mergeRequests['1'].title).toBe('mergerequest');
       });
     });
 
@@ -196,32 +172,28 @@ describe('IDE store merge request actions', () => {
         mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1/).networkError();
       });
 
-      it('dispatches error action', (done) => {
+      it('dispatches error action', () => {
         const dispatch = jest.fn();
 
-        getMergeRequestData(
+        return getMergeRequestData(
           {
             commit() {},
             dispatch,
             state: store.state,
           },
           { projectId: TEST_PROJECT, mergeRequestId: 1 },
-        )
-          .then(done.fail)
-          .catch(() => {
-            expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred while loading the merge request.',
-              action: expect.any(Function),
-              actionText: 'Please try again',
-              actionPayload: {
-                projectId: TEST_PROJECT,
-                mergeRequestId: 1,
-                force: false,
-              },
-            });
-
-            done();
+        ).catch(() => {
+          expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
+            text: 'An error occurred while loading the merge request.',
+            action: expect.any(Function),
+            actionText: 'Please try again',
+            actionPayload: {
+              projectId: TEST_PROJECT,
+              mergeRequestId: 1,
+              force: false,
+            },
           });
+        });
       });
     });
   });
@@ -240,27 +212,22 @@ describe('IDE store merge request actions', () => {
           .reply(200, { title: 'mergerequest' });
       });
 
-      it('calls getProjectMergeRequestChanges service method', (done) => {
-        store
-          .dispatch('getMergeRequestChanges', { projectId: TEST_PROJECT, mergeRequestId: 1 })
-          .then(() => {
-            expect(service.getProjectMergeRequestChanges).toHaveBeenCalledWith(TEST_PROJECT, 1);
-
-            done();
-          })
-          .catch(done.fail);
+      it('calls getProjectMergeRequestChanges service method', async () => {
+        await store.dispatch('getMergeRequestChanges', {
+          projectId: TEST_PROJECT,
+          mergeRequestId: 1,
+        });
+        expect(service.getProjectMergeRequestChanges).toHaveBeenCalledWith(TEST_PROJECT, 1);
       });
 
-      it('sets the Merge Request Changes Object', (done) => {
-        store
-          .dispatch('getMergeRequestChanges', { projectId: TEST_PROJECT, mergeRequestId: 1 })
-          .then(() => {
-            expect(store.state.projects[TEST_PROJECT].mergeRequests['1'].changes.title).toBe(
-              'mergerequest',
-            );
-            done();
-          })
-          .catch(done.fail);
+      it('sets the Merge Request Changes Object', async () => {
+        await store.dispatch('getMergeRequestChanges', {
+          projectId: TEST_PROJECT,
+          mergeRequestId: 1,
+        });
+        expect(store.state.projects[TEST_PROJECT].mergeRequests['1'].changes.title).toBe(
+          'mergerequest',
+        );
       });
     });
 
@@ -269,32 +236,30 @@ describe('IDE store merge request actions', () => {
         mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1\/changes/).networkError();
       });
 
-      it('dispatches error action', (done) => {
+      it('dispatches error action', async () => {
         const dispatch = jest.fn();
 
-        getMergeRequestChanges(
-          {
-            commit() {},
-            dispatch,
-            state: store.state,
-          },
-          { projectId: TEST_PROJECT, mergeRequestId: 1 },
-        )
-          .then(done.fail)
-          .catch(() => {
-            expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred while loading the merge request changes.',
-              action: expect.any(Function),
-              actionText: 'Please try again',
-              actionPayload: {
-                projectId: TEST_PROJECT,
-                mergeRequestId: 1,
-                force: false,
-              },
-            });
+        await expect(
+          getMergeRequestChanges(
+            {
+              commit() {},
+              dispatch,
+              state: store.state,
+            },
+            { projectId: TEST_PROJECT, mergeRequestId: 1 },
+          ),
+        ).rejects.toEqual(new Error('Merge request changes not loaded abcproject'));
 
-            done();
-          });
+        expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
+          text: 'An error occurred while loading the merge request changes.',
+          action: expect.any(Function),
+          actionText: 'Please try again',
+          actionPayload: {
+            projectId: TEST_PROJECT,
+            mergeRequestId: 1,
+            force: false,
+          },
+        });
       });
     });
   });
@@ -312,25 +277,20 @@ describe('IDE store merge request actions', () => {
         jest.spyOn(service, 'getProjectMergeRequestVersions');
       });
 
-      it('calls getProjectMergeRequestVersions service method', (done) => {
-        store
-          .dispatch('getMergeRequestVersions', { projectId: TEST_PROJECT, mergeRequestId: 1 })
-          .then(() => {
-            expect(service.getProjectMergeRequestVersions).toHaveBeenCalledWith(TEST_PROJECT, 1);
-
-            done();
-          })
-          .catch(done.fail);
+      it('calls getProjectMergeRequestVersions service method', async () => {
+        await store.dispatch('getMergeRequestVersions', {
+          projectId: TEST_PROJECT,
+          mergeRequestId: 1,
+        });
+        expect(service.getProjectMergeRequestVersions).toHaveBeenCalledWith(TEST_PROJECT, 1);
       });
 
-      it('sets the Merge Request Versions Object', (done) => {
-        store
-          .dispatch('getMergeRequestVersions', { projectId: TEST_PROJECT, mergeRequestId: 1 })
-          .then(() => {
-            expect(store.state.projects[TEST_PROJECT].mergeRequests['1'].versions.length).toBe(1);
-            done();
-          })
-          .catch(done.fail);
+      it('sets the Merge Request Versions Object', async () => {
+        await store.dispatch('getMergeRequestVersions', {
+          projectId: TEST_PROJECT,
+          mergeRequestId: 1,
+        });
+        expect(store.state.projects[TEST_PROJECT].mergeRequests['1'].versions.length).toBe(1);
       });
     });
 
@@ -339,32 +299,28 @@ describe('IDE store merge request actions', () => {
         mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1\/versions/).networkError();
       });
 
-      it('dispatches error action', (done) => {
+      it('dispatches error action', () => {
         const dispatch = jest.fn();
 
-        getMergeRequestVersions(
+        return getMergeRequestVersions(
           {
             commit() {},
             dispatch,
             state: store.state,
           },
           { projectId: TEST_PROJECT, mergeRequestId: 1 },
-        )
-          .then(done.fail)
-          .catch(() => {
-            expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred while loading the merge request version data.',
-              action: expect.any(Function),
-              actionText: 'Please try again',
-              actionPayload: {
-                projectId: TEST_PROJECT,
-                mergeRequestId: 1,
-                force: false,
-              },
-            });
-
-            done();
+        ).catch(() => {
+          expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
+            text: 'An error occurred while loading the merge request version data.',
+            action: expect.any(Function),
+            actionText: 'Please try again',
+            actionPayload: {
+              projectId: TEST_PROJECT,
+              mergeRequestId: 1,
+              force: false,
+            },
           });
+        });
       });
     });
   });
@@ -503,37 +459,36 @@ describe('IDE store merge request actions', () => {
       );
     });
 
-    it('dispatches actions for merge request data', (done) => {
-      openMergeRequest({ state: store.state, dispatch: store.dispatch, getters: mockGetters }, mr)
-        .then(() => {
-          expect(store.dispatch.mock.calls).toEqual([
-            ['getMergeRequestData', mr],
-            ['setCurrentBranchId', testMergeRequest.source_branch],
-            [
-              'getBranchData',
-              {
-                projectId: mr.projectId,
-                branchId: testMergeRequest.source_branch,
-              },
-            ],
-            [
-              'getFiles',
-              {
-                projectId: mr.projectId,
-                branchId: testMergeRequest.source_branch,
-                ref: 'abcd2322',
-              },
-            ],
-            ['getMergeRequestVersions', mr],
-            ['getMergeRequestChanges', mr],
-            ['openMergeRequestChanges', testMergeRequestChanges.changes],
-          ]);
-        })
-        .then(done)
-        .catch(done.fail);
+    it('dispatches actions for merge request data', async () => {
+      await openMergeRequest(
+        { state: store.state, dispatch: store.dispatch, getters: mockGetters },
+        mr,
+      );
+      expect(store.dispatch.mock.calls).toEqual([
+        ['getMergeRequestData', mr],
+        ['setCurrentBranchId', testMergeRequest.source_branch],
+        [
+          'getBranchData',
+          {
+            projectId: mr.projectId,
+            branchId: testMergeRequest.source_branch,
+          },
+        ],
+        [
+          'getFiles',
+          {
+            projectId: mr.projectId,
+            branchId: testMergeRequest.source_branch,
+            ref: 'abcd2322',
+          },
+        ],
+        ['getMergeRequestVersions', mr],
+        ['getMergeRequestChanges', mr],
+        ['openMergeRequestChanges', testMergeRequestChanges.changes],
+      ]);
     });
 
-    it('updates activity bar view and gets file data, if changes are found', (done) => {
+    it('updates activity bar view and gets file data, if changes are found', async () => {
       store.state.entries.foo = {
         type: 'blob',
         path: 'foo',
@@ -548,28 +503,24 @@ describe('IDE store merge request actions', () => {
         { new_path: 'bar', path: 'bar' },
       ];
 
-      openMergeRequest({ state: store.state, dispatch: store.dispatch, getters: mockGetters }, mr)
-        .then(() => {
-          expect(store.dispatch).toHaveBeenCalledWith(
-            'openMergeRequestChanges',
-            testMergeRequestChanges.changes,
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      await openMergeRequest(
+        { state: store.state, dispatch: store.dispatch, getters: mockGetters },
+        mr,
+      );
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'openMergeRequestChanges',
+        testMergeRequestChanges.changes,
+      );
     });
 
-    it('flashes message, if error', (done) => {
+    it('flashes message, if error', () => {
       store.dispatch.mockRejectedValue();
 
-      openMergeRequest(store, mr)
-        .catch(() => {
-          expect(createFlash).toHaveBeenCalledWith({
-            message: expect.any(String),
-          });
-        })
-        .then(done)
-        .catch(done.fail);
+      return openMergeRequest(store, mr).catch(() => {
+        expect(createFlash).toHaveBeenCalledWith({
+          message: expect.any(String),
+        });
+      });
     });
   });
 });

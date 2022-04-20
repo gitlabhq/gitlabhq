@@ -447,9 +447,8 @@ module Gitlab
         end
 
         def state
-          state = STATE_PARAMS.inject({}) do |h, param|
+          state = STATE_PARAMS.each_with_object({}) do |param, h|
             h[param] = send(param) # rubocop:disable GitlabSecurity/PublicSend
-            h
           end
           Base64.urlsafe_encode64(state.to_json)
         end

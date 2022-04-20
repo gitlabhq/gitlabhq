@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
-import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
+import { getLocationHash, doesHashExistInUrl } from '~/lib/utils/url_utility';
 import {
   DISCUSSION_FILTERS_DEFAULT_VALUE,
   HISTORY_ONLY_FILTER_VALUE,

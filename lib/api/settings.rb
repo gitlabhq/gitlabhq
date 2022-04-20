@@ -4,7 +4,7 @@ module API
   class Settings < ::API::Base
     before { authenticated_as_admin! }
 
-    feature_category :not_owned
+    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
     helpers Helpers::SettingsHelpers
 
@@ -83,7 +83,6 @@ module API
       optional :home_page_url, type: String, desc: 'We will redirect non-logged in users to this page'
       optional :housekeeping_enabled, type: Boolean, desc: 'Enable automatic repository housekeeping (git repack, git gc)'
       given housekeeping_enabled: ->(val) { val } do
-        requires :housekeeping_bitmaps_enabled, type: Boolean, desc: "Creating pack file bitmaps makes housekeeping take a little longer but bitmaps should accelerate 'git clone' performance."
         requires :housekeeping_full_repack_period, type: Integer, desc: "Number of Git pushes after which a full 'git repack' is run."
         requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
         requires :housekeeping_incremental_repack_period, type: Integer, desc: "Number of Git pushes after which an incremental 'git repack' is run."
@@ -182,7 +181,7 @@ module API
       optional :group_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for group runners, in seconds'
       optional :project_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for project runners, in seconds'
 
-      ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+      Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",
                  type: Integer,
                  values: KeyRestrictionValidator.supported_key_restrictions(type),

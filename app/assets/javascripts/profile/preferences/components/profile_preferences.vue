@@ -45,7 +45,7 @@ export default {
     return {
       isSubmitEnabled: true,
       darkModeOnCreate: null,
-      darkModeOnSubmit: null,
+      schemeOnCreate: null,
     };
   },
   computed: {
@@ -61,6 +61,7 @@ export default {
     this.formEl.addEventListener('ajax:success', this.handleSuccess);
     this.formEl.addEventListener('ajax:error', this.handleError);
     this.darkModeOnCreate = this.darkModeSelected();
+    this.schemeOnCreate = this.getSelectedScheme();
   },
   beforeDestroy() {
     this.formEl.removeEventListener('ajax:beforeSend', this.handleLoading);
@@ -76,15 +77,19 @@ export default {
       const themeId = new FormData(this.formEl).get('user[theme_id]');
       return this.applicationThemes[themeId] ?? null;
     },
+    getSelectedScheme() {
+      return new FormData(this.formEl).get('user[color_scheme_id]');
+    },
     handleLoading() {
       this.isSubmitEnabled = false;
-      this.darkModeOnSubmit = this.darkModeSelected();
     },
     handleSuccess(customEvent) {
       // Reload the page if the theme has changed from light to dark mode or vice versa
-      // to correctly load all required styles.
-      const modeChanged = this.darkModeOnCreate ? !this.darkModeOnSubmit : this.darkModeOnSubmit;
-      if (modeChanged) {
+      // or if color scheme has changed to correctly load all required styles.
+      if (
+        this.darkModeOnCreate !== this.darkModeSelected() ||
+        this.schemeOnCreate !== this.getSelectedScheme()
+      ) {
         window.location.reload();
         return;
       }

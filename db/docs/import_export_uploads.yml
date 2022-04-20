@@ -1,0 +1,9 @@
+---
+table_name: import_export_uploads
+classes:
+- ImportExportUpload
+feature_categories:
+- importers
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/a2bf1641546a1d3eeb3e9f44734854f655c0adef
+milestone: '11.1'

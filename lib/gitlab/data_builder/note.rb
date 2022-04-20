@@ -43,10 +43,9 @@ module Gitlab
         if note.for_commit?
           data[:commit] = build_data_for_commit(project, user, note)
         elsif note.for_issue?
-          data[:issue] = note.noteable.hook_attrs
-          data[:issue][:labels] = note.noteable.labels_hook_attrs
+          data[:issue] = Gitlab::HookData::IssueBuilder.new(note.noteable).build
         elsif note.for_merge_request?
-          data[:merge_request] = note.noteable.hook_attrs
+          data[:merge_request] = Gitlab::HookData::MergeRequestBuilder.new(note.noteable).build
         elsif note.for_snippet?
           data[:snippet] = note.noteable.hook_attrs
         end

@@ -1,0 +1,9 @@
+---
+table_name: ci_running_builds
+classes:
+- Ci::RunningBuild
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62912
+milestone: '14.0'

@@ -446,6 +446,9 @@ Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleW
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '*/7 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
+Settings.cron_jobs['update_locked_unknown_artifacts_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['update_locked_unknown_artifacts_worker']['cron'] ||= '*/7 * * * *'
+Settings.cron_jobs['update_locked_unknown_artifacts_worker']['job_class'] = 'Ci::UpdateLockedUnknownArtifactsWorker'
 Settings.cron_jobs['ci_pipelines_expire_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_pipelines_expire_artifacts_worker']['cron'] ||= '*/23 * * * *'
 Settings.cron_jobs['ci_pipelines_expire_artifacts_worker']['job_class'] = 'Ci::PipelineArtifacts::ExpireArtifactsWorker'
@@ -500,6 +503,9 @@ Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsW
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
+Settings.cron_jobs['bulk_imports_stuck_import_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['bulk_imports_stuck_import_worker']['cron'] ||= '0 */4 * * *'
+Settings.cron_jobs['bulk_imports_stuck_import_worker']['job_class'] = 'BulkImports::StuckImportWorker'
 Settings.cron_jobs['import_stuck_project_import_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['import_stuck_project_import_jobs']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['import_stuck_project_import_jobs']['job_class'] = 'Gitlab::Import::StuckProjectImportJobsWorker'
@@ -634,6 +640,9 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker']['job_class'] = 'Analytics::CycleAnalytics::ConsistencyWorker'
+  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '44 * * * *'
+  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['job_class'] = 'Analytics::CycleAnalytics::ReaggregationWorker'
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['active_user_count_threshold_worker']['job_class'] = 'ActiveUserCountThresholdWorker'
@@ -760,6 +769,12 @@ Gitlab.ee do
   Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
+  Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker']['cron'] ||= '*/4 * * * *'
+  Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker']['job_class'] = 'Database::CiNamespaceMirrorsConsistencyCheckWorker'
+  Settings.cron_jobs['ci_project_mirrors_consistency_check_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['ci_project_mirrors_consistency_check_worker']['cron'] ||= '2-58/4 * * * *'
+  Settings.cron_jobs['ci_project_mirrors_consistency_check_worker']['job_class'] = 'Database::CiProjectMirrorsConsistencyCheckWorker'
 end
 
 #

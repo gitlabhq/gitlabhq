@@ -32,7 +32,7 @@ By default, macOS limits the <kbd>tab</kbd> key to **Text boxes and lists only**
 1. Open the **Shortcuts** tab.
 1. Enable the setting **Use keyboard navigation to move focus between controls**.
 
-You can read more about enabling browser-specific keyboard navigation on [a11yproject](https://www.a11yproject.com/posts/2017-12-29-macos-browser-keyboard-navigation/).
+You can read more about enabling browser-specific keyboard navigation on [a11yproject](https://www.a11yproject.com/posts/macos-browser-keyboard-navigation/).
 
 ## Quick checklist
 

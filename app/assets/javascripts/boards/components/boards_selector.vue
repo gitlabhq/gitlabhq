@@ -40,36 +40,20 @@ export default {
   directives: {
     GlModalDirective,
   },
-  inject: ['fullPath'],
+  inject: [
+    'boardBaseUrl',
+    'fullPath',
+    'canAdminBoard',
+    'multipleIssueBoardsAvailable',
+    'hasMissingBoards',
+    'scopedIssueBoardFeatureEnabled',
+    'weights',
+  ],
   props: {
     throttleDuration: {
       type: Number,
       default: 200,
       required: false,
-    },
-    boardBaseUrl: {
-      type: String,
-      required: true,
-    },
-    hasMissingBoards: {
-      type: Boolean,
-      required: true,
-    },
-    canAdminBoard: {
-      type: Boolean,
-      required: true,
-    },
-    multipleIssueBoardsAvailable: {
-      type: Boolean,
-      required: true,
-    },
-    scopedIssueBoardFeatureEnabled: {
-      type: Boolean,
-      required: true,
-    },
-    weights: {
-      type: Array,
-      required: true,
     },
   },
   data() {
@@ -255,11 +239,12 @@ export default {
 </script>
 
 <template>
-  <div class="boards-switcher js-boards-selector gl-mr-3">
-    <span class="boards-selector-wrapper js-boards-selector-wrapper">
+  <div class="boards-switcher gl-mr-3" data-testid="boards-selector">
+    <span class="boards-selector-wrapper">
       <gl-dropdown
+        data-testid="boards-dropdown"
         data-qa-selector="boards_dropdown"
-        toggle-class="dropdown-menu-toggle js-dropdown-toggle"
+        toggle-class="dropdown-menu-toggle"
         menu-class="flex-column dropdown-extended-height"
         :loading="isBoardLoading"
         :text="board.name"
@@ -292,8 +277,8 @@ export default {
             <gl-dropdown-item
               v-for="recentBoard in recentBoards"
               :key="`recent-${recentBoard.id}`"
-              class="js-dropdown-item"
               :href="`${boardBaseUrl}/${recentBoard.id}`"
+              data-testid="dropdown-item"
             >
               {{ recentBoard.name }}
             </gl-dropdown-item>
@@ -308,8 +293,8 @@ export default {
           <gl-dropdown-item
             v-for="otherBoard in filteredBoards"
             :key="otherBoard.id"
-            class="js-dropdown-item"
             :href="`${boardBaseUrl}/${otherBoard.id}`"
+            data-testid="dropdown-item"
           >
             {{ otherBoard.name }}
           </gl-dropdown-item>
@@ -347,7 +332,7 @@ export default {
           <gl-dropdown-item
             v-if="showDelete"
             v-gl-modal-directive="'board-config-modal'"
-            class="text-danger js-delete-board"
+            class="text-danger"
             @click.prevent="showPage('delete')"
           >
             {{ s__('IssueBoards|Delete board') }}

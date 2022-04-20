@@ -209,21 +209,74 @@ func TestGeoProxyFeatureEnablingAndDisabling(t *testing.T) {
 	runTestCases(t, ws, testCasesProxied)
 }
 
-func TestGeoProxySetsCustomHeader(t *testing.T) {
+func TestGeoProxyUpdatesExtraDataWhenChanged(t *testing.T) {
+	var expectedGeoProxyExtraData string
+
 	remoteServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "1", r.Header.Get("Gitlab-Workhorse-Geo-Proxy"), "custom proxy header")
+		require.Equal(t, expectedGeoProxyExtraData, r.Header.Get("Gitlab-Workhorse-Geo-Proxy-Extra-Data"), "custom extra data header")
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer remoteServer.Close()
 
-	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
+	geoProxyEndpointExtraData1 := fmt.Sprintf(`{"geo_proxy_url":"%v","geo_proxy_extra_data":"data1"}`, remoteServer.URL)
+	geoProxyEndpointExtraData2 := fmt.Sprintf(`{"geo_proxy_url":"%v","geo_proxy_extra_data":"data2"}`, remoteServer.URL)
+	geoProxyEndpointExtraData3 := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
+	geoProxyEndpointResponseBody := geoProxyEndpointExtraData1
+	expectedGeoProxyExtraData = "data1"
+
 	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
-	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
+	ws, wsDeferredClose, waitForNextApiPoll := startWorkhorseServer(railsServer.URL, true)
 	defer wsDeferredClose()
 
 	http.Get(ws.URL)
+
+	// Verify that the expected header changes after next updated poll.
+	geoProxyEndpointResponseBody = geoProxyEndpointExtraData2
+	expectedGeoProxyExtraData = "data2"
+	waitForNextApiPoll()
+
+	http.Get(ws.URL)
+
+	// Validate that non-existing extra data results in empty header
+	geoProxyEndpointResponseBody = geoProxyEndpointExtraData3
+	expectedGeoProxyExtraData = ""
+	waitForNextApiPoll()
+
+	http.Get(ws.URL)
+}
+
+func TestGeoProxySetsCustomHeader(t *testing.T) {
+	testCases := []struct {
+		desc      string
+		json      string
+		extraData string
+	}{
+		{"no extra data", `{"geo_proxy_url":"%v"}`, ""},
+		{"with extra data", `{"geo_proxy_url":"%v","geo_proxy_extra_data":"extra-geo-data"}`, "extra-geo-data"},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			remoteServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				require.Equal(t, "1", r.Header.Get("Gitlab-Workhorse-Geo-Proxy"), "custom proxy header")
+				require.Equal(t, tc.extraData, r.Header.Get("Gitlab-Workhorse-Geo-Proxy-Extra-Data"), "custom proxy extra data header")
+				w.WriteHeader(http.StatusOK)
+			}))
+			defer remoteServer.Close()
+
+			geoProxyEndpointResponseBody := fmt.Sprintf(tc.json, remoteServer.URL)
+			railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
+			defer deferredClose()
+
+			ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
+			defer wsDeferredClose()
+
+			http.Get(ws.URL)
+		})
+	}
 }
 
 func runTestCases(t *testing.T, ws *httptest.Server, testCases []testCase) {

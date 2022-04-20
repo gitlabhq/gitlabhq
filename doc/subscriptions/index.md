@@ -34,8 +34,8 @@ GitLab SaaS or GitLab self-managed:
   your own GitLab instance.
 
 On a GitLab self-managed instance, a GitLab subscription provides the same set of
-features for _all_ users. On GitLab SaaS, you can apply a subscription to either
-a group or a personal namespace.
+features for _all_ users. On GitLab SaaS, you can apply a subscription to a group
+namespace. You cannot apply a subscription to a personal namespace.
 
 NOTE:
 Subscriptions cannot be transferred between GitLab SaaS and GitLab self-managed.
@@ -256,12 +256,11 @@ Send all questions and requests related to the GitLab for Startups program to `s
 
 ### Support for Community Programs
 
-Because these Community Programs are free of cost, regular Priority Support is not included. However, it can be purchased at a 95% discount in some cases.
-If interested, email the relevant community program team: `education@gitlab.com`, `opensource@gitlab.com`, or `startups@gitlab.com`.
+Because these Community Programs are free of cost, regular Priority Support is not included.
 
 As a community member, you can follow this diagram to find support:
 
-![Support diagram](img/support-diagram.png)
+![Support diagram](img/support_diagram_c.png)
 
 ## Contact Support
 

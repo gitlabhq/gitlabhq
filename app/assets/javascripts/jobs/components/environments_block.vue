@@ -2,7 +2,7 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import { __ } from '../../locale';
+import { __ } from '~/locale';
 
 export default {
   creatingEnvironment: 'creating',

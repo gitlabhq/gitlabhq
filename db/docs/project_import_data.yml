@@ -1,0 +1,9 @@
+---
+table_name: project_import_data
+classes:
+- ProjectImportData
+feature_categories:
+- importers
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/7d98c8842d6bc9b14fb410f028db7ab651961b42
+milestone: '7.10'

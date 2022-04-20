@@ -1,0 +1,10 @@
+---
+table_name: internal_ids
+classes:
+- InternalId
+feature_categories:
+- projects
+- subgroups
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/754272e392c0da088200a1b56156600973f63267
+milestone: '10.7'

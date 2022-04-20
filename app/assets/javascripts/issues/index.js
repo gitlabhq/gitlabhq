@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import IssuableForm from 'ee_else_ce/issuable/issuable_form';
-import loadAwardsHandler from '~/awards_handler';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import GLForm from '~/gl_form';
@@ -22,6 +21,7 @@ import MilestoneSelect from '~/milestones/milestone_select';
 import initNotesApp from '~/notes';
 import { store } from '~/notes/stores';
 import ZenMode from '~/zen_mode';
+import initAwardsApp from '~/emoji/awards_app';
 import FilteredSearchServiceDesk from './filtered_search_service_desk';
 
 export function initFilteredSearchServiceDesk() {
@@ -72,15 +72,7 @@ export function initShow() {
   initRelatedMergeRequests();
   initSentryErrorStackTrace();
 
-  const awardEmojiEl = document.getElementById('js-vue-awards-block');
-
-  if (awardEmojiEl) {
-    import('~/emoji/awards_app')
-      .then((m) => m.default(awardEmojiEl))
-      .catch(() => {});
-  } else {
-    loadAwardsHandler();
-  }
+  initAwardsApp(document.getElementById('js-vue-awards-block'));
 
   import(/* webpackChunkName: 'design_management' */ '~/design_management')
     .then((module) => module.default())

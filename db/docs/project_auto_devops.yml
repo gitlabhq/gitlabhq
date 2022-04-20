@@ -1,0 +1,9 @@
+---
+table_name: project_auto_devops
+classes:
+- ProjectAutoDevops
+feature_categories:
+- auto_devops
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/6ed490401f49a8941dc7a9e3757ec4012f14ef0b
+milestone: '10.0'

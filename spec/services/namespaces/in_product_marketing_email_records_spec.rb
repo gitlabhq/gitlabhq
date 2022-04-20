@@ -15,7 +15,7 @@ RSpec.describe Namespaces::InProductMarketingEmailRecords do
     before do
       allow(Users::InProductMarketingEmail).to receive(:bulk_insert!)
 
-      records.add(user, :invite_team, 0)
+      records.add(user, :team_short, 0)
       records.add(user, :create, 1)
     end
 
@@ -33,13 +33,13 @@ RSpec.describe Namespaces::InProductMarketingEmailRecords do
   describe '#add' do
     it 'adds a Users::InProductMarketingEmail record to its records' do
       freeze_time do
-        records.add(user, :invite_team, 0)
+        records.add(user, :team_short, 0)
         records.add(user, :create, 1)
 
         first, second = records.records
 
         expect(first).to be_a Users::InProductMarketingEmail
-        expect(first.track.to_sym).to eq :invite_team
+        expect(first.track.to_sym).to eq :team_short
         expect(first.series).to eq 0
         expect(first.created_at).to eq Time.zone.now
         expect(first.updated_at).to eq Time.zone.now

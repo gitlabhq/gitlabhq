@@ -41,9 +41,31 @@ GitLab IaC scanning supports a variety of IaC configuration files. Our IaC secur
 | Google Deployment Manager                | [KICS](https://kics.io/)         | 14.5                          |
 | Kubernetes                               | [KICS](https://kics.io/)         | 14.5                          |
 | OpenAPI                                  | [KICS](https://kics.io/)         | 14.5                          |
-| Terraform                                | [KICS](https://kics.io/)         | 14.5                          |
+| Terraform <sup>2</sup>                   | [KICS](https://kics.io/)         | 14.5                          |
 
 1. IaC scanning can analyze Azure Resource Manager templates in JSON format. If you write templates in the [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) language, you must use [the bicep CLI](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to convert your Bicep files into JSON before GitLab IaC scanning can analyze them.
+1. Terraform modules in a custom registry are not scanned for vulnerabilities. You can follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/357004) for the proposed feature.
+
+### Supported distributions
+
+GitLab scanners are provided with a base alpine image for size and maintainability.
+
+#### FIPS-enabled images
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+
+GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the images. You can therefore replace standard images with FIPS-enabled
+images. To configure the images, set the `SAST_IMAGE_SUFFIX` to `-fips` or modify the
+standard tag plus the `-fips` extension.
+
+```yaml
+variables:
+  SAST_IMAGE_SUFFIX: '-fips'
+
+include:
+  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+```
 
 ### Making IaC analyzers available to all GitLab tiers
 
@@ -54,13 +76,13 @@ All open source (OSS) analyzers are available with the GitLab Free tier. Future 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                             | In Free             | In Ultimate        |
-|:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure IaC Scanners](#configuration)                                               | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in merge request                                           | **{dotted-circle}** | **{check-circle}** |
-| [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
+| Capability                                                      | In Free & Premium   | In Ultimate        |
+|:----------------------------------------------------------------|:--------------------|:-------------------|
+| [Configure IaC scanner](#configuration)                         | **{check-circle}**  | **{check-circle}** |
+| Download [JSON Report](#reports-json-format)                    | **{check-circle}**  | **{check-circle}** |
+| See new findings in merge request widget                        | **{dotted-circle}** | **{check-circle}** |
+| [Manage vulnerabilities](../vulnerabilities/index.md)           | **{dotted-circle}** | **{check-circle}** |
+| [Access the Security Dashboard](../security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -92,15 +114,14 @@ that you can download and analyze.
 
 ### Enable IaC Scanning via an automatic merge request
 
-To enable IaC Scanning in a project, you can create a merge request
-from the Security Configuration page:
+To enable IaC Scanning in a project, you can create a merge request:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure with a merge request**.
+1. Review and merge the merge request to enable IaC Scanning.
 
-This automatically creates a merge request with the changes necessary to enable IaC Scanning
-that you can review and merge to complete the configuration.
+Pipelines now include an IaC job.
 
 ## Reports JSON format
 

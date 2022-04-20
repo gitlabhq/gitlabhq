@@ -10,7 +10,7 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { s__, __ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -307,7 +307,6 @@ export default {
                     v-if="isReplying"
                     ref="noteForm"
                     :discussion="discussion"
-                    :is-editing="false"
                     :line="diffLine"
                     save-button-title="Comment"
                     :autosave-key="autosaveKey"

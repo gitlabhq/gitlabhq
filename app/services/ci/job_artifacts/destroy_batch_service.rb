@@ -117,7 +117,7 @@ module Ci
 
         wrongly_expired_artifacts, @job_artifacts = @job_artifacts.partition { |artifact| wrongly_expired?(artifact) }
 
-        remove_expire_at(wrongly_expired_artifacts)
+        remove_expire_at(wrongly_expired_artifacts) if wrongly_expired_artifacts.any?
       end
 
       def fix_expire_at?
@@ -127,7 +127,9 @@ module Ci
       def wrongly_expired?(artifact)
         return false unless artifact.expire_at.present?
 
-        match_date?(artifact.expire_at) && match_time?(artifact.expire_at)
+        # Although traces should never have expiration dates that don't match time & date here.
+        # we can explicitly exclude them by type since they should never be destroyed.
+        artifact.trace? || (match_date?(artifact.expire_at) && match_time?(artifact.expire_at))
       end
 
       def match_date?(expire_at)

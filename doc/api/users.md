@@ -97,7 +97,17 @@ In addition, to exclude external users from the users' list, you can use the par
 GET /users?exclude_external=true
 ```
 
+To exclude [bot users for projects](../user/project/settings/project_access_tokens.md#bot-users-for-projects)
+and [bot users for groups](../user/group/settings/group_access_tokens.md#bot-users-for-groups), you can use the
+parameter `without_project_bots=true`.
+
+```plaintext
+GET /users?without_project_bots=true
+```
+
 ### For admins
+
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
 ```plaintext
 GET /users
@@ -151,7 +161,8 @@ GET /users
     "external": false,
     "private_profile": false,
     "current_sign_in_ip": "196.165.1.102",
-    "last_sign_in_ip": "172.127.2.22"
+    "last_sign_in_ip": "172.127.2.22",
+    "namespace_id": 1
   },
   {
     "id": 2,
@@ -185,7 +196,8 @@ GET /users
     "external": false,
     "private_profile": false,
     "current_sign_in_ip": "10.165.1.102",
-    "last_sign_in_ip": "172.127.2.22"
+    "last_sign_in_ip": "172.127.2.22",
+    "namespace_id": 2
   }
 ]
 ```
@@ -293,12 +305,17 @@ Parameters:
   "website_url": "",
   "organization": "",
   "job_title": "Operations Specialist",
+  "pronouns": "he/him",
+  "work_information": null,
   "followers": 1,
-  "following": 1
+  "following": 1,
+  "local_time": "3:38 PM"
 }
 ```
 
 ### For admin
+
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
 ```plaintext
 GET /users/:id
@@ -332,6 +349,11 @@ Example Responses:
   "website_url": "",
   "organization": "",
   "job_title": "Operations Specialist",
+  "pronouns": "he/him",
+  "work_information": null,
+  "followers": 1,
+  "following": 1,
+  "local_time": "3:38 PM",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
@@ -355,7 +377,8 @@ Example Responses:
   "last_sign_in_ip": "172.127.2.22",
   "plan": "gold",
   "trial": true,
-  "sign_in_count": 1337
+  "sign_in_count": 1337,
+  "namespace_id": 1
 }
 ```
 
@@ -403,6 +426,8 @@ GET /users/:id?with_custom_attributes=true
 ```
 
 ## User creation
+
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
 Creates a new user. Note only administrators can create new
 users. Either `password`, `reset_password`, or `force_random_password`
@@ -458,6 +483,8 @@ Parameters:
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
 ## User modification
+
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
 Modifies an existing user. Only administrators can change attributes of a user.
 
@@ -561,6 +588,13 @@ GET /user
   "twitter": "",
   "website_url": "",
   "organization": "",
+  "job_title": "",
+  "pronouns": "he/him",
+  "bot": false,
+  "work_information": null,
+  "followers": 0,
+  "following": 0,
+  "local_time": "3:38 PM",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
@@ -577,11 +611,16 @@ GET /user
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false,
-  "private_profile": false
+  "private_profile": false,
+  "commit_email": "admin@example.com",
 }
 ```
 
+Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
+
 ## List current user (for admins)
+
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
 ```plaintext
 GET /user
@@ -632,7 +671,9 @@ Parameters:
   "private_profile": false,
   "commit_email": "john-codes@example.com",
   "current_sign_in_ip": "196.165.1.102",
-  "last_sign_in_ip": "172.127.2.22"
+  "last_sign_in_ip": "172.127.2.22",
+  "namespace_id": 1,
+  "note": null
 }
 ```
 
@@ -1566,7 +1607,7 @@ Returns:
 - `404 User Not Found` if the user cannot be found.
 - `403 Forbidden` when trying to unban a user that is not banned.
 
-### Get user contribution events
+## Get user contribution events
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)
 
@@ -1828,7 +1869,7 @@ POST /users/:user_id/personal_access_tokens
 | `user_id`    | integer | yes      | The ID of the user                                                                                                       |
 | `name`       | string  | yes      | The name of the personal access token                                                                                    |
 | `expires_at` | date    | no       | The expiration date of the personal access token in ISO format (`YYYY-MM-DD`)                                            |
-| `scopes`     | array   | yes      | The array of scopes of the personal access token (`api`, `read_user`, `read_api`, `read_repository`, `write_repository`) |
+| `scopes`     | array   | yes      | The array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" \

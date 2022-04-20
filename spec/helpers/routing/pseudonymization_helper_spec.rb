@@ -180,7 +180,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'when some query params are not required to be masked' do
-      let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=all&state=masked_state" }
+      let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=all&state=masked_state&tab=2" }
       let(:request) do
         double(:Request,
                path_parameters: {
@@ -189,11 +189,11 @@ RSpec.describe ::Routing::PseudonymizationHelper do
                },
                protocol: 'http',
                host: 'localhost',
-               query_string: 'author_username=root&scope=all&state=opened')
+               query_string: 'author_username=root&scope=all&state=opened&tab=2')
       end
 
       before do
-        stub_const('Routing::PseudonymizationHelper::MaskHelper::QUERY_PARAMS_TO_NOT_MASK', %w[scope].freeze)
+        stub_const('Routing::PseudonymizationHelper::MaskHelper::QUERY_PARAMS_TO_NOT_MASK', %w[scope tab].freeze)
         allow(helper).to receive(:request).and_return(request)
       end
 

@@ -1,0 +1,9 @@
+---
+table_name: user_custom_attributes
+classes:
+- UserCustomAttribute
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e9eae3eb0dd25e4a34c9a4b6bcc7de312dde4489
+milestone: '10.1'

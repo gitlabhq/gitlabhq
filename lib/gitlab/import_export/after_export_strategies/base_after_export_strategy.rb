@@ -17,11 +17,11 @@ module Gitlab
         public
 
         def initialize(attributes = {})
-          @options = OpenStruct.new(attributes)
+          @options = attributes
+        end
 
-          self.class.instance_eval do
-            def_delegators :@options, *attributes.keys
-          end
+        def method_missing(method, *args)
+          @options[method]
         end
 
         def execute(current_user, project)

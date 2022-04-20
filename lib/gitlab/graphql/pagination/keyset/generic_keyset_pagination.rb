@@ -73,8 +73,23 @@ module Gitlab
             strong_memoize(:generic_keyset_pagination_items) do
               rebuilt_items_with_keyset_order, success = Gitlab::Pagination::Keyset::SimpleOrderBuilder.build(original_items)
 
-              success ? rebuilt_items_with_keyset_order : original_items
+              if success
+                rebuilt_items_with_keyset_order
+              else
+                if original_items.is_a?(ActiveRecord::Relation)
+                  old_keyset_pagination_usage.increment({ model: original_items.model.to_s })
+                end
+
+                original_items
+              end
             end
+          end
+
+          def old_keyset_pagination_usage
+            @old_keyset_pagination_usage ||= Gitlab::Metrics.counter(
+              :old_keyset_pagination_usage,
+              'The number of times the old keyset pagination code was used'
+            )
           end
         end
       end

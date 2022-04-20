@@ -145,4 +145,8 @@ RSpec.describe WikiHelper do
       expect(subject).to include('wiki-directory-nest-level' => 0)
     end
   end
+
+  it_behaves_like 'wiki endpoint helpers' do
+    let_it_be(:page) { create(:wiki_page) }
+  end
 end

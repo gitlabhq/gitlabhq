@@ -5,14 +5,13 @@
   -# When using integration.activate_disabled_reason[:trackers], it's potentially insecure to use the raw records
   -# when passed directly to the frontend. Only use specific fields that are needed for render.
   -# For example, we can get the link to each tracker with scoped_edit_integration_path(tracker, tracker.project)
-  = render 'shared/global_alert',
-    title: s_('ExternalIssueIntegration|Another issue tracker is already in use'),
+  = render Pajamas::AlertComponent.new(title: s_('ExternalIssueIntegration|Another issue tracker is already in use'),
     variant: :warning,
-    dismissible: false do
+    dismissible: false) do
     .gl-alert-body
       = s_('ExternalIssueIntegration|Only one issue tracker integration can be active at a time. Please disable the active tracker first and try again.')
 
-%h3.page-title
+%h2.gl-mb-4
   = integration.title
   - if integration.operating?
     = sprite_icon('check', css_class: 'gl-text-green-500')

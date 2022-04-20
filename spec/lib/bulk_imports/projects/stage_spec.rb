@@ -34,9 +34,9 @@ RSpec.describe BulkImports::Projects::Stage do
   end
 
   subject do
-    bulk_import = build(:bulk_import)
+    entity = build(:bulk_import_entity, :project_entity)
 
-    described_class.new(bulk_import)
+    described_class.new(entity)
   end
 
   describe '#pipelines' do

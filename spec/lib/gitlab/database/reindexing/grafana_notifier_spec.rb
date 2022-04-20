@@ -74,8 +74,28 @@ RSpec.describe Gitlab::Database::Reindexing::GrafanaNotifier do
   end
 
   describe '#notify_start' do
-    context 'additional tag is nil' do
-      subject { described_class.new(api_key, api_url, nil).notify_start(action) }
+    context 'when Grafana is configured using application settings' do
+      subject { described_class.new.notify_start(action) }
+
+      let(:payload) do
+        {
+          time: (action.action_start.utc.to_f * 1000).to_i,
+          tags: ['reindex', additional_tag, action.index.tablename, action.index.name],
+          text: "Started reindexing of #{action.index.name} on #{action.index.tablename}"
+        }
+      end
+
+      before do
+        stub_application_setting(database_grafana_api_key: api_key)
+        stub_application_setting(database_grafana_api_url: api_url)
+        stub_application_setting(database_grafana_tag: additional_tag)
+      end
+
+      it_behaves_like 'interacting with Grafana annotations API'
+    end
+
+    context 'when there is no additional tag' do
+      subject { described_class.new(api_key: api_key, api_url: api_url, additional_tag: '').notify_start(action) }
 
       let(:payload) do
         {
@@ -88,8 +108,8 @@ RSpec.describe Gitlab::Database::Reindexing::GrafanaNotifier do
       it_behaves_like 'interacting with Grafana annotations API'
     end
 
-    context 'additional tag is not nil' do
-      subject { described_class.new(api_key, api_url, additional_tag).notify_start(action) }
+    context 'additional tag is provided' do
+      subject { described_class.new(api_key: api_key, api_url: api_url, additional_tag: additional_tag).notify_start(action) }
 
       let(:payload) do
         {
@@ -104,8 +124,30 @@ RSpec.describe Gitlab::Database::Reindexing::GrafanaNotifier do
   end
 
   describe '#notify_end' do
-    context 'additional tag is nil' do
-      subject { described_class.new(api_key, api_url, nil).notify_end(action) }
+    context 'when Grafana is configured using application settings' do
+      subject { described_class.new.notify_end(action) }
+
+      let(:payload) do
+        {
+          time: (action.action_start.utc.to_f * 1000).to_i,
+          tags: ['reindex', additional_tag, action.index.tablename, action.index.name],
+          text: "Finished reindexing of #{action.index.name} on #{action.index.tablename} (#{action.state})",
+          timeEnd: (action.action_end.utc.to_f * 1000).to_i,
+          isRegion: true
+        }
+      end
+
+      before do
+        stub_application_setting(database_grafana_api_key: api_key)
+        stub_application_setting(database_grafana_api_url: api_url)
+        stub_application_setting(database_grafana_tag: additional_tag)
+      end
+
+      it_behaves_like 'interacting with Grafana annotations API'
+    end
+
+    context 'when there is no additional tag' do
+      subject { described_class.new(api_key: api_key, api_url: api_url, additional_tag: '').notify_end(action) }
 
       let(:payload) do
         {
@@ -120,8 +162,8 @@ RSpec.describe Gitlab::Database::Reindexing::GrafanaNotifier do
       it_behaves_like 'interacting with Grafana annotations API'
     end
 
-    context 'additional tag is not nil' do
-      subject { described_class.new(api_key, api_url, additional_tag).notify_end(action) }
+    context 'additional tag is provided' do
+      subject { described_class.new(api_key: api_key, api_url: api_url, additional_tag: additional_tag).notify_end(action) }
 
       let(:payload) do
         {

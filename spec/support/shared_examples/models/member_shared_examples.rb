@@ -88,19 +88,55 @@ RSpec.shared_examples_for "member creation" do
       expect(member).to be_persisted
     end
 
-    context 'when admin mode is enabled', :enable_admin_mode do
+    context 'when adding a project_bot' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+
+      before_all do
+        source.add_owner(user)
+      end
+
+      context 'when project_bot is already a member' do
+        before do
+          source.add_developer(project_bot)
+        end
+
+        it 'does not update the member' do
+          member = described_class.new(source, project_bot, :maintainer, current_user: user).execute
+
+          expect(source.users.reload).to include(project_bot)
+          expect(member).to be_persisted
+          expect(member.access_level).to eq(Gitlab::Access::DEVELOPER)
+          expect(member.errors.full_messages).to include(/not authorized to update member/)
+        end
+      end
+
+      context 'when project_bot is not already a member' do
+        it 'adds the member' do
+          member = described_class.new(source, project_bot, :maintainer, current_user: user).execute
+
+          expect(source.users.reload).to include(project_bot)
+          expect(member).to be_persisted
+        end
+      end
+    end
+
+    context 'when admin mode is enabled', :enable_admin_mode, :aggregate_failures do
       it 'sets members.created_by to the given admin current_user' do
         member = described_class.new(source, user, :maintainer, current_user: admin).execute
 
+        expect(member).to be_persisted
+        expect(source.users.reload).to include(user)
         expect(member.created_by).to eq(admin)
       end
     end
 
     context 'when admin mode is disabled' do
-      it 'rejects setting members.created_by to the given admin current_user' do
+      it 'rejects setting members.created_by to the given admin current_user', :aggregate_failures do
         member = described_class.new(source, user, :maintainer, current_user: admin).execute
 
-        expect(member.created_by).to be_nil
+        expect(member).not_to be_persisted
+        expect(source.users.reload).not_to include(user)
+        expect(member.errors.full_messages).to include(/not authorized to create member/)
       end
     end
 
@@ -142,7 +178,7 @@ RSpec.shared_examples_for "member creation" do
       end
 
       context 'when called with an unknown user id' do
-        it 'adds the user as a member' do
+        it 'does not add the user as a member' do
           expect(source.users).not_to include(user)
 
           described_class.new(source, non_existing_record_id, :maintainer).execute
@@ -408,6 +444,22 @@ RSpec.shared_examples_for "bulk member creation" do
         expect(members).to all(be_a(member_type))
         expect(members).to all(be_persisted)
       end
+    end
+
+    it 'with the same user sent more than once by user and by email' do
+      members = described_class.add_users(source, [user1, user1.email], :maintainer)
+
+      expect(members.map(&:user)).to contain_exactly(user1)
+      expect(members).to all(be_a(member_type))
+      expect(members).to all(be_persisted)
+    end
+
+    it 'with the same user sent more than once by user id and by email' do
+      members = described_class.add_users(source, [user1.id, user1.email], :maintainer)
+
+      expect(members.map(&:user)).to contain_exactly(user1)
+      expect(members).to all(be_a(member_type))
+      expect(members).to all(be_persisted)
     end
 
     context 'when a member already exists' do

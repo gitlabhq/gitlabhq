@@ -58,6 +58,15 @@ RSpec.describe Gitlab::Database::EachDatabase do
         end
       end
     end
+
+    context 'when shared connections are not included' do
+      it 'only yields the unshared connections' do
+        expect(Gitlab::Database).to receive(:db_config_share_with).twice.and_return(nil, 'main')
+
+        expect { |b| described_class.each_database_connection(include_shared: false, &b) }
+          .to yield_successive_args([ActiveRecord::Base.connection, 'main'])
+      end
+    end
   end
 
   describe '.each_model_connection' do

@@ -8,7 +8,7 @@ module QA
           include Component::CiBadgeLink
 
           view 'app/assets/javascripts/vue_shared/components/header_ci_component.vue' do
-            element :pipeline_header
+            element :pipeline_header, required: true
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/graph_component.vue' do
@@ -16,14 +16,14 @@ module QA
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
-            element :job_item_container
-            element :job_link
+            element :job_item_container, required: true
+            element :job_link, required: true
             element :job_action_button
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
-            element :expand_pipeline_button
-            element :child_pipeline
+            element :expand_linked_pipeline_button
+            element :linked_pipeline_container
           end
 
           view 'app/assets/javascripts/reports/components/report_section.vue' do
@@ -73,13 +73,17 @@ module QA
             end
           end
 
-          def has_child_pipeline?(title: nil)
-            title ? find_child_pipeline_by_title(title) : has_element?(:child_pipeline)
+          def has_linked_pipeline?(title: nil)
+            title ? find_linked_pipeline_by_title(title) : has_element?(:linked_pipeline_container)
           end
 
-          def has_no_child_pipeline?
-            has_no_element?(:child_pipeline)
+          alias_method :has_child_pipeline?, :has_linked_pipeline?
+
+          def has_no_linked_pipeline?
+            has_no_element?(:linked_pipeline_container)
           end
+
+          alias_method :has_no_child_pipeline?, :has_no_linked_pipeline?
 
           def click_job(job_name)
             # Retry due to transient bug https://gitlab.com/gitlab-org/gitlab/-/issues/347126
@@ -88,21 +92,23 @@ module QA
             end
           end
 
-          def child_pipelines
-            all_elements(:child_pipeline, minimum: 1)
+          def linked_pipelines
+            all_elements(:linked_pipeline_container, minimum: 1)
           end
 
-          def find_child_pipeline_by_title(title)
-            child_pipelines.find { |pipeline| pipeline[:title].include?(title) }
+          def find_linked_pipeline_by_title(title)
+            linked_pipelines.find { |pipeline| pipeline[:title].include?(title) }
           end
 
-          def expand_child_pipeline(title: nil)
-            child_pipeline = title ? find_child_pipeline_by_title(title) : child_pipelines.first
+          def expand_linked_pipeline(title: nil)
+            linked_pipeline = title ? find_linked_pipeline_by_title(title) : linked_pipelines.first
 
-            within_element_by_index(:child_pipeline, child_pipelines.index(child_pipeline)) do
-              click_element(:expand_pipeline_button)
+            within_element_by_index(:linked_pipeline_container, linked_pipelines.index(linked_pipeline)) do
+              click_element(:expand_linked_pipeline_button)
             end
           end
+
+          alias_method :expand_child_pipeline, :expand_linked_pipeline
 
           def expand_license_report
             within_element(:license_report_widget) do

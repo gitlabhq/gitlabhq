@@ -7,7 +7,7 @@ import Api from '~/api';
 import UserList from '~/user_lists/components/user_list.vue';
 import createStore from '~/user_lists/store/show';
 import { parseUserIds, stringifyUserIds } from '~/user_lists/store/utils';
-import { userList } from '../../feature_flags/mock_data';
+import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api');
 

@@ -47,6 +47,7 @@ import getStateQuery from './queries/get_state.query.graphql';
 import terraformExtension from './extensions/terraform';
 import accessibilityExtension from './extensions/accessibility';
 import codeQualityExtension from './extensions/code_quality';
+import testReportExtension from './extensions/test_report';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -191,6 +192,9 @@ export default {
     shouldRenderTerraformPlans() {
       return Boolean(this.mr?.terraformReportsPath);
     },
+    shouldRenderTestReport() {
+      return Boolean(this.mr?.testResultsPath);
+    },
     mergeError() {
       let { mergeError } = this.mr;
 
@@ -250,6 +254,11 @@ export default {
     shouldShowAccessibilityReport(newVal) {
       if (newVal) {
         this.registerAccessibilityExtension();
+      }
+    },
+    shouldRenderTestReport(newVal) {
+      if (newVal) {
+        this.registerTestReportExtension();
       }
     },
   },
@@ -502,6 +511,11 @@ export default {
         registerExtension(codeQualityExtension);
       }
     },
+    registerTestReportExtension() {
+      if (this.shouldRenderTestReport && this.shouldShowExtension) {
+        registerExtension(testReportExtension);
+      }
+    },
   },
 };
 </script>
@@ -574,7 +588,7 @@ export default {
       />
 
       <grouped-test-reports-app
-        v-if="mr.testResultsPath"
+        v-if="mr.testResultsPath && !shouldShowExtension"
         class="js-reports-container"
         :endpoint="mr.testResultsPath"
         :head-blob-path="mr.headBlobPath"

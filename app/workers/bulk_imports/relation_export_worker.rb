@@ -3,12 +3,12 @@
 module BulkImports
   class RelationExportWorker
     include ApplicationWorker
-
-    data_consistency :always
     include ExceptionBacktrace
 
     idempotent!
+    deduplicate :until_executed
     loggable_arguments 2, 3
+    data_consistency :always
     feature_category :importers
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
 

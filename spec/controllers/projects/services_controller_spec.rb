@@ -359,10 +359,9 @@ RSpec.describe Projects::ServicesController do
         def prometheus_integration_as_data
           pi = project.prometheus_integration.reload
           attrs = pi.attributes.except('encrypted_properties',
-                                       'encrypted_properties_iv',
-                                       'encrypted_properties_tmp')
+                                       'encrypted_properties_iv')
 
-          [attrs, pi.encrypted_properties_tmp]
+          [attrs, pi.properties]
         end
       end
 

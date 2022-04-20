@@ -1,6 +1,5 @@
 - if outdated_browser?
-  .gl-alert.gl-alert-danger.outdated-browser{ :role => "alert" }
-    = sprite_icon('error', css_class: "gl-alert-icon gl-alert-icon-no-title gl-icon")
+  = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do
     .gl-alert-body
       = s_('OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser.')
       %br

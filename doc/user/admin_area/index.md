@@ -27,7 +27,7 @@ The Admin Area is made up of the following sections:
 | **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-area-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [topics](#administering-topics), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
 | **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events). |
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users. |
-| **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events. |
+| **{hook}** System Hooks                        | Configure [system hooks](../../administration/system_hooks.md) for many events. |
 | **{applications}** Applications                | Create system [OAuth applications](../../integration/oauth_provider.md) for integrations with other services. |
 | **{slight-frown}** Abuse Reports               | Manage [abuse reports](review_abuse_reports.md) submitted by your users. |
 | **{license}** License                          | Add, display, and remove [licenses](license.md). |
@@ -79,28 +79,29 @@ To access the Projects page:
 By default, all projects are listed, in reverse order of when they were last updated. For each
 project, the following information is listed:
 
-- Name.
-- Namespace.
-- Description.
-- Size, updated every 15 minutes at most.
+- Name
+- Namespace
+- Description
+- Size, updated every 15 minutes at most
 
 Projects can be edited or deleted.
 
 The list of projects can be sorted by:
 
-- Name.
-- Last created.
-- Oldest created.
-- Last updated.
-- Oldest updated.
-- Owner.
+- Updated date
+- Last created
+- Name
+- Most stars
+- Oldest created
+- Oldest updated
+- Largest repository
 
 A user can choose to hide or show archived projects in the list.
 
 In the **Filter by name** field, type the project name you want to find, and GitLab filters
 them as you type.
 
-Select from the **Namespace** dropdown to filter only projects in that namespace.
+To filter only projects in that namespace, select from the **Namespace** dropdown list.
 
 You can combine the filter options. For example, to list only public projects with `score` in their name:
 

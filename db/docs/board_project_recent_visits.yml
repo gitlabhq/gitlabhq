@@ -1,0 +1,9 @@
+---
+table_name: board_project_recent_visits
+classes:
+- BoardProjectRecentVisit
+feature_categories:
+- team_planning
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/7aeab58f4861144fcc1d334907cb1b465c645001
+milestone: '11.5'

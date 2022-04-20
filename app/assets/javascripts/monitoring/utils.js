@@ -294,7 +294,7 @@ export const expandedPanelPayloadFromUrl = (dashboard, search = window.location.
   if (params.group || params.title || params.y_label) {
     const panelGroup = dashboard.panelGroups.find(({ group }) => params.group === group);
     const panel = panelGroup.panels.find(
-      // eslint-disable-next-line babel/camelcase
+      // eslint-disable-next-line camelcase
       ({ y_label, title }) => y_label === params.y_label && title === params.title,
     );
 

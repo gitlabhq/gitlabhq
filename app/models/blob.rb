@@ -8,6 +8,7 @@ class Blob < SimpleDelegator
   include BlobActiveModel
 
   MODE_SYMLINK = '120000' # The STRING 120000 is the git-reported octal filemode for a symlink
+  MODE_EXECUTABLE = '100755' # The STRING 100755 is the git-reported octal filemode for an executable file
 
   CACHE_TIME = 60 # Cache raw blobs referred to by a (mutable) ref for 1 minute
   CACHE_TIME_IMMUTABLE = 3600 # Cache blobs referred to by an immutable reference for 1 hour
@@ -35,7 +36,6 @@ class Blob < SimpleDelegator
 
     BlobViewer::Image,
     BlobViewer::Sketch,
-    BlobViewer::Balsamiq,
 
     BlobViewer::Video,
     BlobViewer::Audio,
@@ -180,6 +180,10 @@ class Blob < SimpleDelegator
 
   def symlink?
     mode == MODE_SYMLINK
+  end
+
+  def executable?
+    mode == MODE_EXECUTABLE
   end
 
   def extension

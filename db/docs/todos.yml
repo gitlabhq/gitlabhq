@@ -1,0 +1,9 @@
+---
+table_name: todos
+classes:
+- Todo
+feature_categories:
+- team_planning
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3d52e139b13ad077286f2f9f46b7e98f43ad9564
+milestone: '8.5'

@@ -1,0 +1,9 @@
+---
+table_name: batched_background_migrations
+classes:
+- Gitlab::Database::BackgroundMigration::BatchedMigration
+feature_categories:
+- database
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54628
+milestone: '13.10'

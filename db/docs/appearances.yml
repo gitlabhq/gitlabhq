@@ -1,0 +1,9 @@
+---
+table_name: appearances
+classes:
+- Appearance
+feature_categories:
+- navigation
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/40104eead753e7e8ea77951a74a3941546c35aab
+milestone: '6.8'

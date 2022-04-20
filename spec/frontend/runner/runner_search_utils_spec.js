@@ -181,6 +181,28 @@ describe('search_params.js', () => {
         first: RUNNER_PAGE_SIZE,
       },
     },
+    {
+      name: 'paused runners',
+      urlQuery: '?paused[]=true',
+      search: {
+        runnerType: null,
+        filters: [{ type: 'paused', value: { data: 'true', operator: '=' } }],
+        pagination: { page: 1 },
+        sort: 'CREATED_DESC',
+      },
+      graphqlVariables: { paused: true, sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    },
+    {
+      name: 'active runners',
+      urlQuery: '?paused[]=false',
+      search: {
+        runnerType: null,
+        filters: [{ type: 'paused', value: { data: 'false', operator: '=' } }],
+        pagination: { page: 1 },
+        sort: 'CREATED_DESC',
+      },
+      graphqlVariables: { paused: false, sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    },
   ];
 
   describe('searchValidator', () => {
@@ -197,14 +219,18 @@ describe('search_params.js', () => {
       expect(updateOutdatedUrl('http://test.host/?a=b')).toBe(null);
     });
 
-    it('returns updated url for updating NOT_CONNECTED to NEVER_CONTACTED', () => {
-      expect(updateOutdatedUrl('http://test.host/admin/runners?status[]=NOT_CONNECTED')).toBe(
-        'http://test.host/admin/runners?status[]=NEVER_CONTACTED',
-      );
+    it.each`
+      query                           | updatedQuery
+      ${'status[]=NOT_CONNECTED'}     | ${'status[]=NEVER_CONTACTED'}
+      ${'status[]=NOT_CONNECTED&a=b'} | ${'status[]=NEVER_CONTACTED&a=b'}
+      ${'status[]=ACTIVE'}            | ${'paused[]=false'}
+      ${'status[]=ACTIVE&a=b'}        | ${'a=b&paused[]=false'}
+      ${'status[]=ACTIVE'}            | ${'paused[]=false'}
+      ${'status[]=PAUSED'}            | ${'paused[]=true'}
+    `('updates "$query" to "$updatedQuery"', ({ query, updatedQuery }) => {
+      const mockUrl = 'http://test.host/admin/runners?';
 
-      expect(updateOutdatedUrl('http://test.host/admin/runners?status[]=NOT_CONNECTED&a=b')).toBe(
-        'http://test.host/admin/runners?status[]=NEVER_CONTACTED&a=b',
-      );
+      expect(updateOutdatedUrl(`${mockUrl}${query}`)).toBe(`${mockUrl}${updatedQuery}`);
     });
   });
 

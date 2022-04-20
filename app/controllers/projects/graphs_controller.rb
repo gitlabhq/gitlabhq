@@ -102,3 +102,5 @@ class Projects::GraphsController < Projects::ApplicationController
     render json: @log.to_json
   end
 end
+
+Projects::GraphsController.prepend_mod

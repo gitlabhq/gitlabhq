@@ -10,7 +10,7 @@ RSpec.describe Metrics::Dashboard::CustomMetricEmbedService do
   let_it_be(:environment) { create(:environment, project: project) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) if user
   end
 
   let(:dashboard_path) { system_dashboard_path }

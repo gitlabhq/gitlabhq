@@ -1,5 +1,6 @@
 - if @project
-  = render 'projects/services/prometheus/configuration_banner', project: @project, integration: integration
+  = render 'shared/prometheus_configuration_banner', project: @project, integration: integration, header_tag: :h4
+  %hr
 
 %h4.gl-mb-3
   = s_('PrometheusService|Manual configuration')

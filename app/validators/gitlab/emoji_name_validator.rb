@@ -11,9 +11,22 @@
 module Gitlab
   class EmojiNameValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
-      unless TanukiEmoji.find_by_alpha_code(value.to_s)
-        record.errors.add(attribute, (options[:message] || 'is not a valid emoji name'))
-      end
+      return if valid_tanuki_emoji?(value)
+      return if valid_custom_emoji?(record, value)
+
+      record.errors.add(attribute, (options[:message] || 'is not a valid emoji name'))
+    end
+
+    private
+
+    def valid_tanuki_emoji?(value)
+      TanukiEmoji.find_by_alpha_code(value.to_s)
+    end
+
+    def valid_custom_emoji?(record, value)
+      resource = record.try(:resource_parent)
+
+      CustomEmoji.for_resource(resource).by_name(value.to_s).any?
     end
   end
 end

@@ -1,5 +1,6 @@
 <script>
 import { GlAvatar, GlIcon } from '@gitlab/ui';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
       required: true,
     },
   },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
@@ -19,7 +21,12 @@ export default {
   <div class="gl-display-flex gl-align-items-center">
     <gl-icon name="folder-o" class="gl-mr-3" />
     <div class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3">
-      <gl-avatar :size="32" shape="rect" :entity-name="group.name" :src="group.avatar_url" />
+      <gl-avatar
+        :size="32"
+        :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+        :entity-name="group.name"
+        :src="group.avatar_url"
+      />
     </div>
 
     <div>

@@ -189,7 +189,7 @@ module API
           present actor.user, with: Entities::UserSafe
         end
 
-        get '/check', feature_category: :not_owned do
+        get '/check', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
           {
             api_version: API.version,
             gitlab_version: Gitlab::VERSION,

@@ -1,0 +1,9 @@
+---
+table_name: container_repositories
+classes:
+- ContainerRepository
+feature_categories:
+- container_registry
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/01d159b409d8b24d36204979a73de249843d71bf
+milestone: '9.1'

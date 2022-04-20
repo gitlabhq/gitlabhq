@@ -49,7 +49,7 @@ func TestUploadOptsLocalAndRemote(t *testing.T) {
 				PartSize:      test.partSize,
 			}
 
-			require.Equal(t, test.isLocal, opts.IsLocal(), "IsLocal() mismatch")
+			require.Equal(t, test.isLocal, opts.IsLocalTempFile(), "IsLocalTempFile() mismatch")
 			require.Equal(t, test.isMultipart, opts.IsMultipart(), "IsMultipart() mismatch")
 		})
 	}
@@ -336,7 +336,7 @@ func TestGoCloudConfig(t *testing.T) {
 			require.Equal(t, apiResponse.RemoteObject.ObjectStorage.GoCloudConfig, opts.ObjectStorageConfig.GoCloudConfig)
 			require.True(t, opts.UseWorkhorseClientEnabled())
 			require.Equal(t, test.valid, opts.ObjectStorageConfig.IsValid())
-			require.False(t, opts.IsLocal())
+			require.False(t, opts.IsLocalTempFile())
 		})
 	}
 }

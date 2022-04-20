@@ -25,6 +25,9 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   feature_category :projects
 
+  # TODO: Set higher urgency after addressing https://gitlab.com/gitlab-org/gitlab/-/issues/357913
+  urgency :low, [:index]
+
   def index
     show_alert_if_search_is_disabled
     @projects = load_projects
@@ -110,7 +113,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def load_topic
-    @topic = Projects::Topic.find_by_name(params[:topic_name])
+    @topic = Projects::Topic.find_by_name_case_insensitive(params[:topic_name])
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

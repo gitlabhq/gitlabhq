@@ -52,9 +52,9 @@ module Gitlab
               WHERE cte_id = id
             SQL
           end
-
-          mark_job_as_succeeded(start_id, end_id)
         end
+
+        mark_job_as_succeeded(start_id, end_id)
       end
 
       private

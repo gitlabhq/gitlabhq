@@ -1,4 +1,4 @@
-import { getTimeago, localTimeAgo, timeFor } from '~/lib/utils/datetime/timeago_utility';
+import { getTimeago, localTimeAgo, timeFor, duration } from '~/lib/utils/datetime/timeago_utility';
 import { s__ } from '~/locale';
 import '~/commons/bootstrap';
 
@@ -64,6 +64,54 @@ describe('TimeAgo utils', () => {
 
       expect(timeFor(date)).toBe(s__('Timeago|1 year remaining'));
     });
+  });
+
+  describe('duration', () => {
+    const ONE_DAY = 24 * 60 * 60;
+
+    it.each`
+      secs                 | formatted
+      ${0}                 | ${'0 seconds'}
+      ${30}                | ${'30 seconds'}
+      ${59}                | ${'59 seconds'}
+      ${60}                | ${'1 minute'}
+      ${-60}               | ${'1 minute'}
+      ${2 * 60}            | ${'2 minutes'}
+      ${60 * 60}           | ${'1 hour'}
+      ${2 * 60 * 60}       | ${'2 hours'}
+      ${ONE_DAY}           | ${'1 day'}
+      ${2 * ONE_DAY}       | ${'2 days'}
+      ${7 * ONE_DAY}       | ${'1 week'}
+      ${14 * ONE_DAY}      | ${'2 weeks'}
+      ${31 * ONE_DAY}      | ${'1 month'}
+      ${61 * ONE_DAY}      | ${'2 months'}
+      ${365 * ONE_DAY}     | ${'1 year'}
+      ${365 * 2 * ONE_DAY} | ${'2 years'}
+    `('formats $secs as "$formatted"', ({ secs, formatted }) => {
+      const ms = secs * 1000;
+
+      expect(duration(ms)).toBe(formatted);
+    });
+
+    // `duration` can be used to format Rails month durations.
+    // Ensure formatting for quantities such as `2.months.to_i`
+    // based on ActiveSupport::Duration::SECONDS_PER_MONTH.
+    // See: https://api.rubyonrails.org/classes/ActiveSupport/Duration.html
+    const SECONDS_PER_MONTH = 2629746; // 1.month.to_i
+
+    it.each`
+      duration      | secs                     | formatted
+      ${'1.month'}  | ${SECONDS_PER_MONTH}     | ${'1 month'}
+      ${'2.months'} | ${SECONDS_PER_MONTH * 2} | ${'2 months'}
+      ${'3.months'} | ${SECONDS_PER_MONTH * 3} | ${'3 months'}
+    `(
+      'formats ActiveSupport::Duration of `$duration` ($secs) as "$formatted"',
+      ({ secs, formatted }) => {
+        const ms = secs * 1000;
+
+        expect(duration(ms)).toBe(formatted);
+      },
+    );
   });
 
   describe('localTimeAgo', () => {

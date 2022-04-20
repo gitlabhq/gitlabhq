@@ -22,7 +22,9 @@ RSpec.describe Resolvers::WorkItemResolver do
       let(:current_user) { create(:user) }
 
       it 'raises a resource not available error' do
-        expect { resolved_work_item }.to raise_error(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolved_work_item
+        end
       end
     end
 

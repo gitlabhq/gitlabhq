@@ -12,6 +12,7 @@ import { redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
+import LineHighlighter from '~/blob/line_highlighter';
 import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import userInfoQuery from '../queries/user_info.query.graphql';
@@ -192,6 +193,7 @@ export default {
 
             window.requestIdleCallback(() => {
               this.isRenderingLegacyTextViewer = false;
+              new LineHighlighter(); // eslint-disable-line no-new
             });
           } else {
             this.legacyRichViewer = html;
@@ -301,6 +303,7 @@ export default {
         :code-navigation-path="blobInfo.codeNavigationPath"
         :blob-path="blobInfo.path"
         :path-prefix="blobInfo.projectBlobPathRoot"
+        :wrap-text-nodes="glFeatures.highlightJs"
       />
     </div>
   </div>

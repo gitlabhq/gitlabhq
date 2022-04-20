@@ -156,6 +156,6 @@ export default {
 </template>
 ```
 
-[In Vue 3](https://v3.vuejs.org/guide/migration/props-default-this.html#props-default-function-this-access),
+[In Vue 3](https://v3-migration.vuejs.org/breaking-changes/props-default-this.html),
 the props default value factory is passed the raw props as an argument, and can
 also access injections.

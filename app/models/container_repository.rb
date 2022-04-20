@@ -9,15 +9,17 @@ class ContainerRepository < ApplicationRecord
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
+
   IDLE_MIGRATION_STATES = %w[default pre_import_done import_done import_aborted import_skipped].freeze
   ACTIVE_MIGRATION_STATES = %w[pre_importing importing].freeze
-  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
   MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
+  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
+  SKIPPABLE_MIGRATION_STATES = (ABORTABLE_MIGRATION_STATES + %w[import_aborted]).freeze
 
   MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
+  MIGRATION_PHASE_1_ENDED_AT = Date.new(2022, 01, 23).freeze
 
   TooManyImportsError = Class.new(StandardError)
-  NativeImportError = Class.new(StandardError)
 
   belongs_to :project
 
@@ -32,7 +34,17 @@ class ContainerRepository < ApplicationRecord
 
   enum status: { delete_scheduled: 0, delete_failed: 1 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
-  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3 }
+
+  enum migration_skipped_reason: {
+    not_in_plan: 0,
+    too_many_retries: 1,
+    too_many_tags: 2,
+    root_namespace_in_deny_list: 3,
+    migration_canceled: 4,
+    not_found: 5,
+    native_import: 6,
+    migration_forced_canceled: 7
+  }
 
   delegate :client, :gitlab_api_client, to: :registry
 
@@ -57,8 +69,8 @@ class ContainerRepository < ApplicationRecord
   scope :import_in_process, -> { where(migration_state: %w[pre_importing pre_import_done importing]) }
 
   scope :recently_done_migration_step, -> do
-    where(migration_state: %w[import_done pre_import_done import_aborted])
-      .order(Arel.sql('GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at) DESC'))
+    where(migration_state: %w[import_done pre_import_done import_aborted import_skipped])
+      .order(Arel.sql('GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at, migration_skipped_at) DESC'))
   end
 
   scope :ready_for_import, -> do
@@ -110,19 +122,19 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :start_pre_import do
-      transition default: :pre_importing
+      transition %i[default pre_importing importing import_aborted] => :pre_importing
     end
 
     event :finish_pre_import do
-      transition %i[pre_importing import_aborted] => :pre_import_done
+      transition %i[pre_importing importing import_aborted] => :pre_import_done
     end
 
     event :start_import do
-      transition pre_import_done: :importing
+      transition %i[pre_import_done pre_importing importing import_aborted] => :importing
     end
 
     event :finish_import do
-      transition %i[importing import_aborted] => :import_done
+      transition %i[default pre_importing importing import_aborted] => :import_done
     end
 
     event :already_migrated do
@@ -134,15 +146,15 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :skip_import do
-      transition ABORTABLE_MIGRATION_STATES.map(&:to_sym) => :import_skipped
+      transition SKIPPABLE_MIGRATION_STATES.map(&:to_sym) => :import_skipped
     end
 
     event :retry_pre_import do
-      transition import_aborted: :pre_importing
+      transition %i[pre_importing importing import_aborted] => :pre_importing
     end
 
     event :retry_import do
-      transition import_aborted: :importing
+      transition %i[pre_importing importing import_aborted] => :importing
     end
 
     before_transition any => :pre_importing do |container_repository|
@@ -150,13 +162,16 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_pre_import_done_at = nil
     end
 
-    after_transition any => :pre_importing do |container_repository|
+    after_transition any => :pre_importing do |container_repository, transition|
+      forced = transition.args.first.try(:[], :forced)
+      next if forced
+
       container_repository.try_import do
         container_repository.migration_pre_import
       end
     end
 
-    before_transition %i[pre_importing import_aborted] => :pre_import_done do |container_repository|
+    before_transition any => :pre_import_done do |container_repository|
       container_repository.migration_pre_import_done_at = Time.zone.now
     end
 
@@ -165,13 +180,16 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_import_done_at = nil
     end
 
-    after_transition any => :importing do |container_repository|
+    after_transition any => :importing do |container_repository, transition|
+      forced = transition.args.first.try(:[], :forced)
+      next if forced
+
       container_repository.try_import do
         container_repository.migration_import
       end
     end
 
-    before_transition %i[importing import_aborted] => :import_done do |container_repository|
+    before_transition any => :import_done do |container_repository|
       container_repository.migration_import_done_at = Time.zone.now
     end
 
@@ -179,6 +197,12 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_aborted_in_state = container_repository.migration_state
       container_repository.migration_aborted_at = Time.zone.now
       container_repository.migration_retries_count += 1
+    end
+
+    after_transition any => :import_aborted do |container_repository|
+      if container_repository.retried_too_many_times?
+        container_repository.skip_import(reason: :too_many_retries)
+      end
     end
 
     before_transition import_aborted: any do |container_repository|
@@ -202,6 +226,13 @@ class ContainerRepository < ApplicationRecord
       project: path.repository_project,
       name: path.repository_name
     ).exists?
+  end
+
+  def self.all_migrated?
+    # check that the set of non migrated repositories is empty
+    where(created_at: ...MIGRATION_PHASE_1_ENDED_AT)
+      .where.not(migration_state: 'import_done')
+      .empty?
   end
 
   def self.with_enabled_policy
@@ -250,10 +281,10 @@ class ContainerRepository < ApplicationRecord
     super
   end
 
-  def start_pre_import
+  def start_pre_import(*args)
     return false unless ContainerRegistry::Migration.enabled?
 
-    super
+    super(*args)
   end
 
   def retry_pre_import
@@ -276,24 +307,38 @@ class ContainerRepository < ApplicationRecord
   def retry_aborted_migration
     return unless migration_state == 'import_aborted'
 
-    case external_import_status
+    reconcile_import_status(external_import_status) do
+      # If the import_status request fails, use the timestamp to guess current state
+      migration_pre_import_done_at ? retry_import : retry_pre_import
+    end
+  end
+
+  def reconcile_import_status(status)
+    case status
     when 'native'
-      raise NativeImportError
+      finish_import_as(:native_import)
+    when 'pre_import_in_progress'
+      return if pre_importing?
+
+      start_pre_import(forced: true)
     when 'import_in_progress'
-      nil
+      return if importing?
+
+      start_import(forced: true)
+    when 'import_canceled', 'pre_import_canceled'
+      return if import_skipped?
+
+      skip_import(reason: :migration_canceled)
     when 'import_complete'
       finish_import
     when 'import_failed'
       retry_import
-    when 'pre_import_in_progress'
-      nil
     when 'pre_import_complete'
       finish_pre_import_and_start_import
     when 'pre_import_failed'
       retry_pre_import
     else
-      # If the import_status request fails, use the timestamp to guess current state
-      migration_pre_import_done_at ? retry_import : retry_pre_import
+      yield
     end
   end
 
@@ -303,9 +348,18 @@ class ContainerRepository < ApplicationRecord
     try_count = 0
     begin
       try_count += 1
-      return true if yield == :ok
 
-      abort_import
+      case yield
+      when :ok
+        return true
+      when :not_found
+        finish_import_as(:not_found)
+      when :already_imported
+        finish_import_as(:native_import)
+      else
+        abort_import
+      end
+
       false
     rescue TooManyImportsError
       if try_count <= ::ContainerRegistry::Migration.start_max_retries
@@ -318,8 +372,12 @@ class ContainerRepository < ApplicationRecord
     end
   end
 
+  def retried_too_many_times?
+    migration_retries_count >= ContainerRegistry::Migration.max_retries
+  end
+
   def last_import_step_done_at
-    [migration_pre_import_done_at, migration_import_done_at, migration_aborted_at].compact.max
+    [migration_pre_import_done_at, migration_import_done_at, migration_aborted_at, migration_skipped_at].compact.max
   end
 
   def external_import_status
@@ -416,7 +474,7 @@ class ContainerRepository < ApplicationRecord
       next if self.created_at.before?(MIGRATION_PHASE_1_STARTED_AT)
       next unless gitlab_api_client.supports_gitlab_api?
 
-      gitlab_api_client.repository_details(self.path, with_size: true)['size_bytes']
+      gitlab_api_client.repository_details(self.path, sizing: :self)['size_bytes']
     end
   end
 
@@ -450,6 +508,25 @@ class ContainerRepository < ApplicationRecord
     response
   end
 
+  def migration_cancel
+    return :error unless gitlab_api_client.supports_gitlab_api?
+
+    gitlab_api_client.cancel_repository_import(self.path)
+  end
+
+  # This method is not meant for consumption by the code
+  # It is meant for manual use in the case that a migration needs to be
+  # cancelled by an admin or SRE
+  def force_migration_cancel
+    return :error unless gitlab_api_client.supports_gitlab_api?
+
+    response = gitlab_api_client.cancel_repository_import(self.path, force: true)
+
+    skip_import(reason: :migration_forced_canceled) if response[:status] == :ok
+
+    response
+  end
+
   def self.build_from_path(path)
     self.new(project: path.repository_project,
              name: path.repository_name)
@@ -477,6 +554,13 @@ class ContainerRepository < ApplicationRecord
   def self.find_by_path(path)
     self.find_by(project: path.repository_project,
                   name: path.repository_name)
+  end
+
+  private
+
+  def finish_import_as(reason)
+    self.migration_skipped_reason = reason
+    finish_import
   end
 end
 

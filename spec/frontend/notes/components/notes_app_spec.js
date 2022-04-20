@@ -300,16 +300,18 @@ describe('note_app', () => {
 
       await nextTick();
       expect(wrapper.find(`.edit-note a[href="${markdownDocsPath}"]`).text().trim()).toEqual(
-        'Markdown is supported',
+        'Markdown',
       );
     });
 
-    it('should not render quick actions docs url', async () => {
+    it('should render quick actions docs url', async () => {
       wrapper.find('.js-note-edit').trigger('click');
       const { quickActionsDocsPath } = mockData.notesDataMock;
 
       await nextTick();
-      expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).exists()).toBe(false);
+      expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).text().trim()).toEqual(
+        'quick actions',
+      );
     });
   });
 

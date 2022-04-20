@@ -13,7 +13,7 @@ module Gitlab
           event_type: event_type,
           user: user.hook_attrs,
           project: issuable.project.hook_attrs,
-          object_attributes: issuable.hook_attrs,
+          object_attributes: issuable_builder.new(issuable).build,
           labels: issuable.labels.map(&:hook_attrs),
           changes: final_changes(changes.slice(*safe_keys)),
           # DEPRECATED
@@ -53,10 +53,7 @@ module Gitlab
       end
 
       def final_changes(changes_hash)
-        changes_hash.reduce({}) do |hash, (key, changes_array)|
-          hash[key] = Hash[CHANGES_KEYS.zip(changes_array)]
-          hash
-        end
+        changes_hash.transform_values { |changes_array| Hash[CHANGES_KEYS.zip(changes_array)] }
       end
     end
   end

@@ -1,21 +1,11 @@
 <script>
-import {
-  GlForm,
-  GlIcon,
-  GlLink,
-  GlButton,
-  GlSprintf,
-  GlAlert,
-  GlModal,
-  GlModalDirective,
-} from '@gitlab/ui';
+import { GlForm, GlIcon, GlLink, GlButton, GlSprintf, GlAlert } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   CONTENT_EDITOR_LOADED_ACTION,
   SAVED_USING_CONTENT_EDITOR_ACTION,
@@ -64,31 +54,6 @@ export default {
         ),
         primaryAction: s__('WikiPage|Retry'),
       },
-      useNewEditor: {
-        primaryLabel: s__('WikiPage|Use the new editor'),
-        secondaryLabel: s__('WikiPage|Try this later'),
-        title: s__('WikiPage|Get a richer editing experience'),
-        text: s__(
-          "WikiPage|Try the new visual Markdown editor. Read the %{linkStart}documentation%{linkEnd} to learn what's currently supported.",
-        ),
-      },
-      switchToOldEditor: {
-        label: s__('WikiPage|Switch me back to the classic editor.'),
-        helpText: s__(
-          "WikiPage|This editor is in beta and may not display the page's contents properly. Switching back to the classic editor will discard changes you've made in the new editor.",
-        ),
-        modal: {
-          title: s__('WikiPage|Are you sure you want to switch back to the classic editor?'),
-          primary: s__('WikiPage|Switch to classic editor'),
-          cancel: s__('WikiPage|Keep editing'),
-          text: s__(
-            "WikiPage|Switching to the classic editor will discard any changes you've made in the new editor.",
-          ),
-        },
-      },
-      feedbackTip: __(
-        'Tell us your experiences with the new Markdown editor %{linkStart}in this feedback issue%{linkEnd}.',
-      ),
     },
     linksHelpText: s__(
       'WikiPage|To link to a (new) page, simply type %{linkExample}. More examples are in the %{linkStart}documentation%{linkEnd}.',
@@ -108,7 +73,6 @@ export default {
     editSourceButtonText: s__('WikiPage|Edit source'),
     editRichTextButtonText: s__('WikiPage|Edit rich text'),
   },
-  contentEditorFeedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332629',
   components: {
     GlAlert,
     GlForm,
@@ -116,24 +80,19 @@ export default {
     GlIcon,
     GlLink,
     GlButton,
-    GlModal,
     MarkdownField,
     ContentEditor: () =>
       import(
         /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
       ),
   },
-  directives: {
-    GlModalDirective,
-  },
-  mixins: [trackingMixin, glFeatureFlagMixin()],
+  mixins: [trackingMixin],
   inject: ['formatOptions', 'pageInfo'],
   data() {
     return {
       title: this.pageInfo.title?.trim() || '',
       format: this.pageInfo.format || 'markdown',
       content: this.pageInfo.content || '',
-      isContentEditorAlertDismissed: false,
       useContentEditor: false,
       commitMessage: '',
       isDirty: false,
@@ -194,24 +153,8 @@ export default {
     isMarkdownFormat() {
       return this.format === 'markdown';
     },
-    showContentEditorAlert() {
-      return (
-        !this.glFeatures.wikiSwitchBetweenContentEditorRawMarkdown &&
-        this.isMarkdownFormat &&
-        !this.useContentEditor &&
-        !this.isContentEditorAlertDismissed
-      );
-    },
-    showSwitchEditingModeButton() {
-      return this.glFeatures.wikiSwitchBetweenContentEditorRawMarkdown && this.isMarkdownFormat;
-    },
     displayWikiSpecificMarkdownHelp() {
       return !this.isContentEditorActive;
-    },
-    displaySwitchBackToClassicEditorMessage() {
-      return (
-        !this.glFeatures.wikiSwitchBetweenContentEditorRawMarkdown && this.isContentEditorActive
-      );
     },
     disableSubmitButton() {
       return this.noContent || !this.title || this.contentEditorRenderFailed;
@@ -312,23 +255,6 @@ export default {
       this.commitMessage = newCommitMessage;
     },
 
-    initContentEditor() {
-      this.useContentEditor = true;
-    },
-
-    switchToOldEditor() {
-      this.useContentEditor = false;
-    },
-
-    confirmSwitchToOldEditor() {
-      if (this.contentEditorRenderFailed) {
-        this.contentEditorRenderFailed = false;
-        this.switchToOldEditor();
-      } else {
-        this.$refs.confirmSwitchToOldEditorModal.show();
-      }
-    },
-
     trackContentEditorLoaded() {
       this.track(CONTENT_EDITOR_LOADED_ACTION);
     },
@@ -348,10 +274,6 @@ export default {
           value: this.format,
         },
       });
-    },
-
-    dismissContentEditorAlert() {
-      this.isContentEditorAlertDismissed = true;
     },
   },
 };
@@ -438,10 +360,7 @@ export default {
         }}</label>
       </div>
       <div class="col-sm-10">
-        <div
-          v-if="showSwitchEditingModeButton"
-          class="gl-display-flex gl-justify-content-end gl-mb-3"
-        >
+        <div v-if="isMarkdownFormat" class="gl-display-flex gl-justify-content-end gl-mb-3">
           <gl-button
             data-testid="toggle-editing-mode-button"
             data-qa-selector="editing_mode_button"
@@ -451,42 +370,6 @@ export default {
             >{{ toggleEditingModeButtonText }}</gl-button
           >
         </div>
-        <gl-alert
-          v-if="showContentEditorAlert"
-          class="gl-mb-6"
-          variant="info"
-          data-qa-selector="try_new_editor_container"
-          :primary-button-text="$options.i18n.contentEditor.useNewEditor.primaryLabel"
-          :secondary-button-text="$options.i18n.contentEditor.useNewEditor.secondaryLabel"
-          :dismiss-label="$options.i18n.contentEditor.useNewEditor.secondaryLabel"
-          :title="$options.i18n.contentEditor.useNewEditor.title"
-          @primaryAction="initContentEditor"
-          @secondaryAction="dismissContentEditorAlert"
-          @dismiss="dismissContentEditorAlert"
-        >
-          <gl-sprintf :message="$options.i18n.contentEditor.useNewEditor.text">
-            <template
-              #link="// eslint-disable-next-line vue/no-template-shadow
-                { content }"
-              ><gl-link
-                :href="contentEditorHelpPath"
-                target="_blank"
-                data-testid="content-editor-help-link"
-                >{{ content }}</gl-link
-              ></template
-            >
-          </gl-sprintf>
-        </gl-alert>
-        <gl-modal
-          ref="confirmSwitchToOldEditorModal"
-          modal-id="confirm-switch-to-old-editor"
-          :title="$options.i18n.contentEditor.switchToOldEditor.modal.title"
-          :action-primary="{ text: $options.i18n.contentEditor.switchToOldEditor.modal.primary }"
-          :action-cancel="{ text: $options.i18n.contentEditor.switchToOldEditor.modal.cancel }"
-          @primary="switchToOldEditor"
-        >
-          {{ $options.i18n.contentEditor.switchToOldEditor.modal.text }}
-        </gl-modal>
         <markdown-field
           v-if="!isContentEditorActive"
           :markdown-preview-path="pageInfo.markdownPreviewPath"
@@ -516,22 +399,7 @@ export default {
             </textarea>
           </template>
         </markdown-field>
-
         <div v-if="isContentEditorActive">
-          <gl-alert class="gl-mb-6" variant="tip" :dismissible="false">
-            <gl-sprintf :message="$options.i18n.contentEditor.feedbackTip">
-              <template
-                #link="// eslint-disable-next-line vue/no-template-shadow
-                { content }"
-                ><gl-link
-                  :href="$options.contentEditorFeedbackIssue"
-                  target="_blank"
-                  data-testid="wiki-markdown-help-link"
-                  >{{ content }}</gl-link
-                ></template
-              >
-            </gl-sprintf>
-          </gl-alert>
           <content-editor
             :render-markdown="renderMarkdown"
             :uploads-path="pageInfo.uploadsPath"
@@ -560,12 +428,6 @@ export default {
               ></template
             >
           </gl-sprintf>
-          <span v-if="displaySwitchBackToClassicEditorMessage">
-            {{ $options.i18n.contentEditor.switchToOldEditor.helpText }}
-            <gl-button variant="link" @click="confirmSwitchToOldEditor">{{
-              $options.i18n.contentEditor.switchToOldEditor.label
-            }}</gl-button>
-          </span>
         </div>
       </div>
     </div>

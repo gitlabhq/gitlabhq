@@ -66,7 +66,15 @@ export default {
       return this.loadingState === LOADING_STATES.expandedLoading;
     },
     isCollapsible() {
-      return !this.isLoadingSummary && this.loadingState !== LOADING_STATES.collapsedError;
+      if (!this.isLoadingSummary && this.loadingState !== LOADING_STATES.collapsedError) {
+        if (this.shouldCollapse) {
+          return this.shouldCollapse();
+        }
+
+        return true;
+      }
+
+      return false;
     },
     hasFullData() {
       return this.fullData.length > 0;
@@ -86,7 +94,7 @@ export default {
       );
     },
     statusIconName() {
-      if (this.hasFetchError) return EXTENSION_ICONS.error;
+      if (this.hasFetchError) return EXTENSION_ICONS.failed;
       if (this.isLoadingSummary) return null;
 
       return this.statusIcon(this.collapsedData);
@@ -128,7 +136,7 @@ export default {
       }
     }),
     toggleCollapsed(e) {
-      if (!e?.target?.closest('.btn:not(.btn-icon),a')) {
+      if (this.isCollapsible && !e?.target?.closest('.btn:not(.btn-icon),a')) {
         this.isCollapsed = !this.isCollapsed;
 
         this.triggerRedisTracking();
@@ -214,7 +222,7 @@ export default {
       // To allow for text to be selected we check if the the user is clicking
       // or selecting, if they are selecting the time difference should be
       // more than 200ms
-      if (up - this.down < 200) {
+      if (up - this.down < 200 && !e?.target?.closest('.btn-icon')) {
         this.toggleCollapsed(e);
       }
     },
@@ -226,7 +234,12 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="media gl-p-5 gl-cursor-pointer" @mousedown="onRowMouseDown" @mouseup="onRowMouseUp">
+    <div
+      :class="{ 'gl-cursor-pointer': isCollapsible }"
+      class="media gl-p-5"
+      @mousedown="onRowMouseDown"
+      @mouseup="onRowMouseUp"
+    >
       <status-icon
         :name="$options.label || $options.name"
         :is-loading="isLoadingSummary"
@@ -264,7 +277,7 @@ export default {
             category="tertiary"
             data-testid="toggle-button"
             size="small"
-            @click.self="toggleCollapsed"
+            @click="toggleCollapsed"
           />
         </div>
       </div>

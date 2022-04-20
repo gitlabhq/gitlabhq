@@ -1,9 +1,4 @@
 import '~/snippet/snippet_show';
+import initAwardsApp from '~/emoji/awards_app';
 
-const awardEmojiEl = document.getElementById('js-vue-awards-block');
-
-if (awardEmojiEl) {
-  import('~/emoji/awards_app')
-    .then((m) => m.default(awardEmojiEl))
-    .catch(() => {});
-}
+initAwardsApp(document.getElementById('js-vue-awards-block'));

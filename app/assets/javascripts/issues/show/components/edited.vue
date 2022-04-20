@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <small class="edited-text">
+  <small class="edited-text js-issue-widgets">
     Edited
     <time-ago-tooltip v-if="updatedAt" :time="updatedAt" tooltip-placement="bottom" />
     <span v-if="hasUpdatedBy">

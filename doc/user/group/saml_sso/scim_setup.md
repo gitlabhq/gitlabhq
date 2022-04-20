@@ -20,7 +20,7 @@ The GitLab [SCIM API](../../../api/scim.md) implements part of [the RFC7644 prot
 The following actions are available:
 
 - Create users
-- Deactivate users
+- Remove users (deactivate SCIM identity)
 
 The following identity providers are supported:
 
@@ -133,7 +133,7 @@ After the above steps are complete:
 
 The Okta GitLab application currently only supports SCIM. Continue
 using the separate Okta [SAML SSO](index.md) configuration along with the new SCIM
-application described above.
+application described above. An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/216173) to add SAML support to the Okta GitLab application.
 
 ### OneLogin
 
@@ -150,7 +150,7 @@ The following diagram is a general outline on what happens when you add users to
 
 ```mermaid
 graph TD
-  A[Add User to SCIM app] -->|IdP sends user info to GitLab| B(GitLab: Does the email exists?)
+  A[Add User to SCIM app] -->|IdP sends user info to GitLab| B(GitLab: Does the email exist?)
   B -->|No| C[GitLab creates user with SCIM identity]
   B -->|Yes| D[GitLab sends message back 'Email exists']
 ```

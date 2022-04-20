@@ -524,6 +524,16 @@ RSpec.describe Deployment do
 
         is_expected.to contain_exactly(deployment1, deployment2, deployment3, deployment4, deployment5)
       end
+
+      it 'has a corresponding database index' do
+        index = ApplicationRecord.connection.indexes('deployments').find do |i|
+          i.name == 'index_deployments_for_visible_scope'
+        end
+
+        scope_values = described_class::VISIBLE_STATUSES.map { |s| described_class.statuses[s] }.to_s
+
+        expect(index.where).to include(scope_values)
+      end
     end
 
     describe 'upcoming' do
@@ -1052,6 +1062,40 @@ RSpec.describe Deployment do
 
       expect(deploy).not_to be_valid
       expect(deploy.errors[:ref]).not_to be_empty
+    end
+  end
+
+  describe '#tier_in_yaml' do
+    context 'when deployable is nil' do
+      before do
+        subject.deployable = nil
+      end
+
+      it 'returns nil' do
+        expect(subject.tier_in_yaml).to be_nil
+      end
+    end
+
+    context 'when deployable is present' do
+      context 'when tier is specified' do
+        let(:deployable) { create(:ci_build, :success, :environment_with_deployment_tier) }
+
+        before do
+          subject.deployable = deployable
+        end
+
+        it 'returns the tier' do
+          expect(subject.tier_in_yaml).to eq('testing')
+        end
+
+        context 'when tier is not specified' do
+          let(:deployable) { create(:ci_build, :success) }
+
+          it 'returns nil' do
+            expect(subject.tier_in_yaml).to be_nil
+          end
+        end
+      end
     end
   end
 

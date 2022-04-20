@@ -71,7 +71,28 @@ options = {
     filter: Net::LDAP::Filter.eq('cn', '*'),
 
     # :attributes is optional
-    # the attributes we want to get returnedk
+    # the attributes we want to get returned
+    attributes: %w(dn cn memberuid member submember uniquemember memberof)
+}
+adapter.ldap_search(options)
+```
+
+When using OIDs in the filter, replace `Net::LDAP::Filter.eq` with `Net::LDAP::Filter.construct`:
+
+```ruby
+adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain')
+options = {
+    # :base is required
+    # use .base or .group_base
+    base: adapter.config.base,
+
+    # :filter is optional
+    # This filter includes OID 1.2.840.113556.1.4.1941
+    # It will search for all direct and nested members of the group gitlab_grp in the LDAP directory  
+    filter: Net::LDAP::Filter.construct("(memberOf:1.2.840.113556.1.4.1941:=CN=gitlab_grp,DC=example,DC=com)"),
+
+    # :attributes is optional
+    # the attributes we want to get returned
     attributes: %w(dn cn memberuid member submember uniquemember memberof)
 }
 adapter.ldap_search(options)

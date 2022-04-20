@@ -53,7 +53,7 @@ describe('InstallAgentModal', () => {
     });
 
     it('shows agent token as an input value', () => {
-      expect(findInput().props('value')).toBe('agent-token');
+      expect(findInput().props('value')).toBe(agentToken);
     });
 
     it('renders a copy button', () => {
@@ -65,12 +65,12 @@ describe('InstallAgentModal', () => {
     });
 
     it('shows warning alert', () => {
-      expect(findAlert().props('title')).toBe(I18N_AGENT_TOKEN.tokenSingleUseWarningTitle);
+      expect(findAlert().text()).toBe(I18N_AGENT_TOKEN.tokenSingleUseWarningTitle);
     });
 
     it('shows code block with agent installation command', () => {
-      expect(findCodeBlock().props('code')).toContain('--agent-token=agent-token');
-      expect(findCodeBlock().props('code')).toContain('--kas-address=kas.example.com');
+      expect(findCodeBlock().props('code')).toContain(`--set config.token=${agentToken}`);
+      expect(findCodeBlock().props('code')).toContain(`--set config.kasAddress=${kasAddress}`);
     });
   });
 });

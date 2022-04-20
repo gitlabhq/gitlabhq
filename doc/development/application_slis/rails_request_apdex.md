@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525) in GitLab 14.4
 
 NOTE:
-This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_dashboards.md#error-budget)
+This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/index.md#error-budget)
 by default. You can [opt in](#error-budget-attribution-and-ownership).
 
 The request Apdex SLI (Service Level Indicator) is [an SLI defined in the application](index.md).
@@ -221,7 +221,7 @@ end
 
 This SLI is used for service level monitoring. It feeds into the
 [error budget for stage
-groups](../stage_group_dashboards.md#error-budget). For this
+groups](../stage_group_observability/index.md#error-budget). For this
 particular SLI, we have opted everyone out by default to give time to
 set the correct urgencies on endpoints before it affects a group's
 error budget.

@@ -36,7 +36,7 @@ describe('Ci variable modal', () => {
   const findAddorUpdateButton = () =>
     findModal()
       .findAll(GlButton)
-      .wrappers.find((button) => button.props('variant') === 'success');
+      .wrappers.find((button) => button.props('variant') === 'confirm');
   const deleteVariableButton = () =>
     findModal()
       .findAll(GlButton)

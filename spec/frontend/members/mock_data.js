@@ -17,6 +17,7 @@ export const member = {
   state: MEMBER_STATE_CREATED,
   user: {
     id: 123,
+    createdAt: '2022-03-10T18:03:04.812Z',
     name: 'Administrator',
     username: 'root',
     webUrl: 'https://gitlab.com/root',
@@ -26,6 +27,7 @@ export const member = {
     oncallSchedules: [{ name: 'schedule 1' }],
     escalationPolicies: [{ name: 'policy 1' }],
     availability: null,
+    lastActivityOn: '2022-03-15',
     showStatus: true,
   },
   id: 238,
@@ -56,6 +58,7 @@ export const group = {
     webUrl: 'https://gitlab.com/groups/parent-group/commit451',
   },
   id: 3,
+  isDirectMember: true,
   createdAt: '2020-08-06T15:31:07.662Z',
   expiresAt: null,
   validRoles: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },

@@ -14,9 +14,7 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
   before_action :authorize_read_snippet!, except: [:new, :index]
   before_action :authorize_update_snippet!, only: :edit
 
-  before_action only: [:show] do
-    push_frontend_feature_flag(:improved_emoji_picker, @project, default_enabled: :yaml)
-  end
+  urgency :low, [:index]
 
   def index
     @snippet_counts = ::Snippets::CountService

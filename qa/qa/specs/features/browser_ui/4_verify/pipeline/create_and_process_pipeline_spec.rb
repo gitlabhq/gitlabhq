@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :smoke, :runner do
+  RSpec.describe 'Verify', :smoke, :runner, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/356295',
+    type: :investigating
+  } do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
 
@@ -58,6 +61,16 @@ module QA
                     artifacts:
                       paths:
                       - my-artifacts/
+
+                  test-coverage-report:
+                    tags:
+                      - #{executor}
+                    script: mkdir coverage; echo "CONTENTS" > coverage/cobertura.xml
+                    artifacts:
+                      reports:
+                        coverage_report:
+                          coverage_format: cobertura
+                          path: coverage/cobertura.xml
                 YAML
               }
             ]
@@ -71,7 +84,8 @@ module QA
             'test-success': 'passed',
             'test-failure': 'failed',
             'test-tags-mismatch': 'pending',
-            'test-artifacts': 'passed'
+            'test-artifacts': 'passed',
+            'test-coverage-report': 'passed'
           }.each do |job, status|
             Page::Project::Pipeline::Show.perform do |pipeline|
               pipeline.click_job(job)

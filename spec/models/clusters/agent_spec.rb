@@ -117,6 +117,23 @@ RSpec.describe Clusters::Agent do
     end
   end
 
+  describe '#last_used_agent_tokens' do
+    let_it_be(:agent) { create(:cluster_agent) }
+
+    subject { agent.last_used_agent_tokens }
+
+    context 'agent has no tokens' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'agent has active and inactive tokens' do
+      let!(:active_token) { create(:cluster_agent_token, agent: agent, last_used_at: 1.minute.ago) }
+      let!(:inactive_token) { create(:cluster_agent_token, agent: agent, last_used_at: 2.hours.ago) }
+
+      it { is_expected.to contain_exactly(active_token, inactive_token) }
+    end
+  end
+
   describe '#activity_event_deletion_cutoff' do
     let_it_be(:agent) { create(:cluster_agent) }
     let_it_be(:event1) { create(:agent_activity_event, agent: agent, recorded_at: 1.hour.ago) }

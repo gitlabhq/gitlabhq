@@ -84,7 +84,7 @@ module Gitlab
         # MAX(relative_position) without the GROUP BY, due to index usage:
         # https://gitlab.com/gitlab-org/gitlab-foss/issues/54276#note_119340977
         relation = scoped_items
-                     .order(Gitlab::Database.nulls_last_order('position', 'DESC'))
+                     .order(Arel.sql('position').desc.nulls_last)
                      .group(grouping_column)
                      .limit(1)
 
@@ -101,7 +101,7 @@ module Gitlab
 
       def max_sibling
         sib = relative_siblings
-          .order(Gitlab::Database.nulls_last_order('relative_position', 'DESC'))
+          .order(model_class.arel_table[:relative_position].desc.nulls_last)
           .first
 
         neighbour(sib)
@@ -109,7 +109,7 @@ module Gitlab
 
       def min_sibling
         sib = relative_siblings
-          .order(Gitlab::Database.nulls_last_order('relative_position', 'ASC'))
+          .order(model_class.arel_table[:relative_position].asc.nulls_last)
           .first
 
         neighbour(sib)

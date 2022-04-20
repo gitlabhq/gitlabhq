@@ -3,8 +3,7 @@
 module Users
   module SavedReplies
     class UpdateService
-      def initialize(current_user:, saved_reply:, name:, content:)
-        @current_user = current_user
+      def initialize(saved_reply:, name:, content:)
         @saved_reply = saved_reply
         @name = name
         @content = content
@@ -20,7 +19,7 @@ module Users
 
       private
 
-      attr_reader :current_user, :saved_reply, :name, :content
+      attr_reader :saved_reply, :name, :content
     end
   end
 end

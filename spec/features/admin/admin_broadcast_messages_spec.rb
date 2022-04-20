@@ -22,9 +22,8 @@ RSpec.describe 'Admin Broadcast Messages' do
 
   it 'creates a customized broadcast banner message' do
     fill_in 'broadcast_message_message', with: 'Application update from **4:00 CST to 5:00 CST**'
-    fill_in 'broadcast_message_color', with: '#f2dede'
     fill_in 'broadcast_message_target_path', with: '*/user_onboarded'
-    fill_in 'broadcast_message_font', with: '#b94a48'
+    select 'light-indigo', from: 'broadcast_message_theme'
     select Date.today.next_year.year, from: 'broadcast_message_ends_at_1i'
     check 'Guest'
     check 'Owner'
@@ -35,7 +34,7 @@ RSpec.describe 'Admin Broadcast Messages' do
     expect(page).to have_content 'Guest, Owner'
     expect(page).to have_content '*/user_onboarded'
     expect(page).to have_selector 'strong', text: '4:00 CST to 5:00 CST'
-    expect(page).to have_selector %(div[style="background-color: #f2dede; color: #b94a48"])
+    expect(page).to have_selector %(.light-indigo[role=alert])
   end
 
   it 'creates a customized broadcast notification message' do
@@ -90,7 +89,7 @@ RSpec.describe 'Admin Broadcast Messages' do
     fill_in 'broadcast_message_message', with: "Live **Markdown** previews. :tada:"
     select 'Notification', from: 'broadcast_message_broadcast_type'
 
-    page.within('.js-broadcast-notification-message-preview') do
+    page.within('#broadcast-message-preview') do
       expect(page).to have_selector('strong', text: 'Markdown')
       expect(page).to have_emoji('tada')
     end

@@ -6,7 +6,7 @@
 .dropdown-page-two.dropdown-new-label
   = dropdown_title(create_label_title(subject), options: { back: true, close: show_close })
   = dropdown_content do
-    = render 'shared/global_alert', variant: :danger, alert_class: 'js-label-error gl-mb-3', dismissible: false
+    = render Pajamas::AlertComponent.new(variant: :danger, alert_class: 'js-label-error gl-mb-3', dismissible: false)
     %input#new_label_name.default-dropdown-input{ type: "text", placeholder: _('Name new label') }
     .suggest-colors.suggest-colors-dropdown
       = render_suggested_colors

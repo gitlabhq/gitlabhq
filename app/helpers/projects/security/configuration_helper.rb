@@ -6,6 +6,10 @@ module Projects
       def security_upgrade_path
         "https://#{ApplicationHelper.promo_host}/pricing/"
       end
+
+      def vulnerability_training_docs_path
+        help_page_path('user/application_security/vulnerabilities/index', anchor: 'enable-security-training-for-vulnerabilities')
+      end
     end
   end
 end

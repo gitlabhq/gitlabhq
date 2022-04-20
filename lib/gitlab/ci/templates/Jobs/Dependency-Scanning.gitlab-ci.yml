@@ -32,6 +32,16 @@ dependency_scanning:
 .ds-analyzer:
   extends: dependency_scanning
   allow_failure: true
+  variables:
+    # DS_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
+    # override the analyzer image with a custom value. This may be subject to change or
+    # breakage across GitLab releases.
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/$DS_ANALYZER_NAME:$DS_MAJOR_VERSION"
+    # DS_ANALYZER_NAME is an undocumented variable used in job definitions
+    # to inject the analyzer name in the image name.
+    DS_ANALYZER_NAME: ""
+  image:
+    name: "$DS_ANALYZER_IMAGE$DS_IMAGE_SUFFIX"
   # `rules` must be overridden explicitly by each child job
   # see https://gitlab.com/gitlab-org/gitlab/-/issues/218444
   script:
@@ -46,13 +56,8 @@ gemnasium-dependency_scanning:
   extends:
     - .ds-analyzer
     - .cyclone-dx-reports
-  image:
-    name: "$DS_ANALYZER_IMAGE"
   variables:
-    # DS_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
-    # override the analyzer image with a custom value. This may be subject to change or
-    # breakage across GitLab releases.
-    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
+    DS_ANALYZER_NAME: "gemnasium"
     GEMNASIUM_LIBRARY_SCAN_ENABLED: "true"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
@@ -77,13 +82,8 @@ gemnasium-maven-dependency_scanning:
   extends:
     - .ds-analyzer
     - .cyclone-dx-reports
-  image:
-    name: "$DS_ANALYZER_IMAGE"
   variables:
-    # DS_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
-    # override the analyzer image with a custom value. This may be subject to change or
-    # breakage across GitLab releases.
-    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
+    DS_ANALYZER_NAME: "gemnasium-maven"
     # Stop reporting Gradle as "maven".
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/338252
     DS_REPORT_PACKAGE_MANAGER_MAVEN_WHEN_JAVA: "false"
@@ -105,13 +105,8 @@ gemnasium-python-dependency_scanning:
   extends:
     - .ds-analyzer
     - .cyclone-dx-reports
-  image:
-    name: "$DS_ANALYZER_IMAGE"
   variables:
-    # DS_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
-    # override the analyzer image with a custom value. This may be subject to change or
-    # breakage across GitLab releases.
-    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
+    DS_ANALYZER_NAME: "gemnasium-python"
     # Stop reporting Pipenv and Setuptools as "pip".
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/338252
     DS_REPORT_PACKAGE_MANAGER_PIP_WHEN_PYTHON: "false"
@@ -138,13 +133,8 @@ gemnasium-python-dependency_scanning:
 
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
-  image:
-    name: "$DS_ANALYZER_IMAGE"
   variables:
-    # DS_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
-    # override the analyzer image with a custom value. This may be subject to change or
-    # breakage across GitLab releases.
-    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
+    DS_ANALYZER_NAME: "bundler-audit"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
@@ -158,13 +148,8 @@ bundler-audit-dependency_scanning:
 
 retire-js-dependency_scanning:
   extends: .ds-analyzer
-  image:
-    name: "$DS_ANALYZER_IMAGE"
   variables:
-    # DS_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
-    # override the analyzer image with a custom value. This may be subject to change or
-    # breakage across GitLab releases.
-    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
+    DS_ANALYZER_NAME: "retire.js"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never

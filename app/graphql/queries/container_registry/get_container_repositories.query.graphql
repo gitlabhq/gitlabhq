@@ -23,6 +23,7 @@ query getProjectContainerRepositories(
       __typename
       nodes {
         id
+        migrationState
         name
         path
         status
@@ -57,6 +58,7 @@ query getProjectContainerRepositories(
       __typename
       nodes {
         id
+        migrationState
         name
         path
         status

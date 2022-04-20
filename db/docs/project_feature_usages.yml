@@ -1,0 +1,9 @@
+---
+table_name: project_feature_usages
+classes:
+- ProjectFeatureUsage
+feature_categories:
+- product_analytics
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/21db9a55e200b23a5a47251e9df46fd548c74559
+milestone: '11.8'

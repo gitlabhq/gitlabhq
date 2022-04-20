@@ -2,7 +2,7 @@
 import { GlTooltipDirective, GlIcon, GlLink, GlButtonGroup, GlButton, GlSprintf } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { __ } from '~/locale';
-import { setUrlParams } from '../../lib/utils/url_utility';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import { EVT_EXPAND_ALL_FILES } from '../constants';
 import eventHub from '../event_hub';
 import CompareDropdownLayout from './compare_dropdown_layout.vue';

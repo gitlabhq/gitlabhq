@@ -142,15 +142,6 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       expect(json_response['author']['username']).to eq(user.username)
     end
 
-    it "creates a confidential note if confidential is set to true" do
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: { body: 'hi!', confidential: true }
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['body']).to eq('hi!')
-      expect(json_response['confidential']).to be_truthy
-      expect(json_response['author']['username']).to eq(user.username)
-    end
-
     it "returns a 400 bad request error if body not given" do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user)
 
@@ -306,52 +297,31 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
   end
 
   describe "PUT /#{parent_type}/:id/#{noteable_type}/:noteable_id/notes/:note_id" do
-    let(:params) { { body: 'Hello!', confidential: false } }
+    let(:params) { { body: 'Hello!' } }
 
     subject do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/#{note.id}", user), params: params
     end
 
-    context 'when eveything is ok' do
-      before do
-        note.update!(confidential: true)
+    context 'when only body param is present' do
+      let(:params) { { body: 'Hello!' } }
+
+      it 'updates the note text' do
+        subject
+
+        expect(note.reload.note).to eq('Hello!')
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['body']).to eq('Hello!')
       end
+    end
 
-      context 'with multiple params present' do
-        before do
-          subject
-        end
+    context 'when confidential param is present' do
+      let(:params) { { confidential: true } }
 
-        it 'returns modified note' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['body']).to eq('Hello!')
-          expect(json_response['confidential']).to be_falsey
-        end
+      it 'does not allow to change confidentiality' do
+        expect { subject }.not_to change { note.reload.note }
 
-        it 'updates the note' do
-          expect(note.reload.note).to eq('Hello!')
-          expect(note.confidential).to be_falsey
-        end
-      end
-
-      context 'when only body param is present' do
-        let(:params) { { body: 'Hello!' } }
-
-        it 'updates only the note text' do
-          expect { subject }.not_to change { note.reload.confidential }
-
-          expect(note.note).to eq('Hello!')
-        end
-      end
-
-      context 'when only confidential param is present' do
-        let(:params) { { confidential: false } }
-
-        it 'updates only the note text' do
-          expect { subject }.not_to change { note.reload.note }
-
-          expect(note.confidential).to be_falsey
-        end
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -390,6 +360,27 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
 
     it_behaves_like '412 response' do
       let(:request) { api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/#{note.id}", user) }
+    end
+  end
+end
+
+RSpec.shared_examples 'noteable API with confidential notes' do |parent_type, noteable_type, id_name|
+  it_behaves_like 'noteable API', parent_type, noteable_type, id_name
+
+  describe "POST /#{parent_type}/:id/#{noteable_type}/:noteable_id/notes" do
+    let(:params) { { body: 'hi!' } }
+
+    subject do
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
+    end
+
+    it "creates a confidential note if confidential is set to true" do
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params.merge(confidential: true)
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['body']).to eq('hi!')
+      expect(json_response['confidential']).to be_truthy
+      expect(json_response['author']['username']).to eq(user.username)
     end
   end
 end

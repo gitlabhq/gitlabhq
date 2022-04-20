@@ -1,5 +1,5 @@
 <script>
-import { GlCard, GlSprintf } from '@gitlab/ui';
+import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
@@ -13,23 +13,20 @@ export default {
     ),
   },
   components: {
-    GlCard,
     GlSprintf,
   },
 };
 </script>
 <template>
-  <gl-card>
-    <template #default>
-      <h4 class="gl-font-lg gl-mt-0">{{ $options.i18n.title }}</h4>
-      <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
-      <p class="gl-mb-0">
-        <gl-sprintf :message="$options.i18n.secondParagraph">
-          <template #code="{ content }">
-            <code>{{ content }}</code>
-          </template>
-        </gl-sprintf>
-      </p>
-    </template>
-  </gl-card>
+  <div>
+    <h3 class="gl-font-lg gl-mt-0 gl-mb-5">{{ $options.i18n.title }}</h3>
+    <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
+    <p class="gl-mb-0">
+      <gl-sprintf :message="$options.i18n.secondParagraph">
+        <template #code="{ content }">
+          <code>{{ content }}</code>
+        </template>
+      </gl-sprintf>
+    </p>
+  </div>
 </template>

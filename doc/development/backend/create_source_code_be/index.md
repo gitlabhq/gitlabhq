@@ -21,13 +21,11 @@ The team works across three codebases: Workhorse, GitLab Shell and GitLab Rails.
 
 ## Workhorse
 
-GitLab Workhorse is a smart reverse proxy for GitLab. It handles "large" HTTP
+[GitLab Workhorse](../../workhorse/index.md) is a smart reverse proxy for GitLab. It handles "large" HTTP
 requests such as file downloads, file uploads, `git push`, `git pull` and `git` archive downloads.
 
 Workhorse itself is not a feature, but there are several features in GitLab
 that would not work efficiently without Workhorse.
-
-Workhorse documentation is available in the [Workhorse repository](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse).
 
 ## GitLab Shell
 

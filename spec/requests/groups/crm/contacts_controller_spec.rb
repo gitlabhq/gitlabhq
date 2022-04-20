@@ -85,28 +85,19 @@ RSpec.describe Groups::Crm::ContactsController do
   end
 
   describe 'GET #index' do
-    subject do
-      get group_crm_contacts_path(group)
-      response
-    end
+    subject { get group_crm_contacts_path(group) }
 
     it_behaves_like 'ok response with index template if authorized'
   end
 
   describe 'GET #new' do
-    subject do
-      get new_group_crm_contact_path(group)
-      response
-    end
+    subject { get new_group_crm_contact_path(group) }
 
     it_behaves_like 'ok response with index template if authorized'
   end
 
   describe 'GET #edit' do
-    subject do
-      get edit_group_crm_contact_path(group, id: 1)
-      response
-    end
+    subject { get edit_group_crm_contact_path(group, id: 1) }
 
     it_behaves_like 'ok response with index template if authorized'
   end

@@ -137,6 +137,16 @@ describe('BulkImportsHistoryApp', () => {
     );
   });
 
+  it('renders correct url for destination group when relative_url is empty', async () => {
+    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+    createComponent({ shallow: false });
+    await axios.waitForAll();
+
+    expect(wrapper.find('tbody tr a').attributes().href).toBe(
+      `/${DUMMY_RESPONSE[0].destination_namespace}/${DUMMY_RESPONSE[0].destination_name}`,
+    );
+  });
+
   describe('details button', () => {
     beforeEach(() => {
       mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);

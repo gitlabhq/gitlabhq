@@ -36,7 +36,6 @@ RSpec.describe CopyAdoptionSnapshotNamespace, :migration, schema: 20210430124630
       runner_configured: true,
       pipeline_succeeded: true,
       deploy_succeeded: true,
-      security_scan_succeeded: true,
       end_time: Time.zone.now.end_of_month
     }
 

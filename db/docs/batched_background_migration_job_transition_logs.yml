@@ -1,0 +1,9 @@
+---
+table_name: batched_background_migration_job_transition_logs
+classes:
+- Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog
+feature_categories:
+- database
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75113
+milestone: '14.8'

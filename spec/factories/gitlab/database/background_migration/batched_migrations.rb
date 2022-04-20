@@ -13,12 +13,24 @@ FactoryBot.define do
     total_tuple_count { 10_000 }
     pause_ms { 100 }
 
-    trait :finished do
-      status { :finished }
+    trait(:paused) do
+      status { 0 }
     end
 
-    trait :failed do
-      status { :failed }
+    trait(:active) do
+      status { 1 }
+    end
+
+    trait(:finished) do
+      status { 3 }
+    end
+
+    trait(:failed) do
+      status { 4 }
+    end
+
+    trait(:finalizing) do
+      status { 5 }
     end
   end
 end

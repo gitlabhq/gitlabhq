@@ -51,7 +51,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 | [Ruby](#2-ruby)     | `2.7`             | From GitLab 13.6, Ruby 2.7 is required. Ruby 3.0 is not supported yet (see [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/5149) for the current status). You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
 | [Go](#3-go) | `1.16` | |
 | [Git](#git) | `2.33.x` | From GitLab 14.4, Git 2.33.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git). |
-| [Node.js](#4-node) | `12.22.1` | GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets. Node.js 14.x is recommended, as it's faster. You can check which version you're running with `node -v`. You need to update it to a newer version if needed. |
+| [Node.js](#4-node) | `14.15.0` | GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets. Node.js 16.x is recommended, as it's faster. You can check which version you're running with `node -v`. You need to update it to a newer version if needed. |
 
 ## GitLab directory structure
 
@@ -263,7 +263,7 @@ GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` >= v12.22.1. (We recommend node 14.x as it is faster)
+- `node` >= v14.15.0. (We recommend node 16.x as it is faster)
 - `yarn` = v1.22.x (Yarn 2 is not supported yet)
 
 In many distributions,
@@ -271,8 +271,8 @@ the versions provided by the official package repositories are out of date, so
 we need to install through the following commands:
 
 ```shell
-# install node v14.x
-curl --location "https://deb.nodesource.com/setup_14.x" | sudo bash -
+# install node v16.x
+curl --location "https://deb.nodesource.com/setup_16.x" | sudo bash -
 sudo apt-get install -y nodejs
 
 npm install --global yarn
@@ -1121,7 +1121,7 @@ host localhost          # Give your setup a name (here: override localhost)
     hostname 127.0.0.1; # Your server name or IP
 ```
 
-You also need to change the corresponding options (for example, `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
+You also need to change the corresponding options (for example, `ssh_user`, `ssh_host`, `admin_uri`) in the `config/gitlab.yml` file.
 
 ### Additional Markup Styles
 

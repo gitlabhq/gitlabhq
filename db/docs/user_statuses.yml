@@ -1,0 +1,9 @@
+---
+table_name: user_statuses
+classes:
+- UserStatus
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/812bfb158b70b09cfd438379a4b9446aa85b52ec
+milestone: '11.2'

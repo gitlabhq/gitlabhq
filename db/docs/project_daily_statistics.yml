@@ -1,0 +1,9 @@
+---
+table_name: project_daily_statistics
+classes:
+- ProjectDailyStatistic
+feature_categories:
+- source_code_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/5ae9a44aa17c8929627cc450f936cd960c143e25
+milestone: '11.9'

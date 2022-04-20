@@ -110,8 +110,13 @@
 
   .bs-callout,
   .form-check:first-child,
-  .form-text.text-muted {
+  .form-check .form-text.text-muted,
+  .form-check + .form-text.text-muted {
     margin-top: 0;
+  }
+
+  .form-check .form-text.text-muted {
+    margin-bottom: $grid-size;
   }
 }
 

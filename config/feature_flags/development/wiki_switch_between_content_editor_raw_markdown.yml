@@ -1,8 +1,0 @@
----
-name: wiki_switch_between_content_editor_raw_markdown
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74457
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345398
-milestone: '14.6'
-type: development
-group: group::editor
-default_enabled: true

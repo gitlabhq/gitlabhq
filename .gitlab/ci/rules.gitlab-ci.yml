@@ -13,6 +13,9 @@
 .if-jh: &if-jh
   if: '$CI_PROJECT_PATH =~ /^gitlab-(jh|cn)\/.*/'
 
+.if-force-ci: &if-force-ci
+  if: '$FORCE_GITLAB_CI'
+
 .if-default-refs: &if-default-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
 
@@ -69,6 +72,9 @@
 
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
+
+.if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
+  if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
@@ -158,6 +164,7 @@
 
 .gitaly-patterns: &gitaly-patterns
   - "GITALY_SERVER_VERSION"
+  - "lib/gitlab/setup_helper.rb"
 
 .workhorse-patterns: &workhorse-patterns
   - "GITLAB_WORKHORSE_VERSION"
@@ -257,6 +264,8 @@
   - ".gitlab/ci/**/*"
   - "*_VERSION"
   - "scripts/rspec_helpers.sh"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -269,7 +278,9 @@
   - "lib/gitlab/markdown_cache/active_record/**/*"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
-  - "GITALY_SERVER_VERSION"  # Has interactions with background migrations:https://gitlab.com/gitlab-org/gitlab/-/issues/336538
+  # Gitaly has interactions with background migrations: https://gitlab.com/gitlab-org/gitlab/-/issues/336538
+  - "GITALY_SERVER_VERSION"
+  - "lib/gitlab/setup_helper.rb"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -311,10 +322,11 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  - "data/whats_new/*.yml"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -335,7 +347,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  - "data/whats_new/*.yml"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -346,6 +357,8 @@
   - "{,ee/,jh/}rubocop/**/*"
   - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
@@ -366,13 +379,14 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  - "data/whats_new/*.yml"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
@@ -393,7 +407,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  - "data/whats_new/*.yml"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -407,6 +420,8 @@
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 .setup-test-env-patterns: &setup-test-env-patterns
@@ -597,6 +612,7 @@
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *code-qa-patterns
     - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-force-ci
 
 .build-images:rules:build-assets-image:
   rules:
@@ -606,15 +622,6 @@
     - <<: *if-auto-deploy-branches
     - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
-
-#############
-# CNG rules #
-#############
-.cng:rules:
-  rules:
-    - <<: *if-dot-com-gitlab-org-and-security-tag
-      when: manual
-      allow_failure: true
 
 ######################
 # CI Templates Rules #
@@ -842,6 +849,11 @@
 ############
 # QA rules #
 ############
+.qa:rules:internal:
+  rules:
+    - <<: *if-default-refs
+      changes: *qa-patterns
+
 .qa:rules:ee-and-foss:
   rules:
     - <<: *if-default-refs
@@ -857,6 +869,12 @@
     - <<: *if-merge-request
       changes: *ci-patterns
 
+.qa:rules:internal-as-if-foss:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-default-refs
+      changes: *qa-patterns
+
 .qa:rules:package-and-qa:
   rules:
     - <<: *if-not-ee
@@ -864,6 +882,9 @@
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *feature-flag-development-config-patterns
       when: never
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *nodejs-patterns
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-qa-patterns
       allow_failure: true
@@ -875,6 +896,9 @@
       when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+    - <<: *if-force-ci
+      when: manual
       allow_failure: true
 
 .qa:rules:package-and-qa:feature-flags:
@@ -1352,6 +1376,10 @@
   rules:
     - changes: *code-backstage-qa-patterns
 
+.static-analysis:rules:ee-and-foss-qa:
+  rules:
+    - changes: *qa-patterns
+
 .static-analysis:rules:ee:
   rules:
     - <<: *if-not-ee
@@ -1449,18 +1477,6 @@
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/ || $DS_DEFAULT_ANALYZERS !~ /gemnasium([^-]|$)/'
       when: never
     - changes: *dependency-patterns
-
-.reports:rules:bundler-audit-dependency_scanning:
-  rules:
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /bundler-audit/ || $DS_DEFAULT_ANALYZERS !~ /bundler-audit/'
-      when: never
-    - changes: *bundler-patterns
-
-.reports:rules:retire-js-dependency_scanning:
-  rules:
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /retire.js/ || $DS_DEFAULT_ANALYZERS !~ /retire.js/'
-      when: never
-    - changes: *nodejs-patterns
 
 .reports:rules:gemnasium-python-dependency_scanning:
   rules:
@@ -1565,17 +1581,12 @@
 #
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76756
 
-# Since `review-qa-smoke` isn't allowed to fail, we need to use `when: always` for `review-qa-smoke-report`.
-.review:rules:review-qa-smoke-report:
-  rules:
-    - when: always
-
 .review:rules:review-qa-reliable:
   rules:
     - when: on_success
 
 # Since `review-qa-reliable` isn't allowed to fail, we need to use `when: always`for `review-qa-reliable-report`.
-.review:rules:review-qa-reliable-report:
+.review:rules:review-qa-blocking-report:
   rules:
     - when: always
 
@@ -1595,19 +1606,10 @@
     - when: on_success
     - when: on_failure
 
-.review:rules:knapsack-report:
-  rules:
-    - if: '$KNAPSACK_GENERATE_REPORT == "true"'
-      when: always
-
 .review:rules:review-cleanup:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-qa-patterns
-      when: manual
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
@@ -1669,6 +1671,13 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns
+
+.setup:rules:jh-contribution:
+  rules:
+    - <<: *if-jh
+      when: never
+    - <<: *if-merge-request-labels-jh-contribution
+
 
 .setup:rules:generate-frontend-fixtures-mapping:
   rules:

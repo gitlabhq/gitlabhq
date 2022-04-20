@@ -27,8 +27,5 @@
     .form-group
       .col-form-label.col-sm-2
       .col-sm-10
-        = deploy_keys_project_form.label :can_push do
-          = deploy_keys_project_form.check_box :can_push
-          %strong= _('Grant write permissions to this key')
-        %p.light.gl-mb-0
-          = _('Allow this key to push to this repository')
+        = deploy_keys_project_form.gitlab_ui_checkbox_component :can_push, _('Grant write permissions to this key'),
+        help_text: _('Allow this key to push to this repository')

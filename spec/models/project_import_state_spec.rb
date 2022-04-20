@@ -22,7 +22,7 @@ RSpec.describe ProjectImportState, type: :model do
 
     before do
       allow_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:import_repository)
-        .with(project.import_url).and_return(true)
+        .with(project.import_url, http_authorization_header: '', mirror: false).and_return(true)
 
       # Works around https://github.com/rspec/rspec-mocks/issues/910
       allow(Project).to receive(:find).with(project.id).and_return(project)
@@ -89,19 +89,6 @@ RSpec.describe ProjectImportState, type: :model do
         import_state.mark_as_failed(error_message)
       end.to change { project.reload.import_data }.from(import_data).to(nil)
     end
-
-    context 'when remove_import_data_on_failure feature flag is disabled' do
-      it 'removes project import data' do
-        stub_feature_flags(remove_import_data_on_failure: false)
-
-        project = create(:project, import_data: ProjectImportData.new(data: { 'test' => 'some data' }))
-        import_state = create(:import_state, :started, project: project)
-
-        expect do
-          import_state.mark_as_failed(error_message)
-        end.not_to change { project.reload.import_data }
-      end
-    end
   end
 
   describe '#human_status_name' do
@@ -110,6 +97,34 @@ RSpec.describe ProjectImportState, type: :model do
         import_state = build(:import_state, :started)
 
         expect(import_state.human_status_name).to eq("started")
+      end
+    end
+  end
+
+  describe '#expire_etag_cache' do
+    context 'when project import type has realtime changes endpoint' do
+      before do
+        import_state.project.import_type = 'github'
+      end
+
+      it 'expires revelant etag cache' do
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+          expect(instance).to receive(:touch).with(Gitlab::Routing.url_helpers.realtime_changes_import_github_path(format: :json))
+        end
+
+        subject.expire_etag_cache
+      end
+    end
+
+    context 'when project import type does not have realtime changes endpoint' do
+      before do
+        import_state.project.import_type = 'jira'
+      end
+
+      it 'does not touch etag caches' do
+        expect(Gitlab::EtagCaching::Store).not_to receive(:new)
+
+        subject.expire_etag_cache
       end
     end
   end
@@ -188,6 +203,22 @@ RSpec.describe ProjectImportState, type: :model do
         import_state.finish!
 
         expect(import_state.jid).to be_nil
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    context 'after_commit :expire_etag_cache' do
+      before do
+        import_state.project.import_type = 'github'
+      end
+
+      it 'expires etag cache' do
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+          expect(instance).to receive(:touch).with(Gitlab::Routing.url_helpers.realtime_changes_import_github_path(format: :json))
+        end
+
+        subject.save!
       end
     end
   end

@@ -4,10 +4,12 @@ module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'PyPI Repository' do
       include Runtime::Fixtures
+      include Support::Helpers::MaskToken
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pypi-package-project'
+          project.visibility = :private
         end
       end
 
@@ -30,7 +32,7 @@ module QA
       let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
       let(:gitlab_address_with_port) { "#{uri.scheme}://#{uri.host}:#{uri.port}" }
       let(:gitlab_host_with_port) { "#{uri.host}:#{uri.port}" }
-      let(:personal_access_token) { Runtime::Env.personal_access_token }
+      let(:personal_access_token) { use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: Runtime::Env.personal_access_token, project: project) }
 
       before do
         Flow::Login.sign_in

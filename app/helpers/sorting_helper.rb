@@ -134,14 +134,14 @@ module SortingHelper
     )
   end
 
-  def milestone_sort_options_hash
+  def milestones_sort_options_hash
     {
-      sort_value_name             => sort_title_name_asc,
-      sort_value_name_desc        => sort_title_name_desc,
-      sort_value_due_date_later   => sort_title_due_date_later,
       sort_value_due_date_soon    => sort_title_due_date_soon,
+      sort_value_due_date_later   => sort_title_due_date_later,
+      sort_value_start_date_soon  => sort_title_start_date_soon,
       sort_value_start_date_later => sort_title_start_date_later,
-      sort_value_start_date_soon  => sort_title_start_date_soon
+      sort_value_name             => sort_title_name_asc,
+      sort_value_name_desc        => sort_title_name_desc
     }
   end
 
@@ -183,6 +183,13 @@ module SortingHelper
       sort_value_oldest_updated => sort_title_oldest_updated,
       sort_value_recently_last_activity => sort_title_recently_last_activity,
       sort_value_oldest_last_activity => sort_title_oldest_last_activity
+    }
+  end
+
+  def runners_sort_options_hash
+    {
+      sort_value_created_date => sort_title_created_date,
+      sort_value_contacted_date => sort_title_contacted_date
     }
   end
 

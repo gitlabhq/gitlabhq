@@ -198,6 +198,31 @@ RSpec.describe Environments::StopService do
 
         expect(pipeline.environments_in_self_and_descendants.first).to be_stopped
       end
+
+      context 'with environment related jobs ' do
+        let!(:environment) { create(:environment, :available, name: 'staging', project: project) }
+        let!(:prepare_staging_job) { create(:ci_build, :prepare_staging, pipeline: pipeline, project: project) }
+        let!(:start_staging_job) { create(:ci_build, :start_staging, :with_deployment, :manual, pipeline: pipeline, project: project) }
+        let!(:stop_staging_job) { create(:ci_build, :stop_staging, :manual, pipeline: pipeline, project: project) }
+
+        it 'does not stop environments that was not started by the merge request' do
+          subject
+
+          expect(prepare_staging_job.persisted_environment.state).to eq('available')
+        end
+
+        context 'when fix_related_environments_for_merge_requests feature flag is disabled' do
+          before do
+            stub_feature_flags(fix_related_environments_for_merge_requests: false)
+          end
+
+          it 'stops unrelated environments too' do
+            subject
+
+            expect(prepare_staging_job.persisted_environment.state).to eq('stopped')
+          end
+        end
+      end
     end
 
     context 'when user is a reporter' do

@@ -1,0 +1,9 @@
+---
+table_name: pages_deployment_states
+classes:
+- Geo::PagesDeploymentState
+feature_categories:
+- pages
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74905
+milestone: '14.6'

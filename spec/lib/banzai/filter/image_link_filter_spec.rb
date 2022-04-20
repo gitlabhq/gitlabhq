@@ -46,6 +46,16 @@ RSpec.describe Banzai::Filter::ImageLinkFilter do
     expect(doc.at_css('img')['data-canonical-src']).to eq doc.at_css('a')['data-canonical-src']
   end
 
+  it 'moves the data-diagram* attributes' do
+    doc = filter(%q(<img class="plantuml" src="http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd91m0rkGMq" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw==">), context)
+
+    expect(doc.at_css('a')['data-diagram']).to eq "plantuml"
+    expect(doc.at_css('a')['data-diagram-src']).to eq "data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw=="
+
+    expect(doc.at_css('a img')['data-diagram']).to be_nil
+    expect(doc.at_css('a img')['data-diagram-src']).to be_nil
+  end
+
   it 'adds no-attachment icon class to the link' do
     doc = filter(image(path), context)
 

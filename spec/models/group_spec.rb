@@ -41,6 +41,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
     it { is_expected.to have_one(:crm_settings) }
+    it { is_expected.to have_one(:group_feature) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -293,6 +294,23 @@ RSpec.describe Group do
     end
   end
 
+  it_behaves_like 'a BulkUsersByEmailLoad model'
+
+  context 'after initialized' do
+    it 'has a group_feature' do
+      expect(described_class.new.group_feature).to be_present
+    end
+  end
+
+  context 'when creating a new project' do
+    let_it_be(:group) { create(:group) }
+
+    it 'automatically creates the groups feature for the group' do
+      expect(group.group_feature).to be_an_instance_of(Groups::FeatureSetting)
+      expect(group.group_feature).to be_persisted
+    end
+  end
+
   context 'traversal_ids on create' do
     context 'default traversal_ids' do
       let(:group) { build(:group) }
@@ -533,6 +551,10 @@ RSpec.describe Group do
       describe '#ancestors_upto' do
         it { expect(group.ancestors_upto.to_sql).not_to include "WITH ORDINALITY" }
       end
+
+      describe '.shortest_traversal_ids_prefixes' do
+        it { expect { described_class.shortest_traversal_ids_prefixes }.to raise_error /Feature not supported since the `:use_traversal_ids` is disabled/ }
+      end
     end
 
     context 'linear' do
@@ -572,6 +594,90 @@ RSpec.describe Group do
 
       describe '#ancestors_upto' do
         it { expect(group.ancestors_upto.to_sql).to include "WITH ORDINALITY" }
+      end
+
+      describe '.shortest_traversal_ids_prefixes' do
+        subject { filter.shortest_traversal_ids_prefixes }
+
+        context 'for many top-level namespaces' do
+          let!(:top_level_groups) { create_list(:group, 4) }
+
+          context 'when querying all groups' do
+            let(:filter) { described_class.id_in(top_level_groups) }
+
+            it "returns all traversal_ids" do
+              is_expected.to contain_exactly(
+                *top_level_groups.map { |group| [group.id] }
+              )
+            end
+          end
+
+          context 'when querying selected groups' do
+            let(:filter) { described_class.id_in(top_level_groups.first) }
+
+            it "returns only a selected traversal_ids" do
+              is_expected.to contain_exactly([top_level_groups.first.id])
+            end
+          end
+        end
+
+        context 'for namespace hierarchy' do
+          let!(:group_a) { create(:group) }
+          let!(:group_a_sub_1) { create(:group, parent: group_a) }
+          let!(:group_a_sub_2) { create(:group, parent: group_a) }
+          let!(:group_b) { create(:group) }
+          let!(:group_b_sub_1) { create(:group, parent: group_b) }
+          let!(:group_c) { create(:group) }
+
+          context 'when querying all groups' do
+            let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_a_sub_2, group_b, group_b_sub_1, group_c]) }
+
+            it 'returns only shortest prefixes of top-level groups' do
+              is_expected.to contain_exactly(
+                [group_a.id],
+                [group_b.id],
+                [group_c.id]
+              )
+            end
+          end
+
+          context 'when sub-group is reparented' do
+            let(:filter) { described_class.id_in([group_b_sub_1, group_c]) }
+
+            before do
+              group_b_sub_1.update!(parent: group_c)
+            end
+
+            it 'returns a proper shortest prefix of a new group' do
+              is_expected.to contain_exactly(
+                [group_c.id]
+              )
+            end
+          end
+
+          context 'when querying sub-groups' do
+            let(:filter) { described_class.id_in([group_a_sub_1, group_b_sub_1, group_c]) }
+
+            it 'returns sub-groups as they are shortest prefixes' do
+              is_expected.to contain_exactly(
+                [group_a.id, group_a_sub_1.id],
+                [group_b.id, group_b_sub_1.id],
+                [group_c.id]
+              )
+            end
+          end
+
+          context 'when querying group and sub-group of this group' do
+            let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_c]) }
+
+            it 'returns parent groups as this contains all sub-groups' do
+              is_expected.to contain_exactly(
+                [group_a.id],
+                [group_c.id]
+              )
+            end
+          end
+        end
       end
 
       context 'when project namespace exists in the group' do
@@ -737,11 +843,23 @@ RSpec.describe Group do
   describe '#add_user' do
     let(:user) { create(:user) }
 
-    before do
+    it 'adds the user with a blocking refresh by default' do
+      expect_next_instance_of(GroupMember) do |member|
+        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true)
+      end
+
       group.add_user(user, GroupMember::MAINTAINER)
+
+      expect(group.group_members.maintainers.map(&:user)).to include(user)
     end
 
-    it { expect(group.group_members.maintainers.map(&:user)).to include(user) }
+    it 'passes the blocking refresh value to member' do
+      expect_next_instance_of(GroupMember) do |member|
+        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: false)
+      end
+
+      group.add_user(user, GroupMember::MAINTAINER, blocking_refresh: false)
+    end
   end
 
   describe '#add_users' do
@@ -3244,6 +3362,59 @@ RSpec.describe Group do
 
       it_behaves_like 'no enforced expiration interval'
       it_behaves_like 'no effective expiration interval'
+    end
+  end
+
+  describe '#work_items_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_items }
+      let(:feature_flag_method) { :work_items_feature_flag_enabled? }
+    end
+  end
+
+  describe 'group shares' do
+    let!(:sub_group) { create(:group, parent: group) }
+    let!(:sub_sub_group) { create(:group, parent: sub_group) }
+    let!(:shared_group_1) { create(:group) }
+    let!(:shared_group_2) { create(:group) }
+    let!(:shared_group_3) { create(:group) }
+
+    before do
+      group.shared_with_groups << shared_group_1
+      sub_group.shared_with_groups << shared_group_2
+      sub_sub_group.shared_with_groups << shared_group_3
+    end
+
+    describe '#shared_with_group_links.of_ancestors' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:subject_group, :result) do
+        ref(:group)         | []
+        ref(:sub_group)     | lazy { [shared_group_1].map(&:id) }
+        ref(:sub_sub_group) | lazy { [shared_group_1, shared_group_2].map(&:id) }
+      end
+
+      with_them do
+        it 'returns correct group shares' do
+          expect(subject_group.shared_with_group_links.of_ancestors.map(&:shared_with_group_id)).to match_array(result)
+        end
+      end
+    end
+
+    describe '#shared_with_group_links.of_ancestors_and_self' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:subject_group, :result) do
+        ref(:group)         | lazy { [shared_group_1].map(&:id) }
+        ref(:sub_group)     | lazy { [shared_group_1, shared_group_2].map(&:id) }
+        ref(:sub_sub_group) | lazy { [shared_group_1, shared_group_2, shared_group_3].map(&:id) }
+      end
+
+      with_them do
+        it 'returns correct group shares' do
+          expect(subject_group.shared_with_group_links.of_ancestors_and_self.map(&:shared_with_group_id)).to match_array(result)
+        end
+      end
     end
   end
 end

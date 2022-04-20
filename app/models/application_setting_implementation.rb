@@ -14,7 +14,6 @@ module ApplicationSettingImplementation
   # Setting a key restriction to `-1` means that all keys of this type are
   # forbidden.
   FORBIDDEN_KEY_VALUE = KeyRestrictionValidator::FORBIDDEN
-  SUPPORTED_KEY_TYPES = Gitlab::SSHPublicKey.supported_types
   VALID_RUNNER_REGISTRAR_TYPES = %w(project group).freeze
 
   DEFAULT_PROTECTED_PATHS = [
@@ -67,11 +66,11 @@ module ApplicationSettingImplementation
         disabled_oauth_sign_in_sources: [],
         dns_rebinding_protection_enabled: true,
         domain_allowlist: Settings.gitlab['domain_allowlist'],
-        dsa_key_restriction: 0,
-        ecdsa_key_restriction: 0,
-        ecdsa_sk_key_restriction: 0,
-        ed25519_key_restriction: 0,
-        ed25519_sk_key_restriction: 0,
+        dsa_key_restriction: default_min_key_size(:dsa),
+        ecdsa_key_restriction: default_min_key_size(:ecdsa),
+        ecdsa_sk_key_restriction: default_min_key_size(:ecdsa_sk),
+        ed25519_key_restriction: default_min_key_size(:ed25519),
+        ed25519_sk_key_restriction: default_min_key_size(:ed25519_sk),
         eks_access_key_id: nil,
         eks_account_id: nil,
         eks_integration_enabled: false,
@@ -96,7 +95,6 @@ module ApplicationSettingImplementation
         help_page_text: nil,
         help_page_documentation_base_url: nil,
         hide_third_party_offers: false,
-        housekeeping_bitmaps_enabled: true,
         housekeeping_enabled: true,
         housekeeping_full_repack_period: 50,
         housekeeping_gc_period: 200,
@@ -143,7 +141,7 @@ module ApplicationSettingImplementation
         require_admin_approval_after_user_signup: true,
         require_two_factor_authentication: false,
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
-        rsa_key_restriction: 0,
+        rsa_key_restriction: default_min_key_size(:rsa),
         send_user_confirmation_email: false,
         session_expire_delay: Settings.gitlab['session_expire_delay'],
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
@@ -242,6 +240,20 @@ module ApplicationSettingImplementation
 
     def default_commit_email_hostname
       "users.noreply.#{Gitlab.config.gitlab.host}"
+    end
+
+    # Return the default allowed minimum key size for a type.
+    # By default this is 0 (unrestricted), but in FIPS mode
+    # this will return the smallest allowed key size. If no
+    # size is available, this type is denied.
+    #
+    # @return [Integer]
+    def default_min_key_size(name)
+      if Gitlab::FIPS.enabled?
+        Gitlab::SSHPublicKey.supported_sizes(name).select(&:positive?).min || -1
+      else
+        0
+      end
     end
 
     def create_from_defaults
@@ -442,7 +454,7 @@ module ApplicationSettingImplementation
   alias_method :usage_ping_enabled?, :usage_ping_enabled
 
   def allowed_key_types
-    SUPPORTED_KEY_TYPES.select do |type|
+    Gitlab::SSHPublicKey.supported_types.select do |type|
       key_restriction_for(type) != FORBIDDEN_KEY_VALUE
     end
   end

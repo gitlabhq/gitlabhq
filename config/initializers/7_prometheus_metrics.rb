@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-PUMA_EXTERNAL_METRICS_SERVER = Gitlab::Utils.to_boolean(ENV['PUMA_EXTERNAL_METRICS_SERVER'])
-require Rails.root.join('metrics_server', 'metrics_server') if PUMA_EXTERNAL_METRICS_SERVER
+require Rails.root.join('metrics_server', 'metrics_server')
 
 # Keep separate directories for separate processes
-def prometheus_default_multiproc_dir
+def metrics_temp_dir
   return unless Rails.env.development? || Rails.env.test?
 
   if Gitlab::Runtime.sidekiq?
@@ -16,20 +15,28 @@ def prometheus_default_multiproc_dir
   end
 end
 
-def puma_metrics_server_process?
+def prometheus_metrics_dir
+  ENV['prometheus_multiproc_dir'] || metrics_temp_dir
+end
+
+def puma_master?
   Prometheus::PidProvider.worker_id == 'puma_master'
 end
 
-def sidekiq_metrics_server_process?
-  Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0')
+# Whether a dedicated process should run that serves Rails application metrics, as opposed
+# to using a Rails controller.
+def puma_dedicated_metrics_server?
+  Settings.monitoring.web_exporter.enabled
 end
 
-if puma_metrics_server_process? || sidekiq_metrics_server_process?
+if puma_master?
   # The following is necessary to ensure stale Prometheus metrics don't accumulate over time.
-  # It needs to be done as early as here to ensure metrics files aren't deleted.
-  # After we hit our app in `warmup`, first metrics and corresponding files already being created,
-  # for example in `lib/gitlab/metrics/requests_rack_middleware.rb`.
-  Prometheus::CleanupMultiprocDirService.new.execute
+  # It needs to be done as early as possible to ensure new metrics aren't being deleted.
+  #
+  # Note that this should not happen for Sidekiq. Since Sidekiq workers are spawned from the
+  # sidekiq-cluster script, we perform this cleanup in `sidekiq_cluster/cli.rb` instead,
+  # since it must happen prior to any worker processes or the metrics server starting up.
+  Prometheus::CleanupMultiprocDirService.new(prometheus_metrics_dir).execute
 
   ::Prometheus::Client.reinitialize_on_pid_change(force: true)
 end
@@ -37,7 +44,7 @@ end
 ::Prometheus::Client.configure do |config|
   config.logger = Gitlab::AppLogger
 
-  config.multiprocess_files_dir = ENV['prometheus_multiproc_dir'] || prometheus_default_multiproc_dir
+  config.multiprocess_files_dir = prometheus_metrics_dir
 
   config.pid_provider = ::Prometheus::PidProvider.method(:worker_id)
 end
@@ -75,11 +82,7 @@ Gitlab::Cluster::LifecycleEvents.on_master_start do
   if Gitlab::Runtime.puma?
     Gitlab::Metrics::Samplers::PumaSampler.instance.start
 
-    if PUMA_EXTERNAL_METRICS_SERVER && Settings.monitoring.web_exporter.enabled
-      MetricsServer.start_for_puma
-    else
-      Gitlab::Metrics::Exporter::WebExporter.instance.start
-    end
+    MetricsServer.start_for_puma if puma_dedicated_metrics_server?
   end
 
   Gitlab::Ci::Parsers.instrument!
@@ -98,11 +101,7 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
   if Gitlab::Runtime.puma?
     # Since we are observing a metrics server from the Puma primary, we would inherit
     # this supervision thread after forking into workers, so we need to explicitly stop it here.
-    if PUMA_EXTERNAL_METRICS_SERVER
-      ::MetricsServer::PumaProcessSupervisor.instance.stop
-    else
-      Gitlab::Metrics::Exporter::WebExporter.instance.stop
-    end
+    ::MetricsServer::PumaProcessSupervisor.instance.stop if puma_dedicated_metrics_server?
 
     Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
   end
@@ -117,15 +116,11 @@ rescue IOError => e
   Gitlab::Metrics.error_detected!
 end
 
-if Gitlab::Runtime.puma?
+if Gitlab::Runtime.puma? && puma_dedicated_metrics_server?
   Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
     # We need to ensure that before we re-exec or shutdown server
     # we also stop the metrics server
-    if PUMA_EXTERNAL_METRICS_SERVER
-      ::MetricsServer::PumaProcessSupervisor.instance.shutdown
-    else
-      Gitlab::Metrics::Exporter::WebExporter.instance.stop
-    end
+    ::MetricsServer::PumaProcessSupervisor.instance.shutdown
   end
 
   Gitlab::Cluster::LifecycleEvents.on_before_master_restart do
@@ -134,10 +129,6 @@ if Gitlab::Runtime.puma?
     #
     # We do it again, for being extra safe,
     # but it should not be needed
-    if PUMA_EXTERNAL_METRICS_SERVER
-      ::MetricsServer::PumaProcessSupervisor.instance.shutdown
-    else
-      Gitlab::Metrics::Exporter::WebExporter.instance.stop
-    end
+    ::MetricsServer::PumaProcessSupervisor.instance.shutdown
   end
 end

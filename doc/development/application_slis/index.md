@@ -111,7 +111,7 @@ After that, add the following information:
   metrics. For example: `["email_type"]`. If the significant labels
   for the SLI include `feature_category`, the metrics will also
   feed into the
-  [error budgets for stage groups](../stage_group_dashboards.md#error-budget).
+  [error budgets for stage groups](../stage_group_observability/index.md#error-budget).
 - `featureCategory`: if the SLI applies to a single feature category,
   you can specify it statically through this field to feed the SLI
   into the error budgets for stage groups.

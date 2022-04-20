@@ -423,7 +423,21 @@ RSpec.describe Projects::NotesController do
       end
 
       context 'when creating a confidential note' do
-        let(:extra_request_params) { { format: :json } }
+        let(:project) { create(:project) }
+        let(:note_params) do
+          { note: note_text, noteable_id: issue.id, noteable_type: 'Issue' }.merge(extra_note_params)
+        end
+
+        let(:request_params) do
+          {
+            note: note_params,
+            namespace_id: project.namespace,
+            project_id: project,
+            target_type: 'issue',
+            target_id: issue.id,
+            format: :json
+          }
+        end
 
         context 'when `confidential` parameter is not provided' do
           it 'sets `confidential` to `false` in JSON response' do

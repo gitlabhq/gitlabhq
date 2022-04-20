@@ -11,6 +11,8 @@ module QA
       include Support::InfluxdbTools
       include Support::API
 
+      RELIABLE_REPORT_LABEL = "reliable test report"
+
       # Project for report creation: https://gitlab.com/gitlab-org/gitlab
       PROJECT_ID = 278964
 
@@ -28,7 +30,11 @@ module QA
         reporter = new(range)
 
         reporter.print_report
-        reporter.report_in_issue_and_slack if report_in_issue_and_slack == "true"
+
+        if report_in_issue_and_slack == "true"
+          reporter.report_in_issue_and_slack
+          reporter.close_previous_reports
+        end
       rescue StandardError => e
         reporter&.notify_failure(e)
         raise(e)
@@ -51,16 +57,15 @@ module QA
       # @return [void]
       def report_in_issue_and_slack
         puts "Creating report".colorize(:green)
-        response = post(
-          "#{gitlab_api_url}/projects/#{PROJECT_ID}/issues",
-          {
-            title: "Reliable e2e test report",
-            description: report_issue_body,
-            labels: "Quality,test,type::maintenance,reliable test report,automation:ml"
-          },
-          headers: { "PRIVATE-TOKEN" => gitlab_access_token }
+        issue = api_update(
+          :post,
+          "projects/#{PROJECT_ID}/issues",
+          title: "Reliable e2e test report",
+          description: report_issue_body,
+          labels: "#{RELIABLE_REPORT_LABEL},Quality,test,type::maintenance,automation:ml"
         )
-        web_url = parse_body(response)[:web_url]
+        @report_iid = issue[:iid]
+        web_url = issue[:web_url]
         puts "Created report issue: #{web_url}"
 
         puts "Sending slack notification".colorize(:green)
@@ -76,6 +81,25 @@ module QA
         puts "Done!"
       end
 
+      # Close previous reliable test reports
+      #
+      # @return [void]
+      def close_previous_reports
+        puts "Closing previous reports".colorize(:green)
+        issues = api_get("projects/#{PROJECT_ID}/issues?labels=#{RELIABLE_REPORT_LABEL}&state=opened")
+
+        issues
+          .reject { |issue| issue[:iid] == report_iid }
+          .each do |issue|
+            issue_iid = issue[:iid]
+            issue_endpoint = "projects/#{PROJECT_ID}/issues/#{issue_iid}"
+
+            puts "Closing previous report '#{issue[:web_url]}'"
+            api_update(:put, issue_endpoint, state_event: "close")
+            api_update(:post, "#{issue_endpoint}/notes", body: "Closed issue in favor of ##{report_iid}")
+          end
+      end
+
       # Notify failure
       #
       # @param [StandardError] error
@@ -89,7 +113,39 @@ module QA
 
       private
 
-      attr_reader :range, :slack_channel
+      attr_reader :range, :slack_channel, :report_iid
+
+      # Slack notifier
+      #
+      # @return [Slack::Notifier]
+      def notifier
+        @notifier ||= Slack::Notifier.new(
+          slack_webhook_url,
+          channel: slack_channel,
+          username: "Reliable Spec Report"
+        )
+      end
+
+      # Gitlab access token
+      #
+      # @return [String]
+      def gitlab_access_token
+        @gitlab_access_token ||= ENV["GITLAB_ACCESS_TOKEN"] || raise("Missing GITLAB_ACCESS_TOKEN env variable")
+      end
+
+      # Gitlab api url
+      #
+      # @return [String]
+      def gitlab_api_url
+        @gitlab_api_url ||= ENV["CI_API_V4_URL"] || raise("Missing CI_API_V4_URL env variable")
+      end
+
+      # Slack webhook url
+      #
+      # @return [String]
+      def slack_webhook_url
+        @slack_webhook_url ||= ENV["SLACK_WEBHOOK"] || raise("Missing SLACK_WEBHOOK env variable")
+      end
 
       # Markdown formatted report issue body
       #
@@ -316,6 +372,7 @@ module QA
             |> filter(fn: (r) => r.status != "pending" and
               r.merge_request == "false" and
               r.quarantined == "false" and
+              r.smoke == "false" and
               r.reliable == "#{reliable}" and
               r._field == "id"
             )
@@ -323,36 +380,30 @@ module QA
         QUERY
       end
 
-      # Slack notifier
+      # Api get request
       #
-      # @return [Slack::Notifier]
-      def notifier
-        @notifier ||= Slack::Notifier.new(
-          slack_webhook_url,
-          channel: slack_channel,
-          username: "Reliable Spec Report"
+      # @param [String] path
+      # @param [Hash] payload
+      # @return [Hash, Array]
+      def api_get(path)
+        response = get("#{gitlab_api_url}/#{path}", { headers: { "PRIVATE-TOKEN" => gitlab_access_token } })
+        parse_body(response)
+      end
+
+      # Api update request
+      #
+      # @param [Symbol] verb :post or :put
+      # @param [String] path
+      # @param [Hash] payload
+      # @return [Hash, Array]
+      def api_update(verb, path, **payload)
+        response = send(
+          verb,
+          "#{gitlab_api_url}/#{path}",
+          payload,
+          { headers: { "PRIVATE-TOKEN" => gitlab_access_token } }
         )
-      end
-
-      # Gitlab access token
-      #
-      # @return [String]
-      def gitlab_access_token
-        @gitlab_access_token ||= ENV["GITLAB_ACCESS_TOKEN"] || raise("Missing GITLAB_ACCESS_TOKEN env variable")
-      end
-
-      # Gitlab api url
-      #
-      # @return [String]
-      def gitlab_api_url
-        @gitlab_api_url ||= ENV["CI_API_V4_URL"] || raise("Missing CI_API_V4_URL env variable")
-      end
-
-      # Slack webhook url
-      #
-      # @return [String]
-      def slack_webhook_url
-        @slack_webhook_url ||= ENV["SLACK_WEBHOOK"] || raise("Missing SLACK_WEBHOOK env variable")
+        parse_body(response)
       end
     end
   end

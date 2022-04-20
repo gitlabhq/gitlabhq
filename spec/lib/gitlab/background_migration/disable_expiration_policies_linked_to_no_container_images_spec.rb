@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::DisableExpirationPoliciesLinkedToNoContainerImages do
+RSpec.describe Gitlab::BackgroundMigration::DisableExpirationPoliciesLinkedToNoContainerImages, :migration, schema: 20220326161803 do # rubocop:disable Layout/LineLength
   let_it_be(:projects) { table(:projects) }
   let_it_be(:container_expiration_policies) { table(:container_expiration_policies) }
   let_it_be(:container_repositories) { table(:container_repositories) }

@@ -127,6 +127,10 @@ export default {
       eventHub.$emit('refreshPipelinesTable');
     },
   },
+  TBODY_TR_ATTR: {
+    'data-testid': 'pipeline-table-row',
+    'data-qa-selector': 'pipeline_row_container',
+  },
 };
 </script>
 <template>
@@ -135,7 +139,7 @@ export default {
       :fields="$options.tableFields"
       :items="pipelines"
       tbody-tr-class="commit"
-      :tbody-tr-attr="{ 'data-testid': 'pipeline-table-row' }"
+      :tbody-tr-attr="$options.TBODY_TR_ATTR"
       stacked="lg"
       fixed
     >

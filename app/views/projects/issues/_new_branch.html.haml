@@ -13,13 +13,13 @@
   .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
     .btn-group.unavailable
       %button.gl-button.btn{ type: 'button', disabled: 'disabled' }
-        .gl-spinner.align-text-bottom.gl-button-icon.hide
+        = gl_loading_icon(inline: true, css_class: 'js-create-mr-spinner gl-button-icon gl-display-none')
         %span.text
           Checking branch availability…
 
     .btn-group.available.hidden
       %button.gl-button.btn.js-create-merge-request.btn-confirm{ type: 'button', data: { action: data_action } }
-        .gl-spinner.js-spinner.gl-mr-2.gl-display-none
+        = gl_loading_icon(css_class: 'js-create-mr-spinner js-spinner gl-mr-2 gl-display-none')
         = value
 
       %button.gl-button.btn.btn-confirm.btn-icon.dropdown-toggle.create-merge-request-dropdown-toggle.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
@@ -55,12 +55,12 @@
               %label{ for: 'source-name' }
                 = _('Source (branch or tag)')
               %input#source-name.js-ref.ref.form-control.gl-form-input{ type: 'text', placeholder: "#{@project.default_branch}", value: "#{@project.default_branch}", data: { value: "#{@project.default_branch}" } }
-              %span.js-ref-message.form-text.text-muted
+              %span.js-ref-message.form-text
 
             .form-group
               %button.btn.gl-button.btn-confirm.js-create-target{ type: 'button', data: { action: 'create-mr' } }
                 = create_mr_text
 
             - if can_create_confidential_merge_request?
-              %p.text-warning.js-exposed-info-warning.hidden
+              %p.gl-text-orange-500.js-exposed-info-warning.gl-display-none
                 = _('This may expose confidential information as the selected fork is in another namespace that can have other members.')

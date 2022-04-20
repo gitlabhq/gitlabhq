@@ -1,0 +1,9 @@
+---
+table_name: prometheus_alerts
+classes:
+- PrometheusAlert
+feature_categories:
+- incident_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590
+milestone: '11.2'

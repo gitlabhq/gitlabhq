@@ -21,6 +21,7 @@ GitLab supports the following OmniAuth providers.
 
 | Provider documentation                                              | OmniAuth provider name     |
 |---------------------------------------------------------------------|----------------------------|
+| [AliCloud](alicloud.md)                                             | `alicloud`                 |
 | [Atlassian Crowd](../administration/auth/crowd.md)                  | `crowd`                    |
 | [Atlassian](../administration/auth/atlassian.md)                    | `atlassian_oauth2`         |
 | [Auth0](auth0.md)                                                   | `auth0`                    |
@@ -41,7 +42,6 @@ GitLab supports the following OmniAuth providers.
 | [OpenID Connect](../administration/auth/oidc.md)                    | `openid_connect`           |
 | [Salesforce](salesforce.md)                                         | `salesforce`               |
 | [SAML](saml.md)                                                     | `saml`                     |
-| [Shibboleth](saml.md)                                         | `shibboleth`               |
 | [Twitter](twitter.md)                                               | `twitter`                  |
 
 ## Configure initial settings
@@ -53,7 +53,7 @@ Setting                    | Description | Default value
 ---------------------------|-------------|--------------
 `allow_single_sign_on`     | Enables you to list the providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | The default is `false`. If `false`, users must be created manually, or they can't sign in using OmniAuth.
 `auto_link_ldap_user`      | If enabled, creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have the [LDAP (ActiveDirectory)](../administration/auth/ldap/index.md) integration enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | The default is `false`.
-`block_auto_created_users` | If enabled, blocks users that are automatically created from signing in until they are approved by an administrator. | The default is `true`. If you set the value to `false`, make sure you only define providers for `allow_single_sign_on` that you can control, like SAML, Shibboleth, Crowd, or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
+`block_auto_created_users` | If enabled, blocks users that are automatically created from signing in until they are approved by an administrator. | The default is `true`. If you set the value to `false`, make sure you only define providers for `allow_single_sign_on` that you can control, like SAML, Crowd, or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
 
 To change these settings:
 
@@ -197,7 +197,7 @@ To enable automatic linking for SAML, see the [SAML setup instructions](saml.md#
 ## Create an external providers list
 
 You can define a list of external OmniAuth providers.
-Users who create accounts or sign in to GitLab through the listed providers do not get access to [internal projects](../public_access/public_access.md#internal-projects-and-groups).
+Users who create accounts or sign in to GitLab through the listed providers do not get access to [internal projects](../user/public_access.md#internal-projects-and-groups).
 
 To define the external providers list, use the full name of the provider,
 for example, `google_oauth2` for Google. For provider names, see the

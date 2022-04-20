@@ -31,15 +31,17 @@ describe('Todos', () => {
   });
 
   describe('goToTodoUrl', () => {
-    it('opens the todo url', (done) => {
+    it('opens the todo url', () => {
       const todoLink = todoItem.dataset.url;
 
+      let expectedUrl = null;
       visitUrl.mockImplementation((url) => {
-        expect(url).toEqual(todoLink);
-        done();
+        expectedUrl = url;
       });
 
       todoItem.click();
+
+      expect(expectedUrl).toEqual(todoLink);
     });
 
     describe('meta click', () => {

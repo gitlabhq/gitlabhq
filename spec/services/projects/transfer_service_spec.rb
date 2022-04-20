@@ -11,8 +11,9 @@ RSpec.describe Projects::TransferService do
 
   let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
   let(:target) { group }
+  let(:executor) { user }
 
-  subject(:execute_transfer) { described_class.new(project, user).execute(target).tap { project.reload } }
+  subject(:execute_transfer) { described_class.new(project, executor).execute(target).tap { project.reload } }
 
   context 'with npm packages' do
     before do
@@ -92,6 +93,55 @@ RSpec.describe Projects::TransferService do
     end
   end
 
+  context 'project in a group -> a personal namespace', :enable_admin_mode do
+    let(:project) { create(:project, :repository, :legacy_storage, group: group) }
+    let(:target) { user.namespace }
+    # We need to use an admin user as the executor because
+    # only an admin user has required permissions to transfer projects
+    # under _all_ the different circumstances specified below.
+    let(:executor) { create(:user, :admin) }
+
+    it 'executes the transfer to personal namespace successfully' do
+      execute_transfer
+
+      expect(project.namespace).to eq(user.namespace)
+    end
+
+    context 'the owner of the namespace does not have a direct membership in the project residing in the group' do
+      it 'creates a project membership record for the owner of the namespace, with OWNER access level, after the transfer' do
+        execute_transfer
+
+        expect(project.members.owners.find_by(user_id: user.id)).to be_present
+      end
+    end
+
+    context 'the owner of the namespace has a direct membership in the project residing in the group' do
+      context 'that membership has an access level of OWNER' do
+        before do
+          project.add_owner(user)
+        end
+
+        it 'retains the project membership record for the owner of the namespace, with OWNER access level, after the transfer' do
+          execute_transfer
+
+          expect(project.members.owners.find_by(user_id: user.id)).to be_present
+        end
+      end
+
+      context 'that membership has an access level that is not OWNER' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'updates the project membership record for the owner of the namespace, to OWNER access level, after the transfer' do
+          execute_transfer
+
+          expect(project.members.owners.find_by(user_id: user.id)).to be_present
+        end
+      end
+    end
+  end
+
   context 'when transfer succeeds' do
     before do
       group.add_owner(user)
@@ -148,23 +198,23 @@ RSpec.describe Projects::TransferService do
 
     context 'with a project integration' do
       let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
-      let_it_be(:instance_integration) { create(:integrations_slack, :instance, webhook: 'http://project.slack.com') }
+      let_it_be(:instance_integration) { create(:integrations_slack, :instance) }
+      let_it_be(:project_integration) { create(:integrations_slack, project: project) }
 
-      context 'with an inherited integration' do
-        let_it_be(:project_integration) { create(:integrations_slack, project: project, webhook: 'http://project.slack.com', inherit_from_id: instance_integration.id) }
+      context 'when it inherits from instance_integration' do
+        before do
+          project_integration.update!(inherit_from_id: instance_integration.id, webhook: instance_integration.webhook)
+        end
 
         it 'replaces inherited integrations', :aggregate_failures do
-          execute_transfer
-
-          expect(project.slack_integration.webhook).to eq(group_integration.webhook)
-          expect(Integration.count).to eq(3)
+          expect { execute_transfer }
+            .to change(Integration, :count).by(0)
+            .and change { project.slack_integration.webhook }.to eq(group_integration.webhook)
         end
       end
 
       context 'with a custom integration' do
-        let_it_be(:project_integration) { create(:integrations_slack, project: project, webhook: 'http://project.slack.com') }
-
-        it 'does not updates the integrations' do
+        it 'does not update the integrations' do
           expect { execute_transfer }.not_to change { project.slack_integration.webhook }
         end
       end

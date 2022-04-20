@@ -18,7 +18,7 @@ import Tracking from '~/tracking';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
-import AccessorUtilities from '../../lib/utils/accessor';
+import AccessorUtilities from '~/lib/utils/accessor';
 import { inactiveId, LIST, ListType, toggleFormEventPrefix } from '../constants';
 import eventHub from '../eventhub';
 import ItemCount from './item_count.vue';
@@ -56,6 +56,9 @@ export default {
     },
     currentUserId: {
       default: null,
+    },
+    canCreateEpic: {
+      default: false,
     },
   },
   props: {
@@ -129,7 +132,7 @@ export default {
       return (this.listType === ListType.backlog || this.showListHeaderButton) && !this.isEpicBoard;
     },
     isNewEpicShown() {
-      return this.isEpicBoard && this.listType !== ListType.closed;
+      return this.isEpicBoard && this.canCreateEpic && this.listType !== ListType.closed;
     },
     isSettingsShown() {
       return (
@@ -262,7 +265,7 @@ export default {
         'gl-py-2': list.collapsed && isSwimlanesHeader,
         'gl-flex-direction-column': list.collapsed,
       }"
-      class="board-title gl-m-0 gl-display-flex gl-align-items-center gl-font-base gl-px-3 js-board-handle"
+      class="board-title gl-m-0 gl-display-flex gl-align-items-center gl-font-base gl-px-3"
     >
       <gl-button
         v-gl-tooltip.hover
@@ -443,12 +446,11 @@ export default {
           ref="settingsBtn"
           v-gl-tooltip.hover
           :aria-label="$options.i18n.listSettings"
-          class="no-drag js-board-settings-button"
+          class="no-drag"
           :title="$options.i18n.listSettings"
           icon="settings"
           @click="openSidebarSettings"
         />
-        <gl-tooltip :target="() => $refs.settingsBtn">{{ $options.i18n.listSettings }}</gl-tooltip>
       </gl-button-group>
     </h3>
   </header>

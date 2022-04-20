@@ -3,7 +3,7 @@ import { BatchHttpLink } from '@apollo/client/link/batch-http';
 import { createUploadLink } from 'apollo-upload-client';
 import ActionCableLink from '~/actioncable_link';
 import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
-import possibleTypes from '~/graphql_shared/possibleTypes.json';
+import possibleTypes from '~/graphql_shared/possible_types.json';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
 import { objectToQuery, queryToObject } from '~/lib/utils/url_utility';
@@ -46,6 +46,9 @@ export const typePolicies = {
   },
   DesignCollection: {
     merge: true,
+  },
+  TreeEntry: {
+    keyFields: ['webPath'],
   },
 };
 

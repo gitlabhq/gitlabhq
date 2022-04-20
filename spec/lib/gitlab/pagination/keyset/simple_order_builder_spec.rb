@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
   let(:ordered_scope) { described_class.build(scope).first }
   let(:order_object) { Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(ordered_scope) }
+  let(:column_definition) { order_object.column_definitions.first }
 
   subject(:sql_with_order) { ordered_scope.to_sql }
 
@@ -16,10 +17,24 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
     end
 
     it 'sets the column definition distinct and not nullable' do
-      column_definition = order_object.column_definitions.first
-
       expect(column_definition).to be_not_nullable
       expect(column_definition).to be_distinct
+    end
+
+    context "when the order scope's model uses default_scope" do
+      let(:scope) do
+        model = Class.new(ApplicationRecord) do
+          self.table_name = 'events'
+
+          default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
+        end
+
+        model.reorder(nil)
+      end
+
+      it 'orders by primary key' do
+        expect(sql_with_order).to end_with('ORDER BY "events"."id" DESC')
+      end
     end
   end
 
@@ -39,8 +54,6 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
     end
 
     it 'sets the column definition for created_at non-distinct and nullable' do
-      column_definition = order_object.column_definitions.first
-
       expect(column_definition.attribute_name).to eq('created_at')
       expect(column_definition.nullable?).to eq(true) # be_nullable calls non_null? method for some reason
       expect(column_definition).not_to be_distinct
@@ -59,11 +72,77 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
     let(:scope) { Project.where(id: [1, 2, 3]).order(namespace_id: :asc, id: :asc) }
 
     it 'sets the column definition for namespace_id non-distinct and non-nullable' do
-      column_definition = order_object.column_definitions.first
-
       expect(column_definition.attribute_name).to eq('namespace_id')
       expect(column_definition).to be_not_nullable
       expect(column_definition).not_to be_distinct
+    end
+  end
+
+  context 'when ordering by a column with the lower named function' do
+    let(:scope) { Project.where(id: [1, 2, 3]).order(Project.arel_table[:name].lower.desc) }
+
+    it 'sets the column definition for name' do
+      expect(column_definition.attribute_name).to eq('name')
+      expect(column_definition.column_expression.expressions.first.name).to eq('name')
+      expect(column_definition.column_expression.name).to eq('LOWER')
+    end
+
+    it 'adds extra primary key order as tie-breaker' do
+      expect(sql_with_order).to end_with('ORDER BY LOWER("projects"."name") DESC, "projects"."id" DESC')
+    end
+  end
+
+  context "NULLS order given as as an Arel literal" do
+    context 'when NULLS LAST order is given without a tie-breaker' do
+      let(:scope) { Project.order(Project.arel_table[:created_at].asc.nulls_last) }
+
+      it 'sets the column definition for created_at appropriately' do
+        expect(column_definition.attribute_name).to eq('created_at')
+      end
+
+      it 'orders by primary key' do
+        expect(sql_with_order)
+          .to end_with('ORDER BY "projects"."created_at" ASC NULLS LAST, "projects"."id" DESC')
+      end
+    end
+
+    context 'when NULLS FIRST order is given with a tie-breaker' do
+      let(:scope) { Issue.order(Issue.arel_table[:relative_position].desc.nulls_first).order(id: :asc) }
+
+      it 'sets the column definition for created_at appropriately' do
+        expect(column_definition.attribute_name).to eq('relative_position')
+      end
+
+      it 'orders by the given primary key' do
+        expect(sql_with_order)
+          .to end_with('ORDER BY "issues"."relative_position" DESC NULLS FIRST, "issues"."id" ASC')
+      end
+    end
+  end
+
+  context "NULLS order given as as an Arel node" do
+    context 'when NULLS LAST order is given without a tie-breaker' do
+      let(:scope) { Project.order(Project.arel_table[:created_at].asc.nulls_last) }
+
+      it 'sets the column definition for created_at appropriately' do
+        expect(column_definition.attribute_name).to eq('created_at')
+      end
+
+      it 'orders by primary key' do
+        expect(sql_with_order).to end_with('ORDER BY "projects"."created_at" ASC NULLS LAST, "projects"."id" DESC')
+      end
+    end
+
+    context 'when NULLS FIRST order is given with a tie-breaker' do
+      let(:scope) { Issue.order(Issue.arel_table[:relative_position].desc.nulls_first).order(id: :asc) }
+
+      it 'sets the column definition for created_at appropriately' do
+        expect(column_definition.attribute_name).to eq('relative_position')
+      end
+
+      it 'orders by the given primary key' do
+        expect(sql_with_order).to end_with('ORDER BY "issues"."relative_position" DESC NULLS FIRST, "issues"."id" ASC')
+      end
     end
   end
 
@@ -76,10 +155,20 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
       it { is_expected.to eq(false) }
     end
 
-    context 'when NULLS LAST order is given' do
-      let(:scope) { Project.order(::Gitlab::Database.nulls_last_order('created_at', 'ASC')) }
+    context 'when an invalid NULLS order is given' do
+      using RSpec::Parameterized::TableSyntax
 
-      it { is_expected.to eq(false) }
+      where(:scope) do
+        [
+          lazy { Project.order(Arel.sql('projects.updated_at created_at Asc Nulls Last')) },
+          lazy { Project.order(Arel.sql('projects.created_at ZZZ NULLS FIRST')) },
+          lazy { Project.order(Arel.sql('projects.relative_position ASC NULLS LAST')) }
+        ]
+      end
+
+      with_them do
+        it { is_expected.to eq(false) }
+      end
     end
 
     context 'when more than 2 columns are given for the order' do

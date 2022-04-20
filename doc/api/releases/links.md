@@ -11,6 +11,16 @@ links. For manipulating other Release assets, see [Release API](index.md).
 
 GitLab supports links to `http`, `https`, and `ftp` assets.
 
+## Authentication
+
+For authentication, the Release Links API accepts:
+
+- A [Personal Access Token](../../user/profile/personal_access_tokens.md) using the
+  `PRIVATE-TOKEN` header.
+- A [Project Access Token](../../user/project/settings/project_access_tokens.md) using the `PRIVATE-TOKEN` header.
+
+The [GitLab CI/CD job token](../../ci/jobs/ci_job_token.md) `$CI_JOB_TOKEN` is not supported. See [GitLab issue #50819](https://gitlab.com/gitlab-org/gitlab/-/issues/250819) for more details.
+
 ## Get links
 
 Get assets as links from a Release.

@@ -1,0 +1,9 @@
+---
+table_name: ci_job_artifact_states
+classes:
+- Geo::JobArtifactState
+feature_categories:
+- geo_replication
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75264
+milestone: '14.8'

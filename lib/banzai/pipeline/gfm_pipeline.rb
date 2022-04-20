@@ -15,11 +15,11 @@ module Banzai
           # Must always be before the SanitizationFilter to prevent XSS attacks
           Filter::SpacedLinkFilter,
           Filter::SanitizationFilter,
+          Filter::KrokiFilter,
           Filter::AssetProxyFilter,
           Filter::SyntaxHighlightFilter,
           Filter::MathFilter,
           Filter::ColorFilter,
-          Filter::KrokiFilter,
           Filter::MermaidFilter,
           Filter::VideoLinkFilter,
           Filter::AudioLinkFilter,

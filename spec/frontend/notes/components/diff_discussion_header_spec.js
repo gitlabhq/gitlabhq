@@ -4,7 +4,7 @@ import { nextTick } from 'vue';
 import diffDiscussionHeader from '~/notes/components/diff_discussion_header.vue';
 import createStore from '~/notes/stores';
 
-import mockDiffFile from '../../diffs/mock_data/diff_discussions';
+import mockDiffFile from 'jest/diffs/mock_data/diff_discussions';
 import { discussionMock } from '../mock_data';
 
 describe('diff_discussion_header component', () => {

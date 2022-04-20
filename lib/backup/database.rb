@@ -25,7 +25,7 @@ module Backup
     end
 
     override :dump
-    def dump(db_file_name)
+    def dump(db_file_name, backup_id)
       FileUtils.mkdir_p(File.dirname(db_file_name))
       FileUtils.rm_f(db_file_name)
       compress_rd, compress_wr = IO.pipe
@@ -132,11 +132,6 @@ module Backup
         Support if you have questions:
         https://about.gitlab.com/support/
       MSG
-    end
-
-    override :human_name
-    def human_name
-      _('database')
     end
 
     protected

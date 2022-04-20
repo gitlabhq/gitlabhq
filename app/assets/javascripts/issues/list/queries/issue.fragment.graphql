@@ -2,7 +2,6 @@ fragment IssueFragment on Issue {
   __typename
   id
   iid
-  closedAt
   confidential
   createdAt
   downvotes
@@ -11,6 +10,7 @@ fragment IssueFragment on Issue {
   humanTimeEstimate
   mergeRequestsCount
   moved
+  state
   title
   updatedAt
   upvotes

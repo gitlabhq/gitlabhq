@@ -30,16 +30,6 @@ RSpec.describe SensitiveSerializableHash do
         expect(model.serializable_hash(unsafe_serialization_hash: true)).to include('super_secret')
       end
     end
-
-    context 'when prevent_sensitive_fields_from_serializable_hash feature flag is disabled' do
-      before do
-        stub_feature_flags(prevent_sensitive_fields_from_serializable_hash: false)
-      end
-
-      it 'includes the field in serializable_hash' do
-        expect(model.serializable_hash).to include('super_secret')
-      end
-    end
   end
 
   describe '#serializable_hash' do

@@ -1,0 +1,9 @@
+---
+table_name: user_highest_roles
+classes:
+- UserHighestRole
+feature_categories:
+- utilization
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26987
+milestone: '12.9'

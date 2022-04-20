@@ -16,7 +16,9 @@ container registry images of a project without having a user and a password.
 
 Deploy tokens can be managed only by users with the Maintainer role.
 
-Deploy tokens cannot be used with the GitLab API.
+Deploy tokens can't be used with the GitLab public API. However, you can use deploy tokens with some
+endpoints, such as those from the Package Registry. For details, see
+[Authenticate with the registry](../../packages/package_registry/index.md#authenticate-with-the-registry).
 
 Deploy tokens are tied to the project and stay enabled even when the user who created the token is removed from the project.
 

@@ -1,0 +1,9 @@
+---
+table_name: epics
+classes:
+- Epic
+feature_categories:
+- portfolio_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3126
+milestone: '10.2'

@@ -183,7 +183,7 @@ describe('Design management index page', () => {
       [moveDesignMutation, moveDesignHandler],
     ];
 
-    fakeApollo = createMockApollo(requestHandlers);
+    fakeApollo = createMockApollo(requestHandlers, {}, { addTypename: true });
     wrapper = shallowMount(Index, {
       apolloProvider: fakeApollo,
       router,

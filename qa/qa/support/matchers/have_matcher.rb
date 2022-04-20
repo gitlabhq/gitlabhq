@@ -10,6 +10,7 @@ module QA
           file_content
           assignee
           child_pipeline
+          linked_pipeline
           content
           design
           file

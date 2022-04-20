@@ -8,7 +8,7 @@ exports[`~/access_tokens/components/expires_at_field should render datepicker wi
   optionaltext="(optional)"
 >
   <gl-datepicker-stub
-    ariallabel=""
+    arialabel=""
     autocomplete=""
     container=""
     displayfield="true"

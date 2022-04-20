@@ -238,6 +238,24 @@ RSpec.describe Issue do
     end
   end
 
+  context 'order by escalation status' do
+    let_it_be(:triggered_incident) { create(:incident_management_issuable_escalation_status, :triggered).issue }
+    let_it_be(:resolved_incident) { create(:incident_management_issuable_escalation_status, :resolved).issue }
+    let_it_be(:issue_no_status) { create(:issue) }
+
+    describe '.order_escalation_status_asc' do
+      subject { described_class.order_escalation_status_asc }
+
+      it { is_expected.to eq([triggered_incident, resolved_incident, issue_no_status]) }
+    end
+
+    describe '.order_escalation_status_desc' do
+      subject { described_class.order_escalation_status_desc }
+
+      it { is_expected.to eq([resolved_incident, triggered_incident, issue_no_status]) }
+    end
+  end
+
   # TODO: Remove when NOT NULL constraint is added to the relationship
   describe '#work_item_type' do
     let(:issue) { create(:issue, :incident, project: reusable_project, work_item_type: nil) }
@@ -1154,18 +1172,6 @@ RSpec.describe Issue do
     end
   end
 
-  describe '#hook_attrs' do
-    it 'delegates to Gitlab::HookData::IssueBuilder#build' do
-      builder = double
-
-      expect(Gitlab::HookData::IssueBuilder)
-        .to receive(:new).with(subject).and_return(builder)
-      expect(builder).to receive(:build)
-
-      subject.hook_attrs
-    end
-  end
-
   describe '#check_for_spam?' do
     let_it_be(:support_bot) { ::User.support_bot }
 
@@ -1312,15 +1318,6 @@ RSpec.describe Issue do
 
   it_behaves_like 'throttled touch' do
     subject { create(:issue, updated_at: 1.hour.ago) }
-  end
-
-  describe "#labels_hook_attrs" do
-    let(:label) { create(:label) }
-    let(:issue) { create(:labeled_issue, project: reusable_project, labels: [label]) }
-
-    it "returns a list of label hook attributes" do
-      expect(issue.labels_hook_attrs).to eq([label.hook_attrs])
-    end
   end
 
   context "relative positioning" do

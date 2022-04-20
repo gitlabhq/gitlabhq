@@ -1,6 +1,8 @@
 /* eslint-disable @gitlab/require-i18n-strings */
 
 import { Node } from '@tiptap/core';
+import { VueNodeViewRenderer } from '@tiptap/vue-2';
+import MediaWrapper from '../components/wrappers/media.vue';
 
 const queryPlayableElement = (element, mediaType) => element.querySelector(mediaType);
 
@@ -11,6 +13,9 @@ export default Node.create({
 
   addAttributes() {
     return {
+      uploading: {
+        default: false,
+      },
       src: {
         default: null,
         parseHTML: (element) => {
@@ -60,7 +65,11 @@ export default Node.create({
           ...this.extraElementAttrs,
         },
       ],
-      ['a', { href: node.attrs.src }, node.attrs.alt],
+      ['a', { href: node.attrs.src }, node.attrs.title || node.attrs.alt || ''],
     ];
+  },
+
+  addNodeView() {
+    return VueNodeViewRenderer(MediaWrapper);
   },
 });

@@ -12,7 +12,7 @@ class Environment < ApplicationRecord
   self.reactive_cache_hard_limit = 10.megabytes
   self.reactive_cache_work_type = :external_dependency
 
-  belongs_to :project, required: true
+  belongs_to :project, optional: false
 
   use_fast_destroy :all_deployments
   nullify_if_blank :external_url
@@ -26,7 +26,7 @@ class Environment < ApplicationRecord
   has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
-  has_one :last_deployment, -> { success.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
+  has_one :last_deployment, -> { Feature.enabled?(:env_last_deployment_by_finished_at, default_enabled: :yaml) ? success.ordered : success.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
   has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus', disable_joins: true
   has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline', disable_joins: true
@@ -59,17 +59,17 @@ class Environment < ApplicationRecord
             allow_nil: true,
             addressable_url: true
 
-  delegate :stop_action, :manual_actions, to: :last_deployment, allow_nil: true
+  delegate :manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
 
   scope :order_by_last_deployed_at, -> do
-    order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
+    order(Arel::Nodes::Grouping.new(max_deployment_id_query).asc.nulls_first)
   end
   scope :order_by_last_deployed_at_desc, -> do
-    order(Gitlab::Database.nulls_last_order("(#{max_deployment_id_sql})", 'DESC'))
+    order(Arel::Nodes::Grouping.new(max_deployment_id_query).desc.nulls_last)
   end
   scope :order_by_name, -> { order('environments.name ASC') }
 
@@ -89,12 +89,18 @@ class Environment < ApplicationRecord
 
   scope :for_project, -> (project) { where(project_id: project) }
   scope :for_tier, -> (tier) { where(tier: tier).where.not(tier: nil) }
-  scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
   scope :unfoldered, -> { where(environment_type: nil) }
   scope :with_rank, -> do
     select('environments.*, rank() OVER (PARTITION BY project_id ORDER BY id DESC)')
   end
   scope :for_id, -> (id) { where(id: id) }
+
+  scope :with_deployment, -> (sha, status: nil) do
+    deployments = Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)
+    deployments = deployments.where(status: status) if status
+
+    where('EXISTS (?)', deployments)
+  end
 
   scope :stopped_review_apps, -> (before, limit) do
     stopped
@@ -145,10 +151,11 @@ class Environment < ApplicationRecord
     find_by(id: id, slug: slug)
   end
 
-  def self.max_deployment_id_sql
-    Deployment.select(Deployment.arel_table[:id].maximum)
-    .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
-    .to_sql
+  def self.max_deployment_id_query
+    Arel.sql(
+      Deployment.select(Deployment.arel_table[:id].maximum)
+      .where(Deployment.arel_table[:environment_id].eq(arel_table[:id])).to_sql
+    )
   end
 
   def self.pluck_names
@@ -183,6 +190,23 @@ class Environment < ApplicationRecord
 
   def last_deployable
     last_deployment&.deployable
+  end
+
+  def last_deployment_pipeline
+    last_deployable&.pipeline
+  end
+
+  # This method returns the deployment records of the last deployment pipeline, that successfully executed to this environment.
+  # e.g.
+  # A pipeline contains
+  #   - deploy job A => production environment
+  #   - deploy job B => production environment
+  # In this case, `last_deployment_group` returns both deployments, whereas `last_deployable` returns only B.
+  def last_deployment_group
+    return Deployment.none unless last_deployment_pipeline
+
+    successful_deployments.where(
+      deployable_id: last_deployment_pipeline.latest_builds.pluck(:id))
   end
 
   # NOTE: Below assocation overrides is a workaround for issue https://gitlab.com/gitlab-org/gitlab/-/issues/339908
@@ -255,8 +279,8 @@ class Environment < ApplicationRecord
     external_url.gsub(%r{\A.*?://}, '')
   end
 
-  def stop_action_available?
-    available? && stop_action.present?
+  def stop_actions_available?
+    available? && stop_actions.present?
   end
 
   def cancel_deployment_jobs!
@@ -269,11 +293,35 @@ class Environment < ApplicationRecord
     end
   end
 
-  def stop_with_action!(current_user)
+  def stop_with_actions!(current_user)
     return unless available?
 
     stop!
-    stop_action&.play(current_user)
+
+    actions = []
+
+    stop_actions.each do |stop_action|
+      Gitlab::OptimisticLocking.retry_lock(
+        stop_action,
+        name: 'environment_stop_with_actions'
+      ) do |build|
+        actions << build.play(current_user)
+      end
+    end
+
+    actions
+  end
+
+  def stop_actions
+    strong_memoize(:stop_actions) do
+      if ::Feature.enabled?(:environment_multiple_stop_actions, project, default_enabled: :yaml)
+        # Fix N+1 queries it brings to the serializer.
+        # Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/358780
+        last_deployment_group.map(&:stop_action).compact
+      else
+        [last_deployment&.stop_action].compact
+      end
+    end
   end
 
   def reset_auto_stop

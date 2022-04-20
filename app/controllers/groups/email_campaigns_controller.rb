@@ -40,7 +40,7 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
       project_pipelines_url(group.projects.first)
     when :trial, :trial_short
       'https://about.gitlab.com/free-trial/'
-    when :team, :team_short, :invite_team
+    when :team, :team_short
       group_group_members_url(group)
     when :admin_verify
       project_settings_ci_cd_path(group.projects.first, ci_runner_templates: true, anchor: 'js-runners-settings')
@@ -58,11 +58,6 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
   def check_params
     @track = params[:track]&.to_sym
     @series = params[:series]&.to_i
-
-    # There is only one email that will be sent for invite team track so series
-    # should only have the value 0. Return early if track is invite team and
-    # condition for series value is met
-    return if @track == Namespaces::InviteTeamEmailService::TRACK && @series == 0
 
     track_valid = @track.in?(Namespaces::InProductMarketingEmailsService::TRACKS.keys)
     return render_404 unless track_valid

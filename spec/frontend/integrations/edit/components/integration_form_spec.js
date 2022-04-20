@@ -9,8 +9,6 @@ import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
-import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
-import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import ResetConfirmationModal from '~/integrations/edit/components/reset_confirmation_modal.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
@@ -55,7 +53,6 @@ describe('IntegrationForm', () => {
         OverrideDropdown,
         ActiveCheckbox,
         ConfirmationModal,
-        JiraTriggerFields,
         TriggerFields,
       },
       mocks: {
@@ -74,8 +71,6 @@ describe('IntegrationForm', () => {
   const findProjectSaveButton = () => wrapper.findByTestId('save-button');
   const findInstanceOrGroupSaveButton = () => wrapper.findByTestId('save-button-instance-group');
   const findTestButton = () => wrapper.findByTestId('test-button');
-  const findJiraTriggerFields = () => wrapper.findComponent(JiraTriggerFields);
-  const findJiraIssuesFields = () => wrapper.findComponent(JiraIssuesFields);
   const findTriggerFields = () => wrapper.findComponent(TriggerFields);
   const findGlForm = () => wrapper.findComponent(GlForm);
   const findRedirectToField = () => wrapper.findByTestId('redirect-to-field');
@@ -198,49 +193,6 @@ describe('IntegrationForm', () => {
       });
     });
 
-    describe('type is "slack"', () => {
-      beforeEach(() => {
-        createComponent({
-          customStateProps: { type: 'slack' },
-        });
-      });
-
-      it('does not render JiraTriggerFields', () => {
-        expect(findJiraTriggerFields().exists()).toBe(false);
-      });
-
-      it('does not render JiraIssuesFields', () => {
-        expect(findJiraIssuesFields().exists()).toBe(false);
-      });
-    });
-
-    describe('type is "jira"', () => {
-      beforeEach(() => {
-        jest.spyOn(document, 'querySelector').mockReturnValue(document.createElement('form'));
-
-        createComponent({
-          customStateProps: { type: 'jira', testPath: '/test' },
-          mountFn: mountExtended,
-        });
-      });
-
-      it('renders JiraTriggerFields', () => {
-        expect(findJiraTriggerFields().exists()).toBe(true);
-      });
-
-      it('renders JiraIssuesFields', () => {
-        expect(findJiraIssuesFields().exists()).toBe(true);
-      });
-
-      describe('when JiraIssueFields emits `request-jira-issue-types` event', () => {
-        it('dispatches `requestJiraIssueTypes` action', () => {
-          findJiraIssuesFields().vm.$emit('request-jira-issue-types');
-
-          expect(dispatch).toHaveBeenCalledWith('requestJiraIssueTypes', expect.any(FormData));
-        });
-      });
-    });
-
     describe('triggerEvents is present', () => {
       it('renders TriggerFields', () => {
         const events = [{ title: 'push' }];
@@ -272,9 +224,6 @@ describe('IntegrationForm', () => {
         ];
 
         createComponent({
-          provide: {
-            glFeatures: { integrationFormSections: true },
-          },
           customStateProps: {
             sections: [mockSectionConnection],
             fields: [...sectionFields, ...nonSectionFields],
@@ -363,9 +312,6 @@ describe('IntegrationForm', () => {
   describe('when integration has sections', () => {
     beforeEach(() => {
       createComponent({
-        provide: {
-          glFeatures: { integrationFormSections: true },
-        },
         customStateProps: {
           sections: [mockSectionConnection],
         },
@@ -396,9 +342,6 @@ describe('IntegrationForm', () => {
       ];
 
       createComponent({
-        provide: {
-          glFeatures: { integrationFormSections: true },
-        },
         customStateProps: {
           sections: [mockSectionConnection],
           fields: [...sectionFields, ...nonSectionFields],
@@ -417,9 +360,6 @@ describe('IntegrationForm', () => {
       ({ formActive, novalidate }) => {
         beforeEach(() => {
           createComponent({
-            provide: {
-              glFeatures: { integrationFormSections: true },
-            },
             customStateProps: {
               sections: [mockSectionConnection],
               showActive: true,
@@ -441,9 +381,6 @@ describe('IntegrationForm', () => {
         jest.spyOn(document, 'querySelector').mockReturnValue(document.createElement('form'));
 
         createComponent({
-          provide: {
-            glFeatures: { integrationFormSections: true },
-          },
           customStateProps: {
             sections: [mockSectionConnection],
             testPath: '/test',

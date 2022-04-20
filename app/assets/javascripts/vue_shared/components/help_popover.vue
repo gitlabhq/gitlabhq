@@ -21,12 +21,17 @@ export default {
       default: () => ({}),
     },
   },
+  methods: {
+    targetFn() {
+      return this.$refs.popoverTrigger?.$el;
+    },
+  },
 };
 </script>
 <template>
   <span>
-    <gl-button ref="popoverTrigger" variant="link" icon="question" :aria-label="__('Help')" />
-    <gl-popover :target="() => $refs.popoverTrigger.$el" v-bind="options">
+    <gl-button ref="popoverTrigger" variant="link" icon="question-o" :aria-label="__('Help')" />
+    <gl-popover :target="targetFn" v-bind="options">
       <template v-if="options.title" #title>
         <span v-safe-html="options.title"></span>
       </template>

@@ -326,7 +326,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,
+        test: /\.(worker(\.min)?\.js|pdf)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
         options: {
@@ -702,7 +702,10 @@ module.exports = {
       const incrementalCompilerMiddleware = incrementalCompiler.createMiddleware(devServer);
 
       if (incrementalCompilerMiddleware) {
-        middlewares.unshift(incrementalCompilerMiddleware);
+        middlewares.unshift({
+          name: 'incremental-compiler',
+          middleware: incrementalCompilerMiddleware,
+        });
       }
 
       return middlewares;
@@ -735,7 +738,7 @@ module.exports = {
   devtool: NO_SOURCEMAPS ? false : devtool,
 
   node: {
-    fs: 'empty', // sqljs requires fs
+    fs: 'empty', // editorconfig requires 'fs'
     setImmediate: false,
   },
 };

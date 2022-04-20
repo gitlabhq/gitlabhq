@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-#  $" is $LOADED_FEATURES, but RuboCop didn't like it
 if $".include?(File.expand_path('fast_spec_helper.rb', __dir__))
   warn 'Detected fast_spec_helper is loaded first than spec_helper.'
   warn 'If running test files using both spec_helper and fast_spec_helper,'
-  warn 'make sure test file with spec_helper is loaded first.'
+  warn 'make sure spec_helper is loaded first, or run rspec with `-r spec_helper`.'
   abort 'Aborting...'
 end
 
@@ -192,6 +191,7 @@ RSpec.configure do |config|
   config.include MigrationsHelpers, :migration
   config.include RedisHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
+  config.include Rails.application.routes.url_helpers, type: :component
   config.include PolicyHelpers, type: :policy
   config.include ExpectRequestWithStatus, type: :request
   config.include IdempotentWorkerHelper, type: :worker
@@ -238,6 +238,7 @@ RSpec.configure do |config|
     # Enable all features by default for testing
     # Reset any changes in after hook.
     stub_all_feature_flags
+    stub_feature_flags(main_branch_over_master: false)
 
     TestEnv.seed_db
   end
@@ -329,10 +330,9 @@ RSpec.configure do |config|
       stub_feature_flags(disable_anonymous_search: false)
       stub_feature_flags(disable_anonymous_project_search: false)
 
-      # Disable the refactored top nav search until there is functionality
-      # Can be removed once all existing functionality has been replicated
-      # For more information check https://gitlab.com/gitlab-org/gitlab/-/issues/339348
-      stub_feature_flags(new_header_search: false)
+      # Specs should not get a CAPTCHA challenge by default, this makes the sign-in flow simpler in
+      # most cases. We do test the CAPTCHA flow in the appropriate specs.
+      stub_feature_flags(arkose_labs_login_challenge: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else

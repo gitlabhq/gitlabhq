@@ -1,7 +1,7 @@
 ---
 name: user_other_role_details
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45635
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255170
+rollout_issue_url: https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/282
 milestone: '13.7'
 type: development
 group: group::conversion

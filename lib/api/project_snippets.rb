@@ -38,7 +38,7 @@ module API
       params do
         use :pagination
       end
-      get ":id/snippets" do
+      get ":id/snippets", urgency: :low do
         authenticate!
 
         present paginate(snippets_for_current_user), with: Entities::ProjectSnippet, current_user: current_user

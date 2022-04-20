@@ -1,0 +1,9 @@
+---
+table_name: status_check_responses
+classes:
+- MergeRequests::StatusCheckResponse
+feature_categories:
+- compliance_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61135
+milestone: '13.12'

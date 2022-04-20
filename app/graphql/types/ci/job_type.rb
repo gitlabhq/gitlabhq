@@ -17,6 +17,8 @@ module Types
             description: 'Duration of the job in seconds.'
       field :id, ::Types::GlobalIDType[::CommitStatus].as('JobID'), null: true,
             description: 'ID of the job.'
+      field :kind, type: ::Types::Ci::JobKindEnum, null: false,
+            description: 'Indicates the type of job.'
       field :name, GraphQL::Types::String, null: true,
             description: 'Name of the job.'
       field :needs, BuildNeedType.connection_type, null: true,
@@ -86,6 +88,12 @@ module Types
             description: 'Indicates the job is stuck.'
       field :triggered, GraphQL::Types::Boolean, null: true,
             description: 'Whether the job was triggered.'
+
+      def kind
+        return ::Ci::Build unless [::Ci::Build, ::Ci::Bridge].include?(object.class)
+
+        object.class
+      end
 
       def pipeline
         Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, object.pipeline_id).find

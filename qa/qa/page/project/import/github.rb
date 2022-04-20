@@ -75,11 +75,10 @@ module QA
           # @return [Boolean]
           def has_imported_project?(gh_project_name, wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME)
             within_element(:project_import_row, source_project: gh_project_name, skip_finished_loading_check: true) do
-              # TODO: remove retrier with reload:true once https://gitlab.com/gitlab-org/gitlab/-/issues/292861 is fixed
               wait_until(
                 max_duration: wait,
                 sleep_interval: 5,
-                reload: true,
+                reload: false,
                 skip_finished_loading_check_on_refresh: true
               ) do
                 has_element?(:import_status_indicator, text: "Complete")

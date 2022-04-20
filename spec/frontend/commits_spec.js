@@ -70,29 +70,17 @@ describe('Commits List', () => {
       mock.restore();
     });
 
-    it('should save the last search string', (done) => {
+    it('should save the last search string', async () => {
       commitsList.searchField.val('GitLab');
-      commitsList
-        .filterResults()
-        .then(() => {
-          expect(ajaxSpy).toHaveBeenCalled();
-          expect(commitsList.lastSearch).toEqual('GitLab');
-
-          done();
-        })
-        .catch(done.fail);
+      await commitsList.filterResults();
+      expect(ajaxSpy).toHaveBeenCalled();
+      expect(commitsList.lastSearch).toEqual('GitLab');
     });
 
-    it('should not make ajax call if the input does not change', (done) => {
-      commitsList
-        .filterResults()
-        .then(() => {
-          expect(ajaxSpy).not.toHaveBeenCalled();
-          expect(commitsList.lastSearch).toEqual('');
-
-          done();
-        })
-        .catch(done.fail);
+    it('should not make ajax call if the input does not change', async () => {
+      await commitsList.filterResults();
+      expect(ajaxSpy).not.toHaveBeenCalled();
+      expect(commitsList.lastSearch).toEqual('');
     });
   });
 });

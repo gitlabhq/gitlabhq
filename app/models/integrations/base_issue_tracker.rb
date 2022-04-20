@@ -25,12 +25,15 @@ module Integrations
     def handle_properties
       # this has been moved from initialize_properties and should be improved
       # as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
-      return unless properties
+      return unless properties.present?
+
+      safe_keys = data_fields.attributes.keys.grep_v(/encrypted/) - %w[id service_id created_at]
 
       @legacy_properties_data = properties.dup
-      data_values = properties.slice!('title', 'description')
+
+      data_values = properties.slice(*safe_keys)
       data_values.reject! { |key| data_fields.changed.include?(key) }
-      data_values.slice!(*data_fields.attributes.keys)
+
       data_fields.assign_attributes(data_values) if data_values.present?
 
       self.properties = {}
@@ -66,10 +69,6 @@ module Integrations
 
     def issue_path(iid)
       issue_url(iid)
-    end
-
-    def initialize_properties
-      {}
     end
 
     # Initialize with default properties values

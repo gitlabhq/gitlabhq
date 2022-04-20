@@ -3,7 +3,7 @@
 describe QA::Runtime::AllureReport do
   include QA::Support::Helpers::StubEnv
 
-  let(:rspec_config) { double('RSpec::Core::Configuration', 'add_formatter': nil, append_after: nil) }
+  let(:rspec_config) { instance_double('RSpec::Core::Configuration', 'add_formatter': nil, append_after: nil) }
 
   let(:png_path) { 'png_path' }
   let(:html_path) { 'html_path' }
@@ -42,11 +42,14 @@ describe QA::Runtime::AllureReport do
   context 'with report generation enabled' do
     let(:generate_report) { 'true' }
 
+    let(:session) { instance_double('Capybara::Session') }
+    let(:attributes) { class_spy('Runtime::Scenario') }
+    let(:version_response) { instance_double('HTTPResponse', code: 200, body: versions.to_json) }
+
     let(:png_file) { 'png-file' }
     let(:html_file) { 'html-file' }
     let(:ci_job) { 'ee:relative 5' }
     let(:versions) { { version: '14', revision: '6ced31db947' } }
-    let(:session) { double('session') }
     let(:browser_log) { ['log message 1', 'log message 2'] }
 
     before do
@@ -54,11 +57,13 @@ describe QA::Runtime::AllureReport do
       stub_env('CI_JOB_NAME', ci_job)
       stub_env('GITLAB_QA_ADMIN_ACCESS_TOKEN', 'token')
 
+      stub_const('QA::Runtime::Scenario', attributes)
+
       allow(Allure).to receive(:add_attachment)
       allow(File).to receive(:open).with(png_path) { png_file }
       allow(File).to receive(:open).with(html_path) { html_file }
-      allow(RestClient::Request).to receive(:execute) { double('response', code: 200, body: versions.to_json) }
-      allow(QA::Runtime::Scenario).to receive(:method_missing).with(:gitlab_address).and_return('gitlab.com')
+      allow(RestClient::Request).to receive(:execute) { version_response }
+      allow(attributes).to receive(:gitlab_address).and_return("https://gitlab.com")
 
       allow(Capybara).to receive(:current_session).and_return(session)
       allow(session).to receive_message_chain('driver.browser.logs.get').and_return(browser_log)

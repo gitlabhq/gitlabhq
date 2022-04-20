@@ -317,6 +317,9 @@ RSpec.describe Notify do
     end
 
     context 'for merge requests' do
+      let(:push_user) { create(:user) }
+      let(:commit_limit) { NotificationService::NEW_COMMIT_EMAIL_DISPLAY_LIMIT }
+
       describe 'that are new' do
         subject { described_class.new_merge_request_email(merge_request.assignee_ids.first, merge_request.id) }
 
@@ -457,12 +460,6 @@ RSpec.describe Notify do
       end
 
       shared_examples 'a push to an existing merge request' do
-        let(:push_user) { create(:user) }
-
-        subject do
-          described_class.push_to_merge_request_email(recipient.id, merge_request.id, push_user.id, new_commits: merge_request.commits, existing_commits: existing_commits)
-        end
-
         it_behaves_like 'a multiple recipients email'
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
           let(:model) { merge_request }
@@ -487,16 +484,136 @@ RSpec.describe Notify do
         end
       end
 
-      describe 'that have new commits' do
-        let(:existing_commits) { [] }
+      shared_examples 'shows the compare url between first and last commits' do |count|
+        it 'shows the compare url between first and last commits' do
+          commit_id_1 = existing_commits.first[:short_id]
+          commit_id_2 = existing_commits.last[:short_id]
+
+          is_expected.to have_link("#{commit_id_1}...#{commit_id_2}", href: project_compare_url(project, from: commit_id_1, to: commit_id_2))
+          is_expected.to have_body_text("#{count} commits from branch `#{merge_request.target_branch}`")
+        end
+      end
+
+      shared_examples 'shows new commit urls' do |count|
+        it 'shows new commit urls' do
+          displayed_new_commits.each do |commit|
+            is_expected.to have_link(commit[:short_id], href: project_commit_url(project, commit[:short_id]))
+            is_expected.to have_body_text(commit[:title])
+          end
+        end
+
+        it 'does not show hidden new commit urls' do
+          hidden_new_commits.each do |commit|
+            is_expected.not_to have_link(commit[:short_id], href: project_commit_url(project, commit[:short_id]))
+            is_expected.not_to have_body_text(commit[:title])
+          end
+        end
+      end
+
+      describe 'that have no new commits' do
+        subject do
+          described_class.push_to_merge_request_email(recipient.id, merge_request.id, push_user.id, new_commits: [], total_new_commits_count: 0, existing_commits: [], total_existing_commits_count: 0)
+        end
 
         it_behaves_like 'a push to an existing merge request'
+      end
+
+      describe 'that have fewer than the commit truncation limit' do
+        let(:new_commits) { merge_request.commits }
+        let(:displayed_new_commits) { new_commits }
+        let(:hidden_new_commits) { [] }
+
+        subject do
+          described_class.push_to_merge_request_email(
+            recipient.id, merge_request.id, push_user.id,
+            new_commits: new_commits, total_new_commits_count: new_commits.length,
+            existing_commits: [], total_existing_commits_count: 0
+          )
+        end
+
+        it_behaves_like 'a push to an existing merge request'
+        it_behaves_like 'shows new commit urls'
+      end
+
+      describe 'that have more than the commit truncation limit' do
+        let(:new_commits) do
+          Array.new(commit_limit + 10) do |i|
+            {
+              short_id: SecureRandom.hex(4),
+              title: "This is commit #{i}"
+            }
+          end
+        end
+
+        let(:displayed_new_commits) { new_commits.first(commit_limit) }
+        let(:hidden_new_commits) { new_commits.last(10) }
+
+        subject do
+          described_class.push_to_merge_request_email(
+            recipient.id, merge_request.id, push_user.id,
+            new_commits: displayed_new_commits, total_new_commits_count: commit_limit + 10,
+            existing_commits: [], total_existing_commits_count: 0
+          )
+        end
+
+        it_behaves_like 'a push to an existing merge request'
+        it_behaves_like 'shows new commit urls'
+
+        it 'shows "and more" message' do
+          is_expected.to have_body_text("And 10 more")
+        end
       end
 
       describe 'that have new commits on top of an existing one' do
         let(:existing_commits) { [merge_request.commits.first] }
 
+        subject do
+          described_class.push_to_merge_request_email(
+            recipient.id, merge_request.id, push_user.id,
+            new_commits: merge_request.commits, total_new_commits_count: merge_request.commits.length,
+            existing_commits: existing_commits, total_existing_commits_count: existing_commits.length
+          )
+        end
+
         it_behaves_like 'a push to an existing merge request'
+
+        it 'shows the existing commit' do
+          commit_id = existing_commits.first.short_id
+          is_expected.to have_link(commit_id, href: project_commit_url(project, commit_id))
+          is_expected.to have_body_text("1 commit from branch `#{merge_request.target_branch}`")
+        end
+      end
+
+      describe 'that have new commits on top of two existing ones' do
+        let(:existing_commits) { [merge_request.commits.first, merge_request.commits.second] }
+
+        subject do
+          described_class.push_to_merge_request_email(
+            recipient.id, merge_request.id, push_user.id,
+            new_commits: merge_request.commits, total_new_commits_count: merge_request.commits.length,
+            existing_commits: existing_commits, total_existing_commits_count: existing_commits.length
+          )
+        end
+
+        it_behaves_like 'a push to an existing merge request'
+        it_behaves_like 'shows the compare url between first and last commits', 2
+      end
+
+      describe 'that have new commits on top of more than two existing ones' do
+        let(:existing_commits) do
+          [merge_request.commits.first] + [double(:commit)] * 3 + [merge_request.commits.second]
+        end
+
+        subject do
+          described_class.push_to_merge_request_email(
+            recipient.id, merge_request.id, push_user.id,
+            new_commits: merge_request.commits, total_new_commits_count: merge_request.commits.length,
+            existing_commits: existing_commits, total_existing_commits_count: existing_commits.length
+          )
+        end
+
+        it_behaves_like 'a push to an existing merge request'
+        it_behaves_like 'shows the compare url between first and last commits', 5
       end
     end
 
@@ -2064,13 +2181,45 @@ RSpec.describe Notify do
     context 'when diff note' do
       let!(:notes) { create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request) }
 
-      it 'links to notes' do
+      it 'links to notes and discussions', :aggregate_failures do
+        reply_note = create(:diff_note_on_merge_request, review: review, project: project, author: review.author, noteable: merge_request, in_reply_to: notes.first)
+
         review.notes.each do |note|
           # Text part
           expect(subject.text_part.body.raw_source).to include(
             project_merge_request_url(project, merge_request, anchor: "note_#{note.id}")
           )
+
+          if note == reply_note
+            expect(subject.text_part.body.raw_source).to include("commented on a discussion on #{note.discussion.file_path}")
+          else
+            expect(subject.text_part.body.raw_source).to include("started a new discussion on #{note.discussion.file_path}")
+          end
         end
+      end
+
+      it 'includes only one link to the highlighted_diff_email' do
+        expect(subject.html_part.body.raw_source).to include('assets/mailers/highlighted_diff_email').once
+      end
+
+      it 'avoids N+1 cached queries when rendering html', :use_sql_query_cache, :request_store do
+        control_count = ActiveRecord::QueryRecorder.new(query_recorder_debug: true, skip_cached: false) do
+          subject.html_part
+        end
+
+        create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request)
+
+        expect { described_class.new_review_email(recipient.id, review.id).html_part }.not_to exceed_all_query_limit(control_count)
+      end
+
+      it 'avoids N+1 cached queries when rendering text', :use_sql_query_cache, :request_store do
+        control_count = ActiveRecord::QueryRecorder.new(query_recorder_debug: true, skip_cached: false) do
+          subject.text_part
+        end
+
+        create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request)
+
+        expect { described_class.new_review_email(recipient.id, review.id).text_part }.not_to exceed_all_query_limit(control_count)
       end
     end
 

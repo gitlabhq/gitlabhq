@@ -1,0 +1,43 @@
+{
+  "version": "14.0.4",
+  "vulnerabilities": [
+    {
+      "id": "985a5666dcae22adef5ac12f8a8a2dacf9b9b481ae5d87cd0ac1712b0fd64864",
+      "category": "sast",
+      "message": "Deserialization of Untrusted Data",
+      "description": "Avoid using `load()`. `PyYAML.load` can create arbitrary Python\nobjects. A malicious actor could exploit this to run arbitrary\ncode. Use `safe_load()` instead.\n",
+      "cve": "",
+      "severity": "Critical",
+      "scanner": {
+        "id": "bandit",
+        "name": "Bandit"
+      },
+      "location": {
+        "file": "app/app.py",
+        "start_line": 39
+      },
+      "identifiers": [
+        {
+          "type": "bandit_test_id",
+          "name": "Bandit Test ID B506",
+          "value": "B506"
+        }
+      ]
+    }
+  ],
+  "scan": {
+    "scanner": {
+      "id": "bandit",
+      "name": "Bandit",
+      "url": "https://github.com/PyCQA/bandit",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "1.7.1"
+    },
+    "type": "sast",
+    "start_time": "2022-03-11T00:21:49",
+    "end_time": "2022-03-11T00:21:50",
+    "status": "success"
+  }
+}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::BackfillProjectNamespacePerGroupBatchingStrategy, '#next_batch' do
+RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::BackfillProjectNamespacePerGroupBatchingStrategy, '#next_batch', :migration, schema: 20220326161803 do
   let!(:namespaces) { table(:namespaces) }
   let!(:projects) { table(:projects) }
   let!(:background_migrations) { table(:batched_background_migrations) }

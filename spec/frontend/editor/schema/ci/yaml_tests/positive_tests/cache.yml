@@ -1,0 +1,25 @@
+# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70779
+stages:
+  - prepare
+
+# test for cache:when values
+job1:
+  stage: prepare
+  script:
+    - echo 'running job'
+  cache:
+    when: 'on_success'
+
+job2:
+  stage: prepare
+  script:
+    - echo 'running job'
+  cache:
+    when: 'on_failure'
+
+job3:
+  stage: prepare
+  script:
+    - echo 'running job'
+  cache:
+    when: 'always'

@@ -17,6 +17,7 @@ class Group < Namespace
   include GroupAPICompatibility
   include EachBatch
   include BulkMemberAccessLoad
+  include BulkUsersByEmailLoad
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
 
@@ -42,7 +43,28 @@ class Group < Namespace
   has_many :milestones
   has_many :integrations
   has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
-  has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink'
+  has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink' do
+    def of_ancestors
+      group = proxy_association.owner
+
+      return GroupGroupLink.none unless group.has_parent?
+
+      GroupGroupLink.where(shared_group_id: group.ancestors.reorder(nil).select(:id))
+    end
+
+    def of_ancestors_and_self
+      group = proxy_association.owner
+
+      source_ids =
+        if group.has_parent?
+          group.self_and_ancestors.reorder(nil).select(:id)
+        else
+          group.id
+        end
+
+      GroupGroupLink.where(shared_group_id: source_ids)
+    end
+  end
   has_many :shared_groups, through: :shared_group_links, source: :shared_group
   has_many :shared_with_groups, through: :shared_with_group_links, source: :shared_with_group
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -60,8 +82,9 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
-  has_many :organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group
-  has_many :contacts, class_name: 'CustomerRelations::Contact', inverse_of: :group
+  # AR defaults to nullify when trying to delete via has_many associations unless we set dependent: :delete_all
+  has_many :organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :contacts, class_name: 'CustomerRelations::Contact', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :cluster_groups, class_name: 'Clusters::Group'
   has_many :clusters, through: :cluster_groups, class_name: 'Clusters::Cluster'
@@ -94,6 +117,8 @@ class Group < Namespace
 
   has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
 
+  has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
+
   delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings
   delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
@@ -102,6 +127,7 @@ class Group < Namespace
   has_one :crm_settings, class_name: 'Group::CrmSettings', inverse_of: :group
 
   accepts_nested_attributes_for :variables, allow_destroy: true
+  accepts_nested_attributes_for :group_feature, update_only: true
 
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
@@ -117,6 +143,8 @@ class Group < Namespace
                       message: Gitlab::Regex.group_name_regex_message },
             if: :name_changed?
 
+  validates :group_feature, presence: true
+
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required },
                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
@@ -125,6 +153,7 @@ class Group < Namespace
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
   after_update :path_changed_hook, if: :saved_change_to_path?
+  after_create -> { create_or_load_association(:group_feature) }
 
   scope :with_users, -> { includes(:users) }
 
@@ -344,14 +373,16 @@ class Group < Namespace
     )
   end
 
-  def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false)
-    Members::Groups::CreatorService.new(self, # rubocop:disable CodeReuse/ServiceClass
-                                        user,
-                                        access_level,
-                                        current_user: current_user,
-                                        expires_at: expires_at,
-                                        ldap: ldap)
-                                   .execute
+  def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false, blocking_refresh: true)
+    Members::Groups::CreatorService.new( # rubocop:disable CodeReuse/ServiceClass
+      self,
+      user,
+      access_level,
+      current_user: current_user,
+      expires_at: expires_at,
+      ldap: ldap,
+      blocking_refresh: blocking_refresh
+    ).execute
   end
 
   def add_guest(user, current_user = nil)
@@ -794,6 +825,10 @@ class Group < Namespace
     super || build_dependency_proxy_setting
   end
 
+  def group_feature
+    super || build_group_feature
+  end
+
   def crm_enabled?
     crm_settings&.enabled?
   end
@@ -813,7 +848,31 @@ class Group < Namespace
     ].compact.min
   end
 
+  def work_items_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items)
+  end
+
+  # Check for enabled features, similar to `Project#feature_available?`
+  # NOTE: We still want to keep this after removing `Namespace#feature_available?`.
+  override :feature_available?
+  def feature_available?(feature, user = nil)
+    if ::Groups::FeatureSetting.available_features.include?(feature)
+      group_feature.feature_available?(feature, user) # rubocop:disable Gitlab/FeatureAvailableUsage
+    else
+      super
+    end
+  end
+
   private
+
+  def feature_flag_enabled_for_self_or_ancestor?(feature_flag)
+    actors = [root_ancestor]
+    actors << self if root_ancestor != self
+
+    actors.any? do |actor|
+      ::Feature.enabled?(feature_flag, actor, default_enabled: :yaml)
+    end
+  end
 
   def max_member_access(user_ids)
     Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(User),

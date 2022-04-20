@@ -25,6 +25,7 @@ RSpec.describe 'projects/commit/show.html.haml' do
     allow(view).to receive(:can_collaborate_with_project?).and_return(false)
     allow(view).to receive(:current_ref).and_return(project.repository.root_ref)
     allow(view).to receive(:diff_btn).and_return('')
+    allow(view).to receive(:pagination_params).and_return({})
   end
 
   context 'inline diff view' do

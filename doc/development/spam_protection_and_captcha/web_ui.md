@@ -37,7 +37,7 @@ additional fields being added to the models. Instead, communication is handled:
 The spam and CAPTCHA-related logic is also cleanly abstracted into reusable modules and helper methods
 which can wrap existing logic, and only alter the existing flow if potential spam
 is detected or a CAPTCHA display is needed. This approach allows the spam and CAPTCHA
-support to be easily added to new areas of the application with minimal changes to
+support to be added to new areas of the application with minimal changes to
 existing logic. In the case of the frontend, potentially **zero** changes are needed!
 
 On the frontend, this is handled abstractly and transparently using `ApolloLink` for Apollo, and an
@@ -75,7 +75,7 @@ sequenceDiagram
 The backend is also cleanly abstracted via mixin modules and helper methods. The three main
 changes required to the relevant backend controller actions (normally just `create`/`update`) are:
 
-1. Create a `SpamParams` parameter object instance based on the request, using the simple static
+1. Create a `SpamParams` parameter object instance based on the request, using the static
    `#new_from_request` factory method. This method takes a request, and returns a `SpamParams` instance.
 1. Pass the created `SpamParams` instance as the `spam_params` named argument to the
    Service class constructor, which you should have already added. If the spam check indicates

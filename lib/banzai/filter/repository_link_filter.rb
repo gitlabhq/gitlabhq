@@ -180,7 +180,7 @@ module Banzai
 
         parts.pop if uri_type(request_path) != :tree
 
-        path.sub!(%r{\A\./}, '')
+        path.delete_prefix!('./')
 
         while path.start_with?('../')
           parts.pop

@@ -6,13 +6,13 @@ module Gitlab
       class BatchedMigrationRunner
         FailedToFinalize = Class.new(RuntimeError)
 
-        def self.finalize(job_class_name, table_name, column_name, job_arguments, connection: ApplicationRecord.connection)
+        def self.finalize(job_class_name, table_name, column_name, job_arguments, connection:)
           new(connection: connection).finalize(job_class_name, table_name, column_name, job_arguments)
         end
 
-        def initialize(migration_wrapper = BatchedMigrationWrapper.new, connection: ApplicationRecord.connection)
-          @migration_wrapper = migration_wrapper
+        def initialize(connection:, migration_wrapper: BatchedMigrationWrapper.new(connection: connection))
           @connection = connection
+          @migration_wrapper = migration_wrapper
         end
 
         # Runs the next batched_job for a batched_background_migration.
@@ -30,6 +30,7 @@ module Gitlab
             migration_wrapper.perform(next_batched_job)
 
             active_migration.optimize!
+            active_migration.failure! if next_batched_job.failed? && active_migration.should_stop?
           else
             finish_active_migration(active_migration)
           end
@@ -67,7 +68,7 @@ module Gitlab
           elsif migration.finished?
             Gitlab::AppLogger.warn "Batched background migration for the given configuration is already finished: #{configuration}"
           else
-            migration.finalizing!
+            migration.finalize!
             migration.batched_jobs.with_status(:pending).each { |job| migration_wrapper.perform(job) }
 
             run_migration_while(migration, :finalizing)
@@ -78,7 +79,7 @@ module Gitlab
 
         private
 
-        attr_reader :migration_wrapper, :connection
+        attr_reader :connection, :migration_wrapper
 
         def find_or_create_next_batched_job(active_migration)
           if next_batch_range = find_next_batch_range(active_migration)
@@ -118,14 +119,14 @@ module Gitlab
           return if active_migration.batched_jobs.active.exists?
 
           if active_migration.batched_jobs.with_status(:failed).exists?
-            active_migration.failed!
+            active_migration.failure!
           else
-            active_migration.finished!
+            active_migration.finish!
           end
         end
 
         def run_migration_while(migration, status)
-          while migration.status == status.to_s
+          while migration.status_name == status
             run_migration_job(migration)
 
             migration.reload_last_job

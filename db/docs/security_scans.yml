@@ -1,0 +1,9 @@
+---
+table_name: security_scans
+classes:
+- Security::Scan
+feature_categories:
+- vulnerability_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23669
+milestone: '12.8'

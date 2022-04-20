@@ -8,7 +8,8 @@ RSpec.describe 'JobRetry' do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
-  let_it_be(:job) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
+
+  let(:job) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
 
   let(:mutation) do
     variables = {
@@ -37,10 +38,23 @@ RSpec.describe 'JobRetry' do
   end
 
   it 'retries a job' do
-    job_id = ::Gitlab::GlobalId.build(job, id: job.id).to_s
     post_graphql_mutation(mutation, current_user: user)
 
     expect(response).to have_gitlab_http_status(:success)
-    expect(mutation_response['job']['id']).to eq(job_id)
+    new_job_id = GitlabSchema.object_from_id(mutation_response['job']['id']).sync.id
+
+    new_job = ::Ci::Build.find(new_job_id)
+    expect(new_job).not_to be_retried
+  end
+
+  context 'when the job is not retryable' do
+    let(:job) { create(:ci_build, :retried, pipeline: pipeline) }
+
+    it 'returns an error' do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(mutation_response['job']).to be(nil)
+      expect(mutation_response['errors']).to match_array(['Job cannot be retried'])
+    end
   end
 end

@@ -1,0 +1,9 @@
+---
+table_name: wiki_page_slugs
+classes:
+- WikiPage::Slug
+feature_categories:
+- wiki
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26529
+milestone: '13.0'

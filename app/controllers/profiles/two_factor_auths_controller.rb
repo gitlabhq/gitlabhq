@@ -4,6 +4,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_two_factor_requirement
   before_action :ensure_verified_primary_email, only: [:show, :create]
   before_action :validate_current_password, only: [:create, :codes, :destroy], if: :current_password_required?
+  before_action :update_current_user_otp!, only: [:show]
 
   helper_method :current_password_required?
 
@@ -14,16 +15,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   feature_category :authentication_and_authorization
 
   def show
-    unless current_user.two_factor_enabled?
-      current_user.otp_secret = User.generate_otp_secret(32)
-    end
-
-    unless current_user.otp_grace_period_started_at && two_factor_grace_period
-      current_user.otp_grace_period_started_at = Time.current
-    end
-
-    Users::UpdateService.new(current_user, user: current_user).execute!
-
     if two_factor_authentication_required? && !current_user.two_factor_enabled?
       two_factor_authentication_reason(
         global: lambda do
@@ -68,6 +59,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     else
       @error = { message: _('Invalid pin code.') }
       @qr_code = build_qr_code
+      @account_string = account_string
 
       if Feature.enabled?(:webauthn, default_enabled: :yaml)
         setup_webauthn_registration
@@ -137,6 +129,18 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   private
+
+  def update_current_user_otp!
+    if current_user.needs_new_otp_secret?
+      current_user.update_otp_secret!
+    end
+
+    unless current_user.otp_grace_period_started_at && two_factor_grace_period
+      current_user.otp_grace_period_started_at = Time.current
+    end
+
+    Users::UpdateService.new(current_user, user: current_user).execute!
+  end
 
   def validate_current_password
     return if current_user.valid_password?(params[:current_password])

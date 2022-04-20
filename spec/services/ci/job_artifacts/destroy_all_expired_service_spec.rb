@@ -19,8 +19,23 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
       let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
 
       context 'with preloaded relationships' do
+        let(:second_artifact) { create(:ci_job_artifact, :expired, :junit, job: job) }
+
+        let(:more_artifacts) do
+          [
+            create(:ci_job_artifact, :expired, :sast, job: job),
+            create(:ci_job_artifact, :expired, :metadata, job: job),
+            create(:ci_job_artifact, :expired, :codequality, job: job),
+            create(:ci_job_artifact, :expired, :accessibility, job: job)
+          ]
+        end
+
         before do
-          stub_const("#{described_class}::LARGE_LOOP_LIMIT", 1)
+          stub_const("#{described_class}::LOOP_LIMIT", 1)
+
+          # This artifact-with-file is created before the control execution to ensure
+          # that the DeletedObject operations are accounted for in the query count.
+          second_artifact
         end
 
         context 'with ci_destroy_unlocked_job_artifacts feature flag disabled' do
@@ -28,19 +43,12 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
             stub_feature_flags(ci_destroy_unlocked_job_artifacts: false)
           end
 
-          it 'performs the smallest number of queries for job_artifacts' do
-            log = ActiveRecord::QueryRecorder.new { subject }
+          it 'performs a consistent number of queries' do
+            control = ActiveRecord::QueryRecorder.new { service.execute }
 
-            # SELECT expired ci_job_artifacts - 3 queries from each_batch
-            # PRELOAD projects, routes, project_statistics
-            # BEGIN
-            # INSERT into ci_deleted_objects
-            # DELETE loaded ci_job_artifacts
-            # DELETE security_findings  -- for EE
-            # COMMIT
-            # SELECT next expired ci_job_artifacts
+            more_artifacts
 
-            expect(log.count).to be_within(1).of(10)
+            expect { subject }.not_to exceed_query_limit(control.count)
           end
         end
 
@@ -49,9 +57,12 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
             stub_feature_flags(ci_destroy_unlocked_job_artifacts: true)
           end
 
-          it 'performs the smallest number of queries for job_artifacts' do
-            log = ActiveRecord::QueryRecorder.new { subject }
-            expect(log.count).to be_within(1).of(8)
+          it 'performs a consistent number of queries' do
+            control = ActiveRecord::QueryRecorder.new { service.execute }
+
+            more_artifacts
+
+            expect { subject }.not_to exceed_query_limit(control.count)
           end
         end
       end
@@ -119,7 +130,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
       let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
 
       before do
-        stub_const("#{described_class}::LARGE_LOOP_LIMIT", 10)
+        stub_const("#{described_class}::LOOP_LIMIT", 10)
       end
 
       context 'when the import fails' do
@@ -189,8 +200,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
 
       context 'when loop reached loop limit' do
         before do
-          stub_feature_flags(ci_artifact_fast_removal_large_loop_limit: false)
-          stub_const("#{described_class}::SMALL_LOOP_LIMIT", 1)
+          stub_const("#{described_class}::LOOP_LIMIT", 1)
         end
 
         it 'destroys one artifact' do

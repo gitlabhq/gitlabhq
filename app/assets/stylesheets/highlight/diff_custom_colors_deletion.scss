@@ -1,0 +1,36 @@
+/**
+* CSS variables used below are declared in `app/views/layouts/_diffs_colors_css.haml`
+*/
+.diff-custom-deletion-color {
+  .code {
+    .line_holder {
+      .diff-line-num,
+      .line-coverage,
+      .line-codequality,
+      .line_content {
+        &.old {
+          &:not(.hll) {
+            background: var(--diff-deletion-color);
+          }
+
+          &.line_content span.idiff {
+            background: var(--diff-deletion-color) !important;
+          }
+
+          &::before,
+          a {
+            mix-blend-mode: luminosity;
+          }
+        }
+      }
+    }
+
+    .gd {
+      background-color: var(--diff-deletion-color);
+    }
+  }
+
+  .idiff.deletion {
+    background: var(--diff-deletion-color) !important;
+  }
+}

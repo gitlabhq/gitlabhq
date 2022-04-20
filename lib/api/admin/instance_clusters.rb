@@ -112,7 +112,7 @@ module API
 
       helpers do
         def clusterable_instance
-          Clusters::Instance.new
+          ::Clusters::Instance.new
         end
 
         def clusters_for_current_user

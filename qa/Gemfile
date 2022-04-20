@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'gitlab-qa', require: 'gitlab/qa'
-gem 'activesupport', '~> 6.1.4.6' # This should stay in sync with the root's Gemfile
+gem 'activesupport', '~> 6.1.4.7' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.16.0'
 gem 'capybara', '~> 3.35.0'
 gem 'capybara-screenshot', '~> 1.0.23'
@@ -30,7 +30,7 @@ gem 'terminal-table', '~> 3.0.0', require: false
 gem 'slack-notifier', '~> 2.4', require: false
 gem 'fog-google', '~> 1.17', require: false
 
-gem 'confiner', '~> 0.2'
+gem 'confiner', '~> 0.3'
 
 gem 'chemlab', '~> 0.9'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'

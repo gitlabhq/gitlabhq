@@ -55,7 +55,7 @@ RSpec.describe EnvironmentHelper do
         can_destroy_environment: true,
         can_stop_environment: true,
         can_admin_environment: true,
-        environment_metrics_path: environment_metrics_path(environment),
+        environment_metrics_path: project_metrics_dashboard_path(project, environment: environment),
         environments_fetch_path: project_environments_path(project, format: :json),
         environment_edit_path: edit_project_environment_path(project, environment),
         environment_stop_path: stop_project_environment_path(project, environment),

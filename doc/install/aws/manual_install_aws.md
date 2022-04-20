@@ -299,8 +299,8 @@ The steps for doing this vary depending on which registrar you use and is beyond
 
 ## PostgreSQL with RDS
 
-For our database server we will use Amazon RDS which offers Multi AZ
-for redundancy. First we'll create a security group and subnet group, then we'll
+For our database server we will use Amazon RDS for PostgreSQL which offers Multi AZ
+for redundancy (Aurora is **not** supported). First we'll create a security group and subnet group, then we'll
 create the actual RDS instance.
 
 ### RDS Security Group

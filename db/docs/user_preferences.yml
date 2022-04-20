@@ -1,0 +1,9 @@
+---
+table_name: user_preferences
+classes:
+- UserPreference
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/132abd3d68a8d97e8245dfc8f87a297a2ff1f39d
+milestone: '11.5'

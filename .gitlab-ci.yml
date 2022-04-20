@@ -16,7 +16,7 @@ stages:
 # in cases where jobs require Docker-in-Docker, the job
 # definition must be extended with `.use-docker-in-docker`
 default:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
+  image: $DEFAULT_CI_IMAGE
   tags:
     - gitlab-org
   # All jobs are interruptible by default
@@ -58,6 +58,8 @@ workflow:
     - if: '$CI_COMMIT_BRANCH =~ /^security\//'
 
 variables:
+  PG_VERSION: "12"
+  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-${PG_VERSION}-graphicsmagick-1.3.36"
   RAILS_ENV: "test"
   NODE_ENV: "test"
   BUNDLE_WITHOUT: "production:development"
@@ -91,10 +93,11 @@ variables:
   CHECK_PRECOMPILED_ASSETS: "true"
   FF_USE_FASTZIP: "true"
   SKIP_FLAKY_TESTS_AUTOMATICALLY: "true"
+  RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
 
-  DOCS_REVIEW_APPS_DOMAIN: "178.62.207.141.nip.io"
+  DOCS_REVIEW_APPS_DOMAIN: "35.193.151.162.nip.io"
   DOCS_GITLAB_REPO_SUFFIX: "ee"
 
   REVIEW_APPS_DOMAIN: "gitlab-review.app"

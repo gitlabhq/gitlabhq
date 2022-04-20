@@ -86,6 +86,25 @@ module CycleAnalyticsHelpers
     wait_for_stages_to_load(ready_selector)
   end
 
+  def select_value_stream(value_stream_name)
+    toggle_value_stream_dropdown
+
+    page.find('[data-testid="dropdown-value-streams"]').all('li button').find { |item| item.text == value_stream_name.to_s }.click
+    wait_for_requests
+  end
+
+  def create_value_stream_group_aggregation(group)
+    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_group(group)
+    Analytics::CycleAnalytics::AggregatorService.new(aggregation: aggregation).execute
+  end
+
+  def select_group_and_custom_value_stream(group, custom_value_stream_name)
+    create_value_stream_group_aggregation(group)
+
+    select_group(group)
+    select_value_stream(custom_value_stream_name)
+  end
+
   def toggle_dropdown(field)
     page.within("[data-testid*='#{field}']") do
       find('.dropdown-toggle').click

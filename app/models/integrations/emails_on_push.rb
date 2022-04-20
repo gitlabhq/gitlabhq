@@ -13,9 +13,7 @@ module Integrations
     validate :number_of_recipients_within_limit, if: :validate_recipients?
 
     def self.valid_recipients(recipients)
-      recipients.split.select do |recipient|
-        recipient.include?('@')
-      end.uniq(&:downcase)
+      recipients.split.grep(Devise.email_regexp).uniq(&:downcase)
     end
 
     def title

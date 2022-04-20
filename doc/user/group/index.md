@@ -1,7 +1,6 @@
 ---
-type: reference, howto
 stage: Manage
-group: Authentication and Authorization
+group: Workspace
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -68,7 +67,7 @@ To create a group:
 1. Enter a name for the group in **Group name**. For a list of words that cannot be used as group names, see
    [reserved names](../reserved_names.md).
 1. Enter a path for the group in **Group URL**, which is used for the [namespace](#namespaces).
-1. Choose the [visibility level](../../public_access/public_access.md).
+1. Choose the [visibility level](../public_access.md).
 1. Personalize your GitLab experience by answering the following questions:
    - What is your role?
    - Who will be using this group?
@@ -279,8 +278,8 @@ To view the activity feed in Atom format, select the
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
-you can share a group with another group. Members get direct access
-to the shared group. This includes members who inherited group membership from a parent group.
+you can share a group with another group. To invite a group, you must be a member of it. Members get direct access
+to the shared group. This includes members who inherited group membership from a parent group. 
 
 To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
@@ -289,10 +288,14 @@ To share a given group, for example, `Frontend` with another group, for example,
 1. On the left sidebar, select **Group information > Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select `Engineering`.
-1. Select a [role](../permissions.md).
+1. Select a [role](../permissions.md) as maximum access level.
 1. Select **Invite**.
 
-All the members of the `Engineering` group are added to the `Frontend` group.
+After sharing the `Frontend` group with the `Engineering` group:
+
+- The **Groups** tab lists the `Engineering` group.
+- The **Groups** tab lists a group regardless of whether it is a public or private group.
+- All members of the `Engineering` group have access to the `Frontend` group. The same access levels of the members apply up to the maximum access level selected when sharing the group.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
 
@@ -793,22 +796,24 @@ The group's new subgroups have push rules set for them based on either:
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
 
-## Group approval rules **(PREMIUM)**
+## Group approval settings **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
 > - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
 
-Group approval rules manage [project merge request approval rules](../project/merge_requests/approvals/index.md)
-at the top-level group level. These rules [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+Group approval settings manage [project merge request approval settings](../project/merge_requests/approvals/settings.md)
+at the top-level group level. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
-To view the merge request approval rules for a group:
+To view the merge request approval settings for a group:
 
 1. Go to the top-level group's **Settings > General** page.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.
 1. Select **Save changes**.
+
+Support for group-level settings for merge request approval rules is tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
 ## Related topics
 

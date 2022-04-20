@@ -123,6 +123,10 @@ Using dependency injection to provide values from HAML is ideal when:
   prop-drilling becomes an inconvenience. Prop-drilling when the same prop is passed
   through all components in the hierarchy until the component that is genuinely using it.
 
+Dependency injection can potentially break a child component (either an immediate child or multiple levels deep) if the value declared in the `inject` configuration doesn't have defaults defined and the parent component has not provided the value using the `provide` configuration.
+
+- A [default value](https://vuejs.org/guide/components/provide-inject.html#injection-default-values) might be useful in contexts where it makes sense.
+
 ##### props
 
 If the value from HAML doesn't fit the criteria of dependency injection, use `props`.
@@ -499,7 +503,7 @@ component under test, with the `computed` property, for example). Remember to us
 We should test for events emitted in response to an action in our component. This is used to
 verify the correct events are being fired with the correct arguments.
 
-For any DOM events we should use [`trigger`](https://vue-test-utils.vuejs.org/api/wrapper/#trigger)
+For any DOM events we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
 to fire out event.
 
 ```javascript
@@ -530,7 +534,7 @@ it('should fire the itemClicked event', () => {
 ```
 
 We should verify an event has been fired by asserting against the result of the
-[`emitted()`](https://vue-test-utils.vuejs.org/api/wrapper/#emitted) method.
+[`emitted()`](https://v1.test-utils.vuejs.org/api/wrapper/#emitted) method.
 
 ## Vue.js Expert Role
 

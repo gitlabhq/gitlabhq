@@ -5,10 +5,12 @@ module ContainerRegistry
     include Gitlab::Utils::StrongMemoize
 
     JSON_TYPE = 'application/json'
+    CANCEL_RESPONSE_STATUS_HEADER = 'status'
 
     IMPORT_RESPONSES = {
       200 => :already_imported,
       202 => :ok,
+      400 => :bad_request,
       401 => :unauthorized,
       404 => :not_found,
       409 => :already_being_imported,
@@ -22,6 +24,12 @@ module ContainerRegistry
     def self.supports_gitlab_api?
       with_dummy_client(return_value_if_disabled: false) do |client|
         client.supports_gitlab_api?
+      end
+    end
+
+    def self.deduplicated_size(path)
+      with_dummy_client(token_config: { type: :nested_repositories_token, path: path }) do |client|
+        client.repository_details(path, sizing: :self_with_descendants)['size_bytes']
       end
     end
 
@@ -50,18 +58,38 @@ module ContainerRegistry
       IMPORT_RESPONSES.fetch(response.status, :error)
     end
 
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#cancel-repository-import
+    def cancel_repository_import(path, force: false)
+      response = with_import_token_faraday do |faraday_client|
+        faraday_client.delete(import_url_for(path)) do |req|
+          req.params['force'] = true if force
+        end
+      end
+
+      status = IMPORT_RESPONSES.fetch(response.status, :error)
+      actual_state = response.body[CANCEL_RESPONSE_STATUS_HEADER]
+
+      { status: status, migration_state: actual_state }
+    end
+
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#get-repository-import-status
     def import_status(path)
       with_import_token_faraday do |faraday_client|
-        body_hash = response_body(faraday_client.get(import_url_for(path)))
-        body_hash['status'] || 'error'
+        response = faraday_client.get(import_url_for(path))
+
+        # Temporary solution for https://gitlab.com/gitlab-org/gitlab/-/issues/356085#solutions
+        # this will trigger a `retry_pre_import`
+        break 'pre_import_failed' unless response.success?
+
+        body_hash = response_body(response)
+        body_hash&.fetch('status') || 'error'
       end
     end
 
-    def repository_details(path, with_size: false)
+    def repository_details(path, sizing: nil)
       with_token_faraday do |faraday_client|
         req = faraday_client.get("/gitlab/v1/repositories/#{path}/") do |req|
-          req.params['size'] = 'self' if with_size
+          req.params['size'] = sizing if sizing
         end
 
         break {} unless req.success?

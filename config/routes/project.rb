@@ -247,7 +247,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :starrers, only: [:index]
         resources :forks, only: [:index, :new, :create]
-        resources :group_links, only: [:create, :update, :destroy], constraints: { id: /\d+|:id/ }
+        resources :group_links, only: [:update, :destroy], constraints: { id: /\d+|:id/ }
 
         resource :import, only: [:new, :create, :show]
         resource :avatar, only: [:show, :destroy]

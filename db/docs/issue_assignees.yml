@@ -1,0 +1,9 @@
+---
+table_name: issue_assignees
+classes:
+- IssueAssignee
+feature_categories:
+- team_planning
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/ac5d8fddd6809113e3d43d94c315f993605135e9
+milestone: '9.2'

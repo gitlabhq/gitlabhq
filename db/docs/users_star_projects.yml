@@ -1,0 +1,9 @@
+---
+table_name: users_star_projects
+classes:
+- UsersStarProject
+feature_categories:
+- projects
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/714f7201d3362793d11f33793e5ef6dc83bdd2f0
+milestone: '7.2'

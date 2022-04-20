@@ -85,18 +85,19 @@ RSpec.describe Groups::Crm::OrganizationsController do
   end
 
   describe 'GET #index' do
-    subject do
-      get group_crm_organizations_path(group)
-      response
-    end
+    subject { get group_crm_organizations_path(group) }
 
     it_behaves_like 'ok response with index template if authorized'
   end
 
   describe 'GET #new' do
-    subject do
-      get new_group_crm_organization_path(group)
-    end
+    subject { get new_group_crm_organization_path(group) }
+
+    it_behaves_like 'ok response with index template if authorized'
+  end
+
+  describe 'GET #edit' do
+    subject { get edit_group_crm_organization_path(group, id: 1) }
 
     it_behaves_like 'ok response with index template if authorized'
   end

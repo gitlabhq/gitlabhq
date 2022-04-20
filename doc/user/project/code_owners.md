@@ -124,8 +124,8 @@ Only one CODEOWNERS pattern can match per file path.
 
 ### Organize Code Owners by putting them into sections
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in GitLab 13.2 behind a feature flag, enabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42389) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in GitLab 13.2 [with a flag](../../administration/feature_flags.md) named `sectional_codeowners`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42389) in GitLab 13.4. Feature flag `sectional_codeowners` removed.
 
 You can organize Code Owners by putting them into named sections.
 
@@ -253,6 +253,11 @@ README @group @group/with-nested/subgroup
 # a directory, but not nested deeper. This code matches
 # `docs/index.md` but not `docs/projects/index.md`:
 /docs/* @root-docs
+
+# Include `/**` to specify Code Owners for all subdirectories
+# in a directory. This rule matches `docs/projects/index.md` or 
+# `docs/development/index.md`
+/docs/**/*.md @root-docs
 
 # This code makes matches a `lib` directory nested anywhere in the repository:
 lib/ @lib-owner

@@ -185,6 +185,11 @@ export default {
       required: false,
       default: false,
     },
+    issueId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const store = new Store({
@@ -322,9 +327,12 @@ export default {
         });
     },
 
+    updateFormState(state) {
+      this.store.setFormState(state);
+    },
+
     updateAndShowForm(templates = {}) {
       if (!this.showForm) {
-        this.showForm = true;
         this.store.setFormState({
           title: this.state.titleText,
           description: this.state.descriptionText,
@@ -333,6 +341,7 @@ export default {
           updateLoading: false,
           issuableTemplates: templates,
         });
+        this.showForm = true;
       }
     },
 
@@ -364,6 +373,10 @@ export default {
     },
 
     updateIssuable() {
+      this.store.setFormState({
+        updateLoading: true,
+      });
+
       const {
         store: { formState },
         issueState,
@@ -371,7 +384,9 @@ export default {
       const issuablePayload = issueState.isDirty
         ? { ...formState, issue_type: issueState.issueType }
         : formState;
+
       this.clearFlash();
+
       return this.service
         .updateIssuable(issuablePayload)
         .then((res) => res.data)
@@ -426,7 +441,7 @@ export default {
 
     clearFlash() {
       if (this.flashContainer) {
-        this.flashContainer.style.display = 'none';
+        this.flashContainer.close();
         this.flashContainer = null;
       }
     },
@@ -468,6 +483,7 @@ export default {
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"
+        @updateForm="updateFormState"
       />
     </div>
     <div v-else>
@@ -534,6 +550,7 @@ export default {
 
       <component
         :is="descriptionComponent"
+        :issue-id="issueId"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"
@@ -545,6 +562,7 @@ export default {
         @taskListUpdateStarted="taskListUpdateStarted"
         @taskListUpdateSucceeded="taskListUpdateSucceeded"
         @taskListUpdateFailed="taskListUpdateFailed"
+        @updateDescription="state.descriptionHtml = $event"
       />
 
       <edited-component

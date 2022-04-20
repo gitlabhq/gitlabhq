@@ -1,0 +1,9 @@
+---
+table_name: resource_label_events
+classes:
+- ResourceLabelEvent
+feature_categories:
+- planning_analytics
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6697
+milestone: '11.2'

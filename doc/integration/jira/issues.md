@@ -106,7 +106,7 @@ sorts by **Created date** by default, with the newest issues listed at the top:
 
 ![Jira issues integration enabled](img/open_jira_issues_list_v14_6.png)
 
-- To display the most recently updated issues first, select **Last updated**.
+- To display the most recently updated issues first, select **Updated date**.
 - You can [search and filter](#search-and-filter-the-issues-list) the issues list.
 - In GitLab [versions 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/299832),
   you can select an issue from the list to view it in GitLab:

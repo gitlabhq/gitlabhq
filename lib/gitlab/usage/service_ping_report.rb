@@ -18,16 +18,11 @@ module Gitlab
         private
 
         def with_instrumentation_classes(old_payload, output_method)
-          if Feature.enabled?(:merge_service_ping_instrumented_metrics, default_enabled: :yaml)
+          instrumented_metrics_key_paths = Gitlab::Usage::ServicePing::PayloadKeysProcessor.new(old_payload).missing_instrumented_metrics_key_paths
 
-            instrumented_metrics_key_paths = Gitlab::Usage::ServicePing::PayloadKeysProcessor.new(old_payload).missing_instrumented_metrics_key_paths
+          instrumented_payload = Gitlab::Usage::ServicePing::InstrumentedPayload.new(instrumented_metrics_key_paths, output_method).build
 
-            instrumented_payload = Gitlab::Usage::ServicePing::InstrumentedPayload.new(instrumented_metrics_key_paths, output_method).build
-
-            old_payload.deep_merge(instrumented_payload)
-          else
-            old_payload
-          end
+          old_payload.deep_merge(instrumented_payload)
         end
 
         def all_metrics_values(cached)

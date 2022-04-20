@@ -1,0 +1,9 @@
+---
+table_name: user_callouts
+classes:
+- Users::Callout
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/648826721f13ee4309a11638e538d96006648b39
+milestone: '10.5'

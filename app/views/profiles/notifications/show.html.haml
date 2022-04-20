@@ -3,16 +3,11 @@
 
 %div
   - if @user.errors.any?
-    .gl-alert.gl-alert-danger.gl-my-5
-      .gl-alert-container
-        %button.js-close.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon{ type: 'button', 'aria-label' => _('Dismiss') }
-          = sprite_icon('close', css_class: 'gl-icon')
-        = sprite_icon('error', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-        .gl-alert-content
-          .gl-alert-body
-            %ul
-              - @user.errors.full_messages.each do |msg|
-                %li= msg
+    = render Pajamas::AlertComponent.new(variant: :danger) do
+      .gl-alert-body
+        %ul
+          - @user.errors.full_messages.each do |msg|
+            %li= msg
 
   = hidden_field_tag :notification_type, 'global'
   .row.gl-mt-3
@@ -27,7 +22,7 @@
       %h5.gl-mt-0
         = _('Global notification settings')
 
-      = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications gl-mt-3' } do |f|
+      = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications gl-mt-3' } do |f|
         = render_if_exists 'profiles/notifications/email_settings', form: f
 
       = label_tag :global_notification_level, "Global notification level", class: "label-bold"
@@ -39,10 +34,9 @@
 
       .clearfix
 
-      = form_for @user, url: profile_notifications_path, method: :put do |f|
-        %label{ for: 'user_notified_of_own_activity' }
-          = f.check_box :notified_of_own_activity
-          %span= _('Receive notifications about your own activity')
+      = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put do |f|
+        .form-group
+          = f.gitlab_ui_checkbox_component :notified_of_own_activity, _('Receive notifications about your own activity')
 
       %hr
       %h5

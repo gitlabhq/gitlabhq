@@ -13,15 +13,20 @@ describe('EmptyStateComponent', () => {
   const findLink = () => wrapper.findComponent(GlLink);
 
   beforeEach(() => {
-    wrapper = shallowMount(EmptyState, { propsData, stubs: { GlEmptyState, GlLink } });
+    wrapper = shallowMount(EmptyState, { propsData });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   it('should render content', () => {
-    expect(findEmptyState().exists()).toBe(true);
-    expect(wrapper.text()).toContain('Get started with Terraform');
+    expect(findEmptyState().props('title')).toBe(
+      "Your project doesn't have any Terraform state files",
+    );
   });
 
-  it('should have a link to the GitLab managed Terraform States docs', () => {
+  it('should have a link to the GitLab managed Terraform states docs', () => {
     expect(findLink().attributes('href')).toBe(docsUrl);
   });
 });

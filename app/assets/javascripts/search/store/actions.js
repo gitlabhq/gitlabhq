@@ -18,31 +18,35 @@ export const fetchGroups = ({ commit }, search) => {
     });
 };
 
-export const fetchProjects = ({ commit, state }, search) => {
+export const fetchProjects = ({ commit, state }, search, emptyCallback = () => {}) => {
   commit(types.REQUEST_PROJECTS);
   const groupId = state.query?.group_id;
-  const callback = (data) => {
-    if (data) {
-      commit(types.RECEIVE_PROJECTS_SUCCESS, data);
-    } else {
-      createFlash({ message: __('There was an error fetching projects') });
-      commit(types.RECEIVE_PROJECTS_ERROR);
-    }
+
+  const handleCatch = () => {
+    createFlash({ message: __('There was an error fetching projects') });
+    commit(types.RECEIVE_PROJECTS_ERROR);
+  };
+  const handleSuccess = ({ data }) => {
+    commit(types.RECEIVE_PROJECTS_SUCCESS, data);
   };
 
   if (groupId) {
-    // TODO (https://gitlab.com/gitlab-org/gitlab/-/issues/323331): For errors `createFlash` is called twice; in `callback` and in `Api.groupProjects`
     Api.groupProjects(
       groupId,
       search,
-      { order_by: 'similarity', with_shared: false, include_subgroups: true },
-      callback,
-    );
+      {
+        order_by: 'similarity',
+        with_shared: false,
+        include_subgroups: true,
+      },
+      emptyCallback,
+      true,
+    )
+      .then(handleSuccess)
+      .catch(handleCatch);
   } else {
     // The .catch() is due to the API method not handling a rejection properly
-    Api.projects(search, { order_by: 'similarity' }, callback).catch(() => {
-      callback();
-    });
+    Api.projects(search, { order_by: 'similarity' }).then(handleSuccess).catch(handleCatch);
   }
 };
 

@@ -33,7 +33,7 @@ module Gitlab
         max_include_depth = doc.attributes.fetch('max-include-depth').to_i
 
         return false if max_include_depth < 1
-        return false if target_uri?(target)
+        return false if target_http?(target)
         return false if included.size >= max_includes
 
         true

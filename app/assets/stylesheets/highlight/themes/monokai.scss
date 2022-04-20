@@ -89,6 +89,11 @@ $monokai-gd: #f92672;
 $monokai-gi: #a6e22e;
 $monokai-gh: #75715e;
 
+:root {
+  --default-diff-color-deletion: #c87872;
+  --default-diff-color-addition: #678528;
+}
+
 .code.monokai {
   // Line numbers
   .file-line-num {

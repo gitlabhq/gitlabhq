@@ -74,6 +74,10 @@ RSpec.describe ClustersHelper do
       expect(subject[:add_cluster_path]).to eq("#{project_path(project)}/-/clusters/connect")
     end
 
+    it 'displays create cluster path' do
+      expect(subject[:new_cluster_docs_path]).to eq("#{project_path(project)}/-/clusters/new_cluster_docs")
+    end
+
     it 'displays project default branch' do
       expect(subject[:default_branch_name]).to eq(project.default_branch)
     end

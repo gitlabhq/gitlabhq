@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-properties, babel/camelcase,
+/* eslint-disable no-restricted-properties, camelcase,
 no-unused-expressions, default-case,
 consistent-return, no-param-reassign,
 no-shadow, no-useless-escape,
@@ -143,7 +143,7 @@ export default class Notes {
     // resolve a discussion
     this.$wrapperEl.on('click', '.js-comment-resolve-button', this.postComment);
     // remove a note (in general)
-    this.$wrapperEl.on('click', '.js-note-delete', this.removeNote);
+    this.$wrapperEl.on('ajax:success', '.js-note-delete', this.removeNote);
     // delete note attachment
     this.$wrapperEl.on('click', '.js-note-attachment-delete', this.removeAttachment);
     // update the file name when an attachment is selected
@@ -188,7 +188,7 @@ export default class Notes {
   cleanBinding() {
     this.$wrapperEl.off('click', '.js-note-edit');
     this.$wrapperEl.off('click', '.note-edit-cancel');
-    this.$wrapperEl.off('click', '.js-note-delete');
+    this.$wrapperEl.off('ajax:success', '.js-note-delete');
     this.$wrapperEl.off('click', '.js-note-attachment-delete');
     this.$wrapperEl.off('click', '.js-discussion-reply-button');
     this.$wrapperEl.off('click', '.js-add-diff-note-button');
@@ -827,50 +827,53 @@ export default class Notes {
    */
   removeNote(e) {
     const $note = $(e.currentTarget).closest('.note');
-    const noteElId = $note.attr('id');
-    $(`.note[id="${noteElId}"]`).each((i, el) => {
-      // A same note appears in the "Discussion" and in the "Changes" tab, we have
-      // to remove all. Using $('.note[id='noteId']') ensure we get all the notes,
-      // where $('#noteId') would return only one.
-      const $note = $(el);
-      const $notes = $note.closest('.discussion-notes');
-      const discussionId = $('.notes', $notes).data('discussionId');
 
-      $note.remove();
+    $note.one('ajax:complete', () => {
+      const noteElId = $note.attr('id');
+      $(`.note[id="${noteElId}"]`).each((i, el) => {
+        // A same note appears in the "Discussion" and in the "Changes" tab, we have
+        // to remove all. Using $('.note[id='noteId']') ensure we get all the notes,
+        // where $('#noteId') would return only one.
+        const $note = $(el);
+        const $notes = $note.closest('.discussion-notes');
+        const discussionId = $('.notes', $notes).data('discussionId');
 
-      // check if this is the last note for this line
-      if ($notes.find('.note').length === 0) {
-        const notesTr = $notes.closest('tr');
+        $note.remove();
 
-        // "Discussions" tab
-        $notes.closest('.timeline-entry').remove();
+        // check if this is the last note for this line
+        if ($notes.find('.note').length === 0) {
+          const notesTr = $notes.closest('tr');
 
-        $(`.js-diff-avatars-${discussionId}`).trigger('remove.vue');
+          // "Discussions" tab
+          $notes.closest('.timeline-entry').remove();
 
-        // The notes tr can contain multiple lists of notes, like on the parallel diff
-        // notesTr does not exist for image diffs
-        if (notesTr.find('.discussion-notes').length > 1 || notesTr.length === 0) {
-          const $diffFile = $notes.closest('.diff-file');
-          if ($diffFile.length > 0) {
-            const removeBadgeEvent = new CustomEvent('removeBadge.imageDiff', {
-              detail: {
-                // badgeNumber's start with 1 and index starts with 0
-                badgeNumber: $notes.index() + 1,
-              },
-            });
+          $(`.js-diff-avatars-${discussionId}`).trigger('remove.vue');
 
-            $diffFile[0].dispatchEvent(removeBadgeEvent);
+          // The notes tr can contain multiple lists of notes, like on the parallel diff
+          // notesTr does not exist for image diffs
+          if (notesTr.find('.discussion-notes').length > 1 || notesTr.length === 0) {
+            const $diffFile = $notes.closest('.diff-file');
+            if ($diffFile.length > 0) {
+              const removeBadgeEvent = new CustomEvent('removeBadge.imageDiff', {
+                detail: {
+                  // badgeNumber's start with 1 and index starts with 0
+                  badgeNumber: $notes.index() + 1,
+                },
+              });
+
+              $diffFile[0].dispatchEvent(removeBadgeEvent);
+            }
+
+            $notes.remove();
+          } else if (notesTr.length > 0) {
+            notesTr.remove();
           }
-
-          $notes.remove();
-        } else if (notesTr.length > 0) {
-          notesTr.remove();
         }
-      }
-    });
+      });
 
-    Notes.checkMergeRequestStatus();
-    return this.updateNotesCount(-1);
+      Notes.checkMergeRequestStatus();
+      return this.updateNotesCount(-1);
+    });
   }
 
   /**

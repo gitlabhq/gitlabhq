@@ -1,0 +1,9 @@
+---
+table_name: project_statistics
+classes:
+- ProjectStatistics
+feature_categories:
+- source_code_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3ef4f74b1acc9399db320b53dffc592542de0126
+milestone: '9.0'

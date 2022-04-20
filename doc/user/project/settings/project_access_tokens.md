@@ -12,17 +12,18 @@ type: reference, howto
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5. Default prefix added.
 
-You can use a project access token to authenticate:
+Project access tokens are similar to passwords, except you can [limit access to resources](#scopes-for-a-project-access-token),
+select a limited role, and provide an expiry date.
+
+Use a project access token to authenticate:
 
 - With the [GitLab API](../../../api/index.md#personalprojectgroup-access-tokens).
-- With Git, when using HTTP Basic Authentication.
-
-After you configure a project access token, you don't need a password when you authenticate.
-Instead, you can enter any non-blank value.
+- With Git, when using HTTP Basic Authentication, use:
+  - Any non-blank value as a username.
+  - The project access token as the password.
 
 Project access tokens are similar to [group access tokens](../../group/settings/group_access_tokens.md)
-and [personal access tokens](../../profile/personal_access_tokens.md), except they are
-associated with a project rather than a group or user.
+and [personal access tokens](../../profile/personal_access_tokens.md).
 
 In self-managed instances, project access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) as personal access tokens if the limit is set.
 
@@ -34,6 +35,8 @@ You can use project access tokens:
     [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
   - Consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to
     lower potential abuse.
+
+You cannot use project access tokens to create other access tokens.
 
 Project access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.

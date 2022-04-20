@@ -32,7 +32,7 @@ To fork an existing project in GitLab:
    It must be unique in the namespace.
 1. Optional. Add a **Project description**.
 1. Select the **Visibility level** for your fork. For more information about
-   visibility levels, read [Project and group visibility](../../../public_access/public_access.md).
+   visibility levels, read [Project and group visibility](../../public_access.md).
 1. Select **Fork project**.
 
 GitLab creates your fork, and redirects you to the new fork's page.

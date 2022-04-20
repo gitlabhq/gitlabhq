@@ -86,6 +86,41 @@ RSpec.describe QA::Specs::Runner do
       end
     end
 
+    context 'when test_metadata_only is set as an option' do
+      let(:rspec_config) { instance_double('RSpec::Core::Configuration') }
+      let(:output_file) { Pathname.new('/root/tmp/test-metadata.json') }
+
+      before do
+        QA::Runtime::Scenario.define(:test_metadata_only, true)
+        allow(RSpec).to receive(:configure).and_yield(rspec_config)
+        allow(rspec_config).to receive(:add_formatter)
+        allow(rspec_config).to receive(:fail_if_no_examples=)
+      end
+
+      it 'sets the `--dry-run` flag' do
+        expect_rspec_runner_arguments(['--dry-run', '--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS], [$stderr, anything])
+
+        subject.perform
+      end
+
+      it 'configures json formatted output to file' do
+        allow(QA::Runtime::Path).to receive(:qa_root).and_return('/root')
+
+        expect(rspec_config).to receive(:add_formatter)
+          .with(QA::Support::JsonFormatter, output_file)
+        expect(rspec_config).to receive(:fail_if_no_examples=)
+          .with(true)
+
+        allow(RSpec::Core::Runner).to receive(:run).and_return(0)
+
+        subject.perform
+      end
+
+      after do
+        QA::Runtime::Scenario.attributes.delete(:test_metadata_only)
+      end
+    end
+
     context 'when tags are set' do
       subject { described_class.new.tap { |runner| runner.tags = %i[orchestrated github] } }
 

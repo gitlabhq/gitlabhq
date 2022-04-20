@@ -38,12 +38,17 @@ describe('Code navigation app component', () => {
     const codeNavigationPath = 'code/nav/path.js';
     const path = 'blob/path.js';
     const definitionPathPrefix = 'path/prefix';
+    const wrapTextNodes = true;
 
-    factory({}, { codeNavigationPath, blobPath: path, pathPrefix: definitionPathPrefix });
+    factory(
+      {},
+      { codeNavigationPath, blobPath: path, pathPrefix: definitionPathPrefix, wrapTextNodes },
+    );
 
     expect(setInitialData).toHaveBeenCalledWith(expect.anything(), {
       blobs: [{ codeNavigationPath, path }],
       definitionPathPrefix,
+      wrapTextNodes,
     });
   });
 

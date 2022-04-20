@@ -6,106 +6,10 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 221
-Capybara/VisibilityMatcher:
-  Enabled: false
-
 # Offense count: 1
 Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
-
-# Offense count: 2270
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: with_first_argument, with_fixed_indentation
-Layout/ArgumentAlignment:
-  Enabled: false
-
-# Offense count: 771
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_brackets
-Layout/FirstArrayElementIndentation:
-  Enabled: false
-
-# Offense count: 1684
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_braces
-Layout/FirstHashElementIndentation:
-  Enabled: false
-
-# Offense count: 3233
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleStyles, EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle.
-# SupportedHashRocketStyles: key, separator, table
-# SupportedColonStyles: key, separator, table
-# SupportedLastArgumentHashStyles: always_inspect, always_ignore, ignore_implicit, ignore_explicit
-Layout/HashAlignment:
-  Enabled: false
-
-# Offense count: 14544
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
-# URISchemes: http, https
-Layout/LineLength:
-  Max: 1313
-
-# Offense count: 170
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: aligned, indented
-Layout/MultilineOperationIndentation:
-  Enabled: false
-
-# Offense count: 53
-# Cop supports --auto-correct.
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: false
-
-# Offense count: 754
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: require_no_space, require_space
-Layout/SpaceInLambdaLiteral:
-  Enabled: false
-
-# Offense count: 1209
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceInsideBlockBraces:
-  Enabled: false
-  EnforcedStyle: space
-
-# Offense count: 585
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/SpaceInsideParens:
-  Enabled: false
-
-# Offense count: 18
-Lint/BinaryOperatorWithIdenticalOperands:
-  Exclude:
-    - 'ee/spec/lib/ee/gitlab/application_context_spec.rb'
-    - 'spec/helpers/visibility_level_helper_spec.rb'
-    - 'spec/lib/gitlab/conan_token_spec.rb'
-    - 'spec/lib/gitlab/git/conflict/parser_spec.rb'
-    - 'spec/lib/gitlab/graphql/lazy_spec.rb'
-    - 'spec/models/ci/build_trace_chunk_spec.rb'
-    - 'spec/models/clusters/platforms/kubernetes_spec.rb'
-    - 'spec/models/concerns/where_composite_spec.rb'
-    - 'spec/models/metrics/dashboard/annotation_spec.rb'
-    - 'spec/models/repository_spec.rb'
-    - 'spec/models/ssh_host_key_spec.rb'
-    - 'spec/tooling/danger/sidekiq_queues_spec.rb'
-
-# Offense count: 84
-Lint/ConstantDefinitionInBlock:
-  Enabled: false
 
 # Offense count: 2
 # Configuration parameters: AllowComments.
@@ -113,11 +17,6 @@ Lint/EmptyFile:
   Exclude:
     - 'db/seeds.rb'
     - 'ee/db/geo/seeds.rb'
-
-# Offense count: 208
-# Configuration parameters: MaximumRangeSize.
-Lint/MissingCopEnableDirective:
-  Enabled: false
 
 # Offense count: 13
 Lint/MixedRegexpCaptureTypes:
@@ -141,49 +40,11 @@ Lint/MixedRegexpCaptureTypes:
 Lint/RedundantCopDisableDirective:
   Enabled: false
 
-# Offense count: 1
-Lint/SelfAssignment:
-  Exclude:
-    - 'spec/lib/gitlab/search_context/builder_spec.rb'
-
-# Offense count: 3
-Lint/StructNewOverride:
-  Exclude:
-    - 'app/presenters/sentry_error_presenter.rb'
-    - 'app/serializers/environment_serializer.rb'
-    - 'lib/gitlab/ci/pipeline/duration.rb'
-
 # Offense count: 22
 # Cop supports --auto-correct.
 # Configuration parameters: AllowComments.
 Lint/UselessMethodDefinition:
   Enabled: false
-
-# Offense count: 5
-# Configuration parameters: IgnoredMethods.
-Metrics/AbcSize:
-  Max: 61
-
-# Offense count: 13
-# Configuration parameters: IgnoredMethods.
-Metrics/CyclomaticComplexity:
-  Max: 25
-
-# Offense count: 14
-# Configuration parameters: IgnoredMethods.
-Metrics/PerceivedComplexity:
-  Max: 25
-
-# Offense count: 11
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: lowercase, uppercase
-Naming/HeredocDelimiterCase:
-  Exclude:
-    - 'spec/lib/gitlab/diff/parser_spec.rb'
-    - 'spec/lib/json_web_token/rsa_token_spec.rb'
-    - 'spec/models/commit_spec.rb'
-    - 'spec/support/helpers/repo_helpers.rb'
-    - 'spec/support/helpers/seed_repo.rb'
 
 # Offense count: 321
 # Configuration parameters: ForbiddenDelimiters.
@@ -218,60 +79,15 @@ Performance/CollectionLiteralInLoop:
 Performance/ConstantRegexp:
   Enabled: false
 
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: SafeMultiline.
-Performance/DeletePrefix:
-  Exclude:
-    - 'app/helpers/submodule_helper.rb'
-    - 'app/workers/concerns/application_worker.rb'
-    - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
-    - 'lib/banzai/filter/repository_link_filter.rb'
-    - 'lib/gitlab/auth/ldap/dn.rb'
-    - 'lib/gitlab/gfm/uploads_rewriter.rb'
-    - 'lib/gitlab/git/ref.rb'
-    - 'lib/gitlab/project_template.rb'
-    - 'lib/gitlab/setup_helper.rb'
-    - 'lib/gitlab/time_tracking_formatter.rb'
-    - 'spec/controllers/projects/artifacts_controller_spec.rb'
-    - 'spec/lib/gitlab/gfm/uploads_rewriter_spec.rb'
-    - 'spec/support/helpers/test_env.rb'
-
 # Offense count: 121
 Performance/MethodObjectAsBlock:
   Enabled: false
-
-# Offense count: 18
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect.
-Performance/StringInclude:
-  Exclude:
-    - 'app/models/snippet_repository.rb'
-    - 'config/initializers/macos.rb'
-    - 'config/spring.rb'
-    - 'ee/app/models/ee/container_registry/event.rb'
-    - 'ee/lib/gitlab/auth/smartcard/certificate.rb'
-    - 'lib/gitlab/database/migration_helpers.rb'
-    - 'lib/kramdown/parser/atlassian_document_format.rb'
-    - 'lib/prometheus/pid_provider.rb'
-    - 'qa/qa/ee/page/merge_request/show.rb'
-    - 'qa/qa/specs/runner.rb'
-    - 'spec/features/projects/jobs_spec.rb'
-    - 'spec/spec_helper.rb'
-    - 'spec/support_specs/helpers/active_record/query_recorder_spec.rb'
 
 # Offense count: 15209
 # Configuration parameters: Prefixes.
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Enabled: false
-
-# Offense count: 4
-# Configuration parameters: CustomIncludeMethods.
-RSpec/EmptyExampleGroup:
-  Exclude:
-    - 'ee/spec/services/personal_access_tokens/revoke_invalid_tokens_spec.rb'
-    - 'spec/services/projects/prometheus/alerts/notify_service_spec.rb'
 
 # Offense count: 1428
 # Cop supports --auto-correct.
@@ -311,26 +127,6 @@ RSpec/ReturnFromStub:
 RSpec/ScatteredLet:
   Enabled: false
 
-# Offense count: 10
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: symbols, strings
-RSpec/VariableDefinition:
-  Exclude:
-    - 'spec/initializers/mail_encoding_patch_spec.rb'
-
-# Offense count: 24
-# Configuration parameters: EnforcedStyle, IgnoredPatterns.
-# SupportedStyles: snake_case, camelCase
-RSpec/VariableName:
-  Exclude:
-    - 'spec/features/projects/import_export/import_file_spec.rb'
-    - 'spec/features/task_lists_spec.rb'
-    - 'spec/initializers/mail_encoding_patch_spec.rb'
-    - 'spec/models/board_spec.rb'
-    - 'spec/support/shared_contexts/url_shared_context.rb'
-    - 'spec/support/shared_examples/requests/api/graphql/group_and_project_boards_query_shared_examples.rb'
-    - 'spec/support/shared_examples/services/boards/boards_list_service_shared_examples.rb'
-
 # Offense count: 26
 # Cop supports --auto-correct.
 # Configuration parameters: Include.
@@ -353,13 +149,6 @@ Rails/ApplicationController:
     - 'spec/controllers/concerns/continue_params_spec.rb'
     - 'spec/lib/marginalia_spec.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Rails/BelongsTo:
-  Exclude:
-    - 'app/models/deployment.rb'
-    - 'app/models/environment.rb'
-
 # Offense count: 155
 # Cop supports --auto-correct.
 Rails/ContentTag:
@@ -377,22 +166,6 @@ Rails/CreateTableWithTimestamps:
 Rails/FilePath:
   Enabled: false
 
-# Offense count: 15
-# Cop supports --auto-correct.
-Rails/FindById:
-  Exclude:
-    - 'app/controllers/projects/pipelines_controller.rb'
-    - 'app/services/concerns/deploy_token_methods.rb'
-    - 'ee/app/controllers/ee/groups/group_members_controller.rb'
-    - 'ee/lib/api/audit_events.rb'
-    - 'ee/lib/api/merge_request_approval_rules.rb'
-    - 'ee/lib/ee/api/groups.rb'
-    - 'ee/lib/ee/api/projects.rb'
-    - 'ee/spec/finders/audit_log_finder_spec.rb'
-    - 'lib/api/snippets.rb'
-    - 'spec/finders/concerns/finder_methods_spec.rb'
-    - 'spec/finders/concerns/finder_with_cross_project_access_spec.rb'
-
 # Offense count: 354
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
@@ -409,11 +182,6 @@ Rails/HelperInstanceVariable:
 # Cop supports --auto-correct.
 Rails/IndexWith:
   Enabled: false
-
-# Offense count: 1
-Rails/Inquiry:
-  Exclude:
-    - 'spec/helpers/labels_helper_spec.rb'
 
 # Offense count: 118
 # Configuration parameters: Include.
@@ -463,11 +231,6 @@ Rails/RakeEnvironment:
 Rails/RedundantForeignKey:
   Enabled: false
 
-# Offense count: 1
-Rails/RenderInline:
-  Exclude:
-    - 'ee/app/controllers/sitemap_controller.rb'
-
 # Offense count: 1144
 # Configuration parameters: ForbiddenMethods, AllowedMethods.
 # ForbiddenMethods: decrement!, decrement_counter, increment!, increment_counter, insert, insert!, insert_all, insert_all!, toggle!, touch, touch_all, update_all, update_attribute, update_column, update_columns, update_counters, upsert, upsert_all
@@ -493,22 +256,6 @@ Rails/WhereExists:
 Style/AccessorGrouping:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-Style/ArrayCoercion:
-  Exclude:
-    - 'app/controllers/admin/ci/variables_controller.rb'
-    - 'app/controllers/groups/variables_controller.rb'
-    - 'app/controllers/projects/variables_controller.rb'
-    - 'db/migrate/20190620105427_change_null_private_profile_to_false.rb'
-    - 'db/post_migrate/20190812070645_migrate_private_profile_nulls.rb'
-    - 'db/post_migrate/20200311130802_schedule_populate_user_highest_roles_table.rb'
-    - 'db/post_migrate/20200805152108_migrate_null_external_diff_store_to_local_value.rb'
-    - 'db/post_migrate/20200806173633_migrate_null_package_files_file_store_to_local_value.rb'
-    - 'ee/app/services/geo/repository_verification_secondary_service.rb'
-    - 'ee/lib/ee/banzai/pipeline/gfm_pipeline.rb'
-    - 'spec/support/helpers/lfs_http_helpers.rb'
-
 # Offense count: 188
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -516,41 +263,10 @@ Style/ArrayCoercion:
 Style/BarePercentLiterals:
   Enabled: false
 
-# Offense count: 6
-# Cop supports --auto-correct.
-Style/BisectedAttrAccessor:
-  Exclude:
-    - 'lib/system_check/base_check.rb'
-    - 'qa/qa/resource/api_fabricator.rb'
-
 # Offense count: 42
 # Cop supports --auto-correct.
 Style/CaseLikeIf:
   Enabled: false
-
-# Offense count: 13
-Style/CombinableLoops:
-  Exclude:
-    - 'ee/db/fixtures/development/30_customizable_cycle_analytics.rb'
-    - 'ee/lib/gitlab/audit/events/preloader.rb'
-    - 'ee/spec/finders/snippets_finder_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/remove_duplicate_cs_findings_spec.rb'
-    - 'spec/features/merge_request/user_suggests_changes_on_diff_spec.rb'
-    - 'spec/finders/packages/group_packages_finder_spec.rb'
-    - 'spec/migrations/cleanup_optimistic_locking_nulls_pt2_fixed_spec.rb'
-    - 'spec/migrations/cleanup_optimistic_locking_nulls_spec.rb'
-    - 'spec/requests/api/members_spec.rb'
-    - 'spec/support/shared_examples/features/protected_branches_access_control_ce_shared_examples.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/EachWithObject:
-  Exclude:
-    - 'lib/expand_variables.rb'
-    - 'lib/gitlab/ci/ansi2html.rb'
-    - 'lib/gitlab/hook_data/issuable_builder.rb'
-    - 'lib/gitlab/i18n/po_linter.rb'
-    - 'lib/gitlab/import_export/members_mapper.rb'
 
 # Offense count: 55
 # Cop supports --auto-correct.
@@ -565,13 +281,6 @@ Style/EmptyElse:
 # SupportedStyles: compact, expanded
 Style/EmptyMethod:
   Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/ExpandPathArguments:
-  Exclude:
-    - 'cable/config.ru'
-    - 'config.ru'
 
 # Offense count: 118
 # Cop supports --auto-correct.
@@ -628,15 +337,6 @@ Style/Lambda:
 Style/MissingRespondToMissing:
   Enabled: false
 
-# Offense count: 5
-Style/MixinUsage:
-  Exclude:
-    - 'spec/factories/ci/builds.rb'
-    - 'spec/factories/ci/job_artifacts.rb'
-    - 'spec/factories/lfs_objects.rb'
-    - 'spec/factories/notes.rb'
-    - 'spec/lib/gitlab/import_export/version_checker_spec.rb'
-
 # Offense count: 35
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, MinBodyLength.
@@ -686,13 +386,6 @@ Style/SingleArgumentDig:
 # Configuration parameters: AllowModifier.
 Style/SoleNestedConditional:
   Enabled: false
-
-# Offense count: 120
-# Cop supports --auto-correct.
-# Configuration parameters: .
-# SupportedStyles: use_perl_names, use_english_names
-Style/SpecialGlobalVars:
-  EnforcedStyle: use_perl_names
 
 # Offense count: 562
 # Cop supports --auto-correct.

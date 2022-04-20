@@ -12,11 +12,9 @@
 = render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
 
 - if can?(current_user, :read_issue, @project) && @milestone.total_issues_count == 0
-  = render 'shared/global_alert',
-    variant: :info,
-    dismissible: false,
+  = render Pajamas::AlertComponent.new(dismissible: false,
     alert_data: { testid: 'no-issues-alert' },
-    alert_class: 'gl-mt-3 gl-mb-5' do
+    alert_class: 'gl-mt-3 gl-mb-5') do
     .gl-alert-body
       = _('Assign some issues to this milestone.')
 - else

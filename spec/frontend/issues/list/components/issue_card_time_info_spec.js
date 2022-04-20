@@ -1,10 +1,11 @@
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
+import { IssuableStatus } from '~/issues/constants';
 import IssueCardTimeInfo from '~/issues/list/components/issue_card_time_info.vue';
 
 describe('CE IssueCardTimeInfo component', () => {
-  useFakeDate(2020, 11, 11);
+  useFakeDate(2020, 11, 11); // 2020 Dec 11
 
   let wrapper;
 
@@ -24,7 +25,7 @@ describe('CE IssueCardTimeInfo component', () => {
   const findDueDate = () => wrapper.find('[data-testid="issuable-due-date"]');
 
   const mountComponent = ({
-    closedAt = null,
+    state = IssuableStatus.Open,
     dueDate = issue.dueDate,
     milestoneDueDate = issue.milestone.dueDate,
     milestoneStartDate = issue.milestone.startDate,
@@ -38,7 +39,7 @@ describe('CE IssueCardTimeInfo component', () => {
             dueDate: milestoneDueDate,
             startDate: milestoneStartDate,
           },
-          closedAt,
+          state,
           dueDate,
         },
       },
@@ -91,7 +92,7 @@ describe('CE IssueCardTimeInfo component', () => {
     describe('when in the past', () => {
       describe('when issue is open', () => {
         it('renders in red', () => {
-          wrapper = mountComponent({ dueDate: new Date('2020-10-10') });
+          wrapper = mountComponent({ dueDate: '2020-10-10' });
 
           expect(findDueDate().classes()).toContain('gl-text-red-500');
         });
@@ -100,8 +101,8 @@ describe('CE IssueCardTimeInfo component', () => {
       describe('when issue is closed', () => {
         it('does not render in red', () => {
           wrapper = mountComponent({
-            dueDate: new Date('2020-10-10'),
-            closedAt: '2020-09-05T13:06:25Z',
+            dueDate: '2020-10-10',
+            state: IssuableStatus.Closed,
           });
 
           expect(findDueDate().classes()).not.toContain('gl-text-red-500');

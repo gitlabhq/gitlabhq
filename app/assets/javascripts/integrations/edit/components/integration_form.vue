@@ -4,7 +4,6 @@ import axios from 'axios';
 import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
@@ -18,8 +17,6 @@ import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import ConfirmationModal from './confirmation_modal.vue';
 import DynamicField from './dynamic_field.vue';
-import JiraIssuesFields from './jira_issues_fields.vue';
-import JiraTriggerFields from './jira_trigger_fields.vue';
 import OverrideDropdown from './override_dropdown.vue';
 import ResetConfirmationModal from './reset_confirmation_modal.vue';
 import TriggerFields from './trigger_fields.vue';
@@ -29,8 +26,6 @@ export default {
   components: {
     OverrideDropdown,
     ActiveCheckbox,
-    JiraTriggerFields,
-    JiraIssuesFields,
     TriggerFields,
     DynamicField,
     ConfirmationModal,
@@ -54,12 +49,6 @@ export default {
     GlModal: GlModalDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
-  provide() {
-    return {
-      hasSections: this.hasSections,
-    };
-  },
   inject: {
     helpHtml: {
       default: '',
@@ -80,9 +69,6 @@ export default {
     isEditable() {
       return this.propsSource.editable;
     },
-    isJira() {
-      return this.propsSource.type === 'jira';
-    },
     isInstanceOrGroupLevel() {
       return (
         this.customState.integrationLevel === integrationLevels.INSTANCE ||
@@ -98,14 +84,11 @@ export default {
     disableButtons() {
       return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
-    sectionsEnabled() {
-      return this.glFeatures.integrationFormSections;
-    },
     hasSections() {
-      return this.sectionsEnabled && this.customState.sections.length !== 0;
+      return this.customState.sections.length !== 0;
     },
     fieldsWithoutSection() {
-      return this.sectionsEnabled
+      return this.hasSections
         ? this.propsSource.fields.filter((field) => !field.section)
         : this.propsSource.fields;
     },
@@ -184,6 +167,9 @@ export default {
       this.integrationActive = integrationActive;
     },
   },
+  descriptionHtmlConfig: {
+    ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
+  },
   helpHtmlConfig: {
     ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
     ADD_TAGS: ['use'], // to support icon SVGs
@@ -229,7 +215,7 @@ export default {
         <div class="row">
           <div class="col-lg-4">
             <h4 class="gl-mt-0">{{ section.title }}</h4>
-            <p v-safe-html="section.description"></p>
+            <p v-safe-html:[$options.descriptionHtmlConfig]="section.description"></p>
           </div>
 
           <div class="col-lg-8">
@@ -257,14 +243,8 @@ export default {
           :key="`${currentKey}-active-checkbox`"
           @toggle-integration-active="onToggleIntegrationState"
         />
-        <jira-trigger-fields
-          v-if="isJira && !hasSections"
-          :key="`${currentKey}-jira-trigger-fields`"
-          v-bind="propsSource.triggerFieldsProps"
-          :is-validated="isValidated"
-        />
         <trigger-fields
-          v-else-if="propsSource.triggerEvents.length && !hasSections"
+          v-if="propsSource.triggerEvents.length && !hasSections"
           :key="`${currentKey}-trigger-fields`"
           :events="propsSource.triggerEvents"
           :type="propsSource.type"
@@ -274,13 +254,6 @@ export default {
           :key="`${currentKey}-${field.name}`"
           v-bind="field"
           :is-validated="isValidated"
-        />
-        <jira-issues-fields
-          v-if="isJira && !isInstanceOrGroupLevel && !hasSections"
-          :key="`${currentKey}-jira-issues-fields`"
-          v-bind="propsSource.jiraIssuesProps"
-          :is-validated="isValidated"
-          @request-jira-issue-types="onRequestJiraIssueTypes"
         />
       </div>
     </div>

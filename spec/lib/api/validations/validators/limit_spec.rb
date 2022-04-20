@@ -22,4 +22,10 @@ RSpec.describe API::Validations::Validators::Limit do
       expect_validation_error('test' => "#{'a' * 256}")
     end
   end
+
+  context 'value is nil' do
+    it 'does not raise a validation error' do
+      expect_no_validation_error('test' => nil)
+    end
+  end
 end

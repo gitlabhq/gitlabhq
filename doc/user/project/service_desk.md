@@ -241,7 +241,8 @@ The configuration options are the same as for configuring
 
 ##### Microsoft Graph
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
+> - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
 Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth2 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
@@ -262,6 +263,22 @@ Graph API instead of IMAP. Follow the [documentation in the incoming email secti
    'poll_interval': 60  # Optional
   }
   ```
+
+For Microsoft Cloud for US Government or [other Azure deployments](https://docs.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
+
+- Example for Microsoft Cloud for US Government:
+
+```ruby
+  gitlab_rails['service_desk_email_inbox_options'] = {
+   'azure_ad_endpoint': 'https://login.microsoftonline.us',
+   'graph_endpoint': 'https://graph.microsoft.us',
+   'tenant_id': '<YOUR-TENANT-ID>',
+   'client_id': '<YOUR-CLIENT-ID>',
+   'client_secret': '<YOUR-CLIENT-SECRET>',
+   'poll_interval': 60  # Optional
+  }
+}
+```
 
 The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
 
@@ -329,20 +346,6 @@ Note that:
 
 - The project's visibility (private, internal, public) does not affect Service Desk.
 - The path to the project, including its group or namespace, is shown in emails.
-
-#### Issues created on someone's behalf
-
-To allow third party applications and ticketing systems to interface with Service Desk,
-when the email contains the `Reply-To` email header, this email address is used as the address of the
-issue author.
-
-Because the `Reply-To` header can be set to arbitrary values, do not blindly trust that an issue
-created on behalf of `someone@example.com` was indeed created by the real owner of such email address.
-
-For example, an email with headers `To: support@example.com` and `Reply-To:someone@example.com`
-creates an issue with the following note:
-
-> Created (…) by `support@example.com` (reply to: `someone@example.com`) (…)
 
 #### Privacy considerations
 

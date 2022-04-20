@@ -20,6 +20,9 @@ RSpec.configure do |config|
     # We drop and recreate the database if any table has more than 1200 columns, just to be safe.
     if any_connection_class_with_more_than_allowed_columns?
       recreate_all_databases!
+
+      # Seed required data as recreating DBs will delete it
+      TestEnv.seed_db
     end
   end
 

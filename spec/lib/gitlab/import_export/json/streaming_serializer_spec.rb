@@ -115,7 +115,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
         end
 
         it 'orders exported issues by custom column(relative_position)' do
-          expected_issues = exportable.issues.reorder(::Gitlab::Database.nulls_first_order('relative_position', 'DESC')).order(id: :desc).map(&:to_json)
+          expected_issues = exportable.issues.reorder(Issue.arel_table[:relative_position].desc.nulls_first).order(id: :desc).map(&:to_json)
 
           expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, expected_issues)
 

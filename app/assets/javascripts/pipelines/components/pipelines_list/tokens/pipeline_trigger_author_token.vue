@@ -83,13 +83,7 @@ export default {
     @input="searchAuthors"
   >
     <template #view="{ inputValue }">
-      <gl-avatar
-        v-if="activeUser"
-        :size="16"
-        :src="activeUser.avatar_url"
-        shape="circle"
-        class="gl-mr-2"
-      />
+      <gl-avatar v-if="activeUser" :size="16" :src="activeUser.avatar_url" class="gl-mr-2" />
       <span>{{ activeUser ? activeUser.name : inputValue }}</span>
     </template>
     <template #suggestions>

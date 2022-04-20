@@ -103,7 +103,7 @@ export default {
       >
         <div
           v-if="commit.signature_html"
-          v-safe-html:[$options.safeHtmlConfig]="commit.signature_html"
+          v-html="commit.signature_html /* eslint-disable-line vue/no-v-html */"
         ></div>
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
@@ -137,7 +137,7 @@ export default {
             :link-href="authorUrl"
             :img-src="authorAvatar"
             :img-alt="authorName"
-            :img-size="40"
+            :img-size="32"
             class="avatar-cell d-none d-sm-block"
           />
         </div>

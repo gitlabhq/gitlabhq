@@ -37,8 +37,8 @@ RSpec.describe ContainerRegistry::Migration do
     subject { described_class.enqueue_waiting_time }
 
     where(:slow_enabled, :fast_enabled, :expected_result) do
-      false | false | 1.hour
-      true  | false | 6.hours
+      false | false | 45.minutes
+      true  | false | 165.minutes
       false | true  | 0
       true  | true  | 0
     end
@@ -154,15 +154,35 @@ RSpec.describe ContainerRegistry::Migration do
     end
   end
 
-  describe '.target_plan' do
-    let_it_be(:plan) { create(:plan) }
+  describe '.target_plans' do
+    subject { described_class.target_plans }
 
-    before do
-      stub_application_setting(container_registry_import_target_plan: plan.name)
+    where(:target_plan, :result) do
+      'free'     | described_class::FREE_TIERS
+      'premium'  | described_class::PREMIUM_TIERS
+      'ultimate' | described_class::ULTIMATE_TIERS
     end
 
-    it 'returns the matching application_setting' do
-      expect(described_class.target_plan).to eq(plan)
+    with_them do
+      before do
+        stub_application_setting(container_registry_import_target_plan: target_plan)
+      end
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
+  describe '.all_plans?' do
+    subject { described_class.all_plans? }
+
+    it { is_expected.to eq(true) }
+
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(container_registry_migration_phase2_all_plans: false)
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 end

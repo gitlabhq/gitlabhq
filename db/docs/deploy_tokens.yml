@@ -1,0 +1,9 @@
+---
+table_name: deploy_tokens
+classes:
+- DeployToken
+feature_categories:
+- continuous_delivery
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/db18993f652425b72c4b854e18a002e0ec44b196
+milestone: '10.7'

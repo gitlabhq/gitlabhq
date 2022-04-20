@@ -118,13 +118,15 @@ class Issue < ApplicationRecord
 
   scope :not_authored_by, ->(user) { where.not(author_id: user) }
 
-  scope :order_due_date_asc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
-  scope :order_due_date_desc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'DESC')) }
+  scope :order_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
+  scope :order_due_date_desc, -> { reorder(arel_table[:due_date].desc.nulls_last) }
   scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
   scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
   scope :order_severity_desc, -> { includes(:issuable_severity).order('issuable_severities.severity DESC NULLS LAST') }
+  scope :order_escalation_status_asc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].asc.nulls_last).references(:incident_management_issuable_escalation_status) }
+  scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].desc.nulls_last).references(:incident_management_issuable_escalation_status) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, project: [:project_feature, :route, namespace: :route]) }
@@ -133,7 +135,7 @@ class Issue < ApplicationRecord
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {
-    preload(:timelogs, :closed_by, :assignees, :author, :labels,
+    preload(:timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
       milestone: { project: [:route, { namespace: :route }] },
       project: [:route, { namespace: :route }])
   }
@@ -327,6 +329,8 @@ class Issue < ApplicationRecord
     when 'relative_position', 'relative_position_asc'     then order_by_relative_position
     when 'severity_asc'                                   then order_severity_asc.with_order_id_desc
     when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
+    when 'escalation_status_asc'                          then order_escalation_status_asc.with_order_id_desc
+    when 'escalation_status_desc'                         then order_escalation_status_desc.with_order_id_desc
     else
       super
     end
@@ -340,8 +344,8 @@ class Issue < ApplicationRecord
     Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
       attribute_name: 'relative_position',
       column_expression: arel_table[:relative_position],
-      order_expression: Gitlab::Database.nulls_last_order('issues.relative_position', 'ASC'),
-      reversed_order_expression: Gitlab::Database.nulls_last_order('issues.relative_position', 'DESC'),
+      order_expression: Issue.arel_table[:relative_position].asc.nulls_last,
+      reversed_order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
       order_direction: :asc,
       nullable: :nulls_last,
       distinct: false
@@ -380,10 +384,6 @@ class Issue < ApplicationRecord
 
   def blocked_for_repositioning?
     resource_parent.root_namespace&.issue_repositioning_disabled?
-  end
-
-  def hook_attrs
-    Gitlab::HookData::IssueBuilder.new(self).build
   end
 
   # `from` argument can be a Namespace or Project.
@@ -524,10 +524,6 @@ class Issue < ApplicationRecord
 
   def merge_requests_count(user = nil)
     ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
-  end
-
-  def labels_hook_attrs
-    labels.map(&:hook_attrs)
   end
 
   def previous_updated_at

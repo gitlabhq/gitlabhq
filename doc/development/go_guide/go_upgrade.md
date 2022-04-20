@@ -76,9 +76,27 @@ if you need help finding the correct person or labels:
 1. Create the epic in `gitlab-org` group:
    - Title the epic `Update Go version to <VERSION_NUMBER>`.
    - Ping the engineering managers responsible for [the projects listed below](#known-dependencies-using-go).
+     - Most engineering managers can be identified on
+       [the product page](https://about.gitlab.com/handbook/product/categories/) or the
+       [feature page](https://about.gitlab.com/handbook/product/categories/features/).
+     - If you still can't find the engineering manager, use
+       [Git blame](/ee/user/project/repository/git_blame.md) to identify a maintainer
+       involved in the project.
 
-1. Create an upgrade issue for each dependency in the [location indicated below](#known-dependencies-using-go)
-   titled `Support building with Go <VERSION_NUMBER>`. Add the proper label to each issue for easier triage.
+1. Create an upgrade issue for each dependency in the
+   [location indicated below](#known-dependencies-using-go) titled
+   `Support building with Go <VERSION_NUMBER>`. Add the proper labels to each issue
+   for easier triage. These should include the stage, group and section.
+   - The issue should be assigned by a member of the maintaining group.
+   - The milestone should be assigned by a member of the maintaining group.
+
+   NOTE:
+   Some overlap exists between project dependencies. When creating an issue for a
+   dependency that is part of a larger product, note the relationship in the issue
+   body. For example: Projects built in the context of Omnibus GitLab have their
+   runtime Go version managed by Omnibus, but "support" and compatibility should
+   be a concern of the individual project. Issues in the parent project's dependencies
+   issue should be about adding support for the updated Go version.
 
    NOTE:
    The upgrade issues must include [upgrade validation items](#upgrade-validation)
@@ -94,9 +112,10 @@ if you need help finding the correct person or labels:
    - [Composition Analysis tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
    - [Container Security tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
-    NOTE:
-    Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
-    the analyzers are built independently as separate container images.
+   NOTE:
+   Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
+   the analyzers are built independently as separate container images.
+
 1. Schedule builder updates with Distribution projects:
    - Dependency and GitLab Development Kit issues created in previous steps should be set as blockers.
    - Each issue should have the title `Support building with Go <VERSION_NUMBER>` and description as noted:

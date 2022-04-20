@@ -438,9 +438,12 @@ a.gl-badge.badge-warning:active {
 .gl-form-input.form-control:disabled,
 .gl-form-input.form-control:not(.form-control-plaintext):not([type="color"]):read-only {
   background-color: #fafafa;
-  color: #868686;
   box-shadow: inset 0 0 0 1px #dbdbdb;
+}
+.gl-form-input:disabled,
+.gl-form-input.form-control:disabled {
   cursor: not-allowed;
+  color: #868686;
 }
 .gl-form-input::placeholder,
 .gl-form-input.form-control::placeholder {
@@ -529,9 +532,7 @@ a.gl-badge.badge-warning:active {
   padding-right: 2rem;
   padding-left: 1.75rem;
 }
-body,
-.form-control,
-.search form {
+body {
   font-size: 0.875rem;
 }
 button,
@@ -548,6 +549,13 @@ strong {
 }
 a {
   color: #1068bf;
+}
+svg {
+  vertical-align: baseline;
+}
+.form-control,
+.search form {
+  font-size: 0.875rem;
 }
 .hidden {
   display: none !important;
@@ -572,9 +580,6 @@ a {
 .toggle-sidebar-button .collapse-text,
 .toggle-sidebar-button .icon-chevron-double-lg-left {
   color: #666;
-}
-svg {
-  vertical-align: baseline;
 }
 html {
   overflow-y: scroll;
@@ -789,7 +794,7 @@ input {
   white-space: nowrap;
 }
 .navbar-gitlab .header-content .title img {
-  height: 28px;
+  height: 24px;
 }
 .navbar-gitlab .header-content .title img + .logo-text {
   margin-left: 8px;
@@ -1496,6 +1501,29 @@ svg.s16 {
 }
 .header-search {
   width: 320px;
+}
+.header-search.is-not-active::after {
+  content: "/";
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 8px;
+  transform: translateY(calc(50% - 4px));
+  padding: 4px 5px;
+  font-size: 12px;
+  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
+    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
+  line-height: 1;
+  vertical-align: middle;
+  border-width: 0;
+  border-style: solid;
+  border-image: none;
+  border-radius: 3px;
+  box-shadow: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 .search {
   margin: 0 8px;

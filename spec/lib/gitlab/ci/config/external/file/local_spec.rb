@@ -55,6 +55,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
   end
 
   describe '#valid?' do
+    subject(:valid?) do
+      local_file.validate!
+      local_file.valid?
+    end
+
     context 'when is a valid local path' do
       let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
 
@@ -62,25 +67,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return("image: 'ruby2:2'")
       end
 
-      it 'returns true' do
-        expect(local_file.valid?).to be_truthy
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'when it is not a valid local path' do
       let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
-      it 'returns false' do
-        expect(local_file.valid?).to be_falsy
-      end
+      it { is_expected.to be_falsy }
     end
 
     context 'when it is not a yaml file' do
       let(:location) { '/config/application.rb' }
 
-      it 'returns false' do
-        expect(local_file.valid?).to be_falsy
-      end
+      it { is_expected.to be_falsy }
     end
 
     context 'when it is an empty file' do
@@ -89,6 +88,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
 
       it 'returns false and adds an error message about an empty file' do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return("")
+        local_file.validate!
         expect(local_file.errors).to include("Local file `/lib/gitlab/ci/templates/xxxxxx/existent-file.yml` is empty!")
       end
     end
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
       let(:sha) { ':' }
 
       it 'returns false and adds an error message stating that included file does not exist' do
-        expect(local_file).not_to be_valid
+        expect(valid?).to be_falsy
         expect(local_file.errors).to include("Sha #{sha} is not valid!")
       end
     end
@@ -140,6 +140,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
     let(:location) { '/lib/gitlab/ci/templates/secret_file.yml' }
     let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
 
+    before do
+      local_file.validate!
+    end
+
     it 'returns an error message' do
       expect(local_file.error_message).to eq("Local file `/lib/gitlab/ci/templates/xxxxxxxxxxx.yml` does not exist!")
     end
@@ -174,11 +178,29 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
 
         allow(project.repository).to receive(:blob_data_at).with(sha, another_location)
           .and_return(another_content)
+
+        local_file.validate!
       end
 
       it 'does expand hash to include the template' do
         expect(local_file.to_hash).to include(:rspec)
       end
     end
+  end
+
+  describe '#metadata' do
+    let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
+
+    subject(:metadata) { local_file.metadata }
+
+    it {
+      is_expected.to eq(
+        context_project: project.full_path,
+        context_sha: '12345',
+        type: :local,
+        location: location,
+        extra: {}
+      )
+    }
   end
 end

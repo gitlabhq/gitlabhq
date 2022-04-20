@@ -36,10 +36,10 @@ describe('Persisted dropdown selection', () => {
   });
 
   describe('local storage sync', () => {
-    it('uses the local storage sync component', () => {
+    it('uses the local storage sync component with the correct props', () => {
       createComponent();
 
-      expect(findLocalStorageSync().exists()).toBe(true);
+      expect(findLocalStorageSync().props('asString')).toBe(true);
     });
 
     it('passes the right props', () => {

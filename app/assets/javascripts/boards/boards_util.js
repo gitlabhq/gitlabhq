@@ -111,7 +111,7 @@ export function fullLabelId(label) {
 
 export function formatIssueInput(issueInput, boardConfig) {
   const { labelIds = [], assigneeIds = [] } = issueInput;
-  const { labels, assigneeId, milestoneId } = boardConfig;
+  const { labels, assigneeId, milestoneId, weight } = boardConfig;
 
   return {
     ...issueInput,
@@ -121,6 +121,7 @@ export function formatIssueInput(issueInput, boardConfig) {
         : issueInput?.milestoneId,
     labelIds: [...labelIds, ...(labels?.map((l) => fullLabelId(l)) || [])],
     assigneeIds: [...assigneeIds, ...(assigneeId ? [fullUserId(assigneeId)] : [])],
+    weight: weight > -1 ? weight : undefined,
   };
 }
 

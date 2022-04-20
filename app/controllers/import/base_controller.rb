@@ -13,7 +13,13 @@ class Import::BaseController < ApplicationController
                        provider_repos: serialized_provider_repos,
                        incompatible_repos: serialized_incompatible_repos }
       end
-      format.html
+      format.html do
+        if params[:namespace_id]&.present?
+          @namespace = Namespace.find_by_id(params[:namespace_id])
+
+          render_404 unless current_user.can?(:create_projects, @namespace)
+        end
+      end
     end
   end
 
@@ -70,7 +76,7 @@ class Import::BaseController < ApplicationController
   end
 
   def already_added_projects
-    @already_added_projects ||= filtered(find_already_added_projects(provider_name))
+    @already_added_projects ||= find_already_added_projects(provider_name)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

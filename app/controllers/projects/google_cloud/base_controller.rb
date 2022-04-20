@@ -25,7 +25,11 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
   end
 
   def feature_flag_enabled!
-    unless Feature.enabled?(:incubation_5mp_google_cloud)
+    enabled_for_user = Feature.enabled?(:incubation_5mp_google_cloud, current_user)
+    enabled_for_group = Feature.enabled?(:incubation_5mp_google_cloud, project.group)
+    enabled_for_project = Feature.enabled?(:incubation_5mp_google_cloud, project)
+    feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
+    unless feature_is_enabled
       track_event('feature_flag_enabled!', 'access_denied', 'feature_flag_not_enabled')
       access_denied!
     end

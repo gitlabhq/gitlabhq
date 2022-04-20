@@ -1,0 +1,350 @@
+{
+  ".build_config": {
+    "before_script": ["echo test"]
+  },
+  ".build_script": "echo build script",
+  ".example_variables": {
+    "foo": "hello",
+    "bar": 42
+  },
+  ".example_services": [
+    "docker:dind",
+    {
+      "name": "sql:latest",
+      "command": ["/usr/bin/super-sql", "run"]
+    }
+  ],
+  "default": {
+    "image": "ruby:2.5",
+    "services": ["docker:dind"],
+    "cache": {
+      "paths": ["vendor/"]
+    },
+    "before_script": ["bundle install --path vendor/"],
+    "after_script": ["rm -rf tmp/"],
+    "tags": ["ruby", "postgres"],
+    "artifacts": {
+      "name": "%CI_COMMIT_REF_NAME%",
+      "expose_as": "artifact 1",
+      "paths": ["path/to/file.txt", "target/*.war"],
+      "when": "on_failure"
+    },
+    "retry": 2,
+    "timeout": "3 hours 30 minutes",
+    "interruptible": true
+  },
+  "stages": ["build", "test", "deploy", "random"],
+  "image": "foo:latest",
+  "services": ["sql:latest"],
+  "before_script": ["echo test", "echo test2"],
+  "after_script": [],
+  "cache": {
+    "key": "asd",
+    "paths": ["dist/", ".foo"],
+    "untracked": false,
+    "policy": "pull"
+  },
+  "variables": {
+    "STAGE": "yep",
+    "PROD": "nope"
+  },
+  "include": [
+    "https://gitlab.com/awesome-project/raw/master/.before-script-template.yml",
+    "/templates/.after-script-template.yml",
+    { "template": "Auto-DevOps.gitlab-ci.yml" },
+    {
+      "project": "my-group/my-project",
+      "ref": "master",
+      "file": "/templates/.gitlab-ci-template.yml"
+    },
+    {
+      "project": "my-group/my-project",
+      "ref": "master",
+      "file": ["/templates/.gitlab-ci-template.yml", "/templates/another-template-to-include.yml"]
+    }
+  ],
+  "build": {
+    "image": {
+      "name": "node:latest"
+    },
+    "services": [],
+    "stage": "build",
+    "script": "npm run build",
+    "before_script": ["npm install"],
+    "rules": [
+      {
+        "if": "moo",
+        "changes": ["Moofile"],
+        "exists": ["main.cow"],
+        "when": "delayed",
+        "start_in": "3 hours"
+      }
+    ],
+    "retry": {
+      "max": 1,
+      "when": "stuck_or_timeout_failure"
+    },
+    "cache": {
+      "key": "$CI_COMMIT_REF_NAME",
+      "paths": ["node_modules/"],
+      "policy": "pull-push"
+    },
+    "artifacts": {
+      "paths": ["dist/"],
+      "expose_as": "link_name_in_merge_request",
+      "name": "bundles",
+      "when": "on_success",
+      "expire_in": "1 week",
+      "reports": {
+        "junit": "result.xml",
+        "cobertura": "cobertura-coverage.xml",
+        "codequality": "codequality.json",
+        "sast": "sast.json",
+        "dependency_scanning": "scan.json",
+        "container_scanning": "scan2.json",
+        "dast": "dast.json",
+        "license_management": "license.json",
+        "performance": "performance.json",
+        "metrics": "metrics.txt"
+      }
+    },
+    "variables": {
+      "FOO_BAR": "..."
+    },
+    "only": {
+      "kubernetes": "active",
+      "variables": ["$FOO_BAR == '...'"],
+      "changes": ["/path/to/file", "/another/file"]
+    },
+    "except": ["master", "tags"],
+    "tags": ["docker"],
+    "allow_failure": true,
+    "when": "manual"
+  },
+  "error-report": {
+    "when": "on_failure",
+    "script": "report error",
+    "stage": "test"
+  },
+  "test": {
+    "image": {
+      "name": "node:latest",
+      "entrypoint": [""]
+    },
+    "stage": "test",
+    "script": "npm test",
+    "parallel": 5,
+    "retry": {
+      "max": 2,
+      "when": [
+        "runner_system_failure",
+        "stuck_or_timeout_failure",
+        "script_failure",
+        "unknown_failure",
+        "always"
+      ]
+    },
+    "artifacts": {
+      "reports": {
+        "junit": ["result.xml"],
+        "cobertura": ["cobertura-coverage.xml"],
+        "codequality": ["codequality.json"],
+        "sast": ["sast.json"],
+        "dependency_scanning": ["scan.json"],
+        "container_scanning": ["scan2.json"],
+        "dast": ["dast.json"],
+        "license_management": ["license.json"],
+        "performance": ["performance.json"],
+        "metrics": ["metrics.txt"]
+      }
+    },
+    "coverage": "/Cycles: \\d+\\.\\d+$/",
+    "dependencies": []
+  },
+  "docker": {
+    "script": "docker build -t foo:latest",
+    "when": "delayed",
+    "start_in": "10 min",
+    "timeout": "1h",
+    "retry": 1,
+    "only": {
+      "changes": ["Dockerfile", "docker/scripts/*"]
+    }
+  },
+  "deploy": {
+    "services": [
+      {
+        "name": "sql:latest",
+        "entrypoint": [""],
+        "command": ["/usr/bin/super-sql", "run"],
+        "alias": "super-sql"
+      },
+      "sql:latest",
+      {
+        "name": "sql:latest",
+        "alias": "default-sql"
+      }
+    ],
+    "script": "dostuff",
+    "stage": "deploy",
+    "environment": {
+      "name": "prod",
+      "url": "http://example.com",
+      "on_stop": "stop-deploy"
+    },
+    "only": ["master"],
+    "release": {
+      "name": "Release $CI_COMMIT_TAG",
+      "description": "Created using the release-cli $EXTRA_DESCRIPTION",
+      "tag_name": "$CI_COMMIT_TAG",
+      "ref": "$CI_COMMIT_TAG",
+      "milestones": ["m1", "m2", "m3"],
+      "released_at": "2020-07-15T08:00:00Z",
+      "assets": {
+        "links": [
+          {
+            "name": "asset1",
+            "url": "https://example.com/assets/1"
+          },
+          {
+            "name": "asset2",
+            "url": "https://example.com/assets/2",
+            "filepath": "/pretty/url/1",
+            "link_type": "other"
+          },
+          {
+            "name": "asset3",
+            "url": "https://example.com/assets/3",
+            "link_type": "runbook"
+          },
+          {
+            "name": "asset4",
+            "url": "https://example.com/assets/4",
+            "link_type": "package"
+          },
+          {
+            "name": "asset5",
+            "url": "https://example.com/assets/5",
+            "link_type": "image"
+          }
+        ]
+      }
+    }
+  },
+  ".performance-tmpl": {
+    "after_script": ["echo after"],
+    "before_script": ["echo before"],
+    "variables": {
+      "SCRIPT_NOT_REQUIRED": "true"
+    }
+  },
+  "performance-a": {
+    "extends": ".performance-tmpl",
+    "script": "echo test"
+  },
+  "performance-b": {
+    "extends": ".performance-tmpl"
+  },
+  "workflow": {
+    "rules": [
+      {
+        "if": "$CI_COMMIT_REF_NAME =~ /-wip$/",
+        "when": "never"
+      },
+      {
+        "if": "$CI_COMMIT_TAG",
+        "when": "never"
+      },
+      {
+        "when": "always"
+      }
+    ]
+  },
+  "job": {
+    "script": "echo Hello, Rules!",
+    "rules": [
+      {
+        "if": "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == \"master\"",
+        "when": "manual",
+        "allow_failure": true
+      }
+    ]
+  },
+  "microservice_a": {
+    "trigger": {
+      "include": "path/to/microservice_a.yml"
+    }
+  },
+  "microservice_b": {
+    "trigger": {
+      "include": [{ "local": "path/to/microservice_b.yml" }, { "template": "SAST.gitlab-cy.yml" }],
+      "strategy": "depend"
+    }
+  },
+  "child-pipeline": {
+    "stage": "test",
+    "trigger": {
+      "include": [
+        {
+          "artifact": "generated-config.yml",
+          "job": "generate-config"
+        }
+      ]
+    }
+  },
+  "child-pipeline-simple": {
+    "stage": "test",
+    "trigger": {
+      "include": "other/file.yml"
+    }
+  },
+  "complex": {
+    "stage": "deploy",
+    "trigger": {
+      "project": "my/deployment",
+      "branch": "stable"
+    }
+  },
+  "parallel-integer": {
+    "stage": "test",
+    "script": ["echo ${CI_NODE_INDEX} ${CI_NODE_TOTAL}"],
+    "parallel": 5
+  },
+  "parallel-matrix-simple": {
+    "stage": "test",
+    "script": ["echo ${MY_VARIABLE}"],
+    "parallel": {
+      "matrix": [
+        {
+          "MY_VARIABLE": 0
+        },
+        {
+          "MY_VARIABLE": "sample"
+        },
+        {
+          "MY_VARIABLE": ["element0", 1, "element2"]
+        }
+      ]
+    }
+  },
+  "parallel-matrix-gitlab-docs": {
+    "stage": "deploy",
+    "script": ["bin/deploy"],
+    "parallel": {
+      "matrix": [
+        {
+          "PROVIDER": "aws",
+          "STACK": ["app1", "app2"]
+        },
+        {
+          "PROVIDER": "ovh",
+          "STACK": ["monitoring", "backup", "app"]
+        },
+        {
+          "PROVIDER": ["gcp", "vultr"],
+          "STACK": ["data", "processing"]
+        }
+      ]
+    }
+  }
+}

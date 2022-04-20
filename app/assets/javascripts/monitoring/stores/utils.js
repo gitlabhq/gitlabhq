@@ -29,7 +29,7 @@ export const gqClient = createGqClient(
  * @param {String} metric.id - User-defined identifier
  * @returns {Object} - normalized metric with a uniqueID
  */
-// eslint-disable-next-line babel/camelcase
+// eslint-disable-next-line camelcase
 export const uniqMetricsId = ({ metric_id, id }) => `${metric_id || NOT_IN_DB_PREFIX}_${id}`;
 
 /**
@@ -45,7 +45,7 @@ export const removeLeadingSlash = (str) => (str || '').replace(/^\/+/, '');
 /**
  * GraphQL environments API returns only id and name.
  * For the environments dropdown we need metrics_path.
- * This method parses the results and add neccessart attrs
+ * This method parses the results and add necessary attrs
  *
  * @param {Array} response Environments API result
  * @param {String} projectPath Current project path
@@ -57,7 +57,7 @@ export const parseEnvironmentsResponse = (response = [], projectPath) =>
     return {
       ...env,
       id,
-      metrics_path: `${projectPath}/environments/${id}/metrics`,
+      metrics_path: `${projectPath}/-/metrics?environment=${id}`,
     };
   });
 
@@ -169,10 +169,10 @@ export const mapPanelToViewModel = ({
   id = null,
   title = '',
   type,
-  x_axis = {},
+  x_axis = {}, // eslint-disable-line camelcase
   x_label,
   y_label,
-  y_axis = {},
+  y_axis = {}, // eslint-disable-line camelcase
   field,
   metrics = [],
   links = [],
@@ -184,11 +184,11 @@ export const mapPanelToViewModel = ({
 }) => {
   // Both `x_axis.name` and `x_label` are supported for now
   // https://gitlab.com/gitlab-org/gitlab/issues/210521
-  const xAxis = mapXAxisToViewModel({ name: x_label, ...x_axis }); // eslint-disable-line babel/camelcase
+  const xAxis = mapXAxisToViewModel({ name: x_label, ...x_axis }); // eslint-disable-line camelcase
 
   // Both `y_axis.name` and `y_label` are supported for now
   // https://gitlab.com/gitlab-org/gitlab/issues/208385
-  const yAxis = mapYAxisToViewModel({ name: y_label, ...y_axis }); // eslint-disable-line babel/camelcase
+  const yAxis = mapYAxisToViewModel({ name: y_label, ...y_axis }); // eslint-disable-line camelcase
 
   return {
     id,
@@ -295,7 +295,7 @@ export const mapToDashboardViewModel = ({
   dashboard = '',
   templating = {},
   links = [],
-  panel_groups = [],
+  panel_groups = [], // eslint-disable-line camelcase
 }) => {
   return {
     dashboard,

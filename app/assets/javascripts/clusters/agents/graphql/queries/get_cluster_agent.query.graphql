@@ -1,4 +1,4 @@
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "../fragments/cluster_agent_token.fragment.graphql"
 
 query getClusterAgent(

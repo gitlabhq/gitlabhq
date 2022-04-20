@@ -13,11 +13,11 @@ the minimum requirements needed to install and use GitLab.
 
 ### Supported Linux distributions
 
-- Ubuntu (16.04/18.04/20.04)
-- Debian (9/10)
+- Ubuntu (18.04/20.04)
+- Debian (9/10/11)
 - AlmaLinux (8)
 - CentOS (7)
-- openSUSE Leap (15.2)
+- openSUSE Leap (15.3)
 - SUSE Linux Enterprise Server (12 SP2/12 SP5)
 - Red Hat Enterprise Linux (use the AlmaLinux or CentOS instructions)
 - Scientific Linux (use the CentOS instructions)
@@ -120,7 +120,7 @@ the following table) as these were used for development and testing:
 | GitLab version | Minimum PostgreSQL version |
 |----------------|----------------------------|
 | 13.0           | 11                         |
-| 14.0           | 12                         |
+| 14.0           | 12.10                      |
 
 You must also ensure the following extensions are loaded into every
 GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).

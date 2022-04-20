@@ -15,8 +15,14 @@ module Banzai
 
         doc.xpath(lang_tag).each do |node|
           img_tag = Nokogiri::HTML::DocumentFragment.parse(
-            Asciidoctor::PlantUml::Processor.plantuml_content(node.content, {}))
-          node.parent.replace(img_tag)
+            Asciidoctor::PlantUml::Processor.plantuml_content(node.content, {})).css('img').first
+
+          unless img_tag.nil?
+            img_tag.set_attribute('data-diagram', 'plantuml')
+            img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(node.content)}")
+
+            node.parent.replace(img_tag)
+          end
         end
 
         doc

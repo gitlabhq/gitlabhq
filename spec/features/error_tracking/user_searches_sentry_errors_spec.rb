@@ -30,7 +30,7 @@ RSpec.describe 'When a user searches for Sentry errors', :js, :use_clean_rails_m
       expect(results.count).to be(3)
     end
 
-    find('.gl-form-input').set('NotFound').native.send_keys(:return)
+    find('.filtered-search-input-container .gl-form-input').set('NotFound').native.send_keys(:return)
 
     page.within(find('.gl-table')) do
       results = page.all('.table-row')

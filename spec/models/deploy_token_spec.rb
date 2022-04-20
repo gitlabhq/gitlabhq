@@ -9,6 +9,7 @@ RSpec.describe DeployToken do
   it { is_expected.to have_many(:projects).through(:project_deploy_tokens) }
   it { is_expected.to have_many :group_deploy_tokens }
   it { is_expected.to have_many(:groups).through(:group_deploy_tokens) }
+  it { is_expected.to belong_to(:user).with_foreign_key('creator_id') }
 
   it_behaves_like 'having unique enum values'
 

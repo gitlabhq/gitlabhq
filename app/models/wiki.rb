@@ -10,11 +10,45 @@ class Wiki
   extend ActiveModel::Naming
 
   MARKUPS = { # rubocop:disable Style/MultilineIfModifier
-    'Markdown' => :markdown,
-    'RDoc'     => :rdoc,
-    'AsciiDoc' => :asciidoc,
-    'Org'      => :org
+    markdown: {
+      name: 'Markdown',
+      default_extension: :md,
+      created_by_user: true
+    },
+    rdoc: {
+      name: 'RDoc',
+      default_extension: :rdoc,
+      created_by_user: true
+    },
+    asciidoc: {
+      name: 'AsciiDoc',
+      default_extension: :asciidoc,
+      created_by_user: true
+    },
+    org: {
+      name: 'Org',
+      default_extension: :org,
+      created_by_user: true
+    },
+    textile: {
+      name: 'Textile',
+      default_extension: :textile
+    },
+    creole: {
+      name: 'Creole',
+      default_extension: :creole
+    },
+    rest: {
+      name: 'reStructuredText',
+      default_extension: :rst
+    },
+    mediawiki: {
+      name: 'MediaWiki',
+      default_extension: :mediawiki
+    }
   }.freeze unless defined?(MARKUPS)
+
+  VALID_USER_MARKUPS = MARKUPS.select { |_, v| v[:created_by_user] }.freeze unless defined?(VALID_USER_MARKUPS)
 
   CouldNotCreateWikiError = Class.new(StandardError)
 
@@ -184,12 +218,37 @@ class Wiki
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
-    commit = commit_details(:updated, message, page.title)
+    if Feature.enabled?(:gitaly_replace_wiki_update_page, container, default_enabled: :yaml)
+      with_valid_format(format) do |default_extension|
+        title = title.presence || Pathname(page.path).sub_ext('').to_s
 
-    wiki.update_page(page.path, title || page.name, format.to_sym, content, commit)
-    after_wiki_activity
+        # If the format is the same we keep the former extension. This check is for formats
+        # that can have more than one extension like Markdown (.md, .markdown)
+        # If we don't do this we will override the existing extension.
+        extension = page.format != format.to_sym ? default_extension : File.extname(page.path).downcase[1..]
 
-    true
+        capture_git_error(:updated) do
+          repository.update_file(
+            user,
+            sluggified_full_path(title, extension),
+            content,
+            previous_path: page.path,
+            **multi_commit_options(:updated, message, title))
+
+          after_wiki_activity
+
+          true
+        end
+      end
+    else
+      commit = commit_details(:updated, message, page.title)
+
+      wiki.update_page(page.path, title || page.name, format.to_sym, content, commit)
+
+      after_wiki_activity
+
+      true
+    end
   end
 
   def delete_page(page, message = nil)
@@ -296,7 +355,7 @@ class Wiki
     git_user = Gitlab::Git::User.from_gitlab(user)
 
     {
-      branch_name: repository.root_ref,
+      branch_name: repository.root_ref || default_branch,
       message: commit_message,
       author_email: git_user.email,
       author_name: git_user.name
@@ -320,6 +379,26 @@ class Wiki
 
   def default_message(action, title)
     "#{user.username} #{action} page: #{title}"
+  end
+
+  def with_valid_format(format, &block)
+    default_extension = Wiki::VALID_USER_MARKUPS.dig(format.to_sym, :default_extension).to_s
+
+    if default_extension.blank?
+      @error_message = _('Invalid format selected')
+
+      return false
+    end
+
+    yield default_extension
+  end
+
+  def sluggified_full_path(title, extension)
+    sluggified_title(title) + '.' + extension
+  end
+
+  def sluggified_title(title)
+    Gitlab::EncodingHelper.encode_utf8_no_detect(title).tr(' ', '-')
   end
 end
 

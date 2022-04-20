@@ -27,6 +27,14 @@ RSpec.describe Gitlab::BlamePresenter do
     end
   end
 
+  describe '#first_line' do
+    it 'delegates #first_line call to the blame' do
+      expect(blame).to receive(:first_line).at_least(:once).and_call_original
+
+      subject.first_line
+    end
+  end
+
   describe '#commit_data' do
     it 'has the data necessary to render the view' do
       commit = blame.groups.first[:commit]
@@ -37,8 +45,27 @@ RSpec.describe Gitlab::BlamePresenter do
         expect(data.age_map_class).to include('blame-commit-age-')
         expect(data.commit_link.to_s).to include '913c66a37b4a45b9769037c55c2d238bd0942d2e">Files, encoding and much more</a>'
         expect(data.commit_author_link.to_s).to include('<a class="commit-author-link" href=')
-        expect(data.project_blame_link.to_s).to include('<a title="View blame prior to this change"')
         expect(data.time_ago_tooltip.to_s).to include('data-container="body">Feb 27, 2014</time>')
+      end
+    end
+
+    context 'renamed file' do
+      let(:path) { 'files/plain_text/renamed' }
+      let(:commit) { project.commit('blame-on-renamed') }
+
+      it 'does not generate link to previous blame on initial commit' do
+        commit = blame.groups[0][:commit]
+        data = subject.commit_data(commit)
+
+        expect(data.project_blame_link.to_s).to eq('')
+      end
+
+      it 'generates link link to previous blame' do
+        commit = blame.groups[1][:commit]
+        data = subject.commit_data(commit)
+
+        expect(data.project_blame_link.to_s).to include('<a title="View blame prior to this change"')
+        expect(data.project_blame_link.to_s).to include('/blame/405a45736a75e439bb059e638afaa9a3c2eeda79/files/plain_text/initial-commit')
       end
     end
   end

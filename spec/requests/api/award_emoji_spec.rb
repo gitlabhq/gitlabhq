@@ -26,6 +26,23 @@ RSpec.describe API::AwardEmoji do
         expect(json_response.first['name']).to eq(award_emoji.name)
       end
 
+      it "includes custom emoji attributes" do
+        group = create(:group)
+        group.add_maintainer(user)
+
+        project = create(:project, namespace: group)
+        custom_emoji = create(:custom_emoji, name: 'partyparrot', namespace: group)
+        issue = create(:issue, project: project)
+        create(:award_emoji, awardable: issue, user: user, name: custom_emoji.name)
+
+        get api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(custom_emoji.name)
+        expect(json_response.first['url']).to eq(custom_emoji.file)
+      end
+
       it "returns a 404 error when issue id not found" do
         get api("/projects/#{project.id}/issues/#{non_existing_record_iid}/award_emoji", user)
 

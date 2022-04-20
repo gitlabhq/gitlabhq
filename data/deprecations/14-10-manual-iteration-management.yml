@@ -1,0 +1,34 @@
+- name: "Manual iteration management"  # The name of the feature to be deprecated
+  announcement_milestone: "14.10"  # The milestone when this feature was first announced as deprecated.
+  announcement_date: "2022-04-22"  # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: "16.0"  # The milestone when this feature is planned to be removed
+  removal_date: "2023-04-22"  # The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: true  # If this deprecation is a breaking change, set this value to true
+  reporter: mcelicalderonG  # GitLab username of the person reporting the deprecation
+  body: |  # Do not modify this line, instead modify the lines below.
+    Manual iteration management is deprecated and only automatic iteration cadences will be supported in the future.
+
+    Creating and deleting iterations will be fully removed in 16.0. Updating all iteration fields except for
+    `description` will also be removed.
+
+    On the GraphQL API the following mutations will be removed:
+
+      1. `iterationCreate`
+      1. `iterationDelete`
+
+    The update `updateIteration` mutation will only allow updating the iteration's `description`. The following
+    arguments will be removed:
+
+      1. `title`
+      1. `dueDate`
+      1. `startDate`
+
+    For more information about iteration cadences, you can refer to
+    [the documentation of the feature](https://docs.gitlab.com/ee/user/group/iterations/#iteration-cadences).
+# The following items are not published on the docs page, but may be used in the future.
+  stage: Plan
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356069
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

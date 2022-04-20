@@ -5,7 +5,7 @@ import {
   WEBIDE_MARK_FETCH_FILES_START,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import { __ } from '../../../locale';
+import { __ } from '~/locale';
 import { decorateFiles } from '../../lib/files';
 import service from '../../services';
 import * as types from '../mutation_types';

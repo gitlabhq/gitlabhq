@@ -23,6 +23,10 @@ module Projects
     end
 
     class << self
+      def find_by_name_case_insensitive(name)
+        find_by('LOWER(name) = ?', name.downcase)
+      end
+
       def search(query)
         fuzzy_search(query, [:name])
       end

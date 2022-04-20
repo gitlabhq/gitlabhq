@@ -18,20 +18,6 @@ you scale GitLab accordingly.
 ![Reference Architectures](img/reference-architectures.png)
 <!-- Internal link: https://docs.google.com/spreadsheets/d/1obYP4fLKkVVDOljaI3-ozhmCiPtEeMblbBKkf2OADKs/edit#gid=1403207183 -->
 
-Testing on these reference architectures was performed with the
-[GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
-at specific coded workloads, and the throughputs used for testing were
-calculated based on sample customer data. Select the
-[reference architecture](#available-reference-architectures) that matches your scale.
-
-Each endpoint type is tested with the following number of requests per second (RPS)
-per 1,000 users:
-
-- API: 20 RPS
-- Web: 2 RPS
-- Git (Pull): 2 RPS
-- Git (Push): 0.4 RPS (rounded to nearest integer)
-
 For GitLab instances with less than 2,000 users, it's recommended that you use
 the [default setup](#automated-backups) by
 [installing GitLab](../../install/index.md) on a single machine to minimize
@@ -48,7 +34,8 @@ When scaling GitLab, there are several factors to consider:
 - A load balancer is added in front to distribute traffic across the application nodes.
 - The application nodes connects to a shared file server and PostgreSQL and Redis services on the backend.
 
-NOTE:
+## Available reference architectures
+
 Depending on your workflow, the following recommended reference architectures
 may need to be adapted accordingly. Your workload is influenced by factors
 including how active your users are, how much automation you use, mirroring,
@@ -57,11 +44,9 @@ provided by [GCP machine types](https://cloud.google.com/compute/docs/machine-ty
 For different cloud vendors, attempt to select options that best match the
 provided architecture.
 
-## Available reference architectures
-
-The following reference architectures are available.
-
 ### GitLab package (Omnibus)
+
+The following reference architectures, where the GitLab package is used, are available:
 
 - [Up to 1,000 users](1k_users.md)
 - [Up to 2,000 users](2k_users.md)
@@ -87,17 +72,53 @@ to get assistance from Support with troubleshooting the [2,000 users](2k_users.m
 and higher reference architectures.
 [Read more about our definition of scaled architectures](https://about.gitlab.com/support/#definition-of-scaled-architecture).
 
-### Validation and test results
+## Validation and test results
 
-The [Quality Engineering - Enablement team](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/) does regular smoke and performance tests for the reference architectures to ensure they remain compliant.
+The [Quality Engineering team](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/)
+does regular smoke and performance tests for the reference architectures to ensure they
+remain compliant.
 
-- Testing occurs against all reference architectures and cloud providers in an automated and ad-hoc fashion. This is done by two tools:
-  - The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) for building the environments.
-  - The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
-- Network latency on the test environments between components on all Cloud Providers were measured at <5ms. Note that this is shared as an observation and not as an implicit recommendation.
-- We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on 10k Omnibus on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
-- Testing is done publicly and all results are shared.
-- For more information about performance testing at GitLab, read [how our QA team leverages GitLab’s performance testing tool (and you can too)](https://about.gitlab.com/blog/2020/02/18/how-were-building-up-performance-testing-of-gitlab/).
+### Why we perform the tests
+
+The Quality Department has a focus on measuring and improving the performance
+of GitLab, as well as creating and validating reference architectures that
+self-managed customers can rely on as performant configurations.
+
+For more information, see our [handbook page](https://about.gitlab.com/handbook/engineering/quality/performance-and-scalability/).
+
+### How we perform the tests
+
+Testing occurs against all reference architectures and cloud providers in an automated and ad-hoc fashion. This is done by two tools:
+
+- The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) for building the environments.
+- The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
+
+Network latency on the test environments between components on all Cloud Providers were measured at <5ms. Note that this is shared as an observation and not as an implicit recommendation.
+
+We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on 10k Omnibus on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
+
+The Standard Reference Architectures are designed to be platform agnostic, with everything being run on VMs via [Omnibus GitLab](https://docs.gitlab.com/omnibus/). While testing occurs primarily on GCP, ad-hoc testing has shown that they perform similarly on equivalently specced hardware on other Cloud Providers or if run on premises (bare-metal).
+
+Testing on these reference architectures is performed with the
+[GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
+at specific coded workloads, and the throughputs used for testing are
+calculated based on sample customer data. Select the
+[reference architecture](#available-reference-architectures) that matches your scale.
+
+Each endpoint type is tested with the following number of requests per second (RPS)
+per 1,000 users:
+
+- API: 20 RPS
+- Web: 2 RPS
+- Git (Pull): 2 RPS
+- Git (Push): 0.4 RPS (rounded to nearest integer)
+
+### How to interpret the results
+
+NOTE:
+Read our blog post on [how our QA team leverages GitLab’s performance testing tool](https://about.gitlab.com/blog/2020/02/18/how-were-building-up-performance-testing-of-gitlab/).
+
+Testing is done publicly and all results are shared.
 
 The following table details the testing done against the reference architectures along with the frequency and results. Additional testing is continuously evaluated, and the table is updated accordingly.
 
@@ -192,9 +213,7 @@ table.test-coverage th {
   </tr>
 </table>
 
-The Standard Reference Architectures are designed to be platform agnostic, with everything being run on VMs via [Omnibus GitLab](https://docs.gitlab.com/omnibus/). While testing occurs primarily on GCP, ad-hoc testing has shown that they perform similarly on equivalently specced hardware on other Cloud Providers or if run on premises (bare-metal).
-
-### Cost to run
+## Cost to run
 
 <table class="test-coverage">
   <col>
@@ -217,61 +236,61 @@ The Standard Reference Architectures are designed to be platform agnostic, with 
     <th scope="row">1k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=a6d6a94a-c7dc-4c22-85c4-7c5747f272ed">Calculated cost</a></td>
     <td></td>
+    <td><a href="https://calculator.aws/#/estimate?id=b51f178f4403b69a63f6eb33ea425f82de3bf249">Calculated cost</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://azure.com/e/1adf30bef7e34ceba9efa97c4470417b">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">2k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=84d11491-d72a-493c-a16e-650931faa658">Calculated cost</a></td>
     <td></td>
+    <td><a href="https://calculator.aws/#/estimate?id=dce36b5cb6ab25211f74e47233d77f58fefb54e2">Calculated cost</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://azure.com/e/72764902f3854f798407fb03c3de4b6f">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">3k</th>
     <td><a href="https://cloud.google.com/products/calculator/#id=ac4838e6-9c40-4a36-ac43-6d1bc1843e08">Calculated cost</a></td>
     <td></td>
+    <td><a href="https://calculator.aws/#/estimate?id=b1c5b4e32e990eaeb035a148255132bd28988760">Calculated cost</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://azure.com/e/0dbfc575051943b9970e5d8ace03680d">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">5k</th>
     <td><a href="https://cloud.google.com/products/calculator/#id=8742e8ea-c08f-4e0a-b058-02f3a1c38a2f">Calculated cost</a></td>
     <td></td>
+    <td><a href="https://calculator.aws/#/estimate?id=2bf1af883096e6f4c6efddb4f3c35febead7fec2">Calculated cost</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://azure.com/e/8f618711ffec4b039f1581871ca6a7c9">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">10k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=e77713f6-dc0b-4bb3-bcef-cea904ac8efd">Calculated cost</a></td>
     <td></td>
+    <td><a href="https://calculator.aws/#/estimate?id=1d374df13c0f2088d332ab0134f5b1d0f717259e">Calculated cost</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://azure.com/e/de3da8286dda4d4db1362932bc75410b">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">25k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=925386e1-c01c-4c0a-8d7d-ebde1824b7b0">Calculated cost</a></td>
     <td></td>
+    <td><a href="https://calculator.aws/#/estimate?id=46fe6a6e9256d9b7779fae59fbbfa7e836942b7d">Calculated cost</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://azure.com/e/69724ebd82914a60857da6a3ace05a64">Calculate cost</a></td>
   </tr>
   <tr>
     <th scope="row">50k</th>
     <td><a href="https://cloud.google.com/products/calculator/#id=8006396b-88ee-40cd-a1c8-77cdefa4d3c8">Calculated cost</a></td>
     <td></td>
+    <td><a href="https://calculator.aws/#/estimate?id=e15926b1a3c7139e4faf390a3875ff807d2ab91c">Calculated cost</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><a href="https://azure.com/e/3f973040ebc14023933d35f576c89846">Calculated cost</a></td>
   </tr>
 </table>
 
-### Recommended cloud providers and services
+## Recommended cloud providers and services
 
 NOTE:
 The following lists are non exhaustive. Generally, other cloud providers not listed
@@ -347,7 +366,7 @@ The following specific cloud provider services have been found to have issues in
 
 - [Azure Blob Storage](https://azure.microsoft.com/en-gb/services/storage/blobs/) has been found to have performance limits that can impact production use at certain times. For larger Reference Architectures the service may not be sufficient for production use and an alternative is recommended for use instead.
 - [Azure Database for PostgreSQL Server](https://azure.microsoft.com/en-gb/services/postgresql/#overview) (Single / Flexible) is not recommended for use due to notable performance issues or missing functionality.
-- [AWS Aurora Database](https://aws.amazon.com/rds/aurora) is not recommended due to compatibility issues.
+- [AWS Aurora Database](https://aws.amazon.com/rds/aurora/) is not recommended due to compatibility issues.
 
 NOTE:
 As a general rule we unfortunately don't recommend Azure Services at this time.
@@ -411,7 +430,7 @@ to any of the [available reference architectures](#available-reference-architect
 > - Required domain knowledge: PostgreSQL, HAProxy, shared storage, distributed systems
 
 GitLab supports [zero-downtime upgrades](../../update/zero_downtime.md).
-Single GitLab nodes can be updated with only a [few minutes of downtime](../../update/zero_downtime.md#single-node-deployment).
+Single GitLab nodes can be updated with only a [few minutes of downtime](../../update/index.md#upgrade-based-on-installation-method).
 To avoid this, we recommend to separate GitLab into several application nodes.
 As long as at least one of each component is online and capable of handling the instance's usage load, your team's productivity will not be interrupted during the update.
 

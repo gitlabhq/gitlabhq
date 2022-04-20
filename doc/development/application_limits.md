@@ -19,7 +19,7 @@ and communicate those limits.
 There is a guide about [introducing application
 limits](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits).
 
-## Development
+## Implement plan limits
 
 ### Insert database plan limits
 
@@ -161,3 +161,31 @@ GitLab.com:
 - `opensource`: Namespaces and projects that are member of GitLab Open Source program.
 
 The `test` environment doesn't have any plans.
+
+## Implement rate limits using `Rack::Attack`
+
+We use the [`Rack::Attack`](https://github.com/rack/rack-attack) middleware to throttle Rack requests.
+This applies to Rails controllers, Grape endpoints, and any other Rack requests.
+
+The process for adding a new throttle is loosely:
+
+1. Add new columns to the `ApplicationSetting` model (`*_enabled`, `*_requests_per_period`, `*_period_in_seconds`).
+1. Extend `Gitlab::RackAttack` and `Gitlab::RackAttack::Request` to configure the new rate limit,
+  and apply it to the desired requests.
+1. Add the new settings to the Admin Area form in `app/views/admin/application_settings/_ip_limits.html.haml`.
+1. Document the new settings in [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md) and [Application settings API](../api/settings.md).
+1. Configure the rate limit for GitLab.com and document it in [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+
+Refer to these past issues for implementation details:
+
+- [Create a separate rate limit for the Files API](https://gitlab.com/gitlab-org/gitlab/-/issues/335075).
+- [Create a separate rate limit for unauthenticated API traffic](https://gitlab.com/gitlab-org/gitlab/-/issues/335300).
+
+## Implement rate limits using `Gitlab::ApplicationRateLimiter`
+
+This module implements a custom rate limiter that can be used to throttle
+certain actions. Unlike `Rack::Attack` and `Rack::Throttle`, which operate at
+the middleware level, this can be used at the controller or API level.
+
+See the `CheckRateLimit` concern for use in controllers. In other parts of the code
+the `Gitlab::ApplicationRateLimiter` module can be called directly.

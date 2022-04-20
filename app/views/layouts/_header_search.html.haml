@@ -1,4 +1,4 @@
-#js-header-search.header-search{ data: { 'search-context' => header_search_context.to_json,
+#js-header-search.header-search.is-not-active.gl-relative{ data: { 'search-context' => header_search_context.to_json,
 'search-path' => search_path,
 'issues-path' => issues_dashboard_path,
 'mr-path' => merge_requests_dashboard_path,
@@ -6,7 +6,10 @@
   = form_tag search_path, method: :get do |_f|
     .gl-search-box-by-type
       = sprite_icon('search', css_class: 'gl-search-box-by-type-search-icon gl-icon')
-      %input{ id: 'search', name: 'search', type: "text", placeholder: s_('GlobalSearch|Search GitLab'), class: 'form-control gl-form-input gl-search-box-by-type-input', autocomplete: 'off' }
+      %input{ id: 'search', name: 'search', type: "text", placeholder: s_('GlobalSearch|Search GitLab'),
+                                                          class: 'form-control gl-form-input gl-search-box-by-type-input',
+                                                          autocomplete: 'off',
+                                                          data: { qa_selector: 'search_box' } }
 
     = hidden_field_tag :group_id, header_search_context[:group][:id] if header_search_context[:group]
     = hidden_field_tag :project_id, header_search_context[:project][:id] if header_search_context[:project]

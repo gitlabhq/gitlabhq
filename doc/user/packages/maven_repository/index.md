@@ -283,7 +283,8 @@ To authenticate to the Package Registry, you need either a personal access token
 
 ### Authenticate with a personal access token in Gradle
 
-Create a file `~/.gradle/gradle.properties` with the following content:
+In [your `GRADLE_USER_HOME` directory](https://docs.gradle.org/current/userguide/directory_layout.html#dir:gradle_user_home),
+create a file `gradle.properties` with the following content:
 
 ```groovy
 gitLabPrivateToken=REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN
@@ -586,7 +587,7 @@ To publish a package by using Gradle:
                url "https://gitlab.example.com/api/v4/projects/<PROJECT_ID>/packages/maven"
                credentials(HttpHeaderCredentials) {
                    name = "Private-Token"
-                   value = gitLabPrivateToken // the variable resides in ~/.gradle/gradle.properties
+                   value = gitLabPrivateToken // the variable resides in $GRADLE_USER_HOME/gradle.properties
                }
                authentication {
                    header(HttpHeaderAuthentication)
@@ -820,7 +821,7 @@ rm -rf ~/.m2/repository
 If you're using Gradle, run this command to clear the cache:
 
 ```shell
-rm -rf ~/.gradle/caches
+rm -rf ~/.gradle/caches # Or replace ~/.gradle with your custom GRADLE_USER_HOME
 ```
 
 ### Review network trace logs

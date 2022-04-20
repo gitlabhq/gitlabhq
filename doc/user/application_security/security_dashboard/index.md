@@ -52,6 +52,9 @@ To view vulnerabilities in a pipeline:
 1. From the list, select the pipeline you want to check for vulnerabilities.
 1. Select the **Security** tab.
 
+**Scan details** shows vulnerabilities introduced by the merge request, in addition to existing vulnerabilities
+from the latest successful pipeline in your project's default branch.
+
 A pipeline consists of multiple jobs, such as SAST and DAST scans. If a job fails to finish,
 the security dashboard doesn't show SAST scanner output. For example, if the SAST
 job finishes but the DAST job fails, the security dashboard doesn't show SAST results. On failure,
@@ -66,7 +69,8 @@ To view the total number of vulnerabilities per scan:
 1. Select the **Status** of a branch.
 1. Select the **Security** tab.
 
-**Scan details** show the total number of vulnerabilities found per scan in the pipeline.
+**Scan details** shows vulnerabilities introduced by the merge request, in addition to existing vulnerabilities
+from the latest successful pipeline in your project's default branch.
 
 ### Download security scan outputs
 

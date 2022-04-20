@@ -5,6 +5,8 @@ import AwardsList from '~/vue_shared/components/awards_list.vue';
 import createstore from './store';
 
 export default (el) => {
+  if (!el) return null;
+
   const {
     dataset: { path },
   } = el;

@@ -8,11 +8,8 @@ import { I18N_AGENT_TOKEN } from '../constants';
 
 export default {
   i18n: I18N_AGENT_TOKEN,
-  basicInstallPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'install-the-agent-into-the-cluster',
-  }),
   advancedInstallPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'advanced-installation',
+    anchor: 'advanced-installation-method',
   }),
   components: {
     GlAlert,
@@ -43,27 +40,7 @@ export default {
 
 <template>
   <div>
-    <p>
-      <strong>{{ $options.i18n.tokenTitle }}</strong>
-    </p>
-
-    <p>
-      <gl-sprintf :message="$options.i18n.tokenBody">
-        <template #link="{ content }">
-          <gl-link :href="$options.basicInstallPath" target="_blank"> {{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </p>
-
-    <p>
-      <gl-alert
-        :title="$options.i18n.tokenSingleUseWarningTitle"
-        variant="warning"
-        :dismissible="false"
-      >
-        {{ $options.i18n.tokenSingleUseWarningBody }}
-      </gl-alert>
-    </p>
+    <p class="gl-mb-3">{{ $options.i18n.tokenLabel }}</p>
 
     <p>
       <gl-form-input-group readonly :value="agentToken" :select-on-click="true">
@@ -76,6 +53,14 @@ export default {
         </template>
       </gl-form-input-group>
     </p>
+
+    <p>
+      {{ $options.i18n.tokenSubtitle }}
+    </p>
+
+    <gl-alert :dismissible="false" variant="warning" class="gl-mb-5">
+      {{ $options.i18n.tokenSingleUseWarningTitle }}
+    </gl-alert>
 
     <p>
       <strong>{{ $options.i18n.basicInstallTitle }}</strong>

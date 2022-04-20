@@ -31,3 +31,5 @@ module Users
     end
   end
 end
+
+Users::GroupCalloutsHelper.prepend_mod

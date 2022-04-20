@@ -2,10 +2,13 @@
 
 module BulkImports
   class Stage
-    def initialize(bulk_import)
-      raise(ArgumentError, 'Expected an argument of type ::BulkImport') unless bulk_import.is_a?(::BulkImport)
+    def initialize(bulk_import_entity)
+      unless bulk_import_entity.is_a?(::BulkImports::Entity)
+        raise(ArgumentError, 'Expected an argument of type ::BulkImports::Entity')
+      end
 
-      @bulk_import = bulk_import
+      @bulk_import_entity = bulk_import_entity
+      @bulk_import = bulk_import_entity.bulk_import
     end
 
     def pipelines

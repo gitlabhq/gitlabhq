@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import ciIcon from '../../vue_shared/components/ci_icon.vue';
+import ciIcon from '~/vue_shared/components/ci_icon.vue';
 
 export default {
   components: {

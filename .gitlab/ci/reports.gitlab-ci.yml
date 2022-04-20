@@ -87,12 +87,6 @@ gemnasium-dependency_scanning:
     - apk add git-lfs
   rules: !reference [".reports:rules:gemnasium-dependency_scanning", rules]
 
-bundler-audit-dependency_scanning:
-  rules: !reference [".reports:rules:bundler-audit-dependency_scanning", rules]
-
-retire-js-dependency_scanning:
-  rules: !reference [".reports:rules:retire-js-dependency_scanning", rules]
-
 gemnasium-python-dependency_scanning:
   rules: !reference [".reports:rules:gemnasium-python-dependency_scanning", rules]
 

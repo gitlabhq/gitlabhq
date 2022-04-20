@@ -1,26 +1,35 @@
 import $ from 'jquery';
 import { nextTick } from 'vue';
 import '~/behaviors/markdown/render_gfm';
-import { GlPopover, GlModal } from '@gitlab/ui';
+import { GlTooltip, GlModal } from '@gitlab/ui';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import createFlash from '~/flash';
 import Description from '~/issues/show/components/description.vue';
+import { updateHistory } from '~/lib/utils/url_utility';
 import TaskList from '~/task_list';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import {
   descriptionProps as initialProps,
   descriptionHtmlWithCheckboxes,
+  descriptionHtmlWithTask,
 } from '../mock_data/mock_data';
 
 jest.mock('~/flash');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  updateHistory: jest.fn(),
+}));
 jest.mock('~/task_list');
 
 const showModal = jest.fn();
 const hideModal = jest.fn();
+const $toast = {
+  show: jest.fn(),
+};
 
 describe('Description component', () => {
   let wrapper;
@@ -28,10 +37,9 @@ describe('Description component', () => {
   const findGfmContent = () => wrapper.find('[data-testid="gfm-content"]');
   const findTextarea = () => wrapper.find('[data-testid="textarea"]');
   const findTaskActionButtons = () => wrapper.findAll('.js-add-task');
-  const findConvertToTaskButton = () => wrapper.find('[data-testid="convert-to-task"]');
-  const findTaskSvg = () => wrapper.find('[data-testid="issue-open-m-icon"]');
+  const findConvertToTaskButton = () => wrapper.find('.js-add-task');
 
-  const findPopovers = () => wrapper.findAllComponents(GlPopover);
+  const findTooltips = () => wrapper.findAllComponents(GlTooltip);
   const findModal = () => wrapper.findComponent(GlModal);
   const findCreateWorkItem = () => wrapper.findComponent(CreateWorkItem);
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
@@ -39,10 +47,14 @@ describe('Description component', () => {
   function createComponent({ props = {}, provide = {} } = {}) {
     wrapper = shallowMountExtended(Description, {
       propsData: {
+        issueId: 1,
         ...initialProps,
         ...props,
       },
       provide,
+      mocks: {
+        $toast,
+      },
       stubs: {
         GlModal: stubComponent(GlModal, {
           methods: {
@@ -50,12 +62,13 @@ describe('Description component', () => {
             hide: hideModal,
           },
         }),
-        GlPopover,
       },
     });
   }
 
   beforeEach(() => {
+    setWindowLocation(TEST_HOST);
+
     if (!document.querySelector('.issuable-meta')) {
       const metaData = document.createElement('div');
       metaData.classList.add('issuable-meta');
@@ -253,9 +266,9 @@ describe('Description component', () => {
         expect(findTaskActionButtons()).toHaveLength(3);
       });
 
-      it('renders a list of popovers corresponding to checkboxes in description HTML', () => {
-        expect(findPopovers()).toHaveLength(3);
-        expect(findPopovers().at(0).props('target')).toBe(
+      it('renders a list of tooltips corresponding to checkboxes in description HTML', () => {
+        expect(findTooltips()).toHaveLength(3);
+        expect(findTooltips().at(0).props('target')).toBe(
           findTaskActionButtons().at(0).attributes('id'),
         );
       });
@@ -264,92 +277,113 @@ describe('Description component', () => {
         expect(findModal().props('visible')).toBe(false);
       });
 
-      it('opens a modal when a button on popover is clicked and displays correct title', async () => {
-        findConvertToTaskButton().vm.$emit('click');
-        expect(showModal).toHaveBeenCalled();
-        await nextTick();
+      it('opens a modal when a button is clicked and displays correct title', async () => {
+        await findConvertToTaskButton().trigger('click');
         expect(findCreateWorkItem().props('initialTitle').trim()).toBe('todo 1');
       });
 
-      it('closes the modal on `closeCreateTaskModal` event', () => {
-        findConvertToTaskButton().vm.$emit('click');
+      it('closes the modal on `closeCreateTaskModal` event', async () => {
+        await findConvertToTaskButton().trigger('click');
         findCreateWorkItem().vm.$emit('closeModal');
         expect(hideModal).toHaveBeenCalled();
       });
 
-      it('updates description HTML on `onCreate` event', async () => {
-        const newTitle = 'New title';
-        findConvertToTaskButton().vm.$emit('click');
-        findCreateWorkItem().vm.$emit('onCreate', { title: newTitle });
+      it('emits `updateDescription` on `onCreate` event', () => {
+        const newDescription = `<p>New description</p>`;
+        findCreateWorkItem().vm.$emit('onCreate', newDescription);
         expect(hideModal).toHaveBeenCalled();
-        await nextTick();
+        expect(wrapper.emitted('updateDescription')).toEqual([[newDescription]]);
+      });
 
-        expect(findTaskSvg().exists()).toBe(true);
-        expect(wrapper.text()).toContain(newTitle);
+      it('shows toast after delete success', async () => {
+        findWorkItemDetailModal().vm.$emit('workItemDeleted');
+
+        expect($toast.show).toHaveBeenCalledWith('Work item deleted');
       });
     });
 
     describe('work items detail', () => {
-      const id = '1';
-      const title = 'my first task';
-      const type = 'task';
+      const findTaskLink = () => wrapper.find('a.gfm-issue');
 
-      const createThenClickOnTask = () => {
-        findConvertToTaskButton().vm.$emit('click');
-        findCreateWorkItem().vm.$emit('onCreate', { id, title, type });
-        return wrapper.findByRole('button', { name: title }).trigger('click');
-      };
-
-      beforeEach(() => {
-        createComponent({
-          props: {
-            descriptionHtml: descriptionHtmlWithCheckboxes,
-          },
-          provide: {
-            glFeatures: { workItems: true },
-          },
+      describe('when opening and closing', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              descriptionHtml: descriptionHtmlWithTask,
+            },
+            provide: {
+              glFeatures: { workItems: true },
+            },
+          });
+          return nextTick();
         });
-        return nextTick();
-      });
 
-      it('opens when task button is clicked', async () => {
-        expect(findWorkItemDetailModal().props('visible')).toBe(false);
+        it('opens when task button is clicked', async () => {
+          expect(findWorkItemDetailModal().props('visible')).toBe(false);
 
-        await createThenClickOnTask();
+          await findTaskLink().trigger('click');
 
-        expect(findWorkItemDetailModal().props('visible')).toBe(true);
-      });
-
-      it('closes from an open state', async () => {
-        await createThenClickOnTask();
-
-        expect(findWorkItemDetailModal().props('visible')).toBe(true);
-
-        findWorkItemDetailModal().vm.$emit('close');
-        await nextTick();
-
-        expect(findWorkItemDetailModal().props('visible')).toBe(false);
-      });
-
-      it('shows error on error', async () => {
-        const message = 'I am error';
-
-        await createThenClickOnTask();
-        findWorkItemDetailModal().vm.$emit('error', message);
-
-        expect(createFlash).toHaveBeenCalledWith({ message });
-      });
-
-      it('tracks when opened', async () => {
-        const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-
-        await createThenClickOnTask();
-
-        expect(trackingSpy).toHaveBeenCalledWith('workItems:show', 'viewed_work_item_from_modal', {
-          category: 'workItems:show',
-          label: 'work_item_view',
-          property: 'type_task',
+          expect(findWorkItemDetailModal().props('visible')).toBe(true);
+          expect(updateHistory).toHaveBeenCalledWith({
+            url: `${TEST_HOST}/?work_item_id=2`,
+            replace: true,
+          });
         });
+
+        it('closes from an open state', async () => {
+          await findTaskLink().trigger('click');
+
+          expect(findWorkItemDetailModal().props('visible')).toBe(true);
+
+          findWorkItemDetailModal().vm.$emit('close');
+          await nextTick();
+
+          expect(findWorkItemDetailModal().props('visible')).toBe(false);
+          expect(updateHistory).toHaveBeenLastCalledWith({
+            url: `${TEST_HOST}/`,
+            replace: true,
+          });
+        });
+
+        it('tracks when opened', async () => {
+          const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+          await findTaskLink().trigger('click');
+
+          expect(trackingSpy).toHaveBeenCalledWith(
+            'workItems:show',
+            'viewed_work_item_from_modal',
+            {
+              category: 'workItems:show',
+              label: 'work_item_view',
+              property: 'type_task',
+            },
+          );
+        });
+      });
+
+      describe('when url query `work_item_id` exists', () => {
+        it.each`
+          behavior           | workItemId     | visible
+          ${'opens'}         | ${'123'}       | ${true}
+          ${'does not open'} | ${'123e'}      | ${false}
+          ${'does not open'} | ${'12e3'}      | ${false}
+          ${'does not open'} | ${'1e23'}      | ${false}
+          ${'does not open'} | ${'x'}         | ${false}
+          ${'does not open'} | ${'undefined'} | ${false}
+        `(
+          '$behavior when url contains `work_item_id=$workItemId`',
+          async ({ workItemId, visible }) => {
+            setWindowLocation(`?work_item_id=${workItemId}`);
+
+            createComponent({
+              props: { descriptionHtml: descriptionHtmlWithTask },
+              provide: { glFeatures: { workItems: true } },
+            });
+
+            expect(findWorkItemDetailModal().props('visible')).toBe(visible);
+          },
+        );
       });
     });
   });

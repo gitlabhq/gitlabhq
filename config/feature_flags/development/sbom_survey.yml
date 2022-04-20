@@ -1,8 +1,0 @@
----
-name: sbom_survey
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76446
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348181
-milestone: '14.6'
-type: development
-group: group::secure
-default_enabled: false

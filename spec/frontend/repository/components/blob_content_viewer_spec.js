@@ -25,6 +25,7 @@ import { redirectTo } from '~/lib/utils/url_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import httpStatusCodes from '~/lib/utils/http_status';
+import LineHighlighter from '~/blob/line_highlighter';
 import {
   simpleViewerMock,
   richViewerMock,
@@ -39,6 +40,7 @@ import {
 jest.mock('~/repository/components/blob_viewers');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/blob/line_highlighter');
 
 let wrapper;
 let mockResolver;
@@ -173,20 +175,30 @@ describe('Blob content viewer component', () => {
     });
 
     describe('legacy viewers', () => {
+      const legacyViewerUrl = 'some_file.js?format=json&viewer=simple';
+      const fileType = 'text';
+      const highlightJs = false;
+
       it('loads a legacy viewer when a the fileType is text and the highlightJs feature is turned off', async () => {
         await createComponent({
-          blob: { ...simpleViewerMock, fileType: 'text', highlightJs: false },
+          blob: { ...simpleViewerMock, fileType, highlightJs },
         });
 
         expect(mockAxios.history.get).toHaveLength(1);
-        expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=simple');
+        expect(mockAxios.history.get[0].url).toBe(legacyViewerUrl);
       });
 
       it('loads a legacy viewer when a viewer component is not available', async () => {
         await createComponent({ blob: { ...simpleViewerMock, fileType: 'unknown' } });
 
         expect(mockAxios.history.get).toHaveLength(1);
-        expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=simple');
+        expect(mockAxios.history.get[0].url).toBe(legacyViewerUrl);
+      });
+
+      it('loads the LineHighlighter', async () => {
+        mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');
+        await createComponent({ blob: { ...simpleViewerMock, fileType, highlightJs } });
+        expect(LineHighlighter).toHaveBeenCalled();
       });
     });
   });
@@ -258,6 +270,7 @@ describe('Blob content viewer component', () => {
         codeNavigationPath: simpleViewerMock.codeNavigationPath,
         blobPath: simpleViewerMock.path,
         pathPrefix: simpleViewerMock.projectBlobPathRoot,
+        wrapTextNodes: true,
       });
     });
 

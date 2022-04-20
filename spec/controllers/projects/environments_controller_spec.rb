@@ -254,38 +254,54 @@ RSpec.describe Projects::EnvironmentsController do
   end
 
   describe 'PATCH #stop' do
+    subject { patch :stop, params: environment_params(format: :json) }
+
     context 'when env not available' do
       it 'returns 404' do
         allow_any_instance_of(Environment).to receive(:available?) { false }
 
-        patch :stop, params: environment_params(format: :json)
+        subject
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
     context 'when stop action' do
-      it 'returns action url' do
+      it 'returns action url for single stop action' do
         action = create(:ci_build, :manual)
 
         allow_any_instance_of(Environment)
-          .to receive_messages(available?: true, stop_with_action!: action)
+          .to receive_messages(available?: true, stop_with_actions!: [action])
 
-        patch :stop, params: environment_params(format: :json)
+        subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq(
           { 'redirect_url' =>
               project_job_url(project, action) })
       end
+
+      it 'returns environment url for multiple stop actions' do
+        actions = create_list(:ci_build, 2, :manual)
+
+        allow_any_instance_of(Environment)
+        .to receive_messages(available?: true, stop_with_actions!: actions)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq(
+          { 'redirect_url' =>
+              project_environment_url(project, environment) })
+      end
     end
 
     context 'when no stop action' do
       it 'returns env url' do
         allow_any_instance_of(Environment)
-          .to receive_messages(available?: true, stop_with_action!: nil)
+          .to receive_messages(available?: true, stop_with_actions!: nil)
 
-        patch :stop, params: environment_params(format: :json)
+        subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq(

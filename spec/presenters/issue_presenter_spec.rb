@@ -5,19 +5,42 @@ require 'spec_helper'
 RSpec.describe IssuePresenter do
   include Gitlab::Routing.url_helpers
 
-  let(:user)      { create(:user) }
-  let(:group)     { create(:group) }
-  let(:project)   { create(:project, group: group) }
-  let(:issue)     { create(:issue, project: project) }
-  let(:presenter) { described_class.new(issue, current_user: user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:task) { create(:issue, :task, project: project) }
 
-  before do
+  let(:presented_issue) { issue }
+  let(:presenter) { described_class.new(presented_issue, current_user: user) }
+
+  before_all do
     group.add_developer(user)
   end
 
   describe '#web_url' do
     it 'returns correct path' do
-      expect(presenter.web_url).to eq("http://localhost/#{group.name}/#{project.name}/-/issues/#{issue.iid}")
+      expect(presenter.web_url).to eq("http://localhost/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
+    end
+
+    context 'when issue type is task' do
+      let(:presented_issue) { task }
+
+      context 'when work_items feature flag is enabled' do
+        it 'returns a work item url for the task' do
+          expect(presenter.web_url).to eq(project_work_items_url(project, work_items_path: presented_issue.id))
+        end
+      end
+
+      context 'when work_items feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it 'returns an issue url for the task' do
+          expect(presenter.web_url).to eq("http://localhost/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
+        end
+      end
     end
   end
 
@@ -29,7 +52,7 @@ RSpec.describe IssuePresenter do
     end
 
     it 'returns subscribed' do
-      create(:subscription, user: user, project: project, subscribable: issue, subscribed: true)
+      create(:subscription, user: user, project: project, subscribable: presented_issue, subscribed: true)
 
       is_expected.to be(true)
     end
@@ -37,7 +60,27 @@ RSpec.describe IssuePresenter do
 
   describe '#issue_path' do
     it 'returns correct path' do
-      expect(presenter.issue_path).to eq("/#{group.name}/#{project.name}/-/issues/#{issue.iid}")
+      expect(presenter.issue_path).to eq("/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
+    end
+
+    context 'when issue type is task' do
+      let(:presented_issue) { task }
+
+      context 'when work_items feature flag is enabled' do
+        it 'returns a work item path for the task' do
+          expect(presenter.issue_path).to eq(project_work_items_path(project, work_items_path: presented_issue.id))
+        end
+      end
+
+      context 'when work_items feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it 'returns an issue path for the task' do
+          expect(presenter.issue_path).to eq("/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
+        end
+      end
     end
   end
 

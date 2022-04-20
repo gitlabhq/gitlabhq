@@ -6,7 +6,7 @@ RSpec.describe GroupLink::ProjectGroupLinkEntity do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project_group_link) { create(:project_group_link) }
 
-  let(:entity) { described_class.new(project_group_link) }
+  let(:entity) { described_class.new(project_group_link, { current_user: current_user, source: project_group_link.project }) }
 
   before do
     allow(entity).to receive(:current_user).and_return(current_user)

@@ -14,7 +14,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
 import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
-import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/pipelines_ci_templates.vue';
+import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
 import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import { RAW_TEXT_WARNING } from '~/pipelines/constants';
 import Store from '~/pipelines/stores/pipelines_store';

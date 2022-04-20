@@ -2,7 +2,7 @@ import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import * as types from '~/user_lists/store/index/mutation_types';
 import mutations from '~/user_lists/store/index/mutations';
 import createState from '~/user_lists/store/index/state';
-import { userList } from '../../../feature_flags/mock_data';
+import { userList } from 'jest/feature_flags/mock_data';
 
 describe('~/user_lists/store/index/mutations', () => {
   let state;

@@ -30,7 +30,7 @@ module Gitlab
         def self.normalize_value(given_value)
           dummy_dn = "placeholder=#{given_value}"
           normalized_dn = new(*dummy_dn).to_normalized_s
-          normalized_dn.sub(/\Aplaceholder=/, '')
+          normalized_dn.delete_prefix('placeholder=')
         end
 
         ##

@@ -1,0 +1,9 @@
+---
+table_name: analytics_cycle_analytics_stage_event_hashes
+classes:
+- Analytics::CycleAnalytics::StageEventHash
+feature_categories:
+- value_stream_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67259
+milestone: '14.2'

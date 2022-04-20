@@ -106,7 +106,8 @@ RSpec.describe Notes::CreateService do
                        type: 'DiffNote',
                        noteable_type: 'MergeRequest',
                        noteable_id: merge_request.id,
-                       position: position.to_h)
+                       position: position.to_h,
+                       confidential: false)
           end
 
           before do
@@ -141,7 +142,8 @@ RSpec.describe Notes::CreateService do
                          type: 'DiffNote',
                          noteable_type: 'MergeRequest',
                          noteable_id: merge_request.id,
-                         position: position.to_h)
+                         position: position.to_h,
+                         confidential: false)
 
             expect(merge_request).not_to receive(:diffs)
 
@@ -173,7 +175,8 @@ RSpec.describe Notes::CreateService do
                          type: 'DiffNote',
                          noteable_type: 'MergeRequest',
                          noteable_id: merge_request.id,
-                         position: position.to_h)
+                         position: position.to_h,
+                         confidential: false)
             end
 
             it 'note is associated with a note diff file' do
@@ -201,7 +204,8 @@ RSpec.describe Notes::CreateService do
                          type: 'DiffNote',
                          noteable_type: 'MergeRequest',
                          noteable_id: merge_request.id,
-                         position: position.to_h)
+                         position: position.to_h,
+                         confidential: false)
             end
 
             it 'note is not associated with a note diff file' do
@@ -230,7 +234,8 @@ RSpec.describe Notes::CreateService do
                            type: 'DiffNote',
                            noteable_type: 'MergeRequest',
                            noteable_id: merge_request.id,
-                           position: image_position.to_h)
+                           position: image_position.to_h,
+                           confidential: false)
               end
 
               it 'note is not associated with a note diff file' do
@@ -306,7 +311,7 @@ RSpec.describe Notes::CreateService do
           let_it_be(:merge_request) { create(:merge_request, source_project: project, labels: [bug_label]) }
 
           let(:issuable) { merge_request }
-          let(:note_params) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
+          let(:note_params) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id, confidential: false) }
           let(:merge_request_quick_actions) do
             [
               QuickAction.new(

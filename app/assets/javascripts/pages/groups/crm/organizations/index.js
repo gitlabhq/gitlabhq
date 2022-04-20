@@ -1,3 +1,3 @@
-import initCrmOrganizationsApp from '~/crm/organizations_bundle';
+import initCrmOrganizationsApp from '~/crm/organizations/bundle';
 
 initCrmOrganizationsApp();

@@ -11,6 +11,12 @@ module QA
           @runner_network = Runtime::Scenario.attributes[:runner_network] || @network
         end
 
+        def logs
+          shell "docker logs #{@name}" do |line|
+            yield "   #{line.chomp}"
+          end
+        end
+
         def network
           shell "docker network inspect #{@network}"
         rescue CommandError

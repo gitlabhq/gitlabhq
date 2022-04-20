@@ -24,6 +24,7 @@ module QA
 
       before do
         allow(subject).to receive(:shell)
+        allow(subject).to receive(:wait_until_running_and_configured)
       end
 
       context 'defaults' do

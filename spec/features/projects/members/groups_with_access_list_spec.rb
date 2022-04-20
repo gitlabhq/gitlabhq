@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects > Members > Groups with access list', :js do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
@@ -94,9 +95,5 @@ RSpec.describe 'Projects > Members > Groups with access list', :js do
 
       expect(members_table).to have_content(group.full_name)
     end
-  end
-
-  def click_groups_tab
-    click_link 'Groups'
   end
 end

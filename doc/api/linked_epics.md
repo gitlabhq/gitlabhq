@@ -88,3 +88,239 @@ Example response:
    }
 ]
 ```
+
+## Create a related epic link
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352840) in GitLab 14.10.
+
+Create a two-way relation between two epics. The user must be allowed to
+update both epics to succeed.
+
+```plaintext
+POST /groups/:id/epics/:epic_iid/related_epics
+```
+
+Supported attributes:
+
+| Attribute           | Type           | Required                    | Description                           |
+|---------------------|----------------|-----------------------------|---------------------------------------|
+| `epic_iid`          | integer        | **{check-circle}** Yes      | Internal ID of a group's epic.        |
+| `id`                | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `target_epic_iid`   | integer/string | **{check-circle}** Yes      | Internal ID of a target group's epic. |
+| `target_group_id`   | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the target group](index.md#namespaced-path-encoding). |
+| `link_type`         | string         | **{dotted-circle}** No      | Type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to`. |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/26/epics/1/related_epics?target_group_id=26&target_epic_iid=5"
+```
+
+Example response:
+
+```json
+{
+  "source_epic": {
+    "id": 21,
+    "iid": 1,
+    "color": "#1068bf",
+    "text_color": "#FFFFFF",
+    "group_id": 26,
+    "parent_id": null,
+    "parent_iid": null,
+    "title": "Aspernatur recusandae distinctio omnis et qui est iste.",
+    "description": "some description",
+    "confidential": false,
+    "author": {
+      "id": 15,
+      "username": "trina",
+      "name": "Theresia Robel",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/085e28df717e16484cbf6ceca75e9a93?s=80&d=identicon",
+      "web_url": "http://gitlab.example.com/trina"
+    },
+    "start_date": null,
+    "end_date": null,
+    "due_date": null,
+    "state": "opened",
+    "web_url": "http://gitlab.example.com/groups/flightjs/-/epics/1",
+    "references": {
+      "short": "&1",
+      "relative": "&1",
+      "full": "flightjs&1"
+    },
+    "created_at": "2022-01-31T15:10:44.988Z",
+    "updated_at": "2022-03-16T09:32:35.712Z",
+    "closed_at": null,
+    "labels": [],
+    "upvotes": 0,
+    "downvotes": 0,
+    "_links": {
+      "self": "http://gitlab.example.com/api/v4/groups/26/epics/1",
+      "epic_issues": "http://gitlab.example.com/api/v4/groups/26/epics/1/issues",
+      "group": "http://gitlab.example.com/api/v4/groups/26",
+      "parent": null
+    }
+  },
+  "target_epic": {
+    "id": 25,
+    "iid": 5,
+    "color": "#1068bf",
+    "text_color": "#FFFFFF",
+    "group_id": 26,
+    "parent_id": null,
+    "parent_iid": null,
+    "title": "Aut assumenda id nihil distinctio fugiat vel numquam est.",
+    "description": "some description",
+    "confidential": false,
+    "author": {
+      "id": 3,
+      "username": "valerie",
+      "name": "Erika Wolf",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/9ef7666abb101418a4716a8ed4dded80?s=80&d=identicon",
+      "web_url": "http://gitlab.example.com/valerie"
+    },
+    "start_date": null,
+    "end_date": null,
+    "due_date": null,
+    "state": "opened",
+    "web_url": "http://gitlab.example.com/groups/flightjs/-/epics/5",
+    "references": {
+      "short": "&5",
+      "relative": "&5",
+      "full": "flightjs&5"
+    },
+    "created_at": "2022-01-31T15:10:45.080Z",
+    "updated_at": "2022-03-16T09:32:35.842Z",
+    "closed_at": null,
+    "labels": [],
+    "upvotes": 0,
+    "downvotes": 0,
+    "_links": {
+      "self": "http://gitlab.example.com/api/v4/groups/26/epics/5",
+      "epic_issues": "http://gitlab.example.com/api/v4/groups/26/epics/5/issues",
+      "group": "http://gitlab.example.com/api/v4/groups/26",
+      "parent": null
+    }
+  },
+  "link_type": "relates_to"
+}
+```
+
+## Delete a related epic link
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352840) in GitLab 14.10.
+
+Delete a two-way relation between two epics. The user must be allowed to
+update both epics to succeed.
+
+```plaintext
+DELETE /groups/:id/epics/:epic_iid/related_epics/:related_epic_link_id
+```
+
+Supported attributes:
+
+| Attribute                | Type           | Required                    | Description                           |
+|--------------------------|----------------|-----------------------------|---------------------------------------|
+| `epic_iid`               | integer        | **{check-circle}** Yes      | Internal ID of a group's epic.        |
+| `id`                     | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `related_epic_link_id`   | integer/string | **{check-circle}** Yes      | Internal ID of a related epic link. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/26/epics/1/related_epics/1"
+```
+
+Example response:
+
+```json
+{
+  "source_epic": {
+    "id": 21,
+    "iid": 1,
+    "color": "#1068bf",
+    "text_color": "#FFFFFF",
+    "group_id": 26,
+    "parent_id": null,
+    "parent_iid": null,
+    "title": "Aspernatur recusandae distinctio omnis et qui est iste.",
+    "description": "some description",
+    "confidential": false,
+    "author": {
+      "id": 15,
+      "username": "trina",
+      "name": "Theresia Robel",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/085e28df717e16484cbf6ceca75e9a93?s=80&d=identicon",
+      "web_url": "http://gitlab.example.com/trina"
+    },
+    "start_date": null,
+    "end_date": null,
+    "due_date": null,
+    "state": "opened",
+    "web_url": "http://gitlab.example.com/groups/flightjs/-/epics/1",
+    "references": {
+      "short": "&1",
+      "relative": "&1",
+      "full": "flightjs&1"
+    },
+    "created_at": "2022-01-31T15:10:44.988Z",
+    "updated_at": "2022-03-16T09:32:35.712Z",
+    "closed_at": null,
+    "labels": [],
+    "upvotes": 0,
+    "downvotes": 0,
+    "_links": {
+      "self": "http://gitlab.example.com/api/v4/groups/26/epics/1",
+      "epic_issues": "http://gitlab.example.com/api/v4/groups/26/epics/1/issues",
+      "group": "http://gitlab.example.com/api/v4/groups/26",
+      "parent": null
+    }
+  },
+  "target_epic": {
+    "id": 25,
+    "iid": 5,
+    "color": "#1068bf",
+    "text_color": "#FFFFFF",
+    "group_id": 26,
+    "parent_id": null,
+    "parent_iid": null,
+    "title": "Aut assumenda id nihil distinctio fugiat vel numquam est.",
+    "description": "some description",
+    "confidential": false,
+    "author": {
+      "id": 3,
+      "username": "valerie",
+      "name": "Erika Wolf",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/9ef7666abb101418a4716a8ed4dded80?s=80&d=identicon",
+      "web_url": "http://gitlab.example.com/valerie"
+    },
+    "start_date": null,
+    "end_date": null,
+    "due_date": null,
+    "state": "opened",
+    "web_url": "http://gitlab.example.com/groups/flightjs/-/epics/5",
+    "references": {
+      "short": "&5",
+      "relative": "&5",
+      "full": "flightjs&5"
+    },
+    "created_at": "2022-01-31T15:10:45.080Z",
+    "updated_at": "2022-03-16T09:32:35.842Z",
+    "closed_at": null,
+    "labels": [],
+    "upvotes": 0,
+    "downvotes": 0,
+    "_links": {
+      "self": "http://gitlab.example.com/api/v4/groups/26/epics/5",
+      "epic_issues": "http://gitlab.example.com/api/v4/groups/26/epics/5/issues",
+      "group": "http://gitlab.example.com/api/v4/groups/26",
+      "parent": null
+    }
+  },
+  "link_type": "relates_to"
+}
+```

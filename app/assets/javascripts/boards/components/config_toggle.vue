@@ -14,16 +14,7 @@ export default {
     GlModalDirective,
   },
   mixins: [Tracking.mixin()],
-  props: {
-    canAdminList: {
-      type: Boolean,
-      required: true,
-    },
-    hasScope: {
-      type: Boolean,
-      required: true,
-    },
-  },
+  inject: ['canAdminList', 'hasScope'],
   computed: {
     buttonText() {
       return this.canAdminList ? s__('Boards|Edit board') : s__('Boards|View scope');

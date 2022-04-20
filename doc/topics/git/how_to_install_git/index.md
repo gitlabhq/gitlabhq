@@ -79,7 +79,7 @@ Go to the [Git website](https://git-scm.com/), and then download and install Git
 
 ## After you install Git
 
-After you successfully install Git on your computer, read about [adding an SSH key to GitLab](../../../ssh/index.md).
+After you successfully install Git on your computer, read about [adding an SSH key to GitLab](../../../user/ssh.md).
 
 <!-- ## Troubleshooting
 

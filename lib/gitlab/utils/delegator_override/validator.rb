@@ -28,7 +28,13 @@ module Gitlab
         end
 
         def add_target(target_class)
-          @target_classes << target_class if target_class
+          return unless target_class
+
+          @target_classes << target_class
+
+          # Also include all descendants inheriting from the target,
+          # to make sure we catch methods that are only defined in some of them.
+          @target_classes += target_class.descendants
         end
 
         # This will make sure allowlist we put into ancestors are all included

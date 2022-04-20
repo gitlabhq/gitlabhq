@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlLoadingIcon, GlModal, GlAlert, GlButton } from '@gitlab/ui';
+import { GlAlert, GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -32,11 +32,7 @@ describe('WikiForm', () => {
   const findMessage = () => wrapper.find('#wiki_message');
   const findSubmitButton = () => wrapper.findByTestId('wiki-submit-button');
   const findCancelButton = () => wrapper.findByTestId('wiki-cancel-button');
-  const findUseNewEditorButton = () => wrapper.findByText('Use the new editor');
   const findToggleEditingModeButton = () => wrapper.findByTestId('toggle-editing-mode-button');
-  const findDismissContentEditorAlertButton = () => wrapper.findByText('Try this later');
-  const findSwitchToOldEditorButton = () =>
-    wrapper.findByRole('button', { name: 'Switch me back to the classic editor.' });
   const findTitleHelpLink = () => wrapper.findByText('Learn more.');
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
   const findContentEditor = () => wrapper.findComponent(ContentEditor);
@@ -293,27 +289,21 @@ describe('WikiForm', () => {
     );
   });
 
-  describe('when wikiSwitchBetweenContentEditorRawMarkdown feature flag is not enabled', () => {
+  describe('toggle editing mode control', () => {
     beforeEach(() => {
-      createWrapper({
-        glFeatures: { wikiSwitchBetweenContentEditorRawMarkdown: false },
-      });
+      createWrapper();
     });
 
-    it('hides toggle editing mode button', () => {
-      expect(findToggleEditingModeButton().exists()).toBe(false);
-    });
-  });
+    it.each`
+      format        | enabled  | action
+      ${'markdown'} | ${true}  | ${'displays'}
+      ${'rdoc'}     | ${false} | ${'hides'}
+      ${'asciidoc'} | ${false} | ${'hides'}
+      ${'org'}      | ${false} | ${'hides'}
+    `('$action toggle editing mode button when format is $format', async ({ format, enabled }) => {
+      await setFormat(format);
 
-  describe('when wikiSwitchBetweenContentEditorRawMarkdown feature flag is enabled', () => {
-    beforeEach(() => {
-      createWrapper({
-        glFeatures: { wikiSwitchBetweenContentEditorRawMarkdown: true },
-      });
-    });
-
-    it('hides gl-alert containing "use new editor" button', () => {
-      expect(findUseNewEditorButton().exists()).toBe(false);
+      expect(findToggleEditingModeButton().exists()).toBe(enabled);
     });
 
     it('displays toggle editing mode button', () => {
@@ -326,8 +316,8 @@ describe('WikiForm', () => {
       });
 
       describe('when clicking the toggle editing mode button', () => {
-        beforeEach(() => {
-          findToggleEditingModeButton().vm.$emit('click');
+        beforeEach(async () => {
+          await findToggleEditingModeButton().trigger('click');
         });
 
         it('hides the classic editor', () => {
@@ -343,17 +333,13 @@ describe('WikiForm', () => {
     describe('when content editor is active', () => {
       let mockContentEditor;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         mockContentEditor = {
           getSerializedContent: jest.fn(),
           setSerializedContent: jest.fn(),
         };
 
-        findToggleEditingModeButton().vm.$emit('click');
-      });
-
-      it('hides switch to old editor button', () => {
-        expect(findSwitchToOldEditorButton().exists()).toBe(false);
+        await findToggleEditingModeButton().trigger('click');
       });
 
       it('displays "Edit source" label in the toggle editing mode button', () => {
@@ -363,13 +349,13 @@ describe('WikiForm', () => {
       describe('when clicking the toggle editing mode button', () => {
         const contentEditorFakeSerializedContent = 'fake content';
 
-        beforeEach(() => {
+        beforeEach(async () => {
           mockContentEditor.getSerializedContent.mockReturnValueOnce(
             contentEditorFakeSerializedContent,
           );
 
           findContentEditor().vm.$emit('initialized', mockContentEditor);
-          findToggleEditingModeButton().vm.$emit('click');
+          await findToggleEditingModeButton().trigger('click');
         });
 
         it('hides the content editor', () => {
@@ -388,75 +374,12 @@ describe('WikiForm', () => {
   });
 
   describe('wiki content editor', () => {
-    it.each`
-      format        | buttonExists
-      ${'markdown'} | ${true}
-      ${'rdoc'}     | ${false}
-    `(
-      'gl-alert containing "use new editor" button exists: $buttonExists if format is $format',
-      async ({ format, buttonExists }) => {
-        createWrapper();
-
-        await setFormat(format);
-
-        expect(findUseNewEditorButton().exists()).toBe(buttonExists);
-      },
-    );
-
-    it('gl-alert containing "use new editor" button is dismissed on clicking dismiss button', async () => {
-      createWrapper();
-
-      await findDismissContentEditorAlertButton().trigger('click');
-
-      expect(findUseNewEditorButton().exists()).toBe(false);
-    });
-
-    const assertOldEditorIsVisible = () => {
-      expect(findContentEditor().exists()).toBe(false);
-      expect(findClassicEditor().exists()).toBe(true);
-      expect(findSubmitButton().props('disabled')).toBe(false);
-
-      expect(wrapper.text()).not.toContain(
-        "Switching will discard any changes you've made in the new editor.",
-      );
-      expect(wrapper.text()).not.toContain(
-        "This editor is in beta and may not display the page's contents properly.",
-      );
-    };
-
-    it('shows classic editor by default', () => {
-      createWrapper({ persisted: true });
-
-      assertOldEditorIsVisible();
-    });
-
-    describe('switch format to rdoc', () => {
-      beforeEach(async () => {
-        createWrapper({ persisted: true });
-
-        await setFormat('rdoc');
-      });
-
-      it('continues to show the classic editor', assertOldEditorIsVisible);
-
-      describe('switch format back to markdown', () => {
-        beforeEach(async () => {
-          await setFormat('markdown');
-        });
-
-        it(
-          'still shows the classic editor and does not automatically switch to the content editor ',
-          assertOldEditorIsVisible,
-        );
-      });
-    });
-
     describe('clicking "use new editor": editor fails to load', () => {
       beforeEach(async () => {
         createWrapper({ mountFn: mount });
         mock.onPost(/preview-markdown/).reply(400);
 
-        await findUseNewEditorButton().trigger('click');
+        await findToggleEditingModeButton().trigger('click');
 
         // try waiting for content editor to load (but it will never actually load)
         await waitForPromises();
@@ -466,14 +389,14 @@ describe('WikiForm', () => {
         expect(findSubmitButton().props('disabled')).toBe(true);
       });
 
-      describe('clicking "switch to classic editor"', () => {
+      describe('toggling editing modes to the classic editor', () => {
         beforeEach(() => {
-          return findSwitchToOldEditorButton().trigger('click');
+          return findToggleEditingModeButton().trigger('click');
         });
 
-        it('switches to classic editor directly without showing a modal', () => {
-          expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
-          expect(wrapper.findComponent(MarkdownField).exists()).toBe(true);
+        it('switches to classic editor', () => {
+          expect(findContentEditor().exists()).toBe(false);
+          expect(findClassicEditor().exists()).toBe(true);
         });
       });
     });
@@ -484,31 +407,15 @@ describe('WikiForm', () => {
 
         mock.onPost(/preview-markdown/).reply(200, { body: '<p>hello <strong>world</strong></p>' });
 
-        await findUseNewEditorButton().trigger('click');
-      });
-
-      it('shows a tip to send feedback', () => {
-        expect(wrapper.text()).toContain('Tell us your experiences with the new Markdown editor');
-      });
-
-      it('shows warnings that the rich text editor is in beta and may not work properly', () => {
-        expect(wrapper.text()).toContain(
-          "This editor is in beta and may not display the page's contents properly.",
-        );
+        await findToggleEditingModeButton().trigger('click');
+        await waitForPromises();
       });
 
       it('shows the rich text editor when loading finishes', async () => {
-        // wait for content editor to load
-        await waitForPromises();
-
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
-        expect(wrapper.findComponent(ContentEditor).exists()).toBe(true);
+        expect(findContentEditor().exists()).toBe(true);
       });
 
       it('sends tracking event when editor loads', async () => {
-        // wait for content editor to load
-        await waitForPromises();
-
         expect(trackingSpy).toHaveBeenCalledWith(undefined, CONTENT_EDITOR_LOADED_ACTION, {
           label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
         });
@@ -562,49 +469,6 @@ describe('WikiForm', () => {
           await triggerFormSubmit();
 
           expect(findContent().element.value).toBe('hello **world**');
-        });
-      });
-
-      describe('clicking "switch to classic editor"', () => {
-        let modal;
-
-        beforeEach(async () => {
-          modal = wrapper.findComponent(GlModal);
-          jest.spyOn(modal.vm, 'show');
-
-          findSwitchToOldEditorButton().trigger('click');
-        });
-
-        it('shows a modal confirming the change', () => {
-          expect(modal.vm.show).toHaveBeenCalled();
-        });
-
-        describe('confirming "switch to classic editor" in the modal', () => {
-          beforeEach(async () => {
-            wrapper.vm.contentEditor.tiptapEditor.commands.setContent(
-              '<p>hello __world__ from content editor</p>',
-              true,
-            );
-
-            wrapper.findComponent(GlModal).vm.$emit('primary');
-
-            await nextTick();
-          });
-
-          it('switches to classic editor', () => {
-            expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
-            expect(wrapper.findComponent(MarkdownField).exists()).toBe(true);
-          });
-
-          it('does not show a warning about content editor', () => {
-            expect(wrapper.text()).not.toContain(
-              "This editor is in beta and may not display the page's contents properly.",
-            );
-          });
-
-          it('the classic editor retains its old value and does not use the content from the content editor', () => {
-            expect(findContent().element.value).toBe('  My page content  ');
-          });
         });
       });
     });

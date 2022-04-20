@@ -10,21 +10,19 @@ import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import initConfirmDanger from '~/init_confirm_danger';
 
-document.addEventListener('DOMContentLoaded', () => {
-  initFilePickers();
-  initConfirmDanger();
-  initSettingsPanels();
-  initTransferGroupForm();
-  dirtySubmitFactory(
-    document.querySelectorAll('.js-general-settings-form, .js-general-permissions-form'),
-  );
-  mountBadgeSettings(GROUP_BADGE);
+initFilePickers();
+initConfirmDanger();
+initSettingsPanels();
+initTransferGroupForm();
+dirtySubmitFactory(
+  document.querySelectorAll('.js-general-settings-form, .js-general-permissions-form'),
+);
+mountBadgeSettings(GROUP_BADGE);
 
-  // Initialize Subgroups selector
-  groupsSelect();
+// Initialize Subgroups selector
+groupsSelect();
 
-  projectSelect();
+projectSelect();
 
-  initSearchSettings();
-  initCascadingSettingsLockPopovers();
-});
+initSearchSettings();
+initCascadingSettingsLockPopovers();

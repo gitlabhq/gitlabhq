@@ -43,6 +43,12 @@ RSpec.describe HamlLint::Linter::DocumentationLinks do
       let(:haml) { "= link_to 'Description', #{link_pattern}('wrong.md'), target: '_blank'" }
 
       it { is_expected.to report_lint }
+
+      context 'when haml ends with block definition' do
+        let(:haml) { "= link_to 'Description', #{link_pattern}('wrong.md') do" }
+
+        it { is_expected.to report_lint }
+      end
     end
 
     context 'when link with wrong file path is assigned to a variable' do

@@ -12,7 +12,7 @@
         :preserve
           #{h(@project.import_state.last_error)}
 
-= form_for @project, url: project_import_path(@project), method: :post, html: { class: 'js-project-import' } do |f|
+= gitlab_ui_form_for @project, url: project_import_path(@project), method: :post, html: { class: 'js-project-import' } do |f|
   = render "shared/import_form", f: f
 
   .form-actions

@@ -214,7 +214,7 @@ end
 ```
 
 This step uses the same mechanism as any background migration, so you
-may want to read the [Background Migration](../background_migrations.md)
+may want to read the [Background Migration](background_migrations.md)
 guide for details on that process. Background jobs are scheduled every
 2 minutes and copy `50_000` records at a time, which can be used to
 estimate the timing of the background migration portion of the

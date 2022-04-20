@@ -8,7 +8,7 @@
         %span
           = "##{runner.id} (#{runner.short_sha})"
       - if runner.locked?
-        %span.has-tooltip{ title: _('Locked to current projects') }
+        %span.has-tooltip{ title: s_('Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.') }
           = sprite_icon('lock')
     .gl-ml-2
       .btn-group.btn-group-sm
@@ -22,10 +22,10 @@
             = link_to resume_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: s_('Runners|Resume accepting jobs'), aria: { label: _('Resume') }, data: { toggle: 'tooltip', container: 'body' } do
               = sprite_icon('play')
           - if runner.belongs_to_one_project?
-            = link_to _('Remove runner'), project_runner_path(@project, runner), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn gl-button btn-danger'
+            = link_to _('Remove runner'), project_runner_path(@project, runner), aria: { label: _('Remove') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, class: 'btn gl-button btn-danger'
           - else
             - runner_project = @project.runner_projects.find_by(runner_id: runner) # rubocop: disable CodeReuse/ActiveRecord
-            = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn gl-button btn-danger'
+            = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), aria: { label: _('Disable') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, class: 'btn gl-button btn-danger'
         - elsif runner.project_type?
           = form_for [@project, @project.runner_projects.new] do |f|
             = f.hidden_field :runner_id, value: runner.id

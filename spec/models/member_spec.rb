@@ -682,14 +682,46 @@ RSpec.describe Member do
       member.accept_invite!(user)
     end
 
-    it "refreshes user's authorized projects", :delete do
-      project = member.source
+    context 'authorized projects' do
+      let(:project) { member.source }
 
-      expect(user.authorized_projects).not_to include(project)
+      before do
+        expect(user.authorized_projects).not_to include(project)
+      end
 
-      member.accept_invite!(user)
+      it 'successfully completes a blocking refresh', :delete do
+        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true).and_call_original
 
-      expect(user.authorized_projects.reload).to include(project)
+        member.accept_invite!(user)
+
+        expect(user.authorized_projects.reload).to include(project)
+      end
+
+      it 'successfully completes a non-blocking refresh', :delete, :sidekiq_inline do
+        member.blocking_refresh = false
+
+        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: false).and_call_original
+
+        member.accept_invite!(user)
+
+        expect(user.authorized_projects.reload).to include(project)
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(allow_non_blocking_member_refresh: false)
+        end
+
+        it 'successfully completes a blocking refresh', :delete, :sidekiq_inline do
+          member.blocking_refresh = false
+
+          expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true).and_call_original
+
+          member.accept_invite!(user)
+
+          expect(user.authorized_projects.reload).to include(project)
+        end
+      end
     end
 
     it 'does not accept the invite if saving a new user fails' do
@@ -924,6 +956,66 @@ RSpec.describe Member do
       it 'sets the member_namespace_id' do
         expect(member.member_namespace_id).to eq group.id
       end
+    end
+  end
+
+  describe '.sort_by_attribute' do
+    let_it_be(:user1) { create(:user, created_at: Date.today, last_sign_in_at: Date.today, last_activity_on: Date.today, name: 'Alpha') }
+    let_it_be(:user2) { create(:user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, last_activity_on: Date.today - 1, name: 'Omega') }
+    let_it_be(:user3) { create(:user, created_at: Date.today - 2, name: 'Beta') }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:member1) { create(:group_member, :reporter, group: group, user: user1) }
+    let_it_be(:member2) { create(:group_member, :developer, group: group, user: user2) }
+    let_it_be(:member3) { create(:group_member, :maintainer, group: group, user: user3) }
+
+    it 'sort users in ascending order by access-level' do
+      expect(described_class.sort_by_attribute('access_level_asc')).to eq([member1, member2, member3])
+    end
+
+    it 'sort users in descending order by access-level' do
+      expect(described_class.sort_by_attribute('access_level_desc')).to eq([member3, member2, member1])
+    end
+
+    context 'when sort by recent_sign_in' do
+      subject { described_class.sort_by_attribute('recent_sign_in') }
+
+      it 'sorts users by recent sign-in time' do
+        expect(subject.first).to eq(member1)
+        expect(subject.second).to eq(member2)
+      end
+
+      it 'pushes users who never signed in to the end' do
+        expect(subject.third).to eq(member3)
+      end
+    end
+
+    context 'when sort by oldest_sign_in' do
+      subject { described_class.sort_by_attribute('oldest_sign_in') }
+
+      it 'sorts users by the oldest sign-in time' do
+        expect(subject.first).to eq(member2)
+        expect(subject.second).to eq(member1)
+      end
+
+      it 'pushes users who never signed in to the end' do
+        expect(subject.third).to eq(member3)
+      end
+    end
+
+    it 'sorts users in descending order by their creation time' do
+      expect(described_class.sort_by_attribute('recent_created_user')).to eq([member1, member2, member3])
+    end
+
+    it 'sorts users in ascending order by their creation time' do
+      expect(described_class.sort_by_attribute('oldest_created_user')).to eq([member3, member2, member1])
+    end
+
+    it 'sort users by recent last activity' do
+      expect(described_class.sort_by_attribute('recent_last_activity')).to eq([member1, member2, member3])
+    end
+
+    it 'sort users by oldest last activity' do
+      expect(described_class.sort_by_attribute('oldest_last_activity')).to eq([member3, member2, member1])
     end
   end
 end

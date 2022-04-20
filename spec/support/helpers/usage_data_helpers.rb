@@ -26,7 +26,6 @@ module UsageDataHelpers
 
   COUNTS_KEYS = %i(
       assignee_lists
-      boards
       ci_builds
       ci_internal_pipelines
       ci_external_pipelines

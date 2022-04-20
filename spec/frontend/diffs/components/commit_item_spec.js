@@ -11,7 +11,9 @@ jest.mock('~/user_popovers');
 const TEST_AUTHOR_NAME = 'test';
 const TEST_AUTHOR_EMAIL = 'test+test@gitlab.com';
 const TEST_AUTHOR_GRAVATAR = `${TEST_HOST}/avatar/test?s=40`;
-const TEST_SIGNATURE_HTML = '<a>Legit commit</a>';
+const TEST_SIGNATURE_HTML = `<a class="btn gpg-status-box valid" data-content="signature-content" data-html="true" data-placement="top" data-title="signature-title" data-toggle="popover" role="button" tabindex="0">
+  Verified
+</a>`;
 const TEST_PIPELINE_STATUS_PATH = `${TEST_HOST}/pipeline/status`;
 
 describe('diffs/components/commit_item', () => {
@@ -82,7 +84,7 @@ describe('diffs/components/commit_item', () => {
       const imgElement = avatarElement.find('img');
 
       expect(avatarElement.attributes('href')).toBe(commit.author.web_url);
-      expect(imgElement.classes()).toContain('s40');
+      expect(imgElement.classes()).toContain('s32');
       expect(imgElement.attributes('alt')).toBe(commit.author.name);
       expect(imgElement.attributes('src')).toBe(commit.author.avatar_url);
     });
@@ -156,8 +158,9 @@ describe('diffs/components/commit_item', () => {
 
     it('renders signature html', () => {
       const actionsElement = getCommitActionsElement();
+      const signatureElement = actionsElement.find('.gpg-status-box');
 
-      expect(actionsElement.html()).toContain(TEST_SIGNATURE_HTML);
+      expect(signatureElement.html()).toBe(TEST_SIGNATURE_HTML);
     });
   });
 

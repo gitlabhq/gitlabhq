@@ -51,11 +51,15 @@ class BulkImports::Entity < ApplicationRecord
   enum source_type: { group_entity: 0, project_entity: 1 }
 
   scope :by_user_id, ->(user_id) { joins(:bulk_import).where(bulk_imports: { user_id: user_id }) }
+  scope :stale, -> { where('created_at < ?', 8.hours.ago).where(status: [0, 1]) }
+  scope :by_bulk_import_id, ->(bulk_import_id) { where(bulk_import_id: bulk_import_id)}
+  scope :order_by_created_at, -> (direction) { order(created_at: direction) }
 
   state_machine :status, initial: :created do
     state :created, value: 0
     state :started, value: 1
     state :finished, value: 2
+    state :timeout, value: 3
     state :failed, value: -1
 
     event :start do
@@ -70,6 +74,11 @@ class BulkImports::Entity < ApplicationRecord
     event :fail_op do
       transition any => :failed
     end
+
+    event :cleanup_stale do
+      transition created: :timeout
+      transition started: :timeout
+    end
   end
 
   def self.all_human_statuses
@@ -83,9 +92,9 @@ class BulkImports::Entity < ApplicationRecord
   def pipelines
     @pipelines ||= case source_type
                    when 'group_entity'
-                     BulkImports::Groups::Stage.new(bulk_import).pipelines
+                     BulkImports::Groups::Stage.new(self).pipelines
                    when 'project_entity'
-                     BulkImports::Projects::Stage.new(bulk_import).pipelines
+                     BulkImports::Projects::Stage.new(self).pipelines
                    end
   end
 

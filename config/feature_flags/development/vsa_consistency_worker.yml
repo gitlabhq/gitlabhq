@@ -1,8 +1,8 @@
 ---
 name: vsa_consistency_worker
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82591
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355709
 milestone: '14.9'
 type: development
 group: group::optimize
-default_enabled: false
+default_enabled: true

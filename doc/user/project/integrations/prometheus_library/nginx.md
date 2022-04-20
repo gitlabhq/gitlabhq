@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
-for use in GitLab 14.7, and is planned for removal in GitLab 15.0.
+in GitLab 14.7, and is planned for removal in GitLab 16.0.
 
 GitLab has support for automatically detecting and monitoring NGINX. This is provided by leveraging the [NGINX VTS exporter](https://github.com/hnlq715/nginx-vts-exporter), which translates [VTS statistics](https://github.com/vozlt/nginx-module-vts) into a Prometheus readable form.
 

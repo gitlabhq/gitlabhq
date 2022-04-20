@@ -10,7 +10,7 @@ FactoryBot.define do
 
     options do
       {
-        image: 'ruby:2.7',
+        image: 'image:1.0',
         services: ['postgres'],
         script: ['ls -a']
       }
@@ -172,6 +172,58 @@ FactoryBot.define do
             url: 'http://staging.example.com/$CI_JOB_NAME',
             action: 'stop' }
         }
+      end
+    end
+
+    trait :prepare_staging do
+      name { 'prepare staging' }
+      environment { 'staging' }
+
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'staging', action: 'prepare' }
+        }
+      end
+
+      set_expanded_environment_name
+    end
+
+    trait :start_staging do
+      name { 'start staging' }
+      environment { 'staging' }
+
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'staging', action: 'start' }
+        }
+      end
+
+      set_expanded_environment_name
+    end
+
+    trait :stop_staging do
+      name { 'stop staging' }
+      environment { 'staging' }
+
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'staging', action: 'stop' }
+        }
+      end
+
+      set_expanded_environment_name
+    end
+
+    trait :set_expanded_environment_name do
+      after(:build) do |build, evaluator|
+        build.assign_attributes(
+          metadata_attributes: {
+            expanded_environment_name: build.expanded_environment_name
+          }
+        )
       end
     end
 
@@ -455,7 +507,7 @@ FactoryBot.define do
     trait :extended_options do
       options do
         {
-          image: { name: 'ruby:2.7', entrypoint: '/bin/sh' },
+          image: { name: 'image:1.0', entrypoint: '/bin/sh' },
           services: ['postgres', { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }, { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
           script: %w(echo),
           after_script: %w(ls date),
@@ -495,6 +547,22 @@ FactoryBot.define do
 
     trait :no_options do
       options { {} }
+    end
+
+    trait :coverage_report_cobertura do
+      options do
+        {
+          artifacts: {
+            expire_in: '7d',
+            reports: {
+              coverage_report: {
+                coverage_format: 'cobertura',
+                path: 'cobertura.xml'
+              }
+            }
+          }
+        }
+      end
     end
 
     # TODO: move Security traits to ee_ci_build

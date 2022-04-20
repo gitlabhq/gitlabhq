@@ -11,8 +11,8 @@ module Gitlab
         @request_context = request_context
       end
 
-      def paginate(relation, exclude_total_headers: false)
-        paginate_with_limit_optimization(add_default_order(relation)).tap do |data|
+      def paginate(relation, exclude_total_headers: false, skip_default_order: false)
+        paginate_with_limit_optimization(add_default_order(relation, skip_default_order: skip_default_order)).tap do |data|
           add_pagination_headers(data, exclude_total_headers)
         end
       end
@@ -27,7 +27,6 @@ module Gitlab
                           end
 
         return pagination_data unless pagination_data.is_a?(ActiveRecord::Relation)
-        return pagination_data unless Feature.enabled?(:api_kaminari_count_with_limit, type: :ops, default_enabled: :yaml)
 
         limited_total_count = pagination_data.total_count_with_limit
         if limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
@@ -47,7 +46,9 @@ module Gitlab
         false
       end
 
-      def add_default_order(relation)
+      def add_default_order(relation, skip_default_order: false)
+        return relation if skip_default_order
+
         if relation.is_a?(ActiveRecord::Relation) && relation.order_values.empty?
           relation = relation.order(:id) # rubocop: disable CodeReuse/ActiveRecord
         end

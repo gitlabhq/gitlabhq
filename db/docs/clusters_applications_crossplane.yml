@@ -1,0 +1,9 @@
+---
+table_name: clusters_applications_crossplane
+classes:
+- Clusters::Applications::Crossplane
+feature_categories:
+- kubernetes_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18797
+milestone: '12.5'

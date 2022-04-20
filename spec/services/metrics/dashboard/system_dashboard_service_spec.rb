@@ -15,7 +15,7 @@ RSpec.describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memo
   subject { described_class.new(*service_params) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) if user
   end
 
   describe '#raw_dashboard' do

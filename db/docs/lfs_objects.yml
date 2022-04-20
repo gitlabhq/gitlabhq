@@ -1,0 +1,9 @@
+---
+table_name: lfs_objects
+classes:
+- LfsObject
+feature_categories:
+- git_lfs
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/14032d8eb1a60ae5920286249c1044be2fa27278
+milestone: '8.2'

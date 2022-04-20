@@ -42,18 +42,19 @@ describe('InviteGroupsModal', () => {
     wrapper = null;
   });
 
+  const findModal = () => wrapper.findComponent(GlModal);
   const findGroupSelect = () => wrapper.findComponent(GroupSelect);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findInviteButton = () => wrapper.findByTestId('invite-button');
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () =>
     findMembersFormGroup().attributes('invalid-feedback');
-  const clickInviteButton = () => findInviteButton().vm.$emit('click');
-  const clickCancelButton = () => findCancelButton().vm.$emit('click');
-  const triggerGroupSelect = (val) => findGroupSelect().vm.$emit('input', val);
   const findBase = () => wrapper.findComponent(InviteModalBase);
-  const hideModal = () => wrapper.findComponent(GlModal).vm.$emit('hide');
+  const triggerGroupSelect = (val) => findGroupSelect().vm.$emit('input', val);
+  const emitEventFromModal = (eventName) => () =>
+    findModal().vm.$emit(eventName, { preventDefault: jest.fn() });
+  const hideModal = emitEventFromModal('hidden');
+  const clickInviteButton = emitEventFromModal('primary');
+  const clickCancelButton = emitEventFromModal('cancel');
 
   describe('displaying the correct introText and form group description', () => {
     describe('when inviting to a project', () => {

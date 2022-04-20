@@ -60,6 +60,8 @@ The correct approach is to add a new metric for GitLab 12.6 release with updated
 
 and update existing business analysis artefacts to use `example_metric_without_archived` instead of `example_metric`
 
+Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automatically once a day. When a change to a metric is made in a YAML file, you can see the change in the dictionary within 24 hours.
+
 ## Remove a metric
 
 WARNING:
@@ -94,6 +96,12 @@ To remove a metric:
    Alternatively, you can modify [fixtures](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/spec/support/usage_data_helpers.rb#L540)
    used to test the [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
    endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.
+
+1. Remove data from Redis
+
+   For [Ordinary Redis](implement.md#ordinary-redis-counters) counters remove data stored in Redis.
+
+   - Add a migration to remove the data from Redis for the related Redis keys. For more details, see [this MR example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82604/diffs).
 
 1. Create an issue in the
    [GitLab Data Team project](https://gitlab.com/gitlab-data/analytics/-/issues).

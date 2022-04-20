@@ -1,0 +1,8 @@
+---
+name: deployment_approval_rules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83495
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354726
+milestone: '14.10'
+type: development
+group: group::release
+default_enabled: true

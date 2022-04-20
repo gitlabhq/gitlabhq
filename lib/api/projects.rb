@@ -20,6 +20,7 @@ module API
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = projects.with_statistics if params[:statistics]
         projects = projects.joins(:statistics) if params[:order_by].include?('project_statistics') # rubocop: disable CodeReuse/ActiveRecord
+        projects = projects.created_by(current_user).imported.with_import_state if params[:imported]
 
         lang = params[:with_programming_language]
         projects = projects.with_programming_language(lang) if lang
@@ -125,6 +126,7 @@ module API
         optional :search_namespaces, type: Boolean, desc: "Include ancestor namespaces when matching search criteria"
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+        optional :imported, type: Boolean, default: false, desc: 'Limit by imported by authenticated user'
         optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
@@ -212,7 +214,7 @@ module API
         use :statistics_params
         use :with_custom_attributes
       end
-      get ":user_id/projects", feature_category: :projects do
+      get ":user_id/projects", feature_category: :projects, urgency: :default do
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -249,7 +251,8 @@ module API
         use :statistics_params
         use :with_custom_attributes
       end
-      get feature_category: :projects do
+      # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/211495
+      get feature_category: :projects, urgency: :low do
         present_projects load_projects
       end
 
@@ -338,7 +341,8 @@ module API
         optional :license, type: Boolean, default: false,
                            desc: 'Include project license data'
       end
-      get ":id", feature_category: :projects do
+      # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/357622
+      get ":id", feature_category: :projects, urgency: :default do
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,
@@ -609,7 +613,8 @@ module API
       params do
         requires :project_id, type: Integer, desc: 'The ID of the source project to import the members from.'
       end
-      post ":id/import_project_members/:project_id", feature_category: :experimentation_expansion do
+      post ":id/import_project_members/:project_id", feature_category: :projects do
+        ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/355916')
         authorize! :admin_project, user_project
 
         source_project = Project.find_by_id(params[:project_id])
@@ -628,7 +633,7 @@ module API
       desc 'Workhorse authorize the file upload' do
         detail 'This feature was introduced in GitLab 13.11'
       end
-      post ':id/uploads/authorize', feature_category: :not_owned do
+      post ':id/uploads/authorize', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
         require_gitlab_workhorse!
 
         status 200
@@ -640,7 +645,7 @@ module API
       params do
         requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
       end
-      post ":id/uploads", feature_category: :not_owned do
+      post ":id/uploads", feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
         log_if_upload_exceed_max_size(user_project, params[:file])
 
         service = UploadService.new(user_project, params[:file])

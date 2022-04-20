@@ -3,6 +3,9 @@ import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import createStore from '~/vue_shared/components/metric_images/store';
+import service from './service';
 import AlertDetails from './components/alert_details.vue';
 import { PAGE_CONFIG } from './constants';
 import sidebarStatusQuery from './graphql/queries/alert_sidebar_status.query.graphql';
@@ -12,7 +15,8 @@ Vue.use(VueApollo);
 
 export default (selector) => {
   const domEl = document.querySelector(selector);
-  const { alertId, projectPath, projectIssuesPath, projectId, page } = domEl.dataset;
+  const { alertId, projectPath, projectIssuesPath, projectId, page, canUpdate } = domEl.dataset;
+  const iid = alertId;
   const router = createRouter();
 
   const resolvers = {
@@ -54,8 +58,12 @@ export default (selector) => {
     page,
     projectIssuesPath,
     projectId,
+    iid,
     statuses: PAGE_CONFIG[page].STATUSES,
+    canUpdate: parseBoolean(canUpdate),
   };
+
+  const opsProperties = {};
 
   if (page === PAGE_CONFIG.OPERATIONS.TITLE) {
     const { TRACK_ALERTS_DETAILS_VIEWS_OPTIONS, TRACK_ALERT_STATUS_UPDATE_OPTIONS } = PAGE_CONFIG[
@@ -63,6 +71,7 @@ export default (selector) => {
     ];
     provide.trackAlertsDetailsViewsOptions = TRACK_ALERTS_DETAILS_VIEWS_OPTIONS;
     provide.trackAlertStatusUpdateOptions = TRACK_ALERT_STATUS_UPDATE_OPTIONS;
+    opsProperties.store = createStore({}, service);
   } else if (page === PAGE_CONFIG.THREAT_MONITORING.TITLE) {
     provide.isThreatMonitoringPage = true;
   }
@@ -74,6 +83,7 @@ export default (selector) => {
     components: {
       AlertDetails,
     },
+    ...opsProperties,
     provide,
     apolloProvider,
     router,

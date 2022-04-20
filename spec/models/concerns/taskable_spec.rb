@@ -13,6 +13,10 @@ RSpec.describe Taskable do
         - [x] Second item
         * [x] First item
         * [ ] Second item
+        + [ ] No-break space (U+00A0)
+        + [ ] Figure space (U+2007)
+        + [ ] Narrow no-break space (U+202F)
+        + [ ] Thin space (U+2009)
       MARKDOWN
     end
 
@@ -21,7 +25,11 @@ RSpec.describe Taskable do
         TaskList::Item.new('- [ ]', 'First item'),
         TaskList::Item.new('- [x]', 'Second item'),
         TaskList::Item.new('* [x]', 'First item'),
-        TaskList::Item.new('* [ ]', 'Second item')
+        TaskList::Item.new('* [ ]', 'Second item'),
+        TaskList::Item.new('+ [ ]', 'No-break space (U+00A0)'),
+        TaskList::Item.new('+ [ ]', 'Figure space (U+2007)'),
+        TaskList::Item.new('+ [ ]', 'Narrow no-break space (U+202F)'),
+        TaskList::Item.new('+ [ ]', 'Thin space (U+2009)')
       ]
     end
 

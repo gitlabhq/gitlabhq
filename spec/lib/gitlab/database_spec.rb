@@ -185,16 +185,6 @@ RSpec.describe Gitlab::Database do
     end
   end
 
-  describe '.nulls_last_order' do
-    it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column ASC NULLS LAST'}
-    it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC NULLS LAST'}
-  end
-
-  describe '.nulls_first_order' do
-    it { expect(described_class.nulls_first_order('column', 'ASC')).to eq 'column ASC NULLS FIRST'}
-    it { expect(described_class.nulls_first_order('column', 'DESC')).to eq 'column DESC NULLS FIRST'}
-  end
-
   describe '.db_config_for_connection' do
     context 'when the regular connection is used' do
       it 'returns db_config' do
@@ -245,15 +235,32 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.db_config_names' do
+    let(:expected) { %w[foo bar] }
+
+    it 'includes only main by default' do
+      allow(::ActiveRecord::Base).to receive(:configurations).and_return(
+        double(configs_for: %w[foo bar].map { |x| double(name: x) })
+      )
+
+      expect(described_class.db_config_names).to eq(expected)
+    end
+
+    it 'excludes geo when that is included' do
+      allow(::ActiveRecord::Base).to receive(:configurations).and_return(
+        double(configs_for: %w[foo bar geo].map { |x| double(name: x) })
+      )
+
+      expect(described_class.db_config_names).to eq(expected)
+    end
+  end
+
   describe '.gitlab_schemas_for_connection' do
     it 'does raise exception for invalid connection' do
       expect { described_class.gitlab_schemas_for_connection(:invalid) }.to raise_error /key not found: "unknown"/
     end
 
     it 'does return a valid schema depending on a base model used', :request_store do
-      # This is currently required as otherwise the `Ci::Build.connection` == `Project.connection`
-      # ENV due to lib/gitlab/database/load_balancing/setup.rb:93
-      stub_env('GITLAB_USE_MODEL_LOAD_BALANCING', '1')
       # FF due to lib/gitlab/database/load_balancing/configuration.rb:92
       stub_feature_flags(force_no_sharing_primary_model: true)
 
@@ -266,6 +273,47 @@ RSpec.describe Gitlab::Database do
         reconfigure_db_connection(model: ActiveRecord::Base, config_model: Ci::Build)
 
         expect(described_class.gitlab_schemas_for_connection(ActiveRecord::Base.connection)).to include(:gitlab_ci, :gitlab_shared)
+      end
+    end
+
+    context "when there's CI connection", :request_store do
+      before do
+        skip_if_multiple_databases_not_setup
+
+        # FF due to lib/gitlab/database/load_balancing/configuration.rb:92
+        # Requires usage of `:request_store`
+        stub_feature_flags(force_no_sharing_primary_model: true)
+      end
+
+      context 'when CI uses database_tasks: false does indicate that ci: is subset of main:' do
+        before do
+          allow(Ci::ApplicationRecord.connection_db_config).to receive(:database_tasks?).and_return(false)
+        end
+
+        it 'does return gitlab_ci when accessing via main: connection' do
+          expect(described_class.gitlab_schemas_for_connection(Project.connection)).to include(:gitlab_ci, :gitlab_main, :gitlab_shared)
+        end
+
+        it 'does not return gitlab_main when accessing via ci: connection' do
+          expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).to include(:gitlab_ci, :gitlab_shared)
+          expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).not_to include(:gitlab_main)
+        end
+      end
+
+      context 'when CI uses database_tasks: true does indicate that ci: has own database' do
+        before do
+          allow(Ci::ApplicationRecord.connection_db_config).to receive(:database_tasks?).and_return(true)
+        end
+
+        it 'does not return gitlab_ci when accessing via main: connection' do
+          expect(described_class.gitlab_schemas_for_connection(Project.connection)).to include(:gitlab_main, :gitlab_shared)
+          expect(described_class.gitlab_schemas_for_connection(Project.connection)).not_to include(:gitlab_ci)
+        end
+
+        it 'does not return gitlab_main when accessing via ci: connection' do
+          expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).to include(:gitlab_ci, :gitlab_shared)
+          expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).not_to include(:gitlab_main)
+        end
       end
     end
   end

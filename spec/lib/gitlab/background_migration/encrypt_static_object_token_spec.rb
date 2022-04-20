@@ -39,6 +39,14 @@ RSpec.describe Gitlab::BackgroundMigration::EncryptStaticObjectToken do
     expect(new_state[user_with_encrypted_token.id]).to match_array([nil, 'encrypted'])
   end
 
+  context 'when id range does not include existing user ids' do
+    let(:arguments) { [non_existing_record_id, non_existing_record_id.succ] }
+
+    it_behaves_like 'marks background migration job records' do
+      subject { described_class.new }
+    end
+  end
+
   private
 
   def create_user!(name:, token: nil, encrypted_token: nil)

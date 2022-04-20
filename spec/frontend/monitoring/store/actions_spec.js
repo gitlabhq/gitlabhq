@@ -7,9 +7,9 @@ import * as commonUtils from '~/lib/utils/common_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 
-import getAnnotations from '~/monitoring/queries/getAnnotations.query.graphql';
-import getDashboardValidationWarnings from '~/monitoring/queries/getDashboardValidationWarnings.query.graphql';
-import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
+import getAnnotations from '~/monitoring/queries/get_annotations.query.graphql';
+import getDashboardValidationWarnings from '~/monitoring/queries/get_dashboard_validation_warnings.query.graphql';
+import getEnvironments from '~/monitoring/queries/get_environments.query.graphql';
 import { createStore } from '~/monitoring/stores';
 import {
   setGettingStartedEmptyState,
@@ -88,8 +88,8 @@ describe('Monitoring store actions', () => {
   // Setup
 
   describe('setGettingStartedEmptyState', () => {
-    it('should commit SET_GETTING_STARTED_EMPTY_STATE mutation', (done) => {
-      testAction(
+    it('should commit SET_GETTING_STARTED_EMPTY_STATE mutation', () => {
+      return testAction(
         setGettingStartedEmptyState,
         null,
         state,
@@ -99,14 +99,13 @@ describe('Monitoring store actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('setInitialState', () => {
-    it('should commit SET_INITIAL_STATE mutation', (done) => {
-      testAction(
+    it('should commit SET_INITIAL_STATE mutation', () => {
+      return testAction(
         setInitialState,
         {
           currentDashboard: '.gitlab/dashboards/dashboard.yml',
@@ -123,7 +122,6 @@ describe('Monitoring store actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
@@ -233,51 +231,39 @@ describe('Monitoring store actions', () => {
         };
       });
 
-      it('dispatches a failure', (done) => {
-        result()
-          .then(() => {
-            expect(commit).toHaveBeenCalledWith(
-              types.SET_ALL_DASHBOARDS,
-              mockDashboardsErrorResponse.all_dashboards,
-            );
-            expect(dispatch).toHaveBeenCalledWith(
-              'receiveMetricsDashboardFailure',
-              new Error('Request failed with status code 500'),
-            );
-            expect(createFlash).toHaveBeenCalled();
-            done();
-          })
-          .catch(done.fail);
+      it('dispatches a failure', async () => {
+        await result();
+        expect(commit).toHaveBeenCalledWith(
+          types.SET_ALL_DASHBOARDS,
+          mockDashboardsErrorResponse.all_dashboards,
+        );
+        expect(dispatch).toHaveBeenCalledWith(
+          'receiveMetricsDashboardFailure',
+          new Error('Request failed with status code 500'),
+        );
+        expect(createFlash).toHaveBeenCalled();
       });
 
-      it('dispatches a failure action when a message is returned', (done) => {
-        result()
-          .then(() => {
-            expect(dispatch).toHaveBeenCalledWith(
-              'receiveMetricsDashboardFailure',
-              new Error('Request failed with status code 500'),
-            );
-            expect(createFlash).toHaveBeenCalledWith({
-              message: expect.stringContaining(mockDashboardsErrorResponse.message),
-            });
-            done();
-          })
-          .catch(done.fail);
+      it('dispatches a failure action when a message is returned', async () => {
+        await result();
+        expect(dispatch).toHaveBeenCalledWith(
+          'receiveMetricsDashboardFailure',
+          new Error('Request failed with status code 500'),
+        );
+        expect(createFlash).toHaveBeenCalledWith({
+          message: expect.stringContaining(mockDashboardsErrorResponse.message),
+        });
       });
 
-      it('does not show a flash error when showErrorBanner is disabled', (done) => {
+      it('does not show a flash error when showErrorBanner is disabled', async () => {
         state.showErrorBanner = false;
 
-        result()
-          .then(() => {
-            expect(dispatch).toHaveBeenCalledWith(
-              'receiveMetricsDashboardFailure',
-              new Error('Request failed with status code 500'),
-            );
-            expect(createFlash).not.toHaveBeenCalled();
-            done();
-          })
-          .catch(done.fail);
+        await result();
+        expect(dispatch).toHaveBeenCalledWith(
+          'receiveMetricsDashboardFailure',
+          new Error('Request failed with status code 500'),
+        );
+        expect(createFlash).not.toHaveBeenCalled();
       });
     });
   });
@@ -322,38 +308,30 @@ describe('Monitoring store actions', () => {
       state.timeRange = defaultTimeRange;
     });
 
-    it('commits empty state when state.groups is empty', (done) => {
+    it('commits empty state when state.groups is empty', async () => {
       const localGetters = {
         metricsWithData: () => [],
       };
-      fetchDashboardData({ state, commit, dispatch, getters: localGetters })
-        .then(() => {
-          expect(Tracking.event).toHaveBeenCalledWith(
-            document.body.dataset.page,
-            'dashboard_fetch',
-            {
-              label: 'custom_metrics_dashboard',
-              property: 'count',
-              value: 0,
-            },
-          );
-          expect(dispatch).toHaveBeenCalledTimes(2);
-          expect(dispatch).toHaveBeenCalledWith('fetchDeploymentsData');
-          expect(dispatch).toHaveBeenCalledWith('fetchVariableMetricLabelValues', {
-            defaultQueryParams: {
-              start_time: expect.any(String),
-              end_time: expect.any(String),
-              step: expect.any(Number),
-            },
-          });
+      await fetchDashboardData({ state, commit, dispatch, getters: localGetters });
+      expect(Tracking.event).toHaveBeenCalledWith(document.body.dataset.page, 'dashboard_fetch', {
+        label: 'custom_metrics_dashboard',
+        property: 'count',
+        value: 0,
+      });
+      expect(dispatch).toHaveBeenCalledTimes(2);
+      expect(dispatch).toHaveBeenCalledWith('fetchDeploymentsData');
+      expect(dispatch).toHaveBeenCalledWith('fetchVariableMetricLabelValues', {
+        defaultQueryParams: {
+          start_time: expect.any(String),
+          end_time: expect.any(String),
+          step: expect.any(Number),
+        },
+      });
 
-          expect(createFlash).not.toHaveBeenCalled();
-          done();
-        })
-        .catch(done.fail);
+      expect(createFlash).not.toHaveBeenCalled();
     });
 
-    it('dispatches fetchPrometheusMetric for each panel query', (done) => {
+    it('dispatches fetchPrometheusMetric for each panel query', async () => {
       state.dashboard.panelGroups = convertObjectPropsToCamelCase(
         metricsDashboardResponse.dashboard.panel_groups,
       );
@@ -363,34 +341,24 @@ describe('Monitoring store actions', () => {
         metricsWithData: () => [metric.id],
       };
 
-      fetchDashboardData({ state, commit, dispatch, getters: localGetters })
-        .then(() => {
-          expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
-            metric,
-            defaultQueryParams: {
-              start_time: expect.any(String),
-              end_time: expect.any(String),
-              step: expect.any(Number),
-            },
-          });
+      await fetchDashboardData({ state, commit, dispatch, getters: localGetters });
+      expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
+        metric,
+        defaultQueryParams: {
+          start_time: expect.any(String),
+          end_time: expect.any(String),
+          step: expect.any(Number),
+        },
+      });
 
-          expect(Tracking.event).toHaveBeenCalledWith(
-            document.body.dataset.page,
-            'dashboard_fetch',
-            {
-              label: 'custom_metrics_dashboard',
-              property: 'count',
-              value: 1,
-            },
-          );
-
-          done();
-        })
-        .catch(done.fail);
-      done();
+      expect(Tracking.event).toHaveBeenCalledWith(document.body.dataset.page, 'dashboard_fetch', {
+        label: 'custom_metrics_dashboard',
+        property: 'count',
+        value: 1,
+      });
     });
 
-    it('dispatches fetchPrometheusMetric for each panel query, handles an error', (done) => {
+    it('dispatches fetchPrometheusMetric for each panel query, handles an error', async () => {
       state.dashboard.panelGroups = metricsDashboardViewModel.panelGroups;
       const metric = state.dashboard.panelGroups[0].panels[0].metrics[0];
 
@@ -400,30 +368,24 @@ describe('Monitoring store actions', () => {
       dispatch.mockRejectedValueOnce(new Error('Error fetching this metric'));
       dispatch.mockResolvedValue();
 
-      fetchDashboardData({ state, commit, dispatch })
-        .then(() => {
-          const defaultQueryParams = {
-            start_time: expect.any(String),
-            end_time: expect.any(String),
-            step: expect.any(Number),
-          };
+      await fetchDashboardData({ state, commit, dispatch });
+      const defaultQueryParams = {
+        start_time: expect.any(String),
+        end_time: expect.any(String),
+        step: expect.any(Number),
+      };
 
-          expect(dispatch).toHaveBeenCalledTimes(metricsDashboardPanelCount + 2); // plus 1 for deployments
-          expect(dispatch).toHaveBeenCalledWith('fetchDeploymentsData');
-          expect(dispatch).toHaveBeenCalledWith('fetchVariableMetricLabelValues', {
-            defaultQueryParams,
-          });
-          expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
-            metric,
-            defaultQueryParams,
-          });
+      expect(dispatch).toHaveBeenCalledTimes(metricsDashboardPanelCount + 2); // plus 1 for deployments
+      expect(dispatch).toHaveBeenCalledWith('fetchDeploymentsData');
+      expect(dispatch).toHaveBeenCalledWith('fetchVariableMetricLabelValues', {
+        defaultQueryParams,
+      });
+      expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
+        metric,
+        defaultQueryParams,
+      });
 
-          expect(createFlash).toHaveBeenCalledTimes(1);
-
-          done();
-        })
-        .catch(done.fail);
-      done();
+      expect(createFlash).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -449,10 +411,10 @@ describe('Monitoring store actions', () => {
       };
     });
 
-    it('commits result', (done) => {
+    it('commits result', () => {
       mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
-      testAction(
+      return testAction(
         fetchPrometheusMetric,
         { metric, defaultQueryParams },
         state,
@@ -472,10 +434,7 @@ describe('Monitoring store actions', () => {
           },
         ],
         [],
-        () => {
-          done();
-        },
-      ).catch(done.fail);
+      );
     });
 
     describe('without metric defined step', () => {
@@ -485,10 +444,10 @@ describe('Monitoring store actions', () => {
         step: 60,
       };
 
-      it('uses calculated step', (done) => {
+      it('uses calculated step', async () => {
         mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
-        testAction(
+        await testAction(
           fetchPrometheusMetric,
           { metric, defaultQueryParams },
           state,
@@ -508,11 +467,8 @@ describe('Monitoring store actions', () => {
             },
           ],
           [],
-          () => {
-            expect(mock.history.get[0].params).toEqual(expectedParams);
-            done();
-          },
-        ).catch(done.fail);
+        );
+        expect(mock.history.get[0].params).toEqual(expectedParams);
       });
     });
 
@@ -527,10 +483,10 @@ describe('Monitoring store actions', () => {
         step: 7,
       };
 
-      it('uses metric step', (done) => {
+      it('uses metric step', async () => {
         mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
-        testAction(
+        await testAction(
           fetchPrometheusMetric,
           { metric, defaultQueryParams },
           state,
@@ -550,43 +506,39 @@ describe('Monitoring store actions', () => {
             },
           ],
           [],
-          () => {
-            expect(mock.history.get[0].params).toEqual(expectedParams);
-            done();
-          },
-        ).catch(done.fail);
+        );
+        expect(mock.history.get[0].params).toEqual(expectedParams);
       });
     });
 
-    it('commits failure, when waiting for results and getting a server error', (done) => {
+    it('commits failure, when waiting for results and getting a server error', async () => {
       mock.onGet(prometheusEndpointPath).reply(500);
 
       const error = new Error('Request failed with status code 500');
 
-      testAction(
-        fetchPrometheusMetric,
-        { metric, defaultQueryParams },
-        state,
-        [
-          {
-            type: types.REQUEST_METRIC_RESULT,
-            payload: {
-              metricId: metric.metricId,
+      await expect(
+        testAction(
+          fetchPrometheusMetric,
+          { metric, defaultQueryParams },
+          state,
+          [
+            {
+              type: types.REQUEST_METRIC_RESULT,
+              payload: {
+                metricId: metric.metricId,
+              },
             },
-          },
-          {
-            type: types.RECEIVE_METRIC_RESULT_FAILURE,
-            payload: {
-              metricId: metric.metricId,
-              error,
+            {
+              type: types.RECEIVE_METRIC_RESULT_FAILURE,
+              payload: {
+                metricId: metric.metricId,
+                error,
+              },
             },
-          },
-        ],
-        [],
-      ).catch((e) => {
-        expect(e).toEqual(error);
-        done();
-      });
+          ],
+          [],
+        ),
+      ).rejects.toEqual(error);
     });
   });
 
@@ -991,20 +943,16 @@ describe('Monitoring store actions', () => {
       state.dashboardsEndpoint = '/dashboards.json';
     });
 
-    it('Succesful POST request resolves', (done) => {
+    it('Succesful POST request resolves', async () => {
       mock.onPost(state.dashboardsEndpoint).reply(statusCodes.CREATED, {
         dashboard: dashboardGitResponse[1],
       });
 
-      testAction(duplicateSystemDashboard, {}, state, [], [])
-        .then(() => {
-          expect(mock.history.post).toHaveLength(1);
-          done();
-        })
-        .catch(done.fail);
+      await testAction(duplicateSystemDashboard, {}, state, [], []);
+      expect(mock.history.post).toHaveLength(1);
     });
 
-    it('Succesful POST request resolves to a dashboard', (done) => {
+    it('Succesful POST request resolves to a dashboard', async () => {
       const mockCreatedDashboard = dashboardGitResponse[1];
 
       const params = {
@@ -1025,50 +973,40 @@ describe('Monitoring store actions', () => {
         dashboard: mockCreatedDashboard,
       });
 
-      testAction(duplicateSystemDashboard, params, state, [], [])
-        .then((result) => {
-          expect(mock.history.post).toHaveLength(1);
-          expect(mock.history.post[0].data).toEqual(expectedPayload);
-          expect(result).toEqual(mockCreatedDashboard);
-
-          done();
-        })
-        .catch(done.fail);
+      const result = await testAction(duplicateSystemDashboard, params, state, [], []);
+      expect(mock.history.post).toHaveLength(1);
+      expect(mock.history.post[0].data).toEqual(expectedPayload);
+      expect(result).toEqual(mockCreatedDashboard);
     });
 
-    it('Failed POST request throws an error', (done) => {
+    it('Failed POST request throws an error', async () => {
       mock.onPost(state.dashboardsEndpoint).reply(statusCodes.BAD_REQUEST);
 
-      testAction(duplicateSystemDashboard, {}, state, [], []).catch((err) => {
-        expect(mock.history.post).toHaveLength(1);
-        expect(err).toEqual(expect.any(String));
-
-        done();
-      });
+      await expect(testAction(duplicateSystemDashboard, {}, state, [], [])).rejects.toEqual(
+        'There was an error creating the dashboard.',
+      );
+      expect(mock.history.post).toHaveLength(1);
     });
 
-    it('Failed POST request throws an error with a description', (done) => {
+    it('Failed POST request throws an error with a description', async () => {
       const backendErrorMsg = 'This file already exists!';
 
       mock.onPost(state.dashboardsEndpoint).reply(statusCodes.BAD_REQUEST, {
         error: backendErrorMsg,
       });
 
-      testAction(duplicateSystemDashboard, {}, state, [], []).catch((err) => {
-        expect(mock.history.post).toHaveLength(1);
-        expect(err).toEqual(expect.any(String));
-        expect(err).toEqual(expect.stringContaining(backendErrorMsg));
-
-        done();
-      });
+      await expect(testAction(duplicateSystemDashboard, {}, state, [], [])).rejects.toEqual(
+        `There was an error creating the dashboard. ${backendErrorMsg}`,
+      );
+      expect(mock.history.post).toHaveLength(1);
     });
   });
 
   // Variables manipulation
 
   describe('updateVariablesAndFetchData', () => {
-    it('should commit UPDATE_VARIABLE_VALUE mutation and fetch data', (done) => {
-      testAction(
+    it('should commit UPDATE_VARIABLE_VALUE mutation and fetch data', () => {
+      return testAction(
         updateVariablesAndFetchData,
         { pod: 'POD' },
         state,
@@ -1083,7 +1021,6 @@ describe('Monitoring store actions', () => {
             type: 'fetchDashboardData',
           },
         ],
-        done,
       );
     });
   });

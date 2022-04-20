@@ -623,6 +623,15 @@ RSpec.describe API::Ci::Jobs do
         end
       end
 
+      context 'when a build is not retryable' do
+        let(:job) { create(:ci_build, :created, pipeline: pipeline) }
+
+        it 'responds with unprocessable entity' do
+          expect(json_response['message']).to eq('403 Forbidden - Job is not retryable')
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
       context 'user without :update_build permission' do
         let(:api_user) { reporter }
 

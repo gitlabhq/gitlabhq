@@ -37,22 +37,31 @@ If you are using GitLab.com:
 - The shared runners consume the [CI/CD minutes](../pipelines/cicd_minutes.md)
   included with your account.
 
-### Enable shared runners
+### Enable shared runners for a project
 
 On GitLab.com, [shared runners](index.md) are enabled in all projects by
 default.
 
-On self-managed instances of GitLab, an administrator must [install](https://docs.gitlab.com/runner/install/index.html)
-and [register](https://docs.gitlab.com/runner/register/index.html) them.
+On self-managed instances of GitLab, an administrator can
+[enable them for all new projects](../../user/admin_area/settings/continuous_integration.md#enable-shared-runners-for-new-projects).
 
-You can also enable shared runners for individual projects.
+For existing projects, an administrator must
+[install](https://docs.gitlab.com/runner/install/index.html) and
+[register](https://docs.gitlab.com/runner/register/index.html) them.
 
-To enable shared runners:
+To enable shared runners for a project:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Select **Enable shared runners for this project**.
 
-### Disable shared runners
+### Enable shared runners for a group
+
+To enable shared runners for a group:
+
+1. Go to the group's **Settings > CI/CD** and expand the **Runners** section.
+1. Select **Enable shared runners for this group**.
+
+### Disable shared runners for a project
 
 You can disable shared runners for individual projects or for groups.
 You must have the Owner role for the project
@@ -68,6 +77,8 @@ Shared runners are automatically disabled for a project:
 - If the shared runners setting for the parent group is disabled, and
 - If overriding this setting is not permitted at the project level.
 
+### Disable shared runners for a group
+
 To disable shared runners for a group:
 
 1. Go to the group's **Settings > CI/CD** and expand the **Runners** section.
@@ -78,7 +89,7 @@ To disable shared runners for a group:
 NOTE:
 To re-enable the shared runners for a group, turn on the
 **Enable shared runners for this group** toggle.
-Then, an owner or maintainer must explicitly change this setting
+Then, a user with the Owner or Maintainer role must explicitly change this setting
 for each project subgroup or project.
 
 ### How shared runners pick jobs
@@ -143,6 +154,8 @@ Group runners process jobs by using a first in, first out ([FIFO](https://en.wik
 
 ### Create a group runner
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19819) in GitLab 14.10, path changed from **Settings > CI/CD > Runners**.
+
 You can create a group runner for your self-managed GitLab instance or for GitLab.com.
 You must have the Owner role for the group.
 
@@ -150,7 +163,7 @@ To create a group runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. Go to the group you want to make the runner work for.
-1. Go to **Settings > CI/CD** and expand the **Runners** section.
+1. On the left sidebar, select **CI/CD > Runners**.
 1. Note the URL and token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/).
 
@@ -163,7 +176,7 @@ You can do this for your self-managed GitLab instance or for GitLab.com.
 You must have the Owner role for the group.
 
 1. Go to the group where you want to view the runners.
-1. Go to **Settings > CI/CD** and expand the **Runners** section.
+1. On the left sidebar, select **CI/CD > Runners**.
 1. The following fields are displayed.
 
    | Attribute    | Description |
@@ -186,7 +199,7 @@ You can pause or remove a group runner for your self-managed GitLab instance or 
 You must have the Owner role for the group.
 
 1. Go to the group you want to remove or pause the runner for.
-1. Go to **Settings > CI/CD** and expand the **Runners** section.
+1. On the left sidebar, select **CI/CD > Runners**.
 1. Click **Pause** or **Remove runner**.
    - If you pause a group runner that is used by multiple projects, the runner pauses for all projects.
    - From the group view, you cannot remove a runner that is assigned to more than one project.

@@ -1021,13 +1021,13 @@ RSpec.describe Packages::Package, type: :model do
       context 'ascending direction' do
         let(:direction) { :asc }
 
-        it { is_expected.to eq('projects.name asc NULLS LAST, "packages_packages"."id" ASC') }
+        it { is_expected.to eq('"projects"."name" ASC NULLS LAST, "packages_packages"."id" ASC') }
       end
 
       context 'descending direction' do
         let(:direction) { :desc }
 
-        it { is_expected.to eq('projects.name desc NULLS FIRST, "packages_packages"."id" DESC') }
+        it { is_expected.to eq('"projects"."name" DESC NULLS FIRST, "packages_packages"."id" DESC') }
       end
     end
   end

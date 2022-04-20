@@ -92,6 +92,7 @@ export default {
       ref="widget"
       :validate="validate"
       v-bind="$attrs"
+      :data-input-target="target"
       @input="onModelChange"
       @update:valid="onValidationStateChange"
     />

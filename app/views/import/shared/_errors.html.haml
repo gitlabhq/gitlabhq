@@ -1,8 +1,7 @@
 - if @errors.present?
-  = render 'shared/global_alert',
-    variant: :danger,
+  = render Pajamas::AlertComponent.new(variant: :danger,
     dismissible: false,
-    alert_class: 'gl-mb-5' do
+    alert_class: 'gl-mb-5') do
     .gl-alert-body
       - @errors.each do |error|
         = error

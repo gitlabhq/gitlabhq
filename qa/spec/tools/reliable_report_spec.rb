@@ -5,7 +5,6 @@ describe QA::Tools::ReliableReport do
 
   subject(:run) { described_class.run(range: range, report_in_issue_and_slack: create_issue) }
 
-  let(:gitlab_response) { instance_double("RestClient::Response", code: 200, body: { web_url: issue_url }.to_json) }
   let(:slack_notifier) { instance_double("Slack::Notifier", post: nil) }
   let(:influx_client) { instance_double("InfluxDB2::Client", create_query_api: query_api) }
   let(:query_api) { instance_double("InfluxDB2::QueryApi") }
@@ -71,6 +70,7 @@ describe QA::Tools::ReliableReport do
         |> filter(fn: (r) => r.status != "pending" and
           r.merge_request == "false" and
           r.quarantined == "false" and
+          r.smoke == "false" and
           r.reliable == "#{reliable}" and
           r._field == "id"
         )
@@ -117,7 +117,7 @@ describe QA::Tools::ReliableReport do
     stub_env("CI_API_V4_URL", "gitlab_api_url")
     stub_env("GITLAB_ACCESS_TOKEN", "gitlab_token")
 
-    allow(RestClient::Request).to receive(:execute).and_return(gitlab_response)
+    allow(RestClient::Request).to receive(:execute)
     allow(Slack::Notifier).to receive(:new).and_return(slack_notifier)
     allow(InfluxDB2::Client).to receive(:new).and_return(influx_client)
 
@@ -138,6 +138,37 @@ describe QA::Tools::ReliableReport do
 
   context "with report creation" do
     let(:create_issue) { "true" }
+    let(:iid) { 2 }
+    let(:old_iid) { 1 }
+    let(:issue_endpoint) { "gitlab_api_url/projects/278964/issues" }
+
+    let(:common_api_args) do
+      {
+        verify_ssl: false,
+        headers: { "PRIVATE-TOKEN" => "gitlab_token" }
+      }
+    end
+
+    let(:create_issue_response) do
+      instance_double(
+        "RestClient::Response",
+        code: 200,
+        body: { web_url: issue_url, iid: iid }.to_json
+      )
+    end
+
+    let(:open_issues_response) do
+      instance_double(
+        "RestClient::Response",
+        code: 200,
+        body: [{ web_url: issue_url, iid: iid }, { web_url: issue_url, iid: old_iid }].to_json
+      )
+    end
+
+    let(:success_response) do
+      instance_double("RestClient::Response", code: 200, body: {}.to_json)
+    end
+
     let(:issue_body) do
       <<~TXT.strip
         [[_TOC_]]
@@ -156,19 +187,48 @@ describe QA::Tools::ReliableReport do
       TXT
     end
 
-    it "creates report issue", :aggregate_failures do
+    before do
+      allow(RestClient::Request).to receive(:execute).exactly(4).times.and_return(
+        create_issue_response,
+        open_issues_response,
+        success_response,
+        success_response
+      )
+    end
+
+    it "creates report issue" do
       expect { run }.to output.to_stdout
 
       expect(RestClient::Request).to have_received(:execute).with(
         method: :post,
-        url: "gitlab_api_url/projects/278964/issues",
-        verify_ssl: false,
-        headers: { "PRIVATE-TOKEN" => "gitlab_token" },
+        url: issue_endpoint,
         payload: {
           title: "Reliable e2e test report",
           description: issue_body,
-          labels: "Quality,test,type::maintenance,reliable test report,automation:ml"
-        }
+          labels: "reliable test report,Quality,test,type::maintenance,automation:ml"
+        },
+        **common_api_args
+      )
+      expect(RestClient::Request).to have_received(:execute).with(
+        method: :get,
+        url: "#{issue_endpoint}?labels=reliable test report&state=opened",
+        **common_api_args
+      )
+      expect(RestClient::Request).to have_received(:execute).with(
+        method: :put,
+        url: "#{issue_endpoint}/#{old_iid}",
+        payload: {
+          state_event: "close"
+        },
+        **common_api_args
+      )
+      expect(RestClient::Request).to have_received(:execute).with(
+        method: :post,
+        url: "#{issue_endpoint}/#{old_iid}/notes",
+        payload: {
+          body: "Closed issue in favor of ##{iid}"
+        },
+        **common_api_args
       )
       expect(slack_notifier).to have_received(:post).with(
         icon_emoji: ":tanuki-protect:",

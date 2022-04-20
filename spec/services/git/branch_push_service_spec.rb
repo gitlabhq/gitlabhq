@@ -721,4 +721,14 @@ RSpec.describe Git::BranchPushService, services: true do
       it_behaves_like 'does not enqueue Jira sync worker'
     end
   end
+
+  describe 'project target platforms detection' do
+    subject(:execute) { execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: ref) }
+
+    it 'calls enqueue_record_project_target_platforms on the project' do
+      expect(project).to receive(:enqueue_record_project_target_platforms)
+
+      execute
+    end
+  end
 end

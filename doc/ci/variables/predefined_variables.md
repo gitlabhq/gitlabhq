@@ -58,6 +58,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_ENVIRONMENT_URL`                     | 9.3    | all    | The URL of the environment for this job. Available if [`environment:url`](../yaml/index.md#environmenturl) is set. |
 | `CI_ENVIRONMENT_ACTION`                  | 13.11  | all    | The action annotation specified for this job's environment. Available if [`environment:action`](../yaml/index.md#environmentaction) is set. Can be `start`, `prepare`, or `stop`. |
 | `CI_ENVIRONMENT_TIER`                    | 14.0   | all    | The [deployment tier of the environment](../environments/index.md#deployment-tier-of-environments) for this job. |
+| `CI_GITLAB_FIPS_MODE`                    | 14.10  | all    | The configuration setting for whether FIPS mode is enabled in the GitLab instance. |
 | `CI_HAS_OPEN_REQUIREMENTS`               | 13.1   | all    | Only available if the pipeline's project has an open [requirement](../../user/project/requirements/index.md). `true` when available. |
 | `CI_JOB_ID`                              | 9.0    | all    | The internal ID of the job, unique across all jobs in the GitLab instance. |
 | `CI_JOB_IMAGE`                           | 12.9   | 12.9   | The name of the Docker image running the job. |
@@ -105,7 +106,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_RUNNER_EXECUTABLE_ARCH`              | all    | 10.6   | The OS/architecture of the GitLab Runner executable. Might not be the same as the environment of the executor. |
 | `CI_RUNNER_ID`                           | 8.10   | 0.5    | The unique ID of the runner being used. |
 | `CI_RUNNER_REVISION`                     | all    | 10.6   | The revision of the runner running the job. |
-| `CI_RUNNER_SHORT_TOKEN`                  | all    | 12.3   | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
+| `CI_RUNNER_SHORT_TOKEN`                  | all    | 12.3   | The runner's unique ID, used to authenticate new job requests. In [GitLab 14.9](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/2251) and later, the token contains a prefix, and the first 17 characters are used. Prior to 14.9, the first eight characters are used. |
 | `CI_RUNNER_TAGS`                         | 8.10   | 0.5    | A comma-separated list of the runner tags. |
 | `CI_RUNNER_VERSION`                      | all    | 10.6   | The version of the GitLab Runner running the job. |
 | `CI_SERVER_HOST`                         | 12.1   | all    | The host of the GitLab instance URL, without protocol or port. For example `gitlab.example.com`. |
@@ -113,6 +114,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_SERVER_PORT`                         | 12.8   | all    | The port of the GitLab instance URL, without host or protocol. For example `8080`. |
 | `CI_SERVER_PROTOCOL`                     | 12.8   | all    | The protocol of the GitLab instance URL, without host or port. For example `https`. |
 | `CI_SERVER_REVISION`                     | all    | all    | GitLab revision that schedules jobs. |
+| `CI_SERVER_TLS_CA_FILE`                  | all    | all    | File containing the CA certificate to verify the GitLab server. |
 | `CI_SERVER_URL`                          | 12.7   | all    | The base URL of the GitLab instance, including protocol and port. For example `https://gitlab.example.com:8080`. |
 | `CI_SERVER_VERSION_MAJOR`                | 11.4   | all    | The major version of the GitLab instance. For example, if the GitLab version is `13.6.1`, the `CI_SERVER_VERSION_MAJOR` is `13`. |
 | `CI_SERVER_VERSION_MINOR`                | 11.4   | all    | The minor version of the GitLab instance. For example, if the GitLab version is `13.6.1`, the `CI_SERVER_VERSION_MINOR` is `6`. |

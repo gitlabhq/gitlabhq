@@ -16,6 +16,7 @@ Use value stream analytics to identify:
 - The amount of time it takes to go from an idea to production.
 - The velocity of a given project.
 - Bottlenecks in the development process.
+- Detecting long-running issues or merge requests.
 - Factors that cause your software development lifecycle to slow down.
 
 Value stream analytics is also available for [projects](../../analytics/value_stream_analytics.md).
@@ -26,7 +27,10 @@ Value stream analytics is also available for [projects](../../analytics/value_st
 > - Filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
 > - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
 
-You must have at least the Reporter role to view value stream analytics for groups.
+Prerequisite:
+
+- You must have at least the Reporter role to view value stream analytics for groups.
+- You must create a [custom value stream](#custom-value-streams). Value stream analytics only shows custom value streams created for your group.
 
 To view value stream analytics for your group:
 
@@ -37,6 +41,9 @@ To view value stream analytics for your group:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
+   1. Select whether to view metrics for items with a start or stop event:
+      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
+      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date. The charts and list show workflow items created
@@ -71,6 +78,9 @@ To view the median time spent in each stage by a group:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
+   1. Select whether to view metrics for items with a start or stop event:
+      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
+      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
@@ -91,6 +101,9 @@ To view the lead time and cycle time for issues:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
+   1. Select whether to view metrics for items with a start or stop event:
+      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
+      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
@@ -111,6 +124,9 @@ To view the lead time for changes for merge requests in your group:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
+   1. Select whether to view metrics for items with a start or stop event:
+      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
+      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
@@ -125,7 +141,7 @@ To view deployment metrics, you must have a
 [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
 
 Value stream analytics shows the following deployment metrics for your group:  
- 
+
 - Deploys: The number of successful deployments in the date range.
 - Deployment Frequency: The average number of successful deployments per day in the date range.
 
@@ -137,6 +153,9 @@ To view deployment metrics for your group:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
+   1. Select whether to view metrics for items with a start or stop event:
+      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
+      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
@@ -150,25 +169,24 @@ NOTE:
 In GitLab 13.9 and later, metrics are calculated based on when the deployment was finished.
 In GitLab 13.8 and earlier, metrics are calculated based on when the deployment was created.
 
-## Upcoming date filter change
+### How value stream analytics aggregates data
 
-In the [epics](https://gitlab.com/groups/gitlab-org/-/epics/6046), we plan to alter
-the date filter behavior to filter the end event time of the currently selected stage.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5 [with a flag](../../../administration/feature_flags.md) named `use_vsa_aggregated_tables`. Disabled by default.
+> - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
+> - Data refresh badge [added](https://gitlab.com/gitlab-org/gitlab/-/issues/341739) in GitLab 14.9
 
-The change makes it possible to get a much better picture about the completed items within the
-stage and helps uncover long-running items.
+Plans for value stream analytics to filter items by stop event instead of start event are tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/6046). With the completion of this work, value stream analytics will only display items with a stop event in the date range. 
 
-For example, an issue was created a year ago and the current stage was finished in the current month.
-If you were to look at the metrics for the last three months, this issue would not be included in the calculation of
-the stage metrics. With the new date filter, this item would be included.
+To preview this functionality, you can use the **Filter by stop date** toggle to enable or disable this filter until the [default filtering mode is introduced](../../../update/deprecations.md#value-stream-analytics-filtering-calculation-change) and the toggle is removed.
 
-DISCLAIMER:
-This section contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
+If you turn on the **Filter by stop date** toggle, the results show items with a stop event within the date range. When this function is enabled, it may take up to 10 minutes for results to show due to data aggregation. There are occasions when it may take longer than 10 minutes for results to display:
+
+- If this is the first time you are viewing value stream analytics and have not yet [created a value stream](#create-a-value-stream).
+- If the group hierarchy has been re-arranged.
+- If there have been bulk updates on issues and merge requests.
+
+To view when the data was most recently updated, in the right corner next to **Edit**, hover over the **Last updated** badge. This badge is only available if you have turned on the **Filter by start date** toggle.
+![Aggregated data toggle](img/vsa_aggregated_data_toggle_v14_9.png "Aggregated data toggle")
 
 ## How value stream analytics measures stages
 
@@ -177,7 +195,10 @@ Value stream analytics measures each stage from its start event to its end event
 For example, a stage might start when a user adds a label to an issue, and ends when they add another label.
 Items aren't included in the stage time calculation if they have not reached the end event.
 
-Each stage of value stream analytics is further described in the table below.
+Value stream analytics allows you to customize your stages based on pre-defined events. To make the
+configuration easier, GitLab provides a pre-defined list of stages that can be used as a template
+
+Each pre-defined stages of value stream analytics is further described in the table below.
 
 | Stage   | Measurement method   |
 | ------- | -------------------- |
@@ -188,21 +209,21 @@ Each stage of value stream analytics is further described in the table below.
 | Review    | The median time taken to review a merge request that has a closing issue pattern, between its creation and until it's merged. |
 | Staging   | The median time between merging a merge request that has a closing issue pattern until the very first deployment to a [production environment](#how-value-stream-analytics-identifies-the-production-environment). If there isn't a production environment, this is not tracked. |
 
-## Example workflow
+### Example workflow
 
-This example shows a workflow through all seven stages in one day. 
+This example shows a workflow through all seven stages in one day.
 
-If a stage does not include a start and a stop time, its data is not included in the median time. 
+If a stage does not include a start and a stop time, its data is not included in the median time.
 In this example, milestones have been created and CI/CD for testing and setting environments is configured.
 
 - 09:00: Create issue. **Issue** stage starts.
-- 11:00: Add issue to a milestone, start work on the issue, and create a branch locally. 
-  **Issue** stage stops and **Plan** stage starts. 
+- 11:00: Add issue to a milestone, start work on the issue, and create a branch locally.
+  **Issue** stage stops and **Plan** stage starts.
 - 12:00: Make the first commit.
 - 12:30: Make the second commit to the branch that mentions the issue number.
   **Plan** stage stops and **Code** stage starts.
-- 14:00: Push branch and create a merge request that contains the 
-  [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically). 
+- 14:00: Push branch and create a merge request that contains the
+  [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically).
   **Code** stage stops and **Test** and **Review** stages start.
 - GitLab CI/CD takes 5 minutes to run scripts defined in [`.gitlab-ci.yml`](../../../ci/yaml/index.md).
 - 19:00: Merge the merge request. **Review** stage stops and **Staging** stage starts.
@@ -214,7 +235,7 @@ Value stream analytics records the following times for each stage:
 - **Plan**: 11:00 to 12:00: 1 hr
 - **Code**: 12:00 to 14:00: 2 hrs
 - **Test**: 5 minutes
-- **Review**: 14:00 to 19:00: 5 hrs 
+- **Review**: 14:00 to 19:00: 5 hrs
 - **Staging**: 19:00 to 19:30: 30 minutes
 
 There are some additional considerations for this example:
@@ -263,12 +284,15 @@ To create a value stream:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
-1. In the top right, select the dropdown list and then **Create new Value Stream**.
+1. If this is the first time you are creating a value stream, select **Create custom value stream**. Otherwise, in the top right, select the dropdown list and then **Create new Value Stream**.
 1. Enter a name for the new Value Stream.
    - You can [customize the stages](#create-a-value-stream-with-stages).
 1. Select **Create Value Stream**.
 
 ![New value stream](img/new_value_stream_v13_12.png "Creating a new value stream")
+
+NOTE:
+If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display.
 
 ### Create a value stream with stages
 
@@ -283,7 +307,7 @@ To create a value stream with stages:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
-1. In the top right, select the dropdown list and then **Create new Value Stream**.
+1. If this is the first time you are creating a value stream, select **Create custom value stream**. Otherwise, in the top right, select the dropdown list and then **Create new Value Stream**.
 1. Select either **Create from default template** or **Create from no template**.
    - You can hide or re-order default stages in the value stream.
 

@@ -4,6 +4,7 @@ RSpec.describe QA::Resource::Base do
   include QA::Support::Helpers::StubEnv
 
   let(:resource) { spy('resource') }
+  let(:api_client) { instance_double('Runtime::API::Client') }
   let(:location) { 'http://location' }
   let(:log_regex) { %r{==> Built a MyResource with username 'qa' via #{method} in [\d.\-e]+ seconds+} }
 
@@ -114,6 +115,7 @@ RSpec.describe QA::Resource::Base do
         allow(QA::Runtime::Logger).to receive(:debug)
         allow(resource).to receive(:api_support?).and_return(true)
         allow(resource).to receive(:fabricate_via_api!)
+        allow(resource).to receive(:api_client) { api_client }
       end
 
       it 'logs the resource and build method' do
@@ -154,7 +156,6 @@ RSpec.describe QA::Resource::Base do
 
       before do
         allow(QA::Runtime::Logger).to receive(:debug)
-        # allow(resource).to receive(:fabricate!)
       end
 
       it 'logs the resource and build method' do

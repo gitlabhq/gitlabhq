@@ -1,0 +1,9 @@
+---
+table_name: group_repository_storage_moves
+classes:
+- Groups::RepositoryStorageMove
+feature_categories:
+- gitaly
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51803
+milestone: '13.9'

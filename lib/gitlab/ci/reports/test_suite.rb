@@ -12,7 +12,6 @@ module Gitlab
         def initialize(name = nil)
           @name = name
           @test_cases = {}
-          @all_test_cases = []
           @total_time = 0.0
         end
 

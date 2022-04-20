@@ -4,10 +4,9 @@
   - webpack_preload_asset_tag('monaco')
 
 - if @conflict
-  = render 'shared/global_alert',
-    alert_class: 'gl-mb-5 gl-mt-5',
+  = render Pajamas::AlertComponent.new(alert_class: 'gl-mb-5 gl-mt-5',
     variant: :danger,
-    dismissible: false do
+    dismissible: false) do
     - blob_url = project_blob_path(@project, @id)
     - external_link_icon = content_tag 'span', { aria: { label: _('Opens new window') }} do
       - sprite_icon('external-link', css_class: 'gl-icon').html_safe

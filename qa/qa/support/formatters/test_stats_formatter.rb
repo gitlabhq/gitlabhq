@@ -64,6 +64,7 @@ module QA
               name: example.full_description,
               file_path: file_path,
               status: example.execution_result.status,
+              smoke: example.metadata.key?(:smoke).to_s,
               reliable: example.metadata.key?(:reliable).to_s,
               quarantined: quarantined(example.metadata),
               retried: ((example.metadata[:retry_attempts] || 0) > 0).to_s,

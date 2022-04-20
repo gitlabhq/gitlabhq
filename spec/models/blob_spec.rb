@@ -229,6 +229,20 @@ RSpec.describe Blob do
     end
   end
 
+  describe '#executable?' do
+    it 'is true for executables' do
+      executable_blob = fake_blob(path: 'file', mode: '100755')
+
+      expect(executable_blob.executable?).to eq true
+    end
+
+    it 'is false for non-executables' do
+      non_executable_blob = fake_blob(path: 'file', mode: '100655')
+
+      expect(non_executable_blob.executable?).to eq false
+    end
+  end
+
   describe '#extension' do
     it 'returns the extension' do
       blob = fake_blob(path: 'file.md')

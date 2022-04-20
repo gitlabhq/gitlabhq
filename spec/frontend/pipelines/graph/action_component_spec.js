@@ -48,17 +48,14 @@ describe('pipeline graph action component', () => {
   });
 
   describe('on click', () => {
-    it('emits `pipelineActionRequestComplete` after a successful request', (done) => {
+    it('emits `pipelineActionRequestComplete` after a successful request', async () => {
       jest.spyOn(wrapper.vm, '$emit');
 
       findButton().trigger('click');
 
-      waitForPromises()
-        .then(() => {
-          expect(wrapper.vm.$emit).toHaveBeenCalledWith('pipelineActionRequestComplete');
-          done();
-        })
-        .catch(done.fail);
+      await waitForPromises();
+
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('pipelineActionRequestComplete');
     });
 
     it('renders a loading icon while waiting for request', async () => {

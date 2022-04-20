@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { debounce, unescape } from 'lodash';
@@ -23,6 +23,9 @@ export default {
     MarkdownToolbar,
     GlIcon,
     Suggestions,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -308,6 +311,9 @@ export default {
         );
     },
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['gl-emoji'],
+  },
 };
 </script>
 
@@ -369,18 +375,19 @@ export default {
       <div
         v-show="previewMarkdown"
         ref="markdown-preview"
+        v-safe-html:[$options.safeHtmlConfig]="markdownPreview"
         class="js-vue-md-preview md md-preview-holder"
-        v-html="markdownPreview /* eslint-disable-line vue/no-v-html */"
       ></div>
     </template>
     <div
       v-if="referencedCommands && previewMarkdown && !markdownPreviewLoading"
+      v-safe-html:[$options.safeHtmlConfig]="referencedCommands"
       class="referenced-commands"
-      v-html="referencedCommands /* eslint-disable-line vue/no-v-html */"
+      data-testid="referenced-commands"
     ></div>
     <div v-if="shouldShowReferencedUsers" class="referenced-users">
       <gl-icon name="warning-solid" />
-      <span v-html="addMultipleToDiscussionWarning /* eslint-disable-line vue/no-v-html */"></span>
+      <span v-safe-html:[$options.safeHtmlConfig]="addMultipleToDiscussionWarning"></span>
     </div>
   </div>
 </template>

@@ -1,0 +1,9 @@
+---
+table_name: project_pages_metadata
+classes:
+- ProjectPagesMetadatum
+feature_categories:
+- pages
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17197
+milestone: '12.4'

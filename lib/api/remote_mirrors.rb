@@ -25,6 +25,18 @@ module API
           with: Entities::RemoteMirror
       end
 
+      desc 'Get a single remote mirror' do
+        success Entities::RemoteMirror
+      end
+      params do
+        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+      end
+      get ':id/remote_mirrors/:mirror_id' do
+        mirror = user_project.remote_mirrors.find(params[:mirror_id])
+
+        present mirror, with: Entities::RemoteMirror
+      end
+
       desc 'Create remote mirror for a project' do
         success Entities::RemoteMirror
       end
@@ -71,6 +83,29 @@ module API
           present mirror.reset, with: Entities::RemoteMirror
         else
           render_api_error!(result[:message], result[:http_status])
+        end
+      end
+
+      desc 'Delete a single remote mirror' do
+        detail 'This feature was introduced in GitLab 14.10'
+      end
+      params do
+        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+      end
+      delete ':id/remote_mirrors/:mirror_id' do
+        mirror = user_project.remote_mirrors.find(params[:mirror_id])
+
+        destroy_conditionally!(mirror) do
+          mirror_params = declared_params(include_missing: false).merge(_destroy: 1)
+          mirror_params[:id] = mirror_params.delete(:mirror_id)
+          update_params = { remote_mirrors_attributes: mirror_params }
+
+          # Note: We are using the update service to be consistent with how the controller handles deletion
+          result = ::Projects::UpdateService.new(user_project, current_user, update_params).execute
+
+          if result[:status] != :success
+            render_api_error!(result[:message], 400)
+          end
         end
       end
     end

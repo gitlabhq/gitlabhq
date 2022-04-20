@@ -84,6 +84,7 @@ module IssueResolverArguments
 
     prepare_assignee_username_params(args)
     prepare_release_tag_params(args)
+    prepare_params(args, parent) if defined?(prepare_params)
 
     finder = IssuesFinder.new(current_user, args)
 

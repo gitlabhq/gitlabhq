@@ -264,3 +264,29 @@ Feature.disable(:dependency_proxy_for_private_groups)
 # Re-enable the authentication
 Feature.enable(:dependency_proxy_for_private_groups)
 ```
+
+## Changing the JWT expiration
+
+The Dependency Proxy follows the [Docker v2 token authentication flow](https://docs.docker.com/registry/spec/auth/token/),
+issuing the client a JWT to use for the pull requests. The token expiration time is a configurable
+using the application setting `container_registry_token_expire_delay`. It can be changed from the
+rails console:
+
+```ruby
+# update the JWT expiration to 30 minutes
+ApplicationSetting.update(container_registry_token_expire_delay: 30)
+```
+
+The default expiration and the expiration on GitLab.com is 15 minutes.
+
+## Using the dependency proxy behind a proxy
+ 
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines:
+
+   ```ruby
+   gitlab_workhorse['env'] = {
+    "http_proxy" => "http://USERNAME:PASSWORD@example.com:8080",
+    "https_proxy" => "http://USERNAME:PASSWORD@example.com:8080"
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.

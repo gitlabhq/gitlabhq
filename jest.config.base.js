@@ -106,10 +106,49 @@ module.exports = (path, options = {}) => {
     return '<rootDir>/coverage-frontend/';
   };
 
+  const gfmParserDependencies = [
+    'rehype-.*',
+    'remark-.*',
+    'hast*',
+    'unist.*',
+    'mdast-util-.*',
+    'micromark.*',
+    'vfile.*',
+    'bail',
+    'trough',
+    'unified',
+    'is-plain-obj',
+    'decode-named-character-reference',
+    'character-entities*',
+    'property-information',
+    'space-separated-tokens',
+    'comma-separated-tokens',
+    'web-namespaces',
+    'zwitch',
+    'html-void-elements',
+    'ccount',
+    'escape-string-regexp',
+  ];
+
+  const transformIgnoreNodeModules = [
+    '@gitlab/ui',
+    '@gitlab/favicon-overlay',
+    'bootstrap-vue',
+    'three',
+    'monaco-editor',
+    'monaco-yaml',
+    'fast-mersenne-twister',
+    'prosemirror-markdown',
+    'fault',
+    'dateformat',
+    'lowlight',
+    ...gfmParserDependencies,
+  ];
+
   return {
     clearMocks: true,
     testMatch,
-    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql'],
+    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql', 'yaml'],
     moduleNameMapper,
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
@@ -127,11 +166,10 @@ module.exports = (path, options = {}) => {
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
       '^.+\\.js$': 'babel-jest',
       '^.+\\.vue$': 'vue-jest',
+      '^.+\\.yml$': './spec/frontend/__helpers__/yaml_transformer.js',
       '^.+\\.(md|zip|png)$': 'jest-raw-loader',
     },
-    transformIgnorePatterns: [
-      'node_modules/(?!(@gitlab/ui|@gitlab/favicon-overlay|bootstrap-vue|three|monaco-editor|monaco-yaml|fast-mersenne-twister|prosemirror-markdown|dateformat|lowlight|fault)/)',
-    ],
+    transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
     timers: 'fake',
     testEnvironment: '<rootDir>/spec/frontend/environment.js',
     testEnvironmentOptions: {

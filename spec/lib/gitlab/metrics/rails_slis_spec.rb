@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
     end
 
     allow(Gitlab::RequestEndpoints).to receive(:all_api_endpoints).and_return([api_route])
-    allow(Gitlab::RequestEndpoints).to receive(:all_controller_actions).and_return([[ProjectsController, 'show']])
+    allow(Gitlab::RequestEndpoints).to receive(:all_controller_actions).and_return([[ProjectsController, 'index']])
     allow(Gitlab::Graphql::KnownOperations).to receive(:default).and_return(Gitlab::Graphql::KnownOperations.new(%w(foo bar)))
   end
 
@@ -22,13 +22,13 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
           request_urgency: :default
         },
         {
-          endpoint_id: "ProjectsController#show",
+          endpoint_id: "ProjectsController#index",
           feature_category: :projects,
           request_urgency: :default
         }
       ]
 
-      possible_graphql_labels = ['graphql:foo', 'graphql:bar', 'graphql:unknown', 'graphql:anonymous'].map do |endpoint_id|
+      possible_graphql_labels = ['graphql:foo', 'graphql:bar', 'graphql:unknown'].map do |endpoint_id|
         {
           endpoint_id: endpoint_id,
           feature_category: nil,

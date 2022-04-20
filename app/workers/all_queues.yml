@@ -192,6 +192,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:bulk_imports_stuck_import
+  :worker_name: BulkImports::StuckImportWorker
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_archive_traces_cron
   :worker_name: Ci::ArchiveTracesCronWorker
   :feature_category: :continuous_integration
@@ -255,6 +264,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_update_locked_unknown_artifacts
+  :worker_name: Ci::UpdateLockedUnknownArtifactsWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies:
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: cronjob:clusters_integrations_check_prometheus_health
   :worker_name: Clusters::Integrations::CheckPrometheusHealthWorker
   :feature_category: :incident_management
@@ -312,6 +330,24 @@
 - :name: cronjob:database_batched_background_migration_ci_database
   :worker_name: Database::BatchedBackgroundMigration::CiDatabaseWorker
   :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:database_ci_namespace_mirrors_consistency_check
+  :worker_name: Database::CiNamespaceMirrorsConsistencyCheckWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:database_ci_project_mirrors_consistency_check
+  :worker_name: Database::CiProjectMirrorsConsistencyCheckWorker
+  :feature_category: :sharding
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -578,15 +614,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
-- :name: cronjob:quality_test_data_cleanup
-  :worker_name: Quality::TestDataCleanupWorker
-  :feature_category: :quality_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: cronjob:releases_manage_evidence
   :worker_name: Releases::ManageEvidenceWorker
@@ -2578,15 +2605,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: namespaces_invite_team_email
-  :worker_name: Namespaces::InviteTeamEmailWorker
-  :feature_category: :experimentation_activation
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: namespaces_onboarding_issue_created
   :worker_name: Namespaces::OnboardingIssueCreatedWorker
   :feature_category: :onboarding
@@ -2771,7 +2789,7 @@
   :worker_name: ProjectExportWorker
   :feature_category: :importers
   :has_external_dependencies:
-  :urgency: :throttled
+  :urgency: :low
   :resource_boundary: :memory
   :weight: 1
   :idempotent:
@@ -2808,6 +2826,15 @@
   :feature_category: :sharding
   :has_external_dependencies:
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: projects_record_target_platforms
+  :worker_name: Projects::RecordTargetPlatformsWorker
+  :feature_category: :experimentation_activation
+  :has_external_dependencies:
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

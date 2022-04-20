@@ -34,6 +34,7 @@ module MergeRequests
       handle_target_branch_change(merge_request)
       handle_milestone_change(merge_request)
       handle_draft_status_change(merge_request, changed_fields)
+      handle_label_changes(merge_request, old_labels)
 
       track_title_and_desc_edits(changed_fields)
       track_discussion_lock_toggle(merge_request, changed_fields)

@@ -1,0 +1,9 @@
+---
+table_name: deployment_clusters
+classes:
+- DeploymentCluster
+feature_categories:
+- deployment_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24235
+milestone: '12.8'

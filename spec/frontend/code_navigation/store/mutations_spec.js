@@ -13,10 +13,12 @@ describe('Code navigation mutations', () => {
       mutations.SET_INITIAL_DATA(state, {
         blobs: ['test'],
         definitionPathPrefix: 'https://test.com/blob/main',
+        wrapTextNodes: true,
       });
 
       expect(state.blobs).toEqual(['test']);
       expect(state.definitionPathPrefix).toBe('https://test.com/blob/main');
+      expect(state.wrapTextNodes).toBe(true);
     });
   });
 

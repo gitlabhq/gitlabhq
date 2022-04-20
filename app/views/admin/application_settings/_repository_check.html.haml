@@ -1,16 +1,13 @@
-= form_for @application_setting, url: repository_admin_application_settings_path(anchor: 'js-repository-check-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: repository_admin_application_settings_path(anchor: 'js-repository-check-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .sub-section
       %h4= _("Repository checks")
       .form-group
-        .form-check
-          = f.check_box :repository_checks_enabled, class: 'form-check-input'
-          = f.label :repository_checks_enabled, class: 'form-check-label' do
-            = _("Enable repository checks")
-          .form-text.text-muted
-            = html_escape(s_('Run %{code_start}git fsck%{code_end} periodically in all project and wiki repositories to look for silent disk corruption issues.')) % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
+        = f.gitlab_ui_checkbox_component :repository_checks_enabled,
+          _("Enable repository checks"),
+          help_text: html_escape(s_('Run %{code_start}git fsck%{code_end} periodically in all project and wiki repositories to look for silent disk corruption issues.')) % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
       .form-group
         .form-text.text-muted
           = _("If you get a lot of false alarms from repository checks, you can clear all repository check information from the database.")
@@ -21,20 +18,11 @@
     .sub-section
       %h4= _("Housekeeping")
       .form-group
-        .form-check
-          = f.check_box :housekeeping_enabled, class: 'form-check-input'
-          = f.label :housekeeping_enabled, class: 'form-check-label' do
-            = _("Enable automatic repository housekeeping")
-          .form-text.text-muted
-            = _("Leaving this setting enabled is recommended.")
-            = link_to s_('Learn more.'), help_page_path('administration/housekeeping.md', anchor: 'housekeeping-options'), target: '_blank', rel: 'noopener noreferrer'
-        .form-check
-          = f.check_box :housekeeping_bitmaps_enabled, class: 'form-check-input'
-          = f.label :housekeeping_bitmaps_enabled, class: 'form-check-label' do
-            = _("Enable Git pack file bitmap creation")
-          .form-text.text-muted
-            = _("Improves Git cloning performance.")
-            = link_to s_('Learn more.'), help_page_path('administration/housekeeping.md', anchor: 'housekeeping-options'), target: '_blank', rel: 'noopener noreferrer'
+        - help_text = _("Leaving this setting enabled is recommended.")
+        - help_link = link_to s_('Learn more.'), help_page_path('administration/housekeeping.md', anchor: 'housekeeping-options'), target: '_blank', rel: 'noopener noreferrer'
+        = f.gitlab_ui_checkbox_component :housekeeping_enabled,
+          _("Enable automatic repository housekeeping"),
+          help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
       .form-group
         = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'label-bold'
         = f.number_field :housekeeping_incremental_repack_period, class: 'form-control gl-form-input'

@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe API::Keys do
-  let(:user)  { create(:user) }
-  let(:admin) { create(:admin) }
-  let(:key)   { create(:key, user: user, expires_at: 1.day.from_now) }
-  let(:email) { create(:email, user: user) }
+  let_it_be(:user)  { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:email) { create(:email, user: user) }
+  let_it_be(:key) { create(:rsa_key_4096, user: user, expires_at: 1.day.from_now) }
+  let_it_be(:fingerprint_md5) { 'df:73:db:29:3c:a5:32:cf:09:17:7e:8e:9d:de:d7:f7' }
 
   describe 'GET /keys/:uid' do
     context 'when unauthenticated' do
@@ -24,7 +25,6 @@ RSpec.describe API::Keys do
       end
 
       it 'returns single ssh key with user information' do
-        user.keys << key
         get api("/keys/#{key.id}", admin)
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(key.title)
@@ -43,23 +43,50 @@ RSpec.describe API::Keys do
 
   describe 'GET /keys?fingerprint=' do
     it 'returns authentication error' do
-      get api("/keys?fingerprint=#{key.fingerprint}")
+      get api("/keys?fingerprint=#{fingerprint_md5}")
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'returns authentication error when authenticated as user' do
-      get api("/keys?fingerprint=#{key.fingerprint}", user)
+      get api("/keys?fingerprint=#{fingerprint_md5}", user)
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     context 'when authenticated as admin' do
-      it 'returns 404 for non-existing SSH md5 fingerprint' do
-        get api("/keys?fingerprint=11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11", admin)
+      context 'MD5 fingerprint' do
+        it 'returns 404 for non-existing SSH md5 fingerprint' do
+          get api("/keys?fingerprint=11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11", admin)
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Key Not Found')
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Key Not Found')
+        end
+
+        it 'returns user if SSH md5 fingerprint found' do
+          get api("/keys?fingerprint=#{fingerprint_md5}", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['title']).to eq(key.title)
+          expect(json_response['user']['id']).to eq(user.id)
+          expect(json_response['user']['username']).to eq(user.username)
+        end
+
+        context 'with FIPS mode', :fips_mode do
+          it 'returns 404 for non-existing SSH md5 fingerprint' do
+            get api("/keys?fingerprint=11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11", admin)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq('Failed to return the key')
+          end
+
+          it 'returns 404 for existing SSH md5 fingerprint' do
+            get api("/keys?fingerprint=#{fingerprint_md5}", admin)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq('Failed to return the key')
+          end
+        end
       end
 
       it 'returns 404 for non-existing SSH sha256 fingerprint' do
@@ -69,20 +96,7 @@ RSpec.describe API::Keys do
         expect(json_response['message']).to eq('404 Key Not Found')
       end
 
-      it 'returns user if SSH md5 fingerprint found' do
-        user.keys << key
-
-        get api("/keys?fingerprint=#{key.fingerprint}", admin)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['title']).to eq(key.title)
-        expect(json_response['user']['id']).to eq(user.id)
-        expect(json_response['user']['username']).to eq(user.username)
-      end
-
       it 'returns user if SSH sha256 fingerprint found' do
-        user.keys << key
-
         get api("/keys?fingerprint=#{URI.encode_www_form_component("SHA256:" + key.fingerprint_sha256)}", admin)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -92,8 +106,6 @@ RSpec.describe API::Keys do
       end
 
       it 'returns user if SSH sha256 fingerprint found' do
-        user.keys << key
-
         get api("/keys?fingerprint=#{URI.encode_www_form_component("sha256:" + key.fingerprint_sha256)}", admin)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -103,7 +115,7 @@ RSpec.describe API::Keys do
       end
 
       it "does not include the user's `is_admin` flag" do
-        get api("/keys?fingerprint=#{key.fingerprint}", admin)
+        get api("/keys?fingerprint=#{URI.encode_www_form_component("sha256:" + key.fingerprint_sha256)}", admin)
 
         expect(json_response['user']['is_admin']).to be_nil
       end

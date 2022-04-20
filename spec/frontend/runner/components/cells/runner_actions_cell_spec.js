@@ -92,6 +92,24 @@ describe('RunnerActionsCell', () => {
       expect(findDeleteBtn().props('compact')).toBe(true);
     });
 
+    it('Passes runner data to delete button', () => {
+      createComponent({
+        runner: mockRunner,
+      });
+
+      expect(findDeleteBtn().props('runner')).toEqual(mockRunner);
+    });
+
+    it('Emits toggledPaused events', () => {
+      createComponent();
+
+      expect(wrapper.emitted('toggledPaused')).toBe(undefined);
+
+      findRunnerPauseBtn().vm.$emit('toggledPaused');
+
+      expect(wrapper.emitted('toggledPaused')).toHaveLength(1);
+    });
+
     it('Emits delete events', () => {
       const value = { name: 'Runner' };
 
@@ -104,7 +122,7 @@ describe('RunnerActionsCell', () => {
       expect(wrapper.emitted('deleted')).toEqual([[value]]);
     });
 
-    it('Does not render the runner delete button when user cannot delete', () => {
+    it('Renders the runner delete disabled button when user cannot delete', () => {
       createComponent({
         runner: {
           userPermissions: {
@@ -114,7 +132,7 @@ describe('RunnerActionsCell', () => {
         },
       });
 
-      expect(findDeleteBtn().exists()).toBe(false);
+      expect(findDeleteBtn().props('disabled')).toBe(true);
     });
   });
 });

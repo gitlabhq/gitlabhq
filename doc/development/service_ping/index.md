@@ -48,7 +48,7 @@ make better product decisions.
 There are several other benefits to enabling Service Ping:
 
 - As a benefit of having Service Ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
-- As a benefit of having Service Ping active, GitLab provides you with [DevOps Score](../../user/admin_area/analytics/dev_ops_report.md#devops-score), which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
+- As a benefit of having Service Ping active, GitLab provides you with [DevOps Score](../../user/admin_area/analytics/dev_ops_reports.md#devops-score), which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
 - You get better, more proactive support (assuming that our TAMs and support organization used the data to deliver more value).
 - You get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
@@ -76,7 +76,7 @@ tier. Users can continue to access the features in a paid tier without sharing u
 
 #### Features available in 14.1 and later
 
-1. [Email from GitLab](../../tools/email.md).
+1. [Email from GitLab](../../user/admin_area/email_from_gitlab.md).
 
 #### Features available in 14.4 and later
 
@@ -582,7 +582,8 @@ ServicePing::SubmitService.new(skip_db_write: true).execute
 
 ## Manually upload Service Ping payload
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83265) in GitLab 14.10.
 
 Service Ping payload can be uploaded to GitLab even if your application instance doesn't have access to the internet,
 or you don't have Service Ping [cron job](#how-service-ping-works) enabled.
@@ -597,6 +598,9 @@ To upload payload manually:
 1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).
 1. Select **Choose file** and choose the file from p5.
 1. Select **Upload**.
+
+The uploaded file is encrypted and sent using secure [HTTPS protocol](https://en.wikipedia.org/wiki/HTTPS). HTTPS creates a secure
+communication channel between web browser and the server, and protects transmitted data against man-in-the-middle attacks.
 
 ## Monitoring
 

@@ -46,6 +46,8 @@ RSpec.describe Profiles::PreferencesController do
       it "changes the user's preferences" do
         prefs = {
           color_scheme_id: '1',
+          diffs_deletion_color: '#123456',
+          diffs_addition_color: '#abcdef',
           dashboard: 'stars',
           theme_id: '2',
           first_day_of_week: '1',
@@ -81,6 +83,28 @@ RSpec.describe Profiles::PreferencesController do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(response.parsed_body['message']).to match(/\AFailed to save preferences \(.+\)\.\z/)
+        expect(response.parsed_body['type']).to eq('alert')
+      end
+    end
+
+    context 'on invalid diffs colors setting' do
+      it 'responds with error for diffs_deletion_color' do
+        prefs = { diffs_deletion_color: '#1234567' }
+
+        go params: prefs
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.parsed_body['message']).to eq _('Failed to save preferences.')
+        expect(response.parsed_body['type']).to eq('alert')
+      end
+
+      it 'responds with error for diffs_addition_color' do
+        prefs = { diffs_addition_color: '#1234567' }
+
+        go params: prefs
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.parsed_body['message']).to eq _('Failed to save preferences.')
         expect(response.parsed_body['type']).to eq('alert')
       end
     end

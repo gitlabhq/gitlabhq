@@ -1,6 +1,6 @@
 - parsed_with_gfm = (_("Content parsed with %{link}.") % { link: link_to('GitLab Flavored Markdown', help_page_path('user/markdown'), target: '_blank') }).html_safe
 
-= form_for @appearance, url: admin_application_settings_appearances_path, html: { class: 'gl-mt-3' } do |f|
+= gitlab_ui_form_for @appearance, url: admin_application_settings_appearances_path, html: { class: 'gl-mt-3' } do |f|
   = form_errors(@appearance)
 
 
@@ -21,7 +21,7 @@
           = f.hidden_field :header_logo_cache
           = f.file_field :header_logo, class: "", accept: 'image/*'
           .form-text.text-muted
-            = _('Maximum file size is 1MB. Pages are optimized for a 28px tall header logo')
+            = _('Maximum file size is 1MB. Pages are optimized for a 24px tall header logo')
   %hr
   .row
     .col-lg-4.profile-settings-sidebar

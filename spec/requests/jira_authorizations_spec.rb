@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Jira authorization requests' do
   let(:user) { create :user }
   let(:application) { create :oauth_application, scopes: 'api' }
-  let(:redirect_uri) { oauth_jira_callback_url(host: "http://www.example.com") }
+  let(:redirect_uri) { oauth_jira_dvcs_callback_url(host: "http://www.example.com") }
 
   def generate_access_grant
     create :oauth_access_grant, application: application, resource_owner_id: user.id, redirect_uri: redirect_uri

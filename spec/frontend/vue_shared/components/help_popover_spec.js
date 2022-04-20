@@ -34,7 +34,7 @@ describe('HelpPopover', () => {
 
     it('renders a link button with an icon question', () => {
       expect(findQuestionButton().props()).toMatchObject({
-        icon: 'question',
+        icon: 'question-o',
         variant: 'link',
       });
     });

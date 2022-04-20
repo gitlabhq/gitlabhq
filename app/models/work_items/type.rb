@@ -37,7 +37,7 @@ module WorkItems
     validates :icon_name, length: { maximum: 255 }
 
     scope :default, -> { where(namespace: nil) }
-    scope :order_by_name_asc, -> { order('LOWER(name)') }
+    scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
 
     def self.default_by_type(type)

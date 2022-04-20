@@ -31,7 +31,8 @@ able to accept a fingerprint. Check the version of OpenSSH on your server with `
 
 ## Fast lookup is required for Geo **(PREMIUM)**
 
-By default, GitLab manages an `authorized_keys` file that is located in the
+Unlike [Cloud Native GitLab](https://docs.gitlab.com/charts/), Omnibus GitLab by default
+manages an `authorized_keys` file that is located in the
 `git` user's home directory. For most installations, this will be located under
 `/var/opt/gitlab/.ssh/authorized_keys`, but you can use the following command to locate the `authorized_keys` on your system:
 
@@ -83,7 +84,7 @@ file (start the line with a `#` to comment it), and from your local machine, att
 ssh -T git@gitlab.example.com
 ```
 
-A successful pull or [welcome message](../../ssh/index.md#verify-that-you-can-connect) would mean that GitLab was able to find the key in the database,
+A successful pull or [welcome message](../../user/ssh.md#verify-that-you-can-connect) would mean that GitLab was able to find the key in the database,
 since it is not present in the file anymore.
 
 NOTE:

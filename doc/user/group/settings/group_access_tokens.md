@@ -16,13 +16,16 @@ You can use a group access token to authenticate:
 
 - With the [GitLab API](../../../api/index.md#personalprojectgroup-access-tokens).
 - In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate with Git over HTTPS.
+  Use:
 
-After you configure a group access token, you don't need a password when you authenticate.
-Instead, you can enter any non-blank value.
+  - Any non-blank value as a username.
+  - The group access token as the password.
 
 Group access tokens are similar to [project access tokens](../../project/settings/project_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are
 associated with a group rather than a project or user.
+
+In self-managed instances, group access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) as personal access tokens if the limit is set.
 
 You can use group access tokens:
 
@@ -32,6 +35,8 @@ You can use group access tokens:
     [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
   - Consider [disabling group access tokens](#enable-or-disable-group-access-token-creation) to
     lower potential abuse.
+
+You cannot use group access tokens to create other access tokens.
 
 Group access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
@@ -45,7 +50,7 @@ To create a group access token:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
-1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC.
+1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC. An instance-wide [maximum lifetime](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-group-access-token).
 1. Select  **Create group access token**.

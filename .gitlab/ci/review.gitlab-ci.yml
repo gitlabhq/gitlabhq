@@ -1,3 +1,6 @@
+include:
+  - remote: 'https://gitlab.com/gitlab-org/modelops/applied-ml/review-recommender/ci-templates/-/raw/v0.2.1/recommender/Reviewers.gitlab-ci.yml'
+
 review-cleanup:
   extends:
     - .default-retry
@@ -55,7 +58,8 @@ danger-review:
       if [ -z "$DANGER_GITLAB_API_TOKEN" ]; then
         run_timed_command danger_as_local
       else
-        run_timed_command "bundle exec danger --fail-on-errors=true --verbose"
+        danger_id=$(echo -n ${DANGER_GITLAB_API_TOKEN} | md5sum | awk '{print $1}' | cut -c5-10)
+        run_timed_command "bundle exec danger --fail-on-errors=true --verbose --danger_id=${danger_id}"
       fi
 
 danger-review-local:
@@ -64,3 +68,9 @@ danger-review-local:
     - .review:rules:danger-local
   script:
     - run_timed_command danger_as_local
+
+reviewers-recommender:
+  extends:
+    - .default-retry
+  stage: test
+  needs: []

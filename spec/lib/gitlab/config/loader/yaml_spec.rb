@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Config::Loader::Yaml do
 
   let(:yml) do
     <<~YAML
-    image: 'ruby:2.7'
+    image: 'image:1.0'
     texts:
       nested_key: 'value1'
       more_text:
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Config::Loader::Yaml do
   end
 
   context 'when yaml syntax is correct' do
-    let(:yml) { 'image: ruby:2.7' }
+    let(:yml) { 'image: image:1.0' }
 
     describe '#valid?' do
       it 'returns true' do
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Config::Loader::Yaml do
 
     describe '#load!' do
       it 'returns a valid hash' do
-        expect(loader.load!).to eq(image: 'ruby:2.7')
+        expect(loader.load!).to eq(image: 'image:1.0')
       end
     end
   end
@@ -164,7 +164,7 @@ RSpec.describe Gitlab::Config::Loader::Yaml do
   describe '#load_raw!' do
     it 'loads keys as strings' do
       expect(loader.load_raw!).to eq(
-        'image' => 'ruby:2.7',
+        'image' => 'image:1.0',
         'texts' => {
           'nested_key' => 'value1',
           'more_text' => {
@@ -178,7 +178,7 @@ RSpec.describe Gitlab::Config::Loader::Yaml do
   describe '#load!' do
     it 'symbolizes keys' do
       expect(loader.load!).to eq(
-        image: 'ruby:2.7',
+        image: 'image:1.0',
         texts: {
           nested_key: 'value1',
           more_text: {

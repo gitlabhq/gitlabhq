@@ -1,0 +1,9 @@
+---
+table_name: analytics_usage_trends_measurements
+classes:
+- Analytics::UsageTrends::Measurement
+feature_categories:
+- devops_reports
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62797
+milestone: '14.0'

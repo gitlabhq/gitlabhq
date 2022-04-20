@@ -2230,4 +2230,10 @@ RSpec.describe Namespace do
       expect(namespace.storage_enforcement_date).to be(nil)
     end
   end
+
+  describe 'serialization' do
+    let(:object) { build(:namespace) }
+
+    it_behaves_like 'blocks unsafe serialization'
+  end
 end

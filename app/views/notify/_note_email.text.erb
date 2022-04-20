@@ -1,13 +1,14 @@
 <% note = local_assigns.fetch(:note, @note) -%>
 <% diff_limit = local_assigns.fetch(:diff_limit, nil) -%>
 <% target_url = local_assigns.fetch(:target_url, @target_url) -%>
-<% discussion = note.discussion if note.part_of_discussion? -%>
+<% author = local_assigns.fetch(:author) { note.author } -%>
+<% discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion? -%>
 
-<%= sanitize_name(note.author_name) -%>
+<%= sanitize_name(author.name) -%>
 <%  if discussion.nil? -%>
  <%= 'commented' -%>:
 <%  else -%>
-<%    if note.start_of_discussion? -%>
+<%    if discussion.first_note == note -%>
  <%=    'started a new discussion' -%>
 <%    else -%>
  <%=    'commented on a discussion' -%>

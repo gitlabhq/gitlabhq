@@ -95,7 +95,6 @@ export default {
         v-if="activeTokenValue"
         :size="16"
         :src="getAvatarUrl(activeTokenValue)"
-        shape="circle"
         class="gl-mr-2"
       />
       {{ activeTokenValue ? activeTokenValue.name : inputValue }}

@@ -37,7 +37,7 @@ has_ee_app_changes = all_changed_files.grep(%r{\Aee/(app|lib|db/(geo/)?(post_)?m
 spec_changes = specs.changed_specs_files(ee: :exclude)
 has_spec_changes = spec_changes.any?
 has_ee_spec_changes = specs.changed_specs_files(ee: :only).any?
-new_specs_needed = (gitlab.mr_labels & NO_SPECS_LABELS).empty?
+new_specs_needed = (helper.mr_labels & NO_SPECS_LABELS).empty?
 
 if (has_app_changes || has_ee_app_changes) && !(has_spec_changes || has_ee_spec_changes) && new_specs_needed
   warn format(NO_NEW_SPEC_MESSAGE, labels: helper.labels_list(NO_SPECS_LABELS)), sticky: false

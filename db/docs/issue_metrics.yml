@@ -1,0 +1,9 @@
+---
+table_name: issue_metrics
+classes:
+- Issue::Metrics
+feature_categories:
+- value_stream_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/516c838a1846d049814765afa85c28a3c14a5b9f
+milestone: '8.12'

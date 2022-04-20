@@ -8,12 +8,13 @@ export default () => {
     return false;
   }
 
-  const { path } = el.dataset;
+  const { path, name } = el.dataset;
 
   return new Vue({
     el,
     provide: {
       path,
+      name,
     },
     render(h) {
       return h(RemoveAvatar);

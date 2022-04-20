@@ -29,7 +29,7 @@ module Gitlab
     end
 
     def project_path
-      URI.parse(preview).path.sub(%r{\A/}, '')
+      URI.parse(preview).path.delete_prefix('/')
     end
 
     def uri_encoded_project_path
@@ -57,7 +57,7 @@ module Gitlab
           ProjectTemplate.new('plainhtml', 'Pages/Plain HTML', _('Everything you need to create a GitLab Pages site using plain HTML'), 'https://gitlab.com/pages/plain-html'),
           ProjectTemplate.new('gitbook', 'Pages/GitBook', _('Everything you need to create a GitLab Pages site using GitBook'), 'https://gitlab.com/pages/gitbook', 'illustrations/logos/gitbook.svg'),
           ProjectTemplate.new('hexo', 'Pages/Hexo', _('Everything you need to create a GitLab Pages site using Hexo'), 'https://gitlab.com/pages/hexo', 'illustrations/logos/hexo.svg'),
-          ProjectTemplate.new('sse_middleman', 'Static Site Editor/Middleman', _('Middleman project with Static Site Editor support'), 'https://gitlab.com/gitlab-org/project-templates/static-site-editor-middleman', 'illustrations/logos/middleman.svg'),
+          ProjectTemplate.new('middleman', 'Pages/Middleman', _('Everything you need to create a GitLab Pages site using Middleman'), 'https://gitlab.com/gitlab-org/project-templates/middleman', 'illustrations/logos/middleman.svg'),
           ProjectTemplate.new('gitpod_spring_petclinic', 'Gitpod/Spring Petclinic', _('A Gitpod configured Webapplication in Spring and Java'), 'https://gitlab.com/gitlab-org/project-templates/gitpod-spring-petclinic', 'illustrations/logos/gitpod.svg'),
           ProjectTemplate.new('nfhugo', 'Netlify/Hugo', _('A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfhugo', 'illustrations/logos/netlify.svg'),
           ProjectTemplate.new('nfjekyll', 'Netlify/Jekyll', _('A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfjekyll', 'illustrations/logos/netlify.svg'),

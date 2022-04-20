@@ -9,6 +9,7 @@ module Gitlab
           attr_accessor :scan, :scanned_resources, :errors, :analyzer, :version, :schema_validation_status, :warnings
 
           delegate :project_id, to: :pipeline
+          delegate :project, to: :pipeline
 
           def initialize(type, pipeline, created_at)
             @type = type
@@ -36,6 +37,10 @@ module Gitlab
 
           def errored?
             errors.present?
+          end
+
+          def warnings?
+            warnings.present?
           end
 
           def add_scanner(scanner)

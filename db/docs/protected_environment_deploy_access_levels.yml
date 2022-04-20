@@ -1,0 +1,9 @@
+---
+table_name: protected_environment_deploy_access_levels
+classes:
+- ProtectedEnvironment::DeployAccessLevel
+feature_categories:
+- continuous_delivery
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6672
+milestone: '11.3'

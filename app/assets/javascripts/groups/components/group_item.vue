@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '../constants';
 import eventHub from '../event_hub';
 
@@ -112,6 +113,7 @@ export default {
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
@@ -131,7 +133,7 @@ export default {
     >
       <div class="folder-toggle-wrap gl-mr-2 d-flex align-items-center">
         <item-caret :is-group-open="group.isOpen" />
-        <item-type-icon :item-type="group.type" :is-group-open="group.isOpen" />
+        <item-type-icon :item-type="group.type" />
       </div>
       <gl-loading-icon
         v-if="group.isChildrenLoading"
@@ -145,7 +147,7 @@ export default {
         :aria-label="group.name"
       >
         <gl-avatar
-          shape="rect"
+          :shape="$options.AVATAR_SHAPE_OPTION_RECT"
           :entity-name="group.name"
           :src="group.avatarUrl"
           :alt="group.name"

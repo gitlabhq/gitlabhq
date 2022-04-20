@@ -24,14 +24,15 @@ The following lists the currently supported OSs and their possible EOL dates.
 | Debian 10        | GitLab CE / GitLab EE 12.2.0   | amd64, arm64    | 2024          | <https://wiki.debian.org/LTS>                                |
 | Debian 11        | GitLab CE / GitLab EE 14.6.0   | amd64, arm64    | 2026          | <https://wiki.debian.org/LTS>                                |
 | OpenSUSE 15.3    | GitLab CE / GitLab EE 14.5.0   | x86_64, aarch64 | Nov 2022      | <https://en.opensuse.org/Lifetime>                           |
+| RHEL 8           | GitLab CE / GitLab EE 12.8.1   | x86_64, arm64   | May 2024      | <https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates> |
 | SLES 12          | GitLab EE 9.0.0                | x86_64          | Oct 2027      | <https://www.suse.com/lifecycle/>                            |
 | Ubuntu 18.04     | GitLab CE / GitLab EE 10.7.0   | amd64           | April 2023    | <https://wiki.ubuntu.com/Releases>                           |
 | Ubuntu 20.04     | GitLab CE / GitLab EE 13.2.0   | amd64, arm64    | April 2025    | <https://wiki.ubuntu.com/Releases>                           |
-| Amazon Linux 2   | GitLab CE / GitLab EE 14.9.0   | amd64, arm64    | June 2023     | <https://aws.amazon.com/amazon-linux-2/faqs>                 |
-| Raspbian Buster  | GitLab CE 12.2.0               | armhf           | 2022          | <https://wiki.debian.org/DebianReleases#Production_Releases> |
+| Amazon Linux 2   | GitLab CE / GitLab EE 14.9.0   | amd64, arm64    | June 2023     | <https://aws.amazon.com/amazon-linux-2/faqs/>                 |
+| Raspberry Pi OS (Buster) (formerly known as Raspbian Buster) | GitLab CE 12.2.0               | armhf           | 2024          | <https://www.raspberrypi.com/news/new-old-functionality-with-raspberry-pi-os-legacy/> |
 
 NOTE:
-CentOS 8 will be EOL on December 31, 2021. In GitLab 14.5 and later,
+CentOS 8 was EOL on December 31, 2021. In GitLab 14.5 and later,
 [CentOS builds work in AlmaLinux](https://gitlab.com/gitlab-org/distribution/team-tasks/-/issues/954#note_730198505).
 We will officially support all distributions that are binary compatible with Red Hat Enterprise Linux.
 This gives users a path forward for their CentOS 8 builds at its end of life.
@@ -78,7 +79,7 @@ release for them can be found below:
 | Ubuntu 14.04    | [April 2019](https://ubuntu.com/info/release-end-of-life)                          | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_11.10&dist=ubuntu%2Ftrusty) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_11.10&dist=ubuntu%2Ftrusty) 11.10    |
 | OpenSUSE 42.3   | [July 2019](https://en.opensuse.org/Lifetime#Discontinued_distributions)           | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-12.1&dist=opensuse%2F42.3) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-12.1&dist=opensuse%2F42.3) 12.1       |
 | OpenSUSE 15.0   | [December 2019](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-12.5&dist=opensuse%2F15.0) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-12.5&dist=opensuse%2F15.0) 12.5       |
-| Raspbian Stretch | [June 2020](https://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/) | [GitLab CE](https://packages.gitlab.com/app/gitlab/raspberry-pi2/search?q=gitlab-ce_13.2&dist=raspbian%2Fstretch) 13.3                                                                                                           |
+| Raspbian Stretch | [June 2020](https://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/) | [GitLab CE](https://packages.gitlab.com/app/gitlab/raspberry-pi2/search?q=gitlab-ce_13.3&dist=raspbian%2Fstretch) 13.3                                                                                                           |
 | Debian Jessie   | [June 2020](https://www.debian.org/News/2020/20200709)                             | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.2&dist=debian%2Fjessie) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.2&dist=debian%2Fjessie) 13.3       |
 | CentOS 6        | [November 2020](https://wiki.centos.org/About/Product)                             | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=13.6&filter=all&filter=all&dist=el%2F6) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=13.6&filter=all&filter=all&dist=el%2F6) 13.6 |
 | OpenSUSE 15.1   | [November 2020](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-13.12&dist=opensuse%2F15.1) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-13.12&dist=opensuse%2F15.1) 13.12    |

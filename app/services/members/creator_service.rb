@@ -4,15 +4,13 @@ module Members
   # This class serves as more of an app-wide way we add/create members
   # All roads to add members should take this path.
   class CreatorService
-    include Gitlab::Experiment::Dsl
-
     class << self
       def parsed_access_level(access_level)
         access_levels.fetch(access_level) { access_level.to_i }
       end
 
       def access_levels
-        raise NotImplementedError
+        Gitlab::Access.sym_options_with_owner
       end
     end
 
@@ -25,7 +23,7 @@ module Members
 
     def execute
       find_or_build_member
-      update_member
+      commit_member
       create_member_task
 
       member
@@ -33,23 +31,39 @@ module Members
 
     private
 
+    delegate :new_record?, to: :member
     attr_reader :source, :user, :access_level, :member, :args
 
-    def update_member
-      return unless can_update_member?
-
+    def assign_member_attributes
       member.attributes = member_attributes
+    end
 
-      if member.request?
-        approve_request
+    def commit_member
+      if can_commit_member?
+        assign_member_attributes
+        commit_changes
       else
-        member.save
+        add_commit_error
       end
     end
 
-    def can_update_member?
+    def can_commit_member?
       # There is no current user for bulk actions, in which case anything is allowed
-      !current_user # inheriting classes will add more logic
+      return true if skip_authorization?
+
+      if new_record?
+        can_create_new_member?
+      else
+        can_update_existing_member?
+      end
+    end
+
+    def can_create_new_member?
+      raise NotImplementedError
+    end
+
+    def can_update_existing_member?
+      raise NotImplementedError
     end
 
     # Populates the attributes of a member.
@@ -62,6 +76,14 @@ module Members
         access_level: access_level,
         expires_at: args[:expires_at]
       }
+    end
+
+    def commit_changes
+      if member.request?
+        approve_request
+      else
+        member.save
+      end
     end
 
     def create_member_task
@@ -93,6 +115,20 @@ module Members
       args[:current_user]
     end
 
+    def skip_authorization?
+      !current_user
+    end
+
+    def add_commit_error
+      msg = if new_record?
+              _('not authorized to create member')
+            else
+              _('not authorized to update member')
+            end
+
+      member.errors.add(:base, msg)
+    end
+
     def find_or_build_member
       @user = parse_user_param
 
@@ -101,6 +137,8 @@ module Members
                 else
                   source.members.build(invite_email: user)
                 end
+
+      @member.blocking_refresh = args[:blocking_refresh]
     end
 
     # This method is used to find users that have been entered into the "Add members" field.
@@ -114,7 +152,7 @@ module Members
         User.find_by(id: user) # rubocop:todo CodeReuse/ActiveRecord
       else
         # must be an email or at least we'll consider it one
-        User.find_by_any_email(user) || user
+        source.users_by_emails([user])[user] || user
       end
     end
 

@@ -1,0 +1,9 @@
+---
+table_name: ci_job_variables
+classes:
+- Ci::JobVariable
+feature_categories:
+- pipeline_authoring
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14784
+milestone: '12.2'

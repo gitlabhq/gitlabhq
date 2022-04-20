@@ -34,7 +34,7 @@ RSpec.describe API::IssueLinks do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
-        expect(response).to match_response_schema('public_api/v4/issue_links')
+        expect(response).to match_response_schema('public_api/v4/related_issues')
       end
 
       it 'returns multiple links without N + 1' do
@@ -205,15 +205,29 @@ RSpec.describe API::IssueLinks do
       end
 
       context 'when user has ability to delete the issue link' do
-        it 'returns 200' do
-          target_issue = create(:issue, project: project)
-          issue_link = create(:issue_link, source: issue, target: target_issue)
+        let_it_be(:target_issue) { create(:issue, project: project) }
+
+        before do
           project.add_reporter(user)
+        end
+
+        it 'returns 200' do
+          issue_link = create(:issue_link, source: issue, target: target_issue)
 
           delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/issue_link')
+        end
+
+        it 'returns 404 when the issue link does not belong to the specified issue' do
+          other_issue = create(:issue, project: project)
+          issue_link = create(:issue_link, source: other_issue, target: target_issue)
+
+          delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Not found')
         end
       end
     end

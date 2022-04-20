@@ -114,6 +114,26 @@ You can also remove the Package Registry for your project specifically:
 
 The **Packages & Registries > Package Registry** entry is removed from the sidebar.
 
+## Package Registry visibility permissions
+
+[Project-level permissions](../../permissions.md)
+determine actions such as downloading, pushing, or deleting packages.
+
+The visibility of the Package Registry is independent of the repository and can't be controlled from
+your project's settings. For example, if you have a public project and set the repository visibility
+to **Only Project Members**, the Package Registry is then public. However, disabling the Package
+Registry disables all Package Registry operations.
+
+[GitLab-#329253](https://gitlab.com/gitlab-org/gitlab/-/issues/329253)
+proposes adding the ability to control Package Registry visibility from the UI.  
+
+|                      |                       | Anonymous<br/>(everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
+| -------------------- | --------------------- | --------- | ----- | ------------------------------------------ |
+| Public project with Package Registry enabled | View Package Registry <br/> and pull packages | Yes       | Yes   | Yes      |
+| Internal project with Package Registry enabled | View Package Registry <br/> and pull packages | No       | Yes   | Yes      |
+| Private project with Package Registry enabled | View Package Registry <br/> and pull packages | No        | No    | Yes      |
+| Any project with Package Registry disabled | All operations on Package Registry | No | No | No |
+
 ## Supported package managers
 
 WARNING:

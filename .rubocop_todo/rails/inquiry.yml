@@ -1,0 +1,4 @@
+---
+Rails/Inquiry:
+  Exclude:
+    - 'spec/helpers/labels_helper_spec.rb'

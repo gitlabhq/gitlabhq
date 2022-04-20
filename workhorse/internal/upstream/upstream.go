@@ -37,7 +37,6 @@ var (
 		upload.RewrittenFieldsHeader,
 	}
 	geoProxyApiPollingInterval = 10 * time.Second
-	geoProxyWorkhorseHeaders   = map[string]string{"Gitlab-Workhorse-Geo-Proxy": "1"}
 )
 
 type upstream struct {
@@ -48,6 +47,7 @@ type upstream struct {
 	CableRoundTripper     http.RoundTripper
 	APIClient             *apipkg.API
 	geoProxyBackend       *url.URL
+	geoProxyExtraData     string
 	geoLocalRoutes        []routeEntry
 	geoProxyCableRoute    routeEntry
 	geoProxyRoute         routeEntry
@@ -215,34 +215,51 @@ func (u *upstream) pollGeoProxyAPI() {
 
 // Calls /api/v4/geo/proxy and sets up routes
 func (u *upstream) callGeoProxyAPI() {
-	geoProxyURL, err := u.APIClient.GetGeoProxyURL()
+	geoProxyData, err := u.APIClient.GetGeoProxyData()
 	if err != nil {
 		log.WithError(err).WithFields(log.Fields{"geoProxyBackend": u.geoProxyBackend}).Error("Geo Proxy: Unable to determine Geo Proxy URL. Fallback on cached value.")
 		return
 	}
 
-	if u.geoProxyBackend.String() != geoProxyURL.String() {
-		log.WithFields(log.Fields{"oldGeoProxyURL": u.geoProxyBackend, "newGeoProxyURL": geoProxyURL}).Info("Geo Proxy: URL changed")
-		u.updateGeoProxyFields(geoProxyURL)
+	hasProxyDataChanged := false
+	if u.geoProxyBackend.String() != geoProxyData.GeoProxyURL.String() {
+		log.WithFields(log.Fields{"oldGeoProxyURL": u.geoProxyBackend, "newGeoProxyURL": geoProxyData.GeoProxyURL}).Info("Geo Proxy: URL changed")
+		hasProxyDataChanged = true
+	}
+
+	if u.geoProxyExtraData != geoProxyData.GeoProxyExtraData {
+		// extra data is usually a JWT, thus not explicitly logging it
+		log.Info("Geo Proxy: signed data changed")
+		hasProxyDataChanged = true
+	}
+
+	if hasProxyDataChanged {
+		u.updateGeoProxyFieldsFromData(geoProxyData)
 	}
 }
 
-func (u *upstream) updateGeoProxyFields(geoProxyURL *url.URL) {
+func (u *upstream) updateGeoProxyFieldsFromData(geoProxyData *apipkg.GeoProxyData) {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 
-	u.geoProxyBackend = geoProxyURL
+	u.geoProxyBackend = geoProxyData.GeoProxyURL
+	u.geoProxyExtraData = geoProxyData.GeoProxyExtraData
 
 	if u.geoProxyBackend.String() == "" {
 		return
 	}
 
+	geoProxyWorkhorseHeaders := map[string]string{
+		"Gitlab-Workhorse-Geo-Proxy":            "1",
+		"Gitlab-Workhorse-Geo-Proxy-Extra-Data": u.geoProxyExtraData,
+	}
 	geoProxyRoundTripper := roundtripper.NewBackendRoundTripper(u.geoProxyBackend, "", u.ProxyHeadersTimeout, u.DevelopmentMode)
 	geoProxyUpstream := proxypkg.NewProxy(
 		u.geoProxyBackend,
 		u.Version,
 		geoProxyRoundTripper,
 		proxypkg.WithCustomHeaders(geoProxyWorkhorseHeaders),
+		proxypkg.WithForcedTargetHostHeader(),
 	)
 	u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
 	u.geoProxyRoute = u.route("", "", geoProxyUpstream, withGeoProxy())

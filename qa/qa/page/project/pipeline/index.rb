@@ -21,54 +21,46 @@ module QA
             element :run_pipeline_button
           end
 
-          def click_on_latest_pipeline
-            all_elements(:pipeline_url_link, minimum: 1, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME).first.click
+          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipelines_table.vue' do
+            element :pipeline_row_container
           end
 
-          def wait_for_latest_pipeline_succeeded
-            wait_for_latest_pipeline_status { has_selector?(".ci-status-icon-success") }
+          def latest_pipeline
+            all_elements(:pipeline_row_container, minimum: 1).first
           end
 
-          def wait_for_latest_pipeline_completed
-            wait_for_latest_pipeline_status { has_selector?(".ci-status-icon-success") || has_selector?(".ci-status-icon-failed") }
+          def latest_pipeline_status
+            latest_pipeline.find(element_selector_css(:pipeline_commit_status)).text
           end
 
-          def wait_for_latest_pipeline_skipped
-            wait_for_latest_pipeline_status { has_text?('skipped') }
-          end
+          # If no status provided, wait for pipeline to complete
+          def wait_for_latest_pipeline(status: nil, wait: nil, reload: false)
+            wait ||= Support::Repeater::DEFAULT_MAX_WAIT_TIME
+            finished_status = %w[passed failed canceled skipped manual]
 
-          def wait_for_latest_pipeline_status
-            wait_until(max_duration: 90, reload: true, sleep_interval: 5) { has_pipeline? }
-
-            wait_until(reload: false, max_duration: 360) do
-              within_element_by_index(:pipeline_commit_status, 0) { yield }
+            wait_until(max_duration: wait, reload: reload, sleep_interval: 1) do
+              status ? latest_pipeline_status == status : finished_status.include?(latest_pipeline_status)
             end
           end
 
-          def wait_for_latest_pipeline_success_or_retry
-            wait_for_latest_pipeline_completion
-
-            if has_text?('failed')
-              click_element :pipeline_retry_button
-              wait_for_latest_pipeline_success
-            end
-          end
-
-          def has_pipeline?
-            has_element? :pipeline_url_link
+          def has_any_pipeline?(wait: nil)
+            wait ||= Support::Repeater::DEFAULT_MAX_WAIT_TIME
+            wait_until(max_duration: wait) { has_element?(:pipeline_row_container) }
           end
 
           def has_no_pipeline?
-            has_no_element? :pipeline_url_link
+            has_no_element?(:pipeline_row_container)
           end
 
           def click_run_pipeline_button
-            click_element :run_pipeline_button, Page::Project::Pipeline::New
+            click_element(:run_pipeline_button, Page::Project::Pipeline::New)
+          end
+
+          def click_on_latest_pipeline
+            latest_pipeline.find(element_selector_css(:pipeline_url_link)).click
           end
         end
       end
     end
   end
 end
-
-QA::Page::Project::Pipeline::Index.prepend_mod_with('Page::Project::Pipeline::Index', namespace: QA)

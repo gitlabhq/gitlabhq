@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { refreshCurrentPage } from '../../lib/utils/url_utility';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 
 export default function adminInit() {
   $('input#user_force_random_password').on('change', function randomPasswordClick() {

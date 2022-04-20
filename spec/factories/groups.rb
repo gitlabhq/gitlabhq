@@ -118,14 +118,5 @@ FactoryBot.define do
         create(:crm_settings, group: group, enabled: true)
       end
     end
-
-    trait :test_group do
-      path { "test-group-fulfillment#{SecureRandom.hex(4)}" }
-      created_at { 4.days.ago }
-
-      after(:create) do |group|
-        group.add_owner(create(:user, email: "test-user-#{SecureRandom.hex(4)}@test.com"))
-      end
-    end
   end
 end

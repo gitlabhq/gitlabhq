@@ -105,7 +105,8 @@ module Projects
       end
 
       @project.track_project_repository
-      @project.create_project_setting unless @project.project_setting
+
+      create_project_settings
 
       yield if block_given?
 
@@ -120,6 +121,14 @@ module Projects
 
       create_readme if @initialize_with_readme
       create_sast_commit if @initialize_with_sast
+    end
+
+    def create_project_settings
+      if Feature.enabled?(:create_project_settings, default_enabled: :yaml)
+        @project.project_setting.save if @project.project_setting.changed?
+      else
+        @project.create_project_setting unless @project.project_setting
+      end
     end
 
     # Add an authorization for the current user authorizations inline
@@ -243,7 +252,7 @@ module Projects
 
     def import_schedule
       if @project.errors.empty?
-        @project.import_state.schedule if @project.import? && !@project.bare_repository_import?
+        @project.import_state.schedule if @project.import? && !@project.bare_repository_import? && !@project.gitlab_project_migration?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end

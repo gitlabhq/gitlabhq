@@ -563,4 +563,39 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
       expect(response).not_to have_key 'nonexistent'
     end
   end
+
+  describe '#raw_blame' do
+    let(:project) { create(:project, :test_repo) }
+    let(:revision) { 'blame-on-renamed' }
+    let(:path) { 'files/plain_text/renamed' }
+
+    let(:blame_headers) do
+      [
+        '405a45736a75e439bb059e638afaa9a3c2eeda79 1 1 2',
+        '405a45736a75e439bb059e638afaa9a3c2eeda79 2 2',
+        'bed1d1610ebab382830ee888288bf939c43873bb 3 3 1',
+        '3685515c40444faf92774e72835e1f9c0e809672 4 4 1',
+        '32c33da59f8a1a9f90bdeda570337888b00b244d 5 5 1'
+      ]
+    end
+
+    subject(:blame) { client.raw_blame(revision, path, range: range).split("\n") }
+
+    context 'without a range' do
+      let(:range) { nil }
+
+      it 'blames a whole file' do
+        is_expected.to include(*blame_headers)
+      end
+    end
+
+    context 'with a range' do
+      let(:range) { '3,4' }
+
+      it 'blames part of a file' do
+        is_expected.to include(blame_headers[2], blame_headers[3])
+        is_expected.not_to include(blame_headers[0], blame_headers[1], blame_headers[4])
+      end
+    end
+  end
 end

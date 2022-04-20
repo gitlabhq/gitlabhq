@@ -11,6 +11,10 @@ RSpec.shared_examples 'wiki model' do
 
   subject { wiki }
 
+  it 'VALID_USER_MARKUPS contains all valid markups' do
+    expect(described_class::VALID_USER_MARKUPS.keys).to match_array(%i(markdown rdoc asciidoc org))
+  end
+
   it 'container class includes HasWiki' do
     # NOTE: This is not enforced at runtime, since we also need to support Geo::DeletedProject
     expect(wiki_container).to be_kind_of(HasWiki)
@@ -427,45 +431,131 @@ RSpec.shared_examples 'wiki model' do
   end
 
   describe '#update_page' do
-    let(:page) { create(:wiki_page, wiki: subject, title: 'update-page') }
+    shared_examples 'update_page tests' do
+      with_them do
+        let!(:page) { create(:wiki_page, wiki: subject, title: original_title, format: original_format, content: 'original content') }
 
-    def update_page
-      subject.update_page(
-        page.page,
-        content: 'some other content',
-        format: :markdown,
-        message: 'updated page'
-      )
+        let(:message) { 'updated page' }
+        let(:updated_content) { 'updated content' }
+
+        def update_page
+          subject.update_page(
+            page.page,
+            content: updated_content,
+            title: updated_title,
+            format: updated_format,
+            message: message
+          )
+        end
+
+        specify :aggregate_failures do
+          expect(subject).to receive(:after_wiki_activity)
+          expect(update_page).to eq true
+
+          page = subject.find_page(updated_title.presence || original_title)
+
+          expect(page.raw_content).to eq(updated_content)
+          expect(page.path).to eq(expected_path)
+          expect(page.version.message).to eq(message)
+          expect(user.commit_email).not_to eq(user.email)
+          expect(commit.author_email).to eq(user.commit_email)
+          expect(commit.committer_email).to eq(user.commit_email)
+        end
+      end
     end
 
-    it 'updates the content of the page' do
-      update_page
-      page = subject.find_page('update-page')
+    shared_context 'common examples' do
+      using RSpec::Parameterized::TableSyntax
 
-      expect(page.raw_content).to eq('some other content')
+      where(:original_title, :original_format, :updated_title, :updated_format, :expected_path) do
+        'test page' | :markdown | 'new test page' | :markdown | 'new-test-page.md'
+        'test page' | :markdown | 'test page'     | :markdown | 'test-page.md'
+        'test page' | :markdown | 'test page'     | :asciidoc | 'test-page.asciidoc'
+
+        'test page' | :markdown | 'new dir/new test page' | :markdown | 'new-dir/new-test-page.md'
+        'test page' | :markdown | 'new dir/test page'     | :markdown | 'new-dir/test-page.md'
+
+        'test dir/test page' | :markdown | 'new dir/new test page'  | :markdown | 'new-dir/new-test-page.md'
+        'test dir/test page' | :markdown | 'test dir/test page'     | :markdown | 'test-dir/test-page.md'
+        'test dir/test page' | :markdown | 'test dir/test page'     | :asciidoc | 'test-dir/test-page.asciidoc'
+
+        'test dir/test page' | :markdown | 'new test page'  | :markdown | 'new-test-page.md'
+        'test dir/test page' | :markdown | 'test page'      | :markdown | 'test-page.md'
+
+        'test page' | :markdown | nil | :markdown | 'test-page.md'
+        'test.page' | :markdown | nil | :markdown | 'test.page.md'
+      end
     end
 
-    it 'sets the correct commit message' do
-      update_page
-      page = subject.find_page('update-page')
+    # There are two bugs in Gollum. THe first one is when the title and the format are updated
+    # at the same time https://gitlab.com/gitlab-org/gitlab/-/issues/243519.
+    # The second one is when the wiki page is within a dir and the `title` argument
+    # we pass to the update method is `nil`. Gollum will remove the dir and move the page.
+    #
+    # We can include this context into the former once it is fixed
+    # or when Gollum is removed since the Gitaly approach already fixes it.
+    shared_context 'extended examples' do
+      using RSpec::Parameterized::TableSyntax
 
-      expect(page.version.message).to eq('updated page')
+      where(:original_title, :original_format, :updated_title, :updated_format, :expected_path) do
+        'test page'          | :markdown | 'new test page'          | :asciidoc | 'new-test-page.asciidoc'
+        'test page'          | :markdown | 'new dir/new test page'  | :asciidoc | 'new-dir/new-test-page.asciidoc'
+        'test dir/test page' | :markdown | 'new dir/new test page'  | :asciidoc | 'new-dir/new-test-page.asciidoc'
+        'test dir/test page' | :markdown | 'new test page'          | :asciidoc | 'new-test-page.asciidoc'
+        'test page'          | :markdown | nil                      | :asciidoc | 'test-page.asciidoc'
+        'test dir/test page' | :markdown | nil                      | :asciidoc | 'test-dir/test-page.asciidoc'
+        'test dir/test page' | :markdown | nil                      | :markdown | 'test-dir/test-page.md'
+        'test page'          | :markdown | ''                       | :markdown | 'test-page.md'
+        'test.page'          | :markdown | ''                       | :markdown | 'test.page.md'
+      end
     end
 
-    it 'sets the correct commit email' do
-      update_page
-
-      expect(user.commit_email).not_to eq(user.email)
-      expect(commit.author_email).to eq(user.commit_email)
-      expect(commit.committer_email).to eq(user.commit_email)
+    it_behaves_like 'update_page tests' do
+      include_context 'common examples'
+      include_context 'extended examples'
     end
 
-    it 'runs after_wiki_activity callbacks' do
-      page
+    context 'when format is invalid' do
+      let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
 
-      expect(subject).to receive(:after_wiki_activity)
+      it 'returns false and sets error message' do
+        expect(subject.update_page(page.page, content: 'new content', format: :foobar)).to eq false
+        expect(subject.error_message).to match(/Invalid format selected/)
+      end
+    end
 
-      update_page
+    context 'when format is not allowed' do
+      let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
+
+      it 'returns false and sets error message' do
+        expect(subject.update_page(page.page, content: 'new content', format: :creole)).to eq false
+        expect(subject.error_message).to match(/Invalid format selected/)
+      end
+    end
+
+    context 'when page path does not have a default extension' do
+      let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
+
+      context 'when format is not different' do
+        it 'does not change the default extension' do
+          path = 'test-page.markdown'
+          page.page.instance_variable_set(:@path, path)
+
+          expect(subject.repository).to receive(:update_file).with(user, path, anything, anything)
+
+          subject.update_page(page.page, content: 'new content', format: :markdown)
+        end
+      end
+    end
+
+    context 'when feature flag :gitaly_replace_wiki_update_page is disabled' do
+      before do
+        stub_feature_flags(gitaly_replace_wiki_update_page: false)
+      end
+
+      it_behaves_like 'update_page tests' do
+        include_context 'common examples'
+      end
     end
   end
 

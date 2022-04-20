@@ -44,7 +44,13 @@ module Gitlab
         new_blob_lazy
         old_blob_lazy
 
-        diff.diff = Gitlab::Diff::CustomDiff.preprocess_before_diff(diff.new_path, old_blob_lazy, new_blob_lazy) || diff.diff unless use_renderable_diff?
+        if use_semantic_ipynb_diff? && !use_renderable_diff?
+          diff.diff = Gitlab::Diff::CustomDiff.preprocess_before_diff(diff.new_path, old_blob_lazy, new_blob_lazy) || diff.diff
+        end
+      end
+
+      def use_semantic_ipynb_diff?
+        strong_memoize(:_use_semantic_ipynb_diff) { Feature.enabled?(:ipynb_semantic_diff, repository.project, default_enabled: :yaml) }
       end
 
       def use_renderable_diff?
@@ -375,7 +381,7 @@ module Gitlab
       end
 
       def rendered
-        return unless use_renderable_diff? && ipynb?
+        return unless use_semantic_ipynb_diff? && use_renderable_diff? && ipynb? && modified_file? && !too_large?
 
         strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
       end
@@ -410,7 +416,7 @@ module Gitlab
       end
 
       def ipynb?
-        modified_file? && file_path.ends_with?('.ipynb')
+        file_path.ends_with?('.ipynb')
       end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but

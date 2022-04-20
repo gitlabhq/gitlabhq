@@ -1,0 +1,9 @@
+---
+table_name: analytics_language_trend_repository_languages
+classes:
+- Analytics::LanguageTrend::RepositoryLanguage
+feature_categories:
+- devops_reports
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16491
+milestone: '12.3'

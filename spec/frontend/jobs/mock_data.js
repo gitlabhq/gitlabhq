@@ -1481,6 +1481,7 @@ export const mockJobsQueryResponse = {
     project: {
       id: '1',
       jobs: {
+        count: 1,
         pageInfo: {
           endCursor: 'eyJpZCI6IjIzMTcifQ',
           hasNextPage: true,
@@ -1911,10 +1912,19 @@ export const CIJobConnectionIncomingCacheRunningStatus = {
 };
 
 export const CIJobConnectionExistingCache = {
+  pageInfo: {
+    __typename: 'PageInfo',
+    endCursor: 'eyJpZCI6IjIwNTEifQ',
+    hasNextPage: true,
+    hasPreviousPage: false,
+    startCursor: 'eyJpZCI6IjIxNzMifQ',
+  },
   nodes: [
-    { __ref: 'CiJob:gid://gitlab/Ci::Build/2057' },
-    { __ref: 'CiJob:gid://gitlab/Ci::Build/2056' },
-    { __ref: 'CiJob:gid://gitlab/Ci::Build/2051' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2100' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2101' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2102' },
   ],
   statuses: 'PENDING',
 };
+
+export const mockFailedSearchToken = { type: 'status', value: { data: 'FAILED', operator: '=' } };

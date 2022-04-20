@@ -31,9 +31,7 @@ module IncidentManagement
       attr_reader :issuable, :param_errors
 
       def available?
-        issuable.supports_escalation? &&
-          user_has_permissions? &&
-          escalation_status.present?
+        issuable.supports_escalation? && user_has_permissions?
       end
 
       def user_has_permissions?
@@ -42,7 +40,7 @@ module IncidentManagement
 
       def escalation_status
         strong_memoize(:escalation_status) do
-          issuable.escalation_status
+          issuable.escalation_status || BuildService.new(issuable).execute
         end
       end
 

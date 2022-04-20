@@ -1,5 +1,5 @@
-import { parseBoolean } from '../lib/utils/common_utils';
-import { n__ } from '../locale';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { n__ } from '~/locale';
 
 export default class SecretValues {
   constructor({

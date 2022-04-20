@@ -1035,6 +1035,9 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
+      # - { name: 'alicloud',
+      #     app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET' }
       # See omniauth-cas3 for more configuration details
       # - { name: 'cas3',
       #     label: 'cas3',
@@ -1179,7 +1182,7 @@ production: &base
   ## Backup settings
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
-    # gitaly_backup_path: # Path of the gitaly-backup binary (default: searches $PATH)
+    # gitaly_backup_path: /home/git/gitaly/_build/bin/gitaly-backup # Path of the gitaly-backup binary (default: searches $PATH)
     # archive_permissions: 0640 # Permissions for the resulting backup.tar file (default: 0600)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
     # pg_schema: public     # default: nil, it means that all schemas will be backed up
@@ -1562,6 +1565,9 @@ test:
     external_providers: []
 
     providers:
+      - { name: 'alicloud',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
       - { name: 'cas3',
           label: 'cas3',
           args: { url: 'https://sso.example.com',

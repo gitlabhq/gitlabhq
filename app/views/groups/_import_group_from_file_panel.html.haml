@@ -6,8 +6,8 @@
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
     %h4
       = _('Import group from file')
-    .gl-alert.gl-alert-warning{ role: 'alert' }
-      = sprite_icon('warning', css_class: 'gl-icon s16 gl-alert-icon gl-alert-icon-no-title')
+    = render Pajamas::AlertComponent.new(variant: :warning,
+      dismissible: false) do
       .gl-alert-body
         - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
         - link_end = '</a>'.html_safe

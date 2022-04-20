@@ -87,6 +87,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
         expect(feature['configuration_path']).to be_nil
         expect(feature['available']).to eq(true)
         expect(feature['can_enable_by_merge_request']).to eq(true)
+        expect(feature['meta_info_path']).to be_nil
       end
 
       context 'when checking features configured status' do

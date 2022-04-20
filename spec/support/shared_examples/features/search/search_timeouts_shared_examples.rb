@@ -11,6 +11,7 @@ RSpec.shared_examples 'search timeouts' do |scope|
     end
 
     it 'renders timeout information' do
+      # expect(page).to have_content('This endpoint has been requested too many times.')
       expect(page).to have_content('Your search timed out')
     end
 

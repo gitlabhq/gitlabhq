@@ -21,7 +21,7 @@ RSpec.shared_context 'stubbed service ping metrics definitions' do
 
   let(:optional_metrics) do
     [
-      metric_attributes('counts.boards', 'optional', 'number'),
+      metric_attributes('counts.boards', 'optional', 'number', 'CountBoardsMetric'),
       metric_attributes('gitaly.filesystems', '').except('data_category'),
       metric_attributes('usage_activity_by_stage.monitor.projects_with_enabled_alert_integrations_histogram', 'optional', 'object'),
       metric_attributes('topology', 'optional', 'object')
@@ -43,11 +43,14 @@ RSpec.shared_context 'stubbed service ping metrics definitions' do
     Gitlab::Usage::MetricDefinition.instance_variable_set(:@all, nil)
   end
 
-  def metric_attributes(key_path, category, value_type = 'string')
+  def metric_attributes(key_path, category, value_type = 'string', instrumentation_class = '')
     {
       'key_path' => key_path,
       'data_category' => category,
-      'value_type' => value_type
+      'value_type' => value_type,
+      'status' => 'active',
+      'instrumentation_class' => instrumentation_class,
+      'time_frame' => 'all'
     }
   end
 end

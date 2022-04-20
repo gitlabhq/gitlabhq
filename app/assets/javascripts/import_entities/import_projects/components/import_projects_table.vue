@@ -109,7 +109,7 @@ export default {
     </template>
     <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-mb-5">
       <gl-button
-        variant="success"
+        variant="confirm"
         :loading="isImportingAnyRepo"
         :disabled="!hasImportableRepos"
         type="button"

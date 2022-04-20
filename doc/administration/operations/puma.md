@@ -108,6 +108,12 @@ To change the worker timeout to 600 seconds:
 
 ## Disable Puma clustered mode in memory-constrained environments
 
+WARNING:
+This is an experimental [Alpha feature](../../policy/alpha-beta-support.md#alpha-features) and subject to change without notice. The feature
+is not ready for production use. If you want to use this feature, we recommend testing
+with non-production data first. See the [known issues](#puma-single-mode-known-issues)
+for additional details.
+
 In a memory-constrained environment with less than 4GB of RAM available, consider disabling Puma
 [clustered mode](https://github.com/puma/puma#clustered-mode).
 
@@ -130,6 +136,8 @@ For details on Puma worker and thread settings, see the [Puma requirements](../.
 
 The downside of running Puma in this configuration is the reduced throughput, which can be
 considered a fair tradeoff in a memory-constrained environment.
+
+### Puma single mode known issues
 
 When running Puma in single mode, some features are not supported:
 

@@ -14,6 +14,7 @@ module QA
       attribute :parallel, '--parallel', 'Execute tests in parallel'
       attribute :loop, '--loop', 'Execute test repeatedly'
       attribute :count_examples_only, '--count-examples-only', 'Return the number of examples without running them'
+      attribute :test_metadata_only, '--test-metadata-only', 'Return all e2e test metadata without running them'
     end
   end
 end

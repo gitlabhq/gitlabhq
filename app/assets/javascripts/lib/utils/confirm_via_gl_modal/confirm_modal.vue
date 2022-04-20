@@ -26,6 +26,16 @@ export default {
       required: false,
       default: 'confirm',
     },
+    secondaryText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    secondaryVariant: {
+      type: String,
+      required: false,
+      default: 'confirm',
+    },
     modalHtmlMessage: {
       type: String,
       required: false,
@@ -39,7 +49,26 @@ export default {
   },
   computed: {
     primaryAction() {
-      return { text: this.primaryText, attributes: { variant: this.primaryVariant } };
+      return {
+        text: this.primaryText,
+        attributes: {
+          variant: this.primaryVariant,
+          'data-qa-selector': 'confirm_ok_button',
+        },
+      };
+    },
+    secondaryAction() {
+      if (!this.secondaryText) {
+        return null;
+      }
+
+      return {
+        text: this.secondaryText,
+        attributes: {
+          variant: this.secondaryVariant,
+          category: 'secondary',
+        },
+      };
     },
     cancelAction() {
       return this.hideCancel ? null : this.$options.cancelAction;
@@ -63,6 +92,7 @@ export default {
     :title="title"
     :action-primary="primaryAction"
     :action-cancel="cancelAction"
+    :action-secondary="secondaryAction"
     :hide-header="!shouldShowHeader"
     @primary="$emit('confirmed')"
     @hidden="$emit('closed')"

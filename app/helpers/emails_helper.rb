@@ -206,6 +206,23 @@ module EmailsHelper
     end
   end
 
+  def new_email_address_added_text(email)
+    _('A new email address has been added to your GitLab account: %{email}') % { email: email }
+  end
+
+  def remove_email_address_text(format: nil)
+    url = profile_emails_url
+
+    case format
+    when :html
+      settings_link_to = generate_link(_('email address settings'), url).html_safe
+      _("If you want to remove this email address, visit the %{settings_link_to} page.").html_safe % { settings_link_to: settings_link_to }
+    else
+      _('If you want to remove this email address, visit %{profile_link}') %
+        { profile_link: url }
+    end
+  end
+
   def admin_changed_password_text(format: nil)
     url = Gitlab.config.gitlab.url
 

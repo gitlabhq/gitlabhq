@@ -557,7 +557,7 @@ RSpec.describe Gitlab::PathRegex do
     end
 
     it 'does not match other non-word characters' do
-      expect(subject.match('ruby:2.7.0')[0]).to eq('ruby')
+      expect(subject.match('image:1.0.0')[0]).to eq('image')
     end
   end
 

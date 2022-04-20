@@ -245,5 +245,12 @@ export function glEmojiTag(inputName, options) {
     ? `data-fallback-sprite-class="${escape(fallbackSpriteClass)}" `
     : '';
 
-  return `<gl-emoji ${fallbackSpriteAttribute}data-name="${escape(name)}"></gl-emoji>`;
+  const fallbackUrl = opts.url;
+  const fallbackSrcAttribute = fallbackUrl
+    ? `data-fallback-src="${fallbackUrl}" data-unicode-version="custom"`
+    : '';
+
+  return `<gl-emoji ${fallbackSrcAttribute}${fallbackSpriteAttribute}data-name="${escape(
+    name,
+  )}"></gl-emoji>`;
 }

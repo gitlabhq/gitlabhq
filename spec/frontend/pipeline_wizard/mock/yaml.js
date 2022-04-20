@@ -59,6 +59,17 @@ export const steps = `
     bar: $BAR
 `;
 
+export const compiledScenario1 = `foo: fooVal
+`;
+
+export const compiledScenario2 = `foo: fooVal
+bar: barVal
+`;
+
+export const compiledScenario3 = `foo: newFooVal
+bar: barVal
+`;
+
 export const fullTemplate = `
 title: some title
 description: some description

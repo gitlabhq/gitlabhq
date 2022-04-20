@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state do
+  include SnowplowHelpers
+
   let(:service) { described_class.new }
 
   let_it_be(:user, reload: true) { create :user }
@@ -15,6 +17,28 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       expect { subject }
         .to change { Gitlab::UsageDataCounters::TrackUniqueEvents.count_unique_events(**tracking_params) }
         .by(1)
+    end
+  end
+
+  shared_examples 'Snowplow event' do
+    it 'is not emitted if FF is disabled' do
+      stub_feature_flags(route_hll_to_snowplow: false)
+
+      subject
+
+      expect_no_snowplow_event
+    end
+
+    it 'is emitted' do
+      subject
+
+      expect_snowplow_event(
+        category: described_class.to_s,
+        action: 'action_active_users_project_repo',
+        namespace: project.namespace,
+        user: user,
+        project: project
+      )
     end
   end
 
@@ -247,7 +271,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
   end
 
-  describe '#push' do
+  describe '#push', :snowplow do
     let(:push_data) do
       {
         commits: [
@@ -270,9 +294,11 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     it_behaves_like "it records the event in the event counter" do
       let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
     end
+
+    it_behaves_like 'Snowplow event'
   end
 
-  describe '#bulk_push' do
+  describe '#bulk_push', :snowplow do
     let(:push_data) do
       {
         action: :created,
@@ -288,6 +314,8 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     it_behaves_like "it records the event in the event counter" do
       let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
     end
+
+    it_behaves_like 'Snowplow event'
   end
 
   describe 'Project' do

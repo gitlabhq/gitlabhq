@@ -104,10 +104,7 @@ module API
         def set_application_context
           return unless current_job
 
-          Gitlab::ApplicationContext.push(
-            user: -> { current_job.user },
-            project: -> { current_job.project }
-          )
+          Gitlab::ApplicationContext.push(job: current_job)
         end
 
         def track_ci_minutes_usage!(_build, _runner)

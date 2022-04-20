@@ -58,7 +58,8 @@ not, the specs will fail.
 ### Excluding Sidekiq workers from feature categorization
 
 A few Sidekiq workers, that are used across all features, cannot be mapped to a
-single category. These should be declared as such using the `feature_category_not_owned!`
+single category. These should be declared as such using the
+`feature_category :not_owned`
 declaration, as shown below:
 
 ```ruby
@@ -66,7 +67,7 @@ class SomeCrossCuttingConcernWorker
   include ApplicationWorker
 
   # Declares that this worker does not map to a feature category
-  feature_category_not_owned!
+  feature_category :not_owned # rubocop:disable Gitlab/AvoidFeatureCategoryNotOwned
 
   # ...
 end

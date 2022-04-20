@@ -229,7 +229,7 @@ end
 
 To keep this guide short, we skipped the definition of the background migration and only
 provided a high level example of the post-deployment migration that is used to schedule the batches.
-You can find more information on the guide about [background migrations](../background_migrations.md)
+You can find more information on the guide about [background migrations](background_migrations.md)
 
 #### Validate the text limit (next release)
 
@@ -277,7 +277,7 @@ end
 
 If you have to clean up a text column for a really [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)
 (for example, the `artifacts` in `ci_builds`), your background migration will go on for a while and
-it will need an additional [background migration cleaning up](../background_migrations.md#cleaning-up)
+it will need an additional [background migration cleaning up](background_migrations.md#cleaning-up)
 in the release after adding the data migration.
 
 In that rare case you will need 3 releases end-to-end:

@@ -122,7 +122,7 @@ describe('Environment table', () => {
     expect(wrapper.find('.deploy-board-icon').exists()).toBe(true);
   });
 
-  it('should toggle deploy board visibility when arrow is clicked', (done) => {
+  it('should toggle deploy board visibility when arrow is clicked', async () => {
     const mockItem = {
       name: 'review',
       size: 1,
@@ -142,7 +142,6 @@ describe('Environment table', () => {
 
     eventHub.$on('toggleDeployBoard', (env) => {
       expect(env.id).toEqual(mockItem.id);
-      done();
     });
 
     factory({
@@ -154,7 +153,7 @@ describe('Environment table', () => {
       },
     });
 
-    wrapper.find('.deploy-board-icon').trigger('click');
+    await wrapper.find('.deploy-board-icon').trigger('click');
   });
 
   it('should set the environment to change and weight when a change canary weight event is recevied', async () => {

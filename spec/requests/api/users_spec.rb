@@ -83,19 +83,21 @@ RSpec.describe API::Users do
 
     describe 'GET /users/' do
       context 'when unauthenticated' do
-        it "does not contain the note of users" do
+        it "does not contain certain fields" do
           get api("/users"), params: { username: user.username }
 
           expect(json_response.first).not_to have_key('note')
+          expect(json_response.first).not_to have_key('namespace_id')
         end
       end
 
       context 'when authenticated' do
         context 'as a regular user' do
-          it 'does not contain the note of users' do
+          it 'does not contain certain fields' do
             get api("/users", user), params: { username: user.username }
 
             expect(json_response.first).not_to have_key('note')
+            expect(json_response.first).not_to have_key('namespace_id')
           end
         end
 
@@ -154,6 +156,7 @@ RSpec.describe API::Users do
             get api("/user", user)
 
             expect(json_response).not_to have_key('note')
+            expect(json_response).not_to have_key('namespace_id')
           end
         end
       end
@@ -335,12 +338,14 @@ RSpec.describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.first.keys).not_to include 'is_admin'
       end
+    end
 
+    context "when admin" do
       context 'exclude_internal param' do
         let_it_be(:internal_user) { User.alert_bot }
 
         it 'returns all users when it is not set' do
-          get api("/users?exclude_internal=false", user)
+          get api("/users?exclude_internal=false", admin)
 
           expect(response).to match_response_schema('public_api/v4/user/basics')
           expect(response).to include_pagination_headers
@@ -353,6 +358,26 @@ RSpec.describe API::Users do
           expect(response).to match_response_schema('public_api/v4/user/basics')
           expect(response).to include_pagination_headers
           expect(json_response.map { |u| u['id'] }).not_to include(internal_user.id)
+        end
+      end
+
+      context 'without_project_bots param' do
+        let_it_be(:project_bot) { create(:user, :project_bot) }
+
+        it 'returns all users when it is not set' do
+          get api("/users?without_project_bots=false", user)
+
+          expect(response).to match_response_schema('public_api/v4/user/basics')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |u| u['id'] }).to include(project_bot.id)
+        end
+
+        it 'returns all non project_bot users when it is set' do
+          get api("/users?without_project_bots=true", user)
+
+          expect(response).to match_response_schema('public_api/v4/user/basics')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |u| u['id'] }).not_to include(project_bot.id)
         end
       end
 
@@ -382,6 +407,15 @@ RSpec.describe API::Users do
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(response).to include_pagination_headers
+      end
+
+      it "users contain the `namespace_id` field" do
+        get api("/users", admin)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to match_response_schema('public_api/v4/user/admins')
+        expect(json_response.size).to eq(2)
+        expect(json_response.map { |u| u['namespace_id'] }).to include(user.namespace_id, admin.namespace_id)
       end
 
       it "returns an array of external users" do
@@ -695,6 +729,14 @@ RSpec.describe API::Users do
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['highest_role']).to be(0)
+      end
+
+      it 'includes the `namespace_id` field' do
+        get api("/users/#{user.id}", admin)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to match_response_schema('public_api/v4/user/admin')
+        expect(json_response['namespace_id']).to eq(user.namespace_id)
       end
 
       if Gitlab.ee?
@@ -1934,7 +1976,7 @@ RSpec.describe API::Users do
     end
   end
 
-  describe "POST /users/:id/emails" do
+  describe "POST /users/:id/emails", :mailer do
     it "does not create invalid email" do
       post api("/users/#{user.id}/emails", admin), params: {}
 
@@ -1944,11 +1986,15 @@ RSpec.describe API::Users do
 
     it "creates unverified email" do
       email_attrs = attributes_for :email
-      expect do
-        post api("/users/#{user.id}/emails", admin), params: email_attrs
-      end.to change { user.emails.count }.by(1)
+
+      perform_enqueued_jobs do
+        expect do
+          post api("/users/#{user.id}/emails", admin), params: email_attrs
+        end.to change { user.emails.count }.by(1)
+      end
 
       expect(json_response['confirmed_at']).to be_nil
+      should_email(user)
     end
 
     it "returns a 400 for invalid ID" do

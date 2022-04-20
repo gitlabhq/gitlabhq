@@ -36,14 +36,14 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
       click_on "1"
 
       # Scopes
-      check "api"
+      check "read_api"
       check "read_user"
 
       click_on "Create impersonation token"
 
       expect(active_impersonation_tokens).to have_text(name)
       expect(active_impersonation_tokens).to have_text('in')
-      expect(active_impersonation_tokens).to have_text('api')
+      expect(active_impersonation_tokens).to have_text('read_api')
       expect(active_impersonation_tokens).to have_text('read_user')
       expect(PersonalAccessTokensFinder.new(impersonation: true).execute.count).to equal(1)
       expect(created_impersonation_token).not_to be_empty

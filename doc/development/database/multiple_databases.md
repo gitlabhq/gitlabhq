@@ -9,40 +9,77 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To scale GitLab, the we are
 [decomposing the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
 
+## GitLab Schema
+
+For properly discovering allowed patterns between different databases
+the GitLab application implements the `lib/gitlab/database/gitlab_schemas.yml` YAML file.
+
+This file provides a virtual classification of tables into a `gitlab_schema`
+which conceptually is similar to [PostgreSQL Schema](https://www.postgresql.org/docs/current/ddl-schemas.html).
+We decided as part of [using database schemas to better isolated CI decomposed features](https://gitlab.com/gitlab-org/gitlab/-/issues/333415)
+that we cannot use PostgreSQL schema due to complex migration procedures. Instead we implemented
+the concept of application-level classification.
+Each table of GitLab needs to have a `gitlab_schema` assigned:
+
+- `gitlab_main`: describes all tables that are being stored in the `main:` database (for example, like `projects`, `users`).
+- `gitlab_ci`: describes all CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`).
+- `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`).
+- `...`: more schemas to be introduced with additional decomposed databases
+
+The usage of schema enforces the base class to be used:
+
+- `ApplicationRecord` for `gitlab_main`
+- `Ci::ApplicationRecord` for `gitlab_ci`
+- `Gitlab::Database::SharedModel` for `gitlab_shared`
+
+### The impact of `gitlab_schema`
+
+The usage of `gitlab_schema` has a significant impact on the application.
+The `gitlab_schema` primary purpose is to introduce a barrier between different data access patterns.
+
+This is used as a primary source of classification for:
+
+- [Discovering cross-joins across tables from different schemas](#removing-joins-between-ci_-and-non-ci_-tables)
+- [Discovering cross-database transactions across tables from different schemas](#removing-cross-database-transactions)
+
+### The special purpose of `gitlab_shared`
+
+`gitlab_shared` is a special case describing tables or views that by design contain data across
+all decomposed databases. This does describe application-defined tables (like `loose_foreign_keys_deleted_records`),
+Rails-defined tables (like `schema_migrations` or `ar_internal_metadata` as well as internal PostgreSQL tables
+(for example, `pg_attribute`).
+
+**Be careful** to use `gitlab_shared` as it requires special handling while accessing data.
+Since `gitlab_shared` shares not only structure but also data, the application needs to be written in a way
+that traverses all data from all databases in sequential manner.
+
+```ruby
+Gitlab::Database::EachDatabase.each_model_connection([MySharedModel]) do |connection, connection_name|
+  MySharedModel.select_all_data...
+end
+```
+
+As such, migrations modifying data of `gitlab_shared` tables are expected to run across
+all decomposed databases.
+
+## Migrations
+
+Read [Migrations for Multiple Databases](migrations_for_multiple_databases.md).
+
 ## CI/CD Database
 
 > Support for configuring the GitLab Rails application to use a distinct
 database for CI/CD tables was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64289)
 in GitLab 14.1. This feature is still under development, and is not ready for production use.
 
-### Development setup
+### Configure single database
 
-By default, GitLab is configured to use only one main database. To
-opt-in to use a main database, and CI database, modify the
-`config/database.yml` file to have a `main` and a `ci` database
-configurations.
-
-You can set this up using [GDK](#gdk-configuration) or by
-[manually configuring `config/database.yml`](#manually-set-up-the-cicd-database).
-
-#### GDK configuration
-
-If you are using GDK, you can follow the following steps:
+By default, GDK is configured to run with multiple databases. To configure GDK to use a single database:
 
 1. On the GDK root directory, run:
 
    ```shell
-   gdk config set gitlab.rails.databases.ci.enabled true
-   ```
-
-1. Open your `gdk.yml`, and confirm that it has the following lines:
-
-   ```yaml
-   gitlab:
-     rails:
-       databases:
-         ci:
-           enabled: true
+   gdk config set gitlab.rails.databases.ci.enabled false
    ```
 
 1. Reconfigure GDK:
@@ -51,99 +88,7 @@ If you are using GDK, you can follow the following steps:
    gdk reconfigure
    ```
 
-1. [Create the new CI/CD database](#create-the-new-database).
-
-#### Manually set up the CI/CD database
-
-You can manually edit `config/database.yml` to split the databases.
-To do so, consider a `config/database.yml` file like the example below:
-
-```yaml
-development:
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_development
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-
-test: &test
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_test
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-```
-
-Edit it to split the databases into `main` and `ci`:
-
-```yaml
-development:
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_development
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-  ci:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_development_ci
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-
-test: &test
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_test
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-  ci:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_test_ci
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-```
-
-Next, [create the new CI/CD database](#create-the-new-database).
-
-#### Create the new database
-
-After configuring GitLab for the two databases, create the new CI/CD database:
-
-1. Create the new `ci:` database, load the DB schema into the `ci:` database,
-   and run any pending migrations:
-
-    ```shell
-    bundle exec rails db:create db:schema:load:ci db:migrate
-    ```
-
-1. Restart GDK:
-
-    ```shell
-    gdk restart
-    ```
+To switch back to using multiple databases, set `gitlab.rails.databases.ci.enabled` to `true` and run `gdk reconfigure`.
 
 <!--
 NOTE: The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
@@ -167,9 +112,9 @@ already many such examples that need to be fixed in
 The following steps are the process to remove cross-database joins between
 `ci_*` and non `ci_*` tables:
 
-1. **{check-circle}** Add all failing specs to the [`cross-join-allowlist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/f5de89daeb468fc45e1e95a76d1b5297aa53da11/spec/support/database/cross-join-allowlist.yml)
+1. **{check-circle}** Add all failing specs to the [`cross-join-allowlist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/database/cross-join-allowlist.yml)
    file.
-1. **{dotted-circle}** Find the code that caused the spec failure and wrap the isolated code
+1. **{check-circle}** Find the code that caused the spec failure and wrap the isolated code
    in [`allow_cross_joins_across_databases`](#allowlist-for-existing-cross-joins).
    Link to a new issue assigned to the correct team to remove the specs from the
    `cross-join-allowlist.yml` file.

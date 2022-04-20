@@ -1,0 +1,14 @@
+---
+table_name: application_settings
+classes:
+- ApplicationSetting
+feature_categories:
+- continuous_integration
+- integrations
+- metrics
+- pages
+- service_ping
+- source_code_management
+description: GitLab application settings
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8589b4e137f50293952923bb07e2814257d7784d
+milestone: '7.7'

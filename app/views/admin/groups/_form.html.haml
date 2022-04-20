@@ -18,7 +18,7 @@
 
   .form-group.row
     .offset-sm-2.col-sm-10
-      = render 'shared/allow_request_access', form: f, bold_label: true
+      = render 'shared/allow_request_access', form: f
 
   = render 'groups/group_admin_settings', f: f
 
@@ -27,7 +27,7 @@
   - if @group.new_record?
     .form-group.row
       .offset-sm-2.col-sm-10
-        = render 'shared/global_alert', dismissible: false do
+        = render Pajamas::AlertComponent.new(dismissible: false) do
           .gl-alert-body
             = render 'shared/group_tips'
     .form-actions

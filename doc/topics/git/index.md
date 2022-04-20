@@ -26,10 +26,11 @@ The following resources can help you get started with Git:
 
 - [Git-ing started with Git](https://www.youtube.com/watch?v=Ce5nz5n41z4),
   a video introduction to Git.
+- [Make your first Git commit](../../tutorials/make_your_first_git_commit.md)
 - [Git Basics](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics)
 - [Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)
 - [How to install Git](how_to_install_git/index.md)
-- [Git terminology](../../gitlab-basics/start-using-git.md#git-terminology)
+- [Git terminology](terminology.md)
 - [Start using Git on the command line](../../gitlab-basics/start-using-git.md)
 - [Edit files through the command line](../../gitlab-basics/command-line-commands.md)
 - [GitLab Git Cheat Sheet (download)](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)

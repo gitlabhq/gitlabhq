@@ -21,18 +21,39 @@ export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
 );
 export const I18N_PROJECT_RUNNER_DESCRIPTION = s__('Runners|Associated with one or more projects');
 
-// Status
-export const I18N_ONLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
+// Status help popover
+export const I18N_STATUS_POPOVER_TITLE = s__('Runners|Runner statuses');
+
+export const I18N_STATUS_POPOVER_NEVER_CONTACTED = s__('Runners|Never contacted:');
+export const I18N_STATUS_POPOVER_NEVER_CONTACTED_DESCRIPTION = s__(
+  'Runners|Runner has never contacted GitLab (when you register a runner, use %{codeStart}gitlab-runner run%{codeEnd} to bring it online)',
+);
+export const I18N_STATUS_POPOVER_ONLINE = s__('Runners|Online:');
+export const I18N_STATUS_POPOVER_ONLINE_DESCRIPTION = s__(
+  'Runners|Runner has contacted GitLab within the last %{elapsedTime}',
+);
+export const I18N_STATUS_POPOVER_OFFLINE = s__('Runners|Offline:');
+export const I18N_STATUS_POPOVER_OFFLINE_DESCRIPTION = s__(
+  'Runners|Runner has not contacted GitLab in more than %{elapsedTime}',
+);
+export const I18N_STATUS_POPOVER_STALE = s__('Runners|Stale:');
+export const I18N_STATUS_POPOVER_STALE_DESCRIPTION = s__(
+  'Runners|Runner has not contacted GitLab in more than %{elapsedTime}',
+);
+
+// Status tooltips
+export const I18N_ONLINE_TIMEAGO_TOOLTIP = s__(
   'Runners|Runner is online; last contact was %{timeAgo}',
 );
-export const I18N_NEVER_CONTACTED_RUNNER_DESCRIPTION = s__(
-  'Runners|This runner has never contacted this instance',
+export const I18N_NEVER_CONTACTED_TOOLTIP = s__('Runners|Runner has never contacted this instance');
+export const I18N_OFFLINE_TIMEAGO_TOOLTIP = s__(
+  'Runners|Runner is offline; last contact was %{timeAgo}',
 );
-export const I18N_OFFLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
-  'Runners|No recent contact from this runner; last contact was %{timeAgo}',
+export const I18N_STALE_TIMEAGO_TOOLTIP = s__(
+  'Runners|Runner is stale; last contact was %{timeAgo}',
 );
-export const I18N_STALE_RUNNER_DESCRIPTION = s__(
-  'Runners|No contact from this runner in over 3 months',
+export const I18N_STALE_NEVER_CONTACTED_TOOLTIP = s__(
+  'Runners|Runner is stale; it has never contacted this instance',
 );
 
 // Actions
@@ -46,15 +67,23 @@ export const I18N_RESUME = __('Resume');
 export const I18N_RESUME_TOOLTIP = s__('Runners|Resume accepting jobs');
 
 export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
+export const I18N_DELETE_DISABLED_MANY_PROJECTS = s__(
+  'Runners|Multi-project runners cannot be deleted',
+);
+export const I18N_DELETE_DISABLED_UNKNOWN_REASON = s__(
+  'Runners|Runner cannot be deleted, please contact your administrator',
+);
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
-export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
+export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
+  'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
+);
 
 // Runner details
 
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
 export const I18N_NONE = __('None');
-export const I18N_NO_JOBS_FOUND = s__('Runner|This runner has not run any jobs.');
+export const I18N_NO_JOBS_FOUND = s__('Runners|This runner has not run any jobs.');
 
 // Styles
 
@@ -66,6 +95,7 @@ export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 // - GlFilteredSearch tokens type
 
 export const PARAM_KEY_STATUS = 'status';
+export const PARAM_KEY_PAUSED = 'paused';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';
 export const PARAM_KEY_TAG = 'tag';
 export const PARAM_KEY_SEARCH = 'search';
@@ -82,9 +112,6 @@ export const GROUP_TYPE = 'GROUP_TYPE';
 export const PROJECT_TYPE = 'PROJECT_TYPE';
 
 // CiRunnerStatus
-
-export const STATUS_ACTIVE = 'ACTIVE';
-export const STATUS_PAUSED = 'PAUSED';
 
 export const STATUS_ONLINE = 'ONLINE';
 export const STATUS_NEVER_CONTACTED = 'NEVER_CONTACTED';

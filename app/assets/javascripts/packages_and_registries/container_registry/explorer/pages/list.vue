@@ -11,7 +11,6 @@ import {
 import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import createFlash from '~/flash';
-import CleanupPolicyEnabledAlert from '~/packages_and_registries/shared/components/cleanup_policy_enabled_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import Tracking from '~/tracking';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
@@ -60,7 +59,6 @@ export default {
     GlSkeletonLoader,
     RegistryHeader,
     DeleteImage,
-    CleanupPolicyEnabledAlert,
     PersistedSearch,
   },
   directives: {
@@ -273,12 +271,6 @@ export default {
       </gl-sprintf>
     </gl-alert>
 
-    <cleanup-policy-enabled-alert
-      v-if="config.showCleanupPolicyOnAlert"
-      :project-path="config.projectPath"
-      :cleanup-policies-settings-path="config.cleanupPoliciesSettingsPath"
-    />
-
     <gl-empty-state
       v-if="showConnectionError"
       :title="$options.i18n.CONNECTION_ERROR_TITLE"
@@ -304,6 +296,8 @@ export default {
         :expiration-policy="config.expirationPolicy"
         :help-page-path="config.helpPagePath"
         :hide-expiration-policy-data="config.isGroupPage"
+        :cleanup-policies-settings-path="config.cleanupPoliciesSettingsPath"
+        :show-cleanup-policy-link="config.showCleanupPolicyLink"
       >
         <template #commands>
           <cli-commands

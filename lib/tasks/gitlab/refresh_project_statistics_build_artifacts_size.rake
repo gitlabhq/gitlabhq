@@ -1,23 +1,43 @@
 # frozen_string_literal: true
 
+require 'httparty'
+require 'csv'
+
 namespace :gitlab do
-  desc "GitLab | Refresh build artifacts size project statistics for given project IDs"
+  desc "GitLab | Refresh build artifacts size project statistics for given list of Project IDs from remote CSV"
 
   BUILD_ARTIFACTS_SIZE_REFRESH_ENQUEUE_BATCH_SIZE = 500
 
-  task :refresh_project_statistics_build_artifacts_size, [:project_ids] => :environment do |_t, args|
-    project_ids = []
-    project_ids = $stdin.read.split unless $stdin.tty?
-    project_ids = args.project_ids.to_s.split unless project_ids.any?
+  task :refresh_project_statistics_build_artifacts_size, [:csv_url] => :environment do |_t, args|
+    csv_url = args.csv_url
+
+    # rubocop: disable Gitlab/HTTParty
+    body = HTTParty.get(csv_url)
+    # rubocop: enable Gitlab/HTTParty
+
+    table = CSV.parse(body.to_s, headers: true)
+    project_ids = table['PROJECT_ID']
+
+    puts "Loaded #{project_ids.size} project ids to import"
+
+    imported = 0
+    missing = 0
 
     if project_ids.any?
-      project_ids.in_groups_of(BUILD_ARTIFACTS_SIZE_REFRESH_ENQUEUE_BATCH_SIZE) do |ids|
+      project_ids.in_groups_of(BUILD_ARTIFACTS_SIZE_REFRESH_ENQUEUE_BATCH_SIZE, false) do |ids|
         projects = Project.where(id: ids)
         Projects::BuildArtifactsSizeRefresh.enqueue_refresh(projects)
+
+        # Take a short break to allow replication to catch up
+        Kernel.sleep(1)
+
+        imported += projects.size
+        missing += ids.size - projects.size
+        puts "#{imported}/#{project_ids.size} (missing projects: #{missing})"
       end
-      puts 'Done.'.green
+      puts 'Done.'
     else
-      puts 'Please provide a string of space-separated project IDs as the argument or through the STDIN'.red
+      puts 'Project IDs must be listed in the CSV under the header PROJECT_ID'.red
     end
   end
 end

@@ -10,6 +10,10 @@ RSpec.describe 'Database schema' do
   let(:tables) { connection.tables }
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
+  IGNORED_INDEXES_ON_FKS = {
+    issues: %w[work_item_type_id]
+  }.with_indifferent_access.freeze
+
   # List of columns historically missing a FK, don't add more columns
   # See: https://docs.gitlab.com/ee/development/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
@@ -18,7 +22,7 @@ RSpec.describe 'Database schema' do
     approvals: %w[user_id],
     approver_groups: %w[target_id],
     approvers: %w[target_id user_id],
-    analytics_cycle_analytics_aggregations: %w[last_full_run_issues_id last_full_run_merge_requests_id last_incremental_issues_id last_incremental_merge_requests_id],
+    analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id last_incremental_issues_id last_full_run_issues_id last_full_run_merge_requests_id last_incremental_merge_requests_id],
     analytics_cycle_analytics_merge_request_stage_events: %w[author_id group_id merge_request_id milestone_id project_id stage_event_hash_id state_id],
     analytics_cycle_analytics_issue_stage_events: %w[author_id group_id issue_id milestone_id project_id stage_event_hash_id state_id],
     audit_events: %w[author_id entity_id target_id],
@@ -115,6 +119,7 @@ RSpec.describe 'Database schema' do
               columns.first.chomp
             end
             foreign_keys_columns = all_foreign_keys.map(&:column)
+            required_indexed_columns = foreign_keys_columns - ignored_index_columns(table)
 
             # Add the primary key column to the list of indexed columns because
             # postgres and mysql both automatically create an index on the primary
@@ -122,7 +127,7 @@ RSpec.describe 'Database schema' do
             # automatically generated indexes (like the primary key index).
             first_indexed_column.push(primary_key_column)
 
-            expect(first_indexed_column.uniq).to include(*foreign_keys_columns)
+            expect(first_indexed_column.uniq).to include(*required_indexed_columns)
           end
         end
 
@@ -175,18 +180,16 @@ RSpec.describe 'Database schema' do
     'PrometheusAlert' => %w[operator]
   }.freeze
 
-  context 'for enums' do
-    ApplicationRecord.descendants.each do |model|
-      # skip model if it is an abstract class as it would not have an associated DB table
-      next if model.abstract_class?
+  context 'for enums', :eager_load do
+    # skip model if it is an abstract class as it would not have an associated DB table
+    let(:models) { ApplicationRecord.descendants.reject(&:abstract_class?) }
 
-      describe model do
-        let(:ignored_enums) { ignored_limit_enums(model.name) }
-        let(:enums) { model.defined_enums.keys - ignored_enums }
+    it 'uses smallint for enums in all models', :aggregate_failures do
+      models.each do |model|
+        ignored_enums = ignored_limit_enums(model.name)
+        enums = model.defined_enums.keys - ignored_enums
 
-        it 'uses smallint for enums' do
-          expect(model).to use_smallint_for_enums(enums)
-        end
+        expect(model).to use_smallint_for_enums(enums)
       end
     end
   end
@@ -305,8 +308,12 @@ RSpec.describe 'Database schema' do
     @models_by_table_name ||= ApplicationRecord.descendants.reject(&:abstract_class).group_by(&:table_name)
   end
 
-  def ignored_fk_columns(column)
-    IGNORED_FK_COLUMNS.fetch(column, [])
+  def ignored_fk_columns(table)
+    IGNORED_FK_COLUMNS.fetch(table, [])
+  end
+
+  def ignored_index_columns(table)
+    IGNORED_INDEXES_ON_FKS.fetch(table, [])
   end
 
   def ignored_limit_enums(model)

@@ -14,9 +14,9 @@ module Packages
 
     def execute
       packages = project.packages
-                        .preload_pipelines
                         .including_project_route
                         .including_tags
+      packages = packages.preload_pipelines if preload_pipelines
 
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
@@ -31,6 +31,10 @@ module Packages
 
     def order_packages(packages)
       packages.sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")
+    end
+
+    def preload_pipelines
+      params.fetch(:preload_pipelines, true)
     end
   end
 end

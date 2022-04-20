@@ -47,6 +47,16 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
     it { is_expected.to be_nil }
   end
 
+  describe '#meta_info_path' do
+    subject { scan.meta_info_path }
+
+    let(:configured) { true }
+    let(:available) { true }
+    let(:type) { :dast }
+
+    it { is_expected.to be_nil }
+  end
+
   describe '#can_enable_by_merge_request?' do
     subject { scan.can_enable_by_merge_request? }
 

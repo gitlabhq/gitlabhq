@@ -55,6 +55,19 @@ RSpec.shared_examples 'issuable link' do
     end
   end
 
+  describe 'scopes' do
+    describe '.for_source_or_target' do
+      it 'returns only links where id is either source or target id' do
+        link1 = create(issuable_link_factory, source: issuable_link.source)
+        link2 = create(issuable_link_factory, target: issuable_link.source)
+        # unrelated link, should not be included in result list
+        create(issuable_link_factory) # rubocop: disable Rails/SaveBang
+
+        expect(described_class.for_source_or_target(issuable_link.source_id)).to match_array([issuable_link, link1, link2])
+      end
+    end
+  end
+
   describe '.link_type' do
     it { is_expected.to define_enum_for(:link_type).with_values(relates_to: 0, blocks: 1) }
 

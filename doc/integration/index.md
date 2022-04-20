@@ -24,8 +24,8 @@ GitLab can be configured to authenticate access requests with the following auth
 - Integrate with [Kerberos](kerberos.md).
 - Enable sign in via [LDAP](../administration/auth/ldap/index.md).
 - Enable [OAuth2 provider](oauth_provider.md) application creation.
-- Use [OmniAuth](omniauth.md) to enable sign in via Twitter, GitHub, GitLab.com, Google,
-  Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure, or Authentiq ID.
+- Use [OmniAuth](omniauth.md) to enable sign in through Twitter, GitHub, GitLab.com, Google,
+  Bitbucket, Facebook, SAML, Crowd, Azure, or Authentiq ID.
 - Use GitLab as an [OpenID Connect](openid_connect_provider.md) identity provider.
 - Authenticate to [Vault](vault.md) through GitLab OpenID Connect.
 - Configure GitLab as a [SAML](saml.md) 2.0 Service Provider.
@@ -89,7 +89,7 @@ at Super User also has relevant information.
 
 **Omnibus Trusted Chain**
 
-[Install the self signed certificate or custom certificate authorities](https://docs.gitlab.com/omnibus/common_installation_problems/index.html#using-self-signed-certificate-or-custom-certificate-authorities)
+[Install the self signed certificate or custom certificate authorities](https://docs.gitlab.com/omnibus/troubleshooting.html#using-self-signed-certificate-or-custom-certificate-authorities)
 in to Omnibus GitLab.
 
 It is enough to concatenate the certificate to the main trusted certificate

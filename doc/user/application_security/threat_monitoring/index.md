@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 Threat Monitoring is in its end-of-life process. It's [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
-for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
 in GitLab 15.0.
 
 The **Threat Monitoring** page provides alerts and metrics

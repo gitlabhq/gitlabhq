@@ -1,0 +1,9 @@
+---
+table_name: licenses
+classes:
+- License
+feature_categories:
+- purchase
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/d1f2b09fadcfba210c5121bd214b910b9f9809fd
+milestone: '7.11'

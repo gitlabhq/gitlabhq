@@ -1,0 +1,9 @@
+---
+table_name: board_assignees
+classes:
+- BoardAssignee
+feature_categories:
+- team_planning
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2912
+milestone: '10.2'

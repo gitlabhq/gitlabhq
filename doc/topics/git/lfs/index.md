@@ -10,7 +10,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs/index.html'
 
 Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
-larger than 1GB to preserve performance.
+larger than 1 GB to preserve performance.
 
 ![Git LFS tracking status](img/lfs-icon.png)
 
@@ -19,7 +19,7 @@ blob or an LFS pointer.
 
 ## How it works
 
-Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication
+Git LFS client communicates with the GitLab server over HTTPS. It uses HTTP Basic Authentication
 to authorize client requests. After the request is authorized, Git LFS client receives
 instructions from where to fetch or where to push the large file.
 
@@ -29,29 +29,23 @@ Documentation for GitLab instance administrators is under [LFS administration do
 
 ## Requirements
 
-- Git LFS is supported in GitLab starting with version 8.2
-- Git LFS must be enabled under project settings
-- [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up must be installed
+- Git LFS must be [enabled in project settings](../../../user/project/settings/index.md#sharing-and-permissions).
+- [Git LFS client](https://git-lfs.github.com) version 1.0.1 or higher must be installed.
 
 ## Known limitations
 
 - Git LFS v1 original API is not supported, because it was deprecated early in LFS
   development.
 - When SSH is set as a remote, Git LFS objects still go through HTTPS.
-- Any Git LFS request asks for HTTPS credentials to be provided so a good Git
-  credentials store is recommended.
+- Any Git LFS request asks for HTTPS credentials, so we recommend a good Git
+  credentials store.
 - Git LFS always assumes HTTPS so if you have GitLab server on HTTP you must
   [add the URL to Git configuration manually](#troubleshooting).
 - [Group wikis](../../../user/project/wiki/group.md) do not support Git LFS.
 
-NOTE:
-With 8.12 GitLab added LFS support to SSH. The Git LFS communication
-still goes over HTTP, but now the SSH client passes the correct credentials
-to the Git LFS client. No action is required by the user.
-
 ## Using Git LFS
 
-Lets take a look at the workflow when you need to check large files into your Git
+Let's take a look at the workflow when you need to check large files into your Git
 repository with Git LFS. For example, if you want to upload a very large file and
 check it into your Git repository:
 
@@ -68,7 +62,7 @@ Git as usual without redoing the command to track a file with the same extension
 cp ~/tmp/debian.iso ./                # copy a large file into the current directory
 git add .                             # add the large file to the project
 git commit -am "Added Debian iso"     # commit the file meta data
-git push origin master                # sync the git repo and large file to the GitLab server
+git push origin main                # sync the git repo and large file to the GitLab server
 ```
 
 **Make sure** that `.gitattributes` is tracked by Git. Otherwise Git
@@ -91,7 +85,7 @@ If you already cloned the repository and you want to get the latest LFS object
 that are on the remote repository, such as for a branch from origin:
 
 ```shell
-git lfs fetch origin master
+git lfs fetch origin main
 ```
 
 Make sure your files aren't listed in `.gitignore`, otherwise, they are ignored by Git

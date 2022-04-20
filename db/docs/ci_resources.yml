@@ -1,0 +1,9 @@
+---
+table_name: ci_resources
+classes:
+- Ci::Resource
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20950
+milestone: '12.7'

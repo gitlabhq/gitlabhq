@@ -2,7 +2,7 @@
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import createFlash from '~/flash';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { __ } from '../../locale';
+import { __ } from '~/locale';
 import {
   TREE_PAGE_SIZE,
   TREE_INITIAL_FETCH_COUNT,

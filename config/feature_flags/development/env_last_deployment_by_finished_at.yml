@@ -1,0 +1,8 @@
+---
+name: env_last_deployment_by_finished_at
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83558
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357299
+milestone: '14.10'
+type: development
+group: group::release
+default_enabled: true

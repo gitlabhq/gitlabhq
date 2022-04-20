@@ -8,7 +8,6 @@ describe('ItemTypeIcon', () => {
 
   const defaultProps = {
     itemType: ITEM_TYPE.GROUP,
-    isGroupOpen: false,
   };
 
   const createComponent = (props = {}) => {
@@ -34,20 +33,14 @@ describe('ItemTypeIcon', () => {
     });
 
     it.each`
-      type                 | isGroupOpen | icon
-      ${ITEM_TYPE.GROUP}   | ${true}     | ${'folder-open'}
-      ${ITEM_TYPE.GROUP}   | ${false}    | ${'folder-o'}
-      ${ITEM_TYPE.PROJECT} | ${true}     | ${'bookmark'}
-      ${ITEM_TYPE.PROJECT} | ${false}    | ${'bookmark'}
-    `(
-      'shows "$icon" icon when `itemType` is "$type" and `isGroupOpen` is $isGroupOpen',
-      ({ type, isGroupOpen, icon }) => {
-        createComponent({
-          itemType: type,
-          isGroupOpen,
-        });
-        expect(findGlIcon().props('name')).toBe(icon);
-      },
-    );
+      type                 | icon
+      ${ITEM_TYPE.GROUP}   | ${'subgroup'}
+      ${ITEM_TYPE.PROJECT} | ${'project'}
+    `('shows "$icon" icon when `itemType` is "$type"', ({ type, icon }) => {
+      createComponent({
+        itemType: type,
+      });
+      expect(findGlIcon().props('name')).toBe(icon);
+    });
   });
 });

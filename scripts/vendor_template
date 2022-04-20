@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+#
+# Run it as:
+#   vendor_template https://gitlab.com/pages/hugo hugo "Pages/Hugo template"
+#
+
+## Check which OS the script runs from since gtar/tar behaves differently
+## on macOS and Linux
+if [ "$(uname)" == "Darwin" ]; then
+  GTAR="gtar"
+else
+  GTAR="tar"
+fi
+
+## Check if jq is installed
+hash jq 2>/dev/null || echo "ERROR: jq is not installed. Install it and run the script again."
+
+REPO_URL=$1
+SHORT_NAME=$2
+COMMENT=$3
+FILENAME="$SHORT_NAME.tar.gz"
+
+# Check if the extracted project exists
+if [ ! -f $FILENAME ]
+then
+  echo
+  echo "ERROR: $FILENAME doesn't exist. Did you export the project?"
+  exit 1
+fi
+
+$GTAR --list --file="$FILENAME"
+rm -rf tar-base project-$SHORT_NAME
+mkdir -p "./tar-base"
+tar xf "$2.tar.gz" -C "./tar-base" ./VERSION ./tree/project.json
+git clone "$REPO_URL" project-$SHORT_NAME
+cd project-$SHORT_NAME
+rm -rf .git
+git init
+git add -A .
+git commit --author "GitLab <root@localhost>" -m "$COMMENT"
+git bundle create project.bundle --all
+mv -f project.bundle ../tar-base/
+cd ../tar-base
+cat tree/project.json | jq '.issues = [] | .releases = [] | .merge_requests = [] | .ci_pipelines = [] | .pipeline_schedules = [] | .services = [] | .pipelines = [] | .protected_branches = [] | .project_members = [] | .labels = [] | del(.ci_cd_settings, .external_authorization_classification_label, .project_feature)' -c > project.json
+rm -rf tree
+ls -alth
+tar cvzf "$FILENAME" ./
+cd ..
+
+echo "=> Moving $FILENAME to the vendored templates"
+mv tar-base/$FILENAME vendor/project_templates/
+
+echo "=> Cleaning up"
+rm -rf tar-base "project-$SHORT_NAME" $FILENAME
+
+echo "=> The following files are included in the bundled repo:"
+$GTAR --list --file="vendor/project_templates/$FILENAME"

@@ -6,6 +6,8 @@ class ProjectImportState < ApplicationRecord
 
   self.table_name = "project_mirror_data"
 
+  after_commit :expire_etag_cache
+
   belongs_to :project, inverse_of: :import_state
 
   validates :project, presence: true
@@ -58,9 +60,7 @@ class ProjectImportState < ApplicationRecord
     end
 
     after_transition any => :failed do |state, _|
-      if Feature.enabled?(:remove_import_data_on_failure, state.project, default_enabled: :yaml)
-        state.project.remove_import_data
-      end
+      state.project.remove_import_data
     end
 
     after_transition started: :finished do |state, _|
@@ -76,6 +76,23 @@ class ProjectImportState < ApplicationRecord
         # rubocop: enable CodeReuse/ServiceClass
       end
     end
+  end
+
+  def expire_etag_cache
+    if realtime_changes_path
+      Gitlab::EtagCaching::Store.new.tap do |store|
+        store.touch(realtime_changes_path)
+      rescue Gitlab::EtagCaching::Store::InvalidKeyError
+        # no-op: not every realtime changes endpoint is using etag caching
+      end
+    end
+  end
+
+  def realtime_changes_path
+    Gitlab::Routing.url_helpers.polymorphic_path([:realtime_changes_import, project.import_type.to_sym], format: :json)
+  rescue NoMethodError
+    # polymorphic_path throws NoMethodError when no such path exists
+    nil
   end
 
   def relation_hard_failures(limit:)

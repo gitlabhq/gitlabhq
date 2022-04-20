@@ -1,0 +1,9 @@
+---
+table_name: tags
+classes:
+- ActsAsTaggableOn::Tag
+feature_categories:
+- runner
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b946da44695c9c8fe8867bb87bcdf801c52177d3
+milestone: "<6.0"

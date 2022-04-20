@@ -2,16 +2,18 @@
 - diff_limit = local_assigns.fetch(:diff_limit, nil)
 - target_url = local_assigns.fetch(:target_url, @target_url)
 - note_style = local_assigns.fetch(:note_style, "")
+- include_stylesheet_link = local_assigns.fetch(:include_stylesheet_link, true)
 
-- discussion = note.discussion if note.part_of_discussion?
+- author = local_assigns.fetch(:author) { note.author }
+- discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion?
 
 %p{ style: "color: #777777;" }
   = succeed ':' do
-    = link_to note.author_name, user_url(note.author)
+    = link_to author.name, user_url(author)
     - if discussion.nil?
       = link_to 'commented', target_url
     - else
-      - if note.start_of_discussion?
+      - if discussion.first_note == note
         started a new
       - else
         commented on a
@@ -22,14 +24,15 @@
         = link_to 'discussion', target_url
 
 - if discussion&.diff_discussion? && discussion.on_text?
-  = content_for :head do
-    = stylesheet_link_tag 'mailers/highlighted_diff_email'
+  - if include_stylesheet_link
+    = content_for :head do
+      = stylesheet_link_tag 'mailers/highlighted_diff_email'
 
-  %table.code
+  %table.code.gl-mb-5
     = render partial: "projects/diffs/email_line",
       collection: discussion.truncated_diff_lines(diff_limit: diff_limit),
       as: :line,
       locals: { diff_file: discussion.diff_file }
 
 .md{ style: note_style }
-  = markdown(note.note, pipeline: :email, author: note.author, current_user: @recipient, issuable_reference_expansion_enabled: true)
+  = markdown(note.note, pipeline: :email, author: author, current_user: @recipient, issuable_reference_expansion_enabled: true)

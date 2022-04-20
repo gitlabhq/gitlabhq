@@ -1146,6 +1146,50 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
       end
     end
+
+    describe 'variable CI_GITLAB_FIPS_MODE' do
+      context 'when FIPS flag is enabled' do
+        before do
+          allow(Gitlab::FIPS).to receive(:enabled?).and_return(true)
+        end
+
+        it "is included with value 'true'" do
+          expect(subject.to_hash).to include('CI_GITLAB_FIPS_MODE' => 'true')
+        end
+      end
+
+      context 'when FIPS flag is disabled' do
+        before do
+          allow(Gitlab::FIPS).to receive(:enabled?).and_return(false)
+        end
+
+        it 'is not included' do
+          expect(subject.to_hash).not_to have_key('CI_GITLAB_FIPS_MODE')
+        end
+      end
+    end
+
+    context 'without a commit' do
+      let(:pipeline) { build(:ci_empty_pipeline, :created, sha: nil) }
+
+      it 'does not expose commit variables' do
+        expect(subject.to_hash.keys)
+          .not_to include(
+            'CI_COMMIT_SHA',
+            'CI_COMMIT_SHORT_SHA',
+            'CI_COMMIT_BEFORE_SHA',
+            'CI_COMMIT_REF_NAME',
+            'CI_COMMIT_REF_SLUG',
+            'CI_COMMIT_BRANCH',
+            'CI_COMMIT_TAG',
+            'CI_COMMIT_MESSAGE',
+            'CI_COMMIT_TITLE',
+            'CI_COMMIT_DESCRIPTION',
+            'CI_COMMIT_REF_PROTECTED',
+            'CI_COMMIT_TIMESTAMP',
+            'CI_COMMIT_AUTHOR')
+      end
+    end
   end
 
   describe '#protected_ref?' do
@@ -1663,7 +1707,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
               expect(upstream_pipeline.reload).to be_failed
 
               Sidekiq::Testing.inline! do
-                new_job = Ci::Build.retry(job, project.users.first)
+                new_job = Ci::RetryJobService.new(project, project.users.first).execute(job)[:job]
 
                 expect(downstream_pipeline.reload).to be_running
                 expect(upstream_pipeline.reload).to be_running
@@ -1684,7 +1728,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
               expect(upstream_pipeline.reload).to be_success
 
               Sidekiq::Testing.inline! do
-                new_job = Ci::Build.retry(job, project.users.first)
+                new_job = Ci::RetryJobService.new(project, project.users.first).execute(job)[:job]
 
                 expect(downstream_pipeline.reload).to be_running
                 expect(upstream_pipeline.reload).to be_running
@@ -1715,7 +1759,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
                 expect(upstream_of_upstream_pipeline.reload).to be_failed
 
                 Sidekiq::Testing.inline! do
-                  new_job = Ci::Build.retry(job, project.users.first)
+                  new_job = Ci::RetryJobService.new(project, project.users.first).execute(job)[:job]
 
                   expect(downstream_pipeline.reload).to be_running
                   expect(upstream_pipeline.reload).to be_running
@@ -2583,8 +2627,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
         build.drop
         project.add_developer(user)
-
-        Ci::Build.retry(build, user)
+        ::Ci::RetryJobService.new(project, user).execute(build)[:job]
       end
 
       # We are changing a state: created > failed > running
@@ -4688,7 +4731,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         project.add_developer(user)
 
         retried_build.cancel!
-        ::Ci::Build.retry(retried_build, user)
+        Ci::RetryJobService.new(project, user).execute(retried_build)[:job]
       end
 
       it 'does not include retried builds' do
@@ -4711,6 +4754,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       expect(pipeline.authorized_cluster_agents).to contain_exactly(agent)
       expect(pipeline.authorized_cluster_agents).to contain_exactly(agent) # cached
+    end
+  end
+
+  describe '#has_expired_test_reports?' do
+    subject { pipeline_with_test_report.has_expired_test_reports? }
+
+    let(:pipeline_with_test_report) { create(:ci_pipeline, :with_test_reports) }
+
+    context 'when artifacts are not expired' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when artifacts are expired' do
+      before do
+        pipeline_with_test_report.job_artifacts.first.update!(expire_at: Date.yesterday)
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 

@@ -74,10 +74,13 @@ describe('unit_format', () => {
 
   it('seconds', () => {
     expect(seconds(1)).toBe('1s');
+    expect(seconds(1, undefined, { unitSeparator: ' ' })).toBe('1 s');
   });
 
   it('milliseconds', () => {
     expect(milliseconds(1)).toBe('1ms');
+    expect(milliseconds(1, undefined, { unitSeparator: ' ' })).toBe('1 ms');
+
     expect(milliseconds(100)).toBe('100ms');
     expect(milliseconds(1000)).toBe('1,000ms');
     expect(milliseconds(10_000)).toBe('10,000ms');
@@ -87,6 +90,7 @@ describe('unit_format', () => {
   it('decimalBytes', () => {
     expect(decimalBytes(1)).toBe('1B');
     expect(decimalBytes(1, 1)).toBe('1.0B');
+    expect(decimalBytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 B');
 
     expect(decimalBytes(10)).toBe('10B');
     expect(decimalBytes(10 ** 2)).toBe('100B');
@@ -104,31 +108,37 @@ describe('unit_format', () => {
   it('kilobytes', () => {
     expect(kilobytes(1)).toBe('1kB');
     expect(kilobytes(1, 1)).toBe('1.0kB');
+    expect(kilobytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 kB');
   });
 
   it('megabytes', () => {
     expect(megabytes(1)).toBe('1MB');
     expect(megabytes(1, 1)).toBe('1.0MB');
+    expect(megabytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 MB');
   });
 
   it('gigabytes', () => {
     expect(gigabytes(1)).toBe('1GB');
     expect(gigabytes(1, 1)).toBe('1.0GB');
+    expect(gigabytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 GB');
   });
 
   it('terabytes', () => {
     expect(terabytes(1)).toBe('1TB');
     expect(terabytes(1, 1)).toBe('1.0TB');
+    expect(terabytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 TB');
   });
 
   it('petabytes', () => {
     expect(petabytes(1)).toBe('1PB');
     expect(petabytes(1, 1)).toBe('1.0PB');
+    expect(petabytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 PB');
   });
 
   it('bytes', () => {
     expect(bytes(1)).toBe('1B');
     expect(bytes(1, 1)).toBe('1.0B');
+    expect(bytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 B');
 
     expect(bytes(10)).toBe('10B');
     expect(bytes(100)).toBe('100B');
@@ -142,26 +152,31 @@ describe('unit_format', () => {
   it('kibibytes', () => {
     expect(kibibytes(1)).toBe('1KiB');
     expect(kibibytes(1, 1)).toBe('1.0KiB');
+    expect(kibibytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 KiB');
   });
 
   it('mebibytes', () => {
     expect(mebibytes(1)).toBe('1MiB');
     expect(mebibytes(1, 1)).toBe('1.0MiB');
+    expect(mebibytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 MiB');
   });
 
   it('gibibytes', () => {
     expect(gibibytes(1)).toBe('1GiB');
     expect(gibibytes(1, 1)).toBe('1.0GiB');
+    expect(gibibytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 GiB');
   });
 
   it('tebibytes', () => {
     expect(tebibytes(1)).toBe('1TiB');
     expect(tebibytes(1, 1)).toBe('1.0TiB');
+    expect(tebibytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 TiB');
   });
 
   it('pebibytes', () => {
     expect(pebibytes(1)).toBe('1PiB');
     expect(pebibytes(1, 1)).toBe('1.0PiB');
+    expect(pebibytes(1, 1, { unitSeparator: ' ' })).toBe('1.0 PiB');
   });
 
   describe('getFormatter', () => {

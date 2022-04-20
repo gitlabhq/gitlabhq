@@ -9,7 +9,7 @@ import axios from '~/lib/utils/axios_utils';
 import { serializeForm } from '~/lib/utils/forms';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import projectSelect from '../../project_select';
+import projectSelect from '~/project_select';
 
 export default class Project {
   constructor() {

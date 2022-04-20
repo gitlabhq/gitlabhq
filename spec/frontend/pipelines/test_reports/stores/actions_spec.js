@@ -38,29 +38,25 @@ describe('Actions TestReports Store', () => {
       mock.onGet(summaryEndpoint).replyOnce(200, summary, {});
     });
 
-    it('sets testReports and shows tests', (done) => {
-      testAction(
+    it('sets testReports and shows tests', () => {
+      return testAction(
         actions.fetchSummary,
         null,
         state,
         [{ type: types.SET_SUMMARY, payload: summary }],
         [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-        done,
       );
     });
 
-    it('should create flash on API error', (done) => {
-      testAction(
+    it('should create flash on API error', async () => {
+      await testAction(
         actions.fetchSummary,
         null,
         { summaryEndpoint: null },
         [],
         [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalled();
     });
   });
 
@@ -73,87 +69,80 @@ describe('Actions TestReports Store', () => {
         .replyOnce(200, testReports.test_suites[0], {});
     });
 
-    it('sets test suite and shows tests', (done) => {
+    it('sets test suite and shows tests', () => {
       const suite = testReports.test_suites[0];
       const index = 0;
 
-      testAction(
+      return testAction(
         actions.fetchTestSuite,
         index,
         { ...state, testReports },
         [{ type: types.SET_SUITE, payload: { suite, index } }],
         [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-        done,
       );
     });
 
-    it('should create flash on API error', (done) => {
+    it('should create flash on API error', async () => {
       const index = 0;
 
-      testAction(
+      await testAction(
         actions.fetchTestSuite,
         index,
         { ...state, testReports, suiteEndpoint: null },
         [],
         [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
       );
+      expect(createFlash).toHaveBeenCalled();
     });
 
     describe('when we already have the suite data', () => {
-      it('should not fetch suite', (done) => {
+      it('should not fetch suite', () => {
         const index = 0;
         testReports.test_suites[0].hasFullSuite = true;
 
-        testAction(actions.fetchTestSuite, index, { ...state, testReports }, [], [], done);
+        return testAction(actions.fetchTestSuite, index, { ...state, testReports }, [], []);
       });
     });
   });
 
   describe('set selected suite index', () => {
-    it('sets selectedSuiteIndex', (done) => {
+    it('sets selectedSuiteIndex', () => {
       const selectedSuiteIndex = 0;
 
-      testAction(
+      return testAction(
         actions.setSelectedSuiteIndex,
         selectedSuiteIndex,
         { ...state, hasFullReport: true },
         [{ type: types.SET_SELECTED_SUITE_INDEX, payload: selectedSuiteIndex }],
         [],
-        done,
       );
     });
   });
 
   describe('remove selected suite index', () => {
-    it('sets selectedSuiteIndex to null', (done) => {
-      testAction(
+    it('sets selectedSuiteIndex to null', () => {
+      return testAction(
         actions.removeSelectedSuiteIndex,
         {},
         state,
         [{ type: types.SET_SELECTED_SUITE_INDEX, payload: null }],
         [],
-        done,
       );
     });
   });
 
   describe('toggles loading', () => {
-    it('sets isLoading to true', (done) => {
-      testAction(actions.toggleLoading, {}, state, [{ type: types.TOGGLE_LOADING }], [], done);
+    it('sets isLoading to true', () => {
+      return testAction(actions.toggleLoading, {}, state, [{ type: types.TOGGLE_LOADING }], []);
     });
 
-    it('toggles isLoading to false', (done) => {
-      testAction(
+    it('toggles isLoading to false', () => {
+      return testAction(
         actions.toggleLoading,
         {},
         { ...state, isLoading: true },
         [{ type: types.TOGGLE_LOADING }],
         [],
-        done,
       );
     });
   });

@@ -70,7 +70,7 @@ module QA
         end
       end
 
-      it 'sends an issues and note event', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
+      it 'sends an issues and note event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
         setup_webhook(issues: true, note: true) do |webhook, smocker|
           issue = Resource::Issue.fabricate_via_api! do |issue_init|
             issue_init.project = webhook.project

@@ -48,6 +48,7 @@ AllCops:
 
 Metrics/ParameterLists:
   Exclude:
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/356771
     - 'app/components/**/*'
 
 Cop/AvoidKeywordArgumentsInSidekiqWorkers:
@@ -94,6 +95,10 @@ Style/FrozenStringLiteralComment:
   Enabled: true
   EnforcedStyle: always_true
 
+Style/SpecialGlobalVars:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/358427
+  EnforcedStyle: use_perl_names
+
 RSpec/FilePath:
   Exclude:
     - 'qa/**/*'
@@ -134,6 +139,7 @@ Naming/FileName:
     - 'qa/qa/specs/**/*'
     - 'qa/tasks/**/*.rake'
     - '**/*.ru'
+    - 'app/graphql/types/issue_connection.rb'
 
   IgnoreExecutableScripts: true
   AllowedAcronyms:
@@ -731,10 +737,6 @@ QA/SelectorUsage:
     - 'ee/spec/**/*.rb'
   Exclude:
     - 'spec/rubocop/**/*_spec.rb'
-
-QA/DuplicateTestcaseLink:
-  # this cop is executed in static-analysis.gitlab-ci.yml since it cannot be run in parallel
-  Enabled: false
 
 Performance/ActiveRecordSubtransactions:
   Exclude:

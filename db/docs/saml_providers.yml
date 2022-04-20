@@ -1,0 +1,9 @@
+---
+table_name: saml_providers
+classes:
+- SamlProvider
+feature_categories:
+- authentication_and_authorization
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4549
+milestone: '10.7'

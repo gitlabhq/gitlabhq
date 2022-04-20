@@ -49,6 +49,7 @@ const noop = () => {};
  *   expectedActions: [],
  * })
  */
+
 export default (
   actionArg,
   payloadArg,

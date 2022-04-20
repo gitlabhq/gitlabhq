@@ -17,11 +17,19 @@ module Mutations
           job = authorized_find!(id: id)
           project = job.project
 
-          ::Ci::RetryBuildService.new(project, current_user).execute(job)
-          {
-            job: job,
-            errors: errors_on_object(job)
-          }
+          response = ::Ci::RetryJobService.new(project, current_user).execute(job)
+
+          if response.success?
+            {
+              job: response[:job],
+              errors: []
+            }
+          else
+            {
+              job: nil,
+              errors: [response.message]
+            }
+          end
         end
       end
     end

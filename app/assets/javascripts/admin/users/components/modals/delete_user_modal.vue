@@ -1,8 +1,8 @@
 <script>
 import { GlModal, GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { s__, sprintf } from '~/locale';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
+import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from './delete_user_modal_event_hub';
 
 export default {
   components: {
@@ -13,47 +13,23 @@ export default {
     UserDeletionObstaclesList,
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    content: {
-      type: String,
-      required: true,
-    },
-    action: {
-      type: String,
-      required: true,
-    },
-    secondaryAction: {
-      type: String,
-      required: true,
-    },
-    deleteUserUrl: {
-      type: String,
-      required: true,
-    },
-    blockUserUrl: {
-      type: String,
-      required: true,
-    },
-    username: {
-      type: String,
-      required: true,
-    },
     csrfToken: {
       type: String,
       required: true,
-    },
-    userDeletionObstacles: {
-      type: String,
-      required: false,
-      default: '[]',
     },
   },
   data() {
     return {
       enteredUsername: '',
+      username: '',
+      blockPath: '',
+      deletePath: '',
+      userDeletionObstacles: [],
+      i18n: {
+        title: '',
+        primaryButtonLabel: '',
+        messageBody: '',
+      },
     };
   },
   computed: {
@@ -61,26 +37,36 @@ export default {
       return this.username.trim();
     },
     modalTitle() {
-      return sprintf(this.title, { username: this.trimmedUsername }, false);
+      return sprintf(this.i18n.title, { username: this.trimmedUsername }, false);
+    },
+    canSubmit() {
+      return this.enteredUsername && this.enteredUsername === this.trimmedUsername;
     },
     secondaryButtonLabel() {
       return s__('AdminUsers|Block user');
     },
-    canSubmit() {
-      return this.enteredUsername === this.trimmedUsername;
-    },
-    obstacles() {
-      try {
-        return JSON.parse(this.userDeletionObstacles);
-      } catch (e) {
-        Sentry.captureException(e);
-      }
-      return [];
-    },
+  },
+  mounted() {
+    eventHub.$on(EVENT_OPEN_DELETE_USER_MODAL, this.onOpenEvent);
+  },
+  destroyed() {
+    eventHub.$off(EVENT_OPEN_DELETE_USER_MODAL, this.onOpenEvent);
   },
   methods: {
-    show() {
+    onOpenEvent({ username, blockPath, deletePath, userDeletionObstacles, i18n }) {
+      this.username = username;
+      this.blockPath = blockPath;
+      this.deletePath = deletePath;
+      this.userDeletionObstacles = userDeletionObstacles;
+      this.i18n = i18n;
+      this.openModal();
+    },
+    openModal() {
       this.$refs.modal.show();
+    },
+    onSubmit() {
+      this.$refs.form.submit();
+      this.enteredUsername = '';
     },
     onCancel() {
       this.enteredUsername = '';
@@ -88,48 +74,43 @@ export default {
     },
     onSecondaryAction() {
       const { form } = this.$refs;
-
-      form.action = this.blockUserUrl;
+      form.action = this.blockPath;
       this.$refs.method.value = 'put';
-
       form.submit();
-    },
-    onSubmit() {
-      this.$refs.form.submit();
-      this.enteredUsername = '';
     },
   },
 };
 </script>
-
 <template>
   <gl-modal ref="modal" modal-id="delete-user-modal" :title="modalTitle" kind="danger">
     <p>
-      <gl-sprintf :message="content">
+      <gl-sprintf :message="i18n.messageBody">
         <template #username>
-          <strong>{{ trimmedUsername }}</strong>
+          <strong data-testid="message-username">{{ trimmedUsername }}</strong>
         </template>
-        <template #strong="props">
-          <strong>{{ props.content }}</strong>
+        <template #strong="{ content }">
+          <strong>{{ content }}</strong>
         </template>
       </gl-sprintf>
     </p>
 
     <user-deletion-obstacles-list
-      v-if="obstacles.length"
-      :obstacles="obstacles"
+      v-if="userDeletionObstacles.length"
+      :obstacles="userDeletionObstacles"
       :user-name="trimmedUsername"
     />
 
     <p>
       <gl-sprintf :message="s__('AdminUsers|To confirm, type %{username}')">
         <template #username>
-          <code class="gl-white-space-pre-wrap">{{ trimmedUsername }}</code>
+          <code data-testid="confirm-username" class="gl-white-space-pre-wrap">{{
+            trimmedUsername
+          }}</code>
         </template>
       </gl-sprintf>
     </p>
 
-    <form ref="form" :action="deleteUserUrl" method="post" @submit.prevent>
+    <form ref="form" :action="deletePath" method="post" @submit.prevent>
       <input ref="method" type="hidden" name="_method" value="delete" />
       <input :value="csrfToken" type="hidden" name="authenticity_token" />
       <gl-form-input
@@ -140,6 +121,7 @@ export default {
         autocomplete="off"
       />
     </form>
+
     <template #modal-footer>
       <gl-button @click="onCancel">{{ __('Cancel') }}</gl-button>
       <gl-button
@@ -148,10 +130,10 @@ export default {
         variant="danger"
         @click="onSecondaryAction"
       >
-        {{ secondaryAction }}
+        {{ secondaryButtonLabel }}
       </gl-button>
       <gl-button :disabled="!canSubmit" category="primary" variant="danger" @click="onSubmit">{{
-        action
+        i18n.primaryButtonLabel
       }}</gl-button>
     </template>
   </gl-modal>

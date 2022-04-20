@@ -295,7 +295,7 @@ RSpec/VerifiedDoubles:
     - spec/controllers/import/gitea_controller_spec.rb
     - spec/controllers/import/github_controller_spec.rb
     - spec/controllers/import/gitlab_controller_spec.rb
-    - spec/controllers/oauth/jira/authorizations_controller_spec.rb
+    - spec/controllers/oauth/jira_dvcs/authorizations_controller_spec.rb
     - spec/controllers/omniauth_callbacks_controller_spec.rb
     - spec/controllers/profiles/two_factor_auths_controller_spec.rb
     - spec/controllers/projects/blob_controller_spec.rb
@@ -437,7 +437,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/error_tracking/collector/dsn_spec.rb
     - spec/lib/error_tracking/collector/sentry_auth_parser_spec.rb
     - spec/lib/error_tracking/collector/sentry_request_parser_spec.rb
-    - spec/lib/error_tracking/sentry_client/issue_spec.rb
     - spec/lib/extracts_path_spec.rb
     - spec/lib/feature_spec.rb
     - spec/lib/gitaly/server_spec.rb
@@ -878,7 +877,6 @@ RSpec/VerifiedDoubles:
     - spec/models/design_management/design_at_version_spec.rb
     - spec/models/diff_viewer/image_spec.rb
     - spec/models/environment_spec.rb
-    - spec/models/error_tracking/project_error_tracking_setting_spec.rb
     - spec/models/event_spec.rb
     - spec/models/external_issue_spec.rb
     - spec/models/hooks/web_hook_spec.rb

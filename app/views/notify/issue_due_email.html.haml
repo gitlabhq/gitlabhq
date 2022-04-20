@@ -1,11 +1,11 @@
 %p.details
-  #{link_to @issue.author_name, user_url(@issue.author)}'s issue #{issue_reference_link(@issue)} is due soon.
+  = sprintf(s_("Notify|%{author_link}'s issue %{issue_reference_link} is due soon."), { author_link: link_to(@issue.author_name, user_url(@issue.author)), issue_reference_link: issue_reference_link(@issue) })
 
 - if @issue.assignees.any?
   %p
     = assignees_label(@issue)
 %p
-  This issue is due on: #{@issue.due_date.to_s(:medium)}
+  = sprintf(s_('Notify|This issue is due on: %{issue_due_date}'), { issue_due_date: @issue.due_date.to_s(:medium) }).html_safe
 
 - if @issue.description
   .md

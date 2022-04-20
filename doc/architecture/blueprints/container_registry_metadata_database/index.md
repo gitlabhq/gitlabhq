@@ -150,7 +150,7 @@ Following the GitLab [Go standards and style guidelines](../../../development/go
 
 The design and development of the registry database adhere to the GitLab [database guidelines](../../../development/database/). Being a Go application, the required tooling to support the database will have to be developed, such as for running database migrations.
 
-Running *online* and [*post deployment*](../../../development/post_deployment_migrations.md) migrations is already supported by the registry CLI, as described in the [documentation](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/database-migrations.md).
+Running *online* and [*post deployment*](../../../development/database/post_deployment_migrations.md) migrations is already supported by the registry CLI, as described in the [documentation](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/database-migrations.md).
 
 #### Partitioning
 

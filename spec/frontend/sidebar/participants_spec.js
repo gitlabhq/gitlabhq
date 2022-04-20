@@ -17,8 +17,7 @@ const PARTICIPANT_LIST = [PARTICIPANT, { ...PARTICIPANT, id: 2 }, { ...PARTICIPA
 describe('Participants', () => {
   let wrapper;
 
-  const getMoreParticipantsButton = () => wrapper.find('button');
-
+  const getMoreParticipantsButton = () => wrapper.find('[data-testid="more-participants"]');
   const getCollapsedParticipantsCount = () => wrapper.find('[data-testid="collapsed-count"]');
 
   const mountComponent = (propsData) =>
@@ -167,7 +166,7 @@ describe('Participants', () => {
 
       expect(wrapper.vm.isShowingMoreParticipants).toBe(false);
 
-      getMoreParticipantsButton().trigger('click');
+      getMoreParticipantsButton().vm.$emit('click');
 
       expect(wrapper.vm.isShowingMoreParticipants).toBe(true);
     });

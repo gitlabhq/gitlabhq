@@ -5,6 +5,8 @@ import IssueTimeEstimate from '~/boards/components/issue_time_estimate.vue';
 describe('Issue Time Estimate component', () => {
   let wrapper;
 
+  const findIssueTimeEstimate = () => wrapper.find('[data-testid="issue-time-estimate"]');
+
   afterEach(() => {
     wrapper.destroy();
   });
@@ -26,7 +28,7 @@ describe('Issue Time Estimate component', () => {
     });
 
     it('renders expanded time estimate in tooltip', () => {
-      expect(wrapper.find('.js-issue-time-estimate').text()).toContain('2 weeks 3 days 1 minute');
+      expect(findIssueTimeEstimate().text()).toContain('2 weeks 3 days 1 minute');
     });
 
     it('prevents tooltip xss', async () => {
@@ -42,7 +44,7 @@ describe('Issue Time Estimate component', () => {
 
       expect(alertSpy).not.toHaveBeenCalled();
       expect(wrapper.find('time').text().trim()).toEqual('0m');
-      expect(wrapper.find('.js-issue-time-estimate').text()).toContain('0m');
+      expect(findIssueTimeEstimate().text()).toContain('0m');
     });
   });
 
@@ -63,7 +65,7 @@ describe('Issue Time Estimate component', () => {
     });
 
     it('renders expanded time estimate in tooltip', () => {
-      expect(wrapper.find('.js-issue-time-estimate').text()).toContain('104 hours 1 minute');
+      expect(findIssueTimeEstimate().text()).toContain('104 hours 1 minute');
     });
   });
 });

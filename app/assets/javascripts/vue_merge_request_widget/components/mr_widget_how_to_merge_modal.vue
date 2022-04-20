@@ -79,7 +79,7 @@ export default {
   },
   data() {
     return {
-      resolveConflictsFromCli: helpPagePath('ee/user/project/merge_requests/conflicts.html', {
+      resolveConflictsFromCli: helpPagePath('user/project/merge_requests/conflicts', {
         anchor: 'resolve-conflicts-from-the-command-line',
       }),
     };

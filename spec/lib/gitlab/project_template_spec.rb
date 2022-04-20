@@ -8,7 +8,7 @@ RSpec.describe Gitlab::ProjectTemplate do
       expected = %w[
         rails spring express iosswift dotnetcore android
         gomicro gatsby hugo jekyll plainhtml gitbook
-        hexo sse_middleman gitpod_spring_petclinic nfhugo
+        hexo middleman gitpod_spring_petclinic nfhugo
         nfjekyll nfplainhtml nfgitbook nfhexo salesforcedx
         serverless_framework tencent_serverless_framework
         jsonnet cluster_management kotlin_native_linux

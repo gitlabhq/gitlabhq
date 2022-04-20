@@ -1,0 +1,9 @@
+---
+table_name: lfs_file_locks
+classes:
+- LfsFileLock
+feature_categories:
+- git_lfs
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4091
+milestone: '10.5'

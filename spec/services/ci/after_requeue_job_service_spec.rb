@@ -85,7 +85,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         c2: 'skipped'
       )
 
-      new_a1 = Ci::RetryBuildService.new(project, user).clone!(a1)
+      new_a1 = Ci::RetryJobService.new(project, user).clone!(a1)
       new_a1.enqueue!
       check_jobs_statuses(
         a1: 'pending',
@@ -172,7 +172,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         c2: 'skipped'
       )
 
-      new_a1 = Ci::RetryBuildService.new(project, user).clone!(a1)
+      new_a1 = Ci::RetryJobService.new(project, user).clone!(a1)
       new_a1.enqueue!
       check_jobs_statuses(
         a1: 'pending',
@@ -195,25 +195,6 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         c1: 'created',
         c2: 'created'
       )
-    end
-
-    context 'when the FF ci_fix_order_of_subsequent_jobs is disabled' do
-      before do
-        stub_feature_flags(ci_fix_order_of_subsequent_jobs: false)
-      end
-
-      it 'does not mark b1 as processable' do
-        execute_after_requeue_service(a1)
-
-        check_jobs_statuses(
-          a1: 'pending',
-          a2: 'created',
-          b1: 'skipped',
-          b2: 'created',
-          c1: 'created',
-          c2: 'created'
-        )
-      end
     end
   end
 

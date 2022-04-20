@@ -1,0 +1,18 @@
+# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79335
+deploy-template:
+  script:
+    - echo "hello world"
+  only:
+    - foo
+  except:
+    - bar
+
+# null value allowed
+deploy-without-only:
+  extends: deploy-template
+  only:
+
+# null value allowed
+deploy-without-except:
+  extends: deploy-template
+  except:

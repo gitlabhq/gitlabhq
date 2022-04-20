@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Create
+group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: 'Learn how to administer GitLab Pages.'
 ---
@@ -243,6 +243,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `enable`                                | Enable or disable GitLab Pages on the current system. |
 | `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. |
 | `external_https`                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
+| `server_shutdown_timeout`               | GitLab Pages server shutdown timeout in seconds (default: 30s). |
 | `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: 10s). |
 | `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: 30s). |
 | `gitlab_cache_expiry`                   | The maximum time a domain's configuration is stored in the cache (default: 600s). |
@@ -292,6 +293,10 @@ control over how the Pages daemon runs and serves content in your environment.
 | `rate_limit_source_ip_burst`            | Rate limit per source IP maximum burst allowed per second. |
 | `rate_limit_domain`                     | Rate limit per domain in number of requests per second. Set to `0` to disable this feature. |
 | `rate_limit_domain_burst`               | Rate limit per domain maximum burst allowed per second. |
+| `server_read_timeout`                   | Maximum duration to read the request headers and body. For no timeout, set to `0` or a negative value. Default: `5s` |
+| `server_read_header_timeout`            | Maximum duration to read the request headers. For no timeout, set to `0` or a negative value. Default: `1s` |
+| `server_write_timeout`                  | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. Default: `5m` |
+| `server_keep_alive`                     | The `Keep-Alive` period for network connections accepted by this listener. If `0`, `Keep-Alive` is enabled if supported by the protocol and operating system. If negative, `Keep-Alive` is disabled. Default: `15s` |
 
 ## Advanced configuration
 
@@ -1392,15 +1397,15 @@ in all of your GitLab Pages instances.
 
 Connections will time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
 This can happen to GitLab instances with multiple servers
-running both the core GitLab application and GitLab Pages. This can also happen when a single 
+running both the core GitLab application and GitLab Pages. This can also happen when a single
 container is running both the core GitLab application and GitLab Pages.
 
 AWS [recommends using an IP target type](https://aws.amazon.com/premiumsupport/knowledge-center/target-connection-fails-load-balancer/)
 to resolve this issue.
 
-Turning off [client IP preservation](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation) 
-may resolve this issue when the core GitLab application and GitLab Pages run on the same host or 
-container.  
+Turning off [client IP preservation](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation)
+may resolve this issue when the core GitLab application and GitLab Pages run on the same host or
+container.
 
 ### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 

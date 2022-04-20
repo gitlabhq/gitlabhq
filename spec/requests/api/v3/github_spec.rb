@@ -9,7 +9,7 @@ RSpec.describe API::V3::Github do
   let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) if user
   end
 
   describe 'GET /orgs/:namespace/repos' do

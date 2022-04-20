@@ -2,7 +2,7 @@ import { escape } from 'lodash';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import { logError } from '~/lib/logger';
-import api from '../../../api';
+import api from '~/api';
 import service from '../../services';
 import * as types from '../mutation_types';
 

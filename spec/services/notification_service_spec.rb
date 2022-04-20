@@ -376,6 +376,17 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  describe '#new_email_address_added' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:email) { create(:email, user: user) }
+
+    subject { notification.new_email_address_added(user, email) }
+
+    it 'sends email to the user' do
+      expect { subject }.to have_enqueued_email(user, email, mail: 'new_email_address_added_email')
+    end
+  end
+
   describe 'Notes' do
     context 'issue note' do
       let_it_be(:project) { create(:project, :private) }
@@ -2088,6 +2099,70 @@ RSpec.describe NotificationService, :mailer do
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
+      end
+
+      describe 'triggers push_to_merge_request_email with corresponding email' do
+        let_it_be(:merge_request) { create(:merge_request, author: author, source_project: project) }
+
+        def mock_commits(length)
+          Array.new(length) { |i| double(:commit, short_id: SecureRandom.hex(4), title: "This is commit #{i}") }
+        end
+
+        def commit_to_hash(commit)
+          { short_id: commit.short_id, title: commit.title }
+        end
+
+        let(:existing_commits) { mock_commits(50) }
+        let(:expected_existing_commits) { [commit_to_hash(existing_commits.first), commit_to_hash(existing_commits.last)] }
+
+        before do
+          allow(::Notify).to receive(:push_to_merge_request_email).and_call_original
+        end
+
+        where(:number_of_new_commits, :number_of_new_commits_displayed) do
+          limit = described_class::NEW_COMMIT_EMAIL_DISPLAY_LIMIT
+          [
+            [0, 0],
+            [limit - 2, limit - 2],
+            [limit - 1, limit - 1],
+            [limit, limit],
+            [limit + 1, limit],
+            [limit + 2, limit]
+          ]
+        end
+
+        with_them do
+          let(:new_commits) { mock_commits(number_of_new_commits) }
+          let(:expected_new_commits) { new_commits.first(number_of_new_commits_displayed).map(&method(:commit_to_hash)) }
+
+          it 'triggers the corresponding mailer method with list of stripped commits' do
+            notification.push_to_merge_request(
+              merge_request, merge_request.author,
+              new_commits: new_commits, existing_commits: existing_commits
+            )
+
+            expect(Notify).to have_received(:push_to_merge_request_email).at_least(:once).with(
+              @subscriber.id, merge_request.id, merge_request.author.id, "subscribed",
+              new_commits: expected_new_commits, total_new_commits_count: number_of_new_commits,
+              existing_commits: expected_existing_commits, total_existing_commits_count: 50
+            )
+          end
+        end
+
+        context 'there is only one existing commit' do
+          let(:new_commits) { mock_commits(10) }
+          let(:expected_new_commits) { new_commits.map(&method(:commit_to_hash)) }
+
+          it 'triggers corresponding mailer method with only one existing commit' do
+            notification.push_to_merge_request(merge_request, merge_request.author, new_commits: new_commits, existing_commits: existing_commits.first(1))
+
+            expect(Notify).to have_received(:push_to_merge_request_email).at_least(:once).with(
+              @subscriber.id, merge_request.id, merge_request.author.id, "subscribed",
+              new_commits: expected_new_commits, total_new_commits_count: 10,
+              existing_commits: expected_existing_commits.first(1), total_existing_commits_count: 1
+            )
+          end
+        end
       end
 
       it_behaves_like 'participating notifications' do

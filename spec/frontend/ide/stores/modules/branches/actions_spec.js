@@ -42,21 +42,20 @@ describe('IDE branches actions', () => {
   });
 
   describe('requestBranches', () => {
-    it('should commit request', (done) => {
-      testAction(
+    it('should commit request', () => {
+      return testAction(
         requestBranches,
         null,
         mockedContext.state,
         [{ type: types.REQUEST_BRANCHES }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveBranchesError', () => {
-    it('should commit error', (done) => {
-      testAction(
+    it('should commit error', () => {
+      return testAction(
         receiveBranchesError,
         { search: TEST_SEARCH },
         mockedContext.state,
@@ -72,20 +71,18 @@ describe('IDE branches actions', () => {
             },
           },
         ],
-        done,
       );
     });
   });
 
   describe('receiveBranchesSuccess', () => {
-    it('should commit received data', (done) => {
-      testAction(
+    it('should commit received data', () => {
+      return testAction(
         receiveBranchesSuccess,
         branches,
         mockedContext.state,
         [{ type: types.RECEIVE_BRANCHES_SUCCESS, payload: branches }],
         [],
-        done,
       );
     });
   });
@@ -110,8 +107,8 @@ describe('IDE branches actions', () => {
         });
       });
 
-      it('dispatches success with received data', (done) => {
-        testAction(
+      it('dispatches success with received data', () => {
+        return testAction(
           fetchBranches,
           { search: TEST_SEARCH },
           mockedState,
@@ -121,7 +118,6 @@ describe('IDE branches actions', () => {
             { type: 'resetBranches' },
             { type: 'receiveBranchesSuccess', payload: branches },
           ],
-          done,
         );
       });
     });
@@ -131,8 +127,8 @@ describe('IDE branches actions', () => {
         mock.onGet(/\/api\/v4\/projects\/\d+\/repository\/branches(.*)$/).replyOnce(500);
       });
 
-      it('dispatches error', (done) => {
-        testAction(
+      it('dispatches error', () => {
+        return testAction(
           fetchBranches,
           { search: TEST_SEARCH },
           mockedState,
@@ -142,20 +138,18 @@ describe('IDE branches actions', () => {
             { type: 'resetBranches' },
             { type: 'receiveBranchesError', payload: { search: TEST_SEARCH } },
           ],
-          done,
         );
       });
     });
 
     describe('resetBranches', () => {
-      it('commits reset', (done) => {
-        testAction(
+      it('commits reset', () => {
+        return testAction(
           resetBranches,
           null,
           mockedContext.state,
           [{ type: types.RESET_BRANCHES }],
           [],
-          done,
         );
       });
     });

@@ -112,11 +112,26 @@ you can reply to comments by sending an email.
 
 You can use [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md) in your email replies.
 
-## Who can edit comments
+## Edit a comment
 
 You can edit your own comment at any time.
-
 Anyone with at least the Maintainer role can also edit a comment made by someone else.
+
+To edit a comment:
+
+1. On the comment, select **Edit comment** (**{pencil}**).
+1. Make your edits.
+1. Select **Save changes**.
+
+### Editing a comment to add a mention
+
+By default, when you mention a user, GitLab [creates a to-do item](../todos.md#actions-that-create-to-do-items)
+for them, and sends them a [notification email](../profile/notifications.md).
+
+If you edit an existing comment to add a user mention that wasn't there before, GitLab:
+
+- Creates a to-do item for the mentioned user.
+- Does not send a notification email.
 
 ## Prevent comments by locking an issue
 
@@ -137,7 +152,8 @@ If an issue or merge request is locked and closed, you cannot reopen it.
 
 ## Mark a comment as confidential **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/351143) in GitLab 14.10: you can only mark comments in issues and epics as confidential. Previously, it was also possible for comments in merge requests and snippets.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -145,9 +161,25 @@ ask an administrator to [enable the feature flag](../../administration/feature_f
 On GitLab.com, this feature is not available.
 You should not use this feature for production environments.
 
-You can make a comment confidential, so that it is visible only to project members
-who have at least the Reporter role.
+You can make a comment **in an issue or an epic** confidential, so that it is visible only to you (the commenting user) and
+the project members who have at least the Reporter role.
 
+Keep in mind:
+
+- You can only mark comments as confidential when you create them.
+- You can't change the confidentiality of existing comments.
+- Replies to comments use same confidentiality as the original comment.
+
+Prerequisites:
+
+- You must either:
+  - Have at least the Reporter role for the project.
+  - Be the issue assignee.
+  - Be the issue author.
+
+To mark a comment as confidential:
+
+1. Start adding a new comment.
 1. Below the comment, select the **Make this comment confidential** checkbox.
 1. Select **Comment**.
 

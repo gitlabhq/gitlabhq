@@ -6,20 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Sorting and ordering issue lists **(FREE)**
 
-You can sort a list of issues several ways, including by:
-
-- [Blocking issues](#sorting-by-blocking-issues)
-- [Created date](#sorting-by-created-date)
-- [Due date](#sorting-by-due-date)
-- [Label priority](#sorting-by-label-priority)
-- [Last updated](#sorting-by-last-updated)
-- [Manual sorting](#manual-sorting)
-- [Milestone due date](#sorting-by-milestone-due-date)
-- [Popularity](#sorting-by-popularity)
-- [Priority](#sorting-by-priority)
-- [Title](#sorting-by-title)
-- [Weight](#sorting-by-weight)
-
+You can sort a list of issues several ways.
 The available sorting options can change based on the context of the list.
 
 ## Sorting by blocking issues **(PREMIUM)**
@@ -51,10 +38,10 @@ For more information, see [issue 14523](https://gitlab.com/gitlab-org/gitlab/-/i
 
 To learn how to change label priority, see [Label priority](../labels.md#set-label-priority).
 
-## Sorting by last updated
+## Sorting by updated date
 
-When you sort by **Last updated**, the issue list changes to sort by the time of a last
-update. Issues changed the most recently are first.
+When you sort by **Updated date**, the issue list changes to sort by the time of a last
+update. Issues changed the most recently are shown first.
 
 ## Manual sorting
 

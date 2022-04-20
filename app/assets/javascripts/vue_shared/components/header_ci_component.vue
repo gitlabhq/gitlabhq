@@ -8,8 +8,8 @@ import {
   GlTooltip,
 } from '@gitlab/ui';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { glEmojiTag } from '../../emoji';
-import { __, sprintf } from '../../locale';
+import { glEmojiTag } from '~/emoji';
+import { __, sprintf } from '~/locale';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 
@@ -117,7 +117,7 @@ export default {
 
 <template>
   <header
-    class="page-content-header gl-display-flex gl-min-h-7"
+    class="page-content-header gl-md-display-flex gl-min-h-7"
     data-qa-selector="pipeline_header"
     data-testid="ci-header-content"
   >
@@ -163,11 +163,7 @@ export default {
       </template>
     </section>
 
-    <section
-      v-if="$slots.default"
-      data-testid="ci-header-action-buttons"
-      class="gl-display-flex gl-mr-3"
-    >
+    <section v-if="$slots.default" data-testid="ci-header-action-buttons" class="gl-display-flex">
       <slot></slot>
     </section>
     <gl-button

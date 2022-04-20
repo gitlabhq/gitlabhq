@@ -96,19 +96,22 @@ export const MOCK_AUTOCOMPLETE_OPTIONS_RES = [
   {
     category: 'Projects',
     id: 1,
-    label: 'MockProject1',
+    label: 'Gitlab Org / MockProject1',
+    value: 'MockProject1',
     url: 'project/1',
   },
   {
     category: 'Groups',
     id: 1,
-    label: 'MockGroup1',
+    label: 'Gitlab Org / MockGroup1',
+    value: 'MockGroup1',
     url: 'group/1',
   },
   {
     category: 'Projects',
     id: 2,
-    label: 'MockProject2',
+    label: 'Gitlab Org / MockProject2',
+    value: 'MockProject2',
     url: 'project/2',
   },
   {
@@ -123,21 +126,24 @@ export const MOCK_AUTOCOMPLETE_OPTIONS = [
     category: 'Projects',
     html_id: 'autocomplete-Projects-0',
     id: 1,
-    label: 'MockProject1',
+    label: 'Gitlab Org / MockProject1',
+    value: 'MockProject1',
     url: 'project/1',
   },
   {
     category: 'Groups',
     html_id: 'autocomplete-Groups-1',
     id: 1,
-    label: 'MockGroup1',
+    label: 'Gitlab Org / MockGroup1',
+    value: 'MockGroup1',
     url: 'group/1',
   },
   {
     category: 'Projects',
     html_id: 'autocomplete-Projects-2',
     id: 2,
-    label: 'MockProject2',
+    label: 'Gitlab Org / MockProject2',
+    value: 'MockProject2',
     url: 'project/2',
   },
   {
@@ -157,7 +163,8 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
         html_id: 'autocomplete-Projects-0',
 
         id: 1,
-        label: 'MockProject1',
+        label: 'Gitlab Org / MockProject1',
+        value: 'MockProject1',
         url: 'project/1',
       },
       {
@@ -165,7 +172,8 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
         html_id: 'autocomplete-Projects-2',
 
         id: 2,
-        label: 'MockProject2',
+        label: 'Gitlab Org / MockProject2',
+        value: 'MockProject2',
         url: 'project/2',
       },
     ],
@@ -178,7 +186,8 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
         html_id: 'autocomplete-Groups-1',
 
         id: 1,
-        label: 'MockGroup1',
+        label: 'Gitlab Org / MockGroup1',
+        value: 'MockGroup1',
         url: 'group/1',
       },
     ],
@@ -202,21 +211,24 @@ export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
     category: 'Projects',
     html_id: 'autocomplete-Projects-0',
     id: 1,
-    label: 'MockProject1',
+    label: 'Gitlab Org / MockProject1',
+    value: 'MockProject1',
     url: 'project/1',
   },
   {
     category: 'Projects',
     html_id: 'autocomplete-Projects-2',
     id: 2,
-    label: 'MockProject2',
+    label: 'Gitlab Org / MockProject2',
+    value: 'MockProject2',
     url: 'project/2',
   },
   {
     category: 'Groups',
     html_id: 'autocomplete-Groups-1',
     id: 1,
-    label: 'MockGroup1',
+    label: 'Gitlab Org / MockGroup1',
+    value: 'MockGroup1',
     url: 'group/1',
   },
   {
@@ -224,5 +236,100 @@ export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
     html_id: 'autocomplete-Help-3',
     label: 'GitLab Help',
     url: 'help/gitlab',
+  },
+];
+
+export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_HELP = [
+  {
+    category: 'Help',
+    data: [
+      {
+        html_id: 'autocomplete-Help-1',
+        category: 'Help',
+        label: 'Rake Tasks Help',
+        url: '/help/raketasks/index',
+      },
+      {
+        html_id: 'autocomplete-Help-2',
+        category: 'Help',
+        label: 'System Hooks Help',
+        url: '/help/system_hooks/system_hooks',
+      },
+    ],
+  },
+];
+
+export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_SETTINGS_HELP = [
+  {
+    category: 'Settings',
+    data: [
+      {
+        html_id: 'autocomplete-Settings-0',
+        category: 'Settings',
+        label: 'User settings',
+        url: '/-/profile',
+      },
+      {
+        html_id: 'autocomplete-Settings-3',
+        category: 'Settings',
+        label: 'Admin Section',
+        url: '/admin',
+      },
+    ],
+  },
+  {
+    category: 'Help',
+    data: [
+      {
+        html_id: 'autocomplete-Help-1',
+        category: 'Help',
+        label: 'Rake Tasks Help',
+        url: '/help/raketasks/index',
+      },
+      {
+        html_id: 'autocomplete-Help-2',
+        category: 'Help',
+        label: 'System Hooks Help',
+        url: '/help/system_hooks/system_hooks',
+      },
+    ],
+  },
+];
+
+export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_2 = [
+  {
+    category: 'Groups',
+    data: [
+      {
+        html_id: 'autocomplete-Groups-0',
+        category: 'Groups',
+        id: 148,
+        label: 'Jashkenas / Test Subgroup / test-subgroup',
+        url: '/jashkenas/test-subgroup/test-subgroup',
+        avatar_url: '',
+      },
+      {
+        html_id: 'autocomplete-Groups-1',
+        category: 'Groups',
+        id: 147,
+        label: 'Jashkenas / Test Subgroup',
+        url: '/jashkenas/test-subgroup',
+        avatar_url: '',
+      },
+    ],
+  },
+  {
+    category: 'Projects',
+    data: [
+      {
+        html_id: 'autocomplete-Projects-2',
+        category: 'Projects',
+        id: 1,
+        value: 'Gitlab Test',
+        label: 'Gitlab Org / Gitlab Test',
+        url: '/gitlab-org/gitlab-test',
+        avatar_url: '/uploads/-/system/project/avatar/1/icons8-gitlab-512.png',
+      },
+    ],
   },
 ];

@@ -7,6 +7,7 @@ import {
   I18N,
   TH_CREATED_AT_TEST_ID,
   TH_SEVERITY_TEST_ID,
+  TH_ESCALATION_STATUS_TEST_ID,
   TH_PUBLISHED_TEST_ID,
   TH_INCIDENT_SLA_TEST_ID,
   trackIncidentCreateNewOptions,
@@ -170,6 +171,7 @@ describe('Incidents List', () => {
 
       expect(link.text()).toBe(title);
       expect(link.attributes('href')).toContain(`issues/incident/${iid}`);
+      expect(link.find('.gl-text-truncate').exists()).toBe(true);
     });
 
     describe('Assignees', () => {
@@ -200,15 +202,14 @@ describe('Incidents List', () => {
 
     describe('Escalation status', () => {
       it('renders escalation status per row', () => {
-        expect(findEscalationStatus().length).toBe(mockIncidents.length);
+        const statuses = findEscalationStatus().wrappers;
+        const expectedStatuses = ['Triggered', 'Acknowledged', 'Resolved', I18N.noEscalationStatus];
 
-        const actualStatuses = findEscalationStatus().wrappers.map((status) => status.text());
-        expect(actualStatuses).toEqual([
-          'Triggered',
-          'Acknowledged',
-          'Resolved',
-          I18N.noEscalationStatus,
-        ]);
+        expect(statuses.length).toBe(mockIncidents.length);
+        statuses.forEach((status, index) => {
+          expect(status.text()).toEqual(expectedStatuses[index]);
+          expect(status.classes('gl-text-truncate')).toBe(true);
+        });
       });
 
       describe('when feature is disabled', () => {
@@ -294,11 +295,12 @@ describe('Incidents List', () => {
     const noneSort = 'none';
 
     it.each`
-      description        | selector                   | initialSort | firstSort   | nextSort
-      ${'creation date'} | ${TH_CREATED_AT_TEST_ID}   | ${descSort} | ${ascSort}  | ${descSort}
-      ${'severity'}      | ${TH_SEVERITY_TEST_ID}     | ${noneSort} | ${descSort} | ${ascSort}
-      ${'publish date'}  | ${TH_PUBLISHED_TEST_ID}    | ${noneSort} | ${descSort} | ${ascSort}
-      ${'due date'}      | ${TH_INCIDENT_SLA_TEST_ID} | ${noneSort} | ${ascSort}  | ${descSort}
+      description        | selector                        | initialSort | firstSort   | nextSort
+      ${'creation date'} | ${TH_CREATED_AT_TEST_ID}        | ${descSort} | ${ascSort}  | ${descSort}
+      ${'severity'}      | ${TH_SEVERITY_TEST_ID}          | ${noneSort} | ${descSort} | ${ascSort}
+      ${'status'}        | ${TH_ESCALATION_STATUS_TEST_ID} | ${noneSort} | ${descSort} | ${ascSort}
+      ${'publish date'}  | ${TH_PUBLISHED_TEST_ID}         | ${noneSort} | ${descSort} | ${ascSort}
+      ${'due date'}      | ${TH_INCIDENT_SLA_TEST_ID}      | ${noneSort} | ${ascSort}  | ${descSort}
     `(
       'updates sort with new direction when sorting by $description',
       async ({ selector, initialSort, firstSort, nextSort }) => {

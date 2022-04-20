@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import mockProjects from 'test_fixtures_static/projects.json';
 import { trimText } from 'helpers/text_helper';
-import ProjectAvatar from '~/vue_shared/components/deprecated_project_avatar/default.vue';
+import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 
 describe('ProjectListItem component', () => {
@@ -52,8 +52,13 @@ describe('ProjectListItem component', () => {
 
   it(`renders the project avatar`, () => {
     wrapper = shallowMount(Component, options);
+    const avatar = wrapper.findComponent(ProjectAvatar);
 
-    expect(wrapper.findComponent(ProjectAvatar).exists()).toBe(true);
+    expect(avatar.exists()).toBe(true);
+    expect(avatar.props()).toMatchObject({
+      projectAvatarUrl: '',
+      projectName: project.name_with_namespace,
+    });
   });
 
   it(`renders a simple namespace name with a trailing slash`, () => {

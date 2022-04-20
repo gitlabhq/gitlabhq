@@ -1,0 +1,9 @@
+---
+table_name: agent_project_authorizations
+classes:
+- Clusters::Agents::ProjectAuthorization
+feature_categories:
+- kubernetes_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67295
+milestone: '14.3'

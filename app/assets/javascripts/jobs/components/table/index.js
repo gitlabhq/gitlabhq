@@ -27,7 +27,6 @@ export default (containerId = 'js-jobs-table') => {
 
   const {
     fullPath,
-    jobCounts,
     jobStatuses,
     pipelineEditorPath,
     emptyStateSvgPath,
@@ -42,7 +41,6 @@ export default (containerId = 'js-jobs-table') => {
       fullPath,
       pipelineEditorPath,
       jobStatuses: JSON.parse(jobStatuses),
-      jobCounts: JSON.parse(jobCounts),
       admin: parseBoolean(admin),
     },
     render(createElement) {

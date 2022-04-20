@@ -14,6 +14,9 @@ export const LIST_INTRO_TEXT = s__(
 export const LIST_DELETE_BUTTON_DISABLED = s__(
   'ContainerRegistry|Missing or insufficient permission, delete button disabled',
 );
+export const LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION = s__(
+  `ContainerRegistry|Image repository temporarily cannot be marked for deletion. Please try again in a few minutes. %{docLinkStart}More details%{docLinkEnd}`,
+);
 export const REMOVE_REPOSITORY_LABEL = s__('ContainerRegistry|Remove repository');
 export const REMOVE_REPOSITORY_MODAL_TEXT = s__(
   'ContainerRegistry|You are about to remove repository %{title}. Once you confirm, this repository will be permanently deleted.',
@@ -45,6 +48,7 @@ export const EMPTY_RESULT_MESSAGE = s__(
 
 export const IMAGE_DELETE_SCHEDULED_STATUS = 'DELETE_SCHEDULED';
 export const IMAGE_FAILED_DELETED_STATUS = 'DELETE_FAILED';
+export const IMAGE_MIGRATING_STATE = 'importing';
 export const GRAPHQL_PAGE_SIZE = 10;
 
 export const SORT_FIELDS = [

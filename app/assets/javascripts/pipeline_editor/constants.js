@@ -45,8 +45,6 @@ export const TAB_QUERY_PARAM = 'tab';
 export const COMMIT_ACTION_CREATE = 'CREATE';
 export const COMMIT_ACTION_UPDATE = 'UPDATE';
 
-export const DRAWER_EXPANDED_KEY = 'pipeline_editor_drawer_expanded';
-
 export const BRANCH_PAGINATION_LIMIT = 20;
 export const BRANCH_SEARCH_DEBOUNCE = '500';
 export const SOURCE_EDITOR_DEBOUNCE = 500;
@@ -102,7 +100,5 @@ export const I18N = {
     subtitle: s__(
       "Pipelines|Use a template based on your project's language or framework to get started with GitLab CI/CD.",
     ),
-    description: s__('Pipelines|CI/CD template to test and deploy your %{name} project.'),
-    cta: s__('Pipelines|Use template'),
   },
 };

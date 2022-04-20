@@ -1,8 +1,7 @@
 - remove_form_id = local_assigns.fetch(:remove_form_id, nil)
 
 - if group.paid?
-  .gl-alert.gl-alert-info.gl-mb-5{ data: { testid: 'group-has-linked-subscription-alert' } }
-    = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+  = render Pajamas::AlertComponent.new(dismissible: false, alert_class: 'gl-mb-5', alert_data: { testid: 'group-has-linked-subscription-alert' }) do
     .gl-alert-body
       = html_escape(_("This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/index', anchor: 'change-the-linked-namespace')}\">".html_safe, linkEnd: '</a>'.html_safe }
 

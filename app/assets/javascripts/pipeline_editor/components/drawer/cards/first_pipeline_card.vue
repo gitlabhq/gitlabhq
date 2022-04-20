@@ -1,5 +1,5 @@
 <script>
-import { GlCard, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
@@ -22,7 +22,6 @@ export default {
     ),
   },
   components: {
-    GlCard,
     GlLink,
     GlSprintf,
   },
@@ -30,22 +29,20 @@ export default {
 };
 </script>
 <template>
-  <gl-card>
-    <template #default>
-      <h4 class="gl-font-lg gl-mt-0">{{ $options.i18n.title }}</h4>
-      <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
-      <ol class="gl-mb-3">
-        <li v-for="(item, i) in $options.i18n.listItems" :key="`li-${i}`">{{ item }}</li>
-      </ol>
-      <p class="gl-mb-0">
-        <gl-sprintf :message="$options.i18n.note">
-          <template #link="{ content }">
-            <gl-link :href="runnerHelpPagePath" target="_blank">
-              {{ content }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
-    </template>
-  </gl-card>
+  <div>
+    <h3 class="gl-font-lg gl-mt-0 gl-mb-5">{{ $options.i18n.title }}</h3>
+    <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
+    <ol class="gl-mb-3">
+      <li v-for="(item, i) in $options.i18n.listItems" :key="`li-${i}`">{{ item }}</li>
+    </ol>
+    <p class="gl-mb-0">
+      <gl-sprintf :message="$options.i18n.note">
+        <template #link="{ content }">
+          <gl-link :href="runnerHelpPagePath" target="_blank">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
+  </div>
 </template>

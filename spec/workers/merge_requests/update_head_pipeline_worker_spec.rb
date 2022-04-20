@@ -11,11 +11,9 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
   let(:pipeline) { create(:ci_pipeline, project: project, ref: ref) }
   let(:event) { Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id }) }
 
-  subject { consume_event(event) }
+  subject { consume_event(subscriber: described_class, event: event) }
 
-  def consume_event(event)
-    described_class.new.perform(event.class.name, event.data)
-  end
+  it_behaves_like 'subscribes to event'
 
   context 'when merge requests already exist for this source branch', :sidekiq_inline do
     let(:merge_request_1) do

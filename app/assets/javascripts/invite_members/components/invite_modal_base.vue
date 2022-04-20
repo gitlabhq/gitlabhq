@@ -7,7 +7,6 @@ import {
   GlDatepicker,
   GlLink,
   GlSprintf,
-  GlButton,
   GlFormInput,
 } from '@gitlab/ui';
 import { sprintf } from '~/locale';
@@ -41,7 +40,6 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlSprintf,
-    GlButton,
     GlFormInput,
     ContentTransition,
   },
@@ -104,6 +102,11 @@ export default {
       required: false,
       default: INVITE_BUTTON_TEXT,
     },
+    cancelButtonText: {
+      type: String,
+      required: false,
+      default: CANCEL_BUTTON_TEXT,
+    },
     currentSlot: {
       type: String,
       required: false,
@@ -113,6 +116,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    preventCancelDefault: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -141,6 +149,22 @@ export default {
     contentSlots() {
       return [...DEFAULT_SLOTS, ...(this.extraSlots || [])];
     },
+    actionPrimary() {
+      return {
+        text: this.submitButtonText,
+        attributes: {
+          variant: 'confirm',
+          disabled: this.submitDisabled,
+          loading: this.isLoading,
+          'data-qa-selector': 'invite_button',
+        },
+      };
+    },
+    actionCancel() {
+      return {
+        text: this.cancelButtonText,
+      };
+    },
   },
   watch: {
     selectedAccessLevel: {
@@ -151,7 +175,7 @@ export default {
     },
   },
   methods: {
-    reset() {
+    onReset() {
       // This component isn't necessarily disposed,
       // so we might need to reset it's state.
       this.selectedAccessLevel = this.defaultAccessLevel;
@@ -159,14 +183,23 @@ export default {
 
       this.$emit('reset');
     },
-    closeModal() {
-      this.reset();
-      this.$refs.modal.hide();
+    onCloseModal(e) {
+      if (this.preventCancelDefault) {
+        e.preventDefault();
+      } else {
+        this.onReset();
+        this.$refs.modal.hide();
+      }
+
+      this.$emit('cancel');
     },
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
     },
-    submit() {
+    onSubmit(e) {
+      // We never want to hide when submitting
+      e.preventDefault();
+
       this.$emit('submit', {
         accessLevel: this.selectedAccessLevel,
         expiresAt: this.selectedDate,
@@ -192,9 +225,11 @@ export default {
     size="sm"
     :title="modalTitle"
     :header-close-label="$options.HEADER_CLOSE_LABEL"
-    @hidden="reset"
-    @close="reset"
-    @hide="reset"
+    :action-primary="actionPrimary"
+    :action-cancel="actionCancel"
+    @primary="onSubmit"
+    @cancel="onCloseModal"
+    @hidden="onReset"
   >
     <content-transition
       class="gl-display-grid"
@@ -214,6 +249,8 @@ export default {
           </p>
           <slot name="intro-text-after"></slot>
         </div>
+
+        <slot name="user-limit-notification"></slot>
 
         <gl-form-group
           :invalid-feedback="invalidFeedbackMessage"
@@ -280,22 +317,5 @@ export default {
         <slot :name="key"></slot>
       </template>
     </content-transition>
-    <template #modal-footer>
-      <slot name="cancel-button">
-        <gl-button data-testid="cancel-button" @click="closeModal">
-          {{ $options.CANCEL_BUTTON_TEXT }}
-        </gl-button>
-      </slot>
-      <gl-button
-        :disabled="submitDisabled"
-        :loading="isLoading"
-        variant="confirm"
-        data-qa-selector="invite_button"
-        data-testid="invite-button"
-        @click="submit"
-      >
-        {{ submitButtonText }}
-      </gl-button>
-    </template>
   </gl-modal>
 </template>

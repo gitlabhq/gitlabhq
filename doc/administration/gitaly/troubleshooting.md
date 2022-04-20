@@ -16,7 +16,8 @@ Before troubleshooting, see the Gitaly and Gitaly Cluster
 
 The following sections provide possible solutions to Gitaly errors.
 
-See also [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings.
+See also [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings,
+and our advice on [parsing the `gitaly/current` file](../troubleshooting/log_parsing.md#parsing-gitalycurrent).
 
 ### Check versions when using standalone Gitaly servers
 
@@ -614,7 +615,7 @@ Possible solutions:
 ## Profiling Gitaly
 
 Gitaly exposes several of Golang's built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
-on port `9236` of the GitLab server: 
+on port `9236` of the GitLab server:
 
 - Get a list of running `goroutines` and their backtraces:
 

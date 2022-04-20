@@ -30,6 +30,8 @@ module BulkImports
             pipeline_class: self.class.name,
             message: "Entity #{entity.status_name}"
           )
+
+          context.portable.try(:after_import)
         end
 
         private

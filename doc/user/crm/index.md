@@ -49,7 +49,7 @@ To view a group's contacts:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Contacts**.
 
-![Contacts list](crm_contacts_v14_6.png)
+![Contacts list](crm_contacts_v14_10.png)
 
 ### Create a contact
 
@@ -86,7 +86,7 @@ To view a group's organizations:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Organizations**.
 
-![Organizations list](crm_organizations_v14_6.png)
+![Organizations list](crm_organizations_v14_10.png)
 
 ### Create an organization
 
@@ -103,7 +103,15 @@ organizations using the GraphQL API.
 
 ### Edit an organization
 
-You can only [edit](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationupdate)
+To edit an existing organization:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Customer relations > Organizations**.
+1. Next to the organization you wish to edit, select **Edit** (**{pencil}**).
+1. Edit the required fields.
+1. Select **Save changes**.
+
+You can also [edit](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationupdate)
 organizations using the GraphQL API.
 
 ## Issues
@@ -171,3 +179,23 @@ When you use the `/add_contacts` or `/remove_contacts` quick actions, follow the
 /add_contacts [contact:
 /remove_contacts [contact:
 ```
+
+## Moving objects with CRM entries
+
+The root group is the topmost group in the group hierarchy.
+
+When you move an issue, project, or group **within the same group hierarchy**,
+issues retain their contacts.
+
+When you move an issue or project and the **root group changes**,
+issues lose their contacts.
+
+When you move a group and its **root group changes**:
+
+- All unique contacts and organizations are migrated to the new root group.
+- Contacts that already exist (by email address) are deemed duplicates and deleted.
+- Organizations that already exist (by name) are deemed duplicates and deleted.
+- All issues retain their contacts or are updated to point at contacts with the same email address.
+
+If you do not have permission to create contacts and organizations in the new
+root group, the group transfer fails.

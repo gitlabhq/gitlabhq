@@ -1,0 +1,9 @@
+---
+table_name: list_user_preferences
+classes:
+- ListUserPreference
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15657
+milestone: '12.3'

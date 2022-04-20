@@ -20,9 +20,7 @@ module QA
             verify_ssl: false
           }
 
-          RestClient::Request.execute(
-            default_args.merge(args)
-          )
+          RestClient::Request.execute(default_args.merge(args))
         rescue RestClient::ExceptionWithResponse => e
           return_response_or_raise(e)
         end
@@ -56,13 +54,16 @@ module QA
         end
       end
 
-      def put(url, payload = nil)
+      def put(url, payload = nil, args = {})
         with_retry_on_too_many_requests do
-          RestClient::Request.execute(
+          default_args = {
             method: :put,
             url: url,
             payload: payload,
-            verify_ssl: false)
+            verify_ssl: false
+          }
+
+          RestClient::Request.execute(default_args.merge(args))
         rescue RestClient::ExceptionWithResponse => e
           return_response_or_raise(e)
         end

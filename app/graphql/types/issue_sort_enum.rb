@@ -14,6 +14,8 @@ module Types
     value 'TITLE_DESC', 'Title by descending order.', value: :title_desc
     value 'POPULARITY_ASC', 'Number of upvotes (awarded "thumbs up" emoji) by ascending order.', value: :popularity_asc
     value 'POPULARITY_DESC', 'Number of upvotes (awarded "thumbs up" emoji) by descending order.', value: :popularity_desc
+    value 'ESCALATION_STATUS_ASC', 'Status from triggered to resolved. Defaults to `CREATED_DESC` if `incident_escalations` feature flag is disabled.', value: :escalation_status_asc
+    value 'ESCALATION_STATUS_DESC', 'Status from resolved to triggered. Defaults to `CREATED_DESC` if `incident_escalations` feature flag is disabled.', value: :escalation_status_desc
   end
 end
 

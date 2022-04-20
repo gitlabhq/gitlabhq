@@ -14,19 +14,45 @@ automatically authenticates as an administrator as long as you provide an approp
 token via `GITLAB_QA_ADMIN_ACCESS_TOKEN` (recommended), or provide `GITLAB_ADMIN_USERNAME`
 and `GITLAB_ADMIN_PASSWORD`.
 
-Please be sure to include the tag `:requires_admin` so that the test can be skipped in environments
-where administrator access is not available.
+## `feature_flag` RSpec tag
 
-WARNING:
-You are strongly advised to [enable feature flags only for a group, project, user](../../feature_flags/index.md#feature-actors),
-or [feature group](../../feature_flags/index.md#feature-groups). This makes it possible to
-test a feature in a shared environment without affecting other users.
+Please be sure to include the `feature_flag` tag so that the test can be skipped on the appropriate environments.
 
-For example, the code below would enable a feature flag named `:feature_flag_name` for the project
+**Optional metadata:**
+
+`name`
+
+- Format: `feature_flag: { name: 'feature_flag_name' }`
+- Used only for informational purposes at this time. It should be included to help quickly determine what 
+feature flag is under test.
+
+`scope`
+
+- Format: `feature_flag: { name: 'feature_flag_name', scope: :project }`
+- When `scope` is set to `:global`, the test will be **skipped on all live .com environments**. This is to avoid issues with feature flag changes affecting other tests or users on that environment.
+- When `scope` is set to any other value (such as `:project`, `:group` or `:user`), or if no `scope` is specified, the test will only be **skipped on canary and production**.
+This is due to the fact that admin access is not available there.
+
+**WARNING:** You are strongly advised to first try and [enable feature flags only for a group, project, user](../../feature_flags/index.md#feature-actors),
+or [feature group](../../feature_flags/index.md#feature-groups).
+
+- If a global feature flag must be used, it is strongly recommended to apply `scope: :global` to the `feature_flag` metadata. This is, however, left up to the SET's discretion to determine the level of risk. 
+  - For example, a test uses a global feature flag that only affects a small area of the application and is also needed to check for critical issues on live environments. 
+  In such a scenario, it would be riskier to skip running the test. For cases like this, `scope` can be left out of the metadata so that it can still run in live environments 
+  with admin access, such as staging.
+
+**Note on `requires_admin`:** This tag should still be applied if there are other actions within the test that require admin access that are unrelated to updating a 
+feature flag (ex: creating a user via the API).
+
+The code below would enable a feature flag named `:feature_flag_name` for the project
 created by the test:
 
 ```ruby
-RSpec.describe "with feature flag enabled", :requires_admin do
+RSpec.describe "with feature flag enabled", feature_flag: { 
+  name: 'feature_flag_name', 
+  scope: :project 
+  } do
+  
   let(:project) { Resource::Project.fabricate_via_api! }
 
   before do
@@ -162,7 +188,7 @@ for details.
 
 ## Confirming that end-to-end tests pass with a feature flag enabled
 
-End-to-end tests should pass with a feature flag enabled before it is enabled on Staging or on GitLab.com. Tests that need to be updated should be identified as part of [quad-planning](https://about.gitlab.com/handbook/engineering/quality/quad-planning/). The relevant [counterpart Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) is responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through quad-planning and a required test update is not made, test failures could block deployment.
+End-to-end tests should pass with a feature flag enabled before it is enabled on Staging or on GitLab.com. Tests that need to be updated should be identified as part of [quad-planning](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/quad-planning/). The relevant [counterpart Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) is responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through quad-planning and a required test update is not made, test failures could block deployment.
 
 ### Automatic test execution when a feature flag definition changes
 

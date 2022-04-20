@@ -1,0 +1,9 @@
+---
+table_name: abuse_reports
+classes:
+- AbuseReport
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cba7f20dc8614d12e3eeda6e14f454aeb22b9b54
+milestone: '7.13'

@@ -1,10 +1,10 @@
-import { shallowMount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
 import { nextTick } from 'vue';
+import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 const scrollIntoViewMock = jest.fn();
 const note = {
@@ -12,6 +12,8 @@ const note = {
   author: {
     id: 'gid://gitlab/User/1',
     username: 'foo-bar',
+    avatarUrl: 'https://gitlab.com/avatar',
+    webUrl: 'https://gitlab.com/user',
   },
   body: 'test',
   userPermissions: {
@@ -30,14 +32,15 @@ const mutate = jest.fn().mockResolvedValue({ data: { updateNote: {} } });
 describe('Design note component', () => {
   let wrapper;
 
-  const findUserAvatar = () => wrapper.find(UserAvatarLink);
-  const findUserLink = () => wrapper.find('.js-user-link');
-  const findReplyForm = () => wrapper.find(DesignReplyForm);
-  const findEditButton = () => wrapper.find('.js-note-edit');
-  const findNoteContent = () => wrapper.find('.js-note-text');
+  const findUserAvatar = () => wrapper.findComponent(GlAvatar);
+  const findUserAvatarLink = () => wrapper.findComponent(GlAvatarLink);
+  const findUserLink = () => wrapper.findByTestId('user-link');
+  const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
+  const findEditButton = () => wrapper.findByTestId('note-edit');
+  const findNoteContent = () => wrapper.findByTestId('note-text');
 
   function createComponent(props = {}, data = { isEditing: false }) {
-    wrapper = shallowMount(DesignNote, {
+    wrapper = shallowMountExtended(DesignNote, {
       propsData: {
         note: {},
         ...props,
@@ -71,12 +74,24 @@ describe('Design note component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('should render an author', () => {
+  it('should render avatar with correct props', () => {
     createComponent({
       note,
     });
 
-    expect(findUserAvatar().exists()).toBe(true);
+    expect(findUserAvatar().props()).toMatchObject({
+      src: note.author.avatarUrl,
+      entityName: note.author.username,
+    });
+
+    expect(findUserAvatarLink().attributes('href')).toBe(note.author.webUrl);
+  });
+
+  it('should render author details', () => {
+    createComponent({
+      note,
+    });
+
     expect(findUserLink().exists()).toBe(true);
   });
 
@@ -107,7 +122,7 @@ describe('Design note component', () => {
         },
       });
 
-      findEditButton().trigger('click');
+      findEditButton().vm.$emit('click');
 
       await nextTick();
       expect(findReplyForm().exists()).toBe(true);

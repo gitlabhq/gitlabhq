@@ -8,12 +8,12 @@ describe('U2FRegister', () => {
   let container;
   let component;
 
-  beforeEach((done) => {
+  beforeEach(() => {
     loadFixtures('u2f/register.html');
     u2fDevice = new MockU2FDevice();
     container = $('#js-register-token-2fa');
     component = new U2FRegister(container, {});
-    component.start().then(done).catch(done.fail);
+    return component.start();
   });
 
   it('allows registering a U2F device', () => {

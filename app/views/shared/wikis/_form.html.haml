@@ -3,4 +3,4 @@
 .gl-mt-3
   = form_errors(@page, truncate: :title)
 
-#js-wiki-form{ data: { page_info: page_info.to_json, format_options: Wiki::MARKUPS.to_json } }
+#js-wiki-form{ data: { page_info: page_info.to_json, format_options: wiki_markup_hash_by_name_id.to_json } }

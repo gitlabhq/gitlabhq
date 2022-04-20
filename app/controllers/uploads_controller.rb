@@ -14,7 +14,8 @@ class UploadsController < ApplicationController
     "appearance"       => Appearance,
     "personal_snippet" => PersonalSnippet,
     "projects/topic"   => Projects::Topic,
-    nil                => PersonalSnippet
+    'alert_management_metric_image' => ::AlertManagement::MetricImage,
+    nil => PersonalSnippet
   }.freeze
 
   rescue_from UnknownUploadModelError, with: :render_404
@@ -26,7 +27,7 @@ class UploadsController < ApplicationController
   before_action :authorize_create_access!, only: [:create, :authorize]
   before_action :verify_workhorse_api!, only: [:authorize]
 
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   def self.model_classes
     MODEL_CLASSES
@@ -56,6 +57,8 @@ class UploadsController < ApplicationController
       true
     when Projects::Topic
       true
+    when ::AlertManagement::MetricImage
+      can?(current_user, :read_alert_management_metric_image, model.alert)
     else
       can?(current_user, "read_#{model.class.underscore}".to_sym, model)
     end

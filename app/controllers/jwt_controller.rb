@@ -9,6 +9,8 @@ class JwtController < ApplicationController
   prepend_before_action :auth_user, :authenticate_project_or_user
 
   feature_category :authentication_and_authorization
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/357037
+  urgency :low
 
   SERVICES = {
     ::Auth::ContainerRegistryAuthenticationService::AUDIENCE => ::Auth::ContainerRegistryAuthenticationService,

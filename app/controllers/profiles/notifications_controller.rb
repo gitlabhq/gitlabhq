@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Profiles::NotificationsController < Profiles::ApplicationController
-  feature_category :users
+  feature_category :team_planning
 
   def show
     @user = current_user

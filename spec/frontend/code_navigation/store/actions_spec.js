@@ -7,15 +7,16 @@ import axios from '~/lib/utils/axios_utils';
 jest.mock('~/code_navigation/utils');
 
 describe('Code navigation actions', () => {
+  const wrapTextNodes = true;
+
   describe('setInitialData', () => {
-    it('commits SET_INITIAL_DATA', (done) => {
-      testAction(
+    it('commits SET_INITIAL_DATA', () => {
+      return testAction(
         actions.setInitialData,
-        { projectPath: 'test' },
+        { projectPath: 'test', wrapTextNodes },
         {},
-        [{ type: 'SET_INITIAL_DATA', payload: { projectPath: 'test' } }],
+        [{ type: 'SET_INITIAL_DATA', payload: { projectPath: 'test', wrapTextNodes } }],
         [],
-        done,
       );
     });
   });
@@ -30,7 +31,7 @@ describe('Code navigation actions', () => {
 
     const codeNavigationPath =
       'gitlab-org/gitlab-shell/-/jobs/1114/artifacts/raw/lsif/cmd/check/main.go.json';
-    const state = { blobs: [{ path: 'index.js', codeNavigationPath }] };
+    const state = { blobs: [{ path: 'index.js', codeNavigationPath }], wrapTextNodes };
 
     beforeEach(() => {
       window.gon = { api_version: '1' };
@@ -57,8 +58,8 @@ describe('Code navigation actions', () => {
         ]);
       });
 
-      it('commits REQUEST_DATA_SUCCESS with normalized data', (done) => {
-        testAction(
+      it('commits REQUEST_DATA_SUCCESS with normalized data', () => {
+        return testAction(
           actions.fetchData,
           null,
           state,
@@ -80,12 +81,11 @@ describe('Code navigation actions', () => {
             },
           ],
           [],
-          done,
         );
       });
 
-      it('calls addInteractionClass with data', (done) => {
-        testAction(
+      it('calls addInteractionClass with data', () => {
+        return testAction(
           actions.fetchData,
           null,
           state,
@@ -107,16 +107,17 @@ describe('Code navigation actions', () => {
             },
           ],
           [],
-        )
-          .then(() => {
-            expect(addInteractionClass).toHaveBeenCalledWith('index.js', {
+        ).then(() => {
+          expect(addInteractionClass).toHaveBeenCalledWith({
+            path: 'index.js',
+            d: {
               start_line: 0,
               start_char: 0,
               hover: { value: '123' },
-            });
-          })
-          .then(done)
-          .catch(done.fail);
+            },
+            wrapTextNodes,
+          });
+        });
       });
     });
 
@@ -125,14 +126,13 @@ describe('Code navigation actions', () => {
         mock.onGet(codeNavigationPath).replyOnce(500);
       });
 
-      it('dispatches requestDataError', (done) => {
-        testAction(
+      it('dispatches requestDataError', () => {
+        return testAction(
           actions.fetchData,
           null,
           state,
           [{ type: 'REQUEST_DATA' }],
           [{ type: 'requestDataError' }],
-          done,
         );
       });
     });
@@ -144,14 +144,19 @@ describe('Code navigation actions', () => {
         data: {
           'index.js': { '0:0': 'test', '1:1': 'console.log' },
         },
+        wrapTextNodes,
       };
 
       actions.showBlobInteractionZones({ state }, 'index.js');
 
       expect(addInteractionClass).toHaveBeenCalled();
       expect(addInteractionClass.mock.calls.length).toBe(2);
-      expect(addInteractionClass.mock.calls[0]).toEqual(['index.js', 'test']);
-      expect(addInteractionClass.mock.calls[1]).toEqual(['index.js', 'console.log']);
+      expect(addInteractionClass.mock.calls[0]).toEqual([
+        { path: 'index.js', d: 'test', wrapTextNodes },
+      ]);
+      expect(addInteractionClass.mock.calls[1]).toEqual([
+        { path: 'index.js', d: 'console.log', wrapTextNodes },
+      ]);
     });
 
     it('does not call addInteractionClass when no data exists', () => {
@@ -175,20 +180,20 @@ describe('Code navigation actions', () => {
       target = document.querySelector('.js-test');
     });
 
-    it('returns early when no data exists', (done) => {
-      testAction(actions.showDefinition, { target }, {}, [], [], done);
+    it('returns early when no data exists', () => {
+      return testAction(actions.showDefinition, { target }, {}, [], []);
     });
 
-    it('commits SET_CURRENT_DEFINITION when target is not code navitation element', (done) => {
-      testAction(actions.showDefinition, { target }, { data: {} }, [], [], done);
+    it('commits SET_CURRENT_DEFINITION when target is not code navitation element', () => {
+      return testAction(actions.showDefinition, { target }, { data: {} }, [], []);
     });
 
-    it('commits SET_CURRENT_DEFINITION with LSIF data', (done) => {
+    it('commits SET_CURRENT_DEFINITION with LSIF data', () => {
       target.classList.add('js-code-navigation');
       target.setAttribute('data-line-index', '0');
       target.setAttribute('data-char-index', '0');
 
-      testAction(
+      return testAction(
         actions.showDefinition,
         { target },
         { data: { 'index.js': { '0:0': { hover: 'test' } } } },
@@ -203,7 +208,6 @@ describe('Code navigation actions', () => {
           },
         ],
         [],
-        done,
       );
     });
 

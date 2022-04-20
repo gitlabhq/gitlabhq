@@ -1,2 +1,2 @@
 %p
-  Merge request #{merge_request_reference_link(@merge_request)} was merged
+  = sprintf(s_('Notify|Merge request %{merge_request} was merged'), { merge_request: merge_request_reference_link(@merge_request) }).html_safe

@@ -80,6 +80,8 @@ RSpec.shared_examples_for 'wikis API returns wiki page' do
 
   context 'when wiki page has versions' do
     let(:new_content) { 'New content' }
+    let(:old_content) { page.content }
+    let(:old_version_id) { page.version.id }
 
     before do
       wiki.update_page(page.page, content: new_content, message: 'updated page')
@@ -96,10 +98,10 @@ RSpec.shared_examples_for 'wikis API returns wiki page' do
     end
 
     context 'when version param is set' do
-      let(:params) { { version: page.version.id } }
+      let(:params) { { version: old_version_id } }
 
       it 'retrieves the specific page version' do
-        expect(json_response['content']).to eq(page.content)
+        expect(json_response['content']).to eq(old_content)
       end
 
       context 'when version param is not valid or inexistent' do

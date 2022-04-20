@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Support for reStructuredText and Textile documents [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324766) in GitLab 13.12.
 
 When [Kroki](https://kroki.io) integration is enabled and configured in
-GitLab you can use it to create diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents.
+GitLab, you can use it to create diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents.
 
 ## Kroki Server
 

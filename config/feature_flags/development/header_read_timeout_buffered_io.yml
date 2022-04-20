@@ -1,8 +1,0 @@
----
-name: header_read_timeout_buffered_io
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78065
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350233
-milestone: '14.8'
-type: development
-group: group::integrations
-default_enabled: true

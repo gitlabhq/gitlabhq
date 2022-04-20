@@ -54,6 +54,9 @@ External status checks have the following states:
 
 Support for adding a `failed` state is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338827).
 
+If something changes outside of GitLab, you can [set the status of an external status check](../../../api/status_checks.md#set-status-of-an-external-status-check)
+using the API. You don't need to wait for a merge request webhook payload to be sent first.
+
 ## View the status checks on a project
 
 Within each project's settings, you can see a list of status checks added to the project:

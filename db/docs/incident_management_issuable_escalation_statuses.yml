@@ -1,0 +1,9 @@
+---
+table_name: incident_management_issuable_escalation_statuses
+classes:
+- IncidentManagement::IssuableEscalationStatus
+feature_categories:
+- incident_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65206
+milestone: '14.2'

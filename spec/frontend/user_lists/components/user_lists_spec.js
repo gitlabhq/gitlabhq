@@ -9,7 +9,7 @@ import UserListsComponent from '~/user_lists/components/user_lists.vue';
 import UserListsTable from '~/user_lists/components/user_lists_table.vue';
 import createStore from '~/user_lists/store/index';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
-import { userList } from '../../feature_flags/mock_data';
+import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api');
 

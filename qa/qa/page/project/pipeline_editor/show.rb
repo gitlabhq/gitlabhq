@@ -15,9 +15,9 @@ module QA
             element :target_branch_field, required: true
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/drawer/pipeline_editor_drawer.vue' do
-            element :toggle_sidebar_collapse_button
-            element :drawer_content
+          view 'app/assets/javascripts/pipeline_editor/components/editor/ci_editor_header.vue' do
+            element :drawer_toggle, required: true
+            element :template_repo_link, required: true
           end
 
           view 'app/assets/javascripts/vue_shared/components/source_editor.vue' do
@@ -44,13 +44,6 @@ module QA
 
           view 'app/assets/javascripts/pipeline_editor/components/pipeline_editor_tabs.vue' do
             element :file_editor_container
-          end
-
-          def initialize
-            super
-
-            wait_for_requests
-            close_toggle_sidebar
           end
 
           def open_branch_selector_dropdown
@@ -147,15 +140,6 @@ module QA
             within_element(:file_editor_container) do
               find('.nav-item', text: name).click
             end
-          end
-
-          # If the page thinks user has never opened pipeline editor before
-          # It will expand pipeline editor sidebar by default
-          # Collapse the sidebar if it is expanded
-          def close_toggle_sidebar
-            return unless has_element?(:drawer_content)
-
-            click_element(:toggle_sidebar_collapse_button)
           end
         end
       end

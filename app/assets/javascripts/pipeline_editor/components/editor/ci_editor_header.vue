@@ -7,13 +7,23 @@ import { pipelineEditorTrackingOptions, TEMPLATE_REPOSITORY_URL } from '../../co
 export default {
   i18n: {
     browseTemplates: __('Browse templates'),
+    help: __('Help'),
   },
   TEMPLATE_REPOSITORY_URL,
   components: {
     GlButton,
   },
   mixins: [Tracking.mixin()],
+  props: {
+    showDrawer: {
+      type: Boolean,
+      required: true,
+    },
+  },
   methods: {
+    toggleDrawer() {
+      this.$emit(this.showDrawer ? 'close-drawer' : 'open-drawer');
+    },
     trackTemplateBrowsing() {
       const { label, actions } = pipelineEditorTrackingOptions;
 
@@ -30,9 +40,20 @@ export default {
       size="small"
       icon="external-link"
       target="_blank"
+      data-testid="template-repo-link"
+      data-qa-selector="template_repo_link"
       @click="trackTemplateBrowsing"
     >
       {{ $options.i18n.browseTemplates }}
+    </gl-button>
+    <gl-button
+      icon="information-o"
+      size="small"
+      data-testid="drawer-toggle"
+      data-qa-selector="drawer_toggle"
+      @click="toggleDrawer"
+    >
+      {{ $options.i18n.help }}
     </gl-button>
   </div>
 </template>

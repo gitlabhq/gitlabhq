@@ -1,4 +1,4 @@
-import '../../webpack';
+import '~/webpack';
 
 import setConfigs from '@gitlab/ui/dist/config';
 import Vue from 'vue';
@@ -48,4 +48,4 @@ export function initJiraConnect() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', initJiraConnect);
+initJiraConnect();

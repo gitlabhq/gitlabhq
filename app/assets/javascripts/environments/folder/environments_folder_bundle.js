@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import Translate from '../../vue_shared/translate';
+import Translate from '~/vue_shared/translate';
 import environmentsFolderApp from './environments_folder_view.vue';
 
 Vue.use(Translate);

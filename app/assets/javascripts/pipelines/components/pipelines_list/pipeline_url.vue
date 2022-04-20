@@ -2,6 +2,7 @@
 import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ICONS } from '../../constants';
 import PipelineLabels from './pipeline_labels.vue';
 
@@ -11,6 +12,7 @@ export default {
     GlLink,
     PipelineLabels,
     TooltipOnTruncate,
+    UserAvatarLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -169,6 +171,15 @@ export default {
       <gl-link :href="commitUrl" class="commit-sha mr-0" data-testid="commit-short-sha">{{
         commitShortSha
       }}</gl-link>
+      <user-avatar-link
+        v-if="commitAuthor"
+        :link-href="commitAuthor.path"
+        :img-src="commitAuthor.avatar_url"
+        :img-size="16"
+        :img-alt="commitAuthor.name"
+        :tooltip-text="commitAuthor.name"
+        class="gl-ml-1"
+      />
       <!--End of commit row-->
     </div>
     <pipeline-labels :pipeline-schedule-url="pipelineScheduleUrl" :pipeline="pipeline" />

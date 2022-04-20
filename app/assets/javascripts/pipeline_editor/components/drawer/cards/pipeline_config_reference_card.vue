@@ -1,5 +1,5 @@
 <script>
-import { GlCard, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
@@ -20,7 +20,6 @@ export default {
     ),
   },
   components: {
-    GlCard,
     GlLink,
     GlSprintf,
   },
@@ -28,48 +27,46 @@ export default {
 };
 </script>
 <template>
-  <gl-card>
-    <template #default>
-      <h4 class="gl-font-lg gl-mt-0">{{ $options.i18n.title }}</h4>
-      <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
-      <ul>
-        <li>
-          <gl-sprintf :message="$options.i18n.browseExamples">
-            <template #link="{ content }">
-              <gl-link :href="ciExamplesHelpPagePath" target="_blank">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </li>
-        <li>
-          <gl-sprintf :message="$options.i18n.viewSyntaxRef">
-            <template #link="{ content }">
-              <gl-link :href="ymlHelpPagePath" target="_blank">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </li>
-        <li>
-          <gl-sprintf :message="$options.i18n.learnMore">
-            <template #link="{ content }">
-              <gl-link :href="ciHelpPagePath" target="_blank">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </li>
-        <li>
-          <gl-sprintf :message="$options.i18n.needs">
-            <template #link="{ content }">
-              <gl-link :href="needsHelpPagePath" target="_blank">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </li>
-      </ul>
-    </template>
-  </gl-card>
+  <div>
+    <h3 class="gl-font-lg gl-mt-0 gl-mb-5">{{ $options.i18n.title }}</h3>
+    <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
+    <ul>
+      <li>
+        <gl-sprintf :message="$options.i18n.browseExamples">
+          <template #link="{ content }">
+            <gl-link :href="ciExamplesHelpPagePath" target="_blank">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </li>
+      <li>
+        <gl-sprintf :message="$options.i18n.viewSyntaxRef">
+          <template #link="{ content }">
+            <gl-link :href="ymlHelpPagePath" target="_blank">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </li>
+      <li>
+        <gl-sprintf :message="$options.i18n.learnMore">
+          <template #link="{ content }">
+            <gl-link :href="ciHelpPagePath" target="_blank">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </li>
+      <li>
+        <gl-sprintf :message="$options.i18n.needs">
+          <template #link="{ content }">
+            <gl-link :href="needsHelpPagePath" target="_blank">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </li>
+    </ul>
+  </div>
 </template>

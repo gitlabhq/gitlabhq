@@ -37,9 +37,15 @@ module ApplicationSettingsHelper
   end
 
   def storage_weights
-    Gitlab.config.repositories.storages.keys.each_with_object(OpenStruct.new) do |storage, weights|
-      weights[storage.to_sym] = @application_setting.repository_storages_weighted[storage] || 0
+    # Instead of using a `Struct` we could wrap this into an object.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/358419
+    weights = Struct.new(*Gitlab.config.repositories.storages.keys.map(&:to_sym))
+
+    values = Gitlab.config.repositories.storages.keys.map do |storage|
+      @application_setting.repository_storages_weighted[storage] || 0
     end
+
+    weights.new(*values)
   end
 
   def all_protocols_enabled?
@@ -63,39 +69,31 @@ module ApplicationSettingsHelper
     end
   end
 
-  # Return a group of checkboxes that use Bootstrap's button plugin for a
-  # toggle button effect.
-  def restricted_level_checkboxes(help_block_id, checkbox_name, options = {})
+  def restricted_level_checkboxes(form)
     Gitlab::VisibilityLevel.values.map do |level|
       checked = restricted_visibility_levels(true).include?(level)
-      css_class = checked ? 'active' : ''
-      tag_name = "application_setting_visibility_level_#{level}"
 
-      label_tag(tag_name, class: css_class) do
-        check_box_tag(checkbox_name, level, checked,
-                      autocomplete: 'off',
-                      'aria-describedby' => help_block_id,
-                      'class' => options[:class],
-                      id: tag_name) + visibility_level_icon(level) + visibility_level_label(level)
-      end
+      form.gitlab_ui_checkbox_component(
+        :restricted_visibility_levels,
+        "#{visibility_level_icon(level)} #{visibility_level_label(level)}".html_safe,
+        checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
+        checked_value: level,
+        unchecked_value: nil
+      )
     end
   end
 
-  # Return a group of checkboxes that use Bootstrap's button plugin for a
-  # toggle button effect.
-  def import_sources_checkboxes(help_block_id, options = {})
+  def import_sources_checkboxes(form)
     Gitlab::ImportSources.options.map do |name, source|
       checked = @application_setting.import_sources.include?(source)
-      css_class = checked ? 'active' : ''
-      checkbox_name = 'application_setting[import_sources][]'
 
-      label_tag(name, class: css_class) do
-        check_box_tag(checkbox_name, source, checked,
-                      autocomplete: 'off',
-                      'aria-describedby' => help_block_id,
-                      'class' => options[:class],
-                      id: name.tr(' ', '_')) + name
-      end
+      form.gitlab_ui_checkbox_component(
+        :import_sources,
+        name,
+        checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
+        checked_value: source,
+        unchecked_value: nil
+      )
     end
   end
 
@@ -223,6 +221,7 @@ module ApplicationSettingsHelper
       :default_project_visibility,
       :default_projects_limit,
       :default_snippet_visibility,
+      :delete_inactive_projects,
       :disable_feed_token,
       :disabled_oauth_sign_in_sources,
       :domain_denylist,
@@ -266,7 +265,6 @@ module ApplicationSettingsHelper
       :help_page_text,
       :hide_third_party_offers,
       :home_page_url,
-      :housekeeping_bitmaps_enabled,
       :housekeeping_enabled,
       :housekeeping_full_repack_period,
       :housekeeping_gc_period,
@@ -274,6 +272,9 @@ module ApplicationSettingsHelper
       :html_emails_enabled,
       :import_sources,
       :in_product_marketing_emails_enabled,
+      :inactive_projects_delete_after_months,
+      :inactive_projects_min_size_mb,
+      :inactive_projects_send_warning_email_after_months,
       :invisible_captcha_enabled,
       :max_artifacts_size,
       :max_attachment_size,

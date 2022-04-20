@@ -88,7 +88,7 @@ The following is hidden from your user profile page (`https://gitlab.example.com
 - Tabs for activity, groups, contributed projects, personal projects, starred projects, snippets
 
 NOTE:
-Making your user profile page private does not hide your public resources from the REST or GraphQL APIs.
+Making your user profile page private does not hide all your public resources from the REST or GraphQL APIs.
 
 ### User visibility
 
@@ -123,7 +123,7 @@ To create a new project and add its README to your profile:
 1. For **Project Configuration**, ensure **Initialize repository with a README** is selected.
 1. Select **Create project**.
 1. Create a README file inside this project. The file can be any valid [README or index file](../project/repository/index.md#readme-and-index-files).
-1. Populate the README file with [Markdown](../markdown.md).
+1. Populate the README file with [Markdown](../markdown.md), or another [supported markup language](../project/repository/index.md#supported-markup-languages).
 
 GitLab displays the contents of your README below your contribution graph.
 
@@ -150,7 +150,7 @@ To add links to other accounts:
 
 ## Show private contributions on your user profile page
 
-In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../index.md#user-contribution-events) to private projects.
+In the user contribution calendar graph and recent activity list, you can see your [contribution actions](#user-contribution-events) to private projects.
 
 To show private contributions:
 
@@ -322,6 +322,65 @@ and configure it on your local machine by using the following command:
 git config --global user.email <your email address>
 ```
 
+## User activity
+
+GitLab tracks user contribution activity.
+You can follow or unfollow other users from their [user profiles](#access-your-user-profile).
+To view a user's activity in a top-level Activity view:
+
+1. From a user's profile, select **Follow**.
+1. In the GitLab menu, select **Activity**.
+1. Select the **Followed users** tab.
+
+### User contribution events
+
+Each of these contribution events is tracked:
+
+- `approved`
+  - Merge request
+- `closed`
+  - [Epic](../group/epics/index.md)
+  - Issue
+  - Merge request
+  - Milestone
+- `commented` on any `Noteable` record.
+  - Alert
+  - Commit
+  - Design
+  - Issue
+  - Merge request
+  - Snippet
+- `created`
+  - Design
+  - [Epic](../group/epics/index.md)
+  - Issue
+  - Merge request
+  - Milestone
+  - Project
+  - Wiki page
+- `destroyed`
+  - Design
+  - Milestone
+  - Wiki page
+- `expired`
+  - Project membership
+- `joined`
+  - Project membership
+- `left`
+  - Project membership
+- `merged`
+  - Merge request
+- `pushed` commits to (or deleted commits from) a repository, individually or in bulk.
+  - Project
+- `reopened`
+  - [Epic](../group/epics/index.md)
+  - Issue
+  - Merge request
+  - Milestone
+- `updated`
+  - Design
+  - Wiki page
+
 ## Troubleshooting
 
 ### Why do I keep getting signed out?
@@ -379,6 +438,6 @@ Without the `config.extend_remember_period` flag, you would be forced to sign in
 - [Receive emails for sign-ins from unknown IP addresses or devices](unknown_sign_in_notification.md)
 - Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
-- Manage [SSH keys](../../ssh/index.md) to access your account via SSH
+- Manage [SSH keys](../ssh.md) to access your account via SSH
 - Change your [syntax highlighting theme](preferences.md#syntax-highlighting-theme)
 - [View your active sessions](active_sessions.md) and revoke any of them if necessary

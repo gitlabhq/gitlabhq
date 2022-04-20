@@ -13,7 +13,7 @@ You can configure the URL endpoint of the system hooks from the GitLab user inte
 1. On the top bar, select **Menu > Admin**.
 1. Select **System Hooks** (`/admin/hooks`).
 
-Read more about [system hooks](../system_hooks/system_hooks.md).
+Read more about [system hooks](../administration/system_hooks.md).
 
 ## List system hooks
 

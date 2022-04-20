@@ -142,7 +142,7 @@ module Resolvers
     def object
       super.tap do |obj|
         # If the field this resolver is used in is wrapped in a presenter, unwrap its subject
-        break obj.subject if obj.is_a?(Gitlab::View::Presenter::Base)
+        break obj.__subject__ if obj.is_a?(Gitlab::View::Presenter::Base)
       end
     end
 

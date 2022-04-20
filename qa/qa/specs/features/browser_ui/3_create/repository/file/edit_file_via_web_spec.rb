@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', :reliable do
     context 'File management' do
       let(:file) { Resource::File.fabricate_via_api! }
 

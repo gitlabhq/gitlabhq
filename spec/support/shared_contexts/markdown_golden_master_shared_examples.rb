@@ -64,6 +64,9 @@ RSpec.shared_context 'API::Markdown Golden Master shared context' do |markdown_y
       let(:substitutions) { markdown_example.fetch(:substitutions, {}) }
 
       it "verifies conversion of GFM to HTML", :unlimited_max_formatted_output_length do
+        stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
+        stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
+
         pending pending_reason if pending_reason
 
         normalized_example_html = normalize_html(example_html, substitutions)

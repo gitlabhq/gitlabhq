@@ -1,4 +1,4 @@
-import { GlDropdown, GlFormTextarea, GlButton } from '@gitlab/ui';
+import { GlDropdown, GlFormTextarea, GlButton, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ApplySuggestionComponent from '~/vue_shared/components/markdown/apply_suggestion.vue';
 
@@ -10,9 +10,10 @@ describe('Apply Suggestion component', () => {
     wrapper = shallowMount(ApplySuggestionComponent, { propsData: { ...propsData, ...props } });
   };
 
-  const findDropdown = () => wrapper.find(GlDropdown);
-  const findTextArea = () => wrapper.find(GlFormTextarea);
-  const findApplyButton = () => wrapper.find(GlButton);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findTextArea = () => wrapper.findComponent(GlFormTextarea);
+  const findApplyButton = () => wrapper.findComponent(GlButton);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   beforeEach(() => createWrapper());
 
@@ -50,6 +51,20 @@ describe('Apply Suggestion component', () => {
       createWrapper({ disabled: true });
 
       expect(findDropdown().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('error', () => {
+    it('displays an error message', () => {
+      const errorMessage = 'Error message';
+      createWrapper({ errorMessage });
+
+      const alert = findAlert();
+
+      expect(alert.exists()).toBe(true);
+      expect(alert.props('variant')).toBe('danger');
+      expect(alert.props('dismissible')).toBe(false);
+      expect(alert.text()).toBe(errorMessage);
     });
   });
 

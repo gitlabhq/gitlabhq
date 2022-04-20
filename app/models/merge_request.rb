@@ -329,15 +329,15 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :order_by_metric, ->(metric, direction) do
-    reverse_direction = { 'ASC' => 'DESC', 'DESC' => 'ASC' }
-    reversed_direction = reverse_direction[direction] || raise("Unknown sort direction was given: #{direction}")
+    column_expression = MergeRequest::Metrics.arel_table[metric]
+    column_expression_with_direction = direction == 'ASC' ? column_expression.asc : column_expression.desc
 
     order = Gitlab::Pagination::Keyset::Order.build([
       Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
         attribute_name: "merge_request_metrics_#{metric}",
-        column_expression: MergeRequest::Metrics.arel_table[metric],
-        order_expression: Gitlab::Database.nulls_last_order("merge_request_metrics.#{metric}", direction),
-        reversed_order_expression: Gitlab::Database.nulls_first_order("merge_request_metrics.#{metric}", reversed_direction),
+        column_expression: column_expression,
+        order_expression: column_expression_with_direction.nulls_last,
+        reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
         order_direction: direction,
         nullable: :nulls_last,
         distinct: false,
@@ -1409,9 +1409,7 @@ class MergeRequest < ApplicationRecord
   def has_ci?
     return false if has_no_commits?
 
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
-      !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
-    end
+    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
   end
 
   def branch_missing?
@@ -1444,7 +1442,7 @@ class MergeRequest < ApplicationRecord
   # This method is for looking for active environments which created via pipelines for merge requests.
   # Since deployments run on a merge request ref (e.g. `refs/merge-requests/:iid/head`),
   # we cannot look up environments with source branch name.
-  def environments
+  def legacy_environments
     return Environment.none unless actual_head_pipeline&.merge_request?
 
     build_for_actual_head_pipeline = Ci::Build.latest.where(pipeline: actual_head_pipeline)
@@ -1456,6 +1454,14 @@ class MergeRequest < ApplicationRecord
                                                 .pluck(:expanded_environment_name)
 
     Environment.where(project: project, name: environments)
+  end
+
+  def environments_in_head_pipeline(deployment_status: nil)
+    if ::Feature.enabled?(:fix_related_environments_for_merge_requests, target_project, default_enabled: :yaml)
+      actual_head_pipeline&.environments_in_self_and_descendants(deployment_status: deployment_status) || Environment.none
+    else
+      legacy_environments
+    end
   end
 
   def fetch_ref!
@@ -1904,9 +1910,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def find_actual_head_pipeline
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
-      all_pipelines.for_sha_or_source_sha(diff_head_sha).first
-    end
+    all_pipelines.for_sha_or_source_sha(diff_head_sha).first
   end
 
   def etag_caching_enabled?

@@ -21,6 +21,7 @@ class User < ApplicationRecord
   include OptionallySearch
   include FromUnion
   include BatchDestroyDependentAssociations
+  include BatchNullifyDependentAssociations
   include HasUniqueInternalUsers
   include IgnorableColumns
   include UpdateHighestRole
@@ -37,6 +38,9 @@ class User < ApplicationRecord
 
   COUNT_CACHE_VALIDITY_PERIOD = 24.hours
 
+  OTP_SECRET_LENGTH = 32
+  OTP_SECRET_TTL = 2.minutes
+
   MAX_USERNAME_LENGTH = 255
   MIN_USERNAME_LENGTH = 2
 
@@ -45,6 +49,8 @@ class User < ApplicationRecord
     :notification_email,
     :public_email
   ].freeze
+
+  FORBIDDEN_SEARCH_STATES = %w(blocked banned ldap_blocked).freeze
 
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
@@ -184,6 +190,8 @@ class User < ApplicationRecord
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :updated_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :closed_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :closed_by_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :events,                   dependent: :delete_all, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
@@ -277,7 +285,7 @@ class User < ApplicationRecord
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
-  after_save if: -> { saved_change_to_email? && confirmed? } do
+  after_save if: -> { (saved_change_to_email? || saved_change_to_confirmed_at?) && confirmed? } do
     email_to_confirm = self.emails.find_by(email: self.email)
 
     if email_to_confirm.present?
@@ -322,6 +330,8 @@ class User < ApplicationRecord
             :setup_for_company, :setup_for_company=,
             :render_whitespace_in_code, :render_whitespace_in_code=,
             :markdown_surround_selection, :markdown_surround_selection=,
+            :diffs_deletion_color, :diffs_deletion_color=,
+            :diffs_addition_color, :diffs_addition_color=,
             to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -460,15 +470,16 @@ class User < ApplicationRecord
          .where('keys.user_id = users.id')
          .expiring_soon_and_not_notified)
   end
-  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
-  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
-  scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
-  scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
+  scope :order_recent_sign_in, -> { reorder(arel_table[:current_sign_in_at].desc.nulls_last) }
+  scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
+  scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last) }
+  scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first) }
   scope :by_id_and_login, ->(id, login) { where(id: id).where('username = LOWER(:login) OR email = LOWER(:login)', login: login) }
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
+  scope :without_forbidden_states, -> { where.not(state: FORBIDDEN_SEARCH_STATES) }
 
   strip_attributes! :name
 
@@ -660,9 +671,9 @@ class User < ApplicationRecord
 
       order = <<~SQL
         CASE
-          WHEN users.name = :query THEN 0
-          WHEN users.username = :query THEN 1
-          WHEN users.public_email = :query THEN 2
+          WHEN LOWER(users.name) = :query THEN 0
+          WHEN LOWER(users.username) = :query THEN 1
+          WHEN LOWER(users.public_email) = :query THEN 2
           ELSE 3
         END
       SQL
@@ -947,6 +958,21 @@ class User < ApplicationRecord
     return false unless Feature.enabled?(:webauthn, default_enabled: :yaml)
 
     (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
+  end
+
+  def needs_new_otp_secret?
+    !two_factor_enabled? && otp_secret_expired?
+  end
+
+  def otp_secret_expired?
+    return true unless otp_secret_expires_at
+
+    otp_secret_expires_at < Time.current
+  end
+
+  def update_otp_secret!
+    self.otp_secret = User.generate_otp_secret(OTP_SECRET_LENGTH)
+    self.otp_secret_expires_at = Time.current + OTP_SECRET_TTL
   end
 
   def namespace_move_dir_allowed
@@ -1709,8 +1735,12 @@ class User < ApplicationRecord
   end
 
   def attention_requested_open_merge_requests_count(force: false)
-    Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+    if Feature.enabled?(:uncached_mr_attention_requests_count, self, default_enabled: :yaml)
       MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
+    else
+      Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+        MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
+      end
     end
   end
 
@@ -2121,8 +2151,8 @@ class User < ApplicationRecord
 
   def authorized_groups_without_shared_membership
     Group.from_union([
-      groups.select(Namespace.arel_table[Arel.star]),
-      authorized_projects.joins(:namespace).select(Namespace.arel_table[Arel.star])
+      groups.select(*Namespace.cached_column_list),
+      authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
     ])
   end
 
@@ -2237,33 +2267,66 @@ class User < ApplicationRecord
   end
 
   def ci_owned_project_runners_from_project_members
-    Ci::RunnerProject
-      .select('ci_runners.*')
-      .joins(:runner)
-      .where(project: project_members.where('access_level >= ?', Gitlab::Access::MAINTAINER).pluck(:source_id))
+    project_ids = project_members.where('access_level >= ?', Gitlab::Access::MAINTAINER).pluck(:source_id)
+
+    Ci::Runner
+      .joins(:runner_projects)
+      .where(runner_projects: { project: project_ids })
   end
 
   def ci_owned_project_runners_from_group_members
-    Ci::RunnerProject
-      .select('ci_runners.*')
-      .joins(:runner)
-      .joins('JOIN ci_project_mirrors ON ci_project_mirrors.project_id = ci_runner_projects.project_id')
-      .joins('JOIN ci_namespace_mirrors ON ci_namespace_mirrors.namespace_id = ci_project_mirrors.namespace_id')
-      .merge(ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER))
+    cte_namespace_ids = Gitlab::SQL::CTE.new(
+      :cte_namespace_ids,
+      ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER).select(:namespace_id)
+    )
+
+    cte_project_ids = Gitlab::SQL::CTE.new(
+      :cte_project_ids,
+      Ci::ProjectMirror
+        .select(:project_id)
+        .where('ci_project_mirrors.namespace_id IN (SELECT namespace_id FROM cte_namespace_ids)')
+    )
+
+    Ci::Runner
+      .with(cte_namespace_ids.to_arel)
+      .with(cte_project_ids.to_arel)
+      .joins(:runner_projects)
+      .where('ci_runner_projects.project_id IN (SELECT project_id FROM cte_project_ids)')
   end
 
   def ci_owned_group_runners
-    Ci::RunnerNamespace
-      .select('ci_runners.*')
-      .joins(:runner)
-      .joins('JOIN ci_namespace_mirrors ON ci_namespace_mirrors.namespace_id = ci_runner_namespaces.namespace_id')
-      .merge(ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER))
+    cte_namespace_ids = Gitlab::SQL::CTE.new(
+      :cte_namespace_ids,
+      ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER).select(:namespace_id)
+    )
+
+    Ci::Runner
+      .with(cte_namespace_ids.to_arel)
+      .joins(:runner_namespaces)
+      .where('ci_runner_namespaces.namespace_id IN (SELECT namespace_id FROM cte_namespace_ids)')
   end
 
   def ci_namespace_mirrors_for_group_members(level)
-    Ci::NamespaceMirror.contains_any_of_namespaces(
-      group_members.where('access_level >= ?', level).pluck(:source_id)
-    )
+    search_members = group_members.where('access_level >= ?', level)
+
+    # This reduces searched prefixes to only shortest ones
+    # to avoid querying descendants since they are already covered
+    # by ancestor namespaces. If the FF is not available fallback to
+    # inefficient search: https://gitlab.com/gitlab-org/gitlab/-/issues/336436
+    unless Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
+      return Ci::NamespaceMirror.contains_any_of_namespaces(search_members.pluck(:source_id))
+    end
+
+    traversal_ids = Group.joins(:all_group_members)
+      .merge(search_members)
+      .shortest_traversal_ids_prefixes
+
+    # Use efficient btree index to perform search
+    if Feature.enabled?(:ci_owned_runners_unnest_index, self, default_enabled: :yaml)
+      Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
+    else
+      Ci::NamespaceMirror.contains_any_of_namespaces(traversal_ids.map(&:last))
+    end
   end
 end
 

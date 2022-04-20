@@ -21,12 +21,12 @@ import Tracking from '~/tracking';
 import initUserPopovers from '~/user_popovers';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import MetricImagesTab from '~/vue_shared/components/metric_images/metric_images_tab.vue';
 import { PAGE_CONFIG, SEVERITY_LEVELS } from '../constants';
 import createIssueMutation from '../graphql/mutations/alert_issue_create.mutation.graphql';
 import toggleSidebarStatusMutation from '../graphql/mutations/alert_sidebar_status.mutation.graphql';
 import alertQuery from '../graphql/queries/alert_sidebar_details.query.graphql';
 import sidebarStatusQuery from '../graphql/queries/alert_sidebar_status.query.graphql';
-import AlertMetrics from './alert_metrics.vue';
 import AlertSidebar from './alert_sidebar.vue';
 import AlertSummaryRow from './alert_summary_row.vue';
 import SystemNote from './system_notes/system_note.vue';
@@ -74,7 +74,7 @@ export default {
     TimeAgoTooltip,
     AlertSidebar,
     SystemNote,
-    AlertMetrics,
+    MetricImagesTab,
   },
   inject: {
     projectPath: {
@@ -372,13 +372,12 @@ export default {
           </alert-summary-row>
           <alert-details-table :alert="alert" :loading="loading" :statuses="statuses" />
         </gl-tab>
-        <gl-tab
+
+        <metric-images-tab
           v-if="!isThreatMonitoringPage"
           :data-testid="$options.tabsConfig[1].id"
           :title="$options.tabsConfig[1].title"
-        >
-          <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />
-        </gl-tab>
+        />
         <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">
           <div v-if="alert.notes.nodes.length > 0" class="issuable-discussion">
             <ul class="notes main-notes-list timeline">

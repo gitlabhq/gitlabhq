@@ -11,8 +11,7 @@ type: reference, api
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_secure_files`.
-The feature is not ready for production use.
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_secure_files`. Limited to 100 secure files per project. Files must be smaller than 5 MB. The feature is not ready for production use. 
 
 ## List project secure files
 
@@ -101,12 +100,12 @@ POST /projects/:project_id/secure_files
 
 Supported attributes:
 
-| Attribute     | Type           | Required               | Description |
-|---------------|----------------|------------------------|-------------|
-| `project_id`  | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `name`        | string         | **{check-circle}** Yes | The `name` of the file being uploaded. |
-| `file`        | file           | **{check-circle}** Yes | The `file` being uploaded. |
-| `permissions` | string         | **{dotted-circle}** No | The file is created with the specified permissions when created in the CI/CD job. Available types are: `read_only` (default), `read_write`, and `execute`. |
+| Attribute       | Type           | Required               | Description |
+|-----------------|----------------|------------------------|-------------|
+| `project_id`    | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `name`          | string         | **{check-circle}** Yes | The `name` of the file being uploaded. The file name must be unique within the project. |
+| `file`          | file           | **{check-circle}** Yes | The `file` being uploaded (5 MB limit). |
+| `permissions`   | string         | **{dotted-circle}** No | The file is created with the specified permissions when created in the CI/CD job. Available types are: `read_only` (default), `read_write`, and `execute`. |
 
 Example request:
 

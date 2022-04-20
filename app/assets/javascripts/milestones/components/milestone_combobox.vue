@@ -192,10 +192,12 @@ export default {
       @keydown.enter.prevent="onSearchBoxEnter"
     />
 
-    <gl-dropdown-item @click="selectNoMilestone()">
-      <span :class="{ 'gl-pl-6': true, 'selected-item': selectedMilestones.length === 0 }">
-        {{ $options.translations.noMilestone }}
-      </span>
+    <gl-dropdown-item
+      :is-checked="selectedMilestones.length === 0"
+      is-check-item
+      @click="selectNoMilestone()"
+    >
+      {{ $options.translations.noMilestone }}
     </gl-dropdown-item>
 
     <gl-dropdown-divider />
@@ -241,9 +243,10 @@ export default {
       v-for="(item, idx) in extraLinks"
       :key="idx"
       :href="item.url"
+      :is-check-item="true"
       data-testid="milestone-combobox-extra-links"
     >
-      <span class="gl-pl-6">{{ item.text }}</span>
+      {{ item.text }}
     </gl-dropdown-item>
   </gl-dropdown>
 </template>

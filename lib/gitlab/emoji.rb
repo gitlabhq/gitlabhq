@@ -46,12 +46,13 @@ module Gitlab
 
     def custom_emoji_tag(name, image_source)
       data = {
-        name: name
+        name: name,
+        fallback_src: image_source,
+        unicode_version: 'custom' # Prevents frontend to check for Unicode support
       }
+      options = { title: name, data: data }
 
-      ActionController::Base.helpers.content_tag('gl-emoji', title: name, data: data) do
-        emoji_image_tag(name, image_source).html_safe
-      end
+      ActionController::Base.helpers.content_tag('gl-emoji', "", options)
     end
   end
 end

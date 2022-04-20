@@ -683,6 +683,33 @@ RSpec.describe API::Projects do
       end
     end
 
+    context 'and imported=true' do
+      before do
+        other_user = create(:user)
+        # imported project by other user
+        create(:project, creator: other_user, import_type: 'github', import_url: 'http://foo.com')
+        # project created by current user directly instead of importing
+        create(:project)
+        project.update_attribute(:import_url, 'http://user:password@host/path')
+        project.update_attribute(:import_type, 'github')
+      end
+
+      it 'returns only imported projects owned by current user' do
+        get api('/projects?imported=true', user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |p| p['id'] }).to eq [project.id]
+      end
+
+      it 'does not expose import credentials' do
+        get api('/projects?imported=true', user)
+
+        expect(json_response.first['import_url']).to eq 'http://host/path'
+      end
+    end
+
     context 'when authenticated as a different user' do
       it_behaves_like 'projects response' do
         let(:filter) { {} }
@@ -777,7 +804,7 @@ RSpec.describe API::Projects do
         subject { get api('/projects', current_user), params: params }
 
         before do
-          group_with_projects.add_owner(current_user)
+          group_with_projects.add_owner(current_user) if current_user
         end
 
         it 'returns non-public items based ordered by similarity' do
@@ -3114,6 +3141,29 @@ RSpec.describe API::Projects do
       project.add_maintainer(user)
       project2.add_maintainer(user)
       project2.add_developer(project2_user)
+    end
+
+    it 'records the query', :request_store, :use_sql_query_cache do
+      post api("/projects/#{project.id}/import_project_members/#{project2.id}", user)
+
+      control_project = create(:project)
+      control_project.add_maintainer(user)
+      control_project.add_developer(create(:user))
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post api("/projects/#{project.id}/import_project_members/#{control_project.id}", user)
+      end
+
+      measure_project = create(:project)
+      measure_project.add_maintainer(user)
+      measure_project.add_developer(create(:user))
+      measure_project.add_developer(create(:user)) # make this 2nd one to find any n+1
+
+      unresolved_n_plus_ones = 21 # 21 queries added per member
+
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{measure_project.id}", user)
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
     end
 
     it 'returns 200 when it successfully imports members from another project' do

@@ -112,6 +112,13 @@ RSpec.describe Explore::ProjectsController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template('topic')
         end
+
+        it 'finds topic by case insensitive name' do
+          get :topic, params: { topic_name: 'TOPIC1' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('topic')
+        end
       end
     end
   end

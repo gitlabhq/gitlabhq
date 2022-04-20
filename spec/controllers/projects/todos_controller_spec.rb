@@ -8,7 +8,7 @@ RSpec.describe Projects::TodosController do
 
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
-  let(:design)        { create(:design, project: project, issue: issue) }
+  let(:design)        { create(:design, :with_versions, project: project, issue: issue) }
   let(:parent)        { project }
 
   shared_examples 'issuable todo actions' do

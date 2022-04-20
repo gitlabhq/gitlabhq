@@ -203,7 +203,7 @@ Go's [`regexp`](https://pkg.go.dev/regexp) package uses `re2` and isn't vulnerab
 
 ### Description
 
-A [Server-side Request Forgery (SSRF)](https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF) is an attack in which an attacker
+A [Server-side Request Forgery (SSRF)](https://www.hackerone.com/application-security/how-server-side-request-forgery-ssrf) is an attack in which an attacker
 is able coerce a application into making an outbound request to an unintended
 resource. This resource is usually internal. In GitLab, the connection most
 commonly uses HTTP, but an SSRF can be performed with any protocol, such as
@@ -1165,7 +1165,7 @@ func printZipContents(src string) error {
 ## Time of check to time of use bugs
 
 Time of check to time of use, or TOCTOU, is a class of error which occur when the state of something changes unexpectedly partway during a process.
-More specifically, it's when the property you checked and validated has changed when you finally get around to using that property. 
+More specifically, it's when the property you checked and validated has changed when you finally get around to using that property.
 
 These types of bugs are often seen in environments which allow multi-threading and concurrency, like filesystems and distributed web applications; these are a type of race condition. TOCTOU also occurs when state is checked and stored, then after a period of time that state is relied on without re-checking its accuracy and/or validity.
 
@@ -1179,7 +1179,7 @@ GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-o
 
 **Example 3:** you need to fetch a remote file, and perform a `HEAD` request to get and validate the content length and content type. When you subsequently make a `GET` request, though, the file delivered is a different size or different file type. (This is stretching the definition of TOCTOU, but things _have_ changed between time of check and time of use).
 
-**Example 4:** you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly clicking upvote in quick succession a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database. 
+**Example 4:** you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly clicking upvote in quick succession a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database.
 
 Here's some pseudocode showing an example of a potential TOCTOU bug:
 

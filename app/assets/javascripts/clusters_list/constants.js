@@ -90,26 +90,20 @@ export const I18N_AGENT_TABLE = {
 export const I18N_AGENT_TOKEN = {
   copyToken: s__('ClusterAgents|Copy token'),
   copyCommand: s__('ClusterAgents|Copy command'),
-  tokenTitle: s__('ClusterAgents|Registration token'),
-
-  tokenBody: s__(
-    `ClusterAgents|The registration token will be used to connect the agent on your cluster to GitLab. %{linkStart}What are registration tokens?%{linkEnd}`,
-  ),
+  tokenLabel: s__('ClusterAgents|Agent access token:'),
   tokenSingleUseWarningTitle: s__(
     'ClusterAgents|You cannot see this token again after you close this window.',
   ),
-  tokenSingleUseWarningBody: s__(
-    `ClusterAgents|The recommended installation method includes the token. If you want to follow the advanced installation method provided in the docs, make sure you save the token value before you close this window.`,
-  ),
+  tokenSubtitle: s__('ClusterAgents|The agent uses the token to connect with GitLab.'),
 
-  basicInstallTitle: s__('ClusterAgents|Recommended installation method'),
-  basicInstallBody: __(
-    `Open a CLI and connect to the cluster you want to install the agent in. Use this installation method to minimize any manual steps. The token is already included in the command.`,
+  basicInstallTitle: s__('ClusterAgents|Install using Helm (recommended)'),
+  basicInstallBody: s__(
+    'ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included in the command.',
   ),
 
   advancedInstallTitle: s__('ClusterAgents|Advanced installation methods'),
   advancedInstallBody: s__(
-    'ClusterAgents|For the advanced installation method %{linkStart}see the documentation%{linkEnd}.',
+    'ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available.',
   ),
 };
 
@@ -118,20 +112,15 @@ export const I18N_AGENT_MODAL = {
   close: __('Close'),
   cancel: __('Cancel'),
 
-  modalTitle: s__('ClusterAgents|Connect a cluster through an agent'),
+  modalTitle: s__('ClusterAgents|Connect a Kubernetes cluster'),
   modalBody: s__(
     'ClusterAgents|Add an agent configuration file to %{linkStart}this repository%{linkEnd} and select it, or create a new one to register with GitLab:',
   ),
   enableKasText: s__(
     "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
   ),
-  altText: s__('ClusterAgents|GitLab Agent for Kubernetes'),
+  altText: s__('ClusterAgents|GitLab agent for Kubernetes'),
   learnMoreLink: s__('ClusterAgents|How do I register an agent?'),
-  copyToken: s__('ClusterAgents|Copy token'),
-  tokenTitle: s__('ClusterAgents|Registration token'),
-  tokenBody: s__(
-    `ClusterAgents|The registration token will be used to connect the agent on your cluster to GitLab. %{linkStart}What are registration tokens?%{linkEnd}`,
-  ),
   registrationErrorTitle: s__('ClusterAgents|Failed to register an agent'),
   unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
 };
@@ -180,16 +169,14 @@ export const AGENT_STATUSES = {
 
 export const I18N_AGENTS_EMPTY_STATE = {
   introText: s__(
-    'ClusterIntegration|Use the %{linkStart}GitLab Agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more.',
+    'ClusterIntegration|Use the %{linkStart}GitLab agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more.',
   ),
-  buttonText: s__('ClusterAgents|Connect with the GitLab Agent'),
 };
 
 export const I18N_CLUSTERS_EMPTY_STATE = {
   introText: s__(
     'ClusterIntegration|Connect your cluster to GitLab through %{linkStart}cluster certificates%{linkEnd}.',
   ),
-  buttonText: s__('ClusterIntegration|Connect with a certificate'),
   alertText: s__(
     'ClusterIntegration|The certificate-based method to connect clusters to GitLab was %{linkStart}deprecated%{linkEnd} in GitLab 14.5.',
   ),
@@ -201,19 +188,15 @@ export const AGENT_CARD_INFO = {
   emptyTitle: s__('ClusterAgents|No agents'),
   tooltip: {
     label: s__('ClusterAgents|Recommended'),
-    title: s__('ClusterAgents|GitLab Agent'),
+    title: s__('ClusterAgents|GitLab agent'),
     text: sprintf(
       s__(
-        'ClusterAgents|The GitLab Agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab Agent.%{linkEnd}',
+        'ClusterAgents|The GitLab agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab agent.%{linkEnd}',
       ),
     ),
     link: helpPagePath('user/clusters/agent/index'),
   },
-  actionText: s__('ClusterAgents|Install a new agent'),
   footerText: sprintf(s__('ClusterAgents|View all %{number} agents')),
-  installAgentDisabledHint: s__(
-    'ClusterAgents|Requires a Maintainer or greater role to install new agents',
-  ),
 };
 
 export const CERTIFICATE_BASED_CARD_INFO = {
@@ -222,12 +205,8 @@ export const CERTIFICATE_BASED_CARD_INFO = {
     s__('ClusterAgents|%{number} of %{total} clusters connected through cluster certificates'),
   ),
   emptyTitle: s__('ClusterAgents|No clusters connected through cluster certificates'),
-  actionText: s__('ClusterAgents|Connect existing cluster'),
   footerText: sprintf(s__('ClusterAgents|View all %{number} clusters')),
   badgeText: s__('ClusterAgents|Deprecated'),
-  connectExistingClusterDisabledHint: s__(
-    'ClusterAgents|Requires a maintainer or greater role to connect existing clusters',
-  ),
 };
 
 export const MAX_CLUSTERS_LIST = 6;
@@ -252,12 +231,13 @@ export const CERTIFICATE_TAB = {
 export const CLUSTERS_TABS = [ALL_TAB, AGENT_TAB, CERTIFICATE_TAB];
 
 export const CLUSTERS_ACTIONS = {
-  actionsButton: s__('ClusterAgents|Actions'),
-  createNewCluster: s__('ClusterAgents|Create a new cluster'),
-  connectWithAgent: s__('ClusterAgents|Connect with an agent'),
-  connectExistingCluster: s__('ClusterAgents|Connect with a certificate'),
-  agent: s__('ClusterAgents|Agent'),
-  certificate: s__('ClusterAgents|Certificate'),
+  connectCluster: s__('ClusterAgents|Connect a cluster'),
+  connectWithAgent: s__('ClusterAgents|Connect a cluster (agent)'),
+  connectClusterDeprecated: s__('ClusterAgents|Connect a cluster (deprecated)'),
+  createClusterDeprecated: s__('ClusterAgents|Create a cluster (deprecated)'),
+  createCluster: s__('ClusterAgents|Create a cluster'),
+  createClusterCertificate: s__('ClusterAgents|Create a cluster (certificate - deprecated)'),
+  connectClusterCertificate: s__('ClusterAgents|Connect a cluster (certificate - deprecated)'),
   dropdownDisabledHint: s__(
     'ClusterAgents|Requires a Maintainer or greater role to perform these actions',
   ),

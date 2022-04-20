@@ -46,5 +46,42 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
 
       expect(data[:deployable_url]).to be_nil
     end
+
+    context 'when commit does not exist in the repository' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:deployment) { create(:deployment, project: project) }
+
+      subject(:data) { described_class.build(deployment, Time.current) }
+
+      before(:all) do
+        project.repository.remove
+      end
+
+      it 'returns nil for commit_url' do
+        expect(data[:commit_url]).to be_nil
+      end
+
+      it 'returns nil for commit_title' do
+        expect(data[:commit_title]).to be_nil
+      end
+    end
+
+    context 'when deployed_by is nil' do
+      let_it_be(:deployment) { create(:deployment, user: nil, deployable: nil) }
+
+      subject(:data) { described_class.build(deployment, Time.current) }
+
+      before(:all) do
+        deployment.user = nil
+      end
+
+      it 'returns nil for user' do
+        expect(data[:user]).to be_nil
+      end
+
+      it 'returns nil for user_url' do
+        expect(data[:user_url]).to be_nil
+      end
+    end
   end
 end

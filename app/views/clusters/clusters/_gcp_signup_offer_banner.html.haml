@@ -1,8 +1,8 @@
 - link = link_to(s_('ClusterIntegration|sign up'), 'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral', target: '_blank', rel: 'noopener noreferrer')
-= render 'shared/global_alert',
-  title: s_('ClusterIntegration|Did you know?'),
+
+= render Pajamas::AlertComponent.new(title: s_('ClusterIntegration|Did you know?'),
   alert_class: 'gcp-signup-offer',
-  alert_data: { feature_id: Users::CalloutsHelper::GCP_SIGNUP_OFFER, dismiss_endpoint: callouts_path } do
+  alert_data: { feature_id: Users::CalloutsHelper::GCP_SIGNUP_OFFER, dismiss_endpoint: callouts_path }) do
   .gl-alert-body
     = s_('ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab\'s Google Kubernetes Engine Integration.').html_safe % { sign_up_link: link }
   .gl-alert-actions

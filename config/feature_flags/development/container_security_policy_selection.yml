@@ -1,0 +1,8 @@
+---
+name: container_security_policy_selection
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80272
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353071
+milestone: '14.10'
+type: development
+group: group::container security
+default_enabled: true

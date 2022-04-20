@@ -1,0 +1,9 @@
+---
+table_name: zoom_meetings
+classes:
+- ZoomMeeting
+feature_categories:
+- incident_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17890
+milestone: '12.5'

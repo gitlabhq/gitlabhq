@@ -172,8 +172,6 @@ subgraph "CNG-mirror pipeline"
      them in its [registry](https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry).
    - We use the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project so that the `CNG`, (Cloud
      Native GitLab), project's registry is not overloaded with a lot of transient Docker images.
-   - Note that the official CNG images are built by the `cloud-native-image`
-     job, which runs only for tags, and triggers itself a [`CNG`](https://gitlab.com/gitlab-org/build/CNG) pipeline.
 1. Once `review-build-cng` is done, the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job
    deploys the Review App using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/) to
    the [`review-apps`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps?project=gitlab-review-apps)
@@ -224,13 +222,9 @@ If you need your Review App to stay up for a longer time, you can
 `review-deploy` job to update the "latest deployed at" time.
 
 The `review-cleanup` job that automatically runs in scheduled
-pipelines (and is manual in merge request) stops stale Review Apps after 5 days,
+pipelines stops stale Review Apps after 5 days,
 deletes their environment after 6 days, and cleans up any dangling Helm releases
 and Kubernetes resources after 7 days.
-
-The `review-gcp-cleanup` job that automatically runs in scheduled pipelines
-(and is manual in merge request) removes any dangling GCP network resources
-that were not removed along with the Kubernetes resources.
 
 ## Cluster configuration
 
@@ -254,189 +248,7 @@ Leading indicators may be health check failures leading to restarts or majority 
 The [Review Apps Overview dashboard](https://console.cloud.google.com/monitoring/classic/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
 aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.
 
-### Database related errors in `review-deploy`, `review-qa-smoke`, or `review-qa-reliable`
-
-Occasionally the state of a Review App's database could diverge from the database schema. This could be caused by
-changes to migration files or schema, such as a migration being renamed or deleted. This typically manifests in migration errors such as:
-
-- migration job failing with a column that already exists
-- migration job failing with a column that does not exist
-
-To recover from this, please attempt to [redeploy Review App from a clean slate](#redeploy-review-app-from-a-clean-slate)
-
-### Release failed with `ImagePullBackOff`
-
-**Potential cause:**
-
-If you see an `ImagePullBackoff` status, check for a missing Docker image.
-
-**Where to look for further debugging:**
-
-To check that the Docker images were created, run the following Docker command:
-
-```shell
-`DOCKER_CLI_EXPERIMENTAL=enabled docker manifest repository:tag`
-```
-
-The output of this command indicates if the Docker image exists. For example:
-
-```shell
-DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ee:39467-allow-a-release-s-associated-milestones-to-be-edited-thro
-```
-
-If the Docker image does not exist:
-
-- Verify the `image.repository` and `image.tag` options in the `helm upgrade --install` command match the repository names used by CNG-mirror pipeline.
-- Look further in the corresponding downstream CNG-mirror pipeline in `review-build-cng` job.
-
-### Node count is always increasing (never stabilizing or decreasing)
-
-**Potential cause:**
-
-That could be a sign that the `review-cleanup` job is
-failing to cleanup stale Review Apps and Kubernetes resources.
-
-**Where to look for further debugging:**
-
-Look at the latest `review-cleanup` job log, and identify look for any
-unexpected failure.
-
-### p99 CPU utilization is at 100% for most of the nodes and/or many components
-
-**Potential cause:**
-
-This could be a sign that Helm is failing to deploy Review Apps. When Helm has a
-lot of `FAILED` releases, it seems that the CPU utilization is increasing, probably
-due to Helm or Kubernetes trying to recreate the components.
-
-**Where to look for further debugging:**
-
-Look at a recent `review-deploy` job log.
-
-**Useful commands:**
-
-```shell
-# Identify if node spikes are common or load on specific nodes which may get rebalanced by the Kubernetes scheduler
-kubectl top nodes | sort --key 3 --numeric
-
-# Identify pods under heavy CPU load
-kubectl top pods | sort --key 2 --numeric
-```
-
-### The `logging/user/events/FailedMount` chart is going up
-
-**Potential cause:**
-
-This could be a sign that there are too many stale secrets and/or configuration maps.
-
-**Where to look for further debugging:**
-
-Look at [the list of Configurations](https://console.cloud.google.com/kubernetes/config?project=gitlab-review-apps)
-or `kubectl get secret,cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-'`.
-
-Any secrets or configuration maps older than 5 days are suspect and should be deleted.
-
-**Useful commands:**
-
-```shell
-# List secrets and config maps ordered by created date
-kubectl get secret,cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-'
-
-# Delete all secrets that are 5 to 9 days old
-kubectl get secret --sort-by='{.metadata.creationTimestamp}' | grep '^review-' | grep '[5-9]d$' | cut -d' ' -f1 | xargs kubectl delete secret
-
-# Delete all secrets that are 10 to 99 days old
-kubectl get secret --sort-by='{.metadata.creationTimestamp}' | grep '^review-' | grep '[1-9][0-9]d$' | cut -d' ' -f1 | xargs kubectl delete secret
-
-# Delete all config maps that are 5 to 9 days old
-kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep -v 'dns-gitlab-review-app' | grep '[5-9]d$' | cut -d' ' -f1 | xargs kubectl delete cm
-
-# Delete all config maps that are 10 to 99 days old
-kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep -v 'dns-gitlab-review-app' | grep '[1-9][0-9]d$' | cut -d' ' -f1 | xargs kubectl delete cm
-```
-
-### Using K9s
-
-[K9s](https://github.com/derailed/k9s) is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes schedules pods to nodes based on resource requests and allow for CPU usage up to the limits.
-
-- In K9s you can sort or add filters by typing the `/` character
-  - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
-  - `-lapp=<app>` - filters down to all pods for a specific app. This aids in determining resource usage by app.
-- You can scroll to a Kubernetes resource and hit `d`(describe), `s`(shell), `l`(logs) for a deeper inspection
-
-![K9s](img/k9s.png)
-
-### Troubleshoot a pending `dns-gitlab-review-app-external-dns` Deployment
-
-#### Finding the problem
-
-[In the past](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62834), it happened
-that the `dns-gitlab-review-app-external-dns` Deployment was in a pending state,
-effectively preventing all the Review Apps from getting a DNS record assigned,
-making them unreachable via domain name.
-
-This in turn prevented other components of the Review App to properly start
-(for example, `gitlab-runner`).
-
-After some digging, we found that new mounts fail when performed
-with transient scopes (for example, pods) of `systemd-mount`:
-
-```plaintext
-MountVolume.SetUp failed for volume "dns-gitlab-review-app-external-dns-token-sj5jm" : mount failed: exit status 1
-Mounting command: systemd-run
-Mounting arguments: --description=Kubernetes transient mount for /var/lib/kubelet/pods/06add1c3-87b4-11e9-80a9-42010a800107/volumes/kubernetes.io~secret/dns-gitlab-review-app-external-dns-token-sj5jm --scope -- mount -t tmpfs tmpfs /var/lib/kubelet/pods/06add1c3-87b4-11e9-80a9-42010a800107/volumes/kubernetes.io~secret/dns-gitlab-review-app-external-dns-token-sj5jm
-Output: Failed to start transient scope unit: Connection timed out
-```
-
-This probably happened because the GitLab chart creates 67 resources, leading to
-a lot of mount points being created on the underlying GCP node.
-
-The [underlying issue seems to be a `systemd` bug](https://github.com/kubernetes/kubernetes/issues/57345#issuecomment-359068048)
-that was fixed in `systemd` `v237`. Unfortunately, our GCP nodes are currently
-using `v232`.
-
-For the record, the debugging steps to find out this issue were:
-
-1. Switch kubectl context to `review-apps-ce` (we recommend using [`kubectx`](https://github.com/ahmetb/kubectx/))
-1. `kubectl get pods | grep dns`
-1. `kubectl describe pod <pod name>` & confirm exact error message
-1. Web search for exact error message, following rabbit hole to [a relevant Kubernetes bug report](https://github.com/kubernetes/kubernetes/issues/57345)
-1. Access the node over SSH via the GCP console (**Computer Engine > VM
-   instances** then click the "SSH" button for the node where the `dns-gitlab-review-app-external-dns` pod runs)
-1. In the node: `systemctl --version` => `systemd 232`
-1. Gather some more information:
-   - `mount | grep kube | wc -l` (returns a count, for example, 290)
-   - `systemctl list-units --all | grep -i var-lib-kube | wc -l` (returns a count, for example, 142)
-1. Check how many pods are in a bad state:
-   - Get all pods running a given node: `kubectl get pods --field-selector=spec.nodeName=NODE_NAME`
-   - Get all the `Running` pods on a given node: `kubectl get pods --field-selector=spec.nodeName=NODE_NAME | grep Running`
-   - Get all the pods in a bad state on a given node: `kubectl get pods --field-selector=spec.nodeName=NODE_NAME | grep -v 'Running' | grep -v 'Completed'`
-
-#### Solving the problem
-
-To resolve the problem, we needed to (forcibly) drain some nodes:
-
-1. Try a normal drain on the node where the `dns-gitlab-review-app-external-dns`
-   pod runs so that Kubernetes automatically move it to another node: `kubectl drain NODE_NAME`
-1. If that doesn't work, you can also perform a forcible "drain" the node by removing all pods: `kubectl delete pods --field-selector=spec.nodeName=NODE_NAME`
-1. In the node:
-   - Perform `systemctl daemon-reload` to remove the dead/inactive units
-   - If that doesn't solve the problem, perform a hard reboot: `sudo systemctl reboot`
-1. Uncordon any cordoned nodes: `kubectl uncordon NODE_NAME`
-
-In parallel, since most Review Apps were in a broken state, we deleted them to
-clean up the list of non-`Running` pods.
-Following is a command to delete Review Apps based on their last deployment date
-(current date was June 6th at the time) with
-
-```shell
-helm ls -d | grep "Jun  4" | cut -f1 | xargs helm delete --purge
-```
-
-#### Mitigation steps taken to avoid this problem in the future
-
-We've created a new node pool with smaller machines to reduce the risk
-that a machine reaches the "too many mount points" problem in the future.
+See the [review apps page of the Engineering Productivity Runbook](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbook/review-apps.md) for troubleshooting review app releases.
 
 ## Frequently Asked Questions
 

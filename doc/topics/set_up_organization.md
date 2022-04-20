@@ -13,5 +13,5 @@ and give everyone access to the projects they need.
 - [Workspace](../user/workspace/index.md) _(Coming soon)_
 - [Groups](../user/group/index.md)
 - [User account options](../user/profile/index.md)
-- [SSH keys](../ssh/index.md)
+- [SSH keys](../user/ssh.md)
 - [GitLab.com settings](../user/gitlab_com/index.md)

@@ -153,4 +153,29 @@ describe('UserAvatarList', () => {
       });
     });
   });
+
+  describe('additional styling for the image', () => {
+    it('should not add CSS class when feature flag  `glAvatarForAllUserAvatars` is disabled', () => {
+      factory({
+        propsData: { items: createList(1) },
+      });
+
+      const link = wrapper.findComponent(UserAvatarLink);
+      expect(link.props('imgCssClasses')).not.toBe('gl-mr-3');
+    });
+
+    it('should add CSS class when feature flag `glAvatarForAllUserAvatars` is enabled', () => {
+      factory({
+        propsData: { items: createList(1) },
+        provide: {
+          glFeatures: {
+            glAvatarForAllUserAvatars: true,
+          },
+        },
+      });
+
+      const link = wrapper.findComponent(UserAvatarLink);
+      expect(link.props('imgCssClasses')).toBe('gl-mr-3');
+    });
+  });
 });

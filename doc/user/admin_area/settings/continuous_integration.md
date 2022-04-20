@@ -28,7 +28,18 @@ From now on, every existing project and newly created ones that don't have a
 If you want to disable it for a specific project, you can do so in
 [its settings](../../../topics/autodevops/index.md#enable-or-disable-auto-devops).
 
-## Shared runner details
+## Enable shared runners for new projects
+
+You can set all new projects to have the instance's shared runners available by default.
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Select the **Enable shared runners for new projects** checkbox.
+
+Any time a new project is created, the shared runners are available.
+
+## Add a message for shared runners
 
 To display details about the instance's shared runners in all projects'
 runner settings:
@@ -36,16 +47,17 @@ runner settings:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-1. Enter your shared runner details in the **Shared runner details** field.
+1. Enter text, including Markdown if you want, in the **Shared runner details** field. For example:
 
-You can use [Markdown](../../markdown.md) for improved formatting. To see the rendered
-details:
+   ![Shared runner details input](img/continuous_integration_shared_runner_details_input_v14_10.png)
+
+To view the rendered details:
 
 1. On the top bar, select **Menu > Project** and select any group or project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 
-![Shared runner details example](img/continuous_integration_shared_runner_details_v14_0.png)
+![Shared runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
 
 ## Maximum artifacts size
 
@@ -137,8 +149,8 @@ As an administrator you can set either a global or namespace-specific limit on t
 
 ## Archive jobs
 
-Archiving jobs is useful for reducing the CI/CD footprint on the system by
-removing some of the capabilities of the jobs (metadata needed to run the job),
+Archiving jobs is useful for reducing the CI/CD footprint on the system by removing some 
+of the capabilities of the jobs (metadata stored in the database needed to run the job),
 but persisting the traces and artifacts for auditing purposes.
 
 To set the duration for which the jobs are considered as old and expired:
@@ -149,7 +161,7 @@ To set the duration for which the jobs are considered as old and expired:
 1. Set the value of **Archive jobs**.
 1. Hit **Save changes** for the changes to take effect.
 
-After that time passes, the jobs are archived and no longer able to be
+After that time passes, the jobs are archived in the background and no longer able to be
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
 for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
@@ -178,6 +190,26 @@ of your GitLab instance (`.gitlab-ci.yml` if not set):
 
 It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
+## Set CI/CD limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352175) in GitLab 14.10.
+
+You can configure some [CI/CD limits](../../../administration/instance_limits.md#cicd-limits)
+from the Admin Area:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand the **Continuous Integration and Deployment** section.
+1. In the **CI/CD limits** section, you can set the following limits:
+   - **Maximum number of jobs in a single pipeline**
+   - **Total number of jobs in currently active pipelines**
+   - **Maximum number of active pipelines per project**
+   - **Maximum number of pipeline subscriptions to and from a project**
+   - **Maximum number of pipeline schedules**
+   - **Maximum number of DAG dependencies that a job can have**
+   - **Maximum number of runners registered per group**
+   - **Maximum number of runners registered per project**
+
 ## Enable or disable the pipeline suggestion banner
 
 By default, a banner displays in merge requests with no pipeline suggesting a
@@ -196,7 +228,7 @@ To enable or disable the banner:
 
 WARNING:
 Required pipeline configurations is in its end-of-life process for Premium users. It's
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) for use in GitLab 14.8,
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) in GitLab 14.8,
 and planned to be unavailable for Premium users in GitLab 15.0. This feature is planned to continue
 to be available for Ultimate users. Ultimate users are not impacted by this deprecation and removal.
 

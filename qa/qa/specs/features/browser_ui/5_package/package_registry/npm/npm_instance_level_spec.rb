@@ -5,6 +5,7 @@ module QA
     describe 'npm instance level endpoint' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
+      include Support::Helpers::MaskToken
 
       let!(:registry_scope) { Runtime::Namespace.sandbox_name }
       let!(:personal_access_token) do
@@ -78,11 +79,13 @@ module QA
         let(:auth_token) do
           case authentication_token_type
           when :personal_access_token
-            "\"#{personal_access_token}\""
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: project)
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: another_project)
           when :ci_job_token
             '${CI_JOB_TOKEN}'
           when :project_deploy_token
-            "\"#{project_deploy_token.token}\""
+            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: project)
+            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: another_project)
           end
         end
 

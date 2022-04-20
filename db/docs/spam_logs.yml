@@ -1,0 +1,9 @@
+---
+table_name: spam_logs
+classes:
+- SpamLog
+feature_categories:
+- authentication_and_authorization
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/d20e75a8d80c2828336cd22897ea6868d666f8a5
+milestone: '8.5'

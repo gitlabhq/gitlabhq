@@ -29,53 +29,56 @@ describe('Batch comments store actions', () => {
   });
 
   describe('addDraftToDiscussion', () => {
-    it('commits ADD_NEW_DRAFT if no errors returned', (done) => {
+    it('commits ADD_NEW_DRAFT if no errors returned', () => {
       res = { id: 1 };
       mock.onAny().reply(200, res);
 
-      testAction(
+      return testAction(
         actions.addDraftToDiscussion,
         { endpoint: TEST_HOST, data: 'test' },
         null,
         [{ type: 'ADD_NEW_DRAFT', payload: res }],
         [],
-        done,
       );
     });
 
-    it('does not commit ADD_NEW_DRAFT if errors returned', (done) => {
+    it('does not commit ADD_NEW_DRAFT if errors returned', () => {
       mock.onAny().reply(500);
 
-      testAction(
+      return testAction(
         actions.addDraftToDiscussion,
         { endpoint: TEST_HOST, data: 'test' },
         null,
         [],
         [],
-        done,
       );
     });
   });
 
   describe('createNewDraft', () => {
-    it('commits ADD_NEW_DRAFT if no errors returned', (done) => {
+    it('commits ADD_NEW_DRAFT if no errors returned', () => {
       res = { id: 1 };
       mock.onAny().reply(200, res);
 
-      testAction(
+      return testAction(
         actions.createNewDraft,
         { endpoint: TEST_HOST, data: 'test' },
         null,
         [{ type: 'ADD_NEW_DRAFT', payload: res }],
         [],
-        done,
       );
     });
 
-    it('does not commit ADD_NEW_DRAFT if errors returned', (done) => {
+    it('does not commit ADD_NEW_DRAFT if errors returned', () => {
       mock.onAny().reply(500);
 
-      testAction(actions.createNewDraft, { endpoint: TEST_HOST, data: 'test' }, null, [], [], done);
+      return testAction(
+        actions.createNewDraft,
+        { endpoint: TEST_HOST, data: 'test' },
+        null,
+        [],
+        [],
+      );
     });
   });
 
@@ -90,7 +93,7 @@ describe('Batch comments store actions', () => {
       };
     });
 
-    it('commits DELETE_DRAFT if no errors returned', (done) => {
+    it('commits DELETE_DRAFT if no errors returned', () => {
       const commit = jest.fn();
       const context = {
         getters,
@@ -99,16 +102,12 @@ describe('Batch comments store actions', () => {
       res = { id: 1 };
       mock.onAny().reply(200);
 
-      actions
-        .deleteDraft(context, { id: 1 })
-        .then(() => {
-          expect(commit).toHaveBeenCalledWith('DELETE_DRAFT', 1);
-        })
-        .then(done)
-        .catch(done.fail);
+      return actions.deleteDraft(context, { id: 1 }).then(() => {
+        expect(commit).toHaveBeenCalledWith('DELETE_DRAFT', 1);
+      });
     });
 
-    it('does not commit DELETE_DRAFT if errors returned', (done) => {
+    it('does not commit DELETE_DRAFT if errors returned', () => {
       const commit = jest.fn();
       const context = {
         getters,
@@ -116,13 +115,9 @@ describe('Batch comments store actions', () => {
       };
       mock.onAny().reply(500);
 
-      actions
-        .deleteDraft(context, { id: 1 })
-        .then(() => {
-          expect(commit).not.toHaveBeenCalledWith('DELETE_DRAFT', 1);
-        })
-        .then(done)
-        .catch(done.fail);
+      return actions.deleteDraft(context, { id: 1 }).then(() => {
+        expect(commit).not.toHaveBeenCalledWith('DELETE_DRAFT', 1);
+      });
     });
   });
 
@@ -137,7 +132,7 @@ describe('Batch comments store actions', () => {
       };
     });
 
-    it('commits SET_BATCH_COMMENTS_DRAFTS with returned data', (done) => {
+    it('commits SET_BATCH_COMMENTS_DRAFTS with returned data', () => {
       const commit = jest.fn();
       const dispatch = jest.fn();
       const context = {
@@ -151,14 +146,10 @@ describe('Batch comments store actions', () => {
       res = { id: 1 };
       mock.onAny().reply(200, res);
 
-      actions
-        .fetchDrafts(context)
-        .then(() => {
-          expect(commit).toHaveBeenCalledWith('SET_BATCH_COMMENTS_DRAFTS', { id: 1 });
-          expect(dispatch).toHaveBeenCalledWith('convertToDiscussion', '1', { root: true });
-        })
-        .then(done)
-        .catch(done.fail);
+      return actions.fetchDrafts(context).then(() => {
+        expect(commit).toHaveBeenCalledWith('SET_BATCH_COMMENTS_DRAFTS', { id: 1 });
+        expect(dispatch).toHaveBeenCalledWith('convertToDiscussion', '1', { root: true });
+      });
     });
   });
 
@@ -177,32 +168,24 @@ describe('Batch comments store actions', () => {
       rootGetters = { discussionsStructuredByLineCode: 'discussions' };
     });
 
-    it('dispatches actions & commits', (done) => {
+    it('dispatches actions & commits', () => {
       mock.onAny().reply(200);
 
-      actions
-        .publishReview({ dispatch, commit, getters, rootGetters })
-        .then(() => {
-          expect(commit.mock.calls[0]).toEqual(['REQUEST_PUBLISH_REVIEW']);
-          expect(commit.mock.calls[1]).toEqual(['RECEIVE_PUBLISH_REVIEW_SUCCESS']);
+      return actions.publishReview({ dispatch, commit, getters, rootGetters }).then(() => {
+        expect(commit.mock.calls[0]).toEqual(['REQUEST_PUBLISH_REVIEW']);
+        expect(commit.mock.calls[1]).toEqual(['RECEIVE_PUBLISH_REVIEW_SUCCESS']);
 
-          expect(dispatch.mock.calls[0]).toEqual(['updateDiscussionsAfterPublish']);
-        })
-        .then(done)
-        .catch(done.fail);
+        expect(dispatch.mock.calls[0]).toEqual(['updateDiscussionsAfterPublish']);
+      });
     });
 
-    it('dispatches error commits', (done) => {
+    it('dispatches error commits', () => {
       mock.onAny().reply(500);
 
-      actions
-        .publishReview({ dispatch, commit, getters, rootGetters })
-        .then(() => {
-          expect(commit.mock.calls[0]).toEqual(['REQUEST_PUBLISH_REVIEW']);
-          expect(commit.mock.calls[1]).toEqual(['RECEIVE_PUBLISH_REVIEW_ERROR']);
-        })
-        .then(done)
-        .catch(done.fail);
+      return actions.publishReview({ dispatch, commit, getters, rootGetters }).then(() => {
+        expect(commit.mock.calls[0]).toEqual(['REQUEST_PUBLISH_REVIEW']);
+        expect(commit.mock.calls[1]).toEqual(['RECEIVE_PUBLISH_REVIEW_ERROR']);
+      });
     });
   });
 
@@ -262,7 +245,7 @@ describe('Batch comments store actions', () => {
   });
 
   describe('expandAllDiscussions', () => {
-    it('dispatches expandDiscussion for all drafts', (done) => {
+    it('dispatches expandDiscussion for all drafts', () => {
       const state = {
         drafts: [
           {
@@ -271,7 +254,7 @@ describe('Batch comments store actions', () => {
         ],
       };
 
-      testAction(
+      return testAction(
         actions.expandAllDiscussions,
         null,
         state,
@@ -282,7 +265,6 @@ describe('Batch comments store actions', () => {
             payload: { discussionId: '1' },
           },
         ],
-        done,
       );
     });
   });

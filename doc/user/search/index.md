@@ -14,8 +14,12 @@ The numbers indicate how many issues, merge requests, and to-do items are assign
 
 ![issues and MRs dashboard links](img/dashboard_links_v14_6.png)
 
-- **{issues}** **Issues**: The open issues assigned to you.
-- **{merge-request-open}** **Merge requests**: The [merge requests](../project/merge_requests/index.md) assigned to you.
+- **{issues}** **Issues**: Issues assigned to you.
+- **{merge-request-open}** **Merge requests**: Open [merge requests](../project/merge_requests/index.md).
+  Select the icon to show a dropdown list of merge request filters:
+  - [Attention requests](../project/merge_requests/index.md#request-attention-to-a-merge-request) (**{attention-solid}**) for you.
+  - [Review requests](../project/merge_requests/reviews/index.md) for you.
+  - Merge requests assigned to you.
 - **{todo-done}** **To-do items**: The [to-do items](../todos.md) assigned to you.
 
 You can search through **Open**, **Closed**, or **All** issues.
@@ -37,6 +41,8 @@ in the search field in the upper right corner:
 > - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
 > - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
 > - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
+> - Filtering by type was [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
+> - Filtering by attention request was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343528) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `mr_attention_requests`. Disabled by default.
 
 Follow these steps to filter the **Issues** and **Merge requests** list pages in projects and
 groups:
@@ -44,6 +50,7 @@ groups:
 1. Select **Search or filter results...**.
 1. In the dropdown list that appears, select the attribute you wish to filter by:
    - Assignee
+   - [Attention requests](../project/merge_requests/index.md#request-attention-to-a-merge-request)
    - Author
    - Confidential
    - [Epic and child Epic](../group/epics/index.md) (available only for the group the Epic was created, not for [higher group levels](https://gitlab.com/gitlab-org/gitlab/-/issues/233729)).
@@ -53,12 +60,6 @@ groups:
    - My-reaction
    - Release
    - Type
-
-     FLAG:
-     On self-managed GitLab, by default filtering by type is not available.
-     To make it available per group, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `vue_issues_list`.
-     On GitLab.com, this feature is not available.
-
    - Weight
    - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are
@@ -146,6 +147,10 @@ you can type (or select from the dropdown list) the following:
 - Deployed-before
 - Deployed-after
 
+NOTE:
+Projects using a [fast-forward merge method](../project/merge_requests/fast_forward_merge.md)
+do not return results, as this method does not create a merge commit.
+
 When filtering by an environment, a dropdown list presents all environments that
 you can choose from:
 
@@ -207,10 +212,14 @@ You can also look for the projects you [starred](../project/working_with_project
 You can **Explore** all public and internal projects available in GitLab.com, from which you can filter by visibility,
 through **Trending**, best rated with **Most stars**, or **All** of them.
 
-You can also sort them by **Name**, **Last created**, **Oldest created**, **Last updated**,
-**Oldest updated**, **Owner**, and choose to hide or show **archived projects**:
+You can also sort them by:
 
-![sort projects](img/sort_projects.png)
+- Name
+- Created date
+- Updated date
+- Owner
+
+You can also choose to hide or show archived projects.
 
 ## Groups
 
@@ -221,7 +230,7 @@ On the field **Filter by name**, type the group name you want to find, and GitLa
 filters them for you as you type.
 
 You can also **Explore** all public and internal groups available in GitLab.com,
-and sort them by **Last created**, **Oldest created**, **Last updated**, or **Oldest updated**.
+and sort them by **Name**, **Last created**, **Oldest created**, or **Updated date**.
 
 ## Issue boards
 
@@ -246,7 +255,7 @@ In the search bar, you can view autocomplete suggestions for:
 - Recently viewed issues (try and type some word from the title of a recently viewed issue)
 - Recently viewed merge requests (try and type some word from the title of a recently viewed merge request)
 - Recently viewed epics (try and type some word from the title of a recently viewed epic)
-- [GitLab Flavored Markdown](../markdown.md#gitlab-specific-references) (GFM) for issues in a project (try and type a GFM reference for an issue)
+- [GitLab Flavored Markdown](../markdown.md#gitlab-specific-references) (GLFM) for issues in a project (try and type a GLFM reference for an issue)
 
 ## Basic search
 

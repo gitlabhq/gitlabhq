@@ -21,7 +21,19 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
 
     context 'when a job is running' do
       it 'logs the transition' do
-        expect(Gitlab::AppLogger).to receive(:info).with( { batched_job_id: job.id, message: 'BatchedJob transition', new_state: :running, previous_state: :failed } )
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          {
+            batched_job_id: job.id,
+            batched_migration_id: job.batched_background_migration_id,
+            exception_class: nil,
+            exception_message: nil,
+            job_arguments: job.batched_migration.job_arguments,
+            job_class_name: job.batched_migration.job_class_name,
+            message: 'BatchedJob transition',
+            new_state: :running,
+            previous_state: :failed
+          }
+        )
 
         expect { job.run! }.to change(job, :started_at)
       end
@@ -31,7 +43,19 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
       let(:job) { create(:batched_background_migration_job, :running) }
 
       it 'logs the transition' do
-        expect(Gitlab::AppLogger).to receive(:info).with( { batched_job_id: job.id, message: 'BatchedJob transition', new_state: :succeeded, previous_state: :running } )
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          {
+            batched_job_id: job.id,
+            batched_migration_id: job.batched_background_migration_id,
+            exception_class: nil,
+            exception_message: nil,
+            job_arguments: job.batched_migration.job_arguments,
+            job_class_name: job.batched_migration.job_class_name,
+            message: 'BatchedJob transition',
+            new_state: :succeeded,
+            previous_state: :running
+          }
+        )
 
         job.succeed!
       end
@@ -89,7 +113,15 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
         end
 
         it 'logs the error' do
-          expect(Gitlab::AppLogger).to receive(:error).with( { message: error_message, batched_job_id: job.id } )
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            {
+              batched_job_id: job.id,
+              batched_migration_id: job.batched_background_migration_id,
+              job_arguments: job.batched_migration.job_arguments,
+              job_class_name: job.batched_migration.job_class_name,
+              message: error_message
+            }
+          )
 
           job.failure!(error: exception)
         end
@@ -100,13 +132,32 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
       let(:job) { create(:batched_background_migration_job, :running) }
 
       it 'logs the transition' do
-        expect(Gitlab::AppLogger).to receive(:info).with( { batched_job_id: job.id, message: 'BatchedJob transition', new_state: :failed, previous_state: :running } )
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          {
+            batched_job_id: job.id,
+            batched_migration_id: job.batched_background_migration_id,
+            exception_class: RuntimeError,
+            exception_message: 'error',
+            job_arguments: job.batched_migration.job_arguments,
+            job_class_name: job.batched_migration.job_class_name,
+            message: 'BatchedJob transition',
+            new_state: :failed,
+            previous_state: :running
+          }
+        )
 
-        job.failure!
+        job.failure!(error: RuntimeError.new('error'))
       end
 
       it 'tracks the exception' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(RuntimeError, { batched_job_id: job.id } )
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          RuntimeError,
+          {
+            batched_job_id: job.id,
+            job_arguments: job.batched_migration.job_arguments,
+            job_class_name: job.batched_migration.job_class_name
+          }
+        )
 
         job.failure!(error: RuntimeError.new)
       end
@@ -130,13 +181,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
   describe 'scopes' do
     let_it_be(:fixed_time) { Time.new(2021, 04, 27, 10, 00, 00, 00) }
 
-    let_it_be(:pending_job) { create(:batched_background_migration_job, :pending, updated_at: fixed_time) }
-    let_it_be(:running_job) { create(:batched_background_migration_job, :running, updated_at: fixed_time) }
-    let_it_be(:stuck_job) { create(:batched_background_migration_job, :pending, updated_at: fixed_time - described_class::STUCK_JOBS_TIMEOUT) }
-    let_it_be(:failed_job) { create(:batched_background_migration_job, :failed, attempts: 1) }
-
-    let!(:max_attempts_failed_job) { create(:batched_background_migration_job, :failed, attempts: described_class::MAX_ATTEMPTS) }
-    let!(:succeeded_job) { create(:batched_background_migration_job, :succeeded) }
+    let_it_be(:pending_job) { create(:batched_background_migration_job, :pending, created_at: fixed_time - 2.days, updated_at: fixed_time) }
+    let_it_be(:running_job) { create(:batched_background_migration_job, :running, created_at: fixed_time - 2.days, updated_at: fixed_time) }
+    let_it_be(:stuck_job) { create(:batched_background_migration_job, :pending, created_at: fixed_time, updated_at: fixed_time - described_class::STUCK_JOBS_TIMEOUT) }
+    let_it_be(:failed_job) { create(:batched_background_migration_job, :failed, created_at: fixed_time, attempts: 1) }
+    let_it_be(:max_attempts_failed_job) { create(:batched_background_migration_job, :failed, created_at: fixed_time, attempts: described_class::MAX_ATTEMPTS) }
 
     before do
       travel_to fixed_time
@@ -163,6 +212,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     describe '.retriable' do
       it 'returns retriable jobs' do
         expect(described_class.retriable).to contain_exactly(failed_job, stuck_job)
+      end
+    end
+
+    describe '.created_since' do
+      it 'returns jobs since a given time' do
+        expect(described_class.created_since(fixed_time)).to contain_exactly(stuck_job, failed_job, max_attempts_failed_job)
       end
     end
   end
@@ -192,6 +247,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     describe '#migration_job_arguments' do
       it 'returns the migration job_arguments' do
         expect(batched_job.migration_job_arguments).to eq(batched_migration.job_arguments)
+      end
+    end
+
+    describe '#migration_job_class_name' do
+      it 'returns the migration job_class_name' do
+        expect(batched_job.migration_job_class_name).to eq(batched_migration.job_class_name)
       end
     end
   end

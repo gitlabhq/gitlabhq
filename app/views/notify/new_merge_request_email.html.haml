@@ -2,18 +2,17 @@
   = html_escape(_('%{user} created a merge request: %{mr_link}')) % { user: link_to(@merge_request.author_name, user_url(@merge_request.author)),
                                                                       mr_link: merge_request_reference_link(@merge_request) }
 
-%p
-  .branch
-    = merge_path_description(@merge_request, 'to')
-  .author
-    Author: #{@merge_request.author_name}
-  .assignee
-    = assignees_label(@merge_request)
-  .reviewer
-    = reviewers_label(@merge_request)
-  .approvers
-    = render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter
+.branch
+  = merge_path_description(@merge_request, 'to')
+.author
+  Author: #{@merge_request.author_name}
+.assignee
+  = assignees_label(@merge_request)
+.reviewer
+  = reviewers_label(@merge_request)
+.approvers
+  = render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter
 
 - if @merge_request.description
-  .md
+  .md.gl-mt-5
     = markdown(@merge_request.description, pipeline: :email, author: @merge_request.author, current_user: @recipient, issuable_reference_expansion_enabled: true)

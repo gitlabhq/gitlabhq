@@ -314,6 +314,7 @@ export default {
     <local-storage-sync
       storage-key="gl-web-ide-button-selected"
       :value="selection"
+      as-string
       @input="select"
     />
     <gl-modal

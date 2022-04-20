@@ -52,7 +52,7 @@ module LooseForeignKeys
     end
 
     def tracked_tables
-      @tracked_tables ||= Gitlab::Database::LooseForeignKeys.definitions_by_table.keys
+      @tracked_tables ||= Gitlab::Database::LooseForeignKeys.definitions_by_table.keys.shuffle
     end
   end
 end

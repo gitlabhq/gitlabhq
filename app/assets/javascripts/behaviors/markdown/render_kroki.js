@@ -51,7 +51,7 @@ export function renderKroki(krokiImages) {
       return;
     }
 
-    const parent = krokiImage.closest('.js-markdown-code');
+    const parent = krokiImage.parentElement;
 
     // A single Kroki image is processed multiple times for some reason,
     // so this condition ensures we only create one alert per Kroki image

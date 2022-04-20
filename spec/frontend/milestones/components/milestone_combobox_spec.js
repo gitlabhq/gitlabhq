@@ -340,7 +340,9 @@ describe('Milestone combobox component', () => {
           await nextTick();
 
           expect(
-            findFirstProjectMilestonesDropdownItem().find('span').classes('selected-item'),
+            findFirstProjectMilestonesDropdownItem()
+              .find('svg')
+              .classes('gl-new-dropdown-item-check-icon'),
           ).toBe(true);
 
           selectFirstProjectMilestone();
@@ -348,8 +350,8 @@ describe('Milestone combobox component', () => {
           await nextTick();
 
           expect(
-            findFirstProjectMilestonesDropdownItem().find('span').classes('selected-item'),
-          ).toBe(false);
+            findFirstProjectMilestonesDropdownItem().find('svg').classes('gl-visibility-hidden'),
+          ).toBe(true);
         });
 
         describe('when a project milestones is selected', () => {
@@ -464,17 +466,19 @@ describe('Milestone combobox component', () => {
 
           await nextTick();
 
-          expect(findFirstGroupMilestonesDropdownItem().find('span').classes('selected-item')).toBe(
-            true,
-          );
+          expect(
+            findFirstGroupMilestonesDropdownItem()
+              .find('svg')
+              .classes('gl-new-dropdown-item-check-icon'),
+          ).toBe(true);
 
           selectFirstGroupMilestone();
 
           await nextTick();
 
-          expect(findFirstGroupMilestonesDropdownItem().find('span').classes('selected-item')).toBe(
-            false,
-          );
+          expect(
+            findFirstGroupMilestonesDropdownItem().find('svg').classes('gl-visibility-hidden'),
+          ).toBe(true);
         });
 
         describe('when a group milestones is selected', () => {

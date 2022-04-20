@@ -149,7 +149,6 @@ pre.code,
   .diff-line-num {
     &.old {
       background-color: $line-number-old;
-      border-color: $line-removed-dark;
 
       a {
         color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
@@ -158,7 +157,6 @@ pre.code,
 
     &.new {
       background-color: $line-number-new;
-      border-color: $line-added-dark;
 
       a {
         color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);

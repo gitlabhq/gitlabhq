@@ -332,4 +332,39 @@ RSpec.describe Users::DestroyService do
       expect(User.exists?(other_user.id)).to be(false)
     end
   end
+
+  context 'batched nullify' do
+    let(:other_user) { create(:user) }
+
+    context 'when :nullify_in_batches_on_user_deletion feature flag is enabled' do
+      it 'nullifies related associations in batches' do
+        expect(other_user).to receive(:nullify_dependent_associations_in_batches).and_call_original
+
+        described_class.new(user).execute(other_user, skip_authorization: true)
+      end
+
+      it 'nullifies last_updated_issues and closed_issues' do
+        issue = create(:issue, closed_by: other_user, updated_by: other_user)
+
+        described_class.new(user).execute(other_user, skip_authorization: true)
+
+        issue.reload
+
+        expect(issue.closed_by).to be_nil
+        expect(issue.updated_by).to be_nil
+      end
+    end
+
+    context 'when :nullify_in_batches_on_user_deletion feature flag is disabled' do
+      before do
+        stub_feature_flags(nullify_in_batches_on_user_deletion: false)
+      end
+
+      it 'does not use batching' do
+        expect(other_user).not_to receive(:nullify_dependent_associations_in_batches)
+
+        described_class.new(user).execute(other_user, skip_authorization: true)
+      end
+    end
+  end
 end

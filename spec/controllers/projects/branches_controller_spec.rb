@@ -688,21 +688,23 @@ RSpec.describe Projects::BranchesController do
     end
 
     context 'when gitaly is not available' do
+      let(:request) { get :index, format: :html, params: { namespace_id: project.namespace, project_id: project } }
+
       before do
         allow_next_instance_of(Gitlab::GitalyClient::RefService) do |ref_service|
           allow(ref_service).to receive(:local_branches).and_raise(GRPC::DeadlineExceeded)
         end
-
-        get :index, format: :html, params: {
-           namespace_id: project.namespace, project_id: project
-        }
       end
 
-      it 'returns with a status 200' do
-        expect(response).to have_gitlab_http_status(:ok)
+      it 'returns with a status 503' do
+        request
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
       end
 
       it 'sets gitaly_unavailable variable' do
+        request
+
         expect(assigns[:gitaly_unavailable]).to be_truthy
       end
     end

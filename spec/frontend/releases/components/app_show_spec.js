@@ -143,6 +143,12 @@ describe('Release show component', () => {
 
   describe('when the request succeeded, but the returned "project.release" key was null', () => {
     beforeEach(async () => {
+      // As we return a release as `null`, Apollo also throws an error to the console
+      // about the missing field. We need to suppress console.error in order to check
+      // that flash message was called
+
+      // eslint-disable-next-line no-console
+      console.error = jest.fn();
       const apolloProvider = createMockApollo([
         [
           oneReleaseQuery,

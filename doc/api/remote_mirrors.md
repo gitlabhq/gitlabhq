@@ -51,6 +51,43 @@ NOTE:
 For security reasons, the `url` attribute is always scrubbed of username
 and password information.
 
+## Get a single project's remote mirror
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82770) in GitLab 14.10.
+
+Returns a remote mirror and its statuses:
+
+```plaintext
+GET /projects/:id/remote_mirrors/:mirror_id
+```
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486"
+```
+
+Example response:
+
+```json
+{
+  "enabled": true,
+  "id": 101486,
+  "last_error": null,
+  "last_successful_update_at": "2020-01-06T17:32:02.823Z",
+  "last_update_at": "2020-01-06T17:32:02.823Z",
+  "last_update_started_at": "2020-01-06T17:31:55.864Z",
+  "only_protected_branches": true,
+  "keep_divergent_refs": true,
+  "update_status": "finished",
+  "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
+}
+```
+
+NOTE:
+For security reasons, the `url` attribute is always scrubbed of username
+and password information.
+
 ## Create a pull mirror
 
 Learn how to [configure a pull mirror](projects.md#configure-pull-mirroring-for-a-project) using the Projects API.
@@ -135,4 +172,24 @@ Example response:
     "update_status": "finished",
     "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
 }
+```
+
+## Delete a remote mirror
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82778) in GitLab 14.10.
+
+Delete a remote mirror.
+
+```plaintext
+DELETE /projects/:id/remote_mirrors/:mirror_id
+```
+
+| Attribute   | Type    | Required   | Description       |
+| :---------- | :-----  | :--------- |:------------------|
+| `mirror_id` | Integer | yes        | Remote mirror ID. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486"
 ```

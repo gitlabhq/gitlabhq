@@ -1,0 +1,19 @@
+{
+  "job1": {
+    "stage": "test",
+    "script": ["execute_script_that_will_fail"],
+    "allow_failure": true
+  },
+  "job2": {
+    "script": ["exit 1"],
+    "allow_failure": {
+      "exit_codes": 137
+    }
+  },
+  "job3": {
+    "script": ["exit 137"],
+    "allow_failure": {
+      "exit_codes": [137, 255]
+    }
+  }
+}

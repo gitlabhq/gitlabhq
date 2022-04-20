@@ -55,7 +55,7 @@ export default {
       :title="__('Subgroups')"
       :value="item.subgroupCount"
       css-class="number-subgroups gl-ml-5"
-      icon-name="folder-o"
+      icon-name="subgroup"
       data-testid="subgroups-count"
     />
     <item-stats-value
@@ -63,7 +63,7 @@ export default {
       :title="__('Projects')"
       :value="item.projectCount"
       css-class="number-projects gl-ml-5"
-      icon-name="bookmark"
+      icon-name="project"
       data-testid="projects-count"
     />
     <item-stats-value

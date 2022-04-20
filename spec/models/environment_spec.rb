@@ -23,7 +23,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to have_one(:upcoming_deployment) }
   it { is_expected.to have_one(:latest_opened_most_severe_alert) }
 
-  it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
   it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }
 
   it { is_expected.to validate_presence_of(:name) }
@@ -349,15 +348,28 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   end
 
   describe '.with_deployment' do
-    subject { described_class.with_deployment(sha) }
+    subject { described_class.with_deployment(sha, status: status) }
 
     let(:environment) { create(:environment, project: project) }
     let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+    let(:status) { nil }
 
     context 'when deployment has the specified sha' do
       let!(:deployment) { create(:deployment, environment: environment, sha: sha) }
 
       it { is_expected.to eq([environment]) }
+
+      context 'with success status filter' do
+        let(:status) { :success }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'with created status filter' do
+        let(:status) { :created }
+
+        it { is_expected.to contain_exactly(environment) }
+      end
     end
 
     context 'when deployment does not have the specified sha' do
@@ -459,8 +471,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#stop_action_available?' do
-    subject { environment.stop_action_available? }
+  describe '#stop_actions_available?' do
+    subject { environment.stop_actions_available? }
 
     context 'when no other actions' do
       it { is_expected.to be_falsey }
@@ -499,10 +511,10 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#stop_with_action!' do
+  describe '#stop_with_actions!' do
     let(:user) { create(:user) }
 
-    subject { environment.stop_with_action!(user) }
+    subject { environment.stop_with_actions!(user) }
 
     before do
       expect(environment).to receive(:available?).and_call_original
@@ -515,9 +527,10 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         end
 
         it do
-          subject
+          actions = subject
 
           expect(environment).to be_stopped
+          expect(actions).to match_array([])
         end
       end
 
@@ -536,18 +549,18 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     context 'when matching action is defined' do
       let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let(:build_a) { create(:ci_build, pipeline: pipeline) }
 
-      let!(:deployment) do
+      before do
         create(:deployment, :success,
-                            environment: environment,
-                            deployable: build,
-                            on_stop: 'close_app')
+          environment: environment,
+          deployable: build_a,
+          on_stop: 'close_app_a')
       end
 
       context 'when user is not allowed to stop environment' do
         let!(:close_action) do
-          create(:ci_build, :manual, pipeline: pipeline, name: 'close_app')
+          create(:ci_build, :manual, pipeline: pipeline, name: 'close_app_a')
         end
 
         it 'raises an exception' do
@@ -565,27 +578,196 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
         context 'when action did not yet finish' do
           let!(:close_action) do
-            create(:ci_build, :manual, pipeline: pipeline, name: 'close_app')
+            create(:ci_build, :manual, pipeline: pipeline, name: 'close_app_a')
           end
 
           it 'returns the same action' do
-            expect(subject).to eq(close_action)
-            expect(subject.user).to eq(user)
+            action = subject.first
+            expect(action).to eq(close_action)
+            expect(action.user).to eq(user)
           end
         end
 
         context 'if action did finish' do
           let!(:close_action) do
             create(:ci_build, :manual, :success,
-                   pipeline: pipeline, name: 'close_app')
+                   pipeline: pipeline, name: 'close_app_a')
           end
 
           it 'returns a new action of the same type' do
-            expect(subject).to be_persisted
-            expect(subject.name).to eq(close_action.name)
-            expect(subject.user).to eq(user)
+            action = subject.first
+
+            expect(action).to be_persisted
+            expect(action.name).to eq(close_action.name)
+            expect(action.user).to eq(user)
           end
         end
+
+        context 'close action does not raise ActiveRecord::StaleObjectError' do
+          let!(:close_action) do
+            create(:ci_build, :manual, pipeline: pipeline, name: 'close_app_a')
+          end
+
+          before do
+            # preload the build
+            environment.stop_actions
+
+            # Update record as the other process. This makes `environment.stop_action` stale.
+            close_action.drop!
+          end
+
+          it 'successfully plays the build even if the build was a stale object' do
+            # Since build is droped.
+            expect(close_action.processed).to be_falsey
+
+            # it encounters the StaleObjectError at first, but reloads the object and runs `build.play`
+            expect { subject }.not_to raise_error(ActiveRecord::StaleObjectError)
+
+            # Now the build should be processed.
+            expect(close_action.reload.processed).to be_truthy
+          end
+        end
+      end
+    end
+
+    context 'when there are more then one stop action for the environment' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:build_a) { create(:ci_build, pipeline: pipeline) }
+      let(:build_b) { create(:ci_build, pipeline: pipeline) }
+
+      let!(:close_actions) do
+        [
+          create(:ci_build, :manual, pipeline: pipeline, name: 'close_app_a'),
+          create(:ci_build, :manual, pipeline: pipeline, name: 'close_app_b')
+        ]
+      end
+
+      before do
+        project.add_developer(user)
+
+        create(:deployment, :success,
+          environment: environment,
+          deployable: build_a,
+          finished_at: 5.minutes.ago,
+          on_stop: 'close_app_a')
+
+        create(:deployment, :success,
+          environment: environment,
+          deployable: build_b,
+          finished_at: 1.second.ago,
+          on_stop: 'close_app_b')
+      end
+
+      it 'returns the same actions' do
+        actions = subject
+
+        expect(actions.count).to eq(close_actions.count)
+        expect(actions.pluck(:id)).to match_array(close_actions.pluck(:id))
+        expect(actions.pluck(:user)).to match_array(close_actions.pluck(:user))
+      end
+
+      context 'when there are failed deployment jobs' do
+        before do
+          create(:ci_build, pipeline: pipeline, name: 'close_app_c')
+
+          create(:deployment, :failed,
+            environment: environment,
+            deployable: create(:ci_build, pipeline: pipeline),
+            on_stop: 'close_app_c')
+        end
+
+        it 'returns only stop actions from successful deployment jobs' do
+          actions = subject
+
+          expect(actions).to match_array(close_actions)
+          expect(actions.count).to eq(environment.successful_deployments.count)
+        end
+      end
+
+      context 'when the feature is disabled' do
+        before do
+          stub_feature_flags(environment_multiple_stop_actions: false)
+        end
+
+        it 'returns the last deployment job stop action' do
+          stop_actions = subject
+
+          expect(stop_actions.first).to eq(close_actions[1])
+          expect(stop_actions.count).to eq(1)
+        end
+      end
+    end
+  end
+
+  describe '#stop_actions' do
+    subject { environment.stop_actions }
+
+    context 'when there are no deployments and builds' do
+      it 'returns empty array' do
+        is_expected.to match_array([])
+      end
+    end
+
+    context 'when there are multiple deployments with actions' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline) }
+      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline) }
+      let!(:ci_build_c) { create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'close_app_a') }
+      let!(:ci_build_d) { create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'close_app_b') }
+
+      let!(:deployment_a) do
+        create(:deployment,
+          :success, project: project, environment: environment, deployable: ci_build_a, on_stop: 'close_app_a')
+      end
+
+      let!(:deployment_b) do
+        create(:deployment,
+          :success, project: project, environment: environment, deployable: ci_build_b, on_stop: 'close_app_b')
+      end
+
+      before do
+        # Create failed deployment without stop_action.
+        build = create(:ci_build, project: project, pipeline: pipeline)
+        create(:deployment, :failed, project: project, environment: environment, deployable: build)
+      end
+
+      it 'returns only the stop actions' do
+        expect(subject.pluck(:id)).to contain_exactly(ci_build_c.id, ci_build_d.id)
+      end
+    end
+  end
+
+  describe '#last_deployment_group' do
+    subject { environment.last_deployment_group }
+
+    context 'when there are no deployments and builds' do
+      it do
+        is_expected.to eq(Deployment.none)
+      end
+    end
+
+    context 'when there are deployments for multiple pipelines' do
+      let(:pipeline_a) { create(:ci_pipeline, project: project) }
+      let(:pipeline_b) { create(:ci_pipeline, project: project) }
+      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
+      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
+      let(:ci_build_c) { create(:ci_build, project: project, pipeline: pipeline_a) }
+      let(:ci_build_d) { create(:ci_build, project: project, pipeline: pipeline_a) }
+
+      # Successful deployments for pipeline_a
+      let!(:deployment_a) { create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a) }
+      let!(:deployment_b) { create(:deployment, :success, project: project, environment: environment, deployable: ci_build_c) }
+
+      before do
+        # Failed deployment for pipeline_a
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_d)
+
+        # Failed deployment for pipeline_b
+        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+      end
+
+      it 'returns the successful deployment jobs for the last deployment pipeline' do
+        expect(subject.pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
       end
     end
   end
@@ -698,9 +880,28 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       context 'when there is a deployment record with success status' do
         let!(:deployment) { create(:deployment, :success, environment: environment) }
+        let!(:old_deployment) { create(:deployment, :success, environment: environment, finished_at: 2.days.ago) }
 
         it 'returns the latest successful deployment' do
           is_expected.to eq(deployment)
+        end
+
+        context 'env_last_deployment_by_finished_at feature flag' do
+          it 'when enabled it returns the deployment with the latest finished_at' do
+            stub_feature_flags(env_last_deployment_by_finished_at: true)
+
+            expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
+
+            is_expected.to eq(deployment)
+          end
+
+          it 'when disabled it returns the deployment with the highest id' do
+            stub_feature_flags(env_last_deployment_by_finished_at: false)
+
+            expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
+
+            is_expected.to eq(old_deployment)
+          end
         end
       end
     end
@@ -724,6 +925,26 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         with_cross_joins_prevented do
           expect(subject.id).to eq(ci_build_a.id)
         end
+      end
+    end
+  end
+
+  describe '#last_deployment_pipeline' do
+    subject { environment.last_deployment_pipeline }
+
+    let(:pipeline_a) { create(:ci_pipeline, project: project) }
+    let(:pipeline_b) { create(:ci_pipeline, project: project) }
+    let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
+    let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
+
+    before do
+      create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+    end
+
+    it 'does not join across databases' do
+      with_cross_joins_prevented do
+        expect(subject.id).to eq(pipeline_a.id)
       end
     end
   end

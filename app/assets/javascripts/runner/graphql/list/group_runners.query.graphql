@@ -1,5 +1,5 @@
 #import "~/runner/graphql/list/list_item.fragment.graphql"
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getGroupRunners(
   $groupFullPath: ID!
@@ -7,6 +7,7 @@ query getGroupRunners(
   $after: String
   $first: Int
   $last: Int
+  $paused: Boolean
   $status: CiRunnerStatus
   $type: CiRunnerType
   $search: String
@@ -20,6 +21,7 @@ query getGroupRunners(
       after: $after
       first: $first
       last: $last
+      paused: $paused
       status: $status
       type: $type
       search: $search
@@ -30,6 +32,7 @@ query getGroupRunners(
         editUrl
         node {
           ...ListItem
+          projectCount # Used to determine why some project runners can't be deleted
         }
       }
       pageInfo {

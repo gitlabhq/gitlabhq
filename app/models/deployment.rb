@@ -14,8 +14,8 @@ class Deployment < ApplicationRecord
 
   ARCHIVABLE_OFFSET = 50_000
 
-  belongs_to :project, required: true
-  belongs_to :environment, required: true
+  belongs_to :project, optional: false
+  belongs_to :environment, optional: false
   belongs_to :cluster, class_name: 'Clusters::Cluster', optional: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true, optional: true # rubocop:disable Cop/PolymorphicAssociations
@@ -46,7 +46,7 @@ class Deployment < ApplicationRecord
   scope :for_project, -> (project_id) { where(project_id: project_id) }
   scope :for_projects, -> (projects) { where(project: projects) }
 
-  scope :visible, -> { where(status: %i[running success failed canceled blocked]) }
+  scope :visible, -> { where(status: VISIBLE_STATUSES) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
   scope :upcoming, -> { where(status: %i[blocked running]) }
@@ -58,6 +58,7 @@ class Deployment < ApplicationRecord
 
   scope :ordered, -> { order(finished_at: :desc) }
 
+  VISIBLE_STATUSES = %i[running success failed canceled blocked].freeze
   FINISHED_STATUSES = %i[success failed canceled].freeze
 
   state_machine :status, initial: :created do
@@ -378,6 +379,12 @@ class Deployment < ApplicationRecord
       tag == params[:tag] &&
       sha == params[:sha] &&
       status == params[:status]
+  end
+
+  def tier_in_yaml
+    return unless deployable
+
+    deployable.environment_deployment_tier
   end
 
   private

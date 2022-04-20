@@ -16,7 +16,7 @@ module Gitlab
       def map
         @map ||=
           begin
-            @exported_members.inject(missing_keys_tracking_hash) do |hash, member|
+            @exported_members.each_with_object(missing_keys_tracking_hash) do |member, hash|
               if member['user']
                 old_user_id = member['user']['id']
                 existing_user_id = existing_users_email_map[get_email(member)]
@@ -24,8 +24,6 @@ module Gitlab
               else
                 add_team_member(member)
               end
-
-              hash
             end
           end
       end

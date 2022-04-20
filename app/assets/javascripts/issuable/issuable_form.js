@@ -12,6 +12,7 @@ import ZenMode from '~/zen_mode';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
+const DATA_ISSUES_NEW_PATH = 'data-new-issue-path';
 
 function organizeQuery(obj, isFallbackKey = false) {
   if (!obj[MR_SOURCE_BRANCH] && !obj[MR_TARGET_BRANCH]) {
@@ -68,6 +69,7 @@ export default class IssuableForm {
     this.reviewersSelect = new UsersSelect(undefined, '.js-reviewer-search');
     this.zenMode = new ZenMode();
 
+    this.newIssuePath = form[0].getAttribute(DATA_ISSUES_NEW_PATH);
     this.titleField = this.form.find('input[name*="[title]"]');
     this.descriptionField = this.form.find('textarea[name*="[description]"]');
     if (!(this.titleField.length && this.descriptionField.length)) {
@@ -104,8 +106,8 @@ export default class IssuableForm {
   }
 
   initAutosave() {
-    const { search } = document.location;
-    const searchTerm = format(search);
+    const { search, pathname } = document.location;
+    const searchTerm = this.newIssuePath === pathname ? '' : format(search);
     const fallbackKey = getFallbackKey();
 
     this.autosave = new Autosave(

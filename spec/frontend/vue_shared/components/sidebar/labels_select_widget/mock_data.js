@@ -141,6 +141,34 @@ export const issuableLabelsQueryResponse = {
   },
 };
 
+export const issuableLabelsSubscriptionResponse = {
+  data: {
+    issuableLabelsUpdated: {
+      id: '1',
+      labels: {
+        nodes: [
+          {
+            __typename: 'Label',
+            color: '#330066',
+            description: null,
+            id: 'gid://gitlab/ProjectLabel/1',
+            title: 'Label1',
+            textColor: '#000000',
+          },
+          {
+            __typename: 'Label',
+            color: '#000000',
+            description: null,
+            id: 'gid://gitlab/ProjectLabel/2',
+            title: 'Label2',
+            textColor: '#ffffff',
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const updateLabelsMutationResponse = {
   data: {
     updateIssuableLabels: {

@@ -192,6 +192,8 @@ pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_cla
 #### Background migrations stuck in 'pending' state
 
 GitLab 13.6 introduced an issue where a background migration named `BackfillJiraTrackerDeploymentType2` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [13.6.0 version-specific instructions](#1360).
+GitLab 14.4 introduced an issue where a background migration named `PopulateTopicsTotalProjectsCountCache` can be permanently stuck in a **pending** state across upgrades when the instance lacks records that match the migration's target. To clean up this stuck migration, see the [14.4.0 version-specific instructions](#1440).
+GitLab 14.8 introduced an issue where a background migration named `PopulateTopicsNonPrivateProjectsCount` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [14.8.0 version-specific instructions](#1480).
 
 For other background migrations stuck in pending, run the following check. If it returns non-zero and the count does not decrease over time, follow the rest of the steps in this section.
 
@@ -398,6 +400,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 14.8.0
 
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.8.2 or later will reset runner registration tokens for your groups and projects.
 - The agent server for Kubernetes [is enabled by default](https://about.gitlab.com/releases/2022/02/22/gitlab-14-8-released/#the-agent-server-for-kubernetes-is-enabled-by-default)
   on Omnibus installations. If you run GitLab at scale,
   such as [the reference architectures](../administration/reference_architectures/index.md),
@@ -417,15 +421,49 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
   1. Add `gitlab_kas['enable'] = false` to `gitlab.rb`.
   1. If the server is already upgraded to 14.8, run `gitlab-ctl reconfigure`.
+- GitLab 14.8.0 includes a
+[background migration `PopulateTopicsNonPrivateProjectsCount`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79140)
+that may remain stuck permanently in a **pending** state.
+
+    To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+    ```ruby
+        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsNonPrivateProjectsCount").find_each do |job|
+          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCountq", job.arguments)
+        end
+    ```
+
+- If upgrading from a version earlier than 14.3.0, to avoid
+  [an issue with job retries](https://gitlab.com/gitlab-org/gitlab/-/issues/357822), first upgrade
+  to GitLab 14.7.x and make sure all batched migrations have finished.
+- If upgrading from version 14.3.0 or later, you might notice a failed
+  [batched migration](../user/admin_area/monitoring/background_migrations.md) named
+  `BackfillNamespaceIdForNamespaceRoute`. You can [ignore](https://gitlab.com/gitlab-org/gitlab/-/issues/357822)
+  this. Retry it after you upgrade to version 14.9.x.
 
 ### 14.7.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.7.4 or later will reset runner registration tokens for your groups and projects.
+- GitLab 14.7 introduced a change where Gitaly expects persistent files in the `/tmp` directory.
+  When using the `noatime` mount option on `/tmp` in a node running Gitaly, most Linux distributions
+  run into [an issue with Git server hooks getting deleted](https://gitlab.com/gitlab-org/gitaly/-/issues/4113).
+  These conditions are present in the default Amazon Linux configuration.
+
+  If your Linux distribution manages files in `/tmp` with the `tmpfiles.d` service, you
+  can override the behavior of `tmpfiles.d` for the Gitaly files and avoid this issue:
+
+  ```shell
+  sudo echo "x /tmp/gitaly-hooks-*" > /etc/tmpfiles.d/gitaly-workaround.conf
+  ```
 
 ### 14.6.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
-
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.6.5 or later will reset runner registration tokens for your groups and projects.
+  
 ### 14.5.0
 
 - When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
@@ -473,6 +511,17 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   as Sidekiq would continue using a bad connection. Geo and other features that rely on
   cron jobs running regularly do not work until Sidekiq is restarted. We recommend
   upgrading to GitLab 14.4.3 and later if this issue affects you.
+- GitLab 14.4.0 includes a
+[background migration `PopulateTopicsTotalProjectsCountCache`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71033)
+that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
+
+    To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+    ```ruby
+        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsTotalProjectsCountCache").find_each do |job|
+          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsTotalProjectsCountCache", job.arguments)
+        end
+    ```
 
 ### 14.3.0
 
@@ -576,6 +625,8 @@ for how to proceed.
 - The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+- See [Custom Rack Attack initializers](#custom-rack-attack-initializers) if you persist your own custom Rack Attack
+  initializers during upgrades.
 
 #### Upgrading to later 14.Y releases
 
@@ -753,6 +804,14 @@ all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later
    ```
 
 1. Only then, continue to upgrade to later versions of GitLab.
+
+#### Custom Rack Attack initializers
+
+From GitLab 13.0.1, custom Rack Attack initializers (`config/initializers/rack_attack.rb`) are replaced with initializers
+supplied with GitLab during upgrades. We recommend you use these GitLab-supplied initializers.
+
+If you persist your own Rack Attack initializers between upgrades, you might
+[get `500` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/334681) when [upgrading to GitLab 14.0 and later](#1400).
 
 ### 12.2.0
 

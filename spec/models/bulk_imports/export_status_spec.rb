@@ -13,6 +13,10 @@ RSpec.describe BulkImports::ExportStatus do
     double(parsed_response: [{ 'relation' => 'labels', 'status' => status, 'error' => 'error!' }])
   end
 
+  let(:invalid_response_double) do
+    double(parsed_response: [{ 'relation' => 'not_a_real_relation', 'status' => status, 'error' => 'error!' }])
+  end
+
   subject { described_class.new(tracker, relation) }
 
   before do
@@ -35,6 +39,18 @@ RSpec.describe BulkImports::ExportStatus do
 
       it 'returns false' do
         expect(subject.started?).to eq(false)
+      end
+
+      context 'when returned relation is invalid' do
+        before do
+          allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            allow(client).to receive(:get).and_return(invalid_response_double)
+          end
+        end
+
+        it 'returns false' do
+          expect(subject.started?).to eq(false)
+        end
       end
     end
   end
@@ -63,7 +79,7 @@ RSpec.describe BulkImports::ExportStatus do
 
       it 'returns true' do
         expect(subject.failed?).to eq(true)
-        expect(subject.error).to eq('Empty export status response')
+        expect(subject.error).to eq('Empty relation export status')
       end
     end
   end

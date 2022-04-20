@@ -63,21 +63,6 @@ module TimeboxesHelper
     issues.size
   end
 
-  # Returns count of milestones for different states
-  # Uses explicit hash keys as the 'opened' state URL params differs from the db value
-  # and we need to add the total
-  # rubocop: disable CodeReuse/ActiveRecord
-  def milestone_counts(milestones)
-    counts = milestones.reorder(nil).group(:state).count
-
-    {
-      opened: counts['active'] || 0,
-      closed: counts['closed'] || 0,
-      all: counts.values.sum || 0
-    }
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   def milestone_progress_tooltip_text(milestone)
     has_issues = milestone.total_issues_count > 0
 

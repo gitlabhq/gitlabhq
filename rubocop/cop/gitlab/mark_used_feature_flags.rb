@@ -31,6 +31,7 @@ module RuboCop
         ].freeze
         SELF_METHODS = %i[
           push_frontend_feature_flag
+          push_force_frontend_feature_flag
           limit_feature_flag=
           limit_feature_flag_for_override=
         ].freeze + EXPERIMENT_METHODS + RUGGED_METHODS + WORKER_METHODS

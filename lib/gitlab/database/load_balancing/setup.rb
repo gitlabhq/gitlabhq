@@ -17,7 +17,12 @@ module Gitlab
           configure_connection
           setup_connection_proxy
           setup_service_discovery
-          setup_feature_flag_to_model_load_balancing
+
+          ::Gitlab::Database::LoadBalancing::Logger.debug(
+            event: :setup,
+            model: model.name,
+            start_service_discovery: @start_service_discovery
+          )
         end
 
         def configure_connection
@@ -45,21 +50,6 @@ module Gitlab
           setup_class_attribute(:sticking, Sticking.new(load_balancer))
         end
 
-        # TODO: This is temporary code to gradually redirect traffic to use
-        # a dedicated DB replicas, or DB primaries (depending on configuration)
-        # This implements a sticky behavior for the current request if enabled.
-        #
-        # This is needed for Phase 3 and Phase 4 of application rollout
-        # https://gitlab.com/groups/gitlab-org/-/epics/6160#progress
-        #
-        # If `GITLAB_USE_MODEL_LOAD_BALANCING` is set, its value is preferred
-        # Otherwise, a `use_model_load_balancing` FF value is used
-        def setup_feature_flag_to_model_load_balancing
-          return if active_record_base?
-
-          @model.singleton_class.prepend(ModelLoadBalancingFeatureFlagMixin)
-        end
-
         def setup_service_discovery
           return unless configuration.service_discovery_enabled?
 
@@ -83,31 +73,6 @@ module Gitlab
 
         def active_record_base?
           @model == ActiveRecord::Base
-        end
-
-        module ModelLoadBalancingFeatureFlagMixin
-          extend ActiveSupport::Concern
-
-          def use_model_load_balancing?
-            # Cache environment variable and return env variable first if defined
-            default_use_model_load_balancing_env = Gitlab.dev_or_test_env? || nil
-            use_model_load_balancing_env = Gitlab::Utils.to_boolean(ENV.fetch('GITLAB_USE_MODEL_LOAD_BALANCING', default_use_model_load_balancing_env))
-
-            unless use_model_load_balancing_env.nil?
-              return use_model_load_balancing_env
-            end
-
-            # Check a feature flag using RequestStore (if active)
-            return false unless Gitlab::SafeRequestStore.active?
-
-            Gitlab::SafeRequestStore.fetch(:use_model_load_balancing) do
-              Feature.enabled?(:use_model_load_balancing, default_enabled: :yaml)
-            end
-          end
-
-          def connection
-            use_model_load_balancing? ? super : ApplicationRecord.connection
-          end
         end
       end
     end

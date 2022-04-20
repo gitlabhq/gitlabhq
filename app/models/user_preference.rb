@@ -19,6 +19,9 @@ class UserPreference < ApplicationRecord
     greater_than_or_equal_to: Gitlab::TabWidth::MIN,
     less_than_or_equal_to: Gitlab::TabWidth::MAX
   }
+  validates :diffs_deletion_color, :diffs_addition_color,
+            format: { with: ColorsHelper::HEX_COLOR_PATTERN },
+            allow_blank: true
 
   ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
 

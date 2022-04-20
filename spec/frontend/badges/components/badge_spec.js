@@ -89,11 +89,9 @@ describe('Badge component', () => {
   });
 
   describe('behavior', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       setFixtures('<div id="dummy-element"></div>');
-      createComponent({ ...dummyProps }, '#dummy-element')
-        .then(done)
-        .catch(done.fail);
+      return createComponent({ ...dummyProps }, '#dummy-element');
     });
 
     it('shows a badge image after loading', () => {

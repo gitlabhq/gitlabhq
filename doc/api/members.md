@@ -18,10 +18,9 @@ The access levels are defined in the `Gitlab::Access` module. Currently, these l
 - Maintainer (`40`)
 - Owner (`50`) - Only valid to set for groups
 
-WARNING:
-Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
-projects in personal namespaces don't show owner (`50`) permission
-for owner.
+NOTE:
+In [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects in personal namespaces have an `access_level` of `50`(Owner).
+In GitLab 14.8 and earlier, projects in personal namespaces have an `access_level` of `40` (Maintainer) due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299)
 
 ## Limitations
 
@@ -63,6 +62,15 @@ Example response:
     "state": "active",
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root",
+    "created_at": "2012-09-22T14:13:35Z",
+    "created_by": {
+      "id": 2,
+      "username": "john_doe",
+      "name": "John Doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+      "web_url": "http://192.168.1.8:3000/root"
+    },
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
     "group_saml_identity": null,
@@ -75,6 +83,15 @@ Example response:
     "state": "active",
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root",
+    "created_at": "2012-09-22T14:13:35Z",
+    "created_by": {
+      "id": 1,
+      "username": "raymond_smith",
+      "name": "Raymond Smith",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+      "web_url": "http://192.168.1.8:3000/root"
+    },
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
     "email": "john@example.com",
@@ -132,6 +149,15 @@ Example response:
     "state": "active",
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root",
+    "created_at": "2012-09-22T14:13:35Z",
+    "created_by": {
+      "id": 2,
+      "username": "john_doe",
+      "name": "John Doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+      "web_url": "http://192.168.1.8:3000/root"
+    },
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
     "group_saml_identity": null,
@@ -144,6 +170,15 @@ Example response:
     "state": "active",
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root",
+    "created_at": "2012-09-22T14:13:35Z",
+    "created_by": {
+      "id": 1,
+      "username": "raymond_smith",
+      "name": "Raymond Smith",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+      "web_url": "http://192.168.1.8:3000/root"
+    },
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
     "email": "john@example.com",
@@ -161,6 +196,15 @@ Example response:
     "state": "active",
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root",
+    "created_at": "2012-10-22T14:13:35Z",
+    "created_by": {
+      "id": 2,
+      "username": "john_doe",
+      "name": "John Doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+      "web_url": "http://192.168.1.8:3000/root"
+    },
     "expires_at": "2012-11-22T14:13:35Z",
     "access_level": 30,
     "group_saml_identity": null,
@@ -201,6 +245,14 @@ Example response:
   "access_level": 30,
   "email": "john@example.com",
   "created_at": "2012-10-22T14:13:35Z",
+  "created_by": {
+    "id": 2,
+    "username": "john_doe",
+    "name": "John Doe",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root"
+  },
   "expires_at": null,
   "group_saml_identity": null,
   "membership_state": "active"
@@ -239,6 +291,15 @@ Example response:
   "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
   "web_url": "http://192.168.1.8:3000/root",
   "access_level": 30,
+  "created_at": "2012-10-22T14:13:35Z",
+  "created_by": {
+    "id": 2,
+    "username": "john_doe",
+    "name": "John Doe",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root"
+  },
   "email": "john@example.com",
   "expires_at": null,
   "group_saml_identity": null,
@@ -250,7 +311,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217384) in GitLab 13.5.
 
-Gets a list of group members that count as billable. The list includes members in the subgroup or subproject.
+Gets a list of group members that count as billable. The list includes members in subgroups and projects.
 
 This API endpoint works on top-level groups only. It does not work on subgroups.
 
@@ -267,11 +328,12 @@ respectively.
 GET /groups/:id/billable_members
 ```
 
-| Attribute | Type | Required | Description                                                                                                  |
-| --------- | ---- | -------- |--------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `search`  | string         | no  | A query string to search for group members by name, username, or public email.                               |
-| `sort`    | string         | no  | A query string containing parameters that specify the sort attribute and order. See supported values below.  |
+| Attribute                     | Type            | Required  | Description                                                                                                   |
+| ----------------------------- | --------------- | --------- |-------------------------------------------------------------------------------------------------------------- |
+| `id`                          | integer/string  | yes       | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user  |
+| `search`                      | string          | no        | A query string to search for group members by name, username, or public email.                                |
+| `sort`                        | string          | no        | A query string containing parameters that specify the sort attribute and order. See supported values below.   |
+| `include_awaiting_members`    | boolean         | no        | Determines if awaiting members are included.                                                                  |
 
 The supported values for the `sort` attribute are:
 
@@ -454,6 +516,15 @@ Example response:
   "state": "active",
   "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
   "web_url": "http://192.168.1.8:3000/root",
+  "created_at": "2012-10-22T14:13:35Z",
+  "created_by": {
+    "id": 2,
+    "username": "john_doe",
+    "name": "John Doe",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root"
+  },
   "expires_at": "2012-10-22T14:13:35Z",
   "access_level": 30,
   "email": "john@example.com",
@@ -492,6 +563,15 @@ Example response:
   "state": "active",
   "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
   "web_url": "http://192.168.1.8:3000/root",
+  "created_at": "2012-10-22T14:13:35Z",
+  "created_by": {
+    "id": 2,
+    "username": "john_doe",
+    "name": "John Doe",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root"
+  },
   "expires_at": "2012-10-22T14:13:35Z",
   "access_level": 40,
   "email": "john@example.com",
@@ -529,6 +609,15 @@ Example response:
   "state": "active",
   "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
   "web_url": "http://192.168.1.8:3000/root",
+  "created_at": "2012-10-22T14:13:35Z",
+  "created_by": {
+    "id": 2,
+    "username": "john_doe",
+    "name": "John Doe",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root"
+  },
   "expires_at": "2012-10-22T14:13:35Z",
   "access_level": 40,
   "email": "john@example.com",
@@ -566,6 +655,15 @@ Example response:
   "state": "active",
   "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
   "web_url": "http://192.168.1.8:3000/root",
+  "created_at": "2012-10-22T14:13:35Z",
+  "created_by": {
+    "id": 2,
+    "username": "john_doe",
+    "name": "John Doe",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root"
+  },
   "expires_at": "2012-10-22",
   "access_level": 40,
   "email": "john@example.com",

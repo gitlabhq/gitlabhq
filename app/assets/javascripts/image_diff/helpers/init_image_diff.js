@@ -1,4 +1,4 @@
-import ImageFile from '../../commit/image_file';
+import ImageFile from '~/commit/image_file';
 import ImageDiff from '../image_diff';
 import ReplacedImageDiff from '../replaced_image_diff';
 

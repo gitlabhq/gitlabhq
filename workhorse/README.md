@@ -1,35 +1,14 @@
-# GitLab Workhorse
+---
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
 
-GitLab Workhorse is a smart reverse proxy for GitLab. It handles
-"large" HTTP requests such as file downloads, file uploads, Git
-push/pull and Git archive downloads.
+# Workhorse documentation
 
-Workhorse itself is not a feature, but there are [several features in
-GitLab](doc/architecture/gitlab_features.md) that would not work efficiently without Workhorse.
+This document was moved to [another location](../doc/development/workhorse/index.md).
 
-## Canonical source
-
-The canonical source for Workhorse is
-[gitlab-org/gitlab/workhorse](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse).
-Prior to https://gitlab.com/groups/gitlab-org/-/epics/4826, it was
-[gitlab-org/gitlab-workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse/tree/master),
-but that repository is no longer used for development.
-
-## Documentation
-
-Workhorse documentation is available in the [`doc` folder of this repository](doc/).
-
-* Architectural overview
-  * [GitLab features that rely on Workhorse](doc/architecture/gitlab_features.md)
-  * [Websocket channel support](doc/architecture/channel.md)
-* Operating Workhorse
-  * [Source installation](doc/operations/install.md)
-  * [Workhorse configuration](doc/operations/configuration.md)
-* [Contributing](CONTRIBUTING.md)
-  * [Adding new features](doc/development/new_features.md)
-  * [Testing your code](doc/development/tests.md)
-
-## License
-
-This code is distributed under the MIT license, see the [LICENSE](LICENSE) file.
-
+<!-- This redirect file can be deleted after <2022-07-01>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

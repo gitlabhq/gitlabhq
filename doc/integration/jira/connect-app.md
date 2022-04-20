@@ -94,7 +94,7 @@ from outside the Marketplace, which allows you to install the application:
 1. Place your Jira instance into
    [development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-2--enable-development-mode).
 1. Sign in to your GitLab application as a user with administrator access.
-1. Install the GitLab application from your self-managed GitLab instance, as
+1. Install the GitLab application from your Jira instance, as
    described in the [Atlassian developer guides](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app):
    1. In your Jira instance, go to **Apps > Manage Apps** and select **Upload app**:
 

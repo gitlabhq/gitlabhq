@@ -141,6 +141,17 @@ module Emails
       end
     end
 
+    def new_email_address_added_email(user, email)
+      return unless user
+
+      @user = user
+      @email = email
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        mail(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
+      end
+    end
+
     private
 
     def profile_email_with_layout(to:, subject:, layout: 'mailer')

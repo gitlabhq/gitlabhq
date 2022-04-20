@@ -60,13 +60,14 @@ as shown in the following table:
 
 | Capability                                                      | In Free & Premium   | In Ultimate        |
 |:----------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure Secret Detection Scanners](#configuration)           | **{check-circle}**  | **{check-circle}** |
-| [Customize Secret Detection Settings](#customizing-settings)    | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](../sast/index.md#reports-json-format)        | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in merge request                    | **{dotted-circle}** | **{check-circle}** |
+| [Configure Secret Detection scanner](#configuration)            | **{check-circle}**  | **{check-circle}** |
+| [Customize Secret Detection settings](#customizing-settings)    | **{check-circle}**  | **{check-circle}** |
+| Download [JSON Report](../sast/index.md#reports-json-format)    | **{check-circle}**  | **{check-circle}** |
+| See new findings in the merge request widget                    | **{dotted-circle}** | **{check-circle}** |
 | View identified secrets in the pipelines' **Security** tab      | **{dotted-circle}** | **{check-circle}** |
-| [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** | **{check-circle}** |
+| [Manage vulnerabilities](../vulnerabilities/index.md)           | **{dotted-circle}** | **{check-circle}** |
+| [Access the Security Dashboard](../security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
+| [Customize Secret Detection rulesets](#custom-rulesets)         | **{dotted-circle}** | **{check-circle}** |
 
 ## Configuration
 
@@ -107,25 +108,48 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
+### Supported distributions
+
+The default scanner images are build off a base Alpine image for size and maintainability.
+
+#### FIPS-enabled images
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+
+GitLab offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the images that are FIPS-enabled. To use the FIPS-enabled images, you can either:
+
+- Set the `SAST_IMAGE_SUFFIX` to `-fips`.
+- Add the `-fips` extension to the default image name.
+
+For example:
+
+```yaml
+variables:
+  SECRET_DETECTION_IMAGE_SUFFIX: '-fips'
+
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+```
+
 ### Enable Secret Detection via an automatic merge request
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
 
-To enable Secret Detection in a project, you can create a merge request
-from the Security Configuration page.
-
-1. In the project where you want to enable Secret Detection, go to
-   **Security & Compliance > Configuration**.
-1. In the **Secret Detection** row, select **Configure with a merge request**.
-
-This automatically creates a merge request with the changes necessary to enable Secret Detection
-that you can review and merge to complete the configuration.
-
 NOTE:
-The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
-configuration file. If you have a complex GitLab configuration file it may not be parsed
-successfully, and an error may occur.
+This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
+file. If you have a complex GitLab configuration file it may not be parsed successfully, and an
+error may occur.
+
+To enable Secret Detection in a project, you can create a merge request:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. In the **Secret Detection** row, select **Configure with a merge request**.
+1. Review and merge the merge request to enable Secret Detection.
+
+Pipelines now include a Secret Detection job.
 
 ### Customizing settings
 
@@ -176,6 +200,7 @@ Secret Detection can be customized by defining available CI/CD variables:
 | `SECRET_DETECTION_COMMITS`        | -             | The list of commits that Gitleaks should scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. |
 | `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN`  | false         | Flag to enable a historic Gitleaks scan. |
+| `SECRET_DETECTION_IMAGE_SUFFIX`       | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355519) in GitLab 14.10. |
 
 ### Custom rulesets **(ULTIMATE)**
 

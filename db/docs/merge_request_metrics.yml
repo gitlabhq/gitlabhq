@@ -1,0 +1,10 @@
+---
+table_name: merge_request_metrics
+classes:
+- MergeRequest::Metrics
+feature_categories:
+- value_stream_management
+- code_review
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/487906b3861068a8f81125814f919a07bfab8469
+milestone: '8.12'

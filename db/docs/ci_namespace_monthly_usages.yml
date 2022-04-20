@@ -1,0 +1,9 @@
+---
+table_name: ci_namespace_monthly_usages
+classes:
+- Ci::Minutes::NamespaceMonthlyUsage
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52915
+milestone: '13.9'

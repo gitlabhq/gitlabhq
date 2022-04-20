@@ -1,0 +1,9 @@
+---
+table_name: analytics_devops_adoption_segments
+classes:
+- Analytics::DevopsAdoption::EnabledNamespace
+feature_categories:
+- devops_reports
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45748
+milestone: '13.6'

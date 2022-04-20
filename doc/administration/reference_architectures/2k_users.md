@@ -13,9 +13,9 @@ For a full list of reference architectures, see
 > - **Supported users (approximate):** 2,000
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-> - **Estimated Costs:** [See cost table](index.md#cost-to-run)  
+> - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Performance tested daily with the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance)**:
+> - **Validation and test results:** The Quality Engineering team does [regular smoke and performance tests](index.md#validation-and-test-results) to ensure the reference architectures remain compliant
 >   - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k)**
 
@@ -397,11 +397,13 @@ are supported and can be added if needed.
 
 ## Configure Gitaly
 
-[Gitaly](../gitaly/index.md) server node requirements are dependent on data,
-specifically the number of projects and those projects' sizes. It's recommended
-that a Gitaly server node stores no more than 5TB of data. Although this
-reference architecture includes a single Gitaly server node, you may require
-additional nodes depending on your repository storage requirements.
+[Gitaly](../gitaly/index.md) server node requirements are dependent on data size,
+specifically the number of projects and those projects' sizes.
+
+NOTE:
+The Reference Architecture specs have been designed with good headroom in mind
+but for Gitaly, increased specs or switching to Gitaly Cluster
+may be required for notably large data sets or load.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -665,6 +667,7 @@ On each node perform the following:
    # Object Storage
    # This is an example for configuring Object Storage on GCP
    # Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['enabled'] = true
    gitlab_rails['object_store']['connection'] = {
      'provider' => 'Google',
      'google_project' => '<gcp-project-name>',
@@ -886,7 +889,7 @@ GitLab has been tested on a number of object storage providers:
 
 - [Amazon S3](https://aws.amazon.com/s3/)
 - [Google Cloud Storage](https://cloud.google.com/storage)
-- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
+- [Digital Ocean Spaces](http://www.digitalocean.com/products/spaces)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
@@ -903,7 +906,8 @@ There are two ways of specifying object storage configuration in GitLab:
 Starting with GitLab 13.2, consolidated object storage configuration is available. It simplifies your GitLab configuration since the connection details are shared across object types. Refer to [Consolidated object storage configuration](../object_storage.md#consolidated-object-storage-configuration) guide for instructions on how to set it up.
 
 GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared via NFS on any GitLab Rails and Sidekiq nodes.
-In GitLab 13.6 and later, it's recommended to switch to [Incremental logging](../job_logs.md#incremental-logging-architecture), which uses Redis instead of disk space for temporary caching of job logs.
+
+In GitLab 13.6 and later, it's also recommended to switch to [Incremental logging](../job_logs.md#incremental-logging-architecture), which uses Redis instead of disk space for temporary caching of job logs. This is required when no NFS node has been deployed.
 
 For configuring object storage in GitLab 13.1 and earlier, or for storage types not
 supported by consolidated configuration form, refer to the following guides based
@@ -1000,11 +1004,11 @@ use Google Cloud's Kubernetes Engine (GKE) and associated machine types, but the
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 
-| Service                                               | Nodes | Configuration          | GCP             | Allocatable CPUs and Memory |
-|-------------------------------------------------------|-------|------------------------|-----------------|-----------------------------|
-| Webservice                                            | 3     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | 23.7 vCPU, 16.9 GB memory   |
-| Sidekiq                                               | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | 3.9 vCPU, 11.8 GB memory    |
-| Supporting services such as NGINX, Prometheus         | 2     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | 1.9 vCPU, 5.5 GB memory     |
+| Service                                       | Nodes | Configuration          | GCP             | AWS          | Min Allocatable CPUs and Memory |
+|-----------------------------------------------|-------|------------------------|-----------------|--------------|---------------------------------|
+| Webservice                                    | 3     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | 23.7 vCPU, 16.9 GB memory       |
+| Sidekiq                                       | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | 3.9 vCPU, 11.8 GB memory        |
+| Supporting services such as NGINX, Prometheus | 2     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | 1.9 vCPU, 5.5 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
@@ -1014,12 +1018,12 @@ future with further specific cloud provider details.
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
-| Service                                    | Nodes | Configuration           | GCP              |
-|--------------------------------------------|-------|-------------------------|------------------|
-| PostgreSQL<sup>1</sup>                     | 1     | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  |
-| Redis<sup>2</sup>                          | 1     | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  |
-| Gitaly                                     | 1     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Object storage<sup>3</sup>                 | n/a   | n/a                     | n/a              |
+| Service                    | Nodes | Configuration          | GCP             | AWS         |
+|----------------------------|-------|------------------------|-----------------|-------------|
+| PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`  |
+| Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`  |
+| Gitaly                     | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` |
+| Object storage<sup>3</sup> | n/a   | n/a                    | n/a             | n/a         |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

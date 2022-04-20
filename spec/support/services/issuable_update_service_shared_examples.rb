@@ -23,3 +23,47 @@ RSpec.shared_examples 'issuable update service' do
     end
   end
 end
+
+RSpec.shared_examples 'keeps issuable labels sorted after update' do
+  before do
+    update_issuable(label_ids: [label_b.id])
+  end
+
+  context 'when label is changed' do
+    it 'keeps the labels sorted by title ASC' do
+      update_issuable({ add_label_ids: [label_a.id] })
+
+      expect(issuable.labels).to eq([label_a, label_b])
+    end
+  end
+end
+
+RSpec.shared_examples 'broadcasting issuable labels updates' do
+  before do
+    update_issuable(label_ids: [label_a.id])
+  end
+
+  context 'when label is added' do
+    it 'triggers the GraphQL subscription' do
+      expect(GraphqlTriggers).to receive(:issuable_labels_updated).with(issuable)
+
+      update_issuable({ add_label_ids: [label_b.id] })
+    end
+  end
+
+  context 'when label is removed' do
+    it 'triggers the GraphQL subscription' do
+      expect(GraphqlTriggers).to receive(:issuable_labels_updated).with(issuable)
+
+      update_issuable({ remove_label_ids: [label_a.id] })
+    end
+  end
+
+  context 'when label is unchanged' do
+    it 'does not trigger the GraphQL subscription' do
+      expect(GraphqlTriggers).not_to receive(:issuable_labels_updated).with(issuable)
+
+      update_issuable({ label_ids: [label_a.id] })
+    end
+  end
+end

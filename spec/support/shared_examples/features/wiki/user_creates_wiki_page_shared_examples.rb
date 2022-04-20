@@ -20,6 +20,12 @@ RSpec.shared_examples 'User creates wiki page' do
       click_link "Create your first page"
     end
 
+    it 'shows all available formats in the dropdown' do
+      Wiki::VALID_USER_MARKUPS.each do |key, markup|
+        expect(page).to have_css("#wiki_format option[value=#{key}]", text: markup[:name])
+      end
+    end
+
     it "disables the submit button", :js do
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "")

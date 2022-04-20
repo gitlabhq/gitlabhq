@@ -28,8 +28,9 @@ import {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PROJECT_TYPE,
+  PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
-  STATUS_ACTIVE,
+  STATUS_ONLINE,
   RUNNER_PAGE_SIZE,
   I18N_EDIT,
 } from '~/runner/constants';
@@ -38,7 +39,13 @@ import getGroupRunnersCountQuery from '~/runner/graphql/list/group_runners_count
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import { groupRunnersData, groupRunnersDataPaginated, groupRunnersCountData } from '../mock_data';
+import {
+  groupRunnersData,
+  groupRunnersDataPaginated,
+  groupRunnersCountData,
+  onlineContactTimeoutSecs,
+  staleTimeoutSecs,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
@@ -89,6 +96,10 @@ describe('GroupRunnersApp', () => {
         groupFullPath: mockGroupFullPath,
         groupRunnersLimitedCount: mockGroupRunnersLimitedCount,
         ...props,
+      },
+      provide: {
+        onlineContactTimeoutSecs,
+        staleTimeoutSecs,
       },
     });
   };
@@ -178,13 +189,16 @@ describe('GroupRunnersApp', () => {
 
     const tokens = findFilteredSearch().props('tokens');
 
-    expect(tokens).toHaveLength(1);
-    expect(tokens[0]).toEqual(
+    expect(tokens).toEqual([
+      expect.objectContaining({
+        type: PARAM_KEY_PAUSED,
+        options: expect.any(Array),
+      }),
       expect.objectContaining({
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
       }),
-    );
+    ]);
   });
 
   describe('Single runner row', () => {
@@ -193,9 +207,11 @@ describe('GroupRunnersApp', () => {
     const { webUrl, editUrl, node } = mockGroupRunnersEdges[0];
     const { id: graphqlId, shortSha } = node;
     const id = getIdFromGraphQLId(graphqlId);
+    const COUNT_QUERIES = 6; // Smart queries that display a filtered count of runners
+    const FILTERED_COUNT_QUERIES = 3; // Smart queries that display a count of runners in tabs
 
     beforeEach(async () => {
-      mockGroupRunnersQuery.mockClear();
+      mockGroupRunnersCountQuery.mockClear();
 
       createComponent({ mountFn: mountExtended });
       showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
@@ -219,12 +235,20 @@ describe('GroupRunnersApp', () => {
       });
     });
 
-    it('When runner is deleted, data is refetched and a toast is shown', async () => {
-      expect(mockGroupRunnersQuery).toHaveBeenCalledTimes(1);
+    it('When runner is paused or unpaused, some data is refetched', async () => {
+      expect(mockGroupRunnersCountQuery).toHaveBeenCalledTimes(COUNT_QUERIES);
 
+      findRunnerActionsCell().vm.$emit('toggledPaused');
+
+      expect(mockGroupRunnersCountQuery).toHaveBeenCalledTimes(
+        COUNT_QUERIES + FILTERED_COUNT_QUERIES,
+      );
+
+      expect(showToast).toHaveBeenCalledTimes(0);
+    });
+
+    it('When runner is deleted, data is refetched and a toast message is shown', async () => {
       findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
-
-      expect(mockGroupRunnersQuery).toHaveBeenCalledTimes(2);
 
       expect(showToast).toHaveBeenCalledTimes(1);
       expect(showToast).toHaveBeenCalledWith('Runner deleted');
@@ -233,7 +257,7 @@ describe('GroupRunnersApp', () => {
 
   describe('when a filter is preselected', () => {
     beforeEach(async () => {
-      setWindowLocation(`?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}`);
+      setWindowLocation(`?status[]=${STATUS_ONLINE}&runner_type[]=${INSTANCE_TYPE}`);
 
       createComponent();
       await waitForPromises();
@@ -242,7 +266,7 @@ describe('GroupRunnersApp', () => {
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
         runnerType: INSTANCE_TYPE,
-        filters: [{ type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } }],
+        filters: [{ type: 'status', value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: 'CREATED_DESC',
         pagination: { page: 1 },
       });
@@ -251,7 +275,7 @@ describe('GroupRunnersApp', () => {
     it('requests the runners with filter parameters', () => {
       expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
-        status: STATUS_ACTIVE,
+        status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
         sort: DEFAULT_SORT,
         first: RUNNER_PAGE_SIZE,
@@ -263,7 +287,7 @@ describe('GroupRunnersApp', () => {
     beforeEach(async () => {
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
-        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } }],
+        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: CREATED_ASC,
       });
 
@@ -273,14 +297,14 @@ describe('GroupRunnersApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: 'http://test.host/groups/group1/-/runners?status[]=ACTIVE&sort=CREATED_ASC',
+        url: 'http://test.host/groups/group1/-/runners?status[]=ONLINE&sort=CREATED_ASC',
       });
     });
 
     it('requests the runners with filters', () => {
       expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
-        status: STATUS_ACTIVE,
+        status: STATUS_ONLINE,
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
       });

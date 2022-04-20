@@ -4,7 +4,7 @@ import { groupBy } from 'lodash';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { glEmojiTag } from '../../emoji';
+import { glEmojiTag } from '~/emoji';
 
 // Internal constant, specific to this component, used when no `currentUserId` is given
 const NO_USER_ID = -1;
@@ -93,12 +93,14 @@ export default {
       return awardList.some((award) => award.user.id === this.currentUserId);
     },
     createAwardList(name, list) {
+      const url = list.length ? list[0].url : null;
+
       return {
         name,
         list,
         title: this.getAwardListTitle(list, name),
         classes: this.getAwardClassBindings(list),
-        html: glEmojiTag(name),
+        html: glEmojiTag(name, { url }),
       };
     },
     getAwardListTitle(awardsList, name) {
@@ -198,10 +200,10 @@ export default {
     </gl-button>
     <div v-if="canAwardEmoji" class="award-menu-holder gl-my-2">
       <emoji-picker
-        v-if="glFeatures.improvedEmojiPicker"
         v-gl-tooltip.viewport
         :title="__('Add reaction')"
         :toggle-class="['add-reaction-button btn-icon gl-relative!', { 'is-active': isMenuOpen }]"
+        data-testid="emoji-picker"
         @click="handleAward"
         @shown="setIsMenuOpen(true)"
         @hidden="setIsMenuOpen(false)"
@@ -219,24 +221,6 @@ export default {
           </span>
         </template>
       </emoji-picker>
-      <gl-button
-        v-else
-        v-gl-tooltip.viewport
-        :class="addButtonClass"
-        class="add-reaction-button js-add-award"
-        title="Add reaction"
-        :aria-label="__('Add reaction')"
-      >
-        <span class="reaction-control-icon reaction-control-icon-neutral">
-          <gl-icon name="slight-smile" />
-        </span>
-        <span class="reaction-control-icon reaction-control-icon-positive">
-          <gl-icon name="smiley" />
-        </span>
-        <span class="reaction-control-icon reaction-control-icon-super-positive">
-          <gl-icon name="smile" />
-        </span>
-      </gl-button>
     </div>
   </div>
 </template>

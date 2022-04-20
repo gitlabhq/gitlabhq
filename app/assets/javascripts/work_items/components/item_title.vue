@@ -2,12 +2,9 @@
 import { escape } from 'lodash';
 import { __ } from '~/locale';
 
-import { WI_TITLE_TRACK_LABEL } from '../constants';
-
 export default {
-  WI_TITLE_TRACK_LABEL,
   props: {
-    initialTitle: {
+    title: {
       type: String,
       required: false,
       default: '',
@@ -22,11 +19,6 @@ export default {
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      title: this.initialTitle,
-    };
   },
   methods: {
     getSanitizedTitle(inputEl) {
@@ -50,7 +42,6 @@ export default {
   <h2
     class="gl-font-weight-normal gl-sm-font-weight-bold gl-my-5 gl-display-inline-block"
     :class="{ 'gl-cursor-not-allowed': disabled }"
-    data-testid="title"
     aria-labelledby="item-title"
   >
     <span
@@ -59,7 +50,6 @@ export default {
       role="textbox"
       :aria-label="__('Title')"
       :data-placeholder="placeholder"
-      :data-track-label="$options.WI_TITLE_TRACK_LABEL"
       :contenteditable="!disabled"
       class="gl-pseudo-placeholder"
       @blur="handleBlur"

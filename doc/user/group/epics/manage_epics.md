@@ -16,6 +16,10 @@ to them.
 > - In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/229621) and later, the New Epic button on the Epics list opens the New Epic form.
 > - In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45948) and later, you can create a new epic from an empty roadmap.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+
 To create an epic in the group you're in:
 
 1. Get to the New Epic form:
@@ -68,6 +72,10 @@ After you create an epic, you can edit the following details:
 - Due date
 - Labels
 
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+
 To edit an epic's title or description:
 
 1. Select **Edit title and description** **{pencil}**.
@@ -87,6 +95,10 @@ Users with at least the Reporter role can manage epics.
 
 When bulk editing epics in a group, you can edit their labels.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the parent epic's group.
+
 To update multiple epics at the same time:
 
 1. In a group, go to **Epics > List**.
@@ -97,8 +109,9 @@ To update multiple epics at the same time:
 
 ## Delete an epic
 
-NOTE:
-To delete an epic, you must be an Owner of a group or subgroup.
+Prerequisites:
+
+- You must have the Owner role for the epic's group.
 
 To delete the epic:
 
@@ -112,6 +125,10 @@ If you delete an epic, all its child epics and their descendants are deleted as 
 
 ## Close an epic
 
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+
 Whenever you decide that there is no longer need for that epic,
 close the epic by:
 
@@ -123,13 +140,19 @@ close the epic by:
 
 ## Reopen a closed epic
 
-You can reopen an epic that was closed by:
+You can reopen an epic that was closed.
 
-- Selecting **Reopen epic**.
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+
+To do so, either:
+
+- Select **Reopen epic**.
 
   ![reopen epic - button](img/button_reopen_epic.png)
 
-- Using the `/reopen` [quick action](../../project/quick_actions.md).
+- Use the `/reopen` [quick action](../../project/quick_actions.md).
 
 ## Go to an epic from an issue
 
@@ -143,6 +166,13 @@ link in the right sidebar.
 In a group, the left sidebar displays the total count of open epics.
 This number indicates all epics associated with the group and its subgroups, including epics you
 might not have permission to view.
+
+Prerequisites:
+
+- You must be a member of either:
+  - The group
+  - A project in the group
+  - A project in one of the group's subgroups
 
 To view epics in a group:
 
@@ -225,6 +255,10 @@ and confidential child epics. However, merge requests are public, if created in 
 Read [Merge requests for confidential issues](../../project/merge_requests/confidential.md)
 to learn how to create a confidential merge request.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+
 To make an epic confidential:
 
 - **When creating an epic:** select the checkbox under **Confidentiality**.
@@ -235,6 +269,15 @@ To make an epic confidential:
 
 This section collects instructions for all the things you can do with [issues](../../project/issues/index.md)
 in relation to epics.
+
+### View issues assigned to an epic
+
+On the **Epics and Issues** tab, you can see epics and issues assigned to this epic.
+Only epics and issues that you can access show on the list.
+
+You can always view the issues assigned to the epic if they are in the group's child project.
+It's possible because the visibility setting of a project must be the same as or less restrictive than
+of its parent group.
 
 ### View count of issues in an epic
 
@@ -258,7 +301,12 @@ An epic contains a list of issues and an issue can be associated with at most on
 When you add a new issue that's already linked to an epic, the issue is automatically unlinked from its
 current parent.
 
-To add a new issue to an epic:
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+- You must be able to [edit the issue](../../project/issues/managing_issues.md#edit-an-issue).
+
+To add an existing issue to an epic:
 
 1. On the epic's page, under **Epics and Issues**, select **Add**.
 1. Select **Add an existing issue**.
@@ -277,18 +325,29 @@ To add a new issue to an epic:
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+
 To create an issue from an epic:
 
 1. On the epic's page, under **Epics and Issues**, select **Add**.
 1. Select **Add a new issue**.
 1. Under **Title**, enter the title for the new issue.
-1. From the **Project** dropdown, select the project in which the issue should be created.
+1. From the **Project** dropdown list, select the project in which the issue should be created.
 1. Select **Create issue**.
+
+The new issue is assigned to the epic.
 
 ### Remove an issue from an epic
 
 You can remove issues from an epic when you're on the epic's details page.
 After you remove an issue from an epic, the issue is no longer associated with this epic.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+- You must be able to [edit the issue](../../project/issues/managing_issues.md#edit-an-issue).
 
 To remove an issue from an epic:
 
@@ -305,6 +364,10 @@ To remove an issue from an epic:
 New issues appear at the top of the list in the **Epics and Issues** tab.
 You can reorder the list of issues by dragging them.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+
 To reorder issues assigned to an epic:
 
 1. Go to the **Epics and Issues** tab.
@@ -317,32 +380,47 @@ To reorder issues assigned to an epic:
 New issues appear at the top of the list in the **Epics and Issues**
 tab. You can move issues from one epic to another.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the epic's group.
+- You must be able to [edit the issue](../../project/issues/managing_issues.md#edit-an-issue).
+
 To move an issue to another epic:
 
 1. Go to the **Epics and Issues** tab.
-1. Drag issues into the desired parent epic.
+1. Drag issues into the desired parent epic in the visible hierarchy.
 
 ### Promote an issue to an epic
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab 11.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
 
-If you have the necessary [permissions](../../permissions.md) to close an issue and create an
-epic in the immediate parent group, you can promote an issue to an epic with the `/promote`
+Prerequisites:
+
+- The project to which the issue belongs must be in a group.
+- You must have at least the Reporter role the project's immediate parent group.
+- You must either:
+  - Have at least the Reporter role for the project.
+  - Be the author of the issue.
+  - Be assigned to the issue.
+
+You can promote an issue to an epic with the `/promote`
 [quick action](../../project/quick_actions.md#issues-merge-requests-and-epics).
-Only issues from projects that are in groups can be promoted. When you attempt to promote a confidential
-issue, a warning is displayed. Promoting a confidential issue to an epic makes all information
+
+NOTE:
+Promoting a confidential issue to an epic makes all information
 related to the issue public as epics are public to group members.
 
 When an issue is promoted to an epic:
 
+- If the issue was confidential, an additional warning is displayed first.
 - An epic is created in the same group as the project of the issue.
 - Subscribers of the issue are notified that the epic was created.
 
 The following issue metadata is copied to the epic:
 
 - Title, description, activity/comment thread.
-- Upvotes/downvotes.
+- Upvotes and downvotes.
 - Participants.
 - Group labels that the issue already has.
 - Parent epic.
@@ -367,6 +445,10 @@ Epics can contain multiple nested child epics, up to a total of seven levels dee
 
 ### Add a child epic to an epic
 
+Prerequisites:
+
+- You must have at least the Reporter role for the parent epic's group.
+
 To add a child epic to an epic:
 
 1. Select **Add**.
@@ -388,6 +470,10 @@ You can move child epics from one epic to another.
 When you add a new epic that's already linked to a parent epic, the link to its current parent is removed.
 Issues and child epics cannot be intermingled.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the parent epic's group.
+
 To move child epics to another epic:
 
 1. Go to the **Epics and Issues** tab.
@@ -400,12 +486,20 @@ To move child epics to another epic:
 New child epics appear at the top of the list in the **Epics and Issues** tab.
 You can reorder the list of child epics.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the parent epic's group.
+
 To reorder child epics assigned to an epic:
 
 1. Go to the **Epics and Issues** tab.
 1. Drag epics into the desired order.
 
 ### Remove a child epic from a parent epic
+
+Prerequisites:
+
+- You must have at least the Reporter role for the parent epic's group.
 
 To remove a child epic from a parent epic:
 

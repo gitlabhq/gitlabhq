@@ -24,6 +24,7 @@ module Git
 
       enqueue_update_mrs
       enqueue_detect_repository_languages
+      enqueue_record_project_target_platforms
 
       execute_related_hooks
 
@@ -51,6 +52,12 @@ module Git
       return unless default_branch?
 
       DetectRepositoryLanguagesWorker.perform_async(project.id)
+    end
+
+    def enqueue_record_project_target_platforms
+      return unless default_branch?
+
+      project.enqueue_record_project_target_platforms
     end
 
     # Only stop environments if the ref is a branch that is being deleted

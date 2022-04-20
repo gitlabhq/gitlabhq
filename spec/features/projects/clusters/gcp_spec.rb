@@ -135,7 +135,7 @@ RSpec.describe 'Gcp Cluster', :js do
           visit project_clusters_path(project)
 
           click_button(class: 'dropdown-toggle-split')
-          click_link 'Connect with a certificate'
+          click_link 'Connect a cluster (certificate - deprecated)'
         end
 
         it 'user sees the "Environment scope" field' do
@@ -154,7 +154,6 @@ RSpec.describe 'Gcp Cluster', :js do
 
         it 'user sees creation form with the successful message' do
           expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
-          expect(page).to have_link('Connect with a certificate')
         end
       end
     end
@@ -220,6 +219,6 @@ RSpec.describe 'Gcp Cluster', :js do
 
   def visit_create_cluster_page
     click_button(class: 'dropdown-toggle-split')
-    click_link 'Create a new cluster'
+    click_link 'Create a cluster (certificate - deprecated)'
   end
 end

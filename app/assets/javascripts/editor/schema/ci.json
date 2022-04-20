@@ -187,6 +187,21 @@
                 }
               ]
             },
+            "coverage_report": {
+              "type": "object",
+              "description": "Used to collect coverage reports from the job.",
+              "properties": {
+                "coverage_format": {
+                  "description": "Code coverage format used by the test framework.",
+                  "enum": ["cobertura"]
+                },
+                "path": {
+                  "description": "Path to the coverage report file that should be parsed.",
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
             "codequality": {
               "$ref": "#/definitions/string_file_list",
               "description": "Path to file or list of files with code quality report(s) (such as Code Climate)."
@@ -1276,7 +1291,7 @@
                     },
                     "pipeline_variables": {
                       "type": "boolean",
-                      "description": "Variables added for manual pipeline runs are passed to downstream pipelines.",
+                      "description": "Variables added for manual pipeline runs and scheduled pipelines are passed to downstream pipelines.",
                       "default": false
                     }
                   }
@@ -1392,7 +1407,7 @@
                     },
                     "pipeline_variables": {
                       "type": "boolean",
-                      "description": "Variables added for manual pipeline runs are passed to downstream pipelines.",
+                      "description": "Variables added for manual pipeline runs and scheduled pipelines are passed to downstream pipelines.",
                       "default": false
                     }
                   }

@@ -1,0 +1,9 @@
+---
+table_name: merge_request_assignees
+classes:
+- MergeRequestAssignee
+feature_categories:
+- code_review
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/929ee4d18da886826e9fcc15c35b4d4024bc8237
+milestone: '11.10'

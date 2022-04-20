@@ -19,6 +19,8 @@ module Files
 
       @file_content = params[:file_content]
       @file_content = Base64.decode64(@file_content) if params[:file_content_encoding] == 'base64'
+
+      @execute_filemode = params[:execute_filemode]
     end
 
     def file_has_changed?(path, commit_id)

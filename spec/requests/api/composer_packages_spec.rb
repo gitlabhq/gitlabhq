@@ -430,11 +430,23 @@ RSpec.describe API::ComposerPackages do
 
     context 'with valid project' do
       let!(:package) { create(:composer_package, :with_metadatum, name: package_name, project: project) }
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
 
       context 'when the sha does not match the package name' do
         let(:sha) { '123' }
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
 
-        it_behaves_like 'process Composer api request', :anonymous, :not_found
+        context 'anonymous' do
+          let(:headers) { {} }
+
+          it_behaves_like 'process Composer api request', :anonymous, :unauthorized
+        end
+
+        it_behaves_like 'process Composer api request', :developer, :not_found
       end
 
       context 'when the package name does not match the sha' do
@@ -442,7 +454,13 @@ RSpec.describe API::ComposerPackages do
         let(:sha) { branch.target }
         let(:url) { "/projects/#{project.id}/packages/composer/archives/unexisting-package-name.zip" }
 
-        it_behaves_like 'process Composer api request', :anonymous, :not_found
+        context 'anonymous' do
+          let(:headers) { {} }
+
+          it_behaves_like 'process Composer api request', :anonymous, :unauthorized
+        end
+
+        it_behaves_like 'process Composer api request', :developer, :not_found
       end
 
       context 'with a match package name and sha' do
@@ -460,14 +478,14 @@ RSpec.describe API::ComposerPackages do
           'PUBLIC'  | :guest      | false | false | :success
           'PUBLIC'  | :anonymous  | false | true  | :success
           'PRIVATE' | :developer  | true  | true  | :success
-          'PRIVATE' | :developer  | true  | false | :success
-          'PRIVATE' | :developer  | false | true  | :success
-          'PRIVATE' | :developer  | false | false | :success
-          'PRIVATE' | :guest      | true  | true  | :success
-          'PRIVATE' | :guest      | true  | false | :success
-          'PRIVATE' | :guest      | false | true  | :success
-          'PRIVATE' | :guest      | false | false | :success
-          'PRIVATE' | :anonymous  | false | true  | :success
+          'PRIVATE' | :developer  | true  | false | :unauthorized
+          'PRIVATE' | :developer  | false | true  | :not_found
+          'PRIVATE' | :developer  | false | false | :unauthorized
+          'PRIVATE' | :guest      | true  | true  | :forbidden
+          'PRIVATE' | :guest      | true  | false | :unauthorized
+          'PRIVATE' | :guest      | false | true  | :not_found
+          'PRIVATE' | :guest      | false | false | :unauthorized
+          'PRIVATE' | :anonymous  | false | true  | :unauthorized
         end
 
         with_them do
@@ -480,8 +498,17 @@ RSpec.describe API::ComposerPackages do
           end
 
           it_behaves_like 'process Composer api request', params[:user_role], params[:expected_status], params[:member]
-          it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
+
+          include_context 'Composer user type', params[:user_role], params[:member] do
+            if params[:expected_status] == :success
+              it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
+            else
+              it_behaves_like 'not a package tracking event'
+            end
+          end
         end
+
+        it_behaves_like 'Composer publish with deploy tokens'
       end
     end
 

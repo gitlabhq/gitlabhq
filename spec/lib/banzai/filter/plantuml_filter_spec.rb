@@ -9,7 +9,7 @@ RSpec.describe Banzai::Filter::PlantumlFilter do
     stub_application_setting(plantuml_enabled: true, plantuml_url: "http://localhost:8080")
 
     input = '<pre lang="plantuml"><code>Bob -> Sara : Hello</code></pre>'
-    output = '<div class="imageblock"><div class="content"><img class="plantuml" src="http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd91m0rkGMq"></div></div>'
+    output = '<img class="plantuml" src="http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd91m0rkGMq" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw==">'
     doc = filter(input)
 
     expect(doc.to_s).to eq output
@@ -29,7 +29,7 @@ RSpec.describe Banzai::Filter::PlantumlFilter do
     stub_application_setting(plantuml_enabled: true, plantuml_url: "invalid")
 
     input = '<pre lang="plantuml"><code>Bob -> Sara : Hello</code></pre>'
-    output = '<div class="listingblock"><div class="content"><pre class="plantuml plantuml-error"> Error: cannot connect to PlantUML server at "invalid"</pre></div></div>'
+    output = '<pre lang="plantuml"><code>Bob -&gt; Sara : Hello</code></pre>'
     doc = filter(input)
 
     expect(doc.to_s).to eq output

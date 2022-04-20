@@ -55,7 +55,7 @@ RSpec.describe API::Integrations do
       describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
         include_context integration
 
-        it "updates #{integration} settings" do
+        it "updates #{integration} settings and returns the correct fields" do
           put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: integration_attrs
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -80,6 +80,8 @@ RSpec.describe API::Integrations do
             expect(project.integrations.first[event]).not_to eq(current_integration[event]),
                                                              "expected #{!current_integration[event]} for event #{event} for #{endpoint} #{current_integration.title}, got #{current_integration[event]}"
           end
+
+          assert_correct_response_fields(json_response['properties'].keys, current_integration)
         end
 
         it "returns if required fields missing" do
@@ -142,22 +144,24 @@ RSpec.describe API::Integrations do
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
 
-        it "returns all properties of active integration #{integration}" do
+        it "returns all properties of active integration #{integration}, except password fields" do
           get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
 
           expect(initialized_integration).to be_active
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
+
+          assert_correct_response_fields(json_response['properties'].keys, integration_instance)
         end
 
-        it "returns all properties of inactive integration #{integration}" do
+        it "returns all properties of inactive integration #{integration}, except password fields" do
           deactive_integration!
 
           get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
 
           expect(initialized_integration).not_to be_active
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
+
+          assert_correct_response_fields(json_response['properties'].keys, integration_instance)
         end
 
         it "returns not found if integration does not exist" do
@@ -368,6 +372,21 @@ RSpec.describe API::Integrations do
           expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
         end
       end
+    end
+
+    private
+
+    def assert_correct_response_fields(response_keys, integration)
+      assert_fields_match_integration(response_keys, integration)
+      assert_secret_fields_filtered(response_keys, integration)
+    end
+
+    def assert_fields_match_integration(response_keys, integration)
+      expect(response_keys).to match_array(integration.api_field_names)
+    end
+
+    def assert_secret_fields_filtered(response_keys, integration)
+      expect(response_keys).not_to include(*integration.secret_fields)
     end
   end
 end

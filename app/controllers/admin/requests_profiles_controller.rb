@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::RequestsProfilesController < Admin::ApplicationController
-  feature_category :not_owned
+  feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
   def index
     @profile_token = Gitlab::RequestProfiler.profile_token

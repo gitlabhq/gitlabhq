@@ -94,10 +94,10 @@ const addDismissFlashClickListener = (flashEl, fadeTransition) => {
  *
  * 1. Render a new alert
  *
- * import { createAlert, ALERT_VARIANTS } from '~/flash';
+ * import { createAlert, VARIANT_WARNING } from '~/flash';
  *
  * createAlert({ message: 'My error message' });
- * createAlert({ message: 'My warning message', variant: ALERT_VARIANTS.WARNING });
+ * createAlert({ message: 'My warning message', variant: VARIANT_WARNING });
  *
  * 2. Dismiss this alert programmatically
  *

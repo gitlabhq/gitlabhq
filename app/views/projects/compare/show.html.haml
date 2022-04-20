@@ -13,6 +13,7 @@
     diffs: @diffs,
     environment: @environment,
     diff_page_context: "is-compare",
+    page: pagination_params[:page],
     paginate_diffs: true,
     paginate_diffs_per_page: Projects::CompareController::COMMIT_DIFFS_PER_PAGE
 - else

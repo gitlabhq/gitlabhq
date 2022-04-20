@@ -2,6 +2,8 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
 
+export * from './alert_management_alerts_api';
+
 const PROJECTS_PATH = '/api/:version/projects.json';
 const PROJECT_IMPORT_MEMBERS_PATH = '/api/:version/projects/:id/import_project_members/:project_id';
 

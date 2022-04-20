@@ -24,12 +24,12 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
   let_it_be(:issues) do
     [
       create(:issue, project: project_1, created_at: three_weeks_ago, relative_position: 5),
-      create(:issue, project: project_1, created_at: two_weeks_ago),
+      create(:issue, project: project_1, created_at: two_weeks_ago, relative_position: nil),
       create(:issue, project: project_2, created_at: two_weeks_ago, relative_position: 15),
-      create(:issue, project: project_2, created_at: two_weeks_ago),
-      create(:issue, project: project_3, created_at: four_weeks_ago),
+      create(:issue, project: project_2, created_at: two_weeks_ago, relative_position: nil),
+      create(:issue, project: project_3, created_at: four_weeks_ago, relative_position: nil),
       create(:issue, project: project_4, created_at: five_weeks_ago, relative_position: 10),
-      create(:issue, project: project_5, created_at: four_weeks_ago)
+      create(:issue, project: project_5, created_at: four_weeks_ago, relative_position: nil)
     ]
   end
 
@@ -121,8 +121,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: :relative_position,
           column_expression: Issue.arel_table[:relative_position],
-          order_expression: Gitlab::Database.nulls_last_order('relative_position', :desc),
-          reversed_order_expression: Gitlab::Database.nulls_first_order('relative_position', :asc),
+          order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
+          reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
           order_direction: :desc,
           nullable: :nulls_last,
           distinct: false
@@ -154,6 +154,31 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
       let(:batch_size) { 3 }
 
       it_behaves_like 'correct ordering examples'
+    end
+
+    context 'with condition "relative_position IS NULL"' do
+      let(:base_scope) { Issue.where(relative_position: nil) }
+      let(:scope) { base_scope.order(order) }
+
+      let(:in_operator_optimization_options) do
+        {
+          array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
+          array_mapping_scope: -> (id_expression) { Issue.merge(base_scope.dup).where(Issue.arel_table[:project_id].eq(id_expression)) },
+          finder_query: -> (_relative_position_expression, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+        }
+      end
+
+      context 'when iterating records one by one' do
+        let(:batch_size) { 1 }
+
+        it_behaves_like 'correct ordering examples'
+      end
+
+      context 'when iterating records with LIMIT 3' do
+        let(:batch_size) { 3 }
+
+        it_behaves_like 'correct ordering examples'
+      end
     end
   end
 
@@ -239,7 +264,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
   end
 
   it 'raises error when unsupported scope is passed' do
-    scope = Issue.order(Issue.arel_table[:id].lower.desc)
+    scope = Issue.order(Arel::Nodes::NamedFunction.new('UPPER', [Issue.arel_table[:id]]))
 
     options = {
       scope: scope,

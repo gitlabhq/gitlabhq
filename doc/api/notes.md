@@ -142,8 +142,8 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                                  |
 |----------------|----------------|----------|------------------------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                                             |
-| `issue_iid`    | integer        | yes      | The IID of an issue.                                                                                                       |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                                           |
+| `issue_iid`    | integer        | yes      | The IID of an issue.                                                                                                         |
 | `body`         | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
 | `confidential` | boolean        | no       | The confidential flag of a note. Default is false.                                                                           |
 | `created_at`   | string         | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
@@ -162,13 +162,13 @@ PUT /projects/:id/issues/:issue_iid/notes/:note_id
 
 Parameters:
 
-| Attribute      | Type           | Required | Description                                                                      |
-|----------------|----------------|----------|----------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
-| `issue_iid`    | integer        | yes      | The IID of an issue.                                                             |
-| `note_id`      | integer        | yes      | The ID of a note.                                                                |
-| `body`         | string         | no       | The content of a note. Limited to 1,000,000 characters.                          |
-| `confidential` | boolean        | no       | The confidential flag of a note.                                                 |
+| Attribute      | Type           | Required    | Description                                                                                        |
+|----------------|----------------|-------------|----------------------------------------------------------------------------------------------------|
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                    |
+| `issue_iid`    | integer           | yes      | The IID of an issue.                                                                               |
+| `note_id`      | integer           | yes      | The ID of a note.                                                                                  |
+| `body`         | string            | no       | The content of a note. Limited to 1,000,000 characters.                                            |
+| `confidential` | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note"
@@ -403,7 +403,7 @@ Parameters:
 | `merge_request_iid`     | integer        | yes      | The IID of a project merge request                                                                                           |
 | `body`                  | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
 | `created_at`            | string         | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
-| `merge_request_diff_sha`| string         | no       | The SHA of the head commit which is used to ensure that the merge request hasn't been updated since the API request was sent. This is required for the /merge quick action |
+| `merge_request_diff_sha`| string         | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
 
 ### Modify existing merge request note
 
@@ -415,12 +415,13 @@ PUT /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 
 Parameters:
 
-| Attribute           | Type           | Required | Description                                                                     |
-|---------------------|----------------|----------|---------------------------------------------------------------------------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
-| `merge_request_iid` | integer        | yes      | The IID of a project merge request                                              |
-| `note_id`           | integer        | no       | The ID of a note                                                                |
-| `body`              | string         | yes      | The content of a note. Limited to 1,000,000 characters.                         |
+| Attribute           | Type              | Required | Description                                                                                        |
+|---------------------|-------------------|----------|----------------------------------------------------------------------------------------------------|
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding)                     |
+| `merge_request_iid` | integer           | yes      | The IID of a project merge request                                                                 |
+| `note_id`           | integer           | no       | The ID of a note                                                                                   |
+| `body`              | string            | yes      | The content of a note. Limited to 1,000,000 characters.                                            |
+| `confidential`      | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes?body=note"
@@ -451,6 +452,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ### List all epic notes
 
 Gets a list of all notes for a single epic. Epic notes are comments users can post to an epic.
+
+NOTE:
+The epics notes API uses the epic ID instead of epic IID. If you use the epic's IID, GitLab returns either a 404
+error or notes for the wrong epic. It's different from the [issue notes API](#issues) and
+[merge requests notes API](#merge-requests).
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/notes
@@ -519,11 +525,12 @@ POST /groups/:id/epics/:epic_id/notes
 
 Parameters:
 
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer or string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `epic_id` | integer | yes  | The ID of an epic |
-| `body`    | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
+| Attribute      | Type           | Required | Description |
+| ---------      | -------------- | -------- | ----------- |
+| `body`         | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
+| `epic_id`      | integer | yes  | The ID of an epic |
+| `id`           | integer or string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `confidential` | boolean        | no       | The confidential flag of a note. Default is `false`. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/notes?body=note"
@@ -539,12 +546,13 @@ PUT /groups/:id/epics/:epic_id/notes/:note_id
 
 Parameters:
 
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer or string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `epic_id` | integer | yes  | The ID of an epic |
-| `note_id` | integer | yes  | The ID of a note |
-| `body`    | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
+| Attribute      | Type              | Required | Description                                                                                        |
+| ---------------| ----------------- | -------- | ---------------------------------------------------------------------------------------------------|
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)                       |
+| `epic_id`      | integer           | yes      | The ID of an epic                                                                                  |
+| `note_id`      | integer           | yes      | The ID of a note                                                                                   |
+| `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters.                                            |
+| `confidential` | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/notes?body=note"

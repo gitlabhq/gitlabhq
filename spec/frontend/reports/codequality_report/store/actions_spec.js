@@ -23,7 +23,7 @@ describe('Codequality Reports actions', () => {
   });
 
   describe('setPaths', () => {
-    it('should commit SET_PATHS mutation', (done) => {
+    it('should commit SET_PATHS mutation', () => {
       const paths = {
         baseBlobPath: 'baseBlobPath',
         headBlobPath: 'headBlobPath',
@@ -31,13 +31,12 @@ describe('Codequality Reports actions', () => {
         helpPath: 'codequalityHelpPath',
       };
 
-      testAction(
+      return testAction(
         actions.setPaths,
         paths,
         localState,
         [{ type: types.SET_PATHS, payload: paths }],
         [],
-        done,
       );
     });
   });
@@ -56,10 +55,10 @@ describe('Codequality Reports actions', () => {
     });
 
     describe('on success', () => {
-      it('commits REQUEST_REPORTS and dispatches receiveReportsSuccess', (done) => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsSuccess', () => {
         mock.onGet(endpoint).reply(200, reportIssues);
 
-        testAction(
+        return testAction(
           actions.fetchReports,
           null,
           localState,
@@ -70,51 +69,48 @@ describe('Codequality Reports actions', () => {
               type: 'receiveReportsSuccess',
             },
           ],
-          done,
         );
       });
     });
 
     describe('on error', () => {
-      it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsError', () => {
         mock.onGet(endpoint).reply(500);
 
-        testAction(
+        return testAction(
           actions.fetchReports,
           null,
           localState,
           [{ type: types.REQUEST_REPORTS }],
           [{ type: 'receiveReportsError', payload: expect.any(Error) }],
-          done,
         );
       });
     });
 
     describe('when base report is not found', () => {
-      it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsError', () => {
         const data = { status: STATUS_NOT_FOUND };
         mock.onGet(`${TEST_HOST}/codequality_reports.json`).reply(200, data);
 
-        testAction(
+        return testAction(
           actions.fetchReports,
           null,
           localState,
           [{ type: types.REQUEST_REPORTS }],
           [{ type: 'receiveReportsError', payload: data }],
-          done,
         );
       });
     });
 
     describe('while waiting for report results', () => {
-      it('continues polling until it receives data', (done) => {
+      it('continues polling until it receives data', () => {
         mock
           .onGet(endpoint)
           .replyOnce(204, undefined, pollIntervalHeader)
           .onGet(endpoint)
           .reply(200, reportIssues);
 
-        Promise.all([
+        return Promise.all([
           testAction(
             actions.fetchReports,
             null,
@@ -126,7 +122,6 @@ describe('Codequality Reports actions', () => {
                 type: 'receiveReportsSuccess',
               },
             ],
-            done,
           ),
           axios
             // wait for initial NO_CONTENT response to be fulfilled
@@ -134,24 +129,23 @@ describe('Codequality Reports actions', () => {
             .then(() => {
               jest.advanceTimersByTime(pollInterval);
             }),
-        ]).catch(done.fail);
+        ]);
       });
 
-      it('continues polling until it receives an error', (done) => {
+      it('continues polling until it receives an error', () => {
         mock
           .onGet(endpoint)
           .replyOnce(204, undefined, pollIntervalHeader)
           .onGet(endpoint)
           .reply(500);
 
-        Promise.all([
+        return Promise.all([
           testAction(
             actions.fetchReports,
             null,
             localState,
             [{ type: types.REQUEST_REPORTS }],
             [{ type: 'receiveReportsError', payload: expect.any(Error) }],
-            done,
           ),
           axios
             // wait for initial NO_CONTENT response to be fulfilled
@@ -159,35 +153,33 @@ describe('Codequality Reports actions', () => {
             .then(() => {
               jest.advanceTimersByTime(pollInterval);
             }),
-        ]).catch(done.fail);
+        ]);
       });
     });
   });
 
   describe('receiveReportsSuccess', () => {
-    it('commits RECEIVE_REPORTS_SUCCESS', (done) => {
+    it('commits RECEIVE_REPORTS_SUCCESS', () => {
       const data = { issues: [] };
 
-      testAction(
+      return testAction(
         actions.receiveReportsSuccess,
         data,
         localState,
         [{ type: types.RECEIVE_REPORTS_SUCCESS, payload: data }],
         [],
-        done,
       );
     });
   });
 
   describe('receiveReportsError', () => {
-    it('commits RECEIVE_REPORTS_ERROR', (done) => {
-      testAction(
+    it('commits RECEIVE_REPORTS_ERROR', () => {
+      return testAction(
         actions.receiveReportsError,
         null,
         localState,
         [{ type: types.RECEIVE_REPORTS_ERROR, payload: null }],
         [],
-        done,
       );
     });
   });

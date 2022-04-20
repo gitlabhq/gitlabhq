@@ -126,9 +126,11 @@ export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
  *
  * @function
  * @param {Number} value - Number to format
- * @param {Number} fractionDigits - precision decimals
- * @param {Number} maxLength - Max length of formatted number
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
  * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const number = getFormatter(SUPPORTED_FORMATS.number);
 
@@ -137,9 +139,11 @@ export const number = getFormatter(SUPPORTED_FORMATS.number);
  *
  * @function
  * @param {Number} value - Number to format, `1` is rendered as `100%`
- * @param {Number} fractionDigits - number of precision decimals
- * @param {Number} maxLength - Max length of formatted number
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
  * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const percent = getFormatter(SUPPORTED_FORMATS.percent);
 
@@ -148,9 +152,11 @@ export const percent = getFormatter(SUPPORTED_FORMATS.percent);
  *
  * @function
  * @param {Number} value - Number to format, `100` is rendered as `100%`
- * @param {Number} fractionDigits - number of precision decimals
- * @param {Number} maxLength - Max length of formatted number
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
  * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const percentHundred = getFormatter(SUPPORTED_FORMATS.percentHundred);
 
@@ -159,9 +165,11 @@ export const percentHundred = getFormatter(SUPPORTED_FORMATS.percentHundred);
  *
  * @function
  * @param {Number} value - Number to format, `1` is rendered as `1s`
- * @param {Number} fractionDigits - number of precision decimals
- * @param {Number} maxLength - Max length of formatted number
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
  * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const seconds = getFormatter(SUPPORTED_FORMATS.seconds);
 
@@ -170,9 +178,11 @@ export const seconds = getFormatter(SUPPORTED_FORMATS.seconds);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1ms`
- * @param {Number} fractionDigits - number of precision decimals
- * @param {Number} maxLength - Max length of formatted number
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
  * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const milliseconds = getFormatter(SUPPORTED_FORMATS.milliseconds);
 
@@ -182,7 +192,11 @@ export const milliseconds = getFormatter(SUPPORTED_FORMATS.milliseconds);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1B`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const decimalBytes = getFormatter(SUPPORTED_FORMATS.decimalBytes);
 
@@ -192,7 +206,11 @@ export const decimalBytes = getFormatter(SUPPORTED_FORMATS.decimalBytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1kB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const kilobytes = getFormatter(SUPPORTED_FORMATS.kilobytes);
 
@@ -202,7 +220,11 @@ export const kilobytes = getFormatter(SUPPORTED_FORMATS.kilobytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1MB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const megabytes = getFormatter(SUPPORTED_FORMATS.megabytes);
 
@@ -212,7 +234,11 @@ export const megabytes = getFormatter(SUPPORTED_FORMATS.megabytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1GB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const gigabytes = getFormatter(SUPPORTED_FORMATS.gigabytes);
 
@@ -222,7 +248,11 @@ export const gigabytes = getFormatter(SUPPORTED_FORMATS.gigabytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1GB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const terabytes = getFormatter(SUPPORTED_FORMATS.terabytes);
 
@@ -232,7 +262,11 @@ export const terabytes = getFormatter(SUPPORTED_FORMATS.terabytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1PB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const petabytes = getFormatter(SUPPORTED_FORMATS.petabytes);
 
@@ -242,7 +276,11 @@ export const petabytes = getFormatter(SUPPORTED_FORMATS.petabytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1B`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const bytes = getFormatter(SUPPORTED_FORMATS.bytes);
 
@@ -252,7 +290,11 @@ export const bytes = getFormatter(SUPPORTED_FORMATS.bytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1kB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const kibibytes = getFormatter(SUPPORTED_FORMATS.kibibytes);
 
@@ -262,7 +304,11 @@ export const kibibytes = getFormatter(SUPPORTED_FORMATS.kibibytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1MB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const mebibytes = getFormatter(SUPPORTED_FORMATS.mebibytes);
 
@@ -272,7 +318,11 @@ export const mebibytes = getFormatter(SUPPORTED_FORMATS.mebibytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1GB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const gibibytes = getFormatter(SUPPORTED_FORMATS.gibibytes);
 
@@ -282,7 +332,11 @@ export const gibibytes = getFormatter(SUPPORTED_FORMATS.gibibytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1GB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const tebibytes = getFormatter(SUPPORTED_FORMATS.tebibytes);
 
@@ -292,7 +346,11 @@ export const tebibytes = getFormatter(SUPPORTED_FORMATS.tebibytes);
  *
  * @function
  * @param {Number} value - Number to format, `1` is formatted as `1PB`
- * @param {Number} fractionDigits - number of precision decimals
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const pebibytes = getFormatter(SUPPORTED_FORMATS.pebibytes);
 
@@ -301,6 +359,10 @@ export const pebibytes = getFormatter(SUPPORTED_FORMATS.pebibytes);
  *
  * @function
  * @param {Number} value - Value to format
- * @param {Number} fractionDigits - precision decimals - Defaults to 2
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - precision decimals, defaults to 2
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const engineering = getFormatter();

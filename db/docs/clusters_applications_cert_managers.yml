@@ -1,0 +1,9 @@
+---
+table_name: clusters_applications_cert_managers
+classes:
+- Clusters::Applications::CertManager
+feature_categories:
+- kubernetes_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8837519445c319a699e0f3ced1c6912c839f3389
+milestone: '11.6'

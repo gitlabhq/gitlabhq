@@ -1,12 +1,9 @@
-- return unless Feature.enabled?(:group_import_export, @group, default_enabled: true)
-
 - group = local_assigns.fetch(:group)
 
 .sub-section
   %h4= s_('GroupSettings|Export group')
   %p= _('Export this group with all related data.')
-  .gl-alert.gl-alert-warning.gl-mb-4{ role: 'alert' }
-    = sprite_icon('warning', css_class: 'gl-icon s16 gl-alert-icon gl-alert-icon-no-title')
+  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_class: 'gl-mb-4') do
     .gl-alert-body
       - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
       - docs_link_end = '</a>'.html_safe
@@ -15,17 +12,18 @@
     - export_information = _('After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance.') % { strong_text_start: '<strong>'.html_safe, strong_text_end: '</strong>'.html_safe}
     = export_information.html_safe
     = link_to _('Learn more.'), help_page_path('user/group/settings/import_export.md'), target: '_blank', rel: 'noopener noreferrer'
-  .bs-callout.bs-callout-info
-    %p.gl-mb-0
-      %p= _('The following items will be exported:')
-      %ul
-        - group_export_descriptions.each do |description|
-          %li= description
-      %p= _('The following items will NOT be exported:')
-      %ul
-        %li= _('Projects')
-        %li= _('Runner tokens')
-        %li= _('SAML discovery tokens')
+  = render Pajamas::AlertComponent.new(dismissible: false, alert_class: 'gl-mb-5') do
+    .gl-alert-body
+      %p.gl-mb-0
+        %p= _('The following items will be exported:')
+        %ul
+          - group_export_descriptions.each do |description|
+            %li= description
+        %p= _('The following items will NOT be exported:')
+        %ul
+          %li= _('Projects')
+          %li= _('Runner tokens')
+          %li= _('SAML discovery tokens')
   - if group.export_file_exists?
     = link_to _('Download export'), download_export_group_path(group),
         rel: 'nofollow', method: :get, class: 'btn gl-button btn-default', data: { qa_selector: 'download_export_link' }

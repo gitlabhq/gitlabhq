@@ -30,6 +30,30 @@ repository is too large, the import can timeout.
 
 You can also [connect your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md).
 
+## Project import history
+
+You can view all project imports created by you. This list includes the following:
+
+- Source (without credentials for security reasons)
+- Destination
+- Status
+- Error details if the import failed
+
+To view project import history:
+
+1. Sign in to GitLab.
+1. On the top bar, select **New** (**{plus}**).
+1. Select **New project/repository**.
+1. Select **Import project**.
+1. Select **History**.
+
+![Project import history page](img/gitlab_import_history_page_v14_10.png)
+
+The history also includes projects created from [built-in](../working_with_projects.md#create-a-project-from-a-built-in-template)
+or [custom](../working_with_projects.md#create-a-project-from-a-built-in-template)
+templates. GitLab uses [import repository by URL](repo_by_url.md)
+to create a new project from a template.
+
 ## LFS authentication
 
 When importing a project that contains LFS objects, if the project has an [`.lfsconfig`](https://github.com/git-lfs/git-lfs/blob/master/docs/man/git-lfs-config.5.ronn)

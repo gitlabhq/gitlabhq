@@ -22,8 +22,6 @@ module QA
 
         Page::Project::Menu.perform(&:go_to_ci_cd_settings)
         Page::Project::Settings::CiCd.perform do |settings|
-          sleep 5 # Runner should register within 5 seconds
-
           settings.expand_runners_settings do |page|
             expect(page).to have_content(executor)
             expect(page).to have_online_runner

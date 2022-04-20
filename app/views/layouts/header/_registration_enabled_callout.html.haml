@@ -1,11 +1,11 @@
 - return unless show_registration_enabled_user_callout?
 
-= render 'shared/global_alert',
-  title: _('Anyone can register for an account.'),
+= render Pajamas::AlertComponent.new(title: _('Anyone can register for an account.'),
   variant: :warning,
   alert_class: 'js-registration-enabled-callout',
-  alert_data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT, dismiss_endpoint: callouts_path },
-  close_button_data: { testid: 'close-registration-enabled-callout' } do
+  alert_data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT,
+                dismiss_endpoint: callouts_path },
+  close_button_data: { testid: 'close-registration-enabled-callout' }) do
   .gl-alert-body
     = _('Only allow anyone to register for accounts on GitLab instances that you intend to be used by anyone. Allowing anyone to register makes GitLab instances more vulnerable.')
   .gl-alert-actions

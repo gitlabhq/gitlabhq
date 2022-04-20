@@ -7,7 +7,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
   let(:namespace) { create(:group) }
 
   let(:repo) do
-    OpenStruct.new(
+    ActiveSupport::InheritableOptions.new(
       login: 'vim',
       name: 'vim',
       full_name: 'asd/vim',
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
     namespace.add_owner(user)
 
     expect_next_instance_of(Project) do |project|
-      expect(project).to receive(:add_import_job)
+      allow(project).to receive(:add_import_job)
     end
   end
 

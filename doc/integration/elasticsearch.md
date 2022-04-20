@@ -982,7 +982,7 @@ There is also an easy way to check it automatically with `sudo gitlab-rake gitla
 
 This exception is seen when your Elasticsearch cluster is configured to reject requests above a certain size (10MiB in this case). This corresponds to the `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a larger size and restart your Elasticsearch cluster.
 
-AWS has [fixed limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-limits.html) for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of the underlying instance.
+AWS has [fixed limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html#network-limits) for this setting ("Maximum size of HTTP request payloads"), based on the size of the underlying instance.
 
 ### My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly
 
@@ -1079,6 +1079,12 @@ If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error duri
 
 - To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
 - If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../administration/operations/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
+
+### Indexing is very slow or fails with `rejected execution of coordinating operation` messages
+
+Bulk requests are getting rejected by the Elasticsearch node(s) likely due to load and lack of available memory.
+Ensure that your Elasticsearch cluster meets the [system requirements](#system-requirements) and has enough resources
+to perform bulk operations. See also the error ["429 (Too Many Requests)"](#indexing-fails-with-error-elastic-error-429-too-many-requests).
 
 ### Access requirements for the self-managed AWS OpenSearch Service
 

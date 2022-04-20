@@ -6,30 +6,12 @@ class Groups::GroupLinksController < Groups::ApplicationController
 
   feature_category :subgroups
 
-  def create
-    shared_with_group = Group.find(params[:shared_with_group_id]) if params[:shared_with_group_id].present?
-
-    if shared_with_group
-      result = Groups::GroupLinks::CreateService
-                 .new(group, shared_with_group, current_user, group_link_create_params)
-                 .execute
-
-      return render_404 if result[:http_status] == 404
-
-      flash[:alert] = result[:message] if result[:status] == :error
-    else
-      flash[:alert] = _('Please select a group.')
-    end
-
-    redirect_to group_group_members_path(group)
-  end
-
   def update
     Groups::GroupLinks::UpdateService.new(@group_link).execute(group_link_params)
 
     if @group_link.expires?
       render json: {
-        expires_in: helpers.distance_of_time_in_words_to_now(@group_link.expires_at),
+        expires_in: helpers.time_ago_with_tooltip(@group_link.expires_at),
         expires_soon: @group_link.expires_soon?
       }
     else
@@ -52,10 +34,6 @@ class Groups::GroupLinksController < Groups::ApplicationController
 
   def group_link
     @group_link ||= group.shared_with_group_links.find(params[:id])
-  end
-
-  def group_link_create_params
-    params.permit(:shared_group_access, :expires_at)
   end
 
   def group_link_params

@@ -23,7 +23,7 @@ module ErrorTracking
       end
 
       def map_to_repos(repos)
-        repos.map(&method(:map_to_repo))
+        repos.map { map_to_repo(_1) }
       end
 
       def map_to_repo(repo)

@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Ci::Config do
   context 'when config is valid' do
     let(:yml) do
       <<-EOS
-        image: ruby:2.7
+        image: image:1.0
 
         rspec:
           script:
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Ci::Config do
     describe '#to_hash' do
       it 'returns hash created from string' do
         hash = {
-          image: 'ruby:2.7',
+          image: 'image:1.0',
           rspec: {
             script: ['gem install rspec',
                      'rspec']
@@ -104,12 +104,32 @@ RSpec.describe Gitlab::Ci::Config do
     end
 
     it { is_expected.to contain_exactly('Jobs/Deploy.gitlab-ci.yml', 'Jobs/Build.gitlab-ci.yml') }
+
+    it 'stores includes' do
+      expect(config.metadata[:includes]).to contain_exactly(
+        { type: :template,
+          location: 'Jobs/Deploy.gitlab-ci.yml',
+          extra: {},
+          context_project: nil,
+          context_sha: nil },
+        { type: :template,
+          location: 'Jobs/Build.gitlab-ci.yml',
+          extra: {},
+          context_project: nil,
+          context_sha: nil },
+        { type: :remote,
+          location: 'https://example.com/gitlab-ci.yml',
+          extra: {},
+          context_project: nil,
+          context_sha: nil }
+      )
+    end
   end
 
   context 'when using extendable hash' do
     let(:yml) do
       <<-EOS
-        image: ruby:2.7
+        image: image:1.0
 
         rspec:
           script: rspec
@@ -122,7 +142,7 @@ RSpec.describe Gitlab::Ci::Config do
 
     it 'correctly extends the hash' do
       hash = {
-        image: 'ruby:2.7',
+        image: 'image:1.0',
         rspec: { script: 'rspec' },
         test: {
           extends: 'rspec',
@@ -212,7 +232,7 @@ RSpec.describe Gitlab::Ci::Config do
         let(:yml) do
           <<-EOS
             image:
-              name: ruby:2.7
+              name: image:1.0
               ports:
                 - 80
           EOS
@@ -226,12 +246,12 @@ RSpec.describe Gitlab::Ci::Config do
       context 'in the job image' do
         let(:yml) do
           <<-EOS
-            image: ruby:2.7
+            image: image:1.0
 
             test:
               script: rspec
               image:
-                name: ruby:2.7
+                name: image:1.0
                 ports:
                   - 80
           EOS
@@ -245,11 +265,11 @@ RSpec.describe Gitlab::Ci::Config do
       context 'in the services' do
         let(:yml) do
           <<-EOS
-            image: ruby:2.7
+            image: image:1.0
 
             test:
               script: rspec
-              image: ruby:2.7
+              image: image:1.0
               services:
                 - name: test
                   alias: test
@@ -325,7 +345,7 @@ RSpec.describe Gitlab::Ci::Config do
         - project: '$MAIN_PROJECT'
           ref: '$REF'
           file: '$FILENAME'
-      image: ruby:2.7
+      image: image:1.0
       HEREDOC
     end
 
@@ -364,7 +384,7 @@ RSpec.describe Gitlab::Ci::Config do
       it 'returns a composed hash' do
         composed_hash = {
           before_script: local_location_hash[:before_script],
-          image: "ruby:2.7",
+          image: "image:1.0",
           rspec: { script: ["bundle exec rspec"] },
           variables: remote_file_hash[:variables]
         }
@@ -402,6 +422,26 @@ RSpec.describe Gitlab::Ci::Config do
             expect(filename).to eq('.another-ci-file.yml')
           end
         end
+      end
+
+      it 'stores includes' do
+        expect(config.metadata[:includes]).to contain_exactly(
+          { type: :local,
+            location: local_location,
+            extra: {},
+            context_project: project.full_path,
+            context_sha: '12345' },
+          { type: :remote,
+            location: remote_location,
+            extra: {},
+            context_project: project.full_path,
+            context_sha: '12345' },
+          { type: :file,
+            location: '.gitlab-ci.yml',
+            extra: { project: main_project.full_path, ref: 'HEAD' },
+            context_project: project.full_path,
+            context_sha: '12345' }
+        )
       end
     end
 
@@ -481,7 +521,7 @@ RSpec.describe Gitlab::Ci::Config do
         include:
           - #{remote_location}
 
-        image: ruby:2.7
+        image: image:1.0
         HEREDOC
       end
 
@@ -492,7 +532,7 @@ RSpec.describe Gitlab::Ci::Config do
       end
 
       it 'takes precedence' do
-        expect(config.to_hash).to eq({ image: 'ruby:2.7' })
+        expect(config.to_hash).to eq({ image: 'image:1.0' })
       end
     end
 
@@ -699,7 +739,7 @@ RSpec.describe Gitlab::Ci::Config do
               - #{local_location}
               - #{other_file_location}
 
-        image: ruby:2.7
+        image: image:1.0
         HEREDOC
       end
 
@@ -718,7 +758,7 @@ RSpec.describe Gitlab::Ci::Config do
       it 'returns a composed hash' do
         composed_hash = {
           before_script: local_location_hash[:before_script],
-          image: "ruby:2.7",
+          image: "image:1.0",
           build: { stage: "build", script: "echo hello" },
           rspec: { stage: "test", script: "bundle exec rspec" }
         }
@@ -735,7 +775,7 @@ RSpec.describe Gitlab::Ci::Config do
             - local: #{local_location}
               rules:
                 - if: $CI_PROJECT_ID == "#{project_id}"
-          image: ruby:2.7
+          image: image:1.0
           HEREDOC
         end
 
@@ -763,7 +803,7 @@ RSpec.describe Gitlab::Ci::Config do
             - local: #{local_location}
               rules:
                 - exists: "#{filename}"
-          image: ruby:2.7
+          image: image:1.0
           HEREDOC
         end
 

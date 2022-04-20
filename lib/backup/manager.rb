@@ -5,74 +5,43 @@ module Backup
     FILE_NAME_SUFFIX = '_gitlab_backup.tar'
     MANIFEST_NAME = 'backup_information.yml'
 
+    # pages used to deploy tmp files to this path
+    # if some of these files are still there, we don't need them in the backup
+    LEGACY_PAGES_TMP_PATH = '@pages.tmp'
+
     TaskDefinition = Struct.new(
+      :enabled, # `true` if the task can be used. Treated as `true` when not specified.
+      :human_name, # Name of the task used for logging.
       :destination_path, # Where the task should put its backup file/dir.
       :destination_optional, # `true` if the destination might not exist on a successful backup.
       :cleanup_path, # Path to remove after a successful backup. Uses `destination_path` when not specified.
       :task,
       keyword_init: true
-    )
+    ) do
+      def enabled?
+        enabled.nil? || enabled
+      end
+    end
 
     attr_reader :progress
 
     def initialize(progress, definitions: nil)
       @progress = progress
 
-      max_concurrency = ENV.fetch('GITLAB_BACKUP_MAX_CONCURRENCY', 1).to_i
-      max_storage_concurrency = ENV.fetch('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 1).to_i
-      force = ENV['force'] == 'yes'
-      incremental = Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
+      @incremental = Feature.feature_flags_available? &&
+        Feature.enabled?(:incremental_repository_backup, default_enabled: :yaml) &&
+        Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
 
-      @definitions = definitions || {
-        'db' => TaskDefinition.new(
-          destination_path: 'db/database.sql.gz',
-          cleanup_path: 'db',
-          task: Database.new(progress, force: force)
-        ),
-        'repositories' => TaskDefinition.new(
-          destination_path: 'repositories',
-          destination_optional: true,
-          task: Repositories.new(progress,
-                                 strategy: repository_backup_strategy(incremental),
-                                 max_concurrency: max_concurrency,
-                                 max_storage_concurrency: max_storage_concurrency)
-        ),
-        'uploads' => TaskDefinition.new(
-          destination_path: 'uploads.tar.gz',
-          task: Uploads.new(progress)
-        ),
-        'builds' => TaskDefinition.new(
-          destination_path: 'builds.tar.gz',
-          task: Builds.new(progress)
-        ),
-        'artifacts' => TaskDefinition.new(
-          destination_path: 'artifacts.tar.gz',
-          task: Artifacts.new(progress)
-        ),
-        'pages' => TaskDefinition.new(
-          destination_path: 'pages.tar.gz',
-          task: Pages.new(progress)
-        ),
-        'lfs' => TaskDefinition.new(
-          destination_path: 'lfs.tar.gz',
-          task: Lfs.new(progress)
-        ),
-        'terraform_state' => TaskDefinition.new(
-          destination_path: 'terraform_state.tar.gz',
-          task: TerraformState.new(progress)
-        ),
-        'registry' => TaskDefinition.new(
-          destination_path: 'registry.tar.gz',
-          task: Registry.new(progress)
-        ),
-        'packages' => TaskDefinition.new(
-          destination_path: 'packages.tar.gz',
-          task: Packages.new(progress)
-        )
-      }.freeze
+      @definitions = definitions || build_definitions
     end
 
     def create
+      if incremental?
+        unpack
+        read_backup_information
+        verify_backup_version
+      end
+
       @definitions.keys.each do |task_name|
         run_create_task(task_name)
       end
@@ -88,34 +57,33 @@ module Backup
         remove_old
       end
 
-      progress.puts "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
+      puts_time "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
            "and are not included in this backup. You will need these files to restore a backup.\n" \
            "Please back them up manually.".color(:red)
-      progress.puts "Backup task is done."
+      puts_time "Backup #{backup_id} is done."
     end
 
     def run_create_task(task_name)
       definition = @definitions[task_name]
 
       build_backup_information
-      puts_time "Dumping #{definition.task.human_name} ... ".color(:blue)
 
-      unless definition.task.enabled
-        puts_time "[DISABLED]".color(:cyan)
+      unless definition.enabled?
+        puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
       end
 
       if skipped?(task_name)
-        puts_time "[SKIPPED]".color(:cyan)
+        puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
         return
       end
 
-      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path))
-
-      puts_time "done".color(:green)
+      puts_time "Dumping #{definition.human_name} ... ".color(:blue)
+      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
+      puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
-      progress.puts "#{e.message}"
+      puts_time "Dumping #{definition.human_name} failed: #{e.message}".color(:red)
     end
 
     def restore
@@ -136,20 +104,20 @@ module Backup
 
       remove_tmp
 
-      puts "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
-           "and are not included in this backup. You will need to restore these files manually.".color(:red)
-      puts "Restore task is done."
+      puts_time "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
+        "and are not included in this backup. You will need to restore these files manually.".color(:red)
+      puts_time "Restore task is done."
     end
 
     def run_restore_task(task_name)
       definition = @definitions[task_name]
 
-      puts_time "Restoring #{definition.task.human_name} ... ".color(:blue)
-
-      unless definition.task.enabled
-        puts_time "[DISABLED]".color(:cyan)
+      unless definition.enabled?
+        puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
       end
+
+      puts_time "Restoring #{definition.human_name} ... ".color(:blue)
 
       warning = definition.task.pre_restore_warning
       if warning.present?
@@ -159,7 +127,7 @@ module Backup
 
       definition.task.restore(File.join(Gitlab.config.backup.path, definition.destination_path))
 
-      puts_time "done".color(:green)
+      puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
       warning = definition.task.post_restore_warning
       if warning.present?
@@ -173,6 +141,86 @@ module Backup
     end
 
     private
+
+    def build_definitions
+      {
+        'db' => TaskDefinition.new(
+          human_name: _('database'),
+          destination_path: 'db/database.sql.gz',
+          cleanup_path: 'db',
+          task: build_db_task
+        ),
+        'repositories' => TaskDefinition.new(
+          human_name: _('repositories'),
+          destination_path: 'repositories',
+          destination_optional: true,
+          task: build_repositories_task
+        ),
+        'uploads' => TaskDefinition.new(
+          human_name: _('uploads'),
+          destination_path: 'uploads.tar.gz',
+          task: build_files_task(File.join(Gitlab.config.uploads.storage_path, 'uploads'), excludes: ['tmp'])
+        ),
+        'builds' => TaskDefinition.new(
+          human_name: _('builds'),
+          destination_path: 'builds.tar.gz',
+          task: build_files_task(Settings.gitlab_ci.builds_path)
+        ),
+        'artifacts' => TaskDefinition.new(
+          human_name: _('artifacts'),
+          destination_path: 'artifacts.tar.gz',
+          task: build_files_task(JobArtifactUploader.root, excludes: ['tmp'])
+        ),
+        'pages' => TaskDefinition.new(
+          human_name: _('pages'),
+          destination_path: 'pages.tar.gz',
+          task: build_files_task(Gitlab.config.pages.path, excludes: [LEGACY_PAGES_TMP_PATH])
+        ),
+        'lfs' => TaskDefinition.new(
+          human_name: _('lfs objects'),
+          destination_path: 'lfs.tar.gz',
+          task: build_files_task(Settings.lfs.storage_path)
+        ),
+        'terraform_state' => TaskDefinition.new(
+          human_name: _('terraform states'),
+          destination_path: 'terraform_state.tar.gz',
+          task: build_files_task(Settings.terraform_state.storage_path, excludes: ['tmp'])
+        ),
+        'registry' => TaskDefinition.new(
+          enabled: Gitlab.config.registry.enabled,
+          human_name: _('container registry images'),
+          destination_path: 'registry.tar.gz',
+          task: build_files_task(Settings.registry.path)
+        ),
+        'packages' => TaskDefinition.new(
+          human_name: _('packages'),
+          destination_path: 'packages.tar.gz',
+          task: build_files_task(Settings.packages.storage_path, excludes: ['tmp'])
+        )
+      }.freeze
+    end
+
+    def build_db_task
+      force = Gitlab::Utils.to_boolean(ENV['force'], default: false)
+
+      Database.new(progress, force: force)
+    end
+
+    def build_repositories_task
+      max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
+      max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
+      strategy = Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
+
+      Repositories.new(progress, strategy: strategy)
+    end
+
+    def build_files_task(app_files_dir, excludes: [])
+      Files.new(progress, app_files_dir, excludes: excludes)
+    end
+
+    def incremental?
+      @incremental
+    end
 
     def read_backup_information
       @backup_information ||= YAML.load_file(File.join(backup_path, MANIFEST_NAME))
@@ -209,103 +257,104 @@ module Backup
     def pack
       Dir.chdir(backup_path) do
         # create archive
-        progress.print "Creating backup archive: #{tar_file} ... "
+        puts_time "Creating backup archive: #{tar_file} ... ".color(:blue)
         # Set file permissions on open to prevent chmod races.
         tar_system_options = { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] }
         if Kernel.system('tar', '-cf', '-', *backup_contents, tar_system_options)
-          progress.puts "done".color(:green)
+          puts_time "Creating backup archive: #{tar_file} ... ".color(:blue) + 'done'.color(:green)
         else
-          puts "creating archive #{tar_file} failed".color(:red)
+          puts_time "Creating archive #{tar_file} failed".color(:red)
           raise Backup::Error, 'Backup failed'
         end
       end
     end
 
     def upload
-      progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
-
       connection_settings = Gitlab.config.backup.upload.connection
-      if connection_settings.blank?
-        progress.puts "skipped".color(:yellow)
+      if connection_settings.blank? || skipped?('remote')
+        puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
         return
       end
+
+      puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue)
 
       directory = connect_to_remote_directory
       upload = directory.files.create(create_attributes)
 
       if upload
         if upload.respond_to?(:encryption) && upload.encryption
-          progress.puts "done (encrypted with #{upload.encryption})".color(:green)
+          puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) + "done (encrypted with #{upload.encryption})".color(:green)
         else
-          progress.puts "done".color(:green)
+          puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) + "done".color(:green)
         end
       else
-        puts "uploading backup to #{remote_directory} failed".color(:red)
+        puts_time "Uploading backup to #{remote_directory} failed".color(:red)
         raise Backup::Error, 'Backup failed'
       end
     end
 
     def cleanup
-      progress.print "Deleting tmp directories ... "
+      puts_time "Deleting tar staging files ... ".color(:blue)
 
       remove_backup_path(MANIFEST_NAME)
       @definitions.each do |_, definition|
         remove_backup_path(definition.cleanup_path || definition.destination_path)
       end
+
+      puts_time "Deleting tar staging files ... ".color(:blue) + 'done'.color(:green)
     end
 
     def remove_backup_path(path)
-      return unless File.exist?(File.join(backup_path, path))
+      absolute_path = File.join(backup_path, path)
+      return unless File.exist?(absolute_path)
 
-      FileUtils.rm_rf(File.join(backup_path, path))
-      progress.puts "done".color(:green)
+      puts_time "Cleaning up #{absolute_path}"
+      FileUtils.rm_rf(absolute_path)
     end
 
     def remove_tmp
       # delete tmp inside backups
-      progress.print "Deleting backups/tmp ... "
+      puts_time "Deleting backups/tmp ... ".color(:blue)
 
-      if FileUtils.rm_rf(File.join(backup_path, "tmp"))
-        progress.puts "done".color(:green)
-      else
-        puts "deleting backups/tmp failed".color(:red)
-      end
+      FileUtils.rm_rf(File.join(backup_path, "tmp"))
+      puts_time "Deleting backups/tmp ... ".color(:blue) + "done".color(:green)
     end
 
     def remove_old
       # delete backups
-      progress.print "Deleting old backups ... "
       keep_time = Gitlab.config.backup.keep_time.to_i
 
-      if keep_time > 0
-        removed = 0
+      if keep_time <= 0
+        puts_time "Deleting old backups ... ".color(:blue) + "[SKIPPED]".color(:cyan)
+        return
+      end
 
-        Dir.chdir(backup_path) do
-          backup_file_list.each do |file|
-            # For backward compatibility, there are 3 names the backups can have:
-            # - 1495527122_gitlab_backup.tar
-            # - 1495527068_2017_05_23_gitlab_backup.tar
-            # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
-            matched = backup_file?(file)
-            next unless matched
+      puts_time "Deleting old backups ... ".color(:blue)
+      removed = 0
 
-            timestamp = matched[1].to_i
+      Dir.chdir(backup_path) do
+        backup_file_list.each do |file|
+          # For backward compatibility, there are 3 names the backups can have:
+          # - 1495527122_gitlab_backup.tar
+          # - 1495527068_2017_05_23_gitlab_backup.tar
+          # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
+          matched = backup_file?(file)
+          next unless matched
 
-            if Time.at(timestamp) < (Time.now - keep_time)
-              begin
-                FileUtils.rm(file)
-                removed += 1
-              rescue StandardError => e
-                progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
-              end
+          timestamp = matched[1].to_i
+
+          if Time.at(timestamp) < (Time.now - keep_time)
+            begin
+              FileUtils.rm(file)
+              removed += 1
+            rescue StandardError => e
+              puts_time "Deleting #{file} failed: #{e.message}".color(:red)
             end
           end
         end
-
-        progress.puts "done. (#{removed} removed)".color(:green)
-      else
-        progress.puts "skipping".color(:yellow)
       end
+
+      puts_time "Deleting old backups ... ".color(:blue) + "done. (#{removed} removed)".color(:green)
     end
 
     def verify_backup_version
@@ -327,7 +376,7 @@ module Backup
 
     def unpack
       if ENV['BACKUP'].blank? && non_tarred_backup?
-        progress.puts "Non tarred backup found in #{backup_path}, using that"
+        puts_time "Non tarred backup found in #{backup_path}, using that"
 
         return false
       end
@@ -335,15 +384,22 @@ module Backup
       Dir.chdir(backup_path) do
         # check for existing backups in the backup dir
         if backup_file_list.empty?
-          progress.puts "No backups found in #{backup_path}"
-          progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
+          puts_time "No backups found in #{backup_path}"
+          puts_time "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
           exit 1
         elsif backup_file_list.many? && ENV["BACKUP"].nil?
-          progress.puts 'Found more than one backup:'
+          puts_time 'Found more than one backup:'
           # print list of available backups
-          progress.puts " " + available_timestamps.join("\n ")
-          progress.puts 'Please specify which one you want to restore:'
-          progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
+          puts_time " " + available_timestamps.join("\n ")
+
+          if incremental?
+            puts_time 'Please specify which one you want to create an incremental backup for:'
+            puts_time 'rake gitlab:backup:create INCREMENTAL=true BACKUP=timestamp_of_backup'
+          else
+            puts_time 'Please specify which one you want to restore:'
+            puts_time 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
+          end
+
           exit 1
         end
 
@@ -354,16 +410,16 @@ module Backup
                    end
 
         unless File.exist?(tar_file)
-          progress.puts "The backup file #{tar_file} does not exist!"
+          puts_time "The backup file #{tar_file} does not exist!"
           exit 1
         end
 
-        progress.print 'Unpacking backup ... '
+        puts_time 'Unpacking backup ... '.color(:blue)
 
         if Kernel.system(*%W(tar -xf #{tar_file}))
-          progress.puts 'done'.color(:green)
+          puts_time 'Unpacking backup ... '.color(:blue) + 'done'.color(:green)
         else
-          progress.puts 'unpacking backup failed'.color(:red)
+          puts_time 'Unpacking backup failed'.color(:red)
           exit 1
         end
       end
@@ -375,11 +431,12 @@ module Backup
     end
 
     def skipped?(item)
-      backup_information[:skipped] && backup_information[:skipped].include?(item)
+      ENV.fetch('SKIP', '').include?(item) ||
+        backup_information[:skipped] && backup_information[:skipped].include?(item)
     end
 
     def enabled_task?(task_name)
-      @definitions[task_name].task.enabled
+      @definitions[task_name].enabled?
     end
 
     def backup_file?(file)
@@ -441,11 +498,15 @@ module Backup
     end
 
     def tar_file
-      @tar_file ||= if ENV['BACKUP'].present?
-                      File.basename(ENV['BACKUP']) + FILE_NAME_SUFFIX
-                    else
-                      "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}#{FILE_NAME_SUFFIX}"
-                    end
+      @tar_file ||= "#{backup_id}#{FILE_NAME_SUFFIX}"
+    end
+
+    def backup_id
+      @backup_id ||= if ENV['BACKUP'].present?
+                       File.basename(ENV['BACKUP'])
+                     else
+                       "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
+                     end
     end
 
     def create_attributes
@@ -479,16 +540,6 @@ module Backup
 
     def google_provider?
       Gitlab.config.backup.upload.connection&.provider&.downcase == 'google'
-    end
-
-    def repository_backup_strategy(incremental)
-      if !Feature.feature_flags_available? || Feature.enabled?(:gitaly_backup, default_enabled: :yaml)
-        max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
-        max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
-        Backup::GitalyBackup.new(progress, incremental: incremental, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
-      else
-        Backup::GitalyRpcBackup.new(progress)
-      end
     end
 
     def puts_time(msg)

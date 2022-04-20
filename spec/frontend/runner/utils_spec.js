@@ -44,6 +44,10 @@ describe('~/runner/utils', () => {
         thClass: expect.arrayContaining(mockClasses),
       });
     });
+
+    it('a field with custom options', () => {
+      expect(tableField({ foo: 'bar' })).toMatchObject({ foo: 'bar' });
+    });
   });
 
   describe('getPaginationVariables', () => {

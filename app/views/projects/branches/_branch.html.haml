@@ -7,6 +7,7 @@
       = sprite_icon('branch', size: 12, css_class: 'gl-flex-shrink-0')
       = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated-100 ref-name gl-ml-3 qa-branch-name' do
         = branch.name
+      = clipboard_button(text: branch.name, title: _("Copy branch name"))
       - if branch.name == @repository.root_ref
         = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info, size: :sm }, { class: 'gl-ml-2' }
       - elsif merged

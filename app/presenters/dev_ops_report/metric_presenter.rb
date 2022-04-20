@@ -2,28 +2,28 @@
 
 module DevOpsReport
   class MetricPresenter < Gitlab::View::Presenter::Simple
-    presents ::DevOpsReport::Metric
+    presents ::DevOpsReport::Metric, as: :metric
 
-    delegate :created_at, to: :subject
+    delegate :created_at, to: :metric
 
     def cards
       [
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Issues',
           description: 'created per active user',
           feature: 'issues',
           blog: 'https://www2.deloitte.com/content/dam/Deloitte/se/Documents/technology-media-telecommunications/deloitte-digital-collaboration.pdf'
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Comments',
           description: 'created per active user',
           feature: 'notes',
           blog: 'http://conversationaldevelopment.com/why/'
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Milestones',
           description: 'created per active user',
           feature: 'milestones',
@@ -31,7 +31,7 @@ module DevOpsReport
           docs: help_page_path('user/project/milestones/index')
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Boards',
           description: 'created per active user',
           feature: 'boards',
@@ -39,7 +39,7 @@ module DevOpsReport
           docs: help_page_path('user/project/issue_board')
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Merge requests',
           description: 'per active user',
           feature: 'merge_requests',
@@ -47,7 +47,7 @@ module DevOpsReport
           docs: help_page_path('user/project/merge_requests/index')
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Pipelines',
           description: 'created per active user',
           feature: 'ci_pipelines',
@@ -55,7 +55,7 @@ module DevOpsReport
           docs: help_page_path('ci/index')
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Environments',
           description: 'created per active user',
           feature: 'environments',
@@ -63,14 +63,14 @@ module DevOpsReport
           docs: help_page_path('ci/environments')
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Deployments',
           description: 'created per active user',
           feature: 'deployments',
           blog: 'https://puppet.com/blog/continuous-delivery-vs-continuous-deployment-what-s-diff'
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Monitoring',
           description: 'fraction of all projects',
           feature: 'projects_prometheus_active',
@@ -78,7 +78,7 @@ module DevOpsReport
           docs: help_page_path('user/project/integrations/prometheus')
         ),
         Card.new(
-          metric: subject,
+          metric: metric,
           title: 'Service Desk',
           description: 'issues created per active user',
           feature: 'service_desk_issues',
@@ -91,52 +91,52 @@ module DevOpsReport
     def idea_to_production_steps
       [
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Idea',
           features: %w(issues)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Issue',
           features: %w(issues notes)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Plan',
           features: %w(milestones boards)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Code',
           features: %w(merge_requests)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Commit',
           features: %w(merge_requests)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Test',
           features: %w(ci_pipelines)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Review',
           features: %w(ci_pipelines environments)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Staging',
           features: %w(environments deployments)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Production',
           features: %w(deployments)
         ),
         IdeaToProductionStep.new(
-          metric: subject,
+          metric: metric,
           title: 'Feedback',
           features: %w(projects_prometheus_active service_desk_issues)
         )

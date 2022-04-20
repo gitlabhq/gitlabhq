@@ -14,13 +14,10 @@
       = form.label :footer_message, _('Footer message'), class: 'col-form-label label-bold'
       = form.text_area :footer_message, placeholder: _('State your message to activate'), class: "form-control gl-form-input js-autosize"
     .form-group
-      .form-check
-        = form.check_box :email_header_and_footer_enabled, class: 'form-check-input'
-        = form.label :email_header_and_footer_enabled, class: 'label-bold' do
-          = _('Enable header and footer in emails')
-
-        .form-text.text-muted
-          = _('Add header and footer to emails. Please note that color settings will only be applied within the application interface')
+      = form.gitlab_ui_checkbox_component :email_header_and_footer_enabled,
+        _('Enable header and footer in emails'),
+        help_text: _('Add header and footer to emails. Please note that color settings will only be applied within the application interface'),
+        label_options: { class: 'gl-font-weight-bold!' }
 
     .form-group.js-toggle-colors-container
       %button.btn.gl-button.btn-link.js-toggle-colors-link{ type: 'button' }

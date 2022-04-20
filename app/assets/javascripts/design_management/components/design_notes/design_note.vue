@@ -1,11 +1,17 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
+import {
+  GlAvatar,
+  GlAvatarLink,
+  GlButton,
+  GlLink,
+  GlSafeHtmlDirective,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
 import { hasErrors } from '../../utils/cache_update';
 import { findNoteId, extractDesignNoteId } from '../../utils/design_management_utils';
@@ -16,13 +22,14 @@ export default {
     editCommentLabel: __('Edit comment'),
   },
   components: {
-    UserAvatarLink,
-    TimelineEntryItem,
-    TimeAgoTooltip,
-    DesignReplyForm,
     ApolloMutation,
-    GlIcon,
+    DesignReplyForm,
+    GlAvatar,
+    GlAvatarLink,
+    GlButton,
     GlLink,
+    TimeAgoTooltip,
+    TimelineEntryItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -86,18 +93,17 @@ export default {
 
 <template>
   <timeline-entry-item :id="`note_${noteAnchorId}`" class="design-note note-form">
-    <user-avatar-link
-      :link-href="author.webUrl"
-      :img-src="author.avatarUrl"
-      :img-alt="author.username"
-      :img-size="40"
-    />
+    <gl-avatar-link :href="author.webUrl" class="gl-float-left gl-mr-3">
+      <gl-avatar :size="32" :src="author.avatarUrl" :entity-name="author.username" />
+    </gl-avatar-link>
+
     <div class="gl-display-flex gl-justify-content-space-between">
       <div>
         <gl-link
           v-once
           :href="author.webUrl"
           class="js-user-link"
+          data-testid="user-link"
           :data-user-id="authorId"
           :data-username="author.username"
         >
@@ -117,24 +123,25 @@ export default {
       </div>
       <div class="gl-display-flex gl-align-items-baseline">
         <slot name="resolve-discussion"></slot>
-        <button
+        <gl-button
           v-if="isEditButtonVisible"
           v-gl-tooltip
-          type="button"
-          :title="$options.i18n.editCommentLabel"
           :aria-label="$options.i18n.editCommentLabel"
-          class="note-action-button js-note-edit btn btn-transparent qa-note-edit-button"
+          :title="$options.i18n.editCommentLabel"
+          category="tertiary"
+          data-testid="note-edit"
+          icon="pencil"
+          size="small"
           @click="isEditing = true"
-        >
-          <gl-icon name="pencil" class="link-highlight" />
-        </button>
+        />
       </div>
     </div>
     <template v-if="!isEditing">
       <div
         v-safe-html="note.bodyHtml"
-        class="note-text js-note-text md"
+        class="note-text md"
         data-qa-selector="note_content"
+        data-testid="note-text"
       ></div>
       <slot name="resolved-status"></slot>
     </template>

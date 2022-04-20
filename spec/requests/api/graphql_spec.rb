@@ -15,7 +15,7 @@ RSpec.describe 'GraphQL' do
       let(:expected_execute_query_log) do
         {
           "correlation_id" => kind_of(String),
-          "meta.caller_id" => "graphql:anonymous",
+          "meta.caller_id" => "graphql:unknown",
           "meta.client_id" => kind_of(String),
           "meta.feature_category" => "not_owned",
           "meta.remote_ip" => kind_of(String),

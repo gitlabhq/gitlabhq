@@ -8,8 +8,6 @@ RSpec.describe 'User edit profile' do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(improved_emoji_picker: false)
-
     sign_in(user)
     visit(profile_path)
   end
@@ -169,10 +167,9 @@ RSpec.describe 'User edit profile' do
 
   context 'user status', :js do
     def select_emoji(emoji_name, is_modal = false)
-      emoji_menu_class = is_modal ? '.js-modal-status-emoji-menu' : '.js-status-emoji-menu'
-      toggle_button = find('.js-toggle-emoji-menu')
+      toggle_button = find('.emoji-menu-toggle-button')
       toggle_button.click
-      emoji_button = find(%Q{#{emoji_menu_class} .js-emoji-btn gl-emoji[data-name="#{emoji_name}"]})
+      emoji_button = find("gl-emoji[data-name=\"#{emoji_name}\"]")
       emoji_button.click
     end
 
@@ -207,7 +204,7 @@ RSpec.describe 'User edit profile' do
       end
 
       it 'adds message and emoji to user status' do
-        emoji = 'tanabata_tree'
+        emoji = '8ball'
         message = 'Playing outside'
         select_emoji(emoji)
         fill_in 'js-status-message-field', with: message
@@ -356,7 +353,7 @@ RSpec.describe 'User edit profile' do
       end
 
       it 'adds emoji to user status' do
-        emoji = 'biohazard'
+        emoji = '8ball'
         open_user_status_modal
         select_emoji(emoji, true)
         set_user_status_in_modal
@@ -387,18 +384,18 @@ RSpec.describe 'User edit profile' do
 
       it 'opens the emoji modal again after closing it' do
         open_user_status_modal
-        select_emoji('biohazard', true)
+        select_emoji('8ball', true)
 
-        find('.js-toggle-emoji-menu').click
+        find('.emoji-menu-toggle-button').click
 
-        expect(page).to have_selector('.emoji-menu')
+        expect(page).to have_selector('.emoji-picker-emoji')
       end
 
       it 'does not update the awards panel emoji' do
         project.add_maintainer(user)
         visit(project_issue_path(project, issue))
 
-        emoji = 'biohazard'
+        emoji = '8ball'
         open_user_status_modal
         select_emoji(emoji, true)
 
@@ -420,7 +417,7 @@ RSpec.describe 'User edit profile' do
       end
 
       it 'adds message and emoji to user status' do
-        emoji = 'tanabata_tree'
+        emoji = '8ball'
         message = 'Playing outside'
         open_user_status_modal
         select_emoji(emoji, true)
@@ -495,9 +492,7 @@ RSpec.describe 'User edit profile' do
         open_user_status_modal
         find('.js-status-message-field').native.send_keys(message)
 
-        within('.js-toggle-emoji-menu') do
-          expect(page).to have_emoji('speech_balloon')
-        end
+        expect(page).to have_emoji('speech_balloon')
       end
 
       context 'note header' do

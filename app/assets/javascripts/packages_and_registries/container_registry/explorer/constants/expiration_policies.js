@@ -4,7 +4,7 @@ export const EXPIRATION_POLICY_WILL_RUN_IN = s__(
   'ContainerRegistry|Expiration policy will run in %{time}',
 );
 export const EXPIRATION_POLICY_DISABLED_TEXT = s__(
-  'ContainerRegistry|Expiration policy is disabled',
+  'ContainerRegistry|Expiration policy is disabled.',
 );
 export const DELETE_ALERT_TITLE = s__('ContainerRegistry|Some tags were not deleted');
 export const DELETE_ALERT_LINK_TEXT = s__(
@@ -13,3 +13,4 @@ export const DELETE_ALERT_LINK_TEXT = s__(
 export const CLEANUP_TIMED_OUT_ERROR_MESSAGE = s__(
   'ContainerRegistry|Cleanup timed out before it could delete all tags',
 );
+export const SET_UP_CLEANUP = s__('ContainerRegistry|Set up cleanup');

@@ -138,7 +138,11 @@ export default {
     >
       {{ __('Lock to current projects') }}
       <template #help>
-        {{ s__('Runners|Use the runner for the currently assigned projects only.') }}
+        {{
+          s__(
+            'Runners|Use the runner for the currently assigned projects only. Only administrators can change the assigned projects.',
+          )
+        }}
       </template>
     </gl-form-checkbox>
 

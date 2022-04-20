@@ -7,6 +7,7 @@ import {
   GlAvatarLabeled,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { PROJECTS_PER_PAGE } from '../constants';
 import getProjectsQuery from '../graphql/queries/get_projects.query.graphql';
 
@@ -80,6 +81,7 @@ export default {
   i18n: {
     selectProjectText: __('Select a project'),
   },
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
@@ -107,7 +109,7 @@ export default {
       >
         <gl-avatar-labeled
           class="gl-text-truncate"
-          shape="rect"
+          :shape="$options.AVATAR_SHAPE_OPTION_RECT"
           :size="32"
           :src="project.avatarUrl"
           :label="project.name"

@@ -23,9 +23,9 @@ RSpec.describe ProjectMemberPolicy do
     it { is_expected.not_to be_allowed(:destroy_project_bot_member) }
   end
 
-  context 'when user is project owner' do
-    let(:member_user) { project.first_owner }
-    let(:member) { project.members.find_by!(user: member_user) }
+  context 'when user is the holder of personal namespace in which the project resides' do
+    let(:namespace_holder) { project.namespace.owner }
+    let(:member) { project.members.find_by!(user: namespace_holder) }
 
     it { is_expected.to be_allowed(:read_project) }
     it { is_expected.to be_disallowed(:update_project_member) }

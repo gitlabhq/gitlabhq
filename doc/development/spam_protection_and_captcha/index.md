@@ -16,7 +16,7 @@ To add this support, you must implement the following areas as applicable:
 1. [Model and Services](model_and_services.md): The basic prerequisite
    changes to the backend code which are required to add spam or CAPTCHA API and UI support
    for a feature which does not yet have support.
-1. REST API (Supported, documentation coming soon): The changes needed to add
+1. [REST API](rest_api.md): The changes needed to add
    spam or CAPTCHA support to Grape REST API endpoints. Refer to the related
    [REST API documentation](../../api/index.md#resolve-requests-detected-as-spam).
 1. [GraphQL API](graphql_api.md): The changes needed to add spam or CAPTCHA support to GraphQL

@@ -1,5 +1,5 @@
 <script>
-import ciIcon from '../../../vue_shared/components/ci_icon.vue';
+import ciIcon from '~/vue_shared/components/ci_icon.vue';
 
 /**
  * Component that renders both the CI icon status and the job name.

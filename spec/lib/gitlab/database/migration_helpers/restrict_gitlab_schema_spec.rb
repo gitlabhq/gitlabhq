@@ -240,7 +240,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             end
 
             def software_license_class
-              Class.new(ActiveRecord::Base) do
+              Class.new(Gitlab::Database::Migration[2.0]::MigrationRecord) do
                 self.table_name = 'software_licenses'
               end
             end
@@ -272,7 +272,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             end
 
             def ci_instance_variables_class
-              Class.new(ActiveRecord::Base) do
+              Class.new(Gitlab::Database::Migration[2.0]::MigrationRecord) do
                 self.table_name = 'ci_instance_variables'
               end
             end
@@ -303,7 +303,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             end
 
             def detached_partitions_class
-              Class.new(ActiveRecord::Base) do
+              Class.new(Gitlab::Database::Migration[2.0]::MigrationRecord) do
                 self.table_name = 'detached_partitions'
               end
             end
@@ -496,11 +496,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
       Gitlab::Database.database_base_models.each do |db_config_name, model|
         context "for db_config_name=#{db_config_name}" do
           around do |example|
+            verbose_was = ActiveRecord::Migration.verbose
+            ActiveRecord::Migration.verbose = false
+
             with_reestablished_active_record_base do
               reconfigure_db_connection(model: ActiveRecord::Base, config_model: model)
 
               example.run
             end
+          ensure
+            ActiveRecord::Migration.verbose = verbose_was
           end
 
           before do
@@ -543,8 +548,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
                   expect { ignore_error(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas::DDLNotAllowedError) { migration_class.migrate(:down) } }.not_to raise_error
 
                 when :skipped
-                  expect { migration_class.migrate(:up) }.to raise_error(Gitlab::Database::MigrationHelpers::RestrictGitlabSchema::MigrationSkippedError)
-                  expect { migration_class.migrate(:down) }.to raise_error(Gitlab::Database::MigrationHelpers::RestrictGitlabSchema::MigrationSkippedError)
+                  expect_next_instance_of(migration_class) do |migration_object|
+                    expect(migration_object).to receive(:migration_skipped).and_call_original
+                    expect(migration_object).not_to receive(:up)
+                    expect(migration_object).not_to receive(:down)
+                    expect(migration_object).not_to receive(:change)
+                  end
+
+                  migration_class.migrate(:up)
+                  migration_class.migrate(:down)
                 end
               end
             end

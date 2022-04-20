@@ -96,6 +96,14 @@ You can authenticate using:
 Users accessing the Dependency Proxy with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.
 
+The Dependency Proxy follows the [Docker v2 token authentication flow](https://docs.docker.com/registry/spec/auth/token/),
+issuing the client a JWT to use for the pull requests. The JWT issued as a result of authenticating
+expires after some time. When the token expires, most Docker clients store your credentials and
+automatically request a new token without further action.
+
+The token expiration time is a [configurable setting](../../../administration/packages/dependency_proxy.md#changing-the-jwt-expiration).
+On GitLab.com, the expiration time is 15 minutes.
+
 #### SAML SSO
 
 When [SSO enforcement](../../group/saml_sso/index.md#sso-enforcement)
@@ -132,7 +140,8 @@ There are other additional predefined CI/CD variables you can also use:
 - `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX`: the image prefix for pulling images through the
   dependency proxy from the direct group or subgroup that the project belongs to.
 
-`CI_DEPENDENCY_PROXY_SERVER` and `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
+`CI_DEPENDENCY_PROXY_SERVER`, `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`, and
+`CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX`
 include the server port. If you explicitly include the Dependency Proxy
 path, the port must be included, unless you have logged into the Dependency
 Proxy manually without including the port:

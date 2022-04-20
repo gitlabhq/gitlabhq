@@ -1,3 +1,0 @@
-fragment WidgetBase on LocalWorkItemWidget {
-  type
-}

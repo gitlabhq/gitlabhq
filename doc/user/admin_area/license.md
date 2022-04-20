@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: License
+group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -36,7 +36,7 @@ To activate your instance with an activation code:
 
 The subscription is activated.
 
-If you have an offline or airgapped environment,
+If you have an offline or air gapped environment,
 [activate GitLab EE with a license file or key](license_file.md) instead.
 
 If you have questions or need assistance activating your instance,
@@ -51,7 +51,19 @@ To verify the edition, sign in to GitLab and select
 **Help** (**{question-o}**) > **Help**. The GitLab edition and version are listed
 at the top of the page.
 
-If you are running GitLab Community Edition (CE), you can upgrade your installation to GitLab
+If you are running GitLab Community Edition, you can upgrade your installation to GitLab
 EE. For more details, see [Upgrading between editions](../../update/index.md#upgrading-between-editions).
-If you have questions or need assistance upgrading from GitLab CE to EE,
+If you have questions or need assistance upgrading from GitLab Community Edition (CE) to EE,
 [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
+
+## Troubleshooting
+
+### Cannot activate instance due to connectivity error
+
+This error occurs when you use an activation code to activate your instance, but your instance is unable to connect to the GitLab servers.
+
+You may have connectivity issues due to the following reasons:
+
+- **You have an offline or air gapped environment**: Configure your setup to allow connection to GitLab servers. If connection to GitLab servers is not possible, contact [GitLab support](https://about.gitlab.com/support/#contact-support) to request a license key.
+- **Firewall settings**: Enable an encrypted HTTPS connection from your GitLab instance to `customers.gitlab.com` (with IP addresses 104.18.26.123 and 104.18.27.123) on port 443.
+- **Customers Portal is not operational**: To check for performance or service disruptions, check the Customers Portal [status](https://status.gitlab.com/).

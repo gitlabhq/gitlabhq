@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable QA/ElementWithPattern
 RSpec.describe QA::Page::Base do
   describe 'page helpers' do
     it 'exposes helpful page helpers' do
@@ -11,12 +12,12 @@ RSpec.describe QA::Page::Base do
     subject do
       Class.new(described_class) do
         view 'path/to/some/view.html.haml' do
-          element :something, 'string pattern' # rubocop:disable QA/ElementWithPattern
-          element :something_else, /regexp pattern/ # rubocop:disable QA/ElementWithPattern
+          element :something, 'string pattern'
+          element :something_else, /regexp pattern/
         end
 
         view 'path/to/some/_partial.html.haml' do
-          element :another_element, 'string pattern' # rubocop:disable QA/ElementWithPattern
+          element :another_element, 'string pattern'
         end
       end
     end
@@ -95,6 +96,7 @@ RSpec.describe QA::Page::Base do
   describe '#all_elements' do
     before do
       allow(subject).to receive(:all)
+      allow(subject).to receive(:wait_for_requests)
     end
 
     it 'raises an error if count or minimum are not specified' do
@@ -108,7 +110,7 @@ RSpec.describe QA::Page::Base do
     end
   end
 
-  context 'elements' do
+  describe 'elements' do
     subject do
       Class.new(described_class) do
         view 'path/to/some/view.html.haml' do
@@ -133,35 +135,37 @@ RSpec.describe QA::Page::Base do
     describe '#visible?', 'Page is currently visible' do
       let(:page) { subject.new }
 
+      before do
+        allow(page).to receive(:wait_for_requests)
+      end
+
       context 'with elements' do
-        context 'on the page' do
-          before do
-            # required elements not there, meaning not on page
-            allow(page).to receive(:has_no_element?).and_return(false)
-          end
+        before do
+          allow(page).to receive(:has_no_element?).and_return(has_no_element)
+        end
+
+        context 'with element on the page' do
+          let(:has_no_element) { false }
 
           it 'is visible' do
             expect(page).to be_visible
           end
+
+          it 'does not raise error if page has elements' do
+            expect { page.visible? }.not_to raise_error
+          end
         end
 
-        context 'not on the page' do
-          before do
-            # required elements are not on the page
-            allow(page).to receive(:has_no_element?).and_return(true)
-          end
+        context 'with element not on the page' do
+          let(:has_no_element) { true }
 
           it 'is not visible' do
             expect(page).not_to be_visible
           end
         end
-
-        it 'does not raise error if page has elements' do
-          expect { page.visible? }.not_to raise_error
-        end
       end
 
-      context 'no elements' do
+      context 'with no elements' do
         subject do
           Class.new(described_class) do
             view 'path/to/some/view.html.haml' do
@@ -180,3 +184,4 @@ RSpec.describe QA::Page::Base do
     end
   end
 end
+# rubocop:enable QA/ElementWithPattern

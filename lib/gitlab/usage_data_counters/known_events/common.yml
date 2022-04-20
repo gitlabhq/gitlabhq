@@ -25,25 +25,21 @@
   redis_slot: edit
   expiry: 29
   aggregation: daily
-  feature_flag: track_editor_edit_actions
 - name: g_edit_by_sfe
   category: ide_edit
   redis_slot: edit
   expiry: 29
   aggregation: daily
-  feature_flag: track_editor_edit_actions
 - name: g_edit_by_sse
   category: ide_edit
   redis_slot: edit
   expiry: 29
   aggregation: daily
-  feature_flag: track_editor_edit_actions
 - name: g_edit_by_snippet_ide
   category: ide_edit
   redis_slot: edit
   expiry: 29
   aggregation: daily
-  feature_flag: track_editor_edit_actions
 - name: i_search_total
   category: search
   redis_slot: search
@@ -343,22 +339,18 @@
   redis_slot: secure
   category: secure
   aggregation: weekly
-  feature_flag: users_expanding_widgets_usage_data
 - name: users_expanding_testing_code_quality_report
   redis_slot: testing
   category: testing
   aggregation: weekly
-  feature_flag: users_expanding_widgets_usage_data
 - name: users_expanding_testing_accessibility_report
   redis_slot: testing
   category: testing
   aggregation: weekly
-  feature_flag: users_expanding_widgets_usage_data
 - name: users_expanding_testing_license_compliance_report
   redis_slot: testing
   category: testing
   aggregation: weekly
-  feature_flag: users_expanding_widgets_usage_data
 - name: users_visiting_testing_license_compliance_full_report
   redis_slot: testing
   category: testing

@@ -86,26 +86,22 @@ The **Alert details** tab has two sections. The top section provides a short lis
 
 ### Metrics tab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.2.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/340852) in GitLab 14.10. In GitLab 14.9 and earlier, this tab shows a metrics chart for alerts coming from Prometheus.
 
-The **Metrics** tab displays a metrics chart for alerts coming from Prometheus. If the alert originated from any other tool, the **Metrics** tab is empty.
-For externally-managed Prometheus instances, you must configure your alerting rules to display a chart in the alert. For information about how to configure
-your alerting rules, see [Embedding metrics based on alerts in incident issues](../metrics/embed.md#embedding-metrics-based-on-alerts-in-incident-issues). See
-[External Prometheus instances](../metrics/alerts.md#external-prometheus-instances) for information about setting up alerts for your self-managed Prometheus
-instance.
+In many cases, alerts are associated to metrics. You can upload screenshots of metric
+charts in the **Metrics** tab.
 
-Prerequisite:
+To do so, either:
 
-- You must have at least the Developer role.
+- Select **upload** and then select an image from your file browser.
+- Drag a file from your file browser and drop it in the drop zone.
 
-To view the metrics for an alert:
+When you upload an image, you can add text to the image and link it to the original graph.
 
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Alerts**.
-1. Select the alert you want to view.
-1. Below the title of the alert, select the **Metrics** tab.
+![Text link modal](img/incident_metrics_tab_text_link_modal_v14_9.png)
 
-![Alert Metrics View](img/alert_detail_metrics_v13_2.png)
+If you add a link, it is shown above the uploaded image.
 
 #### View an alert's logs
 

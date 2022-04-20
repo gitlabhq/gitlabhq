@@ -20,7 +20,7 @@ export default {
       'ClusterAgents|We would love to learn more about your experience with the GitLab Agent.',
     ),
     feedbackBannerButton: s__('ClusterAgents|Give feedback'),
-    error: s__('ClusterAgents|An error occurred while loading your Agents'),
+    error: s__('ClusterAgents|An error occurred while loading your agents'),
   },
   AGENT_FEEDBACK_ISSUE,
   AGENT_FEEDBACK_KEY,
@@ -208,7 +208,7 @@ export default {
       </div>
     </div>
 
-    <agent-empty-state v-else :is-child-component="isChildComponent" />
+    <agent-empty-state v-else />
   </section>
 
   <gl-alert v-else variant="danger" :dismissible="false">

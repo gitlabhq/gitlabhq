@@ -38,6 +38,10 @@ module Gitlab
         end
       end
 
+      def full_host
+        proc { |_env| Settings.gitlab['base_url'] }
+      end
+
       private
 
       def cas3_signout_handler

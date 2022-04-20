@@ -503,6 +503,7 @@
 
         &.dropdown-menu-user-link::before {
           top: 50%;
+          transform: translateY(-50%);
         }
       }
 
@@ -520,8 +521,22 @@
       }
 
       &.is-active {
-        /* stylelint-disable-next-line function-url-quotes */
-        background: url(asset_path('checkmark.png')) no-repeat 14px center;
+        position: relative;
+
+        &::before {
+          content: '';
+          display: block;
+          position: absolute;
+          top: 0.5rem;
+          left: 1rem;
+          width: 1rem;
+          height: 1rem;
+          mask-image: asset_url('icons-stacked.svg#check');
+          mask-repeat: no-repeat;
+          mask-size: cover;
+          mask-position: center center;
+          background: $black-normal;
+        }
       }
     }
   }
@@ -692,7 +707,7 @@
 
 .dropdown-label-box {
   position: relative;
-  top: 3px;
+  top: 0;
   margin-right: 5px;
   display: inline-block;
   width: 15px;

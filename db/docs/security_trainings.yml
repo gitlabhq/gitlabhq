@@ -1,0 +1,9 @@
+---
+table_name: security_trainings
+classes:
+- Security::Training
+feature_categories:
+- vulnerability_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78195
+milestone: '14.7'

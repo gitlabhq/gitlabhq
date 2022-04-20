@@ -1,5 +1,5 @@
 #import "../fragments/state.fragment.graphql"
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getStates($projectPath: ID!, $first: Int, $last: Int, $before: String, $after: String) {
   project(fullPath: $projectPath) {

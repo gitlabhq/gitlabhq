@@ -48,9 +48,16 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 ## Mail configuration
 
 GitLab.com sends emails from the `mg.gitlab.com` domain by using [Mailgun](https://www.mailgun.com/),
-and has its own dedicated IP address (`192.237.158.143`).
+and has its own dedicated IP addresses:
 
-The IP address for `mg.gitlab.com` is subject to change at any time.
+- `161.38.202.219`
+- `159.135.226.146`
+- `192.237.158.143`
+- `198.61.254.136`
+- `23.253.183.236`
+- `69.72.35.190`
+
+The IP addresses for `mg.gitlab.com` are subject to change at any time.
 
 ### Service Desk custom mailbox
 
@@ -138,7 +145,7 @@ the related documentation.
 | Artifacts maximum size (compressed)                                      | 1 GB                                                                                                                      | See [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size)                                                                            |
 | Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)       | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry). | See [Default artifacts expiration](../admin_area/settings/continuous_integration.md#default-artifacts-expiration)                                                                        |
 | Scheduled Pipeline Cron                                                  | `*/5 * * * *`                                                                                                             | See [Pipeline schedules advanced configuration](../../administration/cicd.md#change-maximum-scheduled-pipeline-frequency)                                                               |
-| Maximum jobs in active pipelines                                         | `500` for Free tier, unlimited otherwise                                                                                  | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines)                                                                     |
+| Maximum jobs in active pipelines                                         | `500` for Free tier, `1000` for all trial tiers, and unlimited otherwise.                                                 | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines)                                                                     |
 | Maximum CI/CD subscriptions to a project                                 | `2`                                                                                                                       | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project)                                                      |
 | Maximum number of pipeline triggers in a project                         | `25000` for Free tier, Unlimited for all paid tiers                                                                       | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers)                                                               |
 | Maximum pipeline schedules in projects                                   | `10` for Free tier, `50` for all paid tiers                                                                               | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules)                                                                                 |
@@ -315,23 +322,29 @@ limiting responses](#rate-limiting-responses).
 The following table describes the rate limits for GitLab.com, both before and
 after the limits change in January, 2021:
 
-| Rate limit                                                                | Before 2021-02-12             | From 2021-02-12               | From 2022-02-03                         |
-|:--------------------------------------------------------------------------|:------------------------------|:------------------------------|:----------------------------------------|
-| **Protected paths** (for a given **IP address**)                          | **10** requests per minute    | **10** requests per minute    | **10** requests per minute              |
-| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute   | **300** requests per minute   | **300** requests per minute             |
-| **Unauthenticated** traffic (from a given **IP address**)                 | **500** requests per minute   | **500** requests per minute   | **500** requests per minute             |
-| **Authenticated** API traffic (for a given **user**)                      | **2,000** requests per minute | **2,000** requests per minute | **2,000** requests per minute           |
-| **Authenticated** non-API HTTP traffic (for a given **user**)             | **1,000** requests per minute | **1,000** requests per minute | **1,000** requests per minute           |
-| **All** traffic (from a given **IP address**)                             | **2,000** requests per minute | **2,000** requests per minute | **2,000** requests per minute           |
-| **Issue creation**                                                        | **300** requests per minute   | **300** requests per minute   | **300** requests per minute             |
-| **Note creation** (on issues and merge requests)                          | **300** requests per minute   | **60** requests per minute    | **60** requests per minute              |
-| **Advanced, project, and group search** API (for a given **IP address**)  |                               | **10** requests per minute    | **10** requests per minute              |
-| **GitLab Pages** requests (for a given **IP address**)                    |                               |                               | **1000** requests per **50 seconds**    |
-| **GitLab Pages** requests (for a given **GitLab Pages domain**)           |                               |                               | **5000** requests per **10 seconds**    |
+| Rate limit                                                                | From 2021-02-12               | From 2022-02-03                         |
+|:--------------------------------------------------------------------------|:------------------------------|:----------------------------------------|
+| **Protected paths** (for a given **IP address**)                          | **10** requests per minute    | **10** requests per minute              |
+| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute   | **300** requests per minute             |
+| **Unauthenticated** traffic (from a given **IP address**)                 | **500** requests per minute   | **500** requests per minute             |
+| **Authenticated** API traffic (for a given **user**)                      | **2,000** requests per minute | **2,000** requests per minute           |
+| **Authenticated** non-API HTTP traffic (for a given **user**)             | **1,000** requests per minute | **1,000** requests per minute           |
+| **All** traffic (from a given **IP address**)                             | **2,000** requests per minute | **2,000** requests per minute           |
+| **Issue creation**                                                        | **300** requests per minute   | **300** requests per minute             |
+| **Note creation** (on issues and merge requests)                          | **60** requests per minute    | **60** requests per minute              |
+| **Advanced, project, and group search** API (for a given **IP address**)  | **10** requests per minute    | **10** requests per minute              |
+| **GitLab Pages** requests (for a given **IP address**)                    |                               | **1000** requests per **50 seconds**    |
+| **GitLab Pages** requests (for a given **GitLab Pages domain**)           |                               | **5000** requests per **10 seconds**    |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw
 endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
+
+GitLab can rate-limit requests at several layers. The rate limits listed here
+are configured in the application. These limits are the most
+restrictive per IP address. To learn more about the rate limiting
+for GitLab.com, read our runbook page
+[Overview of rate limits for GitLab.com](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/rate-limiting).
 
 ### Rate limiting responses
 
@@ -395,7 +408,7 @@ doesn't return the following headers:
 ### Visibility settings
 
 If created before GitLab 12.2 (July 2019), these items have the
-[Internal visibility](../../public_access/public_access.md#internal-projects-and-groups)
+[Internal visibility](../public_access.md#internal-projects-and-groups)
 setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388):
 
 - Projects

@@ -9,7 +9,7 @@ module Ci
 
     DuplicateDownstreamPipelineError = Class.new(StandardError)
 
-    MAX_DESCENDANTS_DEPTH = 2
+    MAX_NESTED_CHILDREN = 2
 
     def execute(bridge)
       @bridge = bridge
@@ -77,7 +77,8 @@ module Ci
 
       # TODO: Remove this condition if favour of model validation
       # https://gitlab.com/gitlab-org/gitlab/issues/38338
-      if has_max_descendants_depth?
+      # only applies to parent-child pipelines not multi-project
+      if has_max_nested_children?
         @bridge.drop!(:reached_max_descendant_pipelines_depth)
         return false
       end
@@ -129,11 +130,12 @@ module Ci
       pipeline_checksums.tally.any? { |_checksum, occurrences| occurrences > 2 }
     end
 
-    def has_max_descendants_depth?
+    def has_max_nested_children?
       return false unless @bridge.triggers_child_pipeline?
 
+      # only applies to parent-child pipelines not multi-project
       ancestors_of_new_child = @bridge.pipeline.self_and_ancestors
-      ancestors_of_new_child.count > MAX_DESCENDANTS_DEPTH
+      ancestors_of_new_child.count > MAX_NESTED_CHILDREN
     end
 
     def config_checksum(pipeline)

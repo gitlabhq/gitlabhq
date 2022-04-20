@@ -22,7 +22,7 @@ export default {
                 ...d,
                 definitionLineNumber: parseInt(d.definition_path?.split('#L').pop() || 0, 10),
               };
-              addInteractionClass(path, d);
+              addInteractionClass({ path, d, wrapTextNodes: state.wrapTextNodes });
             }
             return acc;
           }, {});
@@ -34,7 +34,9 @@ export default {
   },
   showBlobInteractionZones({ state }, path) {
     if (state.data && state.data[path]) {
-      Object.values(state.data[path]).forEach((d) => addInteractionClass(path, d));
+      Object.values(state.data[path]).forEach((d) =>
+        addInteractionClass({ path, d, wrapTextNodes: state.wrapTextNodes }),
+      );
     }
   },
   showDefinition({ commit, state }, { target: el }) {

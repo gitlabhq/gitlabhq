@@ -15,6 +15,12 @@ RSpec.describe 'Project' do
     end
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
+      let(:selected_template) { page.find('.project-fields-form .selected-template') }
+
+      choose_template_selector = '.choose-template'
+      template_option_selector = '.template-option'
+      template_name_selector = '.description strong'
+
       it "is created from template", :js do
         click_link 'Create from template'
         find(".project-template #{sub_template_tab}").click if sub_template_tab
@@ -26,6 +32,39 @@ RSpec.describe 'Project' do
         end
 
         expect(page).to have_content template.name
+      end
+
+      it 'is created using keyboard navigation', :js do
+        click_link 'Create from template'
+
+        first_template = first(template_option_selector)
+        first_template_name = first_template.find(template_name_selector).text
+        first_template.find(choose_template_selector).click
+
+        expect(selected_template).to have_text(first_template_name)
+
+        click_button "Change template"
+        find("#built-in").click
+
+        # Jumps down 1 template, skipping the `preview` buttons
+        2.times do
+          page.send_keys :tab
+        end
+
+        # Ensure the template with focus is selected
+        project_name = "project from template"
+        focused_template = page.find(':focus').ancestor(template_option_selector)
+        focused_template_name = focused_template.find(template_name_selector).text
+        focused_template.find(choose_template_selector).send_keys :enter
+        fill_in "project_name", with: project_name
+
+        expect(selected_template).to have_text(focused_template_name)
+
+        page.within '#content-body' do
+          click_button "Create project"
+        end
+
+        expect(page).to have_content project_name
       end
     end
 

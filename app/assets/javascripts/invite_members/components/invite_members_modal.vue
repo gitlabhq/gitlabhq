@@ -24,6 +24,7 @@ import { responseMessageFromSuccess } from '../utils/response_message_parser';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import ModalConfetti from './confetti.vue';
 import MembersTokenSelect from './members_token_select.vue';
+import UserLimitNotification from './user_limit_notification.vue';
 
 export default {
   name: 'InviteMembersModal',
@@ -37,10 +38,15 @@ export default {
     InviteModalBase,
     MembersTokenSelect,
     ModalConfetti,
+    UserLimitNotification,
   },
   inject: ['newProjectPath'],
   props: {
     id: {
+      type: String,
+      required: true,
+    },
+    rootId: {
       type: String,
       required: true,
     },
@@ -187,46 +193,28 @@ export default {
       this.invalidFeedbackMessage = '';
 
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
-      const promises = [];
-      const baseData = {
+
+      const apiAddByInvite = this.isProject
+        ? Api.inviteProjectMembers.bind(Api)
+        : Api.inviteGroupMembers.bind(Api);
+
+      const email = usersToInviteByEmail !== '' ? { email: usersToInviteByEmail } : {};
+      const userId = usersToAddById !== '' ? { user_id: usersToAddById } : {};
+
+      this.trackinviteMembersForTask();
+
+      apiAddByInvite(this.id, {
         format: 'json',
         expires_at: expiresAt,
         access_level: accessLevel,
         invite_source: this.source,
         tasks_to_be_done: this.tasksToBeDoneForPost,
         tasks_project_id: this.tasksProjectForPost,
-      };
-
-      if (usersToInviteByEmail !== '') {
-        const apiInviteByEmail = this.isProject
-          ? Api.inviteProjectMembersByEmail.bind(Api)
-          : Api.inviteGroupMembersByEmail.bind(Api);
-
-        promises.push(
-          apiInviteByEmail(this.id, {
-            ...baseData,
-            email: usersToInviteByEmail,
-          }),
-        );
-      }
-
-      if (usersToAddById !== '') {
-        const apiAddByUserId = this.isProject
-          ? Api.addProjectMembersByUserId.bind(Api)
-          : Api.addGroupMembersByUserId.bind(Api);
-
-        promises.push(
-          apiAddByUserId(this.id, {
-            ...baseData,
-            user_id: usersToAddById,
-          }),
-        );
-      }
-      this.trackinviteMembersForTask();
-
-      Promise.all(promises)
-        .then((responses) => {
-          const message = responseMessageFromSuccess(responses);
+        ...email,
+        ...userId,
+      })
+        .then((response) => {
+          const message = responseMessageFromSuccess(response);
 
           if (message) {
             this.showInvalidFeedbackMessage({
@@ -290,6 +278,8 @@ export default {
     :submit-disabled="inviteDisabled"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
+    :new-users-to-invite="newUsersToInvite"
+    :root-group-id="rootId"
     @reset="resetFields"
     @submit="sendInvite"
     @access-level="onAccessLevelUpdate"
@@ -302,6 +292,11 @@ export default {
       <span v-if="isCelebration">{{ $options.labels.modal.celebrate.intro }} </span>
       <modal-confetti v-if="isCelebration" />
     </template>
+
+    <template #user-limit-notification>
+      <user-limit-notification />
+    </template>
+
     <template #select="{ validationState, labelId }">
       <members-token-select
         v-model="newUsersToInvite"

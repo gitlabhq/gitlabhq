@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "description",
+    "name",
+    "name_with_namespace",
+    "path",
+    "path_with_namespace",
+    "created_at"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "description": { "type": ["string", "null"] },
+    "name": { "type": "string" },
+    "name_with_namespace": { "type": "string" },
+    "path": { "type": "string" },
+    "path_with_namespace": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

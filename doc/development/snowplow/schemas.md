@@ -10,17 +10,18 @@ This page provides Snowplow schema reference for GitLab events.
 
 ## `gitlab_standard`
 
-We are including the [`gitlab_standard` schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_standard/jsonschema/) with every event. See [Standardize Snowplow Schema](https://gitlab.com/groups/gitlab-org/-/epics/5218) for details.
+We are including the [`gitlab_standard` schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_standard/jsonschema/) for structured events and page views.
 
 The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/standard_context.rb)
-class represents this schema in the application. Some properties are automatically populated for [frontend](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/layouts/_snowplow.html.haml)
-events.
+class represents this schema in the application. Some properties are
+[automatically populated for frontend events](implementation.md#snowplow-javascript-frontend-tracking),
+and can be [provided manually for backend events](implementation.md#implement-ruby-backend-tracking).
 
 | Field Name     | Required            | Default value | Type                  | Description                                                                                 |
 |----------------|:-------------------:|-----------------------|--|---------------------------------------------------------------------------------------------|
 | `project_id`   | **{dotted-circle}** | Current project ID * | integer               |                                                                 |
 | `namespace_id` | **{dotted-circle}** | Current group/namespace ID * | integer               |                                                               |
-| `user_id`      | **{dotted-circle}** | Current user ID * | integer               | User database record ID attribute. This file undergoes a pseudonymization process at the collector level. |
+| `user_id`      | **{dotted-circle}** | Current user ID * | integer               | User database record ID attribute. This value undergoes a pseudonymization process at the collector level. |
 | `context_generated_at` | **{dotted-circle}** | Current timestamp | string (date time format) | Timestamp indicating when context was generated.                                                                |
 | `environment`  | **{check-circle}**  | Current environment | string (max 32 chars) | Name of the source environment, such as `production` or `staging`             |
 | `source`       | **{check-circle}**  | Event source | string (max 32 chars) | Name of the source application, such as  `gitlab-rails` or `gitlab-javascript` |

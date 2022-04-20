@@ -51,12 +51,20 @@ module Members
           users.concat(User.id_in(user_ids)) if user_ids.present?
           users.uniq! # de-duplicate just in case as there is no controlling if user records and ids are sent multiple times
 
-          if users.present?
-            # helps not have to perform another query per user id to see if the member exists later on when fetching
-            existing_members = source.members_and_requesters.where(user_id: users).index_by(&:user_id) # rubocop:disable CodeReuse/ActiveRecord
+          users_by_emails = source.users_by_emails(emails) # preloads our request store for all emails
+          # in case emails belong to a user that is being invited by user or user_id, remove them from
+          # emails and let users/user_ids handle it.
+          parsed_emails = emails.select do |email|
+            user = users_by_emails[email]
+            !user || (users.exclude?(user) && user_ids.exclude?(user.id))
           end
 
-          [emails, users, existing_members]
+          if users.present?
+            # helps not have to perform another query per user id to see if the member exists later on when fetching
+            existing_members = source.members_and_requesters.with_user(users).index_by(&:user_id)
+          end
+
+          [parsed_emails, users, existing_members]
         end
       end
     end

@@ -1,0 +1,9 @@
+---
+table_name: geo_container_repository_updated_events
+classes:
+- Geo::ContainerRepositoryUpdatedEvent
+feature_categories:
+- geo_replication
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1902d9cc74a1dc2c87fdbb39a6cdbb67092cbb5a
+milestone: '12.2'

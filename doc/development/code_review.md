@@ -74,17 +74,13 @@ It picks reviewers and maintainers from the list at the
 page, with these behaviors:
 
 1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-    - Contains the string 'OOO', 'PTO', 'Parental Leave', or 'Friends and Family'.
+    - Contains the string `OOO`, `PTO`, `Parental Leave`, or `Friends and Family`.
     - GitLab user **Busy** indicator is set to `True`.
-    - Emoji is any of:
-      - 🌴 `:palm_tree:`
-      - 🏖️ `:beach:`, `:beach_umbrella:`, or `:beach_with_umbrella:`
-      - 🎡 `:ferris_wheel:`
-      - 🌡️ `:thermometer:`
-      - 🤒 `:face_with_thermometer:`
-      - 🔴 `:red_circle:`
-      - 💡 `:bulb:`
-      - 🌞 `:sun_with_face:`
+    - Emoji is from one of these categories:
+      - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`
+      - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
+      - **At capacity** - 🔴 `:red_circle:`
+      - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
 1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
@@ -92,11 +88,21 @@ page, with these behaviors:
    - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
    - Trainee maintainers with 🔵 `:large_blue_circle:` are four times as likely to be picked as other reviewers.
 1. People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
-   is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked. This applies to both reviewers and trainee maintainers.
+   is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
 1. It always picks the same reviewers and maintainers for the same
    branch name (unless their out-of-office (OOO) status changes, as in point 1). It
    removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
    that it can be stable for backport branches.
+
+The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette) contains:
+
+- Assignment events in the last 7 and 30 days.
+- Currently assigned merge requests per person.
+- Sorting by different criteria.
+- A manual reviewer roulette.
+- Local time information.
+
+For more information, review [the roulette README](https://gitlab.com/gitlab-org/gitlab-roulette).
 
 ### Approval guidelines
 
@@ -136,6 +142,7 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes Product Intelligence (telemetry or analytics) changes, it should be reviewed and approved by a [Product Intelligence engineer](https://gitlab.com/gitlab-org/growth/product-intelligence/engineers).
 1. If your merge request includes an addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa)**.
 1. If your merge request introduces a new service to GitLab (Puma, Sidekiq, Gitaly are examples), it must be **approved by a [product manager](https://about.gitlab.com/company/team/)**. See the [process for adding a service component to GitLab](adding_service_component.md) for details.
+1. If your merge request includes changes related to authentication or authorization, it must be **approved by a [Manage:Authentication and Authorization team member](https://about.gitlab.com/company/team/)**. Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication-and-authorization/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication and Authorization` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files.
 
 - (*1*): Specs other than JavaScript specs are considered backend code.
 - (*2*): We encourage you to seek guidance from a database maintainer if your merge
@@ -154,7 +161,7 @@ Using checklists improves quality in software engineering. This checklist is a s
 
 ##### Quality
 
-See the [test engineering process](https://about.gitlab.com/handbook/engineering/quality/test-engineering/) for further quality guidelines.
+See the [test engineering process](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-engineering/) for further quality guidelines.
 
 1. I have self-reviewed this MR per [code review guidelines](code_review.md).
 1. For the code that this change impacts, I believe that the automated tests ([Testing Guide](testing_guide/index.md)) validate functionality that is highly important to users (including consideration of [all test levels](testing_guide/testing_levels.md)).
@@ -240,6 +247,8 @@ warrant a comment could be:
 - Any benchmarking performed to complement the change.
 - Potentially insecure code.
 
+If there are any projects, snippets, or other assets that are required for a reviewer to validate the solution, ensure they have access to those assets before requesting review.
+
 Avoid:
 
 - Adding TODO comments (referenced above) directly to the source code unless the reviewer requires
@@ -249,7 +258,7 @@ Avoid:
   [_explain why, not what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/).
 - Requesting maintainer reviews of merge requests with failed tests. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
 - Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
-through Slack). If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
+through Slack). If you can't add a reviewer for a merge request, it's acceptable to `@` mention a maintainer in a comment. In all other cases, it's sufficient to add a reviewer or [request their attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) if they're already a reviewer.
 
 This saves reviewers time and helps authors catch mistakes earlier.
 
@@ -259,10 +268,8 @@ This saves reviewers time and helps authors catch mistakes earlier.
 that it meets all requirements, you should:
 
 - Click the Approve button.
-- `@` mention the author to generate a to-do notification, and advise them that their merge request has been reviewed and approved.
-- Request a review from a maintainer. Default to requests for a maintainer with [domain expertise](#domain-experts),
+- Request a review from a maintainer or [request their attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) if they're already a reviewer. Default to requests for a maintainer with [domain expertise](#domain-experts),
 however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
-- Remove yourself as a reviewer.
 
 ### The responsibility of the maintainer
 
@@ -290,7 +297,7 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a reviewer, it is recommended that they are not also picked as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
-required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
+required approvers. If still awaiting further approvals from others, explain that in a comment and [request attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) from other reviewers as appropriate. Do not remove yourself as a reviewer.
 
 Maintainers must check before merging if the merge request is introducing new
 vulnerabilities, by inspecting the list in the merge request
@@ -312,14 +319,20 @@ After merging, a maintainer should stay as the reviewer listed on the merge requ
 
 ### Dogfooding the Reviewers feature
 
-On March 18th 2021, an updated process was put in place aimed at efficiently and consistently dogfooding the Reviewers feature.
+Replaced with [dogfooding the attention request feature](#dogfooding-the-attention-request-feature).
+
+### Dogfooding the attention request feature
+
+In March of 2022, an updated process was put in place aimed at efficiently and consistently dogfooding the
+[attention requests feature](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) under `Merge requests` -> `Need your attention`. This replaces previous guidance on [dogfooding the reviewers feature](#dogfooding-the-reviewers-feature).
 
 Here is a summary of the changes, also reflected in this section above.
 
-- Merge request authors and DRIs stay as Assignees
-- Authors request a review from Reviewers when they are expected to review
-- Reviewers remove themselves after they're done reviewing/approving
-- The last approver stays as Reviewer upon merging
+- Merge request authors and DRIs stay as assignees
+- Assignees request a review from reviewer(s) when they are expected to review
+- Reviewers stay assigned for the entire duration of the merge request
+- Reviewers request attention from the assignee or other reviewer(s) after they've done reviewing, depending on who needs to take action
+- Assignees request attention from the reviewer(s) when changes are made
 
 ## Best practices
 
@@ -391,6 +404,11 @@ first time.
 When you are ready to have your merge request reviewed,
 you should [request an initial review](../user/project/merge_requests/getting_started.md#reviewer) by selecting a reviewer from your group or team.
 However, you can also assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
+
+When a merge request has multiple areas for review, it is recommended you specify which area a reviewer should be reviewing, and at which stage (first or second).
+This will help team members who qualify as a reviewer for multiple areas to know which area they're being requested to review.
+For example, when a merge request has both `backend` and `frontend` concerns, you can mention the reviewer in this manner:
+`@john_doe can you please review ~backend?` or `@jane_doe - could you please give this MR a ~frontend maintainer review?`
 
 You can also use `workflow::ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
 
@@ -605,9 +623,9 @@ Enterprise Edition instance. This has some implications:
       migration on the staging environment if you aren't sure.
    1. Categorized correctly:
       - Regular migrations run before the new code is running on the instance.
-      - [Post-deployment migrations](post_deployment_migrations.md) run _after_
+      - [Post-deployment migrations](database/post_deployment_migrations.md) run _after_
         the new code is deployed, when the instance is configured to do that.
-      - [Background migrations](background_migrations.md) run in Sidekiq, and
+      - [Background migrations](database/background_migrations.md) run in Sidekiq, and
         should only be done for migrations that would take an extreme amount of
         time at GitLab.com scale.
 1. **Sidekiq workers** [cannot change in a backwards-incompatible way](sidekiq/compatibility_across_updates.md):

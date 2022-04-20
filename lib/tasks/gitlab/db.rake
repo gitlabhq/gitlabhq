@@ -2,6 +2,14 @@
 
 databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
+def each_database(databases, include_geo: false)
+  ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
+    next if !include_geo && database == 'geo'
+
+    yield database
+  end
+end
+
 namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Manually insert schema migration version on all configured databases'
@@ -10,10 +18,10 @@ namespace :gitlab do
     end
 
     namespace :mark_migration_complete do
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
-        desc "Gitlab | DB | Manually insert schema migration version on #{database} database"
-        task database, [:version] => :environment do |_, args|
-          mark_migration_complete(args[:version], only_on: database)
+      each_database(databases) do |database_name|
+        desc "Gitlab | DB | Manually insert schema migration version on #{database_name} database"
+        task database_name, [:version] => :environment do |_, args|
+          mark_migration_complete(args[:version], only_on: database_name)
         end
       end
     end
@@ -39,10 +47,10 @@ namespace :gitlab do
     end
 
     namespace :drop_tables do
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
-        desc "GitLab | DB | Drop all tables on the #{database} database"
-        task database => :environment do
-          drop_tables(only_on: database)
+      each_database(databases) do |database_name|
+        desc "GitLab | DB | Drop all tables on the #{database_name} database"
+        task database_name => :environment do
+          drop_tables(only_on: database_name)
         end
       end
     end
@@ -76,16 +84,38 @@ namespace :gitlab do
 
     desc 'GitLab | DB | Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
-      # Check if we have existing db tables
-      # The schema_migrations table will still exist if drop_tables was called
-      if ActiveRecord::Base.connection.tables.count > 1
-        Rake::Task['db:migrate'].invoke
+      databases_with_tasks = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
+
+      databases_loaded = []
+
+      if databases_with_tasks.size == 1
+        next unless databases_with_tasks.first.name == 'main'
+
+        connection = Gitlab::Database.database_base_models['main'].connection
+        databases_loaded << configure_database(connection)
       else
-        # Add post-migrate paths to ensure we mark all migrations as up
-        Gitlab::Database.add_post_migrate_path_to_rails(force: true)
-        Rake::Task['db:structure:load'].invoke
-        Rake::Task['db:seed_fu'].invoke
+        Gitlab::Database.database_base_models.each do |name, model|
+          next unless databases_with_tasks.any? { |db_with_tasks| db_with_tasks.name == name }
+
+          databases_loaded << configure_database(model.connection, database_name: name)
+        end
       end
+
+      Rake::Task['db:seed_fu'].invoke if databases_loaded.present? && databases_loaded.all?
+    end
+
+    def configure_database(connection, database_name: nil)
+      database_name = ":#{database_name}" if database_name
+      load_database = connection.tables.count <= 1
+
+      if load_database
+        Gitlab::Database.add_post_migrate_path_to_rails(force: true)
+        Rake::Task["db:schema:load#{database_name}"].invoke
+      else
+        Rake::Task["db:migrate#{database_name}"].invoke
+      end
+
+      load_database
     end
 
     desc 'GitLab | DB | Run database migrations and print `unattended_migrations_completed` if action taken'
@@ -155,6 +185,15 @@ namespace :gitlab do
       Gitlab::Database::Partitioning.sync_partitions
     end
 
+    namespace :create_dynamic_partitions do
+      each_database(databases) do |database_name|
+        desc "Create missing dynamic database partitions on the #{database_name} database"
+        task database_name => :environment do
+          Gitlab::Database::Partitioning.sync_partitions(only_on: database_name)
+        end
+      end
+    end
+
     # This is targeted towards deploys and upgrades of GitLab.
     # Since we're running migrations already at this time,
     # we also check and create partitions as needed here.
@@ -162,14 +201,12 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      # We'll temporarily skip this enhancement for geo, since in some situations we
-      # wish to setup the geo database before the other databases have been setup,
-      # and partition management attempts to connect to the main database.
-      next if name == 'geo'
-
-      Rake::Task["db:migrate:#{name}"].enhance do
-        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    # We'll temporarily skip this enhancement for geo, since in some situations we
+    # wish to setup the geo database before the other databases have been setup,
+    # and partition management attempts to connect to the main database.
+    each_database(databases) do |database_name|
+      Rake::Task["db:migrate:#{database_name}"].enhance do
+        Rake::Task["gitlab:db:create_dynamic_partitions:#{database_name}"].invoke
       end
     end
 
@@ -185,24 +222,16 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      # We'll temporarily skip this enhancement for geo, since in some situations we
-      # wish to setup the geo database before the other databases have been setup,
-      # and partition management attempts to connect to the main database.
-      next if name == 'geo'
-
-      Rake::Task["db:schema:load:#{name}"].enhance do
-        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    # We'll temporarily skip this enhancement for geo, since in some situations we
+    # wish to setup the geo database before the other databases have been setup,
+    # and partition management attempts to connect to the main database.
+    each_database(databases) do |database_name|
+      # :nocov:
+      Rake::Task["db:schema:load:#{database_name}"].enhance do
+        Rake::Task["gitlab:db:create_dynamic_partitions:#{database_name}"].invoke
       end
+      # :nocov:
     end
-
-    desc "Clear all connections"
-    task :clear_all_connections do
-      ActiveRecord::Base.clear_all_connections!
-    end
-
-    Rake::Task['db:test:purge'].enhance(['gitlab:db:clear_all_connections'])
-    Rake::Task['db:drop'].enhance(['gitlab:db:clear_all_connections'])
 
     # During testing, db:test:load restores the database schema from scratch
     # which does not include dynamic partitions. We cannot rely on application
@@ -229,7 +258,7 @@ namespace :gitlab do
     end
 
     namespace :reindex do
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
+      each_database(databases) do |database_name|
         desc "Reindex #{database_name} database without downtime to eliminate bloat"
         task database_name => :environment do
           unless Gitlab::Database::Reindexing.enabled?
@@ -292,13 +321,22 @@ namespace :gitlab do
       task down: :environment do
         Gitlab::Database::Migrations::Runner.down.run
       end
+
+      desc 'Sample traditional background migrations with instrumentation'
+      task :sample_background_migrations, [:duration_s] => [:environment] do |_t, args|
+        duration = args[:duration_s]&.to_i&.seconds || 30.minutes # Default of 30 minutes
+
+        Gitlab::Database::Migrations::Runner.background_migrations.run_jobs(for_duration: duration)
+      end
     end
 
     desc 'Run all pending batched migrations'
     task execute_batched_migrations: :environment do
-      Gitlab::Database::BackgroundMigration::BatchedMigration.active.queue_order.each do |migration|
-        Gitlab::AppLogger.info("Executing batched migration #{migration.id} inline")
-        Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new.run_entire_migration(migration)
+      Gitlab::Database::EachDatabase.each_database_connection do |connection, name|
+        Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:active).queue_order.each do |migration|
+          Gitlab::AppLogger.info("Executing batched migration #{migration.id} on database #{name} inline")
+          Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new(connection: connection).run_entire_migration(migration)
+        end
       end
     end
 

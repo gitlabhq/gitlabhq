@@ -38,8 +38,8 @@ describe('Sort Discussion component', () => {
       createComponent();
     });
 
-    it('has local storage sync', () => {
-      expect(findLocalStorageSync().exists()).toBe(true);
+    it('has local storage sync with the correct props', () => {
+      expect(findLocalStorageSync().props('asString')).toBe(true);
     });
 
     it('calls setDiscussionSortDirection when update is emitted', () => {

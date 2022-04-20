@@ -6,7 +6,7 @@
     .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight, qa_selector: 'file_content' } }
       - blob.present.highlight.lines.each_with_index do |line, index|
         - i = index + offset
-        .line_holder.code-search-line
+        .line_holder.code-search-line.gl-display-flex
           .line-numbers
             .gl-display-flex
               %span.diff-line-num.gl-pl-3
@@ -22,7 +22,7 @@
                 %a{ href: "#{blob_link}#L#{i}", id: "blob-L#{i}", 'data-line-number' => i, class: 'gl-display-flex! gl-align-items-center gl-justify-content-end' }
                   = sprite_icon('link', css_class: 'gl-ml-3! gl-mr-1!')
                   = i
-          %pre.code.highlight
+          %pre.code.highlight.flex-grow-1
             %code
               = line.html_safe
 

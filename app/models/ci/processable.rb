@@ -101,6 +101,12 @@ module Ci
       :merge_train_pipeline?,
       to: :pipeline
 
+    def retryable?
+      return false if retried? || archived? || deployment_rejected?
+
+      success? || failed? || canceled?
+    end
+
     def aggregated_needs_names
       read_attribute(:aggregated_needs_names)
     end

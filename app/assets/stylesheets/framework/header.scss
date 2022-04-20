@@ -1,5 +1,3 @@
-$top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important;
-
 .navbar-gitlab {
   padding: 0 16px;
   z-index: $header-zindex;
@@ -54,7 +52,7 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
       white-space: nowrap;
 
       img {
-        height: 28px;
+        height: 24px;
 
         + .logo-text {
           margin-left: 8px;
@@ -460,7 +458,6 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
       vertical-align: text-top;
     }
 
-    a.upgrade-plan-link gl-emoji,
     a.ci-minutes-emoji gl-emoji,
     a.trial-link gl-emoji {
       font-size: $gl-font-size;
@@ -574,7 +571,7 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
   }
 
   .frequent-items-list-item-container > a:hover {
-    background-color: $top-nav-hover-bg;
+    background-color: $nav-active-bg;
   }
 }
 
@@ -589,11 +586,9 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
 }
 
 .top-nav-menu-item {
-  color: var(--indigo-900, $theme-indigo-900) !important;
-
   &.active,
   &:hover {
-    background-color: $top-nav-hover-bg;
+    background-color: $nav-active-bg;
   }
 
   .gl-icon {
@@ -603,7 +598,6 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
 
 .top-nav-responsive {
   @include gl-display-none;
-  color: var(--indigo-900, $theme-indigo-900);
 }
 
 .top-nav-responsive-open {

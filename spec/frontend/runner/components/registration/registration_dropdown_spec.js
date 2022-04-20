@@ -8,6 +8,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
+import RegistrationToken from '~/runner/components/registration/registration_token.vue';
 import RegistrationTokenResetDropdownItem from '~/runner/components/registration/registration_token_reset_dropdown_item.vue';
 
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
@@ -30,10 +31,10 @@ describe('RegistrationDropdown', () => {
 
   const findRegistrationInstructionsDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findTokenDropdownItem = () => wrapper.findComponent(GlDropdownForm);
+  const findRegistrationToken = () => wrapper.findComponent(RegistrationToken);
+  const findRegistrationTokenInput = () => wrapper.findByTestId('token-value').find('input');
   const findTokenResetDropdownItem = () =>
     wrapper.findComponent(RegistrationTokenResetDropdownItem);
-
-  const findToggleMaskButton = () => wrapper.findByTestId('toggle-masked');
 
   const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMount) => {
     wrapper = extendedWrapper(
@@ -134,9 +135,7 @@ describe('RegistrationDropdown', () => {
     it('Displays masked value by default', () => {
       createComponent({}, mount);
 
-      expect(findTokenDropdownItem().text()).toMatchInterpolatedText(
-        `Registration token ${maskToken}`,
-      );
+      expect(findRegistrationTokenInput().element.value).toBe(maskToken);
     });
   });
 
@@ -155,16 +154,14 @@ describe('RegistrationDropdown', () => {
   });
 
   it('Updates the token when it gets reset', async () => {
+    const newToken = 'mock1';
     createComponent({}, mount);
 
-    const newToken = 'mock1';
+    expect(findRegistrationTokenInput().props('value')).not.toBe(newToken);
 
     findTokenResetDropdownItem().vm.$emit('tokenReset', newToken);
-    findToggleMaskButton().vm.$emit('click', { stopPropagation: jest.fn() });
     await nextTick();
 
-    expect(findTokenDropdownItem().text()).toMatchInterpolatedText(
-      `Registration token ${newToken}`,
-    );
+    expect(findRegistrationToken().props('value')).toBe(newToken);
   });
 });

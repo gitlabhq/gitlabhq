@@ -536,7 +536,7 @@ RSpec.describe Project, factory_default: :keep do
         project = build(:project)
 
         aggregate_failures do
-          urls_with_CRLF.each do |url|
+          urls_with_crlf.each do |url|
             project.import_url = url
 
             expect(project).not_to be_valid
@@ -549,7 +549,7 @@ RSpec.describe Project, factory_default: :keep do
         project = build(:project)
 
         aggregate_failures do
-          valid_urls_with_CRLF.each do |url|
+          valid_urls_with_crlf.each do |url|
             project.import_url = url
 
             expect(project).to be_valid
@@ -634,6 +634,8 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
   end
+
+  it_behaves_like 'a BulkUsersByEmailLoad model'
 
   describe '#all_pipelines' do
     let_it_be(:project) { create(:project) }
@@ -721,6 +723,33 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.ci_pipelines).to all(have_attributes(source: 'external'))
         expect(project.ci_pipelines.size).to eq(1)
       end
+    end
+  end
+
+  describe '#personal_namespace_holder?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:namespace_user) { create(:user) }
+    let_it_be(:admin_user) { create(:user, :admin) }
+    let_it_be(:personal_project) { create(:project, namespace: namespace_user.namespace) }
+    let_it_be(:group_project) { create(:project, group: group) }
+    let_it_be(:another_user) { create(:user) }
+    let_it_be(:group_owner_user) { create(:user).tap { |user| group.add_owner(user) } }
+
+    where(:project, :user, :result) do
+      ref(:personal_project)      | ref(:namespace_user)   | true
+      ref(:personal_project)      | ref(:admin_user)       | false
+      ref(:personal_project)      | ref(:another_user)     | false
+      ref(:personal_project)      | nil                    | false
+      ref(:group_project)         | ref(:namespace_user)   | false
+      ref(:group_project)         | ref(:group_owner_user) | false
+      ref(:group_project)         | ref(:another_user)     | false
+      ref(:group_project)         | nil                    | false
+      ref(:group_project)         | nil                    | false
+      ref(:group_project)         | ref(:admin_user)       | false
+    end
+
+    with_them do
+      it { expect(project.personal_namespace_holder?(user)).to eq(result) }
     end
   end
 
@@ -1189,29 +1218,8 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     describe 'last_activity_date' do
-      it 'returns the creation date of the project\'s last event if present' do
-        new_event = create(:event, :closed, project: project, created_at: Time.current)
-
-        project.reload
-        expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
-      end
-
-      it 'returns the project\'s last update date if it has no events' do
-        expect(project.last_activity_date).to eq(project.updated_at)
-      end
-
-      it 'returns the most recent timestamp' do
-        project.update!(updated_at: nil,
-                       last_activity_at: timestamp,
-                       last_repository_updated_at: timestamp - 1.hour)
-
-        expect(project.last_activity_date).to be_like_time(timestamp)
-
-        project.update!(updated_at: timestamp,
-                       last_activity_at: timestamp - 1.hour,
-                       last_repository_updated_at: nil)
-
-        expect(project.last_activity_date).to be_like_time(timestamp)
+      it 'returns the project\'s last update date' do
+        expect(project.last_activity_date).to be_like_time(project.updated_at)
       end
     end
   end
@@ -1688,14 +1696,26 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '.sort_by_attribute' do
-    it 'reorders the input relation by start count desc' do
-      project1 = create(:project, star_count: 2)
-      project2 = create(:project, star_count: 1)
-      project3 = create(:project)
+    let_it_be(:project1) { create(:project, star_count: 2, updated_at: 1.minute.ago) }
+    let_it_be(:project2) { create(:project, star_count: 1) }
+    let_it_be(:project3) { create(:project, updated_at: 2.minutes.ago) }
 
+    it 'reorders the input relation by start count desc' do
       projects = described_class.sort_by_attribute(:stars_desc)
 
       expect(projects).to eq([project1, project2, project3])
+    end
+
+    it 'reorders the input relation by last activity desc' do
+      projects = described_class.sort_by_attribute(:latest_activity_desc)
+
+      expect(projects).to eq([project2, project1, project3])
+    end
+
+    it 'reorders the input relation by last activity asc' do
+      projects = described_class.sort_by_attribute(:latest_activity_asc)
+
+      expect(projects).to eq([project3, project1, project2])
     end
   end
 
@@ -2273,6 +2293,44 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#pages_show_onboarding?' do
+    let(:project) { create(:project) }
+
+    subject { project.pages_show_onboarding? }
+
+    context "if there is no metadata" do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'if onboarding is complete' do
+      before do
+        project.pages_metadatum.update_column(:onboarding_complete, true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'if there is metadata, but onboarding is not complete' do
+      before do
+        project.pages_metadatum.update_column(:onboarding_complete, false)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    # During migration, the onboarding_complete property can still be false,
+    # but will be updated later. To account for that case, pages_show_onboarding?
+    # should return false if `deployed` is true.
+    context "will return false if pages is deployed even if onboarding_complete is false" do
+      before do
+        project.pages_metadatum.update_column(:onboarding_complete, false)
+        project.pages_metadatum.update_column(:deployed, true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#pages_deployed?' do
     let(:project) { create(:project) }
 
@@ -2692,6 +2750,39 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#container_repositories_size' do
+    let(:project) { build(:project) }
+
+    subject { project.container_repositories_size }
+
+    context 'on gitlab.com' do
+      where(:no_container_repositories, :all_migrated, :gitlab_api_supported, :returned_size, :expected_result) do
+        true  | nil   | nil   | nil | 0
+        false | false | nil   | nil | nil
+        false | true  | false | nil | nil
+        false | true  | true  | 555 | 555
+        false | true  | true  | nil | nil
+      end
+
+      with_them do
+        before do
+          stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
+          allow(Gitlab).to receive(:com?).and_return(true)
+          allow(project.container_repositories).to receive(:empty?).and_return(no_container_repositories)
+          allow(project.container_repositories).to receive(:all_migrated?).and_return(all_migrated)
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
+          allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project.full_path).and_return(returned_size)
+        end
+
+        it { is_expected.to eq(expected_result) }
+      end
+    end
+
+    context 'not on gitlab.com' do
+      it { is_expected.to eq(nil) }
     end
   end
 
@@ -5602,6 +5693,18 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
       end
     end
+
+    describe 'project target platforms detection' do
+      before do
+        create(:import_state, :started, project: project)
+      end
+
+      it 'calls enqueue_record_project_target_platforms' do
+        expect(project).to receive(:enqueue_record_project_target_platforms)
+
+        project.after_import
+      end
+    end
   end
 
   describe '#update_project_counter_caches' do
@@ -6256,6 +6359,10 @@ RSpec.describe Project, factory_default: :keep do
       expect(subject.find_or_initialize_integration('prometheus')).to be_nil
     end
 
+    it 'returns nil if integration does not exist' do
+      expect(subject.find_or_initialize_integration('non-existing')).to be_nil
+    end
+
     context 'with an existing integration' do
       subject { create(:project) }
 
@@ -6554,6 +6661,25 @@ RSpec.describe Project, factory_default: :keep do
           expect(project.errors[:shared_runners_enabled]).to contain_exactly('cannot be enabled because parent group does not allow it')
         end
       end
+    end
+  end
+
+  describe '#mark_pages_onboarding_complete' do
+    let(:project) { create(:project) }
+
+    it "creates new record and sets onboarding_complete to true if none exists yet" do
+      project.mark_pages_onboarding_complete
+
+      expect(project.pages_metadatum.reload.onboarding_complete).to eq(true)
+    end
+
+    it "overrides an existing setting" do
+      pages_metadatum = project.pages_metadatum
+      pages_metadatum.update!(onboarding_complete: false)
+
+      expect do
+        project.mark_pages_onboarding_complete
+      end.to change { pages_metadatum.reload.onboarding_complete }.from(false).to(true)
     end
   end
 
@@ -8009,10 +8135,110 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#work_items_feature_flag_enabled?' do
+    shared_examples 'project checking work_items feature flag' do
+      context 'when work_items FF is disabled globally' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when work_items FF is enabled for the project' do
+        before do
+          stub_feature_flags(work_items: project)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when work_items FF is enabled globally' do
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    subject { project.work_items_feature_flag_enabled? }
+
+    context 'when a project does not belong to a group' do
+      let_it_be(:project) { create(:project, namespace: namespace) }
+
+      it_behaves_like 'project checking work_items feature flag'
+    end
+
+    context 'when project belongs to a group' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: root_group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      it_behaves_like 'project checking work_items feature flag'
+
+      context 'when work_items FF is enabled for the root group' do
+        before do
+          stub_feature_flags(work_items: root_group)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when work_items FF is enabled for the group' do
+        before do
+          stub_feature_flags(work_items: group)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
   describe 'serialization' do
     let(:object) { build(:project) }
 
     it_behaves_like 'blocks unsafe serialization'
+  end
+
+  describe '#enqueue_record_project_target_platforms' do
+    let_it_be(:project) { create(:project) }
+
+    let(:com) { true }
+
+    before do
+      allow(Gitlab).to receive(:com?).and_return(com)
+    end
+
+    it 'enqueues a Projects::RecordTargetPlatformsWorker' do
+      expect(Projects::RecordTargetPlatformsWorker).to receive(:perform_async).with(project.id)
+
+      project.enqueue_record_project_target_platforms
+    end
+
+    shared_examples 'does not enqueue a Projects::RecordTargetPlatformsWorker' do
+      it 'does not enqueue a Projects::RecordTargetPlatformsWorker' do
+        expect(Projects::RecordTargetPlatformsWorker).not_to receive(:perform_async)
+
+        project.enqueue_record_project_target_platforms
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(record_projects_target_platforms: false)
+      end
+
+      it_behaves_like 'does not enqueue a Projects::RecordTargetPlatformsWorker'
+    end
+
+    context 'when not in gitlab.com' do
+      let(:com) { false }
+
+      it_behaves_like 'does not enqueue a Projects::RecordTargetPlatformsWorker'
+    end
+  end
+
+  describe '#inactive?' do
+    let_it_be_with_reload(:project) { create(:project, name: 'test-project') }
+
+    it_behaves_like 'returns true if project is inactive'
   end
 
   private

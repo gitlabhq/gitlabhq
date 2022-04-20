@@ -6,10 +6,12 @@ import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
 import SignInPage from '~/jira_connect/subscriptions/pages/sign_in.vue';
 import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions.vue';
 import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
+import BrowserSupportAlert from '~/jira_connect/subscriptions/components/browser_support_alert.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '~/jira_connect/subscriptions/constants';
 import { __ } from '~/locale';
+import AccessorUtilities from '~/lib/utils/accessor';
 import { mockSubscription } from '../mock_data';
 
 jest.mock('~/jira_connect/subscriptions/utils', () => ({
@@ -26,6 +28,7 @@ describe('JiraConnectApp', () => {
   const findSignInPage = () => wrapper.findComponent(SignInPage);
   const findSubscriptionsPage = () => wrapper.findComponent(SubscriptionsPage);
   const findUserLink = () => wrapper.findComponent(UserLink);
+  const findBrowserSupportAlert = () => wrapper.findComponent(BrowserSupportAlert);
 
   const createComponent = ({ provide, mountFn = shallowMountExtended } = {}) => {
     store = createStore();
@@ -207,4 +210,29 @@ describe('JiraConnectApp', () => {
       });
     });
   });
+
+  describe.each`
+    jiraConnectOauthEnabled | canUseCrypto | shouldShowAlert
+    ${false}                | ${false}     | ${false}
+    ${false}                | ${true}      | ${false}
+    ${true}                 | ${false}     | ${true}
+    ${true}                 | ${true}      | ${false}
+  `(
+    'when `jiraConnectOauth` feature flag is $jiraConnectOauthEnabled and `AccessorUtilities.canUseCrypto` returns $canUseCrypto',
+    ({ jiraConnectOauthEnabled, canUseCrypto, shouldShowAlert }) => {
+      beforeEach(() => {
+        jest.spyOn(AccessorUtilities, 'canUseCrypto').mockReturnValue(canUseCrypto);
+
+        createComponent({ provide: { glFeatures: { jiraConnectOauth: jiraConnectOauthEnabled } } });
+      });
+
+      it(`does ${shouldShowAlert ? '' : 'not'} render BrowserSupportAlert component`, () => {
+        expect(findBrowserSupportAlert().exists()).toBe(shouldShowAlert);
+      });
+
+      it(`does ${!shouldShowAlert ? '' : 'not'} render the main Jira Connect app template`, () => {
+        expect(wrapper.findByTestId('jira-connect-app').exists()).toBe(!shouldShowAlert);
+      });
+    },
+  );
 });

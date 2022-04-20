@@ -21,11 +21,11 @@ module QA
         end
       end
 
-      let(:github_repo) { ENV['QA_LARGE_GH_IMPORT_REPO'] || 'rspec/rspec-core' }
-      let(:import_max_duration) { ENV['QA_LARGE_GH_IMPORT_DURATION'] ? ENV['QA_LARGE_GH_IMPORT_DURATION'].to_i : 7200 }
+      let(:github_repo) { ENV['QA_LARGE_IMPORT_REPO'] || 'rspec/rspec-core' }
+      let(:import_max_duration) { ENV['QA_LARGE_IMPORT_DURATION'] ? ENV['QA_LARGE_IMPORT_DURATION'].to_i : 7200 }
       let(:github_client) do
         Octokit::Client.new(
-          access_token: ENV['QA_LARGE_GH_IMPORT_GH_TOKEN'] || Runtime::Env.github_access_token,
+          access_token: ENV['QA_LARGE_IMPORT_GH_TOKEN'] || Runtime::Env.github_access_token,
           auto_paginate: true
         )
       end
@@ -106,37 +106,47 @@ module QA
         end
       end
 
+      # rubocop:disable RSpec/InstanceVariable
       after do |example|
         user.remove_via_api! unless example.exception
         next unless defined?(@import_time)
 
-        # save data for comparison after run finished
+        # save data for comparison notification creation
         save_json(
           "data",
           {
+            importer: :github,
             import_time: @import_time,
             reported_stats: @stats,
-            github: {
+            source: {
+              name: "GitHub",
               project_name: github_repo,
-              branches: gh_branches.length,
-              commits: gh_commits.length,
-              labels: gh_labels.length,
-              milestones: gh_milestones.length,
-              prs: gh_prs.length,
-              pr_comments: gh_prs.sum { |_k, v| v[:comments].length },
-              issues: gh_issues.length,
-              issue_comments: gh_issues.sum { |_k, v| v[:comments].length }
+              address: "https://github.com",
+              data: {
+                branches: gh_branches.length,
+                commits: gh_commits.length,
+                labels: gh_labels.length,
+                milestones: gh_milestones.length,
+                mrs: gh_prs.length,
+                mr_comments: gh_prs.sum { |_k, v| v[:comments].length },
+                issues: gh_issues.length,
+                issue_comments: gh_issues.sum { |_k, v| v[:comments].length }
+              }
             },
-            gitlab: {
+            target: {
+              name: "GitLab",
               project_name: imported_project.path_with_namespace,
-              branches: gl_branches.length,
-              commits: gl_commits.length,
-              labels: gl_labels.length,
-              milestones: gl_milestones.length,
-              mrs: mrs.length,
-              mr_comments: mrs.sum { |_k, v| v[:comments].length },
-              issues: gl_issues.length,
-              issue_comments: gl_issues.sum { |_k, v| v[:comments].length }
+              address: QA::Runtime::Scenario.gitlab_address,
+              data: {
+                branches: gl_branches.length,
+                commits: gl_commits.length,
+                labels: gl_labels.length,
+                milestones: gl_milestones.length,
+                mrs: mrs.length,
+                mr_comments: mrs.sum { |_k, v| v[:comments].length },
+                issues: gl_issues.length,
+                issue_comments: gl_issues.sum { |_k, v| v[:comments].length }
+              }
             },
             not_imported: {
               mrs: @mr_diff,
@@ -145,6 +155,7 @@ module QA
           }
         )
       end
+      # rubocop:enable RSpec/InstanceVariable
 
       it(
         'imports large Github repo via api',
@@ -153,7 +164,7 @@ module QA
         start = Time.now
 
         # import the project and log gitlab path
-        Runtime::Logger.info("== Importing project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
+        logger.info("== Importing project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
         # fetch all objects right after import has started
         fetch_github_objects
 

@@ -1,13 +1,13 @@
 <script>
-import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlButton, GlLink, GlTooltip, GlSprintf } from '@gitlab/ui';
 
 export default {
   name: 'DeleteButton',
   components: {
     GlButton,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlLink,
+    GlTooltip,
+    GlSprintf,
   },
   props: {
     title: {
@@ -17,6 +17,11 @@ export default {
     tooltipTitle: {
       type: String,
       required: true,
+    },
+    tooltipLink: {
+      type: String,
+      default: '',
+      required: false,
     },
     disabled: {
       type: Boolean,
@@ -29,21 +34,12 @@ export default {
       required: false,
     },
   },
-  computed: {
-    tooltipConfiguration() {
-      return {
-        disabled: this.tooltipDisabled,
-        title: this.tooltipTitle,
-      };
-    },
-  },
 };
 </script>
 
 <template>
-  <div v-gl-tooltip="tooltipConfiguration">
+  <div ref="deleteImageButton">
     <gl-button
-      v-gl-tooltip
       :disabled="disabled"
       :title="title"
       :aria-label="title"
@@ -52,5 +48,14 @@ export default {
       icon="remove"
       @click="$emit('delete')"
     />
+    <gl-tooltip :target="() => $refs.deleteImageButton" :disabled="tooltipDisabled" placement="top">
+      <gl-sprintf :message="tooltipTitle">
+        <template #docLink="{ content }">
+          <gl-link v-if="tooltipLink" :href="tooltipLink" target="_blank">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-tooltip>
   </div>
 </template>

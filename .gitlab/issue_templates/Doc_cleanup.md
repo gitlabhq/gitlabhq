@@ -7,6 +7,26 @@
 * feature development should use the Feature Request template.
 -->
 
+If you are a community contributor:
+
+1. To work on an issue, type `@gl-docsteam I would like to work on this issue.`
+   in a comment. A technical writer
+   will assign the issue to you. Do not work on the issue before it is assigned to you.
+   If someone has already chosen the issue, pick another or view docs [in the docs directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc)
+   and open a merge request for any page you feel can be improved.
+1. Create a merge request for the issue. If this is for a Hackathon, do not create the merge request
+   before the Hackathon has started or it will not be counted towards the Hackathon. If you were not
+   assigned the issue, do not create a merge request. It will not be accepted.
+1. Copy the link to this issue and add it to the merge request's description, which will link
+   the merge request and the issue together.
+1. After your merge request is accepted and merged, close this issue.
+
+If you notice things you'd like to fix that are not part of the issue, open separate merge requests for those issues.
+
+We're sorry for all the rules but we want everyone to have a good experience, and it can be hard when we get an influx of contributions.
+
+Thank you again for contributing to the GitLab documentation!
+
 ## Identified documentation issue
 
 <!--
@@ -18,19 +38,6 @@
 * changes for up to 10 pages. Larger items should be broken out into other issues to better distribute
 * the opportunities for contributors.
 -->
-
-## Process
-
-If you, as a contributor, decide to take this work on, assign this issue to yourself, and create one or more linked
-merge requests that resolve this issue. Be sure to close this issue after all linked merge requests are completed.
-
-The work for this issue should involve only what's listed in the previous section. If you identify other work that
-needs to be done, create separate, unlinked MRs as needed to address those items.
-
-When using automated test results for identified work, use this issue to work only on the listed lines. For
-example, if the tests list several lines that show the word "admin" as needing to possibly be "administrator,"
-do not modify other parts of the page that may also include "admin," as the testing may have excluded those lines
-(for example, they may be part of the **Admin Area** of GitLab).
 
 ## Additional information
 

@@ -6,9 +6,11 @@ import {
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { mapActions } from 'vuex';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import UserNameWithStatus from '../../sidebar/components/assignees/user_name_with_status.vue';
+import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
+
+import { NOTEABLE_TYPE_MAPPING } from '../constants';
 
 export default {
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -44,6 +46,11 @@ export default {
       type: [String, Number],
       required: false,
       default: null,
+    },
+    noteableType: {
+      type: String,
+      required: false,
+      default: '',
     },
     includeToggle: {
       type: Boolean,
@@ -102,6 +109,15 @@ export default {
     },
     authorName() {
       return this.author.name;
+    },
+    noteConfidentialityTooltip() {
+      if (
+        this.noteableType === NOTEABLE_TYPE_MAPPING.Issue ||
+        this.noteableType === NOTEABLE_TYPE_MAPPING.MergeRequest
+      ) {
+        return s__('Notes|This comment is confidential and only visible to project members');
+      }
+      return s__('Notes|This comment is confidential and only visible to group members');
     },
   },
   mounted() {
@@ -226,7 +242,7 @@ export default {
         data-testid="confidentialIndicator"
         name="eye-slash"
         :size="16"
-        :title="s__('Notes|This comment is confidential and only visible to project members')"
+        :title="noteConfidentialityTooltip"
         class="gl-ml-1 gl-text-orange-700 align-middle"
       />
       <slot name="extra-controls"></slot>

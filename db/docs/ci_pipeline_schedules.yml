@@ -1,0 +1,9 @@
+---
+table_name: ci_pipeline_schedules
+classes:
+- Ci::PipelineSchedule
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8df3997a92bffa2d29f3c559933a336b837cdb93
+milestone: '9.2'

@@ -1,0 +1,9 @@
+---
+table_name: user_agent_details
+classes:
+- UserAgentDetail
+feature_categories:
+- snippets
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/95419679f23f0628d1885dd9656cc159e9d55ea9
+milestone: '8.11'

@@ -132,6 +132,11 @@
   category: code_review
   aggregation: weekly
   feature_flag: usage_data_i_code_review_user_jetbrains_api_request
+- name: i_code_review_user_gitlab_cli_api_request
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: usage_data_i_code_review_user_gitlab_cli_api_request
 - name: i_code_review_user_create_mr_from_issue
   redis_slot: code_review
   category: code_review
@@ -173,62 +178,50 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_click_single_file_mode_setting
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_click_file_browser_setting
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_click_whitespace_setting
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_diff_view_inline
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_diff_view_parallel
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_file_browser_tree_view
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_file_browser_list_view
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_diff_show_whitespace
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_diff_hide_whitespace
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_diff_single_file
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_diff_multiple_files
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: diff_settings_usage_data
 - name: i_code_review_user_load_conflict_ui
   redis_slot: code_review
   category: code_review
@@ -241,7 +234,6 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_diff_searches
 - name: i_code_review_total_suggestions_applied
   redis_slot: code_review
   category: code_review

@@ -44,7 +44,7 @@ module Gitlab
               free_right_index = nil
               i += 1
             end
-          elsif line.meta? || line.unchanged?
+          elsif line.meta? || line.unchanged? || !line.has_mapping_in_raw?
             # line in the right panel is the same as in the left one
             lines << {
               left: line,

@@ -61,8 +61,7 @@ To create an Auditor user:
 1. On the left sidebar, select **Overview > Users**.
 1. Create a new user or edit an existing one, and in the **Access** section
    select Auditor.
-1. Select **Create user** or **Save changes** if you created a new user or
-   edited an existing one respectively.
+1. If you created a user, select **Create user**. For an existing user, select **Save changes**.
 
 To revoke Auditor permissions from a user, make them a Regular user by
 following the previous steps.

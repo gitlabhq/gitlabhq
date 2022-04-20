@@ -9,6 +9,9 @@ module Groups
 
     feature_category :subgroups
 
+    # TODO: Set to higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/331494
+    urgency :low, [:index]
+
     def index
       params[:sort] ||= @group_projects_sort
       parent = if params[:parent_id].present?

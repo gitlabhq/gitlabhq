@@ -375,6 +375,30 @@ For example, for installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1
 ```
 
+#### Incremental repository backups
+
+> - Introduced in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 14.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `incremental_repository_backup`.
+On GitLab.com, this feature is not available.
+
+Incremental backups can be faster than full backups because they only pack changes since the last backup into the backup
+bundle for each repository. There must be an existing backup to create an incremental backup from and this backup will be overwritten. You can use the `BACKUP=timestamp_of_backup` option to choose which backup will be used.
+
+To create an incremental backup, run:
+
+```shell
+sudo gitlab-backup create INCREMENTAL=yes
+```
+
+Incremental backups can also be created from [an untarred backup](#skipping-tar-creation) by using `SKIP=tar`:
+
+```shell
+sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
+```
+
 #### Uploading backups to a remote (cloud) storage
 
 You can let the backup script upload (using the [Fog library](http://fog.io/))
@@ -699,6 +723,23 @@ sudo gitlab-backup create DIRECTORY=weekly
 ```
 
 Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:create` instead.
+
+#### Skip uploading backups to remote storage
+
+If you have configured GitLab to [upload backups in a remote storage](#uploading-backups-to-a-remote-cloud-storage),
+you can use the `SKIP=remote` option to skip uploading your backups to the remote storage.
+
+For Omnibus GitLab packages:
+
+```shell
+sudo gitlab-backup create SKIP=remote
+```
+
+For installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create SKIP=remote RAILS_ENV=production
+```
 
 #### Uploading to locally mounted shares
 
@@ -1393,7 +1434,7 @@ To prepare the new server:
 1. Flush the Redis database to disk, and stop GitLab other than the services needed for migration:
 
    ```shell
-   sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket save && sudo gitlab-ctl stop && sudo gitlab-ctl start postgresql
+   sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket save && sudo gitlab-ctl stop && sudo gitlab-ctl start postgresql && sudo gitlab-ctl start gitaly
    ```
 
 1. Create a GitLab backup:
@@ -1813,12 +1854,7 @@ If this happens, examine the following:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.2.
 > - [Deployed behind a feature flag](../user/feature_flags.md), enabled by default.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-or-enable-gitaly-backup).
-
-There can be
-[risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.10. [Feature flag `gitaly_backup`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83254) removed.
 
 The `gitaly-backup` binary is used by the backup Rake task to create and restore repository backups from Gitaly.
 `gitaly-backup` replaces the previous backup method that directly calls RPCs on Gitaly from GitLab.
@@ -1835,41 +1871,3 @@ If you have a specific reason to change the path, it can be configured in Omnibu
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect
-
-#### Disable or enable `gitaly-backup`
-
-`gitaly-backup` is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:gitaly_backup)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:gitaly_backup)
-```
-
-### Incremental repository backups
-
-> Introduced in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `incremental_repository_backup`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-Incremental backups can be faster than full backups because they only pack changes since the last backup into the backup
-bundle for each repository. Because incremental backups require access to the previous backup, you can't use incremental
-backups with tar files.
-
-To create an incremental backup, run:
-
-```shell
-sudo gitlab-backup create SKIP=tar INCREMENTAL=yes
-```

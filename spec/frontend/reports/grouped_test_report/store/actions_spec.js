@@ -24,8 +24,8 @@ describe('Reports Store Actions', () => {
   });
 
   describe('setPaths', () => {
-    it('should commit SET_PATHS mutation', (done) => {
-      testAction(
+    it('should commit SET_PATHS mutation', () => {
+      return testAction(
         setPaths,
         { endpoint: 'endpoint.json', headBlobPath: '/blob/path' },
         mockedState,
@@ -36,14 +36,13 @@ describe('Reports Store Actions', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
 
   describe('requestReports', () => {
-    it('should commit REQUEST_REPORTS mutation', (done) => {
-      testAction(requestReports, null, mockedState, [{ type: types.REQUEST_REPORTS }], [], done);
+    it('should commit REQUEST_REPORTS mutation', () => {
+      return testAction(requestReports, null, mockedState, [{ type: types.REQUEST_REPORTS }], []);
     });
   });
 
@@ -62,12 +61,12 @@ describe('Reports Store Actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestReports and receiveReportsSuccess ', (done) => {
+      it('dispatches requestReports and receiveReportsSuccess ', () => {
         mock
           .onGet(`${TEST_HOST}/endpoint.json`)
           .replyOnce(200, { summary: {}, suites: [{ name: 'rspec' }] });
 
-        testAction(
+        return testAction(
           fetchReports,
           null,
           mockedState,
@@ -81,7 +80,6 @@ describe('Reports Store Actions', () => {
               type: 'receiveReportsSuccess',
             },
           ],
-          done,
         );
       });
     });
@@ -91,8 +89,8 @@ describe('Reports Store Actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
       });
 
-      it('dispatches requestReports and receiveReportsError ', (done) => {
-        testAction(
+      it('dispatches requestReports and receiveReportsError ', () => {
+        return testAction(
           fetchReports,
           null,
           mockedState,
@@ -105,71 +103,65 @@ describe('Reports Store Actions', () => {
               type: 'receiveReportsError',
             },
           ],
-          done,
         );
       });
     });
   });
 
   describe('receiveReportsSuccess', () => {
-    it('should commit RECEIVE_REPORTS_SUCCESS mutation with 200', (done) => {
-      testAction(
+    it('should commit RECEIVE_REPORTS_SUCCESS mutation with 200', () => {
+      return testAction(
         receiveReportsSuccess,
         { data: { summary: {} }, status: 200 },
         mockedState,
         [{ type: types.RECEIVE_REPORTS_SUCCESS, payload: { summary: {} } }],
         [],
-        done,
       );
     });
 
-    it('should not commit RECEIVE_REPORTS_SUCCESS mutation with 204', (done) => {
-      testAction(
+    it('should not commit RECEIVE_REPORTS_SUCCESS mutation with 204', () => {
+      return testAction(
         receiveReportsSuccess,
         { data: { summary: {} }, status: 204 },
         mockedState,
         [],
         [],
-        done,
       );
     });
   });
 
   describe('receiveReportsError', () => {
-    it('should commit RECEIVE_REPORTS_ERROR mutation', (done) => {
-      testAction(
+    it('should commit RECEIVE_REPORTS_ERROR mutation', () => {
+      return testAction(
         receiveReportsError,
         null,
         mockedState,
         [{ type: types.RECEIVE_REPORTS_ERROR }],
         [],
-        done,
       );
     });
   });
 
   describe('openModal', () => {
-    it('should commit SET_ISSUE_MODAL_DATA', (done) => {
-      testAction(
+    it('should commit SET_ISSUE_MODAL_DATA', () => {
+      return testAction(
         openModal,
         { name: 'foo' },
         mockedState,
         [{ type: types.SET_ISSUE_MODAL_DATA, payload: { name: 'foo' } }],
         [],
-        done,
       );
     });
   });
 
   describe('closeModal', () => {
-    it('should commit RESET_ISSUE_MODAL_DATA', (done) => {
-      testAction(
+    it('should commit RESET_ISSUE_MODAL_DATA', () => {
+      return testAction(
         closeModal,
         {},
         mockedState,
         [{ type: types.RESET_ISSUE_MODAL_DATA, payload: {} }],
         [],
-        done,
       );
     });
   });

@@ -112,7 +112,7 @@ module API
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
           requires :note_id, type: Integer, desc: 'The ID of a note'
           optional :body, type: String, allow_blank: false, desc: 'The content of a note'
-          optional :confidential, type: Boolean, desc: 'Confidentiality note flag'
+          optional :confidential, type: Boolean, desc: '[Deprecated in 14.10] No longer allowed to update confidentiality of notes'
         end
         put ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])

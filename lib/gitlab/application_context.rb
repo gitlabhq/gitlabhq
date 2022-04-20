@@ -16,6 +16,8 @@ module Gitlab
       :client_id,
       :caller_id,
       :remote_ip,
+      :job_id,
+      :pipeline_id,
       :related_class,
       :feature_category
     ].freeze
@@ -28,6 +30,7 @@ module Gitlab
       Attribute.new(:runner, ::Ci::Runner),
       Attribute.new(:caller_id, String),
       Attribute.new(:remote_ip, String),
+      Attribute.new(:job, ::Ci::Build),
       Attribute.new(:related_class, String),
       Attribute.new(:feature_category, String)
     ].freeze
@@ -73,14 +76,16 @@ module Gitlab
 
     def to_lazy_hash
       {}.tap do |hash|
-        hash[:user] = -> { username } if set_values.include?(:user)
-        hash[:project] = -> { project_path } if set_values.include?(:project) || set_values.include?(:runner)
+        hash[:user] = -> { username } if include_user?
+        hash[:project] = -> { project_path } if include_project?
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
         hash[:client_id] = -> { client } if include_client?
         hash[:caller_id] = caller_id if set_values.include?(:caller_id)
         hash[:remote_ip] = remote_ip if set_values.include?(:remote_ip)
         hash[:related_class] = related_class if set_values.include?(:related_class)
         hash[:feature_category] = feature_category if set_values.include?(:feature_category)
+        hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
+        hash[:job_id] = -> { job&.id } if set_values.include?(:job)
       end
     end
 
@@ -103,32 +108,41 @@ module Gitlab
     end
 
     def project_path
-      associated_routable = project || runner_project
+      associated_routable = project || runner_project || job_project
       associated_routable&.full_path
     end
 
     def username
-      user&.username
+      associated_user = user || job_user
+      associated_user&.username
     end
 
     def root_namespace_path
-      associated_routable = namespace || project || runner_project || runner_group
+      associated_routable = namespace || project || runner_project || runner_group || job_project
       associated_routable&.full_path_components&.first
     end
 
     def include_namespace?
-      set_values.include?(:namespace) || set_values.include?(:project) || set_values.include?(:runner)
+      set_values.include?(:namespace) || set_values.include?(:project) || set_values.include?(:runner) || set_values.include?(:job)
     end
 
     def include_client?
       set_values.include?(:user) || set_values.include?(:runner) || set_values.include?(:remote_ip)
     end
 
+    def include_user?
+      set_values.include?(:user) || set_values.include?(:job)
+    end
+
+    def include_project?
+      set_values.include?(:project) || set_values.include?(:runner) || set_values.include?(:job)
+    end
+
     def client
-      if user
-        "user/#{user.id}"
-      elsif runner
+      if runner
         "runner/#{runner.id}"
+      elsif user
+        "user/#{user.id}"
       else
         "ip/#{remote_ip}"
       end
@@ -148,6 +162,18 @@ module Gitlab
         next unless runner&.group_type?
 
         runner.groups.first
+      end
+    end
+
+    def job_project
+      strong_memoize(:job_project) do
+        job&.project
+      end
+    end
+
+    def job_user
+      strong_memoize(:job_user) do
+        job&.user
       end
     end
   end

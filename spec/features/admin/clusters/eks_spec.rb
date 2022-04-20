@@ -15,8 +15,8 @@ RSpec.describe 'Instance-level AWS EKS Cluster', :js do
     before do
       visit admin_clusters_path
 
-      click_button 'Actions'
-      click_link 'Create a new cluster'
+      click_button(class: 'dropdown-toggle-split')
+      click_link 'Create a cluster (deprecated)'
     end
 
     context 'when user creates a cluster on AWS EKS' do

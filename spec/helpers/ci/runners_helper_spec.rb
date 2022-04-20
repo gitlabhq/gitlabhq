@@ -10,24 +10,31 @@ RSpec.describe Ci::RunnersHelper do
   end
 
   describe '#runner_status_icon', :clean_gitlab_redis_cache do
-    it "returns - not contacted yet" do
+    it "returns online text" do
+      runner = create(:ci_runner, contacted_at: 1.second.ago)
+      expect(helper.runner_status_icon(runner)).to include("is online")
+    end
+
+    it "returns never contacted" do
       runner = create(:ci_runner)
-      expect(helper.runner_status_icon(runner)).to include("not contacted yet")
+      expect(helper.runner_status_icon(runner)).to include("never contacted")
     end
 
     it "returns offline text" do
-      runner = create(:ci_runner, contacted_at: 1.day.ago, active: true)
-      expect(helper.runner_status_icon(runner)).to include("Runner is offline")
+      runner = create(:ci_runner, contacted_at: 1.day.ago)
+      expect(helper.runner_status_icon(runner)).to include("is offline")
     end
 
-    it "returns online text" do
-      runner = create(:ci_runner, contacted_at: 1.second.ago, active: true)
-      expect(helper.runner_status_icon(runner)).to include("Runner is online")
+    it "returns stale text" do
+      runner = create(:ci_runner, created_at: 4.months.ago, contacted_at: 4.months.ago)
+      expect(helper.runner_status_icon(runner)).to include("is stale")
+      expect(helper.runner_status_icon(runner)).to include("last contact was")
     end
 
-    it "returns paused text" do
-      runner = create(:ci_runner, contacted_at: 1.second.ago, active: false)
-      expect(helper.runner_status_icon(runner)).to include("Runner is paused")
+    it "returns stale text, when runner never contacted" do
+      runner = create(:ci_runner, created_at: 4.months.ago)
+      expect(helper.runner_status_icon(runner)).to include("is stale")
+      expect(helper.runner_status_icon(runner)).to include("never contacted")
     end
   end
 
@@ -79,7 +86,9 @@ RSpec.describe Ci::RunnersHelper do
     it 'returns the data in format' do
       expect(helper.admin_runners_data_attributes).to eq({
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
-        registration_token: Gitlab::CurrentSettings.runners_registration_token
+        registration_token: Gitlab::CurrentSettings.runners_registration_token,
+        online_contact_timeout_secs: 7200,
+        stale_timeout_secs: 7889238
       })
     end
   end
@@ -121,12 +130,14 @@ RSpec.describe Ci::RunnersHelper do
     let(:group) { create(:group) }
 
     it 'returns group data to render a runner list' do
-      data = helper.group_runners_data_attributes(group)
-
-      expect(data[:registration_token]).to eq(group.runners_token)
-      expect(data[:group_id]).to eq(group.id)
-      expect(data[:group_full_path]).to eq(group.full_path)
-      expect(data[:runner_install_help_page]).to eq('https://docs.gitlab.com/runner/install/')
+      expect(helper.group_runners_data_attributes(group)).to eq({
+        registration_token: group.runners_token,
+        group_id: group.id,
+        group_full_path: group.full_path,
+        runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
+        online_contact_timeout_secs: 7200,
+        stale_timeout_secs: 7889238
+      })
     end
   end
 

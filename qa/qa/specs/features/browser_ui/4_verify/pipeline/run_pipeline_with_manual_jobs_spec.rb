@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, quarantine: {
-    type: :flaky,
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/351994'
-  } do
+  RSpec.describe 'Verify', :runner do
     describe 'Run pipeline with manual jobs' do
+      let(:executor) { "qa-runner-#{SecureRandom.hex(4)}" }
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pipeline-with-manual-job'
@@ -16,7 +15,8 @@ module QA
       let!(:runner) do
         Resource::Runner.fabricate! do |runner|
           runner.project = project
-          runner.name = "qa-runner-#{SecureRandom.hex(3)}"
+          runner.name = executor
+          runner.tags = [executor]
         end
       end
 
@@ -36,22 +36,26 @@ module QA
 
                   Prep:
                     stage: Stage1
+                    tags: ["#{executor}"]
                     script: exit 0
                     when: manual
 
                   Build:
                     stage: Stage2
+                    tags: ["#{executor}"]
                     needs: ['Prep']
                     script: exit 0
                     parallel: 6
 
                   Test:
                     stage: Stage3
+                    tags: ["#{executor}"]
                     needs: ['Build']
                     script: exit 0
 
                   Deploy:
                     stage: Stage3
+                    tags: ["#{executor}"]
                     needs: ['Test']
                     script: exit 0
                     parallel: 6
@@ -65,15 +69,17 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'skipped')
+        Flow::Pipeline.visit_latest_pipeline(status: 'skipped')
       end
 
       after do
         runner&.remove_via_api!
-        project&.remove_via_api!
       end
 
-      it 'does not leave any job in skipped state', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349158' do
+      it(
+        'does not leave any job in skipped state',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349158'
+      ) do
         Page::Project::Pipeline::Show.perform do |show|
           show.click_job_action('Prep') # Trigger pipeline manually
 

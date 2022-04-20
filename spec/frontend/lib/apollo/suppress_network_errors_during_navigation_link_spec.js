@@ -82,34 +82,39 @@ describe('getSuppressNetworkErrorsDuringNavigationLink', () => {
         isNavigatingAway.mockReturnValue(false);
       });
 
-      it('forwards successful requests', (done) => {
+      it('forwards successful requests', () => {
         createSubscription(makeMockSuccessLink(), {
           next({ data }) {
             expect(data).toEqual({ foo: { id: 1 } });
           },
-          error: () => done.fail('Should not happen'),
-          complete: () => done(),
+          error: () => {
+            throw new Error('Should not happen');
+          },
         });
       });
 
-      it('forwards GraphQL errors', (done) => {
+      it('forwards GraphQL errors', () => {
         createSubscription(makeMockGraphQLErrorLink(), {
           next({ errors }) {
             expect(errors).toEqual([{ message: 'foo' }]);
           },
-          error: () => done.fail('Should not happen'),
-          complete: () => done(),
+          error: () => {
+            throw new Error('Should not happen');
+          },
         });
       });
 
-      it('forwards network errors', (done) => {
+      it('forwards network errors', () => {
         createSubscription(makeMockNetworkErrorLink(), {
-          next: () => done.fail('Should not happen'),
+          next: () => {
+            throw new Error('Should not happen');
+          },
           error: (error) => {
             expect(error.message).toBe('NetworkError');
-            done();
           },
-          complete: () => done.fail('Should not happen'),
+          complete: () => {
+            throw new Error('Should not happen');
+          },
         });
       });
     });
@@ -119,23 +124,25 @@ describe('getSuppressNetworkErrorsDuringNavigationLink', () => {
         isNavigatingAway.mockReturnValue(true);
       });
 
-      it('forwards successful requests', (done) => {
+      it('forwards successful requests', () => {
         createSubscription(makeMockSuccessLink(), {
           next({ data }) {
             expect(data).toEqual({ foo: { id: 1 } });
           },
-          error: () => done.fail('Should not happen'),
-          complete: () => done(),
+          error: () => {
+            throw new Error('Should not happen');
+          },
         });
       });
 
-      it('forwards GraphQL errors', (done) => {
+      it('forwards GraphQL errors', () => {
         createSubscription(makeMockGraphQLErrorLink(), {
           next({ errors }) {
             expect(errors).toEqual([{ message: 'foo' }]);
           },
-          error: () => done.fail('Should not happen'),
-          complete: () => done(),
+          error: () => {
+            throw new Error('Should not happen');
+          },
         });
       });
     });

@@ -1,9 +1,10 @@
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_INITIAL_DATA](state, { blobs, definitionPathPrefix }) {
+  [types.SET_INITIAL_DATA](state, { blobs, definitionPathPrefix, wrapTextNodes }) {
     state.blobs = blobs;
     state.definitionPathPrefix = definitionPathPrefix;
+    state.wrapTextNodes = wrapTextNodes;
   },
   [types.REQUEST_DATA](state) {
     state.loading = true;

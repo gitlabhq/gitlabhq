@@ -37,17 +37,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:paginated_notes, project, default_enabled: :yaml)
     push_frontend_feature_flag(:confidential_notes, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_mr_widgets_extensions, project, default_enabled: :yaml)
     push_frontend_feature_flag(:rebase_without_ci_ui, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:markdown_continue_lists, project, default_enabled: :yaml)
     push_frontend_feature_flag(:secure_vulnerability_training, project, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
-    # Usage data feature flags
-    push_frontend_feature_flag(:users_expanding_widgets_usage_data, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
-    push_frontend_feature_flag(:usage_data_diff_searches, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:realtime_labels, project, default_enabled: :yaml)
   end
 
   before_action do
@@ -85,7 +80,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :destroy,
     :rebase,
     :discussions,
-    :pipelines
+    :pipelines,
+    :test_reports
+  ]
+  urgency :low, [
+    :codequality_mr_diff_reports,
+    :codequality_reports
   ]
 
   def index
@@ -130,9 +130,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
         set_pipeline_variables
 
-        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
-          @number_of_pipelines = @pipelines.size
-        end
+        @number_of_pipelines = @pipelines.size
 
         render
       end
@@ -196,17 +194,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
-      render json: {
-        pipelines: PipelineSerializer
-          .new(project: @project, current_user: @current_user)
-          .with_pagination(request, response)
-          .represent(@pipelines),
-        count: {
-            all: @pipelines.count
-          }
+    render json: {
+      pipelines: PipelineSerializer
+        .new(project: @project, current_user: @current_user)
+        .with_pagination(request, response)
+        .represent(@pipelines),
+      count: {
+        all: @pipelines.count
       }
-    end
+    }
   end
 
   def sast_reports

@@ -53,5 +53,15 @@ RSpec.describe Resolvers::WorkItems::TypesResolver do
 
       it_behaves_like 'a work item type resolver'
     end
+
+    context 'when parent is not a group or project' do
+      let(:object) { 'not a project/group' }
+
+      it 'returns nil because of feature flag check' do
+        result = resolve(described_class, obj: object, args: {})
+
+        expect(result).to be_nil
+      end
+    end
   end
 end

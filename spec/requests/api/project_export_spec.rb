@@ -260,6 +260,29 @@ RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
             expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
           end
         end
+
+        context 'applies correct scope when throttling' do
+          before do
+            stub_application_setting(project_download_export_limit: 1)
+          end
+
+          it 'throttles downloads within same namespaces' do
+            # simulate prior request to the same namespace, which increments the rate limit counter for that scope
+            Gitlab::ApplicationRateLimiter.throttled?(:project_download_export, scope: [user, project_finished.namespace])
+
+            get api(download_path_finished, user)
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+          end
+
+          it 'allows downloads from different namespaces' do
+            # simulate prior request to a different namespace, which increments the rate limit counter for that scope
+            Gitlab::ApplicationRateLimiter.throttled?(:project_download_export,
+              scope: [user, create(:project, :with_export).namespace])
+
+            get api(download_path_finished, user)
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
 
       context 'when user is a maintainer' do

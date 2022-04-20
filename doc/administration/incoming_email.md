@@ -564,7 +564,7 @@ to receive sub-addressed mail.
 
 To enable sub-addressing:
 
-1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/).
+1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/2.0.5).
 1. In PowerShell, run the following commands:
 
    ```powershell
@@ -766,6 +766,8 @@ This example for Omnibus GitLab assumes you're using the following mailbox: `inc
 
 ##### Configure Microsoft Graph
 
+> Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
+
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
 
@@ -781,6 +783,21 @@ gitlab_rails['incoming_email_email'] = "incoming@example.onmicrosoft.com"
 
 gitlab_rails['incoming_email_inbox_method'] = 'microsoft_graph'
 gitlab_rails['incoming_email_inbox_options'] = {
+   'tenant_id': '<YOUR-TENANT-ID>',
+   'client_id': '<YOUR-CLIENT-ID>',
+   'client_secret': '<YOUR-CLIENT-SECRET>',
+   'poll_interval': 60  # Optional
+}
+```
+
+For Microsoft Cloud for US Government or [other Azure deployments](https://docs.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
+
+- Example for Microsoft Cloud for US Government:
+
+```ruby
+gitlab_rails['incoming_email_inbox_options'] = {
+   'azure_ad_endpoint': 'https://login.microsoftonline.us',
+   'graph_endpoint': 'https://graph.microsoft.us',
    'tenant_id': '<YOUR-TENANT-ID>',
    'client_id': '<YOUR-CLIENT-ID>',
    'client_secret': '<YOUR-CLIENT-SECRET>',

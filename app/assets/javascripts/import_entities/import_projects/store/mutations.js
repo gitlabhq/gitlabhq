@@ -113,7 +113,11 @@ export default {
     updatedProjects.forEach((updatedProject) => {
       const repo = state.repositories.find((p) => p.importedProject?.id === updatedProject.id);
       if (repo?.importedProject) {
-        repo.importedProject.importStatus = updatedProject.importStatus;
+        repo.importedProject = {
+          ...repo.importedProject,
+          stats: updatedProject.stats,
+          importStatus: updatedProject.importStatus,
+        };
       }
     });
   },

@@ -29,7 +29,7 @@ export default {
     <span :class="{ 'text-danger': issuesExceedMax }" data-testid="board-items-count">
       {{ itemsSize }}
     </span>
-    <span v-if="isMaxLimitSet" class="js-max-issue-size">
+    <span v-if="isMaxLimitSet" class="max-issue-size">
       {{ maxIssueCount }}
     </span>
   </div>

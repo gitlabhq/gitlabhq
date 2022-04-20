@@ -1,0 +1,10 @@
+{
+  "variables": {
+    "SOME_STR": "--batch-mode --errors --fail-at-end --show-version",
+    "SOME_INT": 10,
+    "SOME_USER_INPUT_FLAG": {
+      "value": "flag value",
+      "description": "Some Flag!"
+    }
+  }
+}

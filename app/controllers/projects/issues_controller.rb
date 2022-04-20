@@ -10,7 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
-  SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[calendar service_desk].freeze
+  SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
@@ -22,7 +22,9 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
-  before_action :set_issuables_index, if: ->(c) { SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) }
+  before_action :set_issuables_index, if: ->(c) {
+    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !vue_issues_list?
+  }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -37,18 +39,17 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:vue_issues_list, project&.group, default_enabled: :yaml)
-    push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:contacts_autocomplete, project&.group, default_enabled: :yaml)
-    push_frontend_feature_flag(:markdown_continue_lists, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:incident_timeline, project, default_enabled: :yaml)
   end
 
   before_action only: :show do
     push_frontend_feature_flag(:confidential_notes, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_issue_discussions, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:work_items, project&.group, default_enabled: :yaml)
+    push_frontend_feature_flag(:realtime_labels, project, default_enabled: :yaml)
+    push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -72,10 +73,9 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
-    if html_request? && Feature.enabled?(:vue_issues_list, project&.group, default_enabled: :yaml)
+    if vue_issues_list?
       set_sort_order
     else
-      set_issuables_index
       @issues = @issuables
     end
 
@@ -248,6 +248,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   protected
+
+  def vue_issues_list?
+    action_name.to_sym == :index &&
+      html_request? &&
+      Feature.enabled?(:vue_issues_list, project&.group, default_enabled: :yaml)
+  end
 
   def sorting_field
     Issue::SORTING_PREFERENCE_FIELD

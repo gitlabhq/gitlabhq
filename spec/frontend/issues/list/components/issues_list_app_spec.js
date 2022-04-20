@@ -452,13 +452,26 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('IssuableByEmail component', () => {
-    describe.each([true, false])(`when issue creation by email is enabled=%s`, (enabled) => {
-      it(`${enabled ? 'renders' : 'does not render'}`, () => {
-        wrapper = mountComponent({ provide: { initialEmail: enabled } });
+    describe.each`
+      initialEmail | hasAnyIssues | isSignedIn | exists
+      ${false}     | ${false}     | ${false}   | ${false}
+      ${false}     | ${true}      | ${false}   | ${false}
+      ${false}     | ${false}     | ${true}    | ${false}
+      ${false}     | ${true}      | ${true}    | ${false}
+      ${true}      | ${false}     | ${false}   | ${false}
+      ${true}      | ${true}      | ${false}   | ${false}
+      ${true}      | ${false}     | ${true}    | ${true}
+      ${true}      | ${true}      | ${true}    | ${true}
+    `(
+      `when issue creation by email is enabled=$initialEmail`,
+      ({ initialEmail, hasAnyIssues, isSignedIn, exists }) => {
+        it(`${initialEmail ? 'renders' : 'does not render'}`, () => {
+          wrapper = mountComponent({ provide: { initialEmail, hasAnyIssues, isSignedIn } });
 
-        expect(findIssuableByEmail().exists()).toBe(enabled);
-      });
-    });
+          expect(findIssuableByEmail().exists()).toBe(exists);
+        });
+      },
+    );
   });
 
   describe('empty states', () => {

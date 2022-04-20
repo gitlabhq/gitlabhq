@@ -53,13 +53,13 @@ module Gitlab
       # made globally available to the frontend
       push_frontend_feature_flag(:usage_data_api, type: :ops, default_enabled: :yaml)
       push_frontend_feature_flag(:security_auto_fix, default_enabled: false)
-      push_frontend_feature_flag(:improved_emoji_picker, default_enabled: :yaml)
       push_frontend_feature_flag(:new_header_search, default_enabled: :yaml)
       push_frontend_feature_flag(:bootstrap_confirmation_modals, default_enabled: :yaml)
       push_frontend_feature_flag(:sandboxed_mermaid, default_enabled: :yaml)
       push_frontend_feature_flag(:source_editor_toolbar, default_enabled: :yaml)
       push_frontend_feature_flag(:gl_avatar_for_all_user_avatars, default_enabled: :yaml)
       push_frontend_feature_flag(:mr_attention_requests, default_enabled: :yaml)
+      push_frontend_feature_flag(:markdown_continue_lists, default_enabled: :yaml)
     end
 
     # Exposes the state of a feature flag to the frontend code.
@@ -71,6 +71,15 @@ module Gitlab
       enabled = Feature.enabled?(name, *args, **kwargs)
 
       push_to_gon_attributes(:features, name, enabled)
+    end
+
+    # Exposes the state of a feature flag to the frontend code.
+    # Can be used for more complex feature flag checks.
+    #
+    # name - The name of the feature flag, e.g. `my_feature`.
+    # enabled - Boolean to be pushed directly to the frontend. Should be fetched by checking a feature flag.
+    def push_force_frontend_feature_flag(name, enabled)
+      push_to_gon_attributes(:features, name, !!enabled)
     end
 
     def push_to_gon_attributes(key, name, enabled)

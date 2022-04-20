@@ -218,65 +218,88 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   <div
     class="award-menu-holder gl-my-2"
   >
-    <button
-      aria-label="Add reaction"
-      class="btn add-reaction-button js-add-award btn-default btn-md gl-button js-test-add-button-class"
+    <div
+      class="emoji-picker"
+      data-testid="emoji-picker"
       title="Add reaction"
-      type="button"
     >
-      <!---->
-       
-      <!---->
-        
-      <span
-        class="gl-button-text"
+      <div
+        boundary="scrollParent"
+        class="dropdown b-dropdown gl-new-dropdown btn-group"
+        id="__BVID__13"
+        lazy=""
+        menu-class="dropdown-extended-height"
+        no-flip=""
       >
-        <span
-          class="reaction-control-icon reaction-control-icon-neutral"
+        <!---->
+        <button
+          aria-expanded="false"
+          aria-haspopup="true"
+          class="btn dropdown-toggle btn-default btn-md add-reaction-button btn-icon gl-relative! gl-button gl-dropdown-toggle btn-default-secondary"
+          id="__BVID__13__BV_toggle_"
+          type="button"
         >
-          <svg
-            aria-hidden="true"
-            class="gl-icon s16"
-            data-testid="slight-smile-icon"
-            role="img"
+          <span
+            class="gl-sr-only"
           >
-            <use
-              href="#slight-smile"
-            />
-          </svg>
-        </span>
-         
-        <span
-          class="reaction-control-icon reaction-control-icon-positive"
+            Add reaction
+          </span>
+           
+          <span
+            class="reaction-control-icon reaction-control-icon-neutral"
+          >
+            <svg
+              aria-hidden="true"
+              class="gl-icon s16"
+              data-testid="slight-smile-icon"
+              role="img"
+            >
+              <use
+                href="#slight-smile"
+              />
+            </svg>
+          </span>
+           
+          <span
+            class="reaction-control-icon reaction-control-icon-positive"
+          >
+            <svg
+              aria-hidden="true"
+              class="gl-icon s16"
+              data-testid="smiley-icon"
+              role="img"
+            >
+              <use
+                href="#smiley"
+              />
+            </svg>
+          </span>
+           
+          <span
+            class="reaction-control-icon reaction-control-icon-super-positive"
+          >
+            <svg
+              aria-hidden="true"
+              class="gl-icon s16"
+              data-testid="smile-icon"
+              role="img"
+            >
+              <use
+                href="#smile"
+              />
+            </svg>
+          </span>
+        </button>
+        <ul
+          aria-labelledby="__BVID__13__BV_toggle_"
+          class="dropdown-menu dropdown-extended-height dropdown-menu-right"
+          role="menu"
+          tabindex="-1"
         >
-          <svg
-            aria-hidden="true"
-            class="gl-icon s16"
-            data-testid="smiley-icon"
-            role="img"
-          >
-            <use
-              href="#smiley"
-            />
-          </svg>
-        </span>
-         
-        <span
-          class="reaction-control-icon reaction-control-icon-super-positive"
-        >
-          <svg
-            aria-hidden="true"
-            class="gl-icon s16"
-            data-testid="smile-icon"
-            role="img"
-          >
-            <use
-              href="#smile"
-            />
-          </svg>
-        </span>
-      </span>
-    </button>
+          <!---->
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
 `;

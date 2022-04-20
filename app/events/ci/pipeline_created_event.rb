@@ -5,6 +5,7 @@ module Ci
     def schema
       {
         'type' => 'object',
+        'required' => ['pipeline_id'],
         'properties' => {
           'pipeline_id' => { 'type' => 'integer' }
         }

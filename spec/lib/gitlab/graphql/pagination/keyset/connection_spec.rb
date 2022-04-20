@@ -77,6 +77,17 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       expect(decoded_cursor(cursor)).to eq('id' => project.id.to_s)
     end
 
+    context 'when SimpleOrderBuilder cannot build keyset paginated query' do
+      it 'increments the `old_keyset_pagination_usage` counter', :prometheus do
+        expect(Gitlab::Pagination::Keyset::SimpleOrderBuilder).to receive(:build).and_return([false, nil])
+
+        decoded_cursor(cursor)
+
+        counter = Gitlab::Metrics.registry.get(:old_keyset_pagination_usage)
+        expect(counter.get(model: 'Project')).to eq(1)
+      end
+    end
+
     context 'when an order is specified' do
       let(:nodes) { Project.order(:updated_at) }
 
@@ -222,66 +233,6 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       end
     end
 
-    context 'when multiple orders with nil values are defined' do
-      let!(:project1) { create(:project, last_repository_check_at: 10.days.ago) }    # Asc: project5  Desc: project3
-      let!(:project2) { create(:project, last_repository_check_at: nil) }            # Asc: project1  Desc: project1
-      let!(:project3) { create(:project, last_repository_check_at: 5.days.ago) }     # Asc: project3  Desc: project5
-      let!(:project4) { create(:project, last_repository_check_at: nil) }            # Asc: project2  Desc: project2
-      let!(:project5) { create(:project, last_repository_check_at: 20.days.ago) }    # Asc: project4  Desc: project4
-
-      context 'when ascending' do
-        let(:nodes) do
-          Project.order(Arel.sql('projects.last_repository_check_at IS NULL')).order(last_repository_check_at: :asc).order(id: :asc)
-        end
-
-        let(:ascending_nodes) { [project5, project1, project3, project2, project4] }
-
-        it_behaves_like 'nodes are in ascending order'
-
-        context 'when before cursor value is NULL' do
-          let(:arguments) { { before: encoded_cursor(project4) } }
-
-          it 'returns all projects before the cursor' do
-            expect(subject.sliced_nodes).to eq([project5, project1, project3, project2])
-          end
-        end
-
-        context 'when after cursor value is NULL' do
-          let(:arguments) { { after: encoded_cursor(project2) } }
-
-          it 'returns all projects after the cursor' do
-            expect(subject.sliced_nodes).to eq([project4])
-          end
-        end
-      end
-
-      context 'when descending' do
-        let(:nodes) do
-          Project.order(Arel.sql('projects.last_repository_check_at IS NULL')).order(last_repository_check_at: :desc).order(id: :asc)
-        end
-
-        let(:descending_nodes) { [project3, project1, project5, project2, project4] }
-
-        it_behaves_like 'nodes are in descending order'
-
-        context 'when before cursor value is NULL' do
-          let(:arguments) { { before: encoded_cursor(project4) } }
-
-          it 'returns all projects before the cursor' do
-            expect(subject.sliced_nodes).to eq([project3, project1, project5, project2])
-          end
-        end
-
-        context 'when after cursor value is NULL' do
-          let(:arguments) { { after: encoded_cursor(project2) } }
-
-          it 'returns all projects after the cursor' do
-            expect(subject.sliced_nodes).to eq([project4])
-          end
-        end
-      end
-    end
-
     context 'when ordering uses LOWER' do
       let!(:project1) { create(:project, name: 'A') } # Asc: project1  Desc: project4
       let!(:project2) { create(:project, name: 'c') } # Asc: project5  Desc: project2
@@ -307,6 +258,72 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let(:descending_nodes) { [project4, project2, project3, project5, project1] }
 
         it_behaves_like 'nodes are in descending order'
+      end
+    end
+
+    context 'NULLS order' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:issue1) { create(:issue, relative_position: nil) }
+      let_it_be(:issue2) { create(:issue, relative_position: 100) }
+      let_it_be(:issue3) { create(:issue, relative_position: 200) }
+      let_it_be(:issue4) { create(:issue, relative_position: nil) }
+      let_it_be(:issue5) { create(:issue, relative_position: 300) }
+
+      context 'when ascending NULLS LAST (ties broken by id DESC implicitly)' do
+        let(:ascending_nodes) { [issue2, issue3, issue5, issue4, issue1] }
+
+        where(:nodes) do
+          [
+            lazy { Issue.order(Issue.arel_table[:relative_position].asc.nulls_last) }
+          ]
+        end
+
+        with_them do
+          it_behaves_like 'nodes are in ascending order'
+        end
+      end
+
+      context 'when descending NULLS LAST (ties broken by id DESC implicitly)' do
+        let(:descending_nodes) { [issue5, issue3, issue2, issue4, issue1] }
+
+        where(:nodes) do
+          [
+            lazy { Issue.order(Issue.arel_table[:relative_position].desc.nulls_last) }
+]
+        end
+
+        with_them do
+          it_behaves_like 'nodes are in descending order'
+        end
+      end
+
+      context 'when ascending NULLS FIRST with a tie breaker' do
+        let(:ascending_nodes) { [issue1, issue4, issue2, issue3, issue5] }
+
+        where(:nodes) do
+          [
+            lazy { Issue.order(Issue.arel_table[:relative_position].asc.nulls_first).order(id: :asc) }
+]
+        end
+
+        with_them do
+          it_behaves_like 'nodes are in ascending order'
+        end
+      end
+
+      context 'when descending NULLS FIRST with a tie breaker' do
+        let(:descending_nodes) { [issue1, issue4, issue5, issue3, issue2] }
+
+        where(:nodes) do
+          [
+            lazy { Issue.order(Issue.arel_table[:relative_position].desc.nulls_first).order(id: :asc) }
+]
+        end
+
+        with_them do
+          it_behaves_like 'nodes are in descending order'
+        end
       end
     end
 

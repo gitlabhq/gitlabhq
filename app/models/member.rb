@@ -22,6 +22,7 @@ class Member < ApplicationRecord
   STATE_AWAITING = 1
 
   attr_accessor :raw_invite_token
+  attr_writer :blocking_refresh
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
@@ -65,10 +66,10 @@ class Member < ApplicationRecord
 
   scope :in_hierarchy, ->(source) do
     groups = source.root_ancestor.self_and_descendants
-    group_members = Member.default_scoped.where(source: groups)
+    group_members = Member.default_scoped.where(source: groups).select(*Member.cached_column_list)
 
     projects = source.root_ancestor.all_projects
-    project_members = Member.default_scoped.where(source: projects)
+    project_members = Member.default_scoped.where(source: projects).select(*Member.cached_column_list)
 
     Member.default_scoped.from_union([
       group_members,
@@ -177,10 +178,14 @@ class Member < ApplicationRecord
     unscoped.from(distinct_members, :members)
   end
 
-  scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
-  scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
-  scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
-  scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
+  scope :order_name_asc, -> { left_join_users.reorder(User.arel_table[:name].asc.nulls_last) }
+  scope :order_name_desc, -> { left_join_users.reorder(User.arel_table[:name].desc.nulls_last) }
+  scope :order_recent_sign_in, -> { left_join_users.reorder(User.arel_table[:last_sign_in_at].desc.nulls_last) }
+  scope :order_oldest_sign_in, -> { left_join_users.reorder(User.arel_table[:last_sign_in_at].asc.nulls_last) }
+  scope :order_recent_last_activity, -> { left_join_users.reorder(User.arel_table[:last_activity_on].desc.nulls_last) }
+  scope :order_oldest_last_activity, -> { left_join_users.reorder(User.arel_table[:last_activity_on].asc.nulls_first) }
+  scope :order_recent_created_user, -> { left_join_users.reorder(User.arel_table[:created_at].desc.nulls_last) }
+  scope :order_oldest_created_user, -> { left_join_users.reorder(User.arel_table[:created_at].asc.nulls_first) }
 
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
@@ -197,7 +202,7 @@ class Member < ApplicationRecord
   after_save :log_invitation_token_cleanup
 
   after_commit on: [:create, :update], unless: :importing? do
-    refresh_member_authorized_projects(blocking: true)
+    refresh_member_authorized_projects(blocking: blocking_refresh)
   end
 
   after_commit on: [:destroy], unless: :importing? do
@@ -232,6 +237,10 @@ class Member < ApplicationRecord
       when 'access_level_desc' then reorder(access_level: :desc)
       when 'recent_sign_in' then order_recent_sign_in
       when 'oldest_sign_in' then order_oldest_sign_in
+      when 'recent_created_user' then order_recent_created_user
+      when 'oldest_created_user' then order_oldest_created_user
+      when 'recent_last_activity' then order_recent_last_activity
+      when 'oldest_last_activity' then order_oldest_last_activity
       when 'last_joined' then order_created_desc
       when 'oldest_joined' then order_created_asc
       else
@@ -504,6 +513,13 @@ class Member < ApplicationRecord
 
     error = StandardError.new("Invitation token is present but invite was already accepted!")
     Gitlab::ErrorTracking.track_exception(error, attributes.slice(%w["invite_accepted_at created_at source_type source_id user_id id"]))
+  end
+
+  def blocking_refresh
+    return true unless Feature.enabled?(:allow_non_blocking_member_refresh, default_enabled: :yaml)
+    return true if @blocking_refresh.nil?
+
+    @blocking_refresh
   end
 end
 

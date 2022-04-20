@@ -76,7 +76,7 @@ describe('vue_shared/components/awards_list', () => {
         count: Number(x.find('.js-counter').text()),
       };
     });
-  const findAddAwardButton = () => wrapper.find('.js-add-award');
+  const findAddAwardButton = () => wrapper.find('[data-testid="emoji-picker"]');
 
   describe('default', () => {
     beforeEach(() => {
@@ -151,7 +151,6 @@ describe('vue_shared/components/awards_list', () => {
       const btn = findAddAwardButton();
 
       expect(btn.exists()).toBe(true);
-      expect(btn.classes(TEST_ADD_BUTTON_CLASS)).toBe(true);
     });
   });
 

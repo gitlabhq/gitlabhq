@@ -14,7 +14,7 @@
 
   .settings-content
     - if mirror_settings_enabled
-      = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
+      = gitlab_ui_form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
         .panel.panel-default
           .panel-body
             %div= form_errors(@project)
@@ -37,9 +37,7 @@
           .panel-footer
             = f.submit _('Mirror repository'), class: 'gl-button btn btn-confirm js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror
     - else
-      = render 'shared/global_alert',
-        dismissible: false,
-        variant: :info do
+      = render Pajamas::AlertComponent.new(dismissible: false) do
         .gl-alert-body
           = _('Mirror settings are only available to GitLab administrators.')
 

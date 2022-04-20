@@ -16,14 +16,14 @@
 qa:internal:
   extends:
     - .qa-job-base
-    - .qa:rules:ee-and-foss
+    - .qa:rules:internal
   script:
-    - bundle exec rspec
+    - bundle exec rspec -O .rspec_internal
 
 qa:internal-as-if-foss:
   extends:
     - qa:internal
-    - .qa:rules:as-if-foss
+    - .qa:rules:internal-as-if-foss
     - .as-if-foss
 
 qa:selectors:
@@ -33,14 +33,24 @@ qa:selectors:
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
 
-qa:auto_quarantine:
+qa:master-auto-quarantine-dequarantine:
   extends:
     - .qa-job-base
   rules:
     - if: '$QA_TRIGGER_AUTO_QUARANTINE =~ /true|yes|1/i'
   script:
-    - bundle exec confiner -r .confiner/quarantine.yml
+    - bundle exec confiner -r .confiner/master.yml
   allow_failure: true
+
+qa:nightly-auto-quarantine-dequarantine:
+  extends:
+    - .qa-job-base
+  rules:
+    - if: '$QA_TRIGGER_AUTO_QUARANTINE =~ /true|yes|1/i'
+  script:
+    - bundle exec confiner -r .confiner/nightly.yml
+  allow_failure: true
+
 
 qa:selectors-as-if-foss:
   extends:

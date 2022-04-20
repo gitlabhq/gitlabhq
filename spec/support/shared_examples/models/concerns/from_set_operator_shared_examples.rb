@@ -20,6 +20,12 @@ RSpec.shared_examples 'from set operator' do |sql_klass|
       expect(query.to_sql).to match(/FROM \(\(SELECT.+\)\n#{operator_keyword}\n\(SELECT.+\)\) users/m)
     end
 
+    it "returns empty set when passing empty array" do
+      query = model.public_send(operator_method, [])
+
+      expect(query.to_sql).to match(/WHERE \(1=0\)/m)
+    end
+
     it 'supports the use of a custom alias for the sub query' do
       query = model.public_send(operator_method,
         [model.where(id: 1), model.where(id: 2)],

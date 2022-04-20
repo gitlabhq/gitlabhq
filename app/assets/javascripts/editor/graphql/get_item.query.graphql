@@ -1,0 +1,9 @@
+query ToolbarItem($id: String!) {
+  item(id: $id) @client {
+    id
+    label
+    icon
+    selected
+    group
+  }
+}

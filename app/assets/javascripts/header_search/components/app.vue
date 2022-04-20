@@ -11,6 +11,7 @@ import {
   SEARCH_BOX_INDEX,
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
+  SEARCH_SHORTCUTS_MIN_CHARACTERS,
 } from '../constants';
 import HeaderSearchAutocompleteItems from './header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from './header_search_default_items.vue';
@@ -50,7 +51,7 @@ export default {
   },
   computed: {
     ...mapState(['search', 'loading']),
-    ...mapGetters(['searchQuery', 'searchOptions']),
+    ...mapGetters(['searchQuery', 'searchOptions', 'autocompleteGroupedSearchOptions']),
     searchText: {
       get() {
         return this.search;
@@ -66,13 +67,19 @@ export default {
       return this.currentFocusedOption?.html_id;
     },
     isLoggedIn() {
-      return gon?.current_username;
+      return Boolean(gon?.current_username);
     },
     showSearchDropdown() {
-      return this.showDropdown && this.isLoggedIn;
+      const hasResultsUnderMinCharacters =
+        this.searchText?.length === 1 ? this?.autocompleteGroupedSearchOptions?.length > 0 : true;
+
+      return this.showDropdown && this.isLoggedIn && hasResultsUnderMinCharacters;
     },
     showDefaultItems() {
       return !this.searchText;
+    },
+    showShortcuts() {
+      return this.searchText && this.searchText?.length >= SEARCH_SHORTCUTS_MIN_CHARACTERS;
     },
     defaultIndex() {
       if (this.showDefaultItems) {
@@ -105,6 +112,9 @@ export default {
             count: this.searchOptions.length,
           });
     },
+    headerSearchActivityDescriptor() {
+      return this.showDropdown ? 'is-active' : 'is-not-active';
+    },
   },
   methods: {
     ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
@@ -136,13 +146,15 @@ export default {
     v-outside="closeDropdown"
     role="search"
     :aria-label="$options.i18n.searchGitlab"
-    class="header-search gl-relative"
+    class="header-search gl-relative gl-rounded-base"
+    :class="headerSearchActivityDescriptor"
   >
     <gl-search-box-by-type
       id="search"
       v-model="searchText"
       role="searchbox"
       class="gl-z-index-1"
+      data-qa-selector="search_term_field"
       autocomplete="off"
       :placeholder="$options.i18n.searchGitlab"
       :aria-activedescendant="currentFocusedId"
@@ -182,7 +194,10 @@ export default {
           :current-focused-option="currentFocusedOption"
         />
         <template v-else>
-          <header-search-scoped-items :current-focused-option="currentFocusedOption" />
+          <header-search-scoped-items
+            v-if="showShortcuts"
+            :current-focused-option="currentFocusedOption"
+          />
           <header-search-autocomplete-items :current-focused-option="currentFocusedOption" />
         </template>
       </div>

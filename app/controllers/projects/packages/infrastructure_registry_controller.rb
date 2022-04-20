@@ -9,7 +9,6 @@ module Projects
 
       def show
         @package = project.packages.find(params[:id])
-        @package_files = @package.installable_package_files.recent
       end
     end
   end

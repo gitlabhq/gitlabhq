@@ -2,9 +2,7 @@
 - default_ref = params[:ref] || @project.default_branch
 
 - if @error
-  = render 'shared/global_alert',
-    variant: :danger,
-    close_button_class: 'js-close' do
+  = render Pajamas::AlertComponent.new(variant: :danger) do
     .gl-alert-body
       = @error
 %h3.page-title

@@ -1,4 +1,4 @@
-import { parseIntPagination, normalizeHeaders } from '../../lib/utils/common_utils';
+import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 
 export default class PipelinesStore {
   constructor() {

@@ -42,11 +42,11 @@ audit_events: :gitlab_main
 authentication_events: :gitlab_main
 award_emoji: :gitlab_main
 aws_roles: :gitlab_main
-background_migration_jobs: :gitlab_main
+background_migration_jobs: :gitlab_shared
 badges: :gitlab_main
 banned_users: :gitlab_main
-batched_background_migration_jobs: :gitlab_main
-batched_background_migrations: :gitlab_main
+batched_background_migration_jobs: :gitlab_shared
+batched_background_migrations: :gitlab_shared
 board_assignees: :gitlab_main
 board_group_recent_visits: :gitlab_main
 board_labels: :gitlab_main
@@ -240,6 +240,7 @@ group_deletion_schedules: :gitlab_main
 group_deploy_keys: :gitlab_main
 group_deploy_keys_groups: :gitlab_main
 group_deploy_tokens: :gitlab_main
+group_features: :gitlab_main
 group_group_links: :gitlab_main
 group_import_states: :gitlab_main
 group_merge_request_approval_settings: :gitlab_main
@@ -393,7 +394,7 @@ postgres_indexes: :gitlab_shared
 postgres_partitioned_tables: :gitlab_shared
 postgres_partitions: :gitlab_shared
 postgres_reindex_actions: :gitlab_shared
-postgres_reindex_queued_actions: :gitlab_main
+postgres_reindex_queued_actions: :gitlab_shared
 product_analytics_events_experimental: :gitlab_main
 programming_languages: :gitlab_main
 project_access_tokens: :gitlab_main
@@ -435,6 +436,7 @@ protected_branches: :gitlab_main
 protected_branch_merge_access_levels: :gitlab_main
 protected_branch_push_access_levels: :gitlab_main
 protected_branch_unprotect_access_levels: :gitlab_main
+protected_environment_approval_rules: :gitlab_main
 protected_environment_deploy_access_levels: :gitlab_main
 protected_environments: :gitlab_main
 protected_tag_create_access_levels: :gitlab_main
@@ -558,4 +560,4 @@ x509_commit_signatures: :gitlab_main
 x509_issuers: :gitlab_main
 zentao_tracker_data: :gitlab_main
 zoom_meetings: :gitlab_main
-batched_background_migration_job_transition_logs: :gitlab_main
+batched_background_migration_job_transition_logs: :gitlab_shared

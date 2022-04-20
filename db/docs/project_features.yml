@@ -1,0 +1,9 @@
+---
+table_name: project_features
+classes:
+- ProjectFeature
+feature_categories:
+- projects
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/892dea67717c0efbd6a28f7639f34535ec0a8747
+milestone: '8.12'

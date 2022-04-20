@@ -1,6 +1,5 @@
 - if domain_presenter.errors.any?
-  .gl-alert.gl-alert-danger
-    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+  = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do
     - domain_presenter.errors.full_messages.each do |msg|
       = msg
 

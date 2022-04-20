@@ -57,9 +57,9 @@ export default {
     text: s__('ProjectTemplates|Pages/Hexo'),
     icon: '.template-option .icon-hexo',
   },
-  sse_middleman: {
-    text: s__('ProjectTemplates|Static Site Editor/Middleman'),
-    icon: '.template-option .icon-sse_middleman',
+  middleman: {
+    text: s__('ProjectTemplates|Pages/Middleman'),
+    icon: '.template-option .icon-middleman',
   },
   gitpod_spring_petclinic: {
     text: s__('ProjectTemplates|Gitpod/Spring Petclinic'),

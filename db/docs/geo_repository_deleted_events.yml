@@ -1,0 +1,9 @@
+---
+table_name: geo_repository_deleted_events
+classes:
+- Geo::RepositoryDeletedEvent
+feature_categories:
+- geo_replication
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/04c3da24ac5975b140cf2e6a7e33414543f148f5
+milestone: '9.4'

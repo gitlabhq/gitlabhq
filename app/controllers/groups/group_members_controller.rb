@@ -20,10 +20,13 @@ class Groups::GroupMembersController < Groups::ApplicationController
                                   :approve_access_request, :leave, :resend_invite,
                                   :override
 
-  feature_category :authentication_and_authorization
+  feature_category :subgroups
 
   def index
+    push_frontend_feature_flag(:group_member_inherited_group, @group)
+
     @sort = params[:sort].presence || sort_value_name
+    @include_relations ||= requested_relations
 
     if can?(current_user, :admin_group_member, @group)
       @invited_members = invited_members

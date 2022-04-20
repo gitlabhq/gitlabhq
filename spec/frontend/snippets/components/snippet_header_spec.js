@@ -8,7 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
-import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
+import DeleteSnippetMutation from '~/snippets/mutations/delete_snippet.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
 import createFlash, { FLASH_TYPES } from '~/flash';
 

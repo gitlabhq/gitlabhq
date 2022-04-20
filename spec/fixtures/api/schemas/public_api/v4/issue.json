@@ -86,6 +86,7 @@
     "due_date": { "type": ["string", "null"] },
     "confidential": { "type": "boolean" },
     "web_url": { "type": "uri" },
+    "severity": { "type": "string", "enum": ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"] },
     "time_stats": {
       "time_estimate": { "type": "integer" },
       "total_time_spent": { "type": "integer" },

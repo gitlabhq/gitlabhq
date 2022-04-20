@@ -6,13 +6,13 @@ RSpec.describe Preloaders::Environments::DeploymentPreloader do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository) }
 
-  let_it_be(:pipeline) { create(:ci_pipeline, user: user, project: project, sha: project.commit.sha) }
-  let_it_be(:ci_build_a) { create(:ci_build, user: user, project: project, pipeline: pipeline) }
-  let_it_be(:ci_build_b) { create(:ci_build, user: user, project: project, pipeline: pipeline) }
-  let_it_be(:ci_build_c) { create(:ci_build, user: user, project: project, pipeline: pipeline) }
-
   let_it_be(:environment_a) { create(:environment, project: project, state: :available) }
   let_it_be(:environment_b) { create(:environment, project: project, state: :available) }
+
+  let_it_be(:pipeline) { create(:ci_pipeline, user: user, project: project, sha: project.commit.sha) }
+  let_it_be(:ci_build_a) { create(:ci_build, user: user, project: project, pipeline: pipeline, environment: environment_a.name) }
+  let_it_be(:ci_build_b) { create(:ci_build, user: user, project: project, pipeline: pipeline, environment: environment_a.name) }
+  let_it_be(:ci_build_c) { create(:ci_build, user: user, project: project, pipeline: pipeline, environment: environment_b.name) }
 
   before do
     create(:deployment, :success, project: project, environment: environment_a, deployable: ci_build_a)

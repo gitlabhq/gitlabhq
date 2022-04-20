@@ -13,7 +13,7 @@ import httpStatusCodes from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
-import notesEventHub from '../../notes/event_hub';
+import notesEventHub from '~/notes/event_hub';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -376,9 +376,7 @@ export const setInlineDiffViewType = ({ commit }) => {
   const url = mergeUrlParams({ view: INLINE_DIFF_VIEW_TYPE }, window.location.href);
   historyPushState(url);
 
-  if (window.gon?.features?.diffSettingsUsageData) {
-    queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_INLINE]);
-  }
+  queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_INLINE]);
 };
 
 export const setParallelDiffViewType = ({ commit }) => {
@@ -388,9 +386,7 @@ export const setParallelDiffViewType = ({ commit }) => {
   const url = mergeUrlParams({ view: PARALLEL_DIFF_VIEW_TYPE }, window.location.href);
   historyPushState(url);
 
-  if (window.gon?.features?.diffSettingsUsageData) {
-    queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_PARALLEL]);
-  }
+  queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_PARALLEL]);
 };
 
 export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
@@ -576,7 +572,7 @@ export const setRenderTreeList = ({ commit }, { renderTreeList, trackClick = tru
 
   localStorage.setItem(TREE_LIST_STORAGE_KEY, renderTreeList);
 
-  if (window.gon?.features?.diffSettingsUsageData && trackClick) {
+  if (trackClick) {
     const events = [TRACKING_CLICK_FILE_BROWSER_SETTING];
 
     if (renderTreeList) {
@@ -600,7 +596,7 @@ export const setShowWhitespace = async (
   commit(types.SET_SHOW_WHITESPACE, showWhitespace);
   notesEventHub.$emit('refetchDiffData');
 
-  if (window.gon?.features?.diffSettingsUsageData && trackClick) {
+  if (trackClick) {
     const events = [TRACKING_CLICK_WHITESPACE_SETTING];
 
     if (showWhitespace) {
@@ -827,17 +823,15 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
 export const setFileByFile = ({ state, commit }, { fileByFile }) => {
   commit(types.SET_FILE_BY_FILE, fileByFile);
 
-  if (window.gon?.features?.diffSettingsUsageData) {
-    const events = [TRACKING_CLICK_SINGLE_FILE_SETTING];
+  const events = [TRACKING_CLICK_SINGLE_FILE_SETTING];
 
-    if (fileByFile) {
-      events.push(TRACKING_SINGLE_FILE_MODE);
-    } else {
-      events.push(TRACKING_MULTIPLE_FILES_MODE);
-    }
-
-    queueRedisHllEvents(events);
+  if (fileByFile) {
+    events.push(TRACKING_SINGLE_FILE_MODE);
+  } else {
+    events.push(TRACKING_MULTIPLE_FILES_MODE);
   }
+
+  queueRedisHllEvents(events);
 
   return axios
     .put(state.endpointUpdateUser, {

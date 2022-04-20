@@ -34,8 +34,9 @@ describe('Incident Tabs component', () => {
           provide: {
             fullPath: '',
             iid: '',
+            projectId: '',
             uploadMetricsFeatureAvailable: true,
-            glFeatures: { incidentTimelineEventTab: true, incidentTimelineEvents: true },
+            glFeatures: { incidentTimeline: true, incidentTimelineEvents: true },
           },
           data() {
             return { alert: mockAlert, ...data };
@@ -57,7 +58,6 @@ describe('Incident Tabs component', () => {
 
   const findTabs = () => wrapper.findAll(GlTab);
   const findSummaryTab = () => findTabs().at(0);
-  const findMetricsTab = () => wrapper.find('[data-testid="metrics-tab"]');
   const findAlertDetailsTab = () => wrapper.find('[data-testid="alert-details-tab"]');
   const findAlertDetailsComponent = () => wrapper.find(AlertDetailsTable);
   const findDescriptionComponent = () => wrapper.find(DescriptionComponent);
@@ -108,20 +108,6 @@ describe('Incident Tabs component', () => {
 
     it('passes all props to the description component', () => {
       expect(findDescriptionComponent().props()).toMatchObject(descriptionProps);
-    });
-  });
-
-  describe('upload metrics feature available', () => {
-    it('shows the metric tab when metrics are available', () => {
-      mountComponent({}, { provide: { uploadMetricsFeatureAvailable: true } });
-
-      expect(findMetricsTab().exists()).toBe(true);
-    });
-
-    it('hides the tab when metrics are not available', () => {
-      mountComponent({}, { provide: { uploadMetricsFeatureAvailable: false } });
-
-      expect(findMetricsTab().exists()).toBe(false);
     });
   });
 

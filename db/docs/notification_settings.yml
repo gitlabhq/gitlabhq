@@ -1,0 +1,9 @@
+---
+table_name: notification_settings
+classes:
+- NotificationSetting
+feature_categories:
+- team_planning
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/31b0e53015e38e51d9c02cca85c9279600b1bf85
+milestone: '8.7'

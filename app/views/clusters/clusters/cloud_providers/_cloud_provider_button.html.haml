@@ -1,12 +1,15 @@
 - provider = local_assigns.fetch(:provider)
 - is_current_provider = provider == params[:provider]
 - logo_path = local_assigns.fetch(:logo_path)
+- help_path = local_assigns.fetch(:help_path)
 - label = local_assigns.fetch(:label)
 - last = local_assigns.fetch(:last, false)
-- classes = ["btn btn-confirm gl-button btn-confirm-secondary gl-flex-direction-column gl-w-half js-create-#{provider}-cluster-button"]
-- conditional_classes = [('gl-mr-5' unless last), ('active' if is_current_provider)]
+- docs_mode = local_assigns.fetch(:docs_mode, false)
+- classes = ["btn btn-confirm gl-button btn-confirm-secondary gl-flex-direction-column gl-w-half"]
+- conditional_classes = [("gl-mr-5" unless last), ("active" if is_current_provider && !docs_mode), ("js-create-#{provider}-cluster-button" if !docs_mode)]
+- link = docs_mode ? help_path : clusterable.new_path(provider: provider)
 
-= link_to clusterable.new_path(provider: provider), class: classes + conditional_classes do
-  .svg-content.gl-p-3= image_tag logo_path, alt: label, class: 'gl-w-64 gl-h-64'
+= link_to link, class: classes + conditional_classes do
+  .svg-content.gl-p-3= image_tag logo_path, alt: label, class: "gl-w-64 gl-h-64"
   %span
     = label

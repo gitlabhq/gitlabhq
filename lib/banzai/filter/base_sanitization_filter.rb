@@ -39,6 +39,9 @@ module Banzai
           allowlist[:attributes][:all].delete('name')
           allowlist[:attributes]['a'].push('name')
 
+          allowlist[:attributes]['img'].push('data-diagram')
+          allowlist[:attributes]['img'].push('data-diagram-src')
+
           # Allow any protocol in `a` elements
           # and then remove links with unsafe protocols
           allowlist[:protocols].delete('a')

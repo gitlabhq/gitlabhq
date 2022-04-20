@@ -48,8 +48,8 @@ After the job succeeds, code intelligence data can be viewed while browsing the 
 
 ## Find references
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217392) in GitLab 13.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235735) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217392) in GitLab 13.2 [with a flag](../../administration/feature_flags.md) named `code_navigation_references`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/225621) in GitLab 13.3. Feature flag `code_navigation_references` removed.
 
 To find where a particular object is being used, you can see links to specific lines of code
 under the **References** tab:

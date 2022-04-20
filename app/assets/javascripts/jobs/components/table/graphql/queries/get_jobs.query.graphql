@@ -3,6 +3,7 @@ query getJobs($fullPath: ID!, $after: String, $statuses: [CiJobStatus!]) {
     id
     __typename
     jobs(after: $after, first: 30, statuses: $statuses) {
+      count
       pageInfo {
         endCursor
         hasNextPage

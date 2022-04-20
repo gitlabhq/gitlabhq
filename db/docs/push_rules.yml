@@ -1,0 +1,9 @@
+---
+table_name: push_rules
+classes:
+- PushRule
+feature_categories:
+- compliance_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1b98b5ab97ce3e9997df542059cbf3c6ce0bf0e1
+milestone: '8.10'

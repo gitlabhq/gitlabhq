@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
         max_batch_size: 10000,
         sub_batch_size: 10,
         job_arguments: %w[],
-        status: 'active',
+        status_name: :active,
         total_tuple_count: pgclass_info.cardinality_estimate)
     end
 

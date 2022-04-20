@@ -90,6 +90,7 @@ Caddy
 callstack
 callstacks
 Camo
+canonicalization
 canonicalized
 captcha
 CentOS
@@ -517,6 +518,7 @@ reinitialize
 reinitializing
 relicensing
 remediations
+renderers
 replicables
 repmgr
 repmgrd
@@ -524,6 +526,7 @@ repurposing
 requeue
 requeued
 requeues
+requeuing
 Restlet
 resync
 resynced
@@ -576,7 +579,6 @@ severities
 sharded
 sharding
 shfmt
-Shibboleth
 Shimo
 Shopify
 Sidekiq
@@ -594,6 +596,7 @@ Sobelow
 Solargraph
 Solarized
 Sourcegraph
+spammable
 sparkline
 sparklines
 spidering
@@ -645,6 +648,8 @@ subtrees
 sudo
 supercookie
 supercookies
+superset
+supersets
 supertype
 supertypes
 swappiness

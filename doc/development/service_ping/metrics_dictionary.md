@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Metrics Dictionary Guide
 
 [Service Ping](index.md) metrics are defined in individual YAML files definitions from which the
-[Metrics Dictionary](https://metrics.gitlab.com/) is built.
+[Metrics Dictionary](https://metrics.gitlab.com/) is built. Currently, the metrics dictionary is built automatically once a day. When a change to a metric is made in a YAML file, you can see the change in the dictionary within 24 hours.
 This guide describes the dictionary and how it's implemented.
 
 ## Metrics Definition and validation
@@ -95,7 +95,7 @@ return to the instrumentation and update it.
 
 1. Add the metric instrumentation class to `lib/gitlab/usage/metrics/instrumentations/`.
 1. Add the metric logic in the instrumentation class.
-1. Run the [metrics YAML generator](metrics_dictionary.md#metrics-definition-and-validation).
+1. Run the [metrics YAML generator](metrics_dictionary.md#create-a-new-metric-definition).
 1. Use the metric name suggestion to select a suitable metric name.
 1. Update the metric's YAML definition with the correct `key_path`.
 

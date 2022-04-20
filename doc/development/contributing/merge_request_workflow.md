@@ -144,7 +144,7 @@ document from the Kubernetes team also has some great points regarding this.
 
 ### Commit messages guidelines
 
-Commit messages should follow the guidelines below, for reasons explained by Chris Beams in [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/):
+Commit messages should follow the guidelines below, for reasons explained by Chris Beams in [How to Write a Git Commit Message](https://cbea.ms/git-commit/):
 
 - The commit subject and body must be separated by a blank line.
 - The commit subject must start with a capital letter.
@@ -203,7 +203,7 @@ Example commit message template that can be used on your machine that embodies t
 #    Do not use Emojis
 #    Use the body to explain what and why vs. how
 #    Can use multiple lines with "-" for bullet points in body
-#    For more information: https://chris.beams.io/posts/git-commit/
+#    For more information: https://cbea.ms/git-commit/
 # --------------------
 ```
 
@@ -286,8 +286,8 @@ requirements.
 ### Production use
 
 1. Confirmed to be working in staging before implementing the change in production, where possible.
-1. Confirmed to be working in the production with no new [Sentry](https://about.gitlab.com/handbook/engineering/#sentry) errors after the contribution is deployed.
-1. Confirmed that the [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans) has been completed.
+1. Confirmed to be working in the production with no new [Sentry](https://about.gitlab.com/handbook/engineering/monitoring/#sentry) errors after the contribution is deployed.
+1. Confirmed that the [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans/) has been completed.
 1. If there is a performance risk in the change, I have analyzed the performance of the system before and after the change.
 1. *If the merge request uses feature flags, per-project or per-group enablement, and a staged rollout:*
    - Confirmed to be working on GitLab projects.

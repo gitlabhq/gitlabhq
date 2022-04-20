@@ -476,9 +476,6 @@ describe('AlertsSettingsWrapper', () => {
       destroyHttpIntegration(wrapper);
 
       expect(destroyIntegrationHandler).toHaveBeenCalled();
-      await waitForPromises();
-
-      expect(findIntegrations()).toHaveLength(3);
     });
 
     it('displays flash if mutation had a recoverable error', async () => {

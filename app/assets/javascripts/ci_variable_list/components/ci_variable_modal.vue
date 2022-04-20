@@ -405,7 +405,7 @@ export default {
       <gl-button
         ref="updateOrAddVariable"
         :disabled="!canSubmit"
-        variant="success"
+        variant="confirm"
         category="primary"
         data-qa-selector="ci_variable_save_button"
         @click="updateOrAddVariable"

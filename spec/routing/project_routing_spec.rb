@@ -905,6 +905,13 @@ RSpec.describe 'project routing' do
       )
     end
 
+    it 'routes to 404 without format for invalid page' do
+      expect(get: "/gitlab/gitlabhq/-/metrics/invalid_page.md").to route_to(
+        'application#route_not_found',
+        unmatched_route: 'gitlab/gitlabhq/-/metrics/invalid_page.md'
+      )
+    end
+
     it 'routes to 404 with invalid dashboard_path' do
       expect(get: "/gitlab/gitlabhq/-/metrics/invalid_dashboard").to route_to(
         'application#route_not_found',

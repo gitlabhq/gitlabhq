@@ -21,7 +21,7 @@ import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_wi
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import notesEventHub from '../../notes/event_hub';
+import notesEventHub from '~/notes/event_hub';
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -347,35 +347,33 @@ export default {
       this.setHighlightedRow(id.split('diff-content').pop().slice(1));
     }
 
-    if (window.gon?.features?.diffSettingsUsageData) {
-      const events = [];
+    const events = [];
 
-      if (this.renderTreeList) {
-        events.push(TRACKING_FILE_BROWSER_TREE);
-      } else {
-        events.push(TRACKING_FILE_BROWSER_LIST);
-      }
-
-      if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
-        events.push(TRACKING_DIFF_VIEW_INLINE);
-      } else {
-        events.push(TRACKING_DIFF_VIEW_PARALLEL);
-      }
-
-      if (this.showWhitespace) {
-        events.push(TRACKING_WHITESPACE_SHOW);
-      } else {
-        events.push(TRACKING_WHITESPACE_HIDE);
-      }
-
-      if (this.viewDiffsFileByFile) {
-        events.push(TRACKING_SINGLE_FILE_MODE);
-      } else {
-        events.push(TRACKING_MULTIPLE_FILES_MODE);
-      }
-
-      queueRedisHllEvents(events);
+    if (this.renderTreeList) {
+      events.push(TRACKING_FILE_BROWSER_TREE);
+    } else {
+      events.push(TRACKING_FILE_BROWSER_LIST);
     }
+
+    if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
+      events.push(TRACKING_DIFF_VIEW_INLINE);
+    } else {
+      events.push(TRACKING_DIFF_VIEW_PARALLEL);
+    }
+
+    if (this.showWhitespace) {
+      events.push(TRACKING_WHITESPACE_SHOW);
+    } else {
+      events.push(TRACKING_WHITESPACE_HIDE);
+    }
+
+    if (this.viewDiffsFileByFile) {
+      events.push(TRACKING_SINGLE_FILE_MODE);
+    } else {
+      events.push(TRACKING_MULTIPLE_FILES_MODE);
+    }
+
+    queueRedisHllEvents(events);
 
     this.subscribeToVirtualScrollingEvents();
   },
@@ -534,10 +532,8 @@ export default {
           if (delta >= 0 && delta < 1000) {
             this.disableVirtualScroller();
 
-            if (window.gon?.features?.usageDataDiffSearches) {
-              api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
-              api.trackRedisCounterEvent('diff_searches');
-            }
+            api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
+            api.trackRedisCounterEvent('diff_searches');
           }
         }
       });
@@ -574,12 +570,8 @@ export default {
         this.scrollVirtualScrollerToIndex(index);
       }
     },
-    async scrollVirtualScrollerToIndex(index) {
+    scrollVirtualScrollerToIndex(index) {
       this.virtualScrollCurrentIndex = index;
-
-      await this.$nextTick();
-
-      this.virtualScrollCurrentIndex = -1;
     },
     scrollVirtualScrollerToDiffNote() {
       const id = window?.location?.hash;
@@ -705,7 +697,7 @@ export default {
                     </dynamic-scroller-item>
                   </template>
                 </pre-renderer>
-                <virtual-scroller-scroll-sync :index="virtualScrollCurrentIndex" />
+                <virtual-scroller-scroll-sync v-model="virtualScrollCurrentIndex" />
               </template>
             </dynamic-scroller>
             <template v-else>

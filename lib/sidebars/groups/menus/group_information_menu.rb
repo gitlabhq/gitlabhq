@@ -20,7 +20,7 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          'group'
+          context.group.subgroup? ? 'subgroup' : 'group'
         end
 
         override :active_routes

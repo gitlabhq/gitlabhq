@@ -9,8 +9,7 @@ import {
 } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/repository/permissions.query.graphql';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { __ } from '../../locale';
+import { __ } from '~/locale';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import projectShortPathQuery from '../queries/project_short_path.query.graphql';
@@ -58,7 +57,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [getRefMixin, glFeatureFlagsMixin()],
+  mixins: [getRefMixin],
   props: {
     currentPath: {
       type: String,
@@ -176,11 +175,7 @@ export default {
       return this.canEditTree && !this.$apollo.queries.userPermissions.loading;
     },
     showNewDirectoryModal() {
-      return (
-        this.glFeatures.newDirModal &&
-        this.canEditTree &&
-        !this.$apollo.queries.userPermissions.loading
-      );
+      return this.canEditTree && !this.$apollo.queries.userPermissions.loading;
     },
     dropdownItems() {
       const items = [];
@@ -209,24 +204,13 @@ export default {
           },
         );
 
-        if (this.glFeatures.newDirModal) {
-          items.push({
-            attrs: {
-              href: '#modal-create-new-dir',
-            },
-            text: __('New directory'),
-            modalId: NEW_DIRECTORY_MODAL_ID,
-          });
-        } else {
-          items.push({
-            attrs: {
-              href: '#modal-create-new-dir',
-              'data-target': '#modal-create-new-dir',
-              'data-toggle': 'modal',
-            },
-            text: __('New directory'),
-          });
-        }
+        items.push({
+          attrs: {
+            href: '#modal-create-new-dir',
+          },
+          text: __('New directory'),
+          modalId: NEW_DIRECTORY_MODAL_ID,
+        });
       } else if (this.canCreateMrFromFork) {
         items.push(
           {

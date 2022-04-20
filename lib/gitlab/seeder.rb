@@ -4,11 +4,23 @@ module Gitlab
   class Seeder
     extend ActionView::Helpers::NumberHelper
 
-    MASS_INSERT_PROJECT_START = 'mass_insert_project_'
-    MASS_INSERT_USER_START = 'mass_insert_user_'
+    MASS_INSERT_PREFIX = 'mass_insert'
+    MASS_INSERT_PROJECT_START = "#{MASS_INSERT_PREFIX}_project_"
+    MASS_INSERT_GROUP_START = "#{MASS_INSERT_PREFIX}_group_"
+    MASS_INSERT_USER_START = "#{MASS_INSERT_PREFIX}_user_"
     REPORTED_USER_START = 'reported_user_'
-    ESTIMATED_INSERT_PER_MINUTE = 2_000_000
+    ESTIMATED_INSERT_PER_MINUTE = 250_000
     MASS_INSERT_ENV = 'MASS_INSERT'
+
+    module NamespaceSeed
+      extend ActiveSupport::Concern
+
+      included do
+        scope :not_mass_generated, -> do
+          where.not("path LIKE '#{MASS_INSERT_GROUP_START}%'")
+        end
+      end
+    end
 
     module ProjectSeed
       extend ActiveSupport::Concern
@@ -28,6 +40,10 @@ module Gitlab
           where.not("username LIKE '#{MASS_INSERT_USER_START}%' OR username LIKE '#{REPORTED_USER_START}%'")
         end
       end
+    end
+
+    def self.log_message(message)
+      puts "#{Time.current}: #{message}"
     end
 
     def self.with_mass_insert(size, model)
@@ -63,6 +79,7 @@ module Gitlab
 
     def self.quiet
       # Additional seed logic for models.
+      Namespace.include(NamespaceSeed)
       Project.include(ProjectSeed)
       User.include(UserSeed)
 

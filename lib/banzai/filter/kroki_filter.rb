@@ -25,11 +25,19 @@ module Banzai
           diagram_type = node.parent['lang']
           diagram_src = node.content
           image_src = create_image_src(diagram_type, diagram_format, diagram_src)
-          lazy_load = diagram_src.length > MAX_CHARACTER_LIMIT
-          other_attrs = lazy_load ? "hidden" : ""
+          img_tag = Nokogiri::HTML::DocumentFragment.parse(%(<img src="#{image_src}" />))
+          img_tag = img_tag.children.first
 
-          img_tag = Nokogiri::HTML::DocumentFragment.parse(%(<img class="js-render-kroki" src="#{image_src}" #{other_attrs} />))
-          node.parent.replace(img_tag)
+          unless img_tag.nil?
+            lazy_load = diagram_src.length > MAX_CHARACTER_LIMIT
+            img_tag.set_attribute('hidden', '') if lazy_load
+            img_tag.set_attribute('class', 'js-render-kroki')
+
+            img_tag.set_attribute('data-diagram', node.parent['lang'])
+            img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(node.content)}")
+
+            node.parent.replace(img_tag)
+          end
         end
 
         doc

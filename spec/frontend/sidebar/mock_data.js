@@ -415,6 +415,28 @@ export const subscriptionNullResponse = {
   },
 };
 
+export const subscriptionResponse = {
+  data: {
+    issuableAssigneesUpdated: {
+      id: '1',
+      assignees: {
+        nodes: [
+          {
+            __typename: 'UserCore',
+            id: 'gid://gitlab/User/1',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+            name: 'Administrator',
+            username: 'root',
+            webUrl: '/root',
+            status: null,
+          },
+        ],
+      },
+    },
+  },
+};
+
 const mockUser1 = {
   __typename: 'UserCore',
   id: 'gid://gitlab/User/1',

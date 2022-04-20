@@ -114,11 +114,14 @@ module API
 
           build = find_build!(params[:job_id])
           authorize!(:update_build, build)
-          break forbidden!('Job is not retryable') unless build.retryable?
 
-          build = ::Ci::Build.retry(build, current_user)
+          response = ::Ci::RetryJobService.new(@project, current_user).execute(build)
 
-          present build, with: Entities::Ci::Job
+          if response.success?
+            present response[:job], with: Entities::Ci::Job
+          else
+            forbidden!('Job is not retryable')
+          end
         end
 
         desc 'Erase job (remove artifacts and the trace)' do
@@ -194,7 +197,7 @@ module API
 
           pipeline = current_authenticated_job.pipeline
           project = current_authenticated_job.project
-          agent_authorizations = Clusters::AgentAuthorizationsFinder.new(project).execute
+          agent_authorizations = ::Clusters::AgentAuthorizationsFinder.new(project).execute
           project_groups = project.group&.self_and_ancestor_ids&.map { |id| { id: id } } || []
           user_access_level = project.team.max_member_access(current_user.id)
           roles_in_project = Gitlab::Access.sym_options_with_owner

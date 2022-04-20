@@ -1,0 +1,9 @@
+---
+table_name: project_authorizations
+classes:
+- ProjectAuthorization
+feature_categories:
+- projects
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/fd05e26618dd0c123ca476b6f5a3d85f1cfe397a
+milestone: '8.14'

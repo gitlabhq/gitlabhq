@@ -5,7 +5,7 @@ module API
     class PlanLimits < ::API::Base
       before { authenticated_as_admin! }
 
-      feature_category :not_owned
+      feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
       helpers do
         def current_plan(name)

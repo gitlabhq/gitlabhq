@@ -8,7 +8,7 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
 
   feature_category :importers
   worker_resource_boundary :memory
-  urgency :throttled
+  urgency :low
   loggable_arguments 2, 3
   sidekiq_options retry: false, dead: false
   sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
@@ -21,7 +21,10 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
 
     export_job&.start
 
-    ::Projects::ImportExport::ExportService.new(project, current_user, params).execute(after_export)
+    export_service = ::Projects::ImportExport::ExportService.new(project, current_user, params)
+    export_service.execute(after_export)
+
+    log_exporters_duration(export_service)
 
     export_job&.finish
   rescue ActiveRecord::RecordNotFound => e
@@ -45,5 +48,14 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
 
   def log_failure(project_id, ex)
     logger.error("Failed to export project #{project_id}: #{ex.message}")
+  end
+
+  def log_exporters_duration(export_service)
+    export_service.exporters.each do |exporter|
+      exporter_key = "#{exporter.class.name.demodulize.underscore}_duration_s".to_sym # e.g. uploads_saver_duration_s
+      exporter_duration = exporter.duration_s&.round(6)
+
+      log_extra_metadata_on_done(exporter_key, exporter_duration)
+    end
   end
 end

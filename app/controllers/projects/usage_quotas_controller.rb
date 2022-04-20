@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::UsageQuotasController < Projects::ApplicationController
-  before_action :authorize_admin_project!
+  before_action :authorize_read_usage_quotas!
 
   layout "project_settings"
 

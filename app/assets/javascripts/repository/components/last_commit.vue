@@ -10,10 +10,10 @@ import {
 import defaultAvatarUrl from 'images/no_avatar.png';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { sprintf, s__ } from '~/locale';
-import CiIcon from '../../vue_shared/components/ci_icon.vue';
-import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
-import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 
@@ -171,7 +171,7 @@ export default {
         <div class="commit-actions flex-row">
           <div
             v-if="commit.signatureHtml"
-            v-safe-html:[$options.safeHtmlConfig]="commit.signatureHtml"
+            v-html="commit.signatureHtml /* eslint-disable-line vue/no-v-html */"
           ></div>
           <div v-if="commit.pipeline" class="ci-status-link">
             <gl-link

@@ -1,4 +1,5 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import { approximateDuration, calculateRemainingMilliseconds } from '~/lib/utils/datetime_utility';
 import { n__, sprintf } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
@@ -9,6 +10,7 @@ import {
   LIST_INTRO_TEXT,
   EXPIRATION_POLICY_WILL_RUN_IN,
   EXPIRATION_POLICY_DISABLED_TEXT,
+  SET_UP_CLEANUP,
 } from '../../constants/index';
 
 export default {
@@ -16,6 +18,7 @@ export default {
   components: {
     TitleArea,
     MetadataItem,
+    GlLink,
   },
   props: {
     expirationPolicy: {
@@ -43,6 +46,16 @@ export default {
       required: false,
       default: false,
     },
+    cleanupPoliciesSettingsPath: {
+      type: String,
+      default: '',
+      required: false,
+    },
+    showCleanupPolicyLink: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   loader: {
     repeat: 10,
@@ -51,6 +64,7 @@ export default {
   },
   i18n: {
     CONTAINER_REGISTRY_TITLE,
+    SET_UP_CLEANUP,
   },
   computed: {
     imagesCountText() {
@@ -105,6 +119,9 @@ export default {
         :text="expirationPolicyText"
         size="xl"
       />
+      <gl-link v-if="showCleanupPolicyLink" class="gl-ml-2" :href="cleanupPoliciesSettingsPath">{{
+        $options.i18n.SET_UP_CLEANUP
+      }}</gl-link>
     </template>
   </title-area>
 </template>

@@ -1,0 +1,68 @@
+{
+  ".build_config": {
+    "before_script": ["echo test"]
+  },
+  ".build_script": "echo build script",
+  "default": {
+    "image": "ruby:2.5",
+    "services": ["docker:dind"],
+    "cache": {
+      "paths": ["vendor/"]
+    },
+    "before_script": ["bundle install --path vendor/"],
+    "after_script": ["rm -rf tmp/"]
+  },
+  "stages": ["install", "build", "test", "deploy"],
+  "image": "foo:latest",
+  "install task1": {
+    "image": "node:latest",
+    "stage": "install",
+    "script": "npm install",
+    "artifacts": {
+      "paths": ["node_modules/"]
+    }
+  },
+  "build dev": {
+    "image": "node:latest",
+    "stage": "build",
+    "needs": [
+      {
+        "job": "install task1"
+      }
+    ],
+    "script": "npm run build:dev"
+  },
+  "build prod": {
+    "image": "node:latest",
+    "stage": "build",
+    "needs": ["install task1"],
+    "script": "npm run build:prod"
+  },
+  "test": {
+    "image": "node:latest",
+    "stage": "build",
+    "needs": [
+      "install task1",
+      {
+        "job": "build dev",
+        "artifacts": true
+      }
+    ],
+    "script": "npm run test"
+  },
+  "deploy it": {
+    "image": "node:latest",
+    "stage": "deploy",
+    "needs": [
+      {
+        "job": "build dev",
+        "artifacts": false
+      },
+      {
+        "job": "build prod",
+        "artifacts": true
+      }
+    ],
+    "script": "npm run test"
+  }
+}

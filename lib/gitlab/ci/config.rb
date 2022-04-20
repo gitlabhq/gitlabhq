@@ -6,6 +6,8 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
+      include Gitlab::Utils::StrongMemoize
+
       ConfigError = Class.new(StandardError)
       TIMEOUT_SECONDS = 30.seconds
       TIMEOUT_MESSAGE = 'Resolving config took longer than expected'
@@ -22,6 +24,11 @@ module Gitlab
       def initialize(config, project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, source: nil, logger: nil)
         @logger = logger || ::Gitlab::Ci::Pipeline::Logger.new(project: project)
         @source_ref_path = pipeline&.source_ref_path
+        @project = project
+
+        if use_config_variables?
+          pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, user: user, source: source)
+        end
 
         @context = self.logger.instrument(:config_build_context) do
           build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline)
@@ -82,7 +89,13 @@ module Gitlab
       end
 
       def included_templates
-        @context.expandset.filter_map { |i| i[:template] }
+        @context.includes.filter_map { |i| i[:location] if i[:type] == :template }
+      end
+
+      def metadata
+        {
+          includes: @context.includes
+        }
       end
 
       private
@@ -149,6 +162,10 @@ module Gitlab
       end
 
       def build_variables_without_instrumentation(project:, pipeline:)
+        if use_config_variables?
+          return pipeline.variables_builder.config_variables
+        end
+
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
           break variables unless project
 
@@ -176,6 +193,12 @@ module Gitlab
 
       def track_and_raise_for_dev_exception(error)
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, @context.sentry_payload)
+      end
+
+      def use_config_variables?
+        strong_memoize(:use_config_variables) do
+          ::Feature.enabled?(:ci_variables_builder_config_variables, @project, default_enabled: :yaml)
+        end
       end
 
       # Overridden in EE

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillDraftStatusOnMergeRequests do
+RSpec.describe Gitlab::BackgroundMigration::BackfillDraftStatusOnMergeRequests, :migration, schema: 20220326161803 do
   let(:namespaces)     { table(:namespaces) }
   let(:projects)       { table(:projects) }
   let(:merge_requests) { table(:merge_requests) }
@@ -49,6 +49,20 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDraftStatusOnMergeRequests d
       expect(subject).to receive(:mark_job_as_succeeded).with(mr_ids.first, mr_ids.last)
 
       subject.perform(mr_ids.first, mr_ids.last)
+    end
+
+    it_behaves_like 'marks background migration job records' do
+      let!(:non_eligible_mrs) do
+        Array.new(2) do
+          create_merge_request(
+            title: "Not a d-r-a-f-t 1",
+            draft: false,
+            state_id: 1
+          )
+        end
+      end
+
+      let(:arguments) { [non_eligible_mrs.first.id, non_eligible_mrs.last.id] }
     end
   end
 end

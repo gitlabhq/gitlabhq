@@ -1,0 +1,50 @@
+{
+  "image": {
+    "name": "registry.gitlab.com/gitlab-org/gitlab-build-images:terraform",
+    "entrypoint": [
+      "/usr/bin/env",
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    ]
+  },
+  "variables": {
+    "PLAN": "plan.tfplan",
+    "JSON_PLAN_FILE": "tfplan.json"
+  },
+  "cache": {
+    "paths": [".terraform"]
+  },
+  "before_script": [
+    "alias convert_report=\"jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'\"",
+    "terraform --version",
+    "terraform init"
+  ],
+  "stages": ["validate", "build", "test", "deploy"],
+  "validate": {
+    "stage": "validate",
+    "script": ["terraform validate"]
+  },
+  "plan": {
+    "stage": "build",
+    "script": [
+      "terraform plan -out=$PLAN",
+      "terraform show --json $PLAN | convert_report > $JSON_PLAN_FILE"
+    ],
+    "artifacts": {
+      "name": "plan",
+      "paths": ["$PLAN"],
+      "reports": {
+        "terraform": "$JSON_PLAN_FILE"
+      }
+    }
+  },
+  "apply": {
+    "stage": "deploy",
+    "environment": {
+      "name": "production"
+    },
+    "script": ["terraform apply -input=false $PLAN"],
+    "dependencies": ["plan"],
+    "when": "manual",
+    "only": ["master"]
+  }
+}

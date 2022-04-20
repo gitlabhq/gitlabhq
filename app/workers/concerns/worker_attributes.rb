@@ -35,15 +35,7 @@ module WorkerAttributes
 
   class_methods do
     def feature_category(value, *extras)
-      raise "Invalid category. Use `feature_category_not_owned!` to mark a worker as not owned" if value == :not_owned
-
       set_class_attribute(:feature_category, value)
-    end
-
-    # Special case: mark this work as not associated with a feature category
-    # this should be used for cross-cutting concerns, such as mailer workers.
-    def feature_category_not_owned!
-      set_class_attribute(:feature_category, :not_owned)
     end
 
     # Special case: if a worker is not owned, get the feature category

@@ -21,7 +21,7 @@ module API
         optional :include_merged_yaml, type: Boolean, desc: 'Whether or not to include merged CI config yaml in the response'
         optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
       end
-      post '/lint' do
+      post '/lint', urgency: :low do
         unauthorized! unless can_lint_ci?
 
         result = Gitlab::Ci::Lint.new(project: nil, current_user: current_user)

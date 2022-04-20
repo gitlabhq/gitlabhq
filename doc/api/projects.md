@@ -19,7 +19,7 @@ Values for the project visibility level are:
 - `internal`: the project can be cloned by any signed-in user except [external users](../user/permissions.md#external-users).
 - `public`: the project can be accessed without any authentication.
 
-For more, read [Project visibility](../public_access/public_access.md).
+For more, read [Project visibility](../user/public_access.md).
 
 ## Project merge method
 
@@ -49,6 +49,7 @@ GET /projects
 | `archived`                                 | boolean  | **{dotted-circle}** No | Limit by archived status. |
 | `id_after`                                 | integer  | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                | integer  | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
+| `imported`                                 | boolean  | **{dotted-circle}** No | Limit results to projects which were imported from external systems by current user. |
 | `last_activity_after`                      | datetime | **{dotted-circle}** No | Limit results to projects with last_activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `last_activity_before`                     | datetime | **{dotted-circle}** No | Limit results to projects with last_activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                               | boolean  | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
@@ -374,7 +375,7 @@ Get a list of visible projects owned by the given user. When accessed without
 authentication, only public projects are returned.
 
 NOTE:
-Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned.
+Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
 
 This endpoint supports [keyset pagination](index.md#keyset-based-pagination)
 for selected `order_by` options.
@@ -1228,7 +1229,7 @@ POST /projects
 | `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
-| `container_expiration_policy_attributes`                    | hash    | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). Valid values for `cadence` are: `1d` (every day), `7d` (every week), `14d` (every two weeks), `1month` (every month), or `3month` (every quarter). |
+| `container_expiration_policy_attributes`                    | hash    | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). See the [Container Registry](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api) documentation for more information on `cadence`, `keep_n` and `older_than` values. |
 | `container_registry_access_level`                           | string  | **{dotted-circle}** No | Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`. |
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
@@ -2563,7 +2564,7 @@ POST /projects/:id/push_rule
 | `id`                                    | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
-| `commit_committer_check`                | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_committer_check`                | boolean        | **{dotted-circle}** No | Users can only push commits to this repository if the committer email is one of their own verified emails. |
 | `commit_message_negative_regex`         | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
@@ -2586,7 +2587,7 @@ PUT /projects/:id/push_rule
 | `id`                                    | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
-| `commit_committer_check`                | boolean        | **{dotted-circle}** No | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_committer_check`                | boolean        | **{dotted-circle}** No | Users can only push commits to this repository if the committer email is one of their own verified emails. |
 | `commit_message_negative_regex`         | string         | **{dotted-circle}** No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |

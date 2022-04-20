@@ -1,0 +1,9 @@
+---
+table_name: jira_tracker_data
+classes:
+- Integrations::JiraTrackerData
+feature_categories:
+- integrations
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1f332ae8da994509232c7601074b25514ad23c52
+milestone: '12.0'

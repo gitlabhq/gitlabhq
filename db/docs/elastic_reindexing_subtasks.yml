@@ -1,0 +1,9 @@
+---
+table_name: elastic_reindexing_subtasks
+classes:
+- Elastic::ReindexingSubtask
+feature_categories:
+- global_search
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48334
+milestone: '13.8'

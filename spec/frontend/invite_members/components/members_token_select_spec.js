@@ -95,7 +95,7 @@ describe('MembersTokenSelect', () => {
 
         expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
           active: true,
-          exclude_internal: true,
+          without_project_bots: true,
         });
         expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
       });
@@ -172,7 +172,7 @@ describe('MembersTokenSelect', () => {
 
       expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
         active: true,
-        exclude_internal: true,
+        without_project_bots: true,
         saml_provider_id: samlProviderId,
       });
     });

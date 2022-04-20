@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'valid urls with CRLF' do
-  let(:valid_urls_with_CRLF) do
+  let(:valid_urls_with_crlf) do
     [
       "http://example.com/pa%0dth",
       "http://example.com/pa%0ath",
@@ -16,7 +16,7 @@ RSpec.shared_context 'valid urls with CRLF' do
 end
 
 RSpec.shared_context 'invalid urls' do
-  let(:urls_with_CRLF) do
+  let(:urls_with_crlf) do
     [
       "git://example.com/pa%0dth",
       "git://example.com/pa%0ath",

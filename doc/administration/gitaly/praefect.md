@@ -231,6 +231,16 @@ instructions only work on Omnibus-provided PostgreSQL:
 
 The database used by Praefect is now configured.
 
+You can now configure Praefect to use the database:
+
+```ruby
+praefect['database_host'] = POSTGRESQL_HOST
+praefect['database_port'] = 5432
+praefect['database_user'] = 'praefect'
+praefect['database_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_dbname'] = 'praefect_production'
+```
+
 If you see Praefect database errors after configuring PostgreSQL, see
 [troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
 
@@ -619,7 +629,7 @@ Note the following:
   environment variable so that the Gitaly certificate is trusted. For example:
 
    ```shell
-   sudo SSL_CERT_DIR=/etc/gitlab/trusted_certs /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
+   sudo SSL_CERT_DIR=/etc/gitlab/trusted-certs /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
    ```
 
 - You can configure Praefect servers with both an unencrypted listening address
@@ -1197,7 +1207,7 @@ You can configure:
   ```
 
 If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
-node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically. 
+node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically.
 
 ## Automatic failover and primary election strategies
 

@@ -4,8 +4,6 @@ class LabelPresenter < Gitlab::View::Presenter::Delegated
   presents ::Label, as: :label
   delegate :name, :full_name, to: :label_subject, prefix: :subject, allow_nil: true
 
-  delegator_override :subject # TODO: Fix `Gitlab::View::Presenter::Delegated#subject` not to override `Label#subject`.
-
   def edit_path
     case label
     when GroupLabel then edit_group_label_path(label.group, label)

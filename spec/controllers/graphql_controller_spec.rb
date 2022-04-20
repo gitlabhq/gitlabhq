@@ -134,6 +134,47 @@ RSpec.describe GraphqlController do
 
         post :execute
       end
+
+      it 'calls the track gitlab cli when trackable method' do
+        agent = 'GLab - GitLab CLI'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        post :execute
+      end
+
+      it "assigns username in ApplicationContext" do
+        post :execute
+
+        expect(Gitlab::ApplicationContext.current).to include('meta.user' => user.username)
+      end
+    end
+
+    context 'when 2FA is required for the user' do
+      let(:user) { create(:user, last_activity_on: Date.yesterday) }
+
+      before do
+        group = create(:group, require_two_factor_authentication: true)
+        group.add_developer(user)
+
+        sign_in(user)
+      end
+
+      it 'does not redirect if 2FA is enabled' do
+        expect(controller).not_to receive(:redirect_to)
+
+        post :execute
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+
+        expected_message = "Authentication error: " \
+        "enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}" %
+        { mfa_help_page: EnforcesTwoFactorAuthentication::MFA_HELP_PAGE }
+
+        expect(json_response).to eq({ 'errors' => [{ 'message' => expected_message }] })
+      end
     end
 
     context 'when user uses an API token' do
@@ -189,6 +230,12 @@ RSpec.describe GraphqlController do
         expect(assigns(:context)[:is_sessionless_user]).to be true
       end
 
+      it "assigns username in ApplicationContext" do
+        subject
+
+        expect(Gitlab::ApplicationContext.current).to include('meta.user' => user.username)
+      end
+
       it 'calls the track api when trackable method' do
         agent = 'vs-code-gitlab-workflow/3.11.1 VSCode/1.52.1 Node.js/12.14.1 (darwin; x64)'
         request.env['HTTP_USER_AGENT'] = agent
@@ -208,6 +255,16 @@ RSpec.describe GraphqlController do
 
         subject
       end
+
+      it 'calls the track gitlab cli when trackable method' do
+        agent = 'GLab - GitLab CLI'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        subject
+      end
     end
 
     context 'when user is not logged in' do
@@ -221,6 +278,12 @@ RSpec.describe GraphqlController do
         post :execute
 
         expect(assigns(:context)[:is_sessionless_user]).to be false
+      end
+
+      it "does not assign a username in ApplicationContext" do
+        subject
+
+        expect(Gitlab::ApplicationContext.current.key?('meta.user')).to be false
       end
     end
 

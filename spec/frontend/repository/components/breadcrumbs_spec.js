@@ -12,7 +12,7 @@ const defaultMockRoute = {
 describe('Repository breadcrumbs component', () => {
   let wrapper;
 
-  const factory = (currentPath, extraProps = {}, mockRoute = {}, newDirModal = true) => {
+  const factory = (currentPath, extraProps = {}, mockRoute = {}) => {
     const $apollo = {
       queries: {
         userPermissions: {
@@ -36,7 +36,6 @@ describe('Repository breadcrumbs component', () => {
         },
         $apollo,
       },
-      provide: { glFeatures: { newDirModal } },
     });
   };
 
@@ -147,37 +146,21 @@ describe('Repository breadcrumbs component', () => {
   });
 
   describe('renders the new directory modal', () => {
-    describe('with the feature flag enabled', () => {
-      beforeEach(() => {
-        window.gon.features = {
-          newDirModal: true,
-        };
-        factory('/', { canEditTree: true });
-      });
-
-      it('does not render the modal while loading', () => {
-        expect(findNewDirectoryModal().exists()).toBe(false);
-      });
-
-      it('renders the modal once loaded', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
-
-        await nextTick();
-
-        expect(findNewDirectoryModal().exists()).toBe(true);
-      });
+    beforeEach(() => {
+      factory('/', { canEditTree: true });
+    });
+    it('does not render the modal while loading', () => {
+      expect(findNewDirectoryModal().exists()).toBe(false);
     });
 
-    describe('with the feature flag disabled', () => {
-      it('does not render the modal', () => {
-        window.gon.features = {
-          newDirModal: false,
-        };
-        factory('/', { canEditTree: true }, {}, {}, false);
-        expect(findNewDirectoryModal().exists()).toBe(false);
-      });
+    it('renders the modal once loaded', async () => {
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
+      wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
+
+      await nextTick();
+
+      expect(findNewDirectoryModal().exists()).toBe(true);
     });
   });
 });

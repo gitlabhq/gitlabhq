@@ -248,10 +248,9 @@ module Gitlab
             variable == '%d' ? Random.rand(1000) : Gitlab::Utils.random_string
           end
         else
-          variables.inject({}) do |hash, variable|
+          variables.each_with_object({}) do |variable, hash|
             variable_name = variable[/\w+/]
             hash[variable_name] = Gitlab::Utils.random_string
-            hash
           end
         end
       end

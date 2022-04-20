@@ -16,20 +16,14 @@
 
 
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-sourcegraph-settings'), html: { class: 'fieldset-form', id: 'sourcegraph-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-sourcegraph-settings'), html: { class: 'fieldset-form', id: 'sourcegraph-settings' } do |f|
       = form_errors(@application_setting)
 
       %fieldset
         .form-group
-          .form-check
-            = f.check_box :sourcegraph_enabled, class: 'form-check-input'
-            = f.label :sourcegraph_enabled, s_('SourcegraphAdmin|Enable Sourcegraph'), class: 'form-check-label'
+          = f.gitlab_ui_checkbox_component :sourcegraph_enabled, s_('SourcegraphAdmin|Enable Sourcegraph')
         .form-group
-          .form-check
-            = f.check_box :sourcegraph_public_only, class: 'form-check-input'
-            = f.label :sourcegraph_public_only, s_('SourcegraphAdmin|Block on private and internal projects'), class: 'form-check-label'
-            .form-text.text-muted
-              = s_('SourcegraphAdmin|Only public projects have code intelligence enabled and communicate with Sourcegraph.')
+          = f.gitlab_ui_checkbox_component :sourcegraph_public_only, s_('SourcegraphAdmin|Block on private and internal projects'), help_text: s_('SourcegraphAdmin|Only public projects have code intelligence enabled and communicate with Sourcegraph.')
         .form-group
           = f.label :sourcegraph_url, s_('SourcegraphAdmin|Sourcegraph URL'), class: 'label-bold'
           = f.text_field :sourcegraph_url, class: 'form-control gl-form-input', placeholder: s_('SourcegraphAdmin|https://sourcegraph.example.com')

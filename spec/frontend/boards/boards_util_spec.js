@@ -1,6 +1,12 @@
 import { formatIssueInput, filterVariables } from '~/boards/boards_util';
 
 describe('formatIssueInput', () => {
+  const issueInput = {
+    labelIds: ['gid://gitlab/GroupLabel/5'],
+    projectPath: 'gitlab-org/gitlab-test',
+    id: 'gid://gitlab/Issue/11',
+  };
+
   it('correctly merges boardConfig into the issue', () => {
     const boardConfig = {
       labels: [
@@ -14,12 +20,6 @@ describe('formatIssueInput', () => {
       weight: 1,
     };
 
-    const issueInput = {
-      labelIds: ['gid://gitlab/GroupLabel/5'],
-      projectPath: 'gitlab-org/gitlab-test',
-      id: 'gid://gitlab/Issue/11',
-    };
-
     const result = formatIssueInput(issueInput, boardConfig);
     expect(result).toEqual({
       projectPath: 'gitlab-org/gitlab-test',
@@ -27,7 +27,25 @@ describe('formatIssueInput', () => {
       labelIds: ['gid://gitlab/GroupLabel/5', 'gid://gitlab/GroupLabel/44'],
       assigneeIds: ['gid://gitlab/User/55'],
       milestoneId: 'gid://gitlab/Milestone/66',
+      weight: 1,
     });
+  });
+
+  it('does not add weight to input if weight is NONE', () => {
+    const boardConfig = {
+      weight: -2, // NO_WEIGHT
+    };
+
+    const result = formatIssueInput(issueInput, boardConfig);
+    const expected = {
+      projectPath: 'gitlab-org/gitlab-test',
+      id: 'gid://gitlab/Issue/11',
+      labelIds: ['gid://gitlab/GroupLabel/5'],
+      assigneeIds: [],
+      milestoneId: undefined,
+    };
+
+    expect(result).toEqual(expected);
   });
 });
 

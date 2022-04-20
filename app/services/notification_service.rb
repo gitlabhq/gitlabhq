@@ -109,6 +109,13 @@ class NotificationService
     mailer.unknown_sign_in_email(user, ip, time).deliver_later
   end
 
+  # Notify a user when a new email address is added to the their account
+  def new_email_address_added(user, email)
+    return unless user.can?(:receive_notifications)
+
+    mailer.new_email_address_added_email(user, email).deliver_later
+  end
+
   # When create an issue we should send an email to:
   #
   #  * issue assignee if their notification level is not Disabled
@@ -201,13 +208,30 @@ class NotificationService
     new_resource_email(merge_request, current_user, :new_merge_request_email)
   end
 
+  NEW_COMMIT_EMAIL_DISPLAY_LIMIT = 20
   def push_to_merge_request(merge_request, current_user, new_commits: [], existing_commits: [])
-    new_commits = new_commits.map { |c| { short_id: c.short_id, title: c.title } }
-    existing_commits = existing_commits.map { |c| { short_id: c.short_id, title: c.title } }
+    total_new_commits_count = new_commits.count
+    truncated_new_commits = new_commits.first(NEW_COMMIT_EMAIL_DISPLAY_LIMIT).map do |commit|
+      { short_id: commit.short_id, title: commit.title }
+    end
+
+    # We don't need the list of all existing commits. We need the first, the
+    # last, and the total number of existing commits only.
+    total_existing_commits_count = existing_commits.count
+    existing_commits = [existing_commits.first, existing_commits.last] if total_existing_commits_count > 2
+    existing_commits = existing_commits.map do |commit|
+      { short_id: commit.short_id, title: commit.title }
+    end
+
     recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "push_to")
 
     recipients.each do |recipient|
-      mailer.send(:push_to_merge_request_email, recipient.user.id, merge_request.id, current_user.id, recipient.reason, new_commits: new_commits, existing_commits: existing_commits).deliver_later
+      mailer.send(
+        :push_to_merge_request_email,
+        recipient.user.id, merge_request.id, current_user.id, recipient.reason,
+        new_commits: truncated_new_commits, total_new_commits_count: total_new_commits_count,
+        existing_commits: existing_commits, total_existing_commits_count: total_existing_commits_count
+      ).deliver_later
     end
   end
 

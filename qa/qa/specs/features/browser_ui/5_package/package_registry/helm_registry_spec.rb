@@ -5,6 +5,7 @@ module QA
     describe 'Helm Registry' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
+      include Support::Helpers::MaskToken
       include_context 'packages registry qa scenario'
 
       let(:package_name) { "gitlab_qa_helm-#{SecureRandom.hex(8)}" }
@@ -32,11 +33,13 @@ module QA
         let(:access_token) do
           case authentication_token_type
           when :personal_access_token
-            personal_access_token
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: package_project)
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: client_project)
           when :ci_job_token
             '${CI_JOB_TOKEN}'
           when :project_deploy_token
-            project_deploy_token.token
+            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: package_project)
+            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: client_project)
           end
         end
 

@@ -1,0 +1,9 @@
+---
+table_name: note_diff_files
+classes:
+- NoteDiffFile
+feature_categories:
+- code_review
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/bb8f2520b4254c9dabe377df48e29c5f17894a1d
+milestone: '11.0'

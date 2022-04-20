@@ -11,11 +11,17 @@ RSpec.describe Gitlab::Database::Migrations::TestBackgroundRunner, :redis do
     Sidekiq::Testing.disable! { ex.run }
   end
 
+  let(:result_dir) { Dir.mktmpdir }
+
+  after do
+    FileUtils.rm_rf(result_dir)
+  end
+
   context 'without jobs to run' do
     it 'returns immediately' do
-      runner = described_class.new
+      runner = described_class.new(result_dir: result_dir)
       expect(runner).not_to receive(:run_job)
-      described_class.new.run_jobs(for_duration: 1.second)
+      described_class.new(result_dir: result_dir).run_jobs(for_duration: 1.second)
     end
   end
 
@@ -30,7 +36,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBackgroundRunner, :redis do
 
     context 'finding pending background jobs' do
       it 'finds all the migrations' do
-        expect(described_class.new.traditional_background_migrations.to_a.size).to eq(5)
+        expect(described_class.new(result_dir: result_dir).traditional_background_migrations.to_a.size).to eq(5)
       end
     end
 
@@ -53,12 +59,28 @@ RSpec.describe Gitlab::Database::Migrations::TestBackgroundRunner, :redis do
         end
       end
 
+      def expect_recorded_migration_runs(migrations_to_runs)
+        migrations_to_runs.each do |migration, runs|
+          path = File.join(result_dir, migration.name.demodulize)
+          num_subdirs = Pathname(path).children.count(&:directory?)
+          expect(num_subdirs).to eq(runs)
+        end
+      end
+
+      def expect_migration_runs(migrations_to_run_counts)
+        expect_migration_call_counts(migrations_to_run_counts)
+
+        yield
+
+        expect_recorded_migration_runs(migrations_to_run_counts)
+      end
+
       it 'runs the migration class correctly' do
         calls = []
         define_background_migration(migration_name) do |i|
           calls << i
         end
-        described_class.new.run_jobs(for_duration: 1.second) # Any time would work here as we do not advance time
+        described_class.new(result_dir: result_dir).run_jobs(for_duration: 1.second) # Any time would work here as we do not advance time
         expect(calls).to contain_exactly(1, 2, 3, 4, 5)
       end
 
@@ -67,9 +89,9 @@ RSpec.describe Gitlab::Database::Migrations::TestBackgroundRunner, :redis do
           travel(1.minute)
         end
 
-        expect_migration_call_counts(migration => 3)
-
-        described_class.new.run_jobs(for_duration: 3.minutes)
+        expect_migration_runs(migration => 3) do
+          described_class.new(result_dir: result_dir).run_jobs(for_duration: 3.minutes)
+        end
       end
 
       context 'with multiple migrations to run' do
@@ -90,12 +112,12 @@ RSpec.describe Gitlab::Database::Migrations::TestBackgroundRunner, :redis do
             travel(2.minutes)
           end
 
-          expect_migration_call_counts(
+          expect_migration_runs(
             migration => 2, # 1 minute jobs for 90 seconds, can finish the first and start the second
             other_migration => 1 # 2 minute jobs for 90 seconds, past deadline after a single job
-          )
-
-          described_class.new.run_jobs(for_duration: 3.minutes)
+          ) do
+            described_class.new(result_dir: result_dir).run_jobs(for_duration: 3.minutes)
+          end
         end
 
         it 'does not give leftover time to extra migrations' do
@@ -107,12 +129,13 @@ RSpec.describe Gitlab::Database::Migrations::TestBackgroundRunner, :redis do
           other_migration = define_background_migration(other_migration_name) do
             travel(1.minute)
           end
-          expect_migration_call_counts(
+
+          expect_migration_runs(
             migration => 5,
             other_migration => 2
-          )
-
-          described_class.new.run_jobs(for_duration: 3.minutes)
+          ) do
+            described_class.new(result_dir: result_dir).run_jobs(for_duration: 3.minutes)
+          end
         end
       end
     end

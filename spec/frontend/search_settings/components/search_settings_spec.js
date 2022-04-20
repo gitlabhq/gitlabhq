@@ -1,5 +1,6 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { setHTMLFixture } from 'helpers/fixtures';
 import SearchSettings from '~/search_settings/components/search_settings.vue';
 import { HIGHLIGHT_CLASS, HIDE_CLASS } from '~/search_settings/constants';
 import { isExpanded, expandSection, closeSection } from '~/settings_panels';
@@ -11,7 +12,8 @@ describe('search_settings/components/search_settings.vue', () => {
   const GENERAL_SETTINGS_ID = 'js-general-settings';
   const ADVANCED_SETTINGS_ID = 'js-advanced-settings';
   const EXTRA_SETTINGS_ID = 'js-extra-settings';
-  const TEXT_CONTAIN_SEARCH_TERM = `This text contain ${SEARCH_TERM} and <script>alert("111")</script> others.`;
+  const TEXT_CONTAIN_SEARCH_TERM = `This text contain ${SEARCH_TERM}.`;
+  const TEXT_WITH_SIBLING_ELEMENTS = `${SEARCH_TERM} <a data-testid="sibling" href="#">Learn more</a>.`;
 
   let wrapper;
 
@@ -42,13 +44,7 @@ describe('search_settings/components/search_settings.vue', () => {
     });
   };
 
-  const matchParentElement = () => {
-    const highlightedList = Array.from(document.querySelectorAll(`.${HIGHLIGHT_CLASS}`));
-    return highlightedList.map((element) => {
-      return element.parentNode;
-    });
-  };
-
+  const findMatchSiblingElement = () => document.querySelector(`[data-testid="sibling"]`);
   const findSearchBox = () => wrapper.find(GlSearchBoxByType);
   const search = (term) => {
     findSearchBox().vm.$emit('input', term);
@@ -56,7 +52,7 @@ describe('search_settings/components/search_settings.vue', () => {
   const clearSearch = () => search('');
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
     <div>
       <div class="js-search-app"></div>
       <div id="${ROOT_ID}">
@@ -69,6 +65,7 @@ describe('search_settings/components/search_settings.vue', () => {
         <section id="${EXTRA_SETTINGS_ID}" class="settings">
           <span>${SEARCH_TERM}</span>
           <span>${TEXT_CONTAIN_SEARCH_TERM}</span>
+          <span>${TEXT_WITH_SIBLING_ELEMENTS}</span>
         </section>
       </div>
     </div>
@@ -99,7 +96,7 @@ describe('search_settings/components/search_settings.vue', () => {
   it('highlight elements that match the search term', () => {
     search(SEARCH_TERM);
 
-    expect(highlightedElementsCount()).toBe(2);
+    expect(highlightedElementsCount()).toBe(3);
   });
 
   it('highlight only search term and not the whole line', () => {
@@ -108,14 +105,26 @@ describe('search_settings/components/search_settings.vue', () => {
     expect(highlightedTextNodes()).toBe(true);
   });
 
-  it('prevents search xss', () => {
+  // Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/350494
+  it('preserves elements that are siblings of matches', () => {
+    const snapshot = `
+      <a
+        data-testid="sibling"
+        href="#"
+      >
+        Learn more
+      </a>
+      `;
+
+    expect(findMatchSiblingElement()).toMatchInlineSnapshot(snapshot);
+
     search(SEARCH_TERM);
 
-    const parentNodeList = matchParentElement();
-    parentNodeList.forEach((element) => {
-      const scriptElement = element.getElementsByTagName('script');
-      expect(scriptElement.length).toBe(0);
-    });
+    expect(findMatchSiblingElement()).toMatchInlineSnapshot(snapshot);
+
+    clearSearch();
+
+    expect(findMatchSiblingElement()).toMatchInlineSnapshot(snapshot);
   });
 
   describe('default', () => {

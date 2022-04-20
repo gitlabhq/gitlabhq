@@ -45,9 +45,9 @@ module Sidebars
           }
         end
 
-        override :image_path
-        def image_path
-          'learn_gitlab/graduation_hat.svg'
+        override :sprite_icon
+        def sprite_icon
+          'bulb'
         end
 
         override :render?

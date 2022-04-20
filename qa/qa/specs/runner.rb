@@ -52,6 +52,8 @@ module QA
         tags_for_rspec
       end
 
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/CyclomaticComplexity
       def perform
         args = []
         args.push('--tty') if tty
@@ -89,12 +91,29 @@ module QA
           File.open(filename, 'w') { |f| f.write(total_examples) } if total_examples.to_i > 0
 
           $stdout.puts "Total examples in #{Runtime::Scenario.klass}: #{total_examples}#{total_examples.to_i > 0 ? ". Saved to file: #{filename}" : ''}"
+        elsif Runtime::Scenario.attributes[:test_metadata_only]
+          args.unshift('--dry-run')
+
+          output_file = Pathname.new(File.join(Runtime::Path.qa_root, 'tmp', 'test-metadata.json'))
+
+          RSpec.configure do |config|
+            config.add_formatter(QA::Support::JsonFormatter, output_file)
+            config.fail_if_no_examples = true
+          end
+
+          RSpec::Core::Runner.run(args.flatten, $stderr, $stdout) do |status|
+            abort if status.nonzero?
+          end
+
+          $stdout.puts "Saved to file: #{output_file}"
         else
           RSpec::Core::Runner.run(args.flatten, *DEFAULT_STD_ARGS).tap do |status|
             abort if status.nonzero?
           end
         end
       end
+      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       private
 

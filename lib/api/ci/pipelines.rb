@@ -146,7 +146,7 @@ module API
           use :pagination
         end
 
-        get ':id/pipelines/:pipeline_id/bridges', feature_category: :pipeline_authoring do
+        get ':id/pipelines/:pipeline_id/bridges', urgency: :low, feature_category: :pipeline_authoring do
           authorize!(:read_build, user_project)
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])

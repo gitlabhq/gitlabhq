@@ -15,7 +15,9 @@
                 #{ dropzone_text.html_safe }
 
           %br
-          .dropzone-alerts.gl-alert.gl-alert-danger.gl-mb-5.data{ style: "display:none" }
+          = render Pajamas::AlertComponent.new(variant: :danger,
+            alert_class: 'dropzone-alerts gl-alert gl-alert-danger gl-mb-5 data gl-display-none',
+            dismissible: false)
 
           = render 'shared/new_commit_form', placeholder: placeholder, ref: local_assigns[:ref]
 

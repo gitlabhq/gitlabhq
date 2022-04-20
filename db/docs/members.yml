@@ -1,0 +1,13 @@
+---
+table_name: members
+classes:
+- GroupMember
+- Member
+- ProjectMember
+- ProjectNamespaceMember
+feature_categories:
+- projects
+- subgroups
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3503b504eabf95487fc3fb49df953a7d694da4fe
+milestone: '7.4'

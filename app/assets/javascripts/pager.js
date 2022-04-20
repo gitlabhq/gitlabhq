@@ -22,7 +22,10 @@ export default {
     this.prepareData = prepareData;
     this.successCallback = successCallback;
     this.errorCallback = errorCallback;
-    this.loading = $(`${container} .loading`).first();
+    this.$container = $(container);
+    this.$loading = this.$container.length
+      ? this.$container.find('.loading').first()
+      : $('.loading').first();
     if (preload) {
       this.offset = 0;
       this.getOld();
@@ -31,7 +34,7 @@ export default {
   },
 
   getOld() {
-    this.loading.show();
+    this.$loading.show();
     const url = $('.content_list').data('href') || removeParams(['limit', 'offset']);
 
     axios
@@ -49,11 +52,11 @@ export default {
         if (!this.disable && !this.isScrollable()) {
           this.getOld();
         } else {
-          this.loading.hide();
+          this.$loading.hide();
         }
       })
       .catch((err) => this.errorCallback(err))
-      .finally(() => this.loading.hide());
+      .finally(() => this.$loading.hide());
   },
 
   append(count, html) {
@@ -83,8 +86,12 @@ export default {
       fireOnce: true,
       ceaseFire: () => this.disable === true,
       callback: () => {
-        if (!this.loading.is(':visible')) {
-          this.loading.show();
+        if (this.$container.length && !this.$container.is(':visible')) {
+          return;
+        }
+
+        if (!this.$loading.is(':visible')) {
+          this.$loading.show();
           this.getOld();
         }
       },

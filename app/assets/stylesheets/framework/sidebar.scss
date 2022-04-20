@@ -226,3 +226,29 @@
 .edit-link {
   margin-right: -$gl-spacing-scale-2;
 }
+
+.assignee-grid {
+  grid-template-areas: ' attention   user';
+  grid-template-columns: min-content 1fr;
+}
+
+.reviewer-grid {
+  grid-template-areas: ' user approval    rerequest';
+  grid-template-columns: 1fr  min-content min-content;
+
+  &.attention-requests {
+    grid-template-areas: ' attention   user approval';
+    grid-template-columns: min-content 1fr  min-content;
+  }
+}
+
+.assignee-grid,
+.reviewer-grid {
+  [data-css-area='attention'] {
+    grid-area: attention;
+  }
+
+  [data-css-area='user'] {
+    grid-area: user;
+  }
+}

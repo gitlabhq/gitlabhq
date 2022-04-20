@@ -145,19 +145,6 @@ RSpec.shared_examples 'User updates wiki page' do
 
         it_behaves_like 'edits content using the content editor'
       end
-
-      context 'with feature flag off' do
-        before do
-          stub_feature_flags(wiki_switch_between_content_editor_raw_markdown: false)
-          visit(wiki_path(wiki))
-
-          click_link('Edit')
-
-          click_button 'Use the new editor'
-        end
-
-        it_behaves_like 'edits content using the content editor'
-      end
     end
   end
 

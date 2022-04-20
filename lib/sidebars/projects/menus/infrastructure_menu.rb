@@ -90,7 +90,10 @@ module Sidebars
         end
 
         def google_cloud_menu_item
-          feature_is_enabled = Feature.enabled?(:incubation_5mp_google_cloud, context.project)
+          enabled_for_user = Feature.enabled?(:incubation_5mp_google_cloud, context.current_user)
+          enabled_for_group = Feature.enabled?(:incubation_5mp_google_cloud, context.project.group)
+          enabled_for_project = Feature.enabled?(:incubation_5mp_google_cloud, context.project)
+          feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
           user_has_permissions = can?(context.current_user, :admin_project_google_cloud, context.project)
 
           unless feature_is_enabled && user_has_permissions

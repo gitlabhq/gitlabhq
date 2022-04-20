@@ -148,10 +148,10 @@ class Todo < ApplicationRecord
         target_type_column: "todos.target_type",
         target_column: "todos.target_id",
         project_column: "todos.project_id"
-      ).to_sql
+      ).arel.as('highest_priority')
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority")
-        .order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+      select(arel_table[Arel.star], highest_priority)
+        .order(Arel.sql('highest_priority').asc.nulls_last)
         .order('todos.created_at')
     end
 

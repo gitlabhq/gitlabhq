@@ -74,8 +74,8 @@ RSpec.describe IssuesHelper do
       expect(helper.award_state_class(awardable, AwardEmoji.all, build(:user))).to eq('disabled')
     end
 
-    it 'returns active string for author' do
-      expect(helper.award_state_class(awardable, AwardEmoji.all, upvote.user)).to eq('active')
+    it 'returns selected class for author' do
+      expect(helper.award_state_class(awardable, AwardEmoji.all, upvote.user)).to eq('selected')
     end
 
     it 'is blank for a user that has access to the awardable' do
@@ -365,6 +365,16 @@ RSpec.describe IssuesHelper do
       }
 
       expect(helper.group_issues_list_data(group, current_user)).to include(expected)
+    end
+  end
+
+  describe '#issues_form_data' do
+    it 'returns expected result' do
+      expected = {
+        new_issue_path: new_project_issue_path(project)
+      }
+
+      expect(helper.issues_form_data(project)).to include(expected)
     end
   end
 

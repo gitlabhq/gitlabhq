@@ -64,20 +64,14 @@ module SystemCheck
       call_or_return(@skip_reason) || 'skipped'
     end
 
-    # Define a reason why we skipped the SystemCheck (during runtime)
+    # Define or get a reason why we skipped the SystemCheck (during runtime)
     #
     # This is used when you need dynamic evaluation like when you have
     # multiple reasons why a check can fail
     #
     # @param [String] reason to be displayed
-    attr_writer :skip_reason
-
-    # Skip reason defined during runtime
-    #
-    # This value have precedence over the one defined in the subclass
-    #
-    # @return [String] the reason
-    attr_reader :skip_reason
+    # @return [String] reason to be displayed
+    attr_accessor :skip_reason
 
     # Does the check support automatically repair routine?
     #

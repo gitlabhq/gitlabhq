@@ -58,9 +58,9 @@ to a gem, go through these steps:
    the [`gitlab-org/ruby/gems` namespace](https://gitlab.com/gitlab-org/ruby/gems/).
 
    - To create this project:
-       1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/#creating-a-new-project).
-       1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/#cicd-configuration).
-       1. Follow the instructions for [publishing a project](https://about.gitlab.com/handbook/engineering/#publishing-a-project).
+       1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#creating-a-new-project).
+       1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration).
+       1. Follow the instructions for [publishing a project](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#publishing-a-project).
    - See [issue
      #325463](https://gitlab.com/gitlab-org/gitlab/-/issues/325463)
      for an example.

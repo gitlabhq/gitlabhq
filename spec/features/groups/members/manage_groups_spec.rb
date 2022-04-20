@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Groups > Members > Manage groups', :js do
-  include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
   include Spec::Support::Helpers::ModalHelpers
@@ -119,16 +118,92 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
 
   describe 'group search results' do
     let_it_be(:group, refind: true) { create(:group) }
-    let_it_be(:group_within_hierarchy) { create(:group, parent: group) }
-    let_it_be(:group_outside_hierarchy) { create(:group) }
 
-    before_all do
-      group.add_owner(user)
-      group_within_hierarchy.add_owner(user)
-      group_outside_hierarchy.add_owner(user)
+    context 'with instance admin considerations' do
+      let_it_be(:group_to_share) { create(:group) }
+
+      context 'when user is an admin' do
+        let_it_be(:admin) { create(:admin) }
+
+        before do
+          sign_in(admin)
+          gitlab_enable_admin_mode_sign_in(admin)
+        end
+
+        it 'shows groups where the admin has no direct membership' do
+          visit group_group_members_path(group)
+
+          click_on 'Invite a group'
+          click_on 'Select a group'
+          wait_for_requests
+
+          page.within(group_dropdown_selector) do
+            expect_to_have_group(group_to_share)
+            expect_not_to_have_group(group)
+          end
+        end
+
+        it 'shows groups where the admin has at least guest level membership' do
+          group_to_share.add_guest(admin)
+
+          visit group_group_members_path(group)
+
+          click_on 'Invite a group'
+          click_on 'Select a group'
+          wait_for_requests
+
+          page.within(group_dropdown_selector) do
+            expect_to_have_group(group_to_share)
+            expect_not_to_have_group(group)
+          end
+        end
+      end
+
+      context 'when user is not an admin' do
+        before do
+          group.add_owner(user)
+        end
+
+        it 'shows groups where the user has no direct membership' do
+          visit group_group_members_path(group)
+
+          click_on 'Invite a group'
+          click_on 'Select a group'
+          wait_for_requests
+
+          page.within(group_dropdown_selector) do
+            expect_not_to_have_group(group_to_share)
+            expect_not_to_have_group(group)
+          end
+        end
+
+        it 'shows groups where the user has at least guest level membership' do
+          group_to_share.add_guest(user)
+
+          visit group_group_members_path(group)
+
+          click_on 'Invite a group'
+          click_on 'Select a group'
+          wait_for_requests
+
+          page.within(group_dropdown_selector) do
+            expect_to_have_group(group_to_share)
+            expect_not_to_have_group(group)
+          end
+        end
+      end
     end
 
-    context 'when the invite members group modal is enabled' do
+    context 'when user is not an admin and there are hierarchy considerations' do
+      let_it_be(:group_within_hierarchy) { create(:group, parent: group) }
+      let_it_be(:group_outside_hierarchy) { create(:group) }
+
+      before_all do
+        group.add_owner(user)
+        group_within_hierarchy.add_owner(user)
+        group_outside_hierarchy.add_owner(user)
+      end
+
       it 'does not show self or ancestors', :aggregate_failures do
         group_sibbling = create(:group, parent: group)
         group_sibbling.add_owner(user)
@@ -139,46 +214,46 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
         click_on 'Select a group'
         wait_for_requests
 
-        page.within('[data-testid="group-select-dropdown"]') do
-          expect(page).to have_selector("[entity-id='#{group_outside_hierarchy.id}']")
-          expect(page).to have_selector("[entity-id='#{group_sibbling.id}']")
-          expect(page).not_to have_selector("[entity-id='#{group.id}']")
-          expect(page).not_to have_selector("[entity-id='#{group_within_hierarchy.id}']")
+        page.within(group_dropdown_selector) do
+          expect_to_have_group(group_outside_hierarchy)
+          expect_to_have_group(group_sibbling)
+          expect_not_to_have_group(group)
+          expect_not_to_have_group(group_within_hierarchy)
+        end
+      end
+
+      context 'when sharing with groups outside the hierarchy is enabled' do
+        it 'shows groups within and outside the hierarchy in search results' do
+          visit group_group_members_path(group)
+
+          click_on 'Invite a group'
+          click_on 'Select a group'
+          wait_for_requests
+
+          page.within(group_dropdown_selector) do
+            expect_to_have_group(group_within_hierarchy)
+            expect_to_have_group(group_outside_hierarchy)
+          end
+        end
+      end
+
+      context 'when sharing with groups outside the hierarchy is disabled' do
+        before do
+          group.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: true)
+        end
+
+        it 'shows only groups within the hierarchy in search results' do
+          visit group_group_members_path(group)
+
+          click_on 'Invite a group'
+          click_on 'Select a group'
+
+          page.within(group_dropdown_selector) do
+            expect_to_have_group(group_within_hierarchy)
+            expect_not_to_have_group(group_outside_hierarchy)
+          end
         end
       end
     end
-
-    context 'when sharing with groups outside the hierarchy is enabled' do
-      it 'shows groups within and outside the hierarchy in search results' do
-        visit group_group_members_path(group)
-
-        click_on 'Invite a group'
-        click_on 'Select a group'
-
-        expect(page).to have_text group_within_hierarchy.name
-        expect(page).to have_text group_outside_hierarchy.name
-      end
-    end
-
-    context 'when sharing with groups outside the hierarchy is disabled' do
-      before do
-        group.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: true)
-      end
-
-      it 'shows only groups within the hierarchy in search results' do
-        visit group_group_members_path(group)
-
-        click_on 'Invite a group'
-        click_on 'Select a group'
-
-        expect(page).to have_text group_within_hierarchy.name
-        expect(page).not_to have_text group_outside_hierarchy.name
-      end
-    end
-  end
-
-  def click_groups_tab
-    expect(page).to have_link 'Groups'
-    click_link "Groups"
   end
 end

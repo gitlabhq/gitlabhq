@@ -30,6 +30,10 @@ export const augmentFeatures = (securityFeatures, complianceFeatures, features =
       augmented.secondary = { ...augmented.secondary, ...featuresByType[feature.secondary.type] };
     }
 
+    if (augmented.badge && augmented.metaInfoPath) {
+      augmented.badge.badgeHref = augmented.metaInfoPath;
+    }
+
     return augmented;
   };
 

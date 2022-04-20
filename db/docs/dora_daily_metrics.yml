@@ -1,0 +1,9 @@
+---
+table_name: dora_daily_metrics
+classes:
+- Dora::DailyMetrics
+feature_categories:
+- value_stream_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55473
+milestone: '13.10'

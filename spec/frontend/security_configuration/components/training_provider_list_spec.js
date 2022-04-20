@@ -1,5 +1,13 @@
 import * as Sentry from '@sentry/browser';
-import { GlAlert, GlLink, GlToggle, GlCard, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlLink,
+  GlFormRadio,
+  GlToggle,
+  GlCard,
+  GlSkeletonLoader,
+  GlIcon,
+} from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -87,7 +95,7 @@ describe('TrainingProviderList component', () => {
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findToggles = () => wrapper.findAllComponents(GlToggle);
   const findFirstToggle = () => findToggles().at(0);
-  const findPrimaryProviderRadios = () => wrapper.findAllByTestId('primary-provider-radio');
+  const findPrimaryProviderRadios = () => wrapper.findAllComponents(GlFormRadio);
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
   const findLogos = () => wrapper.findAllByTestId('provider-logo');
@@ -177,8 +185,8 @@ describe('TrainingProviderList component', () => {
           const primaryProviderRadioForCurrentCard = findPrimaryProviderRadios().at(index);
 
           // if the given provider is not enabled it should not be possible select it as primary
-          expect(primaryProviderRadioForCurrentCard.find('input').attributes('disabled')).toBe(
-            isEnabled ? undefined : 'disabled',
+          expect(primaryProviderRadioForCurrentCard.attributes('disabled')).toBe(
+            isEnabled ? undefined : 'true',
           );
 
           expect(primaryProviderRadioForCurrentCard.text()).toBe(

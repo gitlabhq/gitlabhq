@@ -19,7 +19,7 @@ under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists
 
 ## Limitations on project and group names
 
-- Special characters are not permitted at the start or end of project or group names. They are permitted in any other location of the name. 
+- Special characters are not permitted at the start or end of project or group names. They are permitted in any other location of the name.
 - Project or group names cannot end in `.git` or `.atom`.
 - Project or group names can only contain letters, digits, emojis, "_", ".", "+", dashes, or spaces.
 - Paths can only contain letters, digits, "_", "-", and "."

@@ -1,0 +1,9 @@
+---
+table_name: status_page_settings
+classes:
+- StatusPage::ProjectSetting
+feature_categories:
+- incident_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25863
+milestone: '12.9'

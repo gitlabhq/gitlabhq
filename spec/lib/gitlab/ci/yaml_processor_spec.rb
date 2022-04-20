@@ -842,7 +842,7 @@ module Gitlab
       describe "Image and service handling" do
         context "when extended docker configuration is used" do
           it "returns image and service when defined" do
-            config = YAML.dump({ image: { name: "ruby:2.7", entrypoint: ["/usr/local/bin/init", "run"] },
+            config = YAML.dump({ image: { name: "image:1.0", entrypoint: ["/usr/local/bin/init", "run"] },
                                  services: ["mysql", { name: "docker:dind", alias: "docker",
                                                        entrypoint: ["/usr/local/bin/init", "run"],
                                                        command: ["/usr/local/bin/init", "run"] }],
@@ -860,7 +860,7 @@ module Gitlab
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
-                image: { name: "ruby:2.7", entrypoint: ["/usr/local/bin/init", "run"] },
+                image: { name: "image:1.0", entrypoint: ["/usr/local/bin/init", "run"] },
                 services: [{ name: "mysql" },
                            { name: "docker:dind", alias: "docker", entrypoint: ["/usr/local/bin/init", "run"],
                              command: ["/usr/local/bin/init", "run"] }]
@@ -874,10 +874,10 @@ module Gitlab
           end
 
           it "returns image and service when overridden for job" do
-            config = YAML.dump({ image: "ruby:2.7",
+            config = YAML.dump({ image: "image:1.0",
                                  services: ["mysql"],
                                  before_script: ["pwd"],
-                                 rspec: { image: { name: "ruby:3.0", entrypoint: ["/usr/local/bin/init", "run"] },
+                                 rspec: { image: { name: "image:1.0", entrypoint: ["/usr/local/bin/init", "run"] },
                                           services: [{ name: "postgresql", alias: "db-pg",
                                                        entrypoint: ["/usr/local/bin/init", "run"],
                                                        command: ["/usr/local/bin/init", "run"] }, "docker:dind"],
@@ -894,7 +894,7 @@ module Gitlab
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
-                image: { name: "ruby:3.0", entrypoint: ["/usr/local/bin/init", "run"] },
+                image: { name: "image:1.0", entrypoint: ["/usr/local/bin/init", "run"] },
                 services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
                              command: ["/usr/local/bin/init", "run"] },
                            { name: "docker:dind" }]
@@ -910,7 +910,7 @@ module Gitlab
 
         context "when etended docker configuration is not used" do
           it "returns image and service when defined" do
-            config = YAML.dump({ image: "ruby:2.7",
+            config = YAML.dump({ image: "image:1.0",
                                  services: ["mysql", "docker:dind"],
                                  before_script: ["pwd"],
                                  rspec: { script: "rspec" } })
@@ -926,7 +926,7 @@ module Gitlab
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
-                image: { name: "ruby:2.7" },
+                image: { name: "image:1.0" },
                 services: [{ name: "mysql" }, { name: "docker:dind" }]
               },
               allow_failure: false,
@@ -938,10 +938,10 @@ module Gitlab
           end
 
           it "returns image and service when overridden for job" do
-            config = YAML.dump({ image: "ruby:2.7",
+            config = YAML.dump({ image: "image:1.0",
                                  services: ["mysql"],
                                  before_script: ["pwd"],
-                                 rspec: { image: "ruby:3.0", services: ["postgresql", "docker:dind"], script: "rspec" } })
+                                 rspec: { image: "image:1.0", services: ["postgresql", "docker:dind"], script: "rspec" } })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
@@ -954,7 +954,7 @@ module Gitlab
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
-                image: { name: "ruby:3.0" },
+                image: { name: "image:1.0" },
                 services: [{ name: "postgresql" }, { name: "docker:dind" }]
               },
               allow_failure: false,
@@ -1557,7 +1557,7 @@ module Gitlab
       describe "Artifacts" do
         it "returns artifacts when defined" do
           config = YAML.dump({
-                               image:         "ruby:2.7",
+                               image:         "image:1.0",
                                services:      ["mysql"],
                                before_script: ["pwd"],
                                rspec:         {
@@ -1583,7 +1583,7 @@ module Gitlab
             options: {
               before_script: ["pwd"],
               script: ["rspec"],
-              image: { name: "ruby:2.7" },
+              image: { name: "image:1.0" },
               services: [{ name: "mysql" }],
               artifacts: {
                 name: "custom_name",
@@ -2327,7 +2327,7 @@ module Gitlab
         context 'when hidden job have a script definition' do
           let(:config) do
             YAML.dump({
-                        '.hidden_job' => { image: 'ruby:2.7', script: 'test' },
+                        '.hidden_job' => { image: 'image:1.0', script: 'test' },
                         'normal_job' => { script: 'test' }
                       })
           end
@@ -2338,7 +2338,7 @@ module Gitlab
         context "when hidden job doesn't have a script definition" do
           let(:config) do
             YAML.dump({
-                        '.hidden_job' => { image: 'ruby:2.7' },
+                        '.hidden_job' => { image: 'image:1.0' },
                         'normal_job' => { script: 'test' }
                       })
           end

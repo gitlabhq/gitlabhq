@@ -69,6 +69,12 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:markdown_surround_selection).to(:user_preference) }
     it { is_expected.to delegate_method(:markdown_surround_selection=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:diffs_deletion_color).to(:user_preference) }
+    it { is_expected.to delegate_method(:diffs_deletion_color=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:diffs_addition_color).to(:user_preference) }
+    it { is_expected.to delegate_method(:diffs_addition_color=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -1554,7 +1560,7 @@ RSpec.describe User do
       end
 
       it 'adds the confirmed primary email to emails' do
-        expect(user.emails.confirmed.map(&:email)).not_to include(user.email)
+        expect(user.emails.confirmed.map(&:email)).not_to include(user.unconfirmed_email)
 
         user.confirm
 
@@ -1613,13 +1619,22 @@ RSpec.describe User do
     context 'when the email is changed but not confirmed' do
       let(:user) { create(:user, email: 'primary@example.com') }
 
-      it 'does not add the new email to emails yet' do
+      before do
         user.update!(email: 'new_primary@example.com')
+      end
 
+      it 'does not add the new email to emails yet' do
         expect(user.unconfirmed_email).to eq('new_primary@example.com')
         expect(user.email).to eq('primary@example.com')
         expect(user).to be_confirmed
         expect(user.emails.pluck(:email)).not_to include('new_primary@example.com')
+      end
+
+      it 'adds the new email to emails upon confirmation' do
+        user.confirm
+        expect(user.email).to eq('new_primary@example.com')
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).to include('new_primary@example.com')
       end
     end
 
@@ -1629,6 +1644,11 @@ RSpec.describe User do
       it 'does not add the email to emails yet' do
         expect(user).not_to be_confirmed
         expect(user.emails.pluck(:email)).not_to include('primary@example.com')
+      end
+
+      it 'adds the email to emails upon confirmation' do
+        user.confirm
+        expect(user.emails.pluck(:email)).to include('primary@example.com')
       end
     end
 
@@ -2080,6 +2100,74 @@ RSpec.describe User do
           expect(user.two_factor_u2f_enabled?).to eq(true)
         end
       end
+    end
+  end
+
+  describe 'needs_new_otp_secret?', :freeze_time do
+    let(:user) { create(:user) }
+
+    context 'when two-factor is not enabled' do
+      it 'returns true if otp_secret_expires_at is nil' do
+        expect(user.needs_new_otp_secret?).to eq(true)
+      end
+
+      it 'returns true if the otp_secret_expires_at has passed' do
+        user.update!(otp_secret_expires_at: 10.minutes.ago)
+
+        expect(user.reload.needs_new_otp_secret?).to eq(true)
+      end
+
+      it 'returns false if the otp_secret_expires_at has not passed' do
+        user.update!(otp_secret_expires_at: 10.minutes.from_now)
+
+        expect(user.reload.needs_new_otp_secret?).to eq(false)
+      end
+    end
+
+    context 'when two-factor is enabled' do
+      let(:user) { create(:user, :two_factor) }
+
+      it 'returns false even if ttl is expired' do
+        user.otp_secret_expires_at = 10.minutes.ago
+
+        expect(user.needs_new_otp_secret?).to eq(false)
+      end
+    end
+  end
+
+  describe 'otp_secret_expired?', :freeze_time do
+    let(:user) { create(:user) }
+
+    it 'returns true if otp_secret_expires_at is nil' do
+      expect(user.otp_secret_expired?).to eq(true)
+    end
+
+    it 'returns true if the otp_secret_expires_at has passed' do
+      user.otp_secret_expires_at = 10.minutes.ago
+
+      expect(user.otp_secret_expired?).to eq(true)
+    end
+
+    it 'returns false if the otp_secret_expires_at has not passed' do
+      user.otp_secret_expires_at = 20.minutes.from_now
+
+      expect(user.otp_secret_expired?).to eq(false)
+    end
+  end
+
+  describe 'update_otp_secret!', :freeze_time do
+    let(:user) { create(:user) }
+
+    before do
+      user.update_otp_secret!
+    end
+
+    it 'sets the otp_secret' do
+      expect(user.otp_secret).to have_attributes(length: described_class::OTP_SECRET_LENGTH)
+    end
+
+    it 'updates the otp_secret_expires_at' do
+      expect(user.otp_secret_expires_at).to eq(Time.current + described_class::OTP_SECRET_TTL)
     end
   end
 
@@ -2652,6 +2740,19 @@ RSpec.describe User do
     let_it_be(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@example.com') }
     let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
     let_it_be(:email) { create(:email, user: user, email: 'alias@example.com') }
+
+    describe 'name user and email relative ordering' do
+      let_it_be(:named_alexander) { create(:user, name: 'Alexander Person', username: 'abcd', email: 'abcd@example.com') }
+      let_it_be(:username_alexand) { create(:user, name: 'Joao Alexander', username: 'Alexand', email: 'joao@example.com') }
+
+      it 'prioritizes exact matches' do
+        expect(described_class.search('Alexand')).to eq([username_alexand, named_alexander])
+      end
+
+      it 'falls back to ordering by name' do
+        expect(described_class.search('Alexander')).to eq([named_alexander, username_alexand])
+      end
+    end
 
     describe 'name matching' do
       it 'returns users with a matching name with exact match first' do
@@ -4251,16 +4352,34 @@ RSpec.describe User do
     end
   end
 
-  it_behaves_like '#ci_owned_runners'
+  describe '#ci_owned_runners' do
+    it_behaves_like '#ci_owned_runners'
 
-  context 'when FF ci_owned_runners_cross_joins_fix is disabled' do
-    before do
-      skip_if_multiple_databases_are_setup
+    context 'when FF use_traversal_ids is disabled fallbacks to inefficient implementation' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
 
-      stub_feature_flags(ci_owned_runners_cross_joins_fix: false)
+      it_behaves_like '#ci_owned_runners'
     end
 
-    it_behaves_like '#ci_owned_runners'
+    context 'when FF ci_owned_runners_cross_joins_fix is disabled' do
+      before do
+        skip_if_multiple_databases_are_setup
+
+        stub_feature_flags(ci_owned_runners_cross_joins_fix: false)
+      end
+
+      it_behaves_like '#ci_owned_runners'
+    end
+
+    context 'when FF ci_owned_runners_unnest_index is disabled uses GIN index' do
+      before do
+        stub_feature_flags(ci_owned_runners_unnest_index: false)
+      end
+
+      it_behaves_like '#ci_owned_runners'
+    end
   end
 
   describe '#projects_with_reporter_access_limited_to' do
@@ -4882,16 +5001,35 @@ RSpec.describe User do
   end
 
   describe '#attention_requested_open_merge_requests_count' do
-    it 'returns number of open merge requests from non-archived projects' do
-      user    = create(:user)
-      project = create(:project, :public)
-      archived_project = create(:project, :public, :archived)
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:archived_project) { create(:project, :public, :archived) }
 
+    before do
       create(:merge_request, source_project: project, author: user, reviewers: [user])
       create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
       create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
+    end
 
+    it 'returns number of open merge requests from non-archived projects' do
+      expect(Rails.cache).not_to receive(:fetch)
       expect(user.attention_requested_open_merge_requests_count(force: true)).to eq 1
+    end
+
+    context 'when uncached_mr_attention_requests_count is disabled' do
+      before do
+        stub_feature_flags(uncached_mr_attention_requests_count: false)
+      end
+
+      it 'fetches from cache' do
+        expect(Rails.cache).to receive(:fetch).with(
+          user.attention_request_cache_key,
+          force: false,
+          expires_in: described_class::COUNT_CACHE_VALIDITY_PERIOD
+        ).and_call_original
+
+        expect(user.attention_requested_open_merge_requests_count).to eq 1
+      end
     end
   end
 
@@ -6629,6 +6767,23 @@ RSpec.describe User do
       new_user = create(:user)
 
       expect(described_class.by_ids_or_usernames([new_user.id], [user_name])).to match_array([user, new_user])
+    end
+  end
+
+  describe '.without_forbidden_states' do
+    let_it_be(:normal_user) { create(:user, username: 'johndoe') }
+    let_it_be(:admin_user) { create(:user, :admin, username: 'iamadmin') }
+    let_it_be(:blocked_user) { create(:user, :blocked, username: 'notsorandom') }
+    let_it_be(:banned_user) { create(:user, :banned, username: 'iambanned') }
+    let_it_be(:external_user) { create(:user, :external) }
+    let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
+    let_it_be(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
+    let_it_be(:internal_user) { User.alert_bot.tap { |u| u.confirm } }
+
+    it 'does not return blocked or banned users' do
+      expect(described_class.without_forbidden_states).to match_array([
+        normal_user, admin_user, external_user, unconfirmed_user, omniauth_user, internal_user
+      ])
     end
   end
 

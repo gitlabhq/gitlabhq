@@ -1,0 +1,216 @@
+// ---
+// Scss to help with bootstrap 3 to 4 migration of bootstrap components
+// ---
+.form-control,
+.search form {
+  // Override default font size used in non-csslab UI
+  // Use rem to keep default font-size at 14px on body so 1rem still
+  // fits 8px grid, but also allow users to change browser font size
+  font-size: 0.875rem;
+}
+
+/* Our adjustments to hx & .hx above add unnecessary margins to modal-title
+   and page-title in modals, so we set them to 0 in order to have properly
+   formatted modal headers. */
+.modal-header {
+  .modal-title,
+  .page-title {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+input[type='file'] {
+  // Bootstrap 4 file input height is taller by default
+  // which makes them look ugly
+  line-height: 1;
+}
+
+.form-group.row .col-form-label {
+  // Bootstrap 4 aligns labels to the left
+  // for horizontal forms
+  @include media-breakpoint-up(md) {
+    text-align: right;
+  }
+}
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    .d#{$infix}-table-header-group {
+      display: table-header-group !important;
+    }
+  }
+}
+
+.text-secondary {
+  // Override Bootstrap's light secondary color
+  // We have to use !important because bootstrap has that set as well
+  color: $gl-text-color-secondary !important;
+}
+
+.bg-success,
+.bg-primary,
+.bg-info,
+.bg-danger,
+.bg-warning {
+  .card-header {
+    color: $white;
+  }
+}
+
+// Polyfill deprecated selectors
+
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.hide {
+  display: none;
+}
+
+.dropdown-toggle::after,
+.dropright .dropdown-menu-toggle::after {
+  // Remove bootstrap's dropdown caret
+  display: none;
+}
+
+// Add to .label so that old system notes that are saved to the db
+// will still receive the correct styling
+.badge:not(.gl-badge),
+.label {
+  padding: 4px 5px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: $gl-font-weight-normal;
+  display: inline-block;
+
+  &.badge-gray {
+    background-color: $label-gray-bg;
+    color: $gl-text-color;
+    text-shadow: none;
+  }
+
+  &.badge-inverse {
+    background-color: $label-inverse-bg;
+  }
+}
+
+.divider {
+  // copied rules from node_modules/bootstrap/scss/_dropdown.scss:116
+  // this might be safe to just remove instead
+  // most places that use divider add overrides to undo these things
+  // there is also a probably-unintentional use in deprecated_dropdown_divider.scss
+  // so we would end up with .gl-dropdown .dropdown-divider
+  height: 0;
+  margin: 4px 0;
+  overflow: hidden;
+  border-top: 1px solid $border-color;
+}
+
+.info-well {
+  background: $gray-10;
+  color: $gl-text-color;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  margin-bottom: 16px;
+
+  .well-segment {
+    padding: 16px;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $well-inner-border;
+    }
+
+    p,
+    ol,
+    ul,
+    .form-group {
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .badge.badge-gray {
+    background-color: $well-expand-item;
+  }
+}
+
+.card {
+  &.card-without-border,
+  &.bg-light {
+    border: 0 !important;
+  }
+}
+
+.nav-tabs {
+  // Override bootstrap's default border
+  border-bottom: 0;
+
+  .nav-link {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .nav-item {
+    margin-bottom: 0;
+  }
+}
+
+.alert {
+  border-radius: 0;
+}
+
+.alert-success {
+  background-color: $green-500;
+  border-color: $green-500;
+}
+
+.alert-info {
+  background-color: $blue-500;
+  border-color: $blue-500;
+}
+
+.alert-warning {
+  background-color: $orange-500;
+  border-color: $orange-500;
+}
+
+.alert-danger {
+  background-color: $red-500;
+  border-color: $red-500;
+}
+
+.alert-success,
+.alert-info,
+.alert-warning,
+.alert-danger {
+  color: $white;
+
+  h4,
+  .alert-link {
+    color: $white;
+  }
+}
+
+input[type=color].form-control {
+  height: $input-height;
+}
+
+.toggle-sidebar-button {
+  .collapse-text,
+  .icon-chevron-double-lg-left,
+  .icon-chevron-double-lg-right {
+    color: $gl-text-color-secondary;
+  }
+}
+
+.project-templates-buttons {
+  .btn {
+    vertical-align: unset;
+  }
+}

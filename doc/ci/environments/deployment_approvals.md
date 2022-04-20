@@ -15,7 +15,7 @@ This feature is in a [Beta](../../policy/alpha-beta-support.md#beta-features) st
 
 It may be useful to require additional approvals before deploying to certain protected environments (for example, production). This pre-deployment approval requirement is useful to accommodate testing, security, or compliance processes that must happen before each deployment.
 
-When a protected environment requires one or more approvals, all deployments to that environment become blocked and wait for the required approvals before running.
+When a protected environment requires one or more approvals, all deployments to that environment become blocked and wait for the required approvals from the `Allowed to Deploy` list before running.
 
 NOTE:
 See the [epic](https://gitlab.com/groups/gitlab-org/-/epics/6832) for planned features.
@@ -52,6 +52,19 @@ Example:
 
 ### Require approvals for a protected environment
 
+There are two ways to configure the approval requirements:
+
+- [Unified approval setting](#unified-approval-setting) ... You can define who can execute **and** approve deployments.
+  This is useful when there is no separation of duties between executors and approvers in your organization.
+- [Multiple approval rules](#multiple-approval-rules) ... You can define who can execute **or** approve deployments.
+  This is useful when there is a separation of duties between executors and approvers in your organization.
+
+NOTE:
+Multiple approval rules is a more flexible option than the unified approval setting, thus both configurations shouldn't
+co-exist and multiple approval rules takes the precedence over the unified approval setting if it happens.
+
+#### Unified approval setting
+
 NOTE:
 At this time, it is not possible to require approvals for an existing protected environment. The workaround is to unprotect the environment and configure approvals when re-protecting the environment.
 
@@ -72,6 +85,35 @@ curl --header 'Content-Type: application/json' --request POST \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
+
+NOTE:
+To protect, update, or unprotect an environment, you must have at least the
+Maintainer role.
+
+#### Multiple approval rules
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
+
+1. Using the [REST API](../../api/group_protected_environments.md#protect-an-environment).
+   1. `deploy_access_levels` represents which entity can execute the deployment job.
+   1. `approval_rules` represents which entity can approve the deployment job.
+
+After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy.
+
+Example:
+
+```shell
+curl --header 'Content-Type: application/json' --request POST \
+     --data '{"name": "production", "deploy_access_levels": [{"group_id": 138}], "approval_rules": [{"group_id": 134}, {"group_id": 135, "required_approvals": 2}]}' \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/groups/128/protected_environments"
+```
+
+With this setup:
+
+- The operator group (`group_id: 138`) has permission to execute the deployment jobs to the `production` environment in the organization (`group_id: 128`).
+- The QA tester group (`group_id: 134`) and security group (`group_id: 135`) have permission to approve the deployment jobs to the `production` environment in the organization (`group_id: 128`).
+- Unless two approvals from security group and one approval from QA tester group have been collected, the operator group can't execute the deployment jobs.
 
 NOTE:
 To protect, update, or unprotect an environment, you must have at least the
@@ -98,6 +140,10 @@ To approve or reject a deployment to a protected environment using the UI:
 1. On the left sidebar, select **Deployments > Environments**.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
 1. Select **Approve** or **Reject**.
+
+NOTE:
+This feature might not work as expected when [Multiple approval rules](#multiple-approval-rules) is configured.
+See the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/355708) for planned improvement.
 
 ### Approve or reject a deployment using the API
 
@@ -127,11 +173,14 @@ curl --data "status=approved&comment=Looks good to me" \
 
 ### Using the API
 
-Use the [Deployments API](../../api/deployments.md) to see deployments.
+Use the [Deployments API](../../api/deployments.md#get-a-specific-deployment) to see deployments.
 
 - The `status` field indicates if a deployment is blocked.
-- The `pending_approval_count` field indicates how many approvals are remaining to run a deployment.
-- The `approvals` field contains the deployment's approvals.
+- When the [unified approval setting](#unified-approval-setting) is configured:
+  - The `pending_approval_count` field indicates how many approvals are remaining to run a deployment.
+  - The `approvals` field contains the deployment's approvals.
+- When the [multiple approval rules](#multiple-approval-rules) is configured:
+  - The `approval_summary` field contains the current approval status per rule.
 
 ## Related features
 

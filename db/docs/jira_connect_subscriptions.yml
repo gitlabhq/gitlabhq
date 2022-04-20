@@ -1,0 +1,9 @@
+---
+table_name: jira_connect_subscriptions
+classes:
+- JiraConnectSubscription
+feature_categories:
+- integrations
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10453
+milestone: '11.11'

@@ -195,7 +195,7 @@ module Issuable
     end
 
     def supports_escalation?
-      return false unless ::Feature.enabled?(:incident_escalations, project)
+      return false unless ::Feature.enabled?(:incident_escalations, project, default_enabled: :yaml)
 
       incident?
     end
@@ -318,12 +318,16 @@ module Issuable
       # 2. We can't ORDER BY a column that isn't in the GROUP BY and doesn't
       #    have an aggregate function applied, so we do a useless MIN() instead.
       #
-      milestones_due_date = 'MIN(milestones.due_date)'
+      milestones_due_date = Milestone.arel_table[:due_date].minimum
+      milestones_due_date_with_direction = direction == 'ASC' ? milestones_due_date.asc : milestones_due_date.desc
+
+      highest_priority_arel = Arel.sql('highest_priority')
+      highest_priority_arel_with_direction = direction == 'ASC' ? highest_priority_arel.asc : highest_priority_arel.desc
 
       order_milestone_due_asc
         .order_labels_priority(excluded_labels: excluded_labels, extra_select_columns: [milestones_due_date])
-        .reorder(Gitlab::Database.nulls_last_order(milestones_due_date, direction),
-                Gitlab::Database.nulls_last_order('highest_priority', direction))
+        .reorder(milestones_due_date_with_direction.nulls_last,
+                 highest_priority_arel_with_direction.nulls_last)
     end
 
     def order_labels_priority(direction = 'ASC', excluded_labels: [], extra_select_columns: [], with_cte: false)
@@ -341,12 +345,15 @@ module Issuable
 
       extra_select_columns.unshift("highest_priorities.label_priority as highest_priority")
 
+      highest_priority_arel = Arel.sql('highest_priority')
+      highest_priority_arel_with_direction = direction == 'ASC' ? highest_priority_arel.asc : highest_priority_arel.desc
+
       select(issuable_columns)
         .select(extra_select_columns)
         .from("#{table_name}")
         .joins("JOIN LATERAL(#{highest_priority}) as highest_priorities ON TRUE")
         .group(group_columns)
-        .reorder(Gitlab::Database.nulls_last_order('highest_priority', direction))
+        .reorder(highest_priority_arel_with_direction.nulls_last)
     end
 
     def with_label(title, sort = nil)
@@ -522,6 +529,10 @@ module Issuable
 
   def label_names
     labels.order('title ASC').pluck(:title)
+  end
+
+  def labels_hook_attrs
+    labels.map(&:hook_attrs)
   end
 
   # Convert this Issuable class name to a format usable by Ability definitions

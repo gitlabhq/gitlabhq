@@ -14,3 +14,4 @@ swap:
   needs? to: "Rewrite the sentence, or use 'must', instead of"
   note that: "Be concise: rewrite the sentence to not use"
   please: "Remove this word from the sentence: "
+  respectively: "Rewrite the sentence to be more precise, instead of using "

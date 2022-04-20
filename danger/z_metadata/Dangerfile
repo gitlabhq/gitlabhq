@@ -2,7 +2,7 @@
 
 # rubocop:disable Style/SignalException
 
-DEFAULT_BRANCH = 'master'
+default_branch = ENV['CI_DEFAULT_BRANCH'] || 'main'
 
 if gitlab.mr_body.size < 5
   fail "Please provide a proper merge request description."
@@ -14,12 +14,12 @@ end
 
 has_milestone = !gitlab.mr_json["milestone"].nil?
 
-unless has_milestone || (helper.security_mr? && gitlab.branch_for_base == DEFAULT_BRANCH)
+unless has_milestone || (helper.security_mr? && helper.mr_target_branch == default_branch)
   warn "This merge request does not refer to an existing milestone.", sticky: false
 end
 
-has_pick_into_stable_label = gitlab.mr_labels.find { |label| label.start_with?('Pick into') }
+has_pick_into_stable_label = helper.mr_labels.find { |label| label.start_with?('Pick into') }
 
-if gitlab.branch_for_base != DEFAULT_BRANCH && !has_pick_into_stable_label && !helper.security_mr?
-  warn "Most of the time, merge requests should target `#{DEFAULT_BRANCH}`. Otherwise, please set the relevant `Pick into X.Y` label."
+if helper.mr_target_branch != default_branch && !has_pick_into_stable_label && !helper.security_mr?
+  warn "Most of the time, merge requests should target `#{default_branch}`. Otherwise, please set the relevant `Pick into X.Y` label."
 end

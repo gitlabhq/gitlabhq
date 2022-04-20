@@ -4,7 +4,7 @@ import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { isElementVisible } from '~/lib/utils/dom_utils';
 import { DEBOUNCE_DROPDOWN_DELAY } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
-import Sidebar from '../../right_sidebar';
+import Sidebar from '~/right_sidebar';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
 import {
   keysFor,
@@ -33,10 +33,37 @@ export default class ShortcutsIssuable extends Shortcuts {
     Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), ShortcutsIssuable.replyWithSelectedText);
     Mousetrap.bind(keysFor(ISSUABLE_EDIT_DESCRIPTION), ShortcutsIssuable.editIssue);
     Mousetrap.bind(keysFor(MR_COPY_SOURCE_BRANCH_NAME), ShortcutsIssuable.copyBranchName);
+
+    /**
+     * We're attaching a global focus event listener on document for
+     * every markdown input field.
+     */
+    $(document).on(
+      'focus',
+      '.js-vue-markdown-field .js-gfm-input',
+      ShortcutsIssuable.handleMarkdownFieldFocus,
+    );
+  }
+
+  /**
+   * This event handler preserves last focused markdown input field.
+   * @param {Object} event
+   */
+  static handleMarkdownFieldFocus({ currentTarget }) {
+    ShortcutsIssuable.$lastFocusedReplyField = $(currentTarget);
   }
 
   static replyWithSelectedText() {
-    const $replyField = $('.js-main-target-form .js-vue-comment-form');
+    let $replyField = $('.js-main-target-form .js-vue-comment-form');
+
+    // Ensure that markdown input is still present in the DOM
+    // otherwise fall back to main comment input field.
+    if (
+      ShortcutsIssuable.$lastFocusedReplyField &&
+      isElementVisible(ShortcutsIssuable.$lastFocusedReplyField?.get(0))
+    ) {
+      $replyField = ShortcutsIssuable.$lastFocusedReplyField;
+    }
 
     if (!$replyField.length || $replyField.is(':hidden') /* Other tab selected in MR */) {
       return false;

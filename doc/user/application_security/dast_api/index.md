@@ -7,73 +7,65 @@ type: reference, howto
 
 # DAST API **(ULTIMATE)**
 
-You can add dynamic application security testing of web APIs to your [GitLab CI/CD](../../../ci/index.md) pipelines.
-This helps you discover bugs and potential security issues that other QA processes may miss.
+You can add dynamic application security testing (DAST) of web APIs to your
+[GitLab CI/CD](../../../ci/index.md) pipelines. This helps you discover bugs and potential security
+issues that other QA processes may miss.
 
 We recommend that you use DAST API testing in addition to [GitLab Secure](../index.md)'s
 other security scanners and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run DAST API tests as part your CI/CD workflow.
 
-## Requirements
+WARNING:
+Do not run DAST API testing against a production server. Not only can it perform *any* function that
+the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
+data. Only run DAST API against a test server.
 
-- One of the following web API types:
-  - REST API
-  - SOAP
-  - GraphQL
-  - Form bodies, JSON, or XML
-- One of the following assets to provide APIs to test:
-  - OpenAPI v2 or v3 API definition
-  - Postman Collection v2.0 or v2.1
-  - HTTP Archive (HAR) of API requests to test
+You can run DAST API scanning against the following web API types:
+
+- REST API
+- SOAP
+- GraphQL
+- Form bodies, JSON, or XML
 
 ## When DAST API scans run
 
-When using the `DAST-API.gitlab-ci.yml` template, the defined jobs use the `dast` stage by default. To enable your `.gitlab-ci.yml` file must include the `dast` stage in your `stages` definition. To ensure DAST API scans the latest code, your CI pipeline should deploy changes to a test environment in a stage before the `dast` stage:
+DAST API scanning runs in the `dast` stage by default. To ensure DAST API scanning examines the latest
+code, ensure your CI/CD pipeline deploys changes to a test environment in a stage before the `dast`
+stage.
 
-```yaml
-stages:
-  - build
-  - test
-  - deploy
-  - dast
-```
+If your pipeline is configured to deploy to the same web server on each run, running a pipeline
+while another is still running could cause a race condition in which one pipeline overwrites the
+code from another. The API to be scanned should be excluded from changes for the duration of a
+DAST API scan. The only changes to the API should be from the DAST API scanner. Changes made to the
+API (for example, by users, scheduled tasks, database changes, code changes, other pipelines, or
+other scanners) during a scan could cause inaccurate results.
 
-Note that if your pipeline is configured to deploy to the same web server on each run, running a
-pipeline while another is still running could cause a race condition in which one pipeline
-overwrites the code from another. The API to scan should be excluded from changes for the duration
-of a DAST API scan. The only changes to the API should be from the DAST API scanner. Be aware that
-any changes made to the API (for example, by users, scheduled tasks, database changes, code
-changes, other pipelines, or other scanners) during a scan could cause inaccurate results.
+## Example DAST API scanning configurations
 
-## Enable DAST API scanning
+The following projects demonstrate DAST API scanning:
 
-There are three ways to perform scans. See the configuration section for the one you wish to use:
-
-- [OpenAPI v2 or v3 specification](#openapi-specification)
-- [HTTP Archive (HAR)](#http-archive-har)
-- [Postman Collection v2.0 or v2.1](#postman-collection)
-
-Examples of various configurations can be found here:
-
-- [Example OpenAPI v2 specification project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-example)
+- [Example OpenAPI v2 Specification project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-example)
 - [Example HTTP Archive (HAR) project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/har-example)
 - [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/postman-example)
 - [Example GraphQL project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/graphql-example)
 - [Example SOAP project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/soap-example)
 
-WARNING:
-GitLab 14.0 will require that you place DAST API configuration files (for example,
-`gitlab-dast-api-config.yml`) in your repository's `.gitlab` directory instead of your
-repository's root. You can continue using your existing configuration files as they are, but
-starting in GitLab 14.0, GitLab will not check your repository's root for configuration files.
+## Targeting API for DAST scanning
+
+You can specify the API you want to scan by using:
+
+- [OpenAPI v2 or v3 Specification](#openapi-specification)
+- [HTTP Archive (HAR)](#http-archive-har)
+- [Postman Collection v2.0 or v2.1](#postman-collection)
 
 ### OpenAPI Specification
 
 > - Support for OpenAPI Specification using YAML format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
 > - Support to generate media type `application/xml` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.8.
+> - Support to media types was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10.
 
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an API description format for REST APIs.
-This section shows you how to configure API fuzzing using an OpenAPI Specification to provide information about the target API to test.
+This section shows you how to configure DAST API scanning using an OpenAPI Specification to provide information about the target API to test.
 OpenAPI Specifications are provided as a file system resource or URL. Both JSON and YAML OpenAPI formats are supported.
 
 DAST API uses an OpenAPI document to generate the request body. When a request body is required,
@@ -84,52 +76,40 @@ the body generation is limited to these body types:
 - `application/json`
 - `application/xml`
 
-Follow these steps to configure DAST API in GitLab with an OpenAPI specification:
+### OpenAPI and media types
 
-1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
-   that's provided as part of your GitLab installation. Add the following to your
-   `.gitlab-ci.yml` file:
+A media type (formerly known as MIME type) is an identifier for file formats and format contents transmitted. A OpenAPI document lets you specify that a given operation can accept different media types, hence a given request can send data using different file content. As for example, a `PUT /user` operation to update user data could accept data in either XML (media type `application/xml`) or JSON (media type `application/json`) format.
+OpenAPI 2.x lets you specify the accepted media types globally or per operation, and OpenAPI 3.x lets you specify the accepted media types per operation. DAST API will check the listed media types, and try to produce sample data for each supported media type.
 
-   ```yaml
-   stages:
-     - dast
+- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), the default behavior is to select one of the supported media types to use. The first supported media type is chosen from the list. This behavior is configurable.
+- In GitLab 14.9 and earlier, the default behavior is to perform testing using all supported media types. This means if two media types are listed (for example, `application/json` and `application/xml`), testing are performed using JSON, and then the same tests using XML.
 
-   include:
-     - template: DAST-API.gitlab-ci.yml
-   ```
+Testing the same operation (for example, `POST /user`) using different media types (for example, `application/json` and `application/xml`) is not always desirable.
+For example, if the target application executes the same code regardless of the request content type, it will take longer to finish the test session, and it may report duplicated vulnerabilities related to the request body depending on the target app.
+
+The environment variable `DAST_API_OPENAPI_ALL_MEDIA_TYPES` lets you specify whether or not to use all supported media types instead of one when generating requests for a given operation. When the environment variable `DAST_API_OPENAPI_ALL_MEDIA_TYPES` is set to any value, DAST API tries to generate requests for all supported media types instead of one in a given operation. This will cause testing to take longer as testing is repeated for each provided media type.
+
+Alternatively, the variable `DAST_API_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that will each be tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `DAST_API_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
+
+Multiple media types in `DAST_API_OPENAPI_MEDIA_TYPES` are separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and  `multipart/form-data`, set the environment variable `DAST_API_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though non-supported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8`, is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when performing the filtering media types on request generation.
+
+The environment variables `DAST_API_OPENAPI_ALL_MEDIA_TYPES` and `DAST_API_OPENAPI_MEDIA_TYPES` allow you to decide how to handle media types. These settings are mutually exclusive. If both are enabled, DAST API reports an error.
+
+#### Configure DAST API with an OpenAPI Specification
+
+To configure DAST API scanning with an OpenAPI specification:
+
+To configure DAST API scanning with an OpenAPI Specification:
+
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. The [configuration file](#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
+   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
 
-   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file,
-   substituting `Quick` for the profile you choose:
-
-   ```yaml
-   stages:
-     - dast
-
-   include:
-     - template: DAST-API.gitlab-ci.yml
-
-   variables:
-     DAST_API_PROFILE: Quick
-   ```
-
-1. Provide the location of the OpenAPI specification. You can provide the specification as a file
-   or URL. Specify the location by adding the `DAST_API_OPENAPI` variable:
-
-   ```yaml
-   stages:
-     - dast
-
-   include:
-     - template: DAST-API.gitlab-ci.yml
-
-   variables:
-     DAST_API_PROFILE: Quick
-     DAST_API_OPENAPI: test-api-specification.json
-   ```
+1. Provide the location of the OpenAPI Specification as either a file or URL.
+   Specify the location by adding the `DAST_API_OPENAPI` variable.
 
 1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
    variable or an `environment_url.txt` file.
@@ -140,20 +120,20 @@ Follow these steps to configure DAST API in GitLab with an OpenAPI specification
    automatically parses that file to find its scan target. You can see an
    [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
-   Here's an example of using `DAST_API_TARGET_URL`:
+Complete example configuration of using an OpenAPI Specification:
 
-   ```yaml
-   stages:
-     - dast
+```yaml
+stages:
+  - dast
 
-   include:
-     - template: DAST-API.gitlab-ci.yml
+include:
+  - template: DAST-API.gitlab-ci.yml
 
-   variables:
-     DAST_API_PROFILE: Quick
-     DAST_API_OPENAPI: test-api-specification.json
-     DAST_API_TARGET_URL: http://test-deployment/
-   ```
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_TARGET_URL: http://test-deployment/
+```
 
 This is a minimal configuration for DAST API. From here you can:
 
@@ -161,14 +141,12 @@ This is a minimal configuration for DAST API. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-WARNING:
-**NEVER** run DAST API testing against a production server. Not only can it perform *any* function that the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting data. Only run DAST API scanning against a test server.
-
 ### HTTP Archive (HAR)
 
-The [HTTP Archive format (HAR)](http://www.softwareishard.com/blog/har-12-spec/)
-is an archive file format for logging HTTP transactions. When used with the GitLab DAST API scanner, HAR must contain records of calling the web API to test. The DAST API scanner extracts all the requests and
-uses them to perform testing.
+The [HTTP Archive format (HAR)](../api_fuzzing/create_har_files.md) is an archive file format for
+logging HTTP transactions. When used with the GitLab DAST API scanner, the HAR file must contain
+records of calling the web API to test. The DAST API scanner extracts all of the requests and uses them
+to perform testing.
 
 You can use various tools to generate HAR files:
 
@@ -182,53 +160,20 @@ WARNING:
 HAR files may contain sensitive information such as authentication tokens, API keys, and session
 cookies. We recommend that you review the HAR file contents before adding them to a repository.
 
-Follow these steps to configure DAST API to use a HAR file that provides information about the
-target API to test:
+#### DAST API scanning with a HAR file
 
-1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
-   that's provided as part of your GitLab installation. To do so, add the following to your
-   `.gitlab-ci.yml` file:
+To configure DAST API to use a HAR file that provides information about the target API to test:
 
-   ```yaml
-   stages:
-     - dast
-
-   include:
-     - template: DAST-API.gitlab-ci.yml
-   ```
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. The [configuration file](#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
 
-   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file,
-   substituting `Quick` for the profile you choose:
-
-   ```yaml
-   stages:
-     - dast
-
-   include:
-     - template: DAST-API.gitlab-ci.yml
-
-   variables:
-     DAST_API_PROFILE: Quick
-   ```
+   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
 
 1. Provide the location of the HAR file. You can provide the location as a file path
-   or URL. [URL support was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020) in GitLab 13.10 and later. Specify the location by adding the `DAST_API_HAR` variable:
-
-   ```yaml
-   stages:
-     - dast
-
-   include:
-     - template: DAST-API.gitlab-ci.yml
-
-   variables:
-     DAST_API_PROFILE: Quick
-     DAST_API_HAR: test-api-recording.har
-   ```
+   or URL. [URL support was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020) in GitLab 13.10 and later. Specify the location by adding the `DAST_API_HAR` variable.
 
 1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
    variable or an `environment_url.txt` file.
@@ -239,31 +184,26 @@ target API to test:
    automatically parses that file to find its scan target. You can see an
    [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
-   Here's an example of using `DAST_API_TARGET_URL`:
+Complete example configuration of using an HAR file:
 
-   ```yaml
-   stages:
-     - dast
+```yaml
+stages:
+  - dast
 
-   include:
-     - template: DAST-API.gitlab-ci.yml
+include:
+  - template: DAST-API.gitlab-ci.yml
 
-   variables:
-     DAST_API_PROFILE: Quick
-     DAST_API_HAR: test-api-recording.har
-     DAST_API_TARGET_URL: http://test-deployment/
-   ```
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_HAR: test-api-recording.har
+  DAST_API_TARGET_URL: http://test-deployment/
+```
 
 This is a minimal configuration for DAST API. From here you can:
 
 - [Run your first scan](#running-your-first-scan).
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
-
-WARNING:
-**NEVER** run DAST API testing against a production server. Not only can it perform *any* function that
-the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
-data. Only run DAST API against a test server.
 
 ### Postman Collection
 
@@ -282,52 +222,20 @@ Postman Collection files may contain sensitive information such as authenticatio
 and session cookies. We recommend that you review the Postman Collection file contents before adding
 them to a repository.
 
-Follow these steps to configure DAST API to use a Postman Collection file that provides
-information about the target API to test:
+#### DAST API scanning with a Postman Collection file
 
-1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
-   that's provided as part of your GitLab installation. To do so, add the following to your
-   `.gitlab-ci.yml` file:
+To configure DAST API to use a Postman Collection file that provides information about the target
+API to test:
 
-   ```yaml
-   stages:
-     - dast
-
-   include:
-     - template: DAST-API.gitlab-ci.yml
-   ```
+1. [Include](../../../ci/yaml/index.md#includetemplate)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml).
 
 1. The [configuration file](#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
 
-   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file,
-   substituting `Quick` for the profile you choose:
+   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
 
-   ```yaml
-   stages:
-     - dast
-
-   include:
-     - template: DAST-API.gitlab-ci.yml
-
-   variables:
-     DAST_API_PROFILE: Quick
-   ```
-
-1. Provide the location of the Postman Collection file. You can provide the location as a file or URL. Specify the location by adding the `DAST_API_POSTMAN_COLLECTION` variable:
-
-   ```yaml
-   stages:
-     - dast
-
-   include:
-     - template: DAST-API.gitlab-ci.yml
-
-   variables:
-     DAST_API_PROFILE: Quick
-     DAST_API_POSTMAN_COLLECTION: postman-collection_serviceA.json
-   ```
+1. Provide the location of the Postman Collection file as either a file or URL. Specify the location by adding the `DAST_API_POSTMAN_COLLECTION` variable.
 
 1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
    variable or an `environment_url.txt` file.
@@ -338,20 +246,20 @@ information about the target API to test:
    automatically parses that file to find its scan target. You can see an
    [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
-   Here's an example of using `DAST_API_TARGET_URL`:
+Complete example configuration of using a Postman collection:
 
-   ```yaml
-   stages:
-     - dast
+```yaml
+stages:
+  - dast
 
-   include:
-     - template: DAST-API.gitlab-ci.yml
+include:
+  - template: DAST-API.gitlab-ci.yml
 
-   variables:
-     DAST_API_PROFILE: Quick
-     DAST_API_POSTMAN_COLLECTION: postman-collection_serviceA.json
-     DAST_API_TARGET_URL: http://test-deployment/
-   ```
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_POSTMAN_COLLECTION: postman-collection_serviceA.json
+  DAST_API_TARGET_URL: http://test-deployment/
+```
 
 This is a minimal configuration for DAST API. From here you can:
 
@@ -359,12 +267,7 @@ This is a minimal configuration for DAST API. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-WARNING:
-**NEVER** run DAST API testing against a production server. Not only can it perform *any* function that
-the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
-data. Only run DAST API against a test server.
-
-#### Postman variables
+##### Postman variables
 
 Postman allows the developer to define placeholders that can be used in different parts of the
 requests. These placeholders are called variables, as explained in [Using variables](https://learning.postman.com/docs/sending-requests/variables/).
@@ -388,11 +291,11 @@ Postman file. For example, Postman does not export environment-scoped variables 
 file.
 
 By default, the DAST API scanner uses the Postman file to resolve Postman variable values. If a JSON file
-is set in a GitLab CI environment variable `DAST_API_POSTMAN_COLLECTION_VARIABLES`, then the JSON
+is set in a GitLab CI/CD environment variable `DAST_API_POSTMAN_COLLECTION_VARIABLES`, then the JSON
 file takes precedence to get Postman variable values.
 
-Although Postman can export environment variables into a JSON file, the format is not compatible
-with the JSON expected by `DAST_API_POSTMAN_COLLECTION_VARIABLES`.
+WARNING:
+Although Postman can export environment variables into a JSON file, the format is not compatible with the JSON expected by `DAST_API_POSTMAN_COLLECTION_VARIABLES`.
 
 Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
 
@@ -421,12 +324,12 @@ values. For example:
    }
    ```
 
-### Authentication
+## Authentication
 
 Authentication is handled by providing the authentication token as a header or cookie. You can
 provide a script that performs an authentication flow or calculates the token.
 
-#### HTTP Basic Authentication
+### HTTP Basic Authentication
 
 [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)
 is an authentication method built in to the HTTP protocol and used in conjunction with
@@ -456,23 +359,23 @@ variables:
   DAST_API_HTTP_PASSWORD: $TEST_API_PASSWORD
 ```
 
-#### Bearer Tokens
+### Bearer tokens
 
 Bearer tokens are used by several different authentication mechanisms, including OAuth2 and JSON Web
-Tokens (JWT). Bearer tokens are transmitted using the `Authorization` HTTP header. To use bearer
+Tokens (JWT). Bearer tokens are transmitted using the `Authorization` HTTP header. To use Bearer
 tokens with DAST API, you need one of the following:
 
-- A token that doesn't expire
-- A way to generate a token that lasts the length of testing
-- A Python script that DAST API can call to generate the token
+- A token that doesn't expire.
+- A way to generate a token that lasts the length of testing.
+- A Python script that DAST API can call to generate the token.
 
-##### Token doesn't expire
+#### Token doesn't expire
 
-If the bearer token doesn't expire, use the `DAST_API_OVERRIDES_ENV` variable to provide it. This
+If the Bearer token doesn't expire, use the `DAST_API_OVERRIDES_ENV` variable to provide it. This
 variable's content is a JSON snippet that provides headers and cookies to add to DAST API's
 outgoing HTTP requests.
 
-Follow these steps to provide the bearer token with `DAST_API_OVERRIDES_ENV`:
+Follow these steps to provide the Bearer token with `DAST_API_OVERRIDES_ENV`:
 
 1. [Create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables),
    for example `TEST_API_BEARERAUTH`, with the value
@@ -502,9 +405,9 @@ Follow these steps to provide the bearer token with `DAST_API_OVERRIDES_ENV`:
 1. To validate that authentication is working, run an DAST API test and review the job logs
    and the test API's application logs.
 
-##### Token generated at test runtime
+#### Token generated at test runtime
 
-If the bearer token must be generated and doesn't expire during testing, you can provide to DAST API a file containing the token. A prior stage and job, or part of the DAST API job, can
+If the Bearer token must be generated and doesn't expire during testing, you can provide DAST API a file that has the token. A prior stage and job, or part of the DAST API job, can
 generate this file.
 
 DAST API expects to receive a JSON file with the following structure:
@@ -539,14 +442,14 @@ variables:
 To validate that authentication is working, run an DAST API test and review the job logs and
 the test API's application logs.
 
-##### Token has short expiration
+#### Token has short expiration
 
-If the bearer token must be generated and expires prior to the scan's completion, you can provide a
+If the Bearer token must be generated and expires prior to the scan's completion, you can provide a
 program or script for the DAST API scanner to execute on a provided interval. The provided script runs in
 an Alpine Linux container that has Python 3 and Bash installed. If the Python script requires
 additional packages, it must detect this and install the packages at runtime.
 
-The script must create a JSON file containing the bearer token in a specific format:
+The script must create a JSON file containing the Bearer token in a specific format:
 
 ```json
 {
@@ -582,7 +485,7 @@ variables:
 
 To validate that authentication is working, run an DAST API test and review the job logs and the test API's application logs. See the [overrides section](#overrides) for more information about override commands.
 
-### Configuration files
+## Configuration files
 
 To get you started quickly, GitLab provides the configuration file
 [`gitlab-dast-api-config.yml`](https://gitlab.com/gitlab-org/security-products/analyzers/dast/-/blob/master/config/gitlab-dast-api-config.yml).
@@ -590,12 +493,12 @@ This file has several testing profiles that perform various numbers of tests. Th
 profile increases as the test numbers go up. To use a configuration file, add it to your
 repository's root as `.gitlab/gitlab-dast-api-config.yml`.
 
-#### Profiles
+### Profiles
 
 The following profiles are pre-defined in the default configuration file. Profiles
 can be added, removed, and modified by creating a custom configuration.
 
-##### Quick
+#### Quick
 
 - Application Information Check
 - Cleartext Authentication Check
@@ -610,7 +513,7 @@ can be added, removed, and modified by creating a custom configuration.
 - Token Check
 - XML Injection Check
 
-##### Full
+#### Full
 
 - Application Information Check
 - Cleartext AuthenticationCheck
@@ -630,17 +533,24 @@ can be added, removed, and modified by creating a custom configuration.
 - Token Check
 - XML Injection Check
 
-### Available CI/CD variables
+## Available CI/CD variables
 
 | CI/CD variable                                       | Description        |
 |------------------------------------------------------|--------------------|
-| `DAST_API_VERSION`                                    | Specify DAST API container version. Defaults to `latest`. |
+| `SECURE_ANALYZERS_PREFIX`                            | Specify the Docker registry base address from which to download the analyzer. |
+| `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `1`. |
+| `DAST_API_IMAGE_SUFFIX`                              | Specify a container image suffix. Defaults to none. |
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |
 |[`DAST_API_CONFIG`](#configuration-files)              | DAST API configuration file. Defaults to `.gitlab-dast-api.yml`. |
 |[`DAST_API_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
 |[`DAST_API_EXCLUDE_PATHS`](#exclude-paths)              | Exclude API URL paths from testing. |
+|[`DAST_API_EXCLUDE_URLS`](#exclude-urls)               | Exclude API URL from testing. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10. |
+|[`DAST_API_EXCLUDE_PARAMETER_ENV`](#exclude-parameters)       | JSON string containing excluded parameters. |
+|[`DAST_API_EXCLUDE_PARAMETER_FILE`](#exclude-parameters)      | Path to a JSON file containing excluded parameters. |
 |[`DAST_API_OPENAPI`](#openapi-specification)           | OpenAPI specification file or URL. |
 |[`DAST_API_OPENAPI_RELAXED_VALIDATION`](#openapi-specification) | Relax document validation. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345950) in GitLab 14.7. |
+|[`DAST_API_OPENAPI_ALL_MEDIA_TYPES`](#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
+|[`DAST_API_OPENAPI_MEDIA_TYPES`](#openapi-specification)  | Colon (`:`) separated media types accepted for testing. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
 |[`DAST_API_HAR`](#http-archive-har)                    | HTTP Archive (HAR) file. |
 |[`DAST_API_POSTMAN_COLLECTION`](#postman-collection)   | Postman Collection file. |
 |[`DAST_API_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract postman variable values. |
@@ -656,7 +566,7 @@ can be added, removed, and modified by creating a custom configuration.
 |`DAST_API_SERVICE_START_TIMEOUT`                       | How long to wait for target API to become available in seconds. Default is 300 seconds. |
 |`DAST_API_TIMEOUT`                                     | How long to wait for API responses in seconds. Default is 30 seconds. |
 
-### Overrides
+## Overrides
 
 DAST API provides a method to add or override specific items in your request, for example:
 
@@ -814,7 +724,7 @@ It is changed to:
 You can provide this JSON document as a file or environment variable. You may also provide a command
 to generate the JSON document. The command can run at intervals to support values that expire.
 
-#### Using a file
+### Using a file
 
 To provide the overrides JSON as a file, the `DAST_API_OVERRIDES_FILE` CI/CD variable is set. The path is relative to the job current working directory.
 
@@ -834,7 +744,7 @@ variables:
   DAST_API_OVERRIDES_FILE: dast-api-overrides.json
 ```
 
-#### Using a CI/CD variable
+### Using a CI/CD variable
 
 To provide the overrides JSON as a CI/CD variable, use the `DAST_API_OVERRIDES_ENV` variable.
 This allows you to place the JSON as variables that can be masked and protected.
@@ -872,7 +782,7 @@ variables:
   DAST_API_OVERRIDES_ENV: $SECRET_OVERRIDES
 ```
 
-#### Using a command
+### Using a command
 
 If the value must be generated or regenerated on expiration, you can provide a program or script for
 the DAST API scanner to execute on a specified interval. The provided command runs in an Alpine Linux
@@ -914,7 +824,7 @@ variables:
   DAST_API_OVERRIDES_INTERVAL: 300
 ```
 
-#### Debugging overrides
+### Debugging overrides
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334578) in GitLab 14.8.
 
@@ -965,10 +875,10 @@ def get_auth_response():
 # In our example, access token is retrieved from a given endpoint
 try:
 
-    # Performs a http request, response sample: 
+    # Performs a http request, response sample:
     # { "Token" : "b5638ae7-6e77-4585-b035-7d9de2e3f6b3" }
     response = get_auth_response()
-    
+
     # Check that the request is successful. may raise `requests.exceptions.HTTPError`
     response.raise_for_status()
 
@@ -995,7 +905,7 @@ except Exception as e:
     logging.error(f'Error, unknown error while retrieving access token. Error message: {e}')
     raise
 
-# computes object that holds overrides file content. 
+# computes object that holds overrides file content.
 # It uses data fetched from request
 overrides_data = {
     "headers": {
@@ -1070,7 +980,7 @@ variables:
 
 In the previous sample, you could use the script `user-pre-scan-set-up.sh` to also install new runtimes or applications that later on you could use in our overrides command.
 
-### Exclude Paths
+## Exclude Paths
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211892) in GitLab 14.0.
 
@@ -1088,7 +998,7 @@ To verify the paths are excluded, review the `Tested Operations` and `Excluded O
 2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
 ```
 
-#### Examples
+### Examples
 
 This example excludes the `/auth` resource. This does not exclude child resources (`/auth/child`).
 
@@ -1109,6 +1019,294 @@ To exclude multiple paths we use the `;` character. In this example we exclude `
 ```yaml
 variables:
   DAST_API_EXCLUDE_PATHS=/auth*;/v1/*
+```
+
+### Exclude parameters
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292196) in GitLab 14.10.
+
+While testing an API you may might want to exclude a parameter (query string, header, or body element) from testing. This may be needed because a parameter always causes a failure, slows down testing, or for other reasons. To exclude parameters, you can set one of the following variables: `DAST_API_EXCLUDE_PARAMETER_ENV` or `DAST_API_EXCLUDE_PARAMETER_FILE`.
+
+The `DAST_API_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and will not often change. Another option is the variable `DAST_API_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime with a pre script using `DAST_API_PRE_SCRIPT`.
+
+#### Exclude parameters using a JSON document
+
+The JSON document contains a JSON object, this object uses specific properties to identify which parameter should be excluded.
+You can provide the following properties to exclude specific parameters during the scanning process:
+
+- `headers`: Use this property to exclude specific headers. The property's value is an array of header names to be excluded. Names are case-insensitive.
+- `cookies`: Use this property's value to exclude specific cookies. The property's value is an array of cookie names to be excluded. Names are case-sensitive.
+- `query`: Use this property to exclude specific fields from the query string. The property's value is an array of field names from the query string to be excluded. Names are case-sensitive.
+- `body-form`: Use this property to exclude specific fields from a request that uses the media type `application/x-www-form-urlencoded`. The property's value is an array of the field names from the body to be excluded. Names are case-sensitive.
+- `body-json`: Use this property to exclude specific JSON nodes from a request that uses the media type `application/json`. The property's value is an array, each entry of the array is a [JSON Path](https://goessner.net/articles/JsonPath/) expression.
+- `body-xml`: Use this property to exclude specific XML nodes from a request that uses media type `application/xml`. The property's value is an array, each entry of the array is a [XPath v2](https://www.w3.org/TR/xpath20/) expression.
+
+Thus, the following JSON document is an example of the expected structure to exclude parameters.  
+
+```json
+{
+  "headers": [
+    "header1",
+    "header2"
+  ],
+  "cookies": [
+    "cookie1",
+    "cookie2"
+  ],
+  "query": [
+    "query-string1",
+    "query-string2"
+  ],
+  "body-form": [
+    "form-param1",
+    "form-param2"
+  ],
+  "body-json": [
+    "json-path-expression-1",
+    "json-path-expression-2"
+  ],
+  "body-xml" : [
+    "xpath-expression-1",
+    "xpath-expression-2"
+  ]
+}
+```
+
+#### Examples
+
+##### Excluding a single header
+
+To exclude the header `Upgrade-Insecure-Requests`, set the `header` property's value to an array with the header name: `[ "Upgrade-Insecure-Requests" ]`. For instance, the JSON document looks like this:
+
+```json
+{
+  "headers": [ "Upgrade-Insecure-Requests" ]
+}
+```
+
+Header names are case-insensitive, so the header name `UPGRADE-INSECURE-REQUESTS` is equivalent to `Upgrade-Insecure-Requests`.
+
+##### Excluding both a header and two cookies
+
+To exclude the header `Authorization`, and the cookies `PHPSESSID` and `csrftoken`, set the `headers` property's value to an array with header name `[ "Authorization" ]` and the `cookies` property's value to an array with the cookies' names `[ "PHPSESSID", "csrftoken" ]`. For instance, the JSON document looks like this:
+
+```json
+{
+  "headers": [ "Authorization" ],
+  "cookies": [ "PHPSESSID", "csrftoken" ]
+}
+```
+
+##### Excluding a `body-form` parameter
+
+To exclude the `password` field in a request that uses `application/x-www-form-urlencoded`, set the `body-form` property's value to an array with the field name `[ "password" ]`. For instance, the JSON document looks like this:
+
+```json
+{
+  "body-form":  [ "password" ]
+}
+```
+
+The exclude parameters uses `body-form` when the request uses a content type `application/x-www-form-urlencoded`.
+
+##### Excluding a specific JSON nodes using JSON Path 
+
+To exclude the `schema` property in the root object, set the `body-json` property's value to an array with the JSON Path expression `[ "$.schema" ]`.
+
+The JSON Path expression uses special syntax to identify JSON nodes: `$` refers to the root of the JSON document, `.` refers to the current object (in our case the root object), and the text `schema` refers to a property name. Thus, the JSON path expression `$.schema` refers to a property `schema` in the root object. 
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-json": [ "$.schema" ]
+}
+```
+
+The exclude parameters uses `body-json` when the request uses a content type `application/json`. Each entry in `body-json` is expected to be a [JSON Path expression](https://goessner.net/articles/JsonPath/). In JSON Path characters like `$`, `*`, `.` among others have special meaning. 
+
+##### Excluding multiple JSON nodes using JSON Path 
+
+To exclude the property `password` on each entry of an array of `users` at the root level, set the `body-json` property's value to an array with the JSON Path expression `[ "$.users[*].paswword" ]`.
+
+The JSON Path expression starts with `$` to refer to the root node and uses `.` to refer to the current node. Then, it uses `users` to refer to a property and the characters `[` and `]` to enclose the index in the array you want to use, instead of providing a number as an index you use `*` to specify any index. After the index reference, we find `.` which now refers to any given selected index in the array, preceded by a property name `password`. 
+
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-json": [ "$.users[*].paswword" ]
+}
+```
+
+The exclude parameters uses `body-json` when the request uses a content type `application/json`. Each entry in `body-json` is expected to be a [JSON Path expression](https://goessner.net/articles/JsonPath/). In JSON Path characters like `$`, `*`, `.` among others have special meaning. 
+
+##### Excluding a XML attribute
+
+To exclude an attribute named `isEnabled` located in the root element `credentials`, set the `body-xml` property's value to an array with the XPath expression `[ "/credentials/@isEnabled" ]`.
+
+The XPath expression `/credentials/@isEnabled`, starts with `/` to indicate the root of the XML document, then it is followed by the word `credentials` which indicates the name of the element to match. It uses a `/` to refer to a node of the previous XML element, and the character `@` to indicate that the name `isEnable` is an attribute.
+
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-xml": [ 
+    "/credentials/@isEnabled"
+  ]
+}
+```
+
+The exclude parameters uses `body-xml` when the request uses a content type `application/xml`. Each entry in `body-xml` is expected to be a [XPath v2 expression](https://www.w3.org/TR/xpath20/). In XPath expressions characters like `@`, `/`, `:`, `[`, `]` among others have special meanings. 
+
+##### Excluding a XML text's element
+
+To exclude the text of the `username` element contained in root node `credentials`, set the `body-xml` property's value to an array with the XPath expression `[/credentials/username/text()" ]`. 
+
+In the XPath expression `/credentials/username/text()`, the first character `/` refers to the root XML node, and then after it indicates an XML element's name `credentials`. Similarly, the character `/` refers to the current element, followed by a new XML element's name `username`. Last part has a `/` that refers to the current element, and uses a XPath function called `text()` which identifies the text of the current element.
+
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-xml": [ 
+    "/credentials/username/text()"
+  ]
+}
+```
+
+The exclude parameters uses `body-xml` when the request uses a content type `application/xml`. Each entry in `body-xml` is expected to be a [XPath v2 expression](https://www.w3.org/TR/xpath20/). In XPath expressions characters like `@`, `/`, `:`, `[`, `]` among others have special meanings. 
+
+##### Excluding an XML element
+
+To exclude the element `username` contained in root node `credentials`, set the `body-xml` property's value to an array with the XPath expression `[/credentials/username" ]`. 
+
+In the XPath expression `/credentials/username`, the first character `/` refers to the root XML node, and then after it indicates an XML element's name `credentials`. Similarly, the character `/` refers to the current element, followed by a new XML element's name `username`.
+
+For instance, the JSON document looks like this:
+
+```json
+{
+  "body-xml": [ 
+    "/credentials/username"
+  ]
+}
+```
+
+The exclude parameters uses `body-xml` when the request uses a content type `application/xml`. Each entry in `body-xml` is expected to be a [XPath v2 expression](https://www.w3.org/TR/xpath20/). In XPath expressions characters like `@`, `/`, `:`, `[`, `]` among others have special meanings. 
+
+##### Excluding an XML node with namespaces
+
+To exclude anXML element `login` which is defined in namespace `s`, and contained in `credentials` root node, set the `body-xml` property's value to an array with the XPath expression `[ "/credentials/s:login" ]`. 
+
+In the XPath expression `/credentials/s:login`, the first character `/` refers to the root XML node, and then after it indicates an XML element's name `credentials`. Similarly, the character `/` refers to the current element, followed by a new XML element's name `s:login`. Notice that name contains the character `:`, this character separates the namespace from the node name. 
+
+The namespace name should have been defined in the XML document which is part of the body request. You may check the namespace in the specification document HAR, OpenAPI, or Postman Collection file.
+
+```json
+{
+  "body-xml": [ 
+    "/credentials/s:login"
+  ]
+}
+```
+
+The exclude parameters uses `body-xml` when the request uses a content type `application/xml`. Each entry in `body-xml` is expected to be an [XPath v2 expression](https://www.w3.org/TR/xpath20/). In XPath, expressions characters like `@`, `/`, `:`, `[`, `]` among others have special meanings. 
+
+#### Using a JSON string
+
+To provide the exclusion JSON document set the variable `DAST_API_EXCLUDE_PARAMETER_ENV` with the JSON string. In the following example, the `.gitlab-ci.yml`, the `DAST_API_EXCLUDE_PARAMETER_ENV` variable is set to a JSON string:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_EXCLUDE_PARAMETER_ENV: '{ "headers": [ "Upgrade-Insecure-Requests" ] }'
+```
+
+#### Using a file
+
+To provide the exclusion JSON document set the variable `DAST_API_EXCLUDE_PARAMETER_FILE` with the JSON file path. The file path is relative to the job current working directory. In the following example `.gitlab-ci.yml` content, the `DAST_API_EXCLUDE_PARAMETER_FILE` variable is set to a JSON file path:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_EXCLUDE_PARAMETER_FILE: dast-api-exclude-parameters.json
+```
+
+The `dast-api-exclude-parameters.json` is a JSON document that follows the structure of [exclude parameters document](#exclude-parameters-using-a-json-document). 
+
+### Exclude URLS
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10.
+
+As an alternative to excluding by paths, you can filter by any other component in the URL by using the `DAST_API_EXCLUDE_URLS` CI/CD variable. This variable can be set in your `.gitlab-ci.yml` file. The variable can store multiple values, separated by commas (`,`). Each value is a regular expression. Because each entry is a regular expression, an entry like `.*` will exclude all URLs because it is a regular expression that matches everything.
+
+In your job output you can check if any URLs matched any provided regular expression from `DAST_API_EXCLUDE_URLS`. Matching operations are listed in the **Excluded Operations** section. Operations listed in the **Excluded Operations** should not be listed in the **Tested Operations** section. For example the following portion of a job output:
+
+```plaintext
+2021-05-27 21:51:08 [INF] API Security: --[ Tested Operations ]-------------------------
+2021-05-27 21:51:08 [INF] API Security: 201 POST http://target:7777/api/users CREATED
+2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
+2021-05-27 21:51:08 [INF] API Security: --[ Excluded Operations ]-----------------------
+2021-05-27 21:51:08 [INF] API Security: GET http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] API Security: POST http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
+```
+
+NOTE:
+Each value in `DAST_API_EXCLUDE_URLS` is a regular expression. Characters such as `.` , `*` and `$` among many others have special meanings in [regular expressions](https://en.wikipedia.org/wiki/Regular_expression#Standards).
+
+#### Examples
+
+##### Excluding a URL and child resources
+
+The following example excludes the URL `http://target/api/auth` and its child resources.
+
+```yaml
+variables:
+  DAST_API_EXCLUDE_URLS: http://target/api/auth
+```
+
+##### Excluding two URLs and allow their child resources
+
+To exclude the URLs `http://target/api/buy` and `http://target/api/sell` but allowing to scan their child resources, for instance: `http://target/api/buy/toy` or `http://target/api/sell/chair`. You could use the value `http://target/api/buy/$,http://target/api/sell/$`. This value is using two regular expressions, each of them separated by a `,` character. Hence, it contains `http://target/api/buy$` and `http://target/api/sell$`. In each regular expression, the trailing `$` character points out where the matching URL should end.
+
+```yaml
+variables:
+  DAST_API_EXCLUDE_URLS: http://target/api/buy/$,http://target/api/sell/$
+```
+
+##### Excluding two URLs and their child resources
+
+In order to exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
+
+```yaml
+variables:
+  DAST_API_EXCLUDE_URLS: http://target/api/buy,http://target/api/sell
+```
+
+##### Excluding URL using regular expressions
+
+In order to exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there. 
+
+```yaml
+variables:
+  DAST_API_EXCLUDE_URLS: https://target/api/v.*/user/create$
 ```
 
 ## Running your first scan
@@ -1165,7 +1363,7 @@ pipelines. For more information, see the [Security Dashboard documentation](../s
 Once a vulnerability is found, you can interact with it. Read more on how to
 [address the vulnerabilities](../vulnerabilities/index.md).
 
-## Handling False Positives
+### Handling False Positives
 
 False positives can be handled in several ways:
 
@@ -1177,7 +1375,7 @@ False positives can be handled in several ways:
 - Turn off the Check producing the false positive. This prevents the check from generating any
   vulnerabilities. Example checks are the SQL Injection Check, and JSON Hijacking Check.
 
-### Turn off a Check
+#### Turn off a Check
 
 Checks perform testing of a specific type and can be turned on and off for specific configuration
 profiles. The provided [configuration files](#configuration-files) define several profiles that you
@@ -1235,7 +1433,7 @@ This results in the following YAML:
         - Name: XmlInjectionCheck
 ```
 
-### Turn off an Assertion for a Check
+#### Turn off an Assertion for a Check
 
 Assertions detect vulnerabilities in tests produced by checks. Many checks support multiple Assertions such as Log Analysis, Response Analysis, and Status Code. When a vulnerability is found, the Assertion used is provided. To identify which Assertions are on by default, see the Checks default configuration in the configuration file. The section is called `Checks`.
 
@@ -1418,6 +1616,19 @@ API Security can still try to consume an OpenAPI document that does not fully co
      DAST_API_OPENAPI: test-api-specification.json
      DAST_API_OPENAPI_RELAXED_VALIDATION: On
 ```
+
+### No operation in the OpenAPI document is consuming any supported media type
+
+API Security uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error will be thrown.
+
+**Error message**
+
+- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), `Error, no operation in the OpenApi document is consuming any supported media type. Check 'OpenAPI Specification' to check the supported media types.`
+
+**Solution**
+
+1. Review supported media types in the [OpenAPI Specification](#openapi-specification) section.
+1. Edit your OpenAPI document, allowing at least a given operation to accept any of the supported media types. Alternatively, a supported media type could be set in the OpenAPI document level and get applied to all operations. This step may require changes in your application to ensure the supported media type is accepted by the application.
 
 ## Get support or request an improvement
 

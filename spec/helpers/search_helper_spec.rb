@@ -71,7 +71,7 @@ RSpec.describe SearchHelper do
         create(:group).add_owner(user)
         result = search_autocomplete_opts("gro").first
 
-        expect(result.keys).to match_array(%i[category id label url avatar_url])
+        expect(result.keys).to match_array(%i[category id value label url avatar_url])
       end
 
       it 'includes the users recently viewed issues', :aggregate_failures do
@@ -467,6 +467,12 @@ RSpec.describe SearchHelper do
   describe '#show_user_search_tab?' do
     subject { show_user_search_tab? }
 
+    let(:current_user) { build(:user) }
+
+    before do
+      allow(self).to receive(:current_user).and_return(current_user)
+    end
+
     context 'when project search' do
       before do
         @project = :some_project
@@ -481,11 +487,14 @@ RSpec.describe SearchHelper do
       end
     end
 
-    context 'when not project search' do
+    context 'when group search' do
+      before do
+        @group = :some_group
+      end
+
       context 'when current_user can read_users_list' do
         before do
-          allow(self).to receive(:current_user).and_return(:the_current_user)
-          allow(self).to receive(:can?).with(:the_current_user, :read_users_list).and_return(true)
+          allow(self).to receive(:can?).with(current_user, :read_users_list).and_return(true)
         end
 
         it { is_expected.to eq(true) }
@@ -493,8 +502,33 @@ RSpec.describe SearchHelper do
 
       context 'when current_user cannot read_users_list' do
         before do
-          allow(self).to receive(:current_user).and_return(:the_current_user)
-          allow(self).to receive(:can?).with(:the_current_user, :read_users_list).and_return(false)
+          allow(self).to receive(:can?).with(current_user, :read_users_list).and_return(false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'when global search' do
+      context 'when current_user can read_users_list' do
+        before do
+          allow(self).to receive(:can?).with(current_user, :read_users_list).and_return(true)
+        end
+
+        it { is_expected.to eq(true) }
+
+        context 'when global_search_user_tab feature flag is disabled' do
+          before do
+            stub_feature_flags(global_search_users_tab: false)
+          end
+
+          it { is_expected.to eq(false) }
+        end
+      end
+
+      context 'when current_user cannot read_users_list' do
+        before do
+          allow(self).to receive(:can?).with(current_user, :read_users_list).and_return(false)
         end
 
         it { is_expected.to eq(false) }

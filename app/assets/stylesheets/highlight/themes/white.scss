@@ -3,3 +3,8 @@
 
   @include conflict-colors('white');
 }
+
+:root {
+  --default-diff-color-deletion: #eb919b;
+  --default-diff-color-addition: #a0f5b4;
+}

@@ -126,7 +126,7 @@ describe('dashboard invalid url parameters', () => {
   });
 
   it('redirects to different time range', async () => {
-    const toUrl = `${mockProjectDir}/-/environments/1/metrics`;
+    const toUrl = `${mockProjectDir}/-/metrics?environment=1`;
     removeParams.mockReturnValueOnce(toUrl);
 
     createMountedWrapper();

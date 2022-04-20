@@ -1,0 +1,9 @@
+---
+table_name: user_interacted_projects
+classes:
+- UserInteractedProject
+feature_categories:
+- product_analytics
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/43b74afd8656df8228c19d5e5e6aee9f87abc244
+milestone: '10.6'

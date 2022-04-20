@@ -1,5 +1,5 @@
 import { isNumber } from 'lodash';
-import { __, n__ } from '../../../locale';
+import { __, n__ } from '~/locale';
 import { getDayName, parseSeconds } from './date_format_utility';
 
 const DAYS_IN_WEEK = 7;
@@ -189,13 +189,21 @@ export const getDateInFuture = (date, daysInFuture) =>
  */
 export const isValidDate = (date) => date instanceof Date && !Number.isNaN(date.getTime());
 
-/*
+/**
  * Appending T00:00:00 makes JS assume local time and prevents it from shifting the date
  * to match the user's time zone. We want to display the date in server time for now, to
  * be consistent with the "edit issue -> due date" UI.
+ *
+ * @param {String} date Date without time, e.g. `2022-03-22`
+ * @return {Date} new Date object
  */
-
 export const newDateAsLocaleTime = (date) => {
+  if (!date || typeof date !== 'string') {
+    return null;
+  }
+  if (date.includes('T')) {
+    return new Date(date);
+  }
   const suffix = 'T00:00:00';
   return new Date(`${date}${suffix}`);
 };

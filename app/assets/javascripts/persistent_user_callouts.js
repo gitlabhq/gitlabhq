@@ -12,6 +12,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-security-newsletter-callout',
   '.js-approaching-seats-count-threshold',
   '.js-storage-enforcement-banner',
+  '.js-user-over-limit-free-plan-alert',
 ];
 
 const initCallouts = () => {

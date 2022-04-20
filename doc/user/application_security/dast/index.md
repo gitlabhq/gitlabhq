@@ -278,7 +278,8 @@ page.
 You can enable or configure DAST settings using the UI. The generated settings are formatted so they
 can be conveniently pasted into the `.gitlab-ci.yml` file.
 
-1. From the project's home page, go to **Security & Compliance > Configuration**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Enable DAST** or
    **Configure DAST**.
 1. Select the desired **Scanner profile**, or select **Create scanner profile** and save a
@@ -288,12 +289,14 @@ can be conveniently pasted into the `.gitlab-ci.yml` file.
 1. Select **Generate code snippet**. A modal opens with the YAML snippet corresponding to the
    options you selected.
 1. Do one of the following:
-   1. Select **Copy code only** to copy the snippet to your clipboard.
-   1. Select **Copy code and open `.gitlab-ci.yml` file** to copy the snippet to your clipboard. The
-   CI/CD Editor then opens.
+   1. To copy the snippet to your clipboard, select **Copy code only**.
+   1. To add the snippet to your project's `.gitlab-ci.yml` file, select
+      **Copy code and open `.gitlab-ci.yml` file**. The Pipeline Editor opens.
       1. Paste the snippet into the `.gitlab-ci.yml` file.
       1. Select the **Lint** tab to confirm the edited `.gitlab-ci.yml` file is valid.
-      1. Select **Commit changes**.
+      1. Select the **Edit** tab, then select **Commit changes**.
+
+When the snippet is committed to the `.gitlab-ci.yml` file, pipelines include a DAST job.
 
 #### Crawling web applications dependent on JavaScript
 
@@ -1053,7 +1056,7 @@ To run an on-demand scan either at a scheduled date or frequency, read
 
 1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left
    sidebar.
-1. Select **New DAST scan**.
+1. Select **New scan**.
 1. Complete the **Scan name** and **Description** fields.
 1. In GitLab 13.10 and later, select the desired branch from the **Branch** dropdown.
 1. In **Scanner profile**, select a scanner profile from the dropdown.
@@ -1088,7 +1091,7 @@ To schedule a scan:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
-1. Select **New DAST scan**.
+1. Select **New scan**.
 1. Complete the **Scan name** and **Description** text boxes.
 1. In GitLab 13.10 and later, from the **Branch** dropdown list, select the desired branch.
 1. In the **Scanner profile** section, from the dropdown list, select a scanner profile.

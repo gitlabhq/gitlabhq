@@ -8,8 +8,8 @@ RSpec.describe 'Setting labels of a merge request' do
   let(:current_user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
-  let(:label) { create(:label, project: project) }
-  let(:label2) { create(:label, project: project) }
+  let(:label) { create(:label, title: "a", project: project) }
+  let(:label2) { create(:label, title: "b", project: project) }
   let(:input) { { label_ids: [GitlabSchema.id_from_object(label).to_s] } }
 
   let(:mutation) do
@@ -81,12 +81,12 @@ RSpec.describe 'Setting labels of a merge request' do
       merge_request.update!(labels: [label2])
     end
 
-    it 'sets the labels, without removing others' do
+    it 'sets the labels and resets labels to keep the title ordering, without removing others' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_label_nodes.count).to eq(2)
-      expect(mutation_label_nodes).to contain_exactly({ 'id' => label.to_global_id.to_s }, { 'id' => label2.to_global_id.to_s })
+      expect(mutation_label_nodes).to eq([{ 'id' => label.to_global_id.to_s }, { 'id' => label2.to_global_id.to_s }])
     end
   end
 

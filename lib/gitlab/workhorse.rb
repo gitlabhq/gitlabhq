@@ -226,6 +226,13 @@ module Gitlab
         end
       end
 
+      def detect_content_type
+        [
+          Gitlab::Workhorse::DETECT_HEADER,
+          'true'
+        ]
+      end
+
       protected
 
       # This is the outermost encoding of a senddata: header. It is safe for

@@ -15,7 +15,6 @@ class GroupsController < Groups::ApplicationController
 
   prepend_before_action(only: [:show, :issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
-  prepend_before_action :ensure_export_enabled, only: [:export, :download_export]
   prepend_before_action :check_captcha, only: :create, if: -> { captcha_enabled? }
 
   before_action :authenticate_user!, only: [:new, :create]
@@ -33,7 +32,6 @@ class GroupsController < Groups::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:vue_issues_list, @group, default_enabled: :yaml)
-    push_frontend_feature_flag(:iteration_cadences, @group, default_enabled: :yaml)
   end
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
@@ -61,7 +59,8 @@ class GroupsController < Groups::ApplicationController
   feature_category :importers, [:export, :download_export]
 
   urgency :high, [:unfoldered_environment_names]
-  urgency :low, [:merge_requests]
+  # TODO: Set #show to higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/334795
+  urgency :low, [:merge_requests, :show]
 
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)
@@ -218,6 +217,8 @@ class GroupsController < Groups::ApplicationController
 
     @has_projects = group_projects.exists?
 
+    set_sort_order
+
     respond_to do |format|
       format.html
     end
@@ -293,7 +294,7 @@ class GroupsController < Groups::ApplicationController
       :setup_for_company,
       :jobs_to_be_done,
       :crm_enabled
-    ]
+    ] + [group_feature_attributes: group_feature_attributes]
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -336,10 +337,6 @@ class GroupsController < Groups::ApplicationController
     scope = params[:action] == :download_export ? @group : nil
 
     check_rate_limit!(prefixed_action, scope: [current_user, scope].compact)
-  end
-
-  def ensure_export_enabled
-    render_404 unless Feature.enabled?(:group_import_export, @group, default_enabled: true)
   end
 
   private
@@ -399,6 +396,10 @@ class GroupsController < Groups::ApplicationController
     return if params[:parent_id]
 
     experiment(:require_verification_for_namespace_creation, user: current_user).track(:start_create_group)
+  end
+
+  def group_feature_attributes
+    []
   end
 end
 

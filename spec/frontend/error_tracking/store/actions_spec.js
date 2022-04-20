@@ -28,9 +28,9 @@ describe('Sentry common store actions', () => {
   const params = { endpoint, redirectUrl, status };
 
   describe('updateStatus', () => {
-    it('should handle successful status update', (done) => {
+    it('should handle successful status update', async () => {
       mock.onPut().reply(200, {});
-      testAction(
+      await testAction(
         actions.updateStatus,
         params,
         {},
@@ -41,20 +41,15 @@ describe('Sentry common store actions', () => {
           },
         ],
         [],
-        () => {
-          done();
-          expect(visitUrl).toHaveBeenCalledWith(redirectUrl);
-        },
       );
+      expect(visitUrl).toHaveBeenCalledWith(redirectUrl);
     });
 
-    it('should handle unsuccessful status update', (done) => {
+    it('should handle unsuccessful status update', async () => {
       mock.onPut().reply(400, {});
-      testAction(actions.updateStatus, params, {}, [], [], () => {
-        expect(visitUrl).not.toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledTimes(1);
-        done();
-      });
+      await testAction(actions.updateStatus, params, {}, [], []);
+      expect(visitUrl).not.toHaveBeenCalled();
+      expect(createFlash).toHaveBeenCalledTimes(1);
     });
   });
 

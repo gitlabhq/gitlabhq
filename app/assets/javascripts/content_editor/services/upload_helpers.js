@@ -5,6 +5,16 @@ import { extractFilename, readFileAsDataURL } from './utils';
 
 export const acceptedMimes = {
   image: ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'],
+  audio: [
+    'audio/basic',
+    'audio/mid',
+    'audio/mpeg',
+    'audio/x-aiff',
+    'audio/ogg',
+    'audio/vorbis',
+    'audio/vnd.wav',
+  ],
+  video: ['video/mp4', 'video/quicktime'],
 };
 
 const extractAttachmentLinkUrl = (html) => {
@@ -50,11 +60,11 @@ export const uploadFile = async ({ uploadsPath, renderMarkdown, file }) => {
   return extractAttachmentLinkUrl(rendered);
 };
 
-const uploadImage = async ({ editor, file, uploadsPath, renderMarkdown, eventHub }) => {
+const uploadContent = async ({ type, editor, file, uploadsPath, renderMarkdown, eventHub }) => {
   const encodedSrc = await readFileAsDataURL(file);
   const { view } = editor;
 
-  editor.commands.setImage({ uploading: true, src: encodedSrc });
+  editor.commands.insertContent({ type, attrs: { uploading: true, src: encodedSrc } });
 
   const { state } = view;
   const position = state.selection.from - 1;
@@ -74,7 +84,7 @@ const uploadImage = async ({ editor, file, uploadsPath, renderMarkdown, eventHub
   } catch (e) {
     editor.commands.deleteRange({ from: position, to: position + 1 });
     eventHub.$emit('alert', {
-      message: __('An error occurred while uploading the image. Please try again.'),
+      message: __('An error occurred while uploading the file. Please try again.'),
       variant: VARIANT_DANGER,
     });
   }
@@ -114,10 +124,12 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
 export const handleFileEvent = ({ editor, file, uploadsPath, renderMarkdown, eventHub }) => {
   if (!file) return false;
 
-  if (acceptedMimes.image.includes(file?.type)) {
-    uploadImage({ editor, file, uploadsPath, renderMarkdown, eventHub });
+  for (const [type, mimes] of Object.entries(acceptedMimes)) {
+    if (mimes.includes(file?.type)) {
+      uploadContent({ type, editor, file, uploadsPath, renderMarkdown, eventHub });
 
-    return true;
+      return true;
+    }
   }
 
   uploadAttachment({ editor, file, uploadsPath, renderMarkdown, eventHub });

@@ -227,9 +227,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
         end
 
         context 'for confidential notes' do
-          before_all do
-            issue_note.update!(confidential: true)
-          end
+          let_it_be(:issue_note) { create(:note_on_issue, project: project, note: "issue note", confidential: true) }
 
           it 'falls back to note channel' do
             expect(::Slack::Messenger).to execute_with_options(channel: ['random'])

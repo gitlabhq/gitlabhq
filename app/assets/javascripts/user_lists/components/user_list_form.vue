@@ -84,7 +84,7 @@ export default {
           <gl-form-input id="user-list-name" v-model="name" data-testid="user-list-name" required />
         </gl-form-group>
         <div :class="$options.classes.actionContainer">
-          <gl-button variant="success" data-testid="save-user-list" @click="submit">
+          <gl-button variant="confirm" data-testid="save-user-list" @click="submit">
             {{ saveButtonLabel }}
           </gl-button>
           <gl-button :href="cancelPath" data-testid="user-list-cancel">

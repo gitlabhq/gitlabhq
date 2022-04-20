@@ -43,6 +43,11 @@ class InstanceClusterablePresenter < ClusterablePresenter
     connect_admin_clusters_path
   end
 
+  override :new_cluster_docs_path
+  def new_cluster_docs_path
+    nil
+  end
+
   override :create_user_clusters_path
   def create_user_clusters_path
     create_user_admin_clusters_path

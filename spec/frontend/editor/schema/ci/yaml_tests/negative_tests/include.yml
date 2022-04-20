@@ -1,0 +1,17 @@
+# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70779
+stages:
+  - prepare
+
+# missing file property
+childPipeline:
+  stage: prepare
+  trigger:
+    include:
+      - project: 'my-group/my-pipeline-library'
+
+# missing project property
+childPipeline2:
+  stage: prepare
+  trigger:
+    include:
+      - file: '.gitlab-ci.yml'

@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'json'
+
+TESTCASE_FORMAT = %r{https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/\d+}.freeze
+
+testcases = []
+missing_testcases = []
+formatted_duplicates = []
+testcase_format_errors = []
+missing_message = %"\n*** The following tests are missing testcase links:\n\n%s\n"
+duplicate_message = %"\n*** The following tests have duplicate testcase links:\n\n%s"
+format_message = %"\n*** The following testcase links are incorrectly formatted:\n\n%s\n"
+
+test_metadata_file = ARGV.shift
+
+unless test_metadata_file
+  puts "usage: #{__FILE__} <test_metadata_file>"
+  exit 1
+end
+
+file = File.read(test_metadata_file)
+
+unless file =~ %r{.*\"examples\":\[\{\"id\"\:.*}
+  puts "\nRspec output did not match regex. Check test-metadata.json file.\n"
+  exit 1
+end
+
+puts "\nAnalyzing testcase data...\n"
+
+data_hash = JSON.parse(file)
+tests = data_hash['examples']
+
+tests.each do |test|
+  next if test['id'] =~ %r{.\/qa\/specs\/features\/sanity\/*}
+
+  if test['testcase']
+    testcases.push(["#{test['testcase']}", "#{test['id']} - #{test['full_description']}"])
+
+    unless TESTCASE_FORMAT =~ test['testcase']
+      testcase_format_errors.push(
+        <<~FORMAT_ERRORS
+           ==> #{test['testcase']} in file: #{test['id']} with title:
+               #{test['full_description']}
+        FORMAT_ERRORS
+      )
+    end
+  else
+    missing_testcases.push(" ==> #{test['id']} - #{test['full_description']}\n")
+  end
+end
+
+testcase_list = testcases.group_by {|testcase| testcase.shift}.transform_values(&:flatten)
+
+duplicates = testcase_list.select {|k, v| v.count > 1}
+
+unless duplicates.empty?
+  duplicates.each do |duplicate|
+    formatted_duplicates.append(
+      <<~DUPLICATES
+        Testcase link #{duplicate[0]} is used in too many tests:
+         ==> #{duplicate[1].join("\n ==> ")}\n
+      DUPLICATES
+    )
+  end
+end
+
+if formatted_duplicates.empty? && missing_testcases.empty? && testcase_format_errors.empty?
+  puts "\nNo errors found."
+else
+  puts "\n*** Testcase link violations detected! ***\n"
+  puts duplicate_message % formatted_duplicates.join("\n") unless formatted_duplicates.empty?
+  puts missing_message % missing_testcases.join("\n") unless missing_testcases.empty?
+  puts format_message % testcase_format_errors.join("\n") unless testcase_format_errors.empty?
+  puts "\n*** Please link a unique test case from the GitLab project for the errors listed above.\n"
+  puts "    See: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/best_practices.html#link-a-test-to-its-test-case."
+  exit 1
+end

@@ -1,0 +1,9 @@
+---
+table_name: description_versions
+classes:
+- DescriptionVersion
+feature_categories:
+- design_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17147
+milestone: '12.4'

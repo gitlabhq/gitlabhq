@@ -11,12 +11,21 @@ but if they are not available you can still quickly parse
 [GitLab logs](../logs.md) in JSON format
 (the default in GitLab 12.0 and later) using [`jq`](https://stedolan.github.io/jq/).
 
+NOTE:
+Spefically for summarising error events and basic usage statistics,
+the GitLab Support Team provides the specialised
+[`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
+
 ## What is JQ?
 
 As noted in its [manual](https://stedolan.github.io/jq/manual/), `jq` is a command-line JSON processor. The following examples
 include use cases targeted for parsing GitLab log files.
 
 ## Parsing Logs
+
+The examples listed below address their respective log files by
+their relative Omnibus paths and default filenames.
+Find the respective full paths in the [GitLab logs sections](../logs.md#production_jsonlog).
 
 ### General Commands
 
@@ -61,7 +70,7 @@ zcat some_json.log.25.gz | (head -1; tail -1) | jq '.time'
 grep -hR <correlationID> | jq -c -R 'fromjson?' | jq -C -s 'sort_by(.time)'  | less -R
 ```
 
-### Parsing `production_json.log` and `api_json.log`
+### Parsing `gitlab-rails/production_json.log` and `gitlab-rails/api_json.log`
 
 #### Find all requests with a 5XX status code
 
@@ -111,7 +120,7 @@ jq 'select(.queue_duration > 10000)' <FILE>
 jq -s 'map(select(.gitaly_calls != null)) | sort_by(-.gitaly_calls) | limit(10; .[])' <FILE>
 ```
 
-### Parsing `production_json.log`
+### Parsing `gitlab-rails/production_json.log`
 
 #### Print the top three controller methods by request volume and their three longest durations
 
@@ -127,7 +136,7 @@ CT: 2435   METHOD: MetricsController#index DURS: 299.29,  284.01,  158.57
 CT: 1328   METHOD: Projects::NotesController#index DURS: 403.99,  386.29,  384.39
 ```
 
-### Parsing `api_json.log`
+### Parsing `gitlab-rails/api_json.log`
 
 #### Print top three routes with request count and their three longest durations
 
@@ -143,7 +152,21 @@ CT: 297  ROUTE: /api/:version/projects/:id/repository/tags       DURS: 731.39,  
 CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02,  979.68,  958.21
 ```
 
+### Parsing `gitlab-rails/geo.log`
+
+#### Find most common Geo sync errors
+
+If [the `geo:status` Rake task](../geo/replication/troubleshooting.md#sync-status-rake-task)
+repeatedly reports that some items never reach 100%,
+the following command helps to focus on the most common errors.
+
+```shell
+jq --raw-output 'select(.severity == "ERROR") | [.project_path, .message] | @tsv' geo.log | sort | uniq -c | sort | tail
+```
+
 ### Parsing `gitaly/current`
+
+The following examples are useful to [troubleshoot Gitaly](../gitaly/troubleshooting.md).
 
 #### Find all Gitaly requests sent from web UI
 
@@ -185,7 +208,7 @@ jq --raw-output --slurp '
       .[2]."grpc.time_ms",
       .[0]."grpc.request.glProjectPath"
     ]
-  | @sh' /var/log/gitlab/gitaly/current \
+  | @sh' current \
 | awk 'BEGIN { printf "%7s %10s %10s %10s\t%s\n", "CT", "MAX DURS", "", "", "PROJECT" }
   { printf "%7u %7u ms, %7u ms, %7u ms\t%s\n", $1, $2, $3, $4, $5 }'
 ```
@@ -203,12 +226,12 @@ jq --raw-output --slurp '
 #### Find all projects affected by a fatal Git problem
 
 ```shell
-grep "fatal: " /var/log/gitlab/gitaly/current | \
+grep "fatal: " current | \
     jq '."grpc.request.glProjectPath"' | \
     sort | uniq
 ```
 
-### Parsing `gitlab-shell.log`
+### Parsing `gitlab-shell/gitlab-shell.log`
 
 For investigating Git calls via SSH, from [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab-shell/-/merge_requests/367).
 
@@ -226,7 +249,7 @@ jq --raw-output --slurp '
   | sort_by(-length)
   | limit(20; .[])
   | "count: \(length)\tuser: \(.[0].username)\tproject: \(.[0].gl_project_path)" ' \
-  /var/log/gitlab/gitlab-shell/gitlab-shell.log
+  gitlab-shell.log
 ```
 
 Find the top 20 calls by project, user, and command:
@@ -244,5 +267,5 @@ jq --raw-output --slurp '
   | sort_by(-length)
   | limit(20; .[])
   | "count: \(length)\tcommand: \(.[0].command)\tuser: \(.[0].username)\tproject: \(.[0].gl_project_path)" ' \
-  /var/log/gitlab/gitlab-shell/gitlab-shell.log
+  gitlab-shell.log
 ```

@@ -52,7 +52,7 @@ The following vulnerability scanners and their databases are regularly updated:
 | Secure scanning tool                                            | Vulnerabilities database updates |
 |:----------------------------------------------------------------|:---------------------------------|
 | [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. For more details, see [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database-update). |
-| [Dependency Scanning](dependency_scanning/index.md)          | Relies on `bundler-audit` (for Ruby gems), `retire.js` (for npm packages), and `gemnasium` (the GitLab tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Security Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
+| [Dependency Scanning](dependency_scanning/index.md)          | Relies on `bundler-audit` (for Ruby gems), `retire.js` (for npm packages), and `gemnasium` (the GitLab tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | The scanning engine is updated on a periodic basis. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L1). The scanning rules are downloaded at scan runtime. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | Relies exclusively on [the tools GitLab wraps](sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |
 
@@ -218,7 +218,7 @@ security issues:
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](../../update/deprecations.md#vulnerability-check)
-for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
 [Security Approval Policies](policies/scan-result-policies.md).
 
 To prevent a merge request introducing a security vulnerability in a project, enable the
@@ -381,6 +381,12 @@ Learn more on overriding security jobs:
 
 All the security scanning tools define their stage, so this error can occur with all of them.
 
+## Self managed installation options
+
+For self managed installations, you can choose to run most of the GitLab security scanners even when [not connected to the internet](offline_deployments/index.md).
+
+Self managed installations can also run the security scanners on a GitLab Runner [running inside OpenShift](../../install/openshift_and_gitlab/index.md).
+
 ## Security report validation
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
@@ -474,6 +480,7 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
 - [Compliance framework pipelines](../project/settings/#compliance-pipeline-configuration)
   are recommended when:
 
+  - Scan execution enforcement is required for SAST or Secret Detection scans that use custom rulesets.
   - Scan execution enforcement is required for SAST IaC, Dependency Scanning,
     License Compliance, API Fuzzing, or Coverage-guided Fuzzing.
   - Scan execution enforcement is required for scanners external to GitLab.
@@ -482,8 +489,17 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
 - [Scan execution policies](policies/scan-execution-policies.md)
   are recommended when:
 
-  - Scan execution enforcement is required for DAST, SAST, Secret Detection, or Container Scanning.
+  - Scan execution enforcement is required for DAST.
+  - Scan execution enforcement is required for Container Scanning with project-specific variable
+    customizations. To accomplish this, users must create a separate security policy per project.
   - Scans are required to run on a regular, scheduled cadence.
+
+- Either solution can be used equally well when:
+
+  - Scan execution enforcement is required for SAST or Secret Detection when custom rulesets are not
+    used.
+  - Scan execution enforcement is required for Container Scanning with no project-specific variable
+    customizations.
 
 Additional details about the differences between the two solutions are outlined below:
 

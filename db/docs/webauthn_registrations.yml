@@ -1,0 +1,9 @@
+---
+table_name: webauthn_registrations
+classes:
+- WebauthnRegistration
+feature_categories:
+- authentication_and_authorization
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9af97ee69a36de1dc4e73f4030d6316d3f0a82c5
+milestone: '13.2'

@@ -509,6 +509,14 @@ RSpec.describe GroupsController, factory_default: :keep do
         expect(assigns(:issues)).to eq([issue_1])
       end
     end
+
+    it 'saves the sort order to user preferences' do
+      stub_feature_flags(vue_issues_list: true)
+
+      get :issues, params: { id: group.to_param, sort: 'priority' }
+
+      expect(user.reload.user_preference.issues_sort).to eq('priority')
+    end
   end
 
   describe 'GET #merge_requests', :sidekiq_might_not_need_inline do
@@ -1076,19 +1084,6 @@ RSpec.describe GroupsController, factory_default: :keep do
       enable_admin_mode!(admin)
     end
 
-    context 'when the group export feature flag is not enabled' do
-      before do
-        sign_in(admin)
-        stub_feature_flags(group_import_export: false)
-      end
-
-      it 'returns a not found error' do
-        post :export, params: { id: group.to_param }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'when the user does not have permission to export the group' do
       before do
         sign_in(guest)
@@ -1186,19 +1181,6 @@ RSpec.describe GroupsController, factory_default: :keep do
           .to eq 'Group export link has expired. Please generate a new export from your group settings.'
 
         expect(response).to redirect_to(edit_group_path(group))
-      end
-    end
-
-    context 'when the group export feature flag is not enabled' do
-      before do
-        sign_in(admin)
-        stub_feature_flags(group_import_export: false)
-      end
-
-      it 'returns a not found error' do
-        post :export, params: { id: group.to_param }
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

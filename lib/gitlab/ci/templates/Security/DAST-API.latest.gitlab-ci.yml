@@ -27,11 +27,12 @@ variables:
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
   #
   DAST_API_VERSION: "1"
+  DAST_API_IMAGE_SUFFIX: ""
   DAST_API_IMAGE: api-fuzzing
 
 dast_api:
   stage: dast
-  image: $SECURE_ANALYZERS_PREFIX/$DAST_API_IMAGE:$DAST_API_VERSION
+  image: $SECURE_ANALYZERS_PREFIX/$DAST_API_IMAGE:$DAST_API_VERSION$DAST_API_IMAGE_SUFFIX
   allow_failure: true
   rules:
     - if: $DAST_API_DISABLED
@@ -39,6 +40,10 @@ dast_api:
     - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH &&
           $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        DAST_API_IMAGE_SUFFIX: "-fips"
     - if: $CI_COMMIT_BRANCH
   script:
     - /peach/analyzer-dast-api
@@ -50,3 +55,5 @@ dast_api:
       - gl-*.log
     reports:
       dast: gl-dast-api-report.json
+
+# end

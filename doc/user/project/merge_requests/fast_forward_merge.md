@@ -13,14 +13,17 @@ merge commits. In such cases, the fast-forward merge is the perfect candidate.
 With fast-forward merge requests, you can retain a linear Git history and a way
 to accept merge requests without creating merge commits.
 
-## Overview
-
 When the fast-forward merge
 ([`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)) setting
 is enabled, no merge commits are created and all merges are fast-forwarded,
 which means that merging is only allowed if the branch can be fast-forwarded.
 
 When a fast-forward merge is not possible, the user is given the option to rebase.
+
+NOTE:
+Projects using the fast-forward merge strategy can't filter merge requests
+[by deployment date](../../search/index.md#filtering-merge-requests-by-environment-or-deployment-date),
+because no merge commit is created.
 
 ## Enabling fast-forward merges
 

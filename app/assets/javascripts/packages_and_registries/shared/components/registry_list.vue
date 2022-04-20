@@ -13,7 +13,8 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      default: '',
+      required: false,
     },
     isLoading: {
       type: Boolean,

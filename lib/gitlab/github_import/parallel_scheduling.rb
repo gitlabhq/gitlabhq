@@ -72,7 +72,7 @@ module Gitlab
       # Imports all objects in parallel by scheduling a Sidekiq job for every
       # individual object.
       def parallel_import
-        if Feature.enabled?(:spread_parallel_import, default_enabled: :yaml) && parallel_import_batch.present?
+        if parallel_import_batch.present?
           spread_parallel_import
         else
           parallel_import_deprecated
@@ -209,7 +209,11 @@ module Gitlab
       # Default batch settings for parallel import (can be redefined in Importer classes)
       # Example: { size: 100, delay: 1.minute }
       def parallel_import_batch
-        {}
+        if Feature.enabled?(:distribute_github_parallel_import, default_enabled: :yaml)
+          { size: 1000, delay: 1.minute }
+        else
+          {}
+        end
       end
 
       def abort_on_failure

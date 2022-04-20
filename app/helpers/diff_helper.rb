@@ -60,6 +60,18 @@ module DiffHelper
     html.join.html_safe
   end
 
+  def diff_nomappinginraw_line(line, first_line_num_class, second_line_num_class, content_line_class)
+    css_class = ''
+    css_class = 'old' if line.type == 'old-nomappinginraw'
+    css_class = 'new' if line.type == 'new-nomappinginraw'
+
+    html = [content_tag(:td, '', class: [*first_line_num_class, css_class])]
+    html << content_tag(:td, '', class: [*second_line_num_class, css_class]) if second_line_num_class
+    html << content_tag(:td, diff_line_content(line.rich_text), class: [*content_line_class, 'nomappinginraw', css_class])
+
+    html.join.html_safe
+  end
+
   def diff_line_content(line)
     if line.blank?
       "&nbsp;".html_safe
@@ -74,7 +86,7 @@ module DiffHelper
   end
 
   def diff_link_number(line_type, match, text)
-    line_type == match || text == 0 ? " " : text
+    line_type == match ? " " : text
   end
 
   def parallel_diff_discussions(left, right, diff_file)
@@ -167,26 +179,20 @@ module DiffHelper
     }
   end
 
+  def diff_file_stats_data(diff_file)
+    old_blob = diff_file.old_blob
+    new_blob = diff_file.new_blob
+    {
+      old_size: old_blob&.size,
+      new_size: new_blob&.size,
+      added_lines: diff_file.added_lines,
+      removed_lines: diff_file.removed_lines,
+      viewer_name: diff_file.viewer.partial_name
+    }
+  end
+
   def editable_diff?(diff_file)
     !diff_file.deleted_file? && @merge_request && @merge_request.source_project
-  end
-
-  def diff_file_changed_icon(diff_file)
-    if diff_file.deleted_file?
-      "file-deletion"
-    elsif diff_file.new_file?
-      "file-addition"
-    else
-      "file-modified"
-    end
-  end
-
-  def diff_file_changed_icon_color(diff_file)
-    if diff_file.deleted_file?
-      "danger"
-    elsif diff_file.new_file?
-      "success"
-    end
   end
 
   def render_overflow_warning?(diffs_collection)
@@ -248,23 +254,6 @@ module DiffHelper
     toggle_whitespace_link(url, options)
   end
 
-  def diff_files_data(diff_files)
-    diffs_map = diff_files.map do |f|
-      {
-          href: "##{hexdigest(f.file_path)}",
-          title: f.new_path,
-          name: f.file_path,
-          path: diff_file_path_text(f),
-          icon: diff_file_changed_icon(f),
-          iconColor: "#{diff_file_changed_icon_color(f)}",
-          added: f.added_lines,
-          removed: f.removed_lines
-      }
-    end
-
-    diffs_map.to_json
-  end
-
   def hide_whitespace?
     params[:w] == '1'
   end
@@ -276,14 +265,6 @@ module DiffHelper
   def toggle_whitespace_link(url, options)
     options[:class] = [*options[:class], 'btn gl-button btn-default'].join(' ')
     link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
-  end
-
-  def diff_file_path_text(diff_file, max: 60)
-    path = diff_file.new_path
-
-    return path unless path.size > max && max > 3
-
-    "...#{path[-(max - 3)..]}"
   end
 
   def code_navigation_path(diffs)

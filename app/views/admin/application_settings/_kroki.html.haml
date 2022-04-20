@@ -9,14 +9,13 @@
       = _('Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki.')
       = link_to _('Learn more.'), help_page_path('administration/integration/kroki.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-kroki-settings'), html: { class: 'fieldset-form', id: 'kroki-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-kroki-settings'), html: { class: 'fieldset-form', id: 'kroki-settings' } do |f|
       = form_errors(@application_setting) if expanded
 
       %fieldset
         .form-group
-          .form-check
-            = f.check_box :kroki_enabled, class: 'form-check-input'
-            = f.label :kroki_enabled, _('Enable Kroki'), class: 'form-check-label'
+          = f.gitlab_ui_checkbox_component :kroki_enabled,
+            _('Enable Kroki')
         .form-group
           = f.label :kroki_url, 'Kroki URL', class: 'label-bold'
           = f.text_field :kroki_url, class: 'form-control gl-form-input', placeholder: 'http://your-kroki-instance:8000'
@@ -30,9 +29,7 @@
             - container_link_url = 'https://docs.kroki.io/kroki/setup/install/#images'
             - container_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: container_link_url }
             = html_escape(_('To use the additional formats, you must start the required %{container_link_start}companion containers%{container_link_end}.')) % { container_link_start: container_link_start, container_link_end: '</a>'.html_safe }
-          - kroki_available_formats.each do |format|
-            .form-check
-              = f.check_box format[:name], class: 'form-check-input'
-              = f.label format[:name], format[:label], class: 'form-check-label'
+        - kroki_available_formats.each do |format|
+          = f.gitlab_ui_checkbox_component format[:name], format[:label]
 
       = f.submit _('Save changes'), class: "btn gl-button btn-confirm"

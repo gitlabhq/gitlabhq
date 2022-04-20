@@ -1,0 +1,9 @@
+---
+table_name: project_tracing_settings
+classes:
+- ProjectTracingSetting
+feature_categories:
+- projects
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7903
+milestone: '11.5'

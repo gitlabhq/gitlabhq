@@ -27,17 +27,11 @@ RSpec.describe 'Multiple view Diffs', :js do
 
   context 'when :rendered_diffs_viewer is off' do
     context 'and diff does not have ipynb' do
-      include_examples "no multiple viewers", 'ddd0f15ae83993f5cb66a927a28673882e99100b'
+      it_behaves_like "no multiple viewers", 'ddd0f15ae83993f5cb66a927a28673882e99100b'
     end
 
     context 'and diff has ipynb' do
-      include_examples "no multiple viewers", '5d6ed1503801ca9dc28e95eeb85a7cf863527aee'
-
-      it 'shows the transformed diff' do
-        diff = page.find('.diff-file, .file-holder', match: :first)
-
-        expect(diff['innerHTML']).to include('%% Cell type:markdown id:0aac5da7-745c-4eda-847a-3d0d07a1bb9b tags:')
-      end
+      it_behaves_like "no multiple viewers", '5d6ed1503801ca9dc28e95eeb85a7cf863527aee'
     end
   end
 
@@ -45,14 +39,28 @@ RSpec.describe 'Multiple view Diffs', :js do
     let(:feature_flag_on) { true }
 
     context 'and diff does not include ipynb' do
-      include_examples "no multiple viewers", 'ddd0f15ae83993f5cb66a927a28673882e99100b'
+      it_behaves_like "no multiple viewers", 'ddd0f15ae83993f5cb66a927a28673882e99100b'
+
+      context 'and in inline diff' do
+        let(:ref) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+
+        it 'does not change display for non-ipynb' do
+          expect(page).to have_selector line_with_content('new', 1)
+        end
+      end
+
+      context 'and in parallel diff' do
+        let(:ref) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+
+        it 'does not change display for non-ipynb' do
+          page.find('#parallel-diff-btn').click
+
+          expect(page).to have_selector line_with_content('new', 1)
+        end
+      end
     end
 
     context 'and opening a diff with ipynb' do
-      context 'but the changes are not renderable' do
-        include_examples "no multiple viewers", 'a867a602d2220e5891b310c07d174fbe12122830'
-      end
-
       it 'loads the rendered diff as hidden' do
         diff = page.find('.diff-file, .file-holder', match: :first)
 
@@ -76,10 +84,55 @@ RSpec.describe 'Multiple view Diffs', :js do
         expect(classes_for_element(diff, 'toHideBtn')).not_to include('selected')
         expect(classes_for_element(diff, 'toShowBtn')).to include('selected')
       end
+
+      it 'transforms the diff' do
+        diff = page.find('.diff-file, .file-holder', match: :first)
+
+        expect(diff['innerHTML']).to include('%% Cell type:markdown id:0aac5da7-745c-4eda-847a-3d0d07a1bb9b tags:')
+      end
+
+      context 'on parallel view' do
+        before do
+          page.find('#parallel-diff-btn').click
+        end
+
+        it 'lines without mapping cannot receive comments' do
+          expect(page).not_to have_selector('td.line_content.nomappinginraw ~ td.diff-line-num > .add-diff-note')
+          expect(page).to have_selector('td.line_content:not(.nomappinginraw) ~ td.diff-line-num > .add-diff-note')
+        end
+
+        it 'lines numbers without mapping are empty' do
+          expect(page).not_to have_selector('td.nomappinginraw + td.diff-line-num')
+          expect(page).to have_selector('td.nomappinginraw + td.diff-line-num', visible: false)
+        end
+
+        it 'transforms the diff' do
+          diff = page.find('.diff-file, .file-holder', match: :first)
+
+          expect(diff['innerHTML']).to include('%% Cell type:markdown id:0aac5da7-745c-4eda-847a-3d0d07a1bb9b tags:')
+        end
+      end
+
+      context 'on inline view' do
+        it 'lines without mapping cannot receive comments' do
+          expect(page).not_to have_selector('tr.line_holder[class$="nomappinginraw"] > td.diff-line-num > .add-diff-note')
+          expect(page).to have_selector('tr.line_holder:not([class$="nomappinginraw"]) > td.diff-line-num > .add-diff-note')
+        end
+
+        it 'lines numbers without mapping are empty' do
+          elements = page.all('tr.line_holder[class$="nomappinginraw"] > td.diff-line-num').map { |e| e.text(:all) }
+
+          expect(elements).to all(be == "")
+        end
+      end
     end
   end
 
   def classes_for_element(node, data_diff_entity, visible: true)
     node.find("[data-diff-toggle-entity=\"#{data_diff_entity}\"]", visible: visible)[:class]
+  end
+
+  def line_with_content(old_or_new, line_number)
+    "td.#{old_or_new}_line.diff-line-num[data-linenumber=\"#{line_number}\"] > a[data-linenumber=\"#{line_number}\"]"
   end
 end

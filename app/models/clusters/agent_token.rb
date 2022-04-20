@@ -18,7 +18,7 @@ module Clusters
     validates :description, length: { maximum: 1024 }
     validates :name, presence: true, length: { maximum: 255 }
 
-    scope :order_last_used_at_desc, -> { order(::Gitlab::Database.nulls_last_order('last_used_at', 'DESC')) }
+    scope :order_last_used_at_desc, -> { order(arel_table[:last_used_at].desc.nulls_last) }
     scope :with_status, -> (status) { where(status: status) }
 
     enum status: {

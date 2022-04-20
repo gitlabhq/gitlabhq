@@ -97,6 +97,12 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 - secret token
 - authentication token
 
+## air gap, air-gapped
+
+Use **offline environment** to describe installations that have physical barriers or security policies that prevent or limit internet access. Do not use **air gap**, **air gapped**, or **air-gapped**. For example:
+
+- The firewall policies in an offline environment prevent the computer from accessing the internet.
+
 ## allow, enable
 
 Try to avoid **allow** and **enable**, unless you are talking about security-related features.
@@ -261,10 +267,16 @@ Do not use **Developer permissions**. A user who is assigned the Developer role 
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
-
 ## disallow
 
 Use **prevent** instead of **disallow**. ([Vale](../testing.md#vale) rule: [`Substitutions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Substitutions.yml))
+
+## downgrade
+
+To be more upbeat and precise, do not use **downgrade**. Focus instead on the action the user is taking.
+
+- For changing to earlier GitLab versions, use [**roll back**](#roll-back).
+- For changing to lower GitLab tiers, use **change the subscription tier**.
 
 ## dropdown list
 
@@ -729,11 +741,30 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 
 Use title case for **Repository Mirroring**.
 
+## respectively
+
+Avoid **respectively** and be more precise instead.
+
+Use:
+
+- To create a user, select **Create user**. For an existing user, select **Save changes**.
+
+Instead of:
+
+- Select **Create user** or **Save changes** if you created a new user or
+  edited an existing one respectively.
+
 ## roles
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
 Roles are not the same as [**access levels**](#access-level).
+
+## roll back
+
+Use **roll back** for changing a GitLab version to an earlier one.
+
+Do not use **roll back** for licensing or subscriptions. Use **change the subscription tier** instead.
 
 ## runner, runners
 
@@ -921,6 +952,33 @@ Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) 
 
 Do not use **type** if you can avoid it. Use **enter** instead.
 
+## update
+
+Use **update** for installing a newer **patch** version of the software only. For example:
+
+- Update GitLab from 14.9 to 14.9.1.
+
+Do not use **update** for any other case. Instead, use **upgrade**.
+
+## upgrade
+
+Use **upgrade** for:
+
+- Choosing a higher subscription tier (Premium or Ultimate).
+- Installing a newer **major** (13.0, 14.0) or **minor** (13.8, 14.5) version of GitLab.
+
+For example:
+
+- Upgrade to GitLab Ultimate.
+- Upgrade GitLab from 14.0 to 14.1.
+- Upgrade GitLab from 14.0 to 15.0.
+
+Use caution with the phrase **Upgrade GitLab** without any other text.
+Ensure the surrounding text clarifies whether
+you're talking about the product version or the subscription tier.
+
+See also [downgrade](#downgrade) and [roll back](#roll-back).
+
 ## useful
 
 Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
@@ -971,7 +1029,7 @@ Do not use **yet** when talking about the product or its features. The documenta
 
 Sometimes you might need to use **yet** when writing a task. If you use
 **yet**, ensure the surrounding phrases are written
-in present tense, active voice. 
+in present tense, active voice.
 
 [View guidance about how to write about future features](index.md#promising-features-in-future-versions).
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))

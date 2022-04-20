@@ -11,7 +11,9 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
     style_src_values = Array.wrap(p.directives['style-src']) | %w('self' 'unsafe-inline')
     # rubocop: enable Lint/PercentStringArray
 
-    p.frame_ancestors :self, 'https://*.atlassian.net'
+    # *.jira.com is needed for some legacy Jira Cloud instances, new ones will use *.atlassian.net
+    # https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/
+    p.frame_ancestors :self, 'https://*.atlassian.net', 'https://*.jira.com'
     p.script_src(*script_src_values)
     p.style_src(*style_src_values)
   end

@@ -166,31 +166,29 @@ describe('setFilters', () => {
 });
 
 describe('performSearch', () => {
-  it('should dispatch setFilters, fetchLists and resetIssues action', (done) => {
-    testAction(
+  it('should dispatch setFilters, fetchLists and resetIssues action', () => {
+    return testAction(
       actions.performSearch,
       {},
       {},
       [],
       [{ type: 'setFilters', payload: {} }, { type: 'fetchLists' }, { type: 'resetIssues' }],
-      done,
     );
   });
 });
 
 describe('setActiveId', () => {
-  it('should commit mutation SET_ACTIVE_ID', (done) => {
+  it('should commit mutation SET_ACTIVE_ID', () => {
     const state = {
       activeId: inactiveId,
     };
 
-    testAction(
+    return testAction(
       actions.setActiveId,
       { id: 1, sidebarType: 'something' },
       state,
       [{ type: types.SET_ACTIVE_ID, payload: { id: 1, sidebarType: 'something' } }],
       [],
-      done,
     );
   });
 });
@@ -219,10 +217,10 @@ describe('fetchLists', () => {
 
   const formattedLists = formatBoardLists(queryResponse.data.group.board.lists);
 
-  it('should commit mutations RECEIVE_BOARD_LISTS_SUCCESS on success', (done) => {
+  it('should commit mutations RECEIVE_BOARD_LISTS_SUCCESS on success', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
-    testAction(
+    return testAction(
       actions.fetchLists,
       {},
       state,
@@ -233,14 +231,13 @@ describe('fetchLists', () => {
         },
       ],
       [],
-      done,
     );
   });
 
-  it('should commit mutations RECEIVE_BOARD_LISTS_FAILURE on failure', (done) => {
+  it('should commit mutations RECEIVE_BOARD_LISTS_FAILURE on failure', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
 
-    testAction(
+    return testAction(
       actions.fetchLists,
       {},
       state,
@@ -250,11 +247,10 @@ describe('fetchLists', () => {
         },
       ],
       [],
-      done,
     );
   });
 
-  it('dispatch createList action when backlog list does not exist and is not hidden', (done) => {
+  it('dispatch createList action when backlog list does not exist and is not hidden', () => {
     queryResponse = {
       data: {
         group: {
@@ -269,7 +265,7 @@ describe('fetchLists', () => {
     };
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
-    testAction(
+    return testAction(
       actions.fetchLists,
       {},
       state,
@@ -280,7 +276,6 @@ describe('fetchLists', () => {
         },
       ],
       [{ type: 'createList', payload: { backlog: true } }],
-      done,
     );
   });
 
@@ -951,10 +946,10 @@ describe('fetchItemsForList', () => {
     });
   });
 
-  it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_SUCCESS on success', (done) => {
+  it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_SUCCESS on success', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
-    testAction(
+    return testAction(
       actions.fetchItemsForList,
       { listId },
       state,
@@ -973,14 +968,13 @@ describe('fetchItemsForList', () => {
         },
       ],
       [],
-      done,
     );
   });
 
-  it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_FAILURE on failure', (done) => {
+  it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_FAILURE on failure', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
 
-    testAction(
+    return testAction(
       actions.fetchItemsForList,
       { listId },
       state,
@@ -996,7 +990,6 @@ describe('fetchItemsForList', () => {
         { type: types.RECEIVE_ITEMS_FOR_LIST_FAILURE, payload: listId },
       ],
       [],
-      done,
     );
   });
 });
@@ -1398,8 +1391,8 @@ describe('setAssignees', () => {
   const node = { username: 'name' };
 
   describe('when succeeds', () => {
-    it('calls the correct mutation with the correct values', (done) => {
-      testAction(
+    it('calls the correct mutation with the correct values', () => {
+      return testAction(
         actions.setAssignees,
         { assignees: [node], iid: '1' },
         { commit: () => {} },
@@ -1410,7 +1403,6 @@ describe('setAssignees', () => {
           },
         ],
         [],
-        done,
       );
     });
   });
@@ -1728,7 +1720,7 @@ describe('setActiveItemSubscribed', () => {
     projectPath: 'gitlab-org/gitlab-test',
   };
 
-  it('should commit subscribed status', (done) => {
+  it('should commit subscribed status', () => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
         updateIssuableSubscription: {
@@ -1746,7 +1738,7 @@ describe('setActiveItemSubscribed', () => {
       value: subscribedState,
     };
 
-    testAction(
+    return testAction(
       actions.setActiveItemSubscribed,
       input,
       { ...state, ...getters },
@@ -1757,7 +1749,6 @@ describe('setActiveItemSubscribed', () => {
         },
       ],
       [],
-      done,
     );
   });
 
@@ -1783,7 +1774,7 @@ describe('setActiveItemTitle', () => {
     projectPath: 'h/b',
   };
 
-  it('should commit title after setting the issue', (done) => {
+  it('should commit title after setting the issue', () => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
         updateIssuableTitle: {
@@ -1801,7 +1792,7 @@ describe('setActiveItemTitle', () => {
       value: testTitle,
     };
 
-    testAction(
+    return testAction(
       actions.setActiveItemTitle,
       input,
       { ...state, ...getters },
@@ -1812,7 +1803,6 @@ describe('setActiveItemTitle', () => {
         },
       ],
       [],
-      done,
     );
   });
 
@@ -1829,14 +1819,14 @@ describe('setActiveItemConfidential', () => {
   const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeBoardItem: mockIssue };
 
-  it('set confidential value on board item', (done) => {
+  it('set confidential value on board item', () => {
     const payload = {
       itemId: getters.activeBoardItem.id,
       prop: 'confidential',
       value: true,
     };
 
-    testAction(
+    return testAction(
       actions.setActiveItemConfidential,
       true,
       { ...state, ...getters },
@@ -1847,7 +1837,6 @@ describe('setActiveItemConfidential', () => {
         },
       ],
       [],
-      done,
     );
   });
 });
@@ -1876,10 +1865,10 @@ describe('fetchGroupProjects', () => {
     },
   };
 
-  it('should commit mutations REQUEST_GROUP_PROJECTS and RECEIVE_GROUP_PROJECTS_SUCCESS on success', (done) => {
+  it('should commit mutations REQUEST_GROUP_PROJECTS and RECEIVE_GROUP_PROJECTS_SUCCESS on success', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
-    testAction(
+    return testAction(
       actions.fetchGroupProjects,
       {},
       state,
@@ -1894,14 +1883,13 @@ describe('fetchGroupProjects', () => {
         },
       ],
       [],
-      done,
     );
   });
 
-  it('should commit mutations REQUEST_GROUP_PROJECTS and RECEIVE_GROUP_PROJECTS_FAILURE on failure', (done) => {
+  it('should commit mutations REQUEST_GROUP_PROJECTS and RECEIVE_GROUP_PROJECTS_FAILURE on failure', () => {
     jest.spyOn(gqlClient, 'query').mockRejectedValue();
 
-    testAction(
+    return testAction(
       actions.fetchGroupProjects,
       {},
       state,
@@ -1915,16 +1903,15 @@ describe('fetchGroupProjects', () => {
         },
       ],
       [],
-      done,
     );
   });
 });
 
 describe('setSelectedProject', () => {
-  it('should commit mutation SET_SELECTED_PROJECT', (done) => {
+  it('should commit mutation SET_SELECTED_PROJECT', () => {
     const project = mockGroupProjects[0];
 
-    testAction(
+    return testAction(
       actions.setSelectedProject,
       project,
       {},
@@ -1935,7 +1922,6 @@ describe('setSelectedProject', () => {
         },
       ],
       [],
-      done,
     );
   });
 });

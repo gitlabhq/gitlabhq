@@ -87,7 +87,7 @@ Alternatively, projects that are marked for removal can be deleted immediately. 
 
 ## Configure project visibility defaults
 
-To set the default [visibility levels for new projects](../../../public_access/public_access.md):
+To set the default [visibility levels for new projects](../../public_access.md):
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
@@ -112,7 +112,7 @@ To set the default visibility levels for new [snippets](../../snippets.md):
 1. Select **Save changes**.
 
 For more details on snippet visibility, read
-[Project visibility](../../../public_access/public_access.md).
+[Project visibility](../../public_access.md).
 
 ## Configure group visibility defaults
 
@@ -146,7 +146,7 @@ To restrict visibility levels for projects, snippets, and selected pages:
 1. Select **Save changes**.
 
 For more details on project visibility, see
-[Project visibility](../../../public_access/public_access.md).
+[Project visibility](../../public_access.md).
 
 ## Configure allowed import sources
 
@@ -162,7 +162,7 @@ You can specify from which hosting sites users can [import their projects](../..
 ## Enable project export
 
 To enable the export of
-[projects and their data](../../../user/project/settings/import_export.md#export-a-project-and-its-data):
+[projects and their data](../../project/settings/import_export.md#export-a-project-and-its-data):
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.

@@ -1,6 +1,6 @@
 <script>
 import { uniqueId } from 'lodash';
-import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 
@@ -8,11 +8,12 @@ export default {
   components: {
     GlButton,
     GlModal,
+    GlSprintf,
   },
   directives: {
     GlModal: GlModalDirective,
   },
-  inject: ['path'],
+  inject: ['path', 'name'],
   data() {
     return {
       modalId: uniqueId('remove-topic-avatar-'),
@@ -25,8 +26,8 @@ export default {
   },
   i18n: {
     remove: __('Remove avatar'),
-    title: __('Confirm remove avatar'),
-    body: __('Avatar will be removed. Are you sure?'),
+    title: __('Remove topic avatar'),
+    body: __('Topic avatar for %{name} will be removed. This cannot be undone.'),
   },
   modal: {
     actionPrimary: {
@@ -57,7 +58,9 @@ export default {
       :modal-id="modalId"
       size="sm"
       @primary="deleteApplication"
-      >{{ $options.i18n.body }}
+      ><gl-sprintf :message="$options.i18n.body"
+        ><template #name>{{ name }}</template></gl-sprintf
+      >
       <form ref="deleteForm" method="post" :action="path">
         <input type="hidden" name="_method" value="delete" />
         <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />

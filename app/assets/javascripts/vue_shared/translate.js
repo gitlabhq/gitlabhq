@@ -1,4 +1,4 @@
-import { __, n__, s__, sprintf } from '../locale';
+import { __, n__, s__, sprintf } from '~/locale';
 
 export default (Vue) => {
   Vue.mixin({

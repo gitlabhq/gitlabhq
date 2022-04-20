@@ -92,7 +92,7 @@ module Gitlab
 
       def simple_serialize
         subject.as_json(
-          tree.merge(include: nil, preloads: nil))
+          tree.merge(include: nil, preloads: nil, unsafe: true))
       end
 
       def serialize_includes

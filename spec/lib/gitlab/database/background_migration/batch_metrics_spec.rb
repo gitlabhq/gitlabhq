@@ -10,7 +10,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchMetrics do
       expect(batch_metrics.timings).to be_empty
 
       expect(Gitlab::Metrics::System).to receive(:monotonic_time)
-        .exactly(6).times
         .and_return(0.0, 111.0, 200.0, 290.0, 300.0, 410.0)
 
       batch_metrics.time_operation(:my_label) do
@@ -26,6 +25,35 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchMetrics do
       end
 
       expect(batch_metrics.timings).to eq(my_label: [111.0, 110.0], my_other_label: [90.0])
+    end
+  end
+
+  describe '#instrument_operation' do
+    it 'tracks duration and affected rows' do
+      expect(batch_metrics.timings).to be_empty
+      expect(batch_metrics.affected_rows).to be_empty
+
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time)
+        .and_return(0.0, 111.0, 200.0, 290.0, 300.0, 410.0, 420.0, 450.0)
+
+      batch_metrics.instrument_operation(:my_label) do
+        3
+      end
+
+      batch_metrics.instrument_operation(:my_other_label) do
+        42
+      end
+
+      batch_metrics.instrument_operation(:my_label) do
+        2
+      end
+
+      batch_metrics.instrument_operation(:my_other_label) do
+        :not_an_integer
+      end
+
+      expect(batch_metrics.timings).to eq(my_label: [111.0, 110.0], my_other_label: [90.0, 30.0])
+      expect(batch_metrics.affected_rows).to eq(my_label: [3, 2], my_other_label: [42])
     end
   end
 end

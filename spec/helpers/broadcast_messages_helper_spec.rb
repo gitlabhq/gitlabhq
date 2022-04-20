@@ -115,36 +115,7 @@ RSpec.describe BroadcastMessagesHelper do
     end
 
     it 'includes the current message' do
-      allow(helper).to receive(:broadcast_message_style).and_return(nil)
-
       expect(helper.broadcast_message(current_broadcast_message)).to include 'Current Message'
-    end
-
-    it 'includes custom style' do
-      allow(helper).to receive(:broadcast_message_style).and_return('foo')
-
-      expect(helper.broadcast_message(current_broadcast_message)).to include 'style="foo"'
-    end
-  end
-
-  describe 'broadcast_message_style' do
-    it 'defaults to no style' do
-      broadcast_message = spy
-
-      expect(helper.broadcast_message_style(broadcast_message)).to eq ''
-    end
-
-    it 'allows custom style for banner messages' do
-      broadcast_message = BroadcastMessage.new(color: '#f2dede', font: '#b94a48', broadcast_type: "banner")
-
-      expect(helper.broadcast_message_style(broadcast_message))
-        .to match('background-color: #f2dede; color: #b94a48')
-    end
-
-    it 'does not add style for notification messages' do
-      broadcast_message = BroadcastMessage.new(color: '#f2dede', broadcast_type: "notification")
-
-      expect(helper.broadcast_message_style(broadcast_message)).to eq ''
     end
   end
 

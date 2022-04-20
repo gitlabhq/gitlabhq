@@ -530,9 +530,17 @@ module QA
         storage_repositories[2..-3]
       end
 
+      def modify_repo_access_time(node, repo_path, update_time)
+        repo = "/var/opt/gitlab/git-data/repositories/#{repo_path}"
+        shell(%{
+          docker exec --user git #{node} bash -c 'find #{repo} -exec touch -d "#{update_time}" {} \\;'
+        })
+      end
+
       def add_repo_to_disk(node, repo_path)
         cmd = "GIT_DIR=. git init --initial-branch=main /var/opt/gitlab/git-data/repositories/#{repo_path}"
         shell "docker exec --user git #{node} bash -c '#{cmd}'"
+        modify_repo_access_time(node, repo_path, "24 hours ago")
       end
 
       def remove_repo_from_disk(repo_path)

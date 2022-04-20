@@ -300,13 +300,16 @@ disable enforcement. For more information, see the documentation on configuring
    ```toml
    listen_addr = '0.0.0.0:8075'
 
-   internal_socket_dir = '/var/opt/gitlab/gitaly'
+   runtime_dir = '/var/opt/gitlab/gitaly'
 
    [logging]
    format = 'json'
    level = 'info'
    dir = '/var/log/gitaly'
    ```
+
+    For GitLab 14.9 and earlier, set `internal_socket_dir = '/var/opt/gitlab/gitaly'` instead
+    of `runtime_dir`.
 
 1. Append the following to `/home/git/gitaly/config.toml` for each respective Gitaly server:
 

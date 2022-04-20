@@ -1,0 +1,9 @@
+---
+table_name: geo_repository_updated_events
+classes:
+- Geo::RepositoryUpdatedEvent
+feature_categories:
+- geo_replication
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/71cc57b1e4b7721c93107357517235a18f7ba8e2
+milestone: '9.3'

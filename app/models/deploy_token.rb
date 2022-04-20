@@ -14,6 +14,11 @@ class DeployToken < ApplicationRecord
 
   default_value_for(:expires_at) { Forever.date }
 
+  # Do NOT use this `user` for the authentication/authorization of the deploy tokens.
+  # It's for the auditing purpose on Credential Inventory, only.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/353467#note_859774246 for more information.
+  belongs_to :user, foreign_key: :creator_id, optional: true
+
   has_many :project_deploy_tokens, inverse_of: :deploy_token
   has_many :projects, through: :project_deploy_tokens
 

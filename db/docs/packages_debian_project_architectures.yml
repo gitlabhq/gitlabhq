@@ -1,0 +1,9 @@
+---
+table_name: packages_debian_project_architectures
+classes:
+- Packages::Debian::ProjectArchitecture
+feature_categories:
+- package_registry
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51265
+milestone: '13.8'

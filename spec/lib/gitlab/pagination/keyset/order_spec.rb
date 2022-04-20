@@ -262,8 +262,8 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'year',
             column_expression: table['year'],
-            order_expression: Gitlab::Database.nulls_last_order('year', :asc),
-            reversed_order_expression: Gitlab::Database.nulls_first_order('year', :desc),
+            order_expression: table[:year].asc.nulls_last,
+            reversed_order_expression: table[:year].desc.nulls_first,
             order_direction: :asc,
             nullable: :nulls_last,
             distinct: false
@@ -271,8 +271,8 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'month',
             column_expression: table['month'],
-            order_expression: Gitlab::Database.nulls_last_order('month', :asc),
-            reversed_order_expression: Gitlab::Database.nulls_first_order('month', :desc),
+            order_expression: table[:month].asc.nulls_last,
+            reversed_order_expression: table[:month].desc.nulls_first,
             order_direction: :asc,
             nullable: :nulls_last,
             distinct: false
@@ -328,8 +328,8 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'year',
             column_expression: table['year'],
-            order_expression: Gitlab::Database.nulls_first_order('year', :asc),
-            reversed_order_expression: Gitlab::Database.nulls_last_order('year', :desc),
+            order_expression: table[:year].asc.nulls_first,
+            reversed_order_expression: table[:year].desc.nulls_last,
             order_direction: :asc,
             nullable: :nulls_first,
             distinct: false
@@ -337,9 +337,9 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'month',
             column_expression: table['month'],
-            order_expression: Gitlab::Database.nulls_first_order('month', :asc),
+            order_expression: table[:month].asc.nulls_first,
             order_direction: :asc,
-            reversed_order_expression: Gitlab::Database.nulls_last_order('month', :desc),
+            reversed_order_expression: table[:month].desc.nulls_last,
             nullable: :nulls_first,
             distinct: false
           ),
@@ -438,6 +438,47 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
           { "id" => 2, "year" => 2011, "month" => 0 },
           { "id" => 6, "year" => 2012, "month" => 0 }
         ])
+      end
+    end
+
+    context 'when ordering by the named function LOWER' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'title',
+            column_expression: Arel::Nodes::NamedFunction.new("LOWER", [table['title'].desc]),
+            order_expression: table['title'].lower.desc,
+            nullable: :not_nullable,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id',
+            column_expression: table['id'],
+            order_expression: table['id'].desc,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
+      end
+
+      let(:table_data) do
+        <<-SQL
+      VALUES (1,  'A')
+        SQL
+      end
+
+      let(:query) do
+        <<-SQL
+          SELECT id, title
+          FROM (#{table_data}) my_table (id, title)
+          ORDER BY #{order};
+        SQL
+      end
+
+      subject { run_query(query) }
+
+      it "uses downcased value for encoding and decoding a cursor" do
+        expect(order.cursor_attributes_for_node(subject.first)['title']).to eq("a")
       end
     end
 

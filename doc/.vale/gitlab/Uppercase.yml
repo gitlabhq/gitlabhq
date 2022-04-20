@@ -22,6 +22,7 @@ exceptions:
   - ARN
   - ASCII
   - AWS
+  - BMP
   - BSD
   - CAS
   - CDN
@@ -69,6 +70,7 @@ exceptions:
   - GID
   - GIF
   - GKE
+  - GLFM
   - GNU
   - GPG
   - GPL
@@ -85,6 +87,7 @@ exceptions:
   - IAM
   - IANA
   - IBM
+  - ICO
   - IDE
   - IID
   - IMAP
@@ -124,9 +127,9 @@ exceptions:
   - PEM
   - PEP
   - PGP
+  - PHP
   - PID
   - PKCS
-  - PHP
   - PNG
   - POSIX
   - POST
@@ -136,6 +139,7 @@ exceptions:
   - RBAC
   - RDP
   - RDS
+  - RDS
   - REST
   - RFC
   - RHEL
@@ -143,7 +147,6 @@ exceptions:
   - RPM
   - RPS
   - RSA
-  - RDS
   - RSS
   - RTC
   - RVM
@@ -161,6 +164,7 @@ exceptions:
   - SFTP
   - SHA
   - SLA
+  - SLI
   - SMS
   - SMTP
   - SOC
@@ -168,6 +172,7 @@ exceptions:
   - SPDX
   - SPF
   - SQL
+  - SRE
   - SSD
   - SSG
   - SSH
@@ -185,8 +190,8 @@ exceptions:
   - TOML
   - TOTP
   - TTL
-  - UID
   - UDP
+  - UID
   - UID
   - UNIX
   - URI
@@ -198,6 +203,7 @@ exceptions:
   - VCS
   - VPC
   - VPN
+  - WEBP
   - WIP
   - WSL
   - XML

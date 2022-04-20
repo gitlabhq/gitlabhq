@@ -1,11 +1,8 @@
 import Sortable from 'sortablejs';
-import {
-  getBoardSortableDefaultOptions,
-  sortableStart,
-} from '~/boards/mixins/sortable_default_options';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
+import { getSortableDefaultOptions, sortableStart } from '~/sortable/utils';
 
 const updateIssue = (url, { move_before_id, move_after_id }) =>
   axios
@@ -28,7 +25,7 @@ const initManualOrdering = () => {
 
   Sortable.create(
     issueList,
-    getBoardSortableDefaultOptions({
+    getSortableDefaultOptions({
       scroll: true,
       fallbackTolerance: 1,
       dataIdAttr: 'data-id',

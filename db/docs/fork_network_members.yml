@@ -1,0 +1,9 @@
+---
+table_name: fork_network_members
+classes:
+- ForkNetworkMember
+feature_categories:
+- source_code_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3098
+milestone: '10.1'

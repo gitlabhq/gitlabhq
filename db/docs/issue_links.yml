@@ -1,0 +1,9 @@
+---
+table_name: issue_links
+classes:
+- IssueLink
+feature_categories:
+- team_planning
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/7afdb31770f927cf4fcca98ab675e015f39f8479
+milestone: '9.4'

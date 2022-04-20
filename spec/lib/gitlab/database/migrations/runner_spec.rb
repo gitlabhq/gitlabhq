@@ -124,4 +124,16 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
       expect(metadata).to match('version' => described_class::SCHEMA_VERSION)
     end
   end
+
+  describe '.background_migrations' do
+    it 'is a TestBackgroundRunner' do
+      expect(described_class.background_migrations).to be_a(Gitlab::Database::Migrations::TestBackgroundRunner)
+    end
+
+    it 'is configured with a result dir of /background_migrations' do
+      runner = described_class.background_migrations
+
+      expect(runner.result_dir).to eq(described_class::BASE_RESULT_DIR.join( 'background_migrations'))
+    end
+  end
 end

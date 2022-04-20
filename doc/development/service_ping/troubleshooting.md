@@ -28,4 +28,4 @@ For results about an investigation conducted into an unexpected drop in Service 
 
 ### Troubleshooting data warehouse layer
 
-Reach out to the [Data team](https://about.gitlab.com/handbook/business-technology/data-team) to ask about current state of data warehouse. On their handbook page there is a [section with contact details](https://about.gitlab.com/handbook/business-technology/data-team/#how-to-connect-with-us).
+Reach out to the [Data team](https://about.gitlab.com/handbook/business-technology/data-team/) to ask about current state of data warehouse. On their handbook page there is a [section with contact details](https://about.gitlab.com/handbook/business-technology/data-team/#how-to-connect-with-us).

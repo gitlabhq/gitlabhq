@@ -6,7 +6,7 @@ module Ci
 
     def runner_status_icon(runner, size: 16, icon_class: '')
       status = runner.status
-      active = runner.active
+      contacted_at = runner.contacted_at
 
       title = ''
       icon = 'warning-solid'
@@ -14,22 +14,20 @@ module Ci
 
       case status
       when :online
-        if active
-          title = s_("Runners|Runner is online, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }
-          icon = 'status-active'
-          span_class = 'gl-text-green-500'
-        else
-          title = s_("Runners|Runner is paused, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }
-          icon = 'status-paused'
-          span_class = 'gl-text-gray-600'
-        end
+        title = s_("Runners|Runner is online; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) }
+        icon = 'status-active'
+        span_class = 'gl-text-green-500'
       when :not_connected, :never_contacted
-        title = s_("Runners|New runner, has not contacted yet")
+        title = s_("Runners|Runner has never contacted this instance")
         icon = 'warning-solid'
       when :offline
-        title = s_("Runners|Runner is offline, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }
+        title = s_("Runners|Runner is offline; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) }
         icon = 'status-failed'
         span_class = 'gl-text-red-500'
+      when :stale
+        # runner may have contacted (or not) and be stale: consider both cases.
+        title = contacted_at ? s_("Runners|Runner is stale; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) } : s_("Runners|Runner is stale; it has never contacted this instance")
+        icon = 'warning-solid'
       end
 
       content_tag(:span, class: span_class, title: title, data: { toggle: 'tooltip', container: 'body', testid: 'runner_status_icon', qa_selector: "runner_status_#{status}_content" }) do
@@ -65,7 +63,9 @@ module Ci
         # Runner install help page is external, located at
         # https://gitlab.com/gitlab-org/gitlab-runner
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
-        registration_token: Gitlab::CurrentSettings.runners_registration_token
+        registration_token: Gitlab::CurrentSettings.runners_registration_token,
+        online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
       }
     end
 
@@ -85,7 +85,9 @@ module Ci
         registration_token: group.runners_token,
         group_id: group.id,
         group_full_path: group.full_path,
-        runner_install_help_page: 'https://docs.gitlab.com/runner/install/'
+        runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
+        online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
       }
     end
 

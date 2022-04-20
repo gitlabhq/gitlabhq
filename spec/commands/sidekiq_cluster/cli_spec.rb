@@ -41,6 +41,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
   end
 
   let(:supervisor) { instance_double(Gitlab::SidekiqCluster::SidekiqProcessSupervisor) }
+  let(:metrics_cleanup_service) { instance_double(Prometheus::CleanupMultiprocDirService, execute: nil) }
 
   before do
     stub_env('RAILS_ENV', 'test')
@@ -54,6 +55,8 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
     allow(Gitlab::ProcessManagement).to receive(:write_pid)
     allow(Gitlab::SidekiqCluster::SidekiqProcessSupervisor).to receive(:instance).and_return(supervisor)
     allow(supervisor).to receive(:supervise)
+
+    allow(Prometheus::CleanupMultiprocDirService).to receive(:new).and_return(metrics_cleanup_service)
   end
 
   after do
@@ -300,6 +303,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             allow(Gitlab::SidekiqCluster).to receive(:start).and_return([])
           end
 
+          it 'wipes the metrics directory before starting workers' do
+            expect(metrics_cleanup_service).to receive(:execute).ordered
+            expect(Gitlab::SidekiqCluster).to receive(:start).ordered.and_return([])
+
+            cli.run(%w(foo))
+          end
+
           context 'when there are no sidekiq_health_checks settings set' do
             let(:sidekiq_exporter_enabled) { true }
 
@@ -379,7 +389,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             with_them do
               specify do
                 if start_metrics_server
-                  expect(MetricsServer).to receive(:fork).with('sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: true, reset_signals: trapped_signals)
+                  expect(MetricsServer).to receive(:fork).with('sidekiq', metrics_dir: metrics_dir, reset_signals: trapped_signals)
                 else
                   expect(MetricsServer).not_to receive(:fork)
                 end

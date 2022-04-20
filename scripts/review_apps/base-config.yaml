@@ -1,3 +1,6 @@
+safe-to-evict: &safe-to-evict
+  cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+
 global:
   appConfig:
     enableUsagePing: false
@@ -29,6 +32,8 @@ gitlab:
       storageClass: ssd
     nodeSelector:
       preemptible: "false"
+    podAnnotations:
+      <<: *safe-to-evict
   gitlab-exporter:
     enabled: false
   mailroom:
@@ -107,6 +112,8 @@ gitlab-runner:
       memory: 150M
   nodeSelector:
     preemptible: "true"
+  podAnnotations:
+    <<: *safe-to-evict
 minio:
   resources:
     requests:
@@ -117,6 +124,8 @@ minio:
       memory: 280M
   nodeSelector:
     preemptible: "true"
+  podAnnotations:
+      <<: *safe-to-evict
 nginx-ingress:
   controller:
     config:
@@ -159,6 +168,8 @@ postgresql:
   master:
     nodeSelector:
       preemptible: "false"
+    podAnnotations:
+      <<: *safe-to-evict
 prometheus:
   install: false
 redis:
@@ -174,6 +185,8 @@ redis:
   master:
     nodeSelector:
       preemptible: "true"
+    podAnnotations:
+      <<: *safe-to-evict
 registry:
   hpa:
     minReplicas: 1

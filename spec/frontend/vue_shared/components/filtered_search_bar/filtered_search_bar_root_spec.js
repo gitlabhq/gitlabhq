@@ -26,7 +26,6 @@ import {
   tokenValueMilestone,
   tokenValueMembership,
   tokenValueConfidential,
-  tokenValueEmpty,
 } from './mock_data';
 
 jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', () => ({
@@ -207,33 +206,14 @@ describe('FilteredSearchBarRoot', () => {
     });
   });
 
-  describe('watchers', () => {
-    describe('filterValue', () => {
-      it('emits component event `onFilter` with empty array and false when filter was never selected', async () => {
-        wrapper = createComponent({ initialFilterValue: [tokenValueEmpty] });
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          initialRender: false,
-          filterValue: [tokenValueEmpty],
-        });
+  describe('events', () => {
+    it('emits component event `onFilter` with empty array and true when initially selected filter value was cleared', async () => {
+      wrapper = createComponent({ initialFilterValue: [tokenValueLabel] });
 
-        await nextTick();
-        expect(wrapper.emitted('onFilter')[0]).toEqual([[], false]);
-      });
+      wrapper.find(GlFilteredSearch).vm.$emit('clear');
 
-      it('emits component event `onFilter` with empty array and true when initially selected filter value was cleared', async () => {
-        wrapper = createComponent({ initialFilterValue: [tokenValueLabel] });
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          initialRender: false,
-          filterValue: [tokenValueEmpty],
-        });
-
-        await nextTick();
-        expect(wrapper.emitted('onFilter')[0]).toEqual([[], true]);
-      });
+      await nextTick();
+      expect(wrapper.emitted('onFilter')[0]).toEqual([[], true]);
     });
   });
 

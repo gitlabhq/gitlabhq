@@ -1,0 +1,9 @@
+---
+table_name: merge_request_blocks
+classes:
+- MergeRequestBlock
+feature_categories:
+- source_code_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/df778038981ae49cb7c0fec0a60f89abf801c5f0
+milestone: '12.0'

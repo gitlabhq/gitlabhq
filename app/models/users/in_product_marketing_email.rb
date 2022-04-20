@@ -26,12 +26,17 @@ module Users
       invite_team: 8
     }, _suffix: true
 
+    # Tracks we don't send emails for (e.g. unsuccessful experiment). These
+    # are kept since we already have DB records that use the enum value.
+    INACTIVE_TRACK_NAMES = %w(invite_team).freeze
+    ACTIVE_TRACKS = tracks.except(*INACTIVE_TRACK_NAMES)
+
     scope :without_track_and_series, -> (track, series) do
       users = User.arel_table
       product_emails = arel_table
 
       join_condition = users[:id].eq(product_emails[:user_id])
-        .and(product_emails[:track]).eq(tracks[track])
+        .and(product_emails[:track]).eq(ACTIVE_TRACKS[track])
         .and(product_emails[:series]).eq(series)
 
       arel_join = users.join(product_emails, Arel::Nodes::OuterJoin).on(join_condition)

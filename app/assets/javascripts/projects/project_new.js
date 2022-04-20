@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import DEFAULT_PROJECT_TEMPLATES from 'ee_else_ce/projects/default_project_templates';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '../lib/utils/constants';
+import { ENTER_KEY } from '../lib/utils/keys';
 import axios from '../lib/utils/axios_utils';
 import {
   convertToTitleCase,
@@ -14,6 +15,7 @@ import {
 let hasUserDefinedProjectPath = false;
 let hasUserDefinedProjectName = false;
 const invalidInputClass = 'gl-field-error-outline';
+const invalidDropdownClass = 'gl-inset-border-1-red-400!';
 
 const cancelSource = axios.CancelToken.source();
 const endpoint = `${gon.relative_url_root}/import/url/validate`;
@@ -50,6 +52,25 @@ const onProjectPathChange = ($projectNameInput, $projectPathInput, hasExistingPr
   }
 };
 
+const selectedNamespaceId = () => document.querySelector('[name="project[selected_namespace_id]"]');
+const dropdownButton = () => document.querySelector('.js-group-namespace-dropdown > button');
+const namespaceButton = () => document.querySelector('.js-group-namespace-button');
+const namespaceError = () => document.querySelector('.js-group-namespace-error');
+
+const validateGroupNamespaceDropdown = (e) => {
+  if (selectedNamespaceId() && !selectedNamespaceId().attributes.value) {
+    document.querySelector('input[data-qa-selector="project_name"]').reportValidity();
+    e.preventDefault();
+    dropdownButton().classList.add(invalidDropdownClass);
+    namespaceButton().classList.add(invalidDropdownClass);
+    namespaceError().classList.remove('gl-display-none');
+  } else {
+    dropdownButton().classList.remove(invalidDropdownClass);
+    namespaceButton().classList.remove(invalidDropdownClass);
+    namespaceError().classList.add('gl-display-none');
+  }
+};
+
 const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
   const specialRepo = document.querySelector('.js-user-readme-repo');
 
@@ -69,6 +90,10 @@ const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
       'gl-display-none',
       $projectPathInput.val() !== $projectPathInput.data('username'),
     );
+  });
+
+  document.querySelector('.js-create-project-button').addEventListener('click', (e) => {
+    validateGroupNamespaceDropdown(e);
   });
 };
 
@@ -158,7 +183,11 @@ const bindEvents = () => {
     $projectTemplateButtons.addClass('hidden');
     $projectFieldsForm.addClass('selected');
     $selectedIcon.empty();
-    const value = $(this).val();
+
+    const $selectedTemplate = $(this);
+    $selectedTemplate.prop('checked', true);
+
+    const value = $selectedTemplate.val();
 
     const selectedTemplate = DEFAULT_PROJECT_TEMPLATES[value];
     $selectedTemplateText.text(selectedTemplate.text);
@@ -170,7 +199,21 @@ const bindEvents = () => {
     setProjectNamePathHandlers($activeTabProjectName, $activeTabProjectPath);
   }
 
-  $useTemplateBtn.on('change', chooseTemplate);
+  function toggleActiveClassOnLabel(event) {
+    const $label = $(event.target).parent();
+    $label.toggleClass('active');
+  }
+
+  function chooseTemplateOnEnter(event) {
+    if (event.code === ENTER_KEY) {
+      chooseTemplate.call(this);
+    }
+  }
+
+  $useTemplateBtn.on('click', chooseTemplate);
+
+  $useTemplateBtn.on('focus focusout', toggleActiveClassOnLabel);
+  $useTemplateBtn.on('keypress', chooseTemplateOnEnter);
 
   $changeTemplateBtn.on('click', () => {
     $projectTemplateButtons.removeClass('hidden');

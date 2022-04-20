@@ -1,0 +1,32 @@
+# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70779
+
+# test for include:rules
+include:
+  - local: builds.yml
+    rules:
+      - if: '$INCLUDE_BUILDS == "true"'
+        when: always
+
+stages:
+  - prepare
+
+# test for trigger:include
+childPipeline:
+  stage: prepare
+  script:
+    - echo 'creating pipeline...'
+  trigger:
+    include:
+      - project: 'my-group/my-pipeline-library'
+        file: '.gitlab-ci.yml'
+
+# accepts optional ref property
+childPipeline2:
+  stage: prepare
+  script:
+    - echo 'creating pipeline...'
+  trigger:
+    include:
+      - project: 'my-group/my-pipeline-library'
+        file: '.gitlab-ci.yml'
+        ref: 'main'

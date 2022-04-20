@@ -1000,6 +1000,54 @@ RSpec.describe ProjectsHelper do
     end
   end
 
+  context 'fork security helpers' do
+    using RSpec::Parameterized::TableSyntax
+
+    describe "#able_to_see_merge_requests?" do
+      subject { helper.able_to_see_merge_requests?(project, user) }
+
+      where(:can_read_merge_request, :merge_requests_enabled, :expected) do
+        false | false | false
+        true | false | false
+        false | true | false
+        true | true | true
+      end
+
+      with_them do
+        before do
+          allow(project).to receive(:merge_requests_enabled?).and_return(merge_requests_enabled)
+          allow(helper).to receive(:can?).with(user, :read_merge_request, project).and_return(can_read_merge_request)
+        end
+
+        it 'returns the correct response' do
+          expect(subject).to eq(expected)
+        end
+      end
+    end
+
+    describe "#able_to_see_issues?" do
+      subject { helper.able_to_see_issues?(project, user) }
+
+      where(:can_read_issues, :issues_enabled, :expected) do
+        false | false | false
+        true | false | false
+        false | true | false
+        true | true | true
+      end
+
+      with_them do
+        before do
+          allow(project).to receive(:issues_enabled?).and_return(issues_enabled)
+          allow(helper).to receive(:can?).with(user, :read_issue, project).and_return(can_read_issues)
+        end
+
+        it 'returns the correct response' do
+          expect(subject).to eq(expected)
+        end
+      end
+    end
+  end
+
   describe '#fork_button_disabled_tooltip' do
     using RSpec::Parameterized::TableSyntax
 

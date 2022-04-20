@@ -36,12 +36,12 @@ export default {
       return xLabel;
     },
     yAxisTitle() {
-      const { y_label = '' } = this.graphData;
-      return y_label; // eslint-disable-line babel/camelcase
+      const { y_label: yLabel = '' } = this.graphData;
+      return yLabel;
     },
     xAxisType() {
-      const { x_type = 'value' } = this.graphData;
-      return x_type; // eslint-disable-line babel/camelcase
+      const { x_type: xType = 'value' } = this.graphData;
+      return xType;
     },
     dataZoomConfig() {
       const handleIcon = this.svgs['scroll-handle'];

@@ -38,79 +38,76 @@ read the [Introduction to CI/CD with GitLab](introduction/index.md).
   <iframe src="https://www.youtube.com/embed/ljth1Q5oJoo" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
-## GitLab CI/CD concepts
+## Concepts
 
 GitLab CI/CD uses a number of concepts to describe and run your build and deploy.
 
-| Concept                                                 | Description                                                                    |
-|:--------------------------------------------------------|:-------------------------------------------------------------------------------|
-| [Pipelines](pipelines/index.md)                         | Structure your CI/CD process through pipelines.                                |
-| [CI/CD variables](variables/index.md)                  | Reuse values based on a variable/value key pair.                               |
+| Concept                                                 | Description                                                                           |
+|:--------------------------------------------------------|:--------------------------------------------------------------------------------------|
+| [Pipelines](pipelines/index.md)                         | Structure your CI/CD process through pipelines.                                       |
+| [CI/CD variables](variables/index.md)                   | Reuse values based on a variable/value key pair.                                      |
 | [Environments](environments/index.md)                   | Deploy your application to different environments (for example, staging, production). |
-| [Job artifacts](pipelines/job_artifacts.md)             | Output, use, and reuse job artifacts.                                          |
-| [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                |
-| [GitLab Runner](https://docs.gitlab.com/runner/)        | Configure your own runners to execute your scripts.                            |
-| [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and efficiently.                       |
-| [Test cases](test_cases/index.md)                       | Create testing scenarios.                                                      |
+| [Job artifacts](pipelines/job_artifacts.md)             | Output, use, and reuse job artifacts.                                                 |
+| [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                       |
+| [GitLab Runner](https://docs.gitlab.com/runner/)        | Configure your own runners to execute your scripts.                                   |
+| [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and efficiently.                              |
+| [Test cases](test_cases/index.md)                       | Create testing scenarios.                                                             |
 
-## GitLab CI/CD configuration
+## Configuration
 
 GitLab CI/CD supports numerous configuration options:
 
-| Configuration                                                                           | Description                                                                               |
-|:----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|
-| [Schedule pipelines](pipelines/schedules.md)                                            | Schedule pipelines to run as often as you need.                                           |
-| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#specify-a-custom-cicd-configuration-file) | Define a custom path for the CI/CD configuration file.                         |
-| [Git submodules for CI/CD](git_submodules.md)                                           | Configure jobs for using Git submodules.                                                  |
-| [SSH keys for CI/CD](ssh_keys/index.md)                                                 | Using SSH keys in your CI pipelines.                                                      |
-| [Pipeline triggers](triggers/index.md)                                                  | Trigger pipelines through the API.                                                        |
-| [Merge request pipelines](pipelines/merge_request_pipelines.md)                    | Design a pipeline structure for running a pipeline in merge requests.                     |
-| [Integrate with Kubernetes clusters](../user/infrastructure/clusters/index.md)                 | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
-| [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories.                                   |
-| [`.gitlab-ci.yml` full reference](yaml/index.md)                                        | All the attributes you can use with GitLab CI/CD.                                         |
+| Configuration                                                                                      | Description                                                                               |
+|:---------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|
+| [Schedule pipelines](pipelines/schedules.md)                                                       | Schedule pipelines to run as often as you need.                                           |
+| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#specify-a-custom-cicd-configuration-file) | Define a custom path for the CI/CD configuration file.                                    |
+| [Git submodules for CI/CD](git_submodules.md)                                                      | Configure jobs for using Git submodules.                                                  |
+| [SSH keys for CI/CD](ssh_keys/index.md)                                                            | Using SSH keys in your CI pipelines.                                                      |
+| [Pipeline triggers](triggers/index.md)                                                             | Trigger pipelines through the API.                                                        |
+| [Merge request pipelines](pipelines/merge_request_pipelines.md)                                    | Design a pipeline structure for running a pipeline in merge requests.                     |
+| [Integrate with Kubernetes clusters](../user/infrastructure/clusters/index.md)                     | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
+| [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md)            | Recommended strategies for handling large repositories.                                   |
+| [`.gitlab-ci.yml` full reference](yaml/index.md)                                                   | All the attributes you can use with GitLab CI/CD.                                         |
 
 Certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
 
-## GitLab CI/CD features
+## Features
 
 GitLab CI/CD features, grouped by DevOps stage, include:
 
-| Feature                                                                                         | Description                                                                                                                    |
-|:------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
-| **Configure**                                                                                   |                                                                                                                                |
-| [Auto DevOps](../topics/autodevops/index.md)                                                    | Set up your app's entire lifecycle.                                                                                            |
-| [ChatOps](chatops/index.md)                                                                     | Trigger CI jobs from chat, with results sent back to the channel.                                                              |
-| [Connect to cloud services](cloud_services/index.md)                                            | Connect to cloud providers using OpenID Connect (OIDC) to retrieve temporary credentials to access services or secrets.        |
-|-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| **Verify**                                                                                      |                                                                                                                                |
-| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md)    | Quickly determine the browser performance impact of pending code changes.                                                      |
-| [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md)          | Quickly determine the server performance impact of pending code changes.                                                       |
-| [CI services](services/index.md)                                                                | Link Docker containers with your base image.                                                                                   |
-| [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)**       | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud.                                     |
-| [Interactive Web Terminals](interactive_web_terminal/index.md) **(FREE SELF)**                  | Open an interactive web terminal to debug the running jobs.                                                                    |
-| [Review Apps](review_apps/index.md)                                                             | Configure GitLab CI/CD to preview code changes.                                                                                |
-| [Unit test reports](unit_test_reports.md)                                                       | Identify test failures directly on merge requests.                                                                           |
-| [Using Docker images](docker/using_docker_images.md)                                            | Use GitLab and GitLab Runner with Docker to build and test applications.                                                       |
-|-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| **Release**                                                                                     |                                                                                                                                |
-| [Auto Deploy](../topics/autodevops/stages.md#auto-deploy)                                       | Deploy your application to a production environment in a Kubernetes cluster.                                                   |
-| [Building Docker images](docker/using_docker_build.md)                                          | Maintain Docker-based projects using GitLab CI/CD.                                                                             |
-| [Canary Deployments](../user/project/canary_deployments.md)                                     | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
-| [Deploy boards](../user/project/deploy_boards.md)                                               | Check the current health and status of each CI/CD environment running on Kubernetes.                                           |
-| [Feature Flags](../operations/feature_flags.md)                                                 | Deploy your features behind Feature Flags.                                                                                     |
-| [GitLab Pages](../user/project/pages/index.md)                                                  | Deploy static websites.                                                                                                        |
-| [GitLab Releases](../user/project/releases/index.md)                                            | Add release notes to Git tags.                                                                                                 |
-| [Cloud deployment](cloud_deployment/index.md)                                                   | Deploy your application to a main cloud provider.                                                                              |
-|-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| **Secure**                                                                                      |                                                                                                                                |
-| [Code Quality](../user/project/merge_requests/code_quality.md)                                  | Analyze your source code quality.                                                                                              |
-| [Container Scanning](../user/application_security/container_scanning/index.md) **(ULTIMATE)**   | Check your Docker containers for known vulnerabilities.                                                                        |
-| [Dependency Scanning](../user/application_security/dependency_scanning/index.md) **(ULTIMATE)** | Analyze your dependencies for known vulnerabilities.                                                                           |
-| [License Compliance](../user/compliance/license_compliance/index.md) **(ULTIMATE)**             | Search your project dependencies for their licenses.                                                                           |
-| [Security Test reports](../user/application_security/index.md) **(ULTIMATE)**                   | Check for app vulnerabilities.                                                                                                 |
+| Feature                                                                                      | Description |
+|:---------------------------------------------------------------------------------------------|:------------|
+| **Configure**                                                                                |             |
+| [Auto DevOps](../topics/autodevops/index.md)                                                 | Set up your app's entire lifecycle. |
+| [ChatOps](chatops/index.md)                                                                  | Trigger CI jobs from chat, with results sent back to the channel. |
+| [Connect to cloud services](cloud_services/index.md)                                         | Connect to cloud providers using OpenID Connect (OIDC) to retrieve temporary credentials to access services or secrets. |
+| **Verify**                                                                                   |             |
+| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the browser performance impact of pending code changes. |
+| [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md)       | Quickly determine the server performance impact of pending code changes. |
+| [CI services](services/index.md)                                                             | Link Docker containers with your base image. |
+| [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md)                  | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
+| [Interactive Web Terminals](interactive_web_terminal/index.md)                               | Open an interactive web terminal to debug the running jobs. |
+| [Review Apps](review_apps/index.md)                                                          | Configure GitLab CI/CD to preview code changes. |
+| [Unit test reports](unit_test_reports.md)                                                    | Identify test failures directly on merge requests. |
+| [Using Docker images](docker/using_docker_images.md)                                         | Use GitLab and GitLab Runner with Docker to build and test applications. |
+| **Release**                                                                                  |             |
+| [Auto Deploy](../topics/autodevops/stages.md#auto-deploy)                                    | Deploy your application to a production environment in a Kubernetes cluster. |
+| [Building Docker images](docker/using_docker_build.md)                                       | Maintain Docker-based projects using GitLab CI/CD. |
+| [Canary Deployments](../user/project/canary_deployments.md)                                  | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
+| [Deploy boards](../user/project/deploy_boards.md)                                            | Check the current health and status of each CI/CD environment running on Kubernetes. |
+| [Feature Flags](../operations/feature_flags.md)                                              | Deploy your features behind Feature Flags. |
+| [GitLab Pages](../user/project/pages/index.md)                                               | Deploy static websites. |
+| [GitLab Releases](../user/project/releases/index.md)                                         | Add release notes to Git tags. |
+| [Cloud deployment](cloud_deployment/index.md)                                                | Deploy your application to a main cloud provider. |
+| **Secure**                                                                                   |             |
+| [Code Quality](../user/project/merge_requests/code_quality.md)                               | Analyze your source code quality. |
+| [Container Scanning](../user/application_security/container_scanning/index.md)               | Check your Docker containers for known vulnerabilities. |
+| [Dependency Scanning](../user/application_security/dependency_scanning/index.md)             | Analyze your dependencies for known vulnerabilities. |
+| [License Compliance](../user/compliance/license_compliance/index.md)                         | Search your project dependencies for their licenses. |
+| [Security Test reports](../user/application_security/index.md)                               | Check for app vulnerabilities. |
 
-## GitLab CI/CD examples
+## Examples
 
 See the [CI/CD examples](examples/index.md) page for example project code and tutorials for
 using GitLab CI/CD with various:
@@ -119,7 +116,7 @@ using GitLab CI/CD with various:
 - Languages
 - Platforms
 
-## GitLab CI/CD Administration
+## Administration
 
 You can change the default behavior of GitLab CI/CD for:
 
@@ -136,7 +133,7 @@ Learn more about GitLab CI/CD:
 
 - [Why you might choose GitLab CI/CD](https://about.gitlab.com/blog/2016/10/17/gitlab-ci-oohlala/).
 - [Reasons you might migrate from another platform](https://about.gitlab.com/blog/2016/07/22/building-our-web-app-on-gitlab-ci/).
-- [5 Teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/)
+- [Five teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/).
 - If you use VS Code to edit your GitLab CI/CD configuration, the
   [GitLab Workflow VS Code extension](../user/project/repository/vscode.md) helps you
   [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)

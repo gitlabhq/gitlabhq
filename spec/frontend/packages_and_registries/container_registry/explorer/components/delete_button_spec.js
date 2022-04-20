@@ -1,7 +1,7 @@
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltip, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import component from '~/packages_and_registries/container_registry/explorer/components/delete_button.vue';
+import { LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION } from '~/packages_and_registries/container_registry/explorer/constants/list';
 
 describe('delete_button', () => {
   let wrapper;
@@ -12,6 +12,7 @@ describe('delete_button', () => {
   };
 
   const findButton = () => wrapper.find(GlButton);
+  const findTooltip = () => wrapper.find(GlTooltip);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(component, {
@@ -19,8 +20,9 @@ describe('delete_button', () => {
         ...defaultProps,
         ...props,
       },
-      directives: {
-        GlTooltip: createMockDirective(),
+      stubs: {
+        GlTooltip,
+        GlSprintf,
       },
     });
   };
@@ -33,41 +35,50 @@ describe('delete_button', () => {
   describe('tooltip', () => {
     it('the title is controlled by tooltipTitle prop', () => {
       mountComponent();
-      const tooltip = getBinding(wrapper.element, 'gl-tooltip');
+      const tooltip = findTooltip();
       expect(tooltip).toBeDefined();
-      expect(tooltip.value.title).toBe(defaultProps.tooltipTitle);
+      expect(tooltip.text()).toBe(defaultProps.tooltipTitle);
     });
 
     it('is disabled when tooltipTitle is disabled', () => {
       mountComponent({ tooltipDisabled: true });
-      const tooltip = getBinding(wrapper.element, 'gl-tooltip');
-      expect(tooltip.value.disabled).toBe(true);
+      expect(findTooltip().props('disabled')).toBe(true);
     });
 
-    describe('button', () => {
-      it('exists', () => {
-        mountComponent();
-        expect(findButton().exists()).toBe(true);
+    it('works with a link', () => {
+      mountComponent({
+        tooltipTitle: LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION,
+        tooltipLink: 'foo',
       });
+      expect(findTooltip().text()).toMatchInterpolatedText(
+        LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION,
+      );
+    });
+  });
 
-      it('has the correct props/attributes bound', () => {
-        mountComponent({ disabled: true });
-        expect(findButton().attributes()).toMatchObject({
-          'aria-label': 'Foo title',
-          icon: 'remove',
-          title: 'Foo title',
-          variant: 'danger',
-          disabled: 'true',
-          category: 'secondary',
-        });
-      });
+  describe('button', () => {
+    it('exists', () => {
+      mountComponent();
+      expect(findButton().exists()).toBe(true);
+    });
 
-      it('emits a delete event', () => {
-        mountComponent();
-        expect(wrapper.emitted('delete')).toEqual(undefined);
-        findButton().vm.$emit('click');
-        expect(wrapper.emitted('delete')).toEqual([[]]);
+    it('has the correct props/attributes bound', () => {
+      mountComponent({ disabled: true });
+      expect(findButton().attributes()).toMatchObject({
+        'aria-label': 'Foo title',
+        icon: 'remove',
+        title: 'Foo title',
+        variant: 'danger',
+        disabled: 'true',
+        category: 'secondary',
       });
+    });
+
+    it('emits a delete event', () => {
+      mountComponent();
+      expect(wrapper.emitted('delete')).toEqual(undefined);
+      findButton().vm.$emit('click');
+      expect(wrapper.emitted('delete')).toEqual([[]]);
     });
   });
 });

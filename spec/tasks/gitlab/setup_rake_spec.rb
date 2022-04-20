@@ -6,6 +6,7 @@ RSpec.describe 'gitlab:setup namespace rake tasks', :silence_stdout do
   before do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
+    Rake.application.rake_require 'tasks/dev'
     Rake.application.rake_require 'tasks/gitlab/setup'
   end
 
@@ -21,8 +22,6 @@ RSpec.describe 'gitlab:setup namespace rake tasks', :silence_stdout do
 
     let(:server_service1) { double(:server_service) }
     let(:server_service2) { double(:server_service) }
-
-    let(:connections) { Gitlab::Database.database_base_models.values.map(&:connection) }
 
     before do
       allow(Gitlab).to receive_message_chain('config.repositories.storages').and_return(storages)
@@ -98,18 +97,6 @@ RSpec.describe 'gitlab:setup namespace rake tasks', :silence_stdout do
       end
     end
 
-    context 'when the database is not found when terminating connections' do
-      it 'continues setting up the database', :aggregate_failures do
-        expect_gitaly_connections_to_be_checked
-
-        expect(connections).to all(receive(:execute).and_raise(ActiveRecord::NoDatabaseError))
-
-        expect_database_to_be_setup
-
-        setup_task
-      end
-    end
-
     def expect_gitaly_connections_to_be_checked
       expect(Gitlab::GitalyClient::ServerService).to receive(:new).with('name1').and_return(server_service1)
       expect(server_service1).to receive(:info)
@@ -119,13 +106,11 @@ RSpec.describe 'gitlab:setup namespace rake tasks', :silence_stdout do
     end
 
     def expect_connections_to_be_terminated
-      expect(connections).to all(receive(:execute).with(/SELECT pg_terminate_backend/))
+      expect(Rake::Task['dev:terminate_all_connections']).to receive(:invoke)
     end
 
     def expect_connections_not_to_be_terminated
-      connections.each do |connection|
-        expect(connection).not_to receive(:execute)
-      end
+      expect(Rake::Task['dev:terminate_all_connections']).not_to receive(:invoke)
     end
 
     def expect_database_to_be_setup

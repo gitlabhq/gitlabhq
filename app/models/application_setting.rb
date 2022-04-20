@@ -387,7 +387,7 @@ class ApplicationSetting < ApplicationRecord
   validates :invisible_captcha_enabled,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
-  SUPPORTED_KEY_TYPES.each do |type|
+  Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
 
@@ -576,6 +576,17 @@ class ApplicationSetting < ApplicationRecord
           length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
           allow_nil: false
 
+  validates :public_runner_releases_url, addressable_url: true, presence: true
+
+  validates :inactive_projects_min_size_mb,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :inactive_projects_delete_after_months,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :inactive_projects_send_warning_email_after_months,
+            numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -609,6 +620,9 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :cloud_license_auth_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_pipeline_validation_service_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :mailgun_signing_key, encryption_options_base_32_aes_256_gcm.merge(encode: false)
+  attr_encrypted :database_grafana_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :arkose_labs_public_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :arkose_labs_private_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: _('must be a boolean value') }

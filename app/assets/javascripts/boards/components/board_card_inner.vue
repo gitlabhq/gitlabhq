@@ -13,7 +13,7 @@ import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ListType } from '../constants';
 import BoardBlockedIcon from './board_blocked_icon.vue';
 import IssueDueDate from './issue_due_date.vue';
@@ -240,7 +240,7 @@ export default {
       class="board-card-footer gl-display-flex gl-justify-content-space-between gl-align-items-flex-end"
     >
       <div
-        class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden js-board-card-number-container"
+        class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
         <gl-loading-icon v-if="item.isLoading" size="md" class="mt-3" />
         <span

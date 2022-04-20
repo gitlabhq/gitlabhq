@@ -1,0 +1,9 @@
+---
+table_name: alert_management_alert_metric_images
+classes:
+- AlertManagement::MetricImage
+feature_categories:
+- incident_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80339
+milestone: '14.8'

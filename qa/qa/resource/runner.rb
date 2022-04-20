@@ -31,7 +31,7 @@ module QA
       end
 
       def fabricate_via_api!
-        Service::DockerRun::GitlabRunner.new(name).tap do |runner|
+        @docker_container = Service::DockerRun::GitlabRunner.new(name).tap do |runner|
           runner.pull
           runner.token = @token ||= project.runners_token
           runner.address = Runtime::Scenario.gitlab_address
@@ -46,12 +46,22 @@ module QA
       end
 
       def remove_via_api!
-        runners = project.runners(tag_list: @tags)
+        runners = list_of_runners(tag_list: @tags)
 
-        return if runners.blank?
+        # If we have no runners, print the logs from the runner docker container in case they show why it isn't running.
+        if runners.blank?
+          dump_logs
+
+          return
+        end
 
         this_runner = runners.find { |runner| runner[:description] == name }
+
+        # As above, but now we should have a specific runner. If not, print the logs from the runner docker container
+        # to see if we can find out why the runner isn't running.
         unless this_runner
+          dump_logs
+
           raise "Project #{project.path_with_namespace} does not have a runner with a description matching #{name} #{"or tags #{@tags}" if @tags&.any?}. Runners available: #{runners}"
         end
 
@@ -62,6 +72,20 @@ module QA
         Service::DockerRun::GitlabRunner.new(name).remove!
       end
 
+      def list_of_runners(tag_list: nil)
+        url = tag_list ? "#{api_post_path}?tag_list=#{tag_list.compact.join(',')}" : api_post_path
+        response = get(request_url(url, per_page: '100'))
+
+        # Capturing 500 error code responses to log this issue better. We can consider cleaning it up once https://gitlab.com/gitlab-org/gitlab/-/issues/331753 is addressed.
+        raise "Response returned a #{response.code} error code. #{response.body}" if response.code == Support::API::HTTP_STATUS_SERVER_ERROR
+
+        parse_body(response)
+      end
+
+      def reload!
+        super if method(:running?).super_method.call
+      end
+
       def api_delete_path
         "/runners/#{id}"
       end
@@ -70,9 +94,20 @@ module QA
       end
 
       def api_post_path
+        "/runners"
       end
 
       def api_post_body
+      end
+
+      private
+
+      def dump_logs
+        if @docker_container.running?
+          @docker_container.logs { |line| QA::Runtime::Logger.debug(line) }
+        else
+          QA::Runtime::Logger.debug("No runner container found named #{name}")
+        end
       end
     end
   end

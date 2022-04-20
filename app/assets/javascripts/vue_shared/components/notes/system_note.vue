@@ -31,7 +31,7 @@ import { __ } from '~/locale';
 import initMRPopovers from '~/mr_popover/';
 import noteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { spriteIcon } from '../../../lib/utils/common_utils';
+import { spriteIcon } from '~/lib/utils/common_utils';
 import TimelineEntryItem from './timeline_entry_item.vue';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;

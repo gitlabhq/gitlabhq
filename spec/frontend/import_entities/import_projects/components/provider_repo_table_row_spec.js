@@ -98,6 +98,8 @@ describe('ProviderRepoTableRow', () => {
   });
 
   describe('when rendering imported project', () => {
+    const FAKE_STATS = {};
+
     const repo = {
       importSource: {
         id: 'remote-1',
@@ -109,6 +111,7 @@ describe('ProviderRepoTableRow', () => {
         fullPath: 'fullPath',
         importSource: 'importSource',
         importStatus: STATUSES.FINISHED,
+        stats: FAKE_STATS,
       },
     };
 
@@ -133,6 +136,10 @@ describe('ProviderRepoTableRow', () => {
 
     it('does not render import button', () => {
       expect(findImportButton().exists()).toBe(false);
+    });
+
+    it('passes stats to import status component', () => {
+      expect(wrapper.find(ImportStatus).props().stats).toBe(FAKE_STATS);
     });
   });
 

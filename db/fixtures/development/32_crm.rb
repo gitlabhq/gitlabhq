@@ -29,7 +29,7 @@ class Gitlab::Seeder::Crm
         group_id: group.id,
         first_name: first_name,
         last_name: last_name,
-        email: "#{first_name}.#{last_name}@example.org",
+        email: "#{first_name}.#{last_name}-#{index}@example.org",
         organization_id: organization_id
       )
 
@@ -41,7 +41,7 @@ end
 Gitlab::Seeder.quiet do
   puts "\nGenerating group crm organizations and contacts"
 
-  Group.all.find_each do |group|
+  Group.not_mass_generated.where('parent_id IS NULL').first(10).each do |group|
     Gitlab::Seeder::Crm.new(group).seed!
   end
 end

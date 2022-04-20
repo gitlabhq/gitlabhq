@@ -4,6 +4,8 @@ module BulkImports
   class RelationExportService
     include Gitlab::ImportExport::CommandLineUtil
 
+    EXISTING_EXPORT_TTL = 3.minutes
+
     def initialize(user, portable, relation, jid)
       @user = user
       @portable = portable
@@ -31,6 +33,9 @@ module BulkImports
       validate_user_permissions!
 
       export = portable.bulk_import_exports.safe_find_or_create_by!(relation: relation)
+
+      return export if export.finished? && export.updated_at > EXISTING_EXPORT_TTL.ago
+
       export.update!(status_event: 'start', jid: jid)
 
       yield export

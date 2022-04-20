@@ -5,7 +5,7 @@ module Mutations
     class Base < BaseMutation
       field :saved_reply, Types::SavedReplyType,
             null: true,
-            description: 'Updated saved reply.'
+            description: 'Saved reply after mutation.'
 
       private
 

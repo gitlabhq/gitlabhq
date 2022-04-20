@@ -15,6 +15,8 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab_git/merge_requests/77#note_4754193
     ENCODING_CONFIDENCE_THRESHOLD = 50
 
+    UNICODE_REPLACEMENT_CHARACTER = "�"
+
     def encode!(message)
       message = force_encode_utf8(message)
       return message if message.valid_encoding?
@@ -65,6 +67,10 @@ module Gitlab
       message.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
     end
 
+    def encode_utf8_with_replacement_character(data)
+      encode_utf8(data, replace: UNICODE_REPLACEMENT_CHARACTER)
+    end
+
     def encode_utf8(message, replace: "")
       message = force_encode_utf8(message)
       return message if message.valid_encoding?
@@ -97,6 +103,35 @@ module Gitlab
       io ||= StringIO.new(str_or_io.to_s.freeze)
 
       io.tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
+    end
+
+    ESCAPED_CHARS = {
+      "a" => "\a", "b" => "\b", "e" => "\e", "f" => "\f",
+      "n" => "\n", "r" => "\r", "t" => "\t", "v" => "\v",
+      "\"" => "\""
+    }.freeze
+
+    # rubocop:disable Style/AsciiComments
+    # `unquote_path` decode filepaths that are returned by some git commands.
+    # The path may be returned in double-quotes if it contains special characters,
+    # that are encoded in octal. Also, some characters (see `ESCAPED_CHARS`) are escaped.
+    # eg. "\311\240\304\253\305\247\305\200\310\247\306\200" (quotes included) is decoded as ɠīŧŀȧƀ
+    #
+    # Based on `unquote_c_style` from git source
+    # https://github.com/git/git/blob/v2.35.1/quote.c#L399
+    # rubocop:enable Style/AsciiComments
+    def unquote_path(filename)
+      return filename unless filename[0] == '"'
+
+      filename = filename[1..-2].gsub(/\\(?:([#{ESCAPED_CHARS.keys.join}\\])|(\d{3}))/) do
+        if c = Regexp.last_match(1)
+          c == "\\" ? "\\" : ESCAPED_CHARS[c]
+        elsif c = Regexp.last_match(2)
+          c.to_i(8).chr
+        end
+      end
+
+      filename.force_encoding("UTF-8")
     end
 
     private

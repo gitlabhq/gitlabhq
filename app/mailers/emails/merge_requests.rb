@@ -14,10 +14,17 @@ module Emails
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
-    def push_to_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil, new_commits: [], existing_commits: [])
+    # existing_commits - an array containing the first and last commits
+    def push_to_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil, new_commits: [], total_new_commits_count: nil, existing_commits: [], total_existing_commits_count: nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
+
       @new_commits = new_commits
+      @total_new_commits_count = total_new_commits_count || @new_commits.length
+      @total_stripped_new_commits_count = @total_new_commits_count - @new_commits.length
+
       @existing_commits = existing_commits
+      @total_existing_commits_count = total_existing_commits_count || @existing_commits.length
+
       @updated_by_user = User.find(updated_by_user_id)
 
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))

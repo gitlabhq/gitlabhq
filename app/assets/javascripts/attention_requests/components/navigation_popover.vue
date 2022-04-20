@@ -82,7 +82,9 @@ export default {
       return 'bottom';
     },
   },
-  docsPage: helpPagePath('development/code_review.html'),
+  docsPage: helpPagePath('user/project/merge_requests/index.md', {
+    anchor: 'request-attention-to-a-merge-request',
+  }),
 };
 </script>
 

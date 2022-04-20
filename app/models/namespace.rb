@@ -15,6 +15,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
   include EachBatch
+  include BlocksUnsafeSerialization
 
   # Temporary column used for back-filling project namespaces.
   # Remove it once the back-filling of all project namespaces is done.
@@ -131,7 +132,7 @@ class Namespace < ApplicationRecord
 
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }
-  scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
+  scope :sort_by_type, -> { order(arel_table[:type].asc.nulls_first) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
   scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }
@@ -372,7 +373,7 @@ class Namespace < ApplicationRecord
   end
 
   # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.
-  def feature_available?(feature)
+  def feature_available?(feature, _user = nil)
     licensed_feature_available?(feature)
   end
 

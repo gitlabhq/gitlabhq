@@ -1,0 +1,9 @@
+---
+table_name: saved_replies
+classes:
+- Users::SavedReply
+feature_categories:
+- users
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80807
+milestone: '14.9'

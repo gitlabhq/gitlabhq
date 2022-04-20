@@ -50,6 +50,12 @@ module Auth
       access_token(['pull'], names)
     end
 
+    def self.pull_nested_repositories_access_token(name)
+      name = name.chomp('/') if name.end_with?('/')
+      paths = [name, "#{name}/*"]
+      access_token(['pull'], paths)
+    end
+
     def self.access_token(actions, names, type = 'repository')
       names = names.flatten
       registry = Gitlab.config.registry

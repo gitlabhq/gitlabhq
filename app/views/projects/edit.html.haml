@@ -5,6 +5,8 @@
 - expanded = expanded_by_default?
 - reduce_visibility_form_id = 'reduce-visibility-form'
 
+= render_if_exists 'shared/minute_limit_banner', namespace: @project
+
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
@@ -33,7 +35,7 @@
   .settings-content
     = render_if_exists 'shared/promotions/promote_mr_features'
 
-    = form_for @project, html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
+    = gitlab_ui_form_for @project, html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
       = render 'projects/merge_request_settings', form: f
       = f.submit _('Save changes'), class: "btn gl-button btn-confirm rspec-save-merge-request-changes", data: { qa_selector: 'save_merge_request_changes_button' }
@@ -98,7 +100,7 @@
                 .input-group-text
                   #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
               = f.text_field :path, class: 'form-control h-auto', data: { qa_selector: 'project_path_field' }
-        = f.submit _('Change path'), class: "gl-button btn btn-warning", data: { qa_selector: 'change_path_button' }
+        = f.submit _('Change path'), class: "gl-button btn btn-danger", data: { qa_selector: 'change_path_button' }
 
     = render 'transfer', project: @project
 

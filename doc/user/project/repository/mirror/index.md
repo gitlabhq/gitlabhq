@@ -7,9 +7,13 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.htm
 
 # Repository mirroring **(FREE)**
 
-You can _mirror_ a repository to and from external sources. You can select which
-repository serves as the source, and modify which parts of the repository are copied.
-Branches, tags, and commits can be mirrored.
+You can _mirror_ a repository to and from external sources. You can select which repository
+serves as the source. Branches, tags, and commits can be mirrored.
+
+NOTE:
+SCP-style URLs are **not** supported. However, the work for implementing SCP-style URLs is tracked
+in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18993).
+Subscribe to the issue to follow its progress.
 
 Several mirroring methods exist:
 
@@ -23,11 +27,7 @@ Mirror a repository when:
   copy of your project at its previous home, configure your GitLab repository as a
   [push mirror](push.md). Changes you make to your GitLab repository are copied to
   the old location.
-- Your GitLab project is private, but some components can be shared publicly.
-  Configure your primary repository as a [push mirror](push.md) and push the portions
-  you want to make public. With this configuration, you can open-source specific
-  projects, contribute back to the open-source community, and protect the sensitive
-  parts of your project.
+- Your GitLab instance is private, but you want to open-source some projects.
 - You migrated to GitLab, but the canonical version of your project is somewhere else.
   Configure your GitLab repository as a [pull mirror](pull.md) of the other project.
   Your GitLab repository pulls copies of the commits, tags, and branches of project.

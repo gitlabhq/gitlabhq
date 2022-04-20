@@ -1,0 +1,9 @@
+---
+table_name: ci_unit_tests
+classes:
+- Ci::UnitTest
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56137
+milestone: '13.11'

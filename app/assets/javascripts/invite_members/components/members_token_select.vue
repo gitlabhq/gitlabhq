@@ -117,7 +117,7 @@ export default {
       this.$emit('clear');
     },
   },
-  defaultQueryOptions: { exclude_internal: true, active: true },
+  defaultQueryOptions: { without_project_bots: true, active: true },
   i18n: {
     inviteTextMessage: __('Invite "%{email}" by email'),
   },

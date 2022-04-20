@@ -18,8 +18,8 @@ module Projects::ProjectMembersHelper
     MemberSerializer.new.represent(members, { current_user: current_user, group: project.group, source: project })
   end
 
-  def project_group_links_serialized(group_links)
-    GroupLink::ProjectGroupLinkSerializer.new.represent(group_links, { current_user: current_user })
+  def project_group_links_serialized(project, group_links)
+    GroupLink::ProjectGroupLinkSerializer.new.represent(group_links, { current_user: current_user, source: project })
   end
 
   def project_members_list_data(project, members, pagination = {})
@@ -32,7 +32,7 @@ module Projects::ProjectMembersHelper
 
   def project_group_links_list_data(project, group_links)
     {
-      members: project_group_links_serialized(group_links),
+      members: project_group_links_serialized(project, group_links),
       pagination: members_pagination_data(group_links),
       member_path: project_group_link_path(project, ':id')
     }

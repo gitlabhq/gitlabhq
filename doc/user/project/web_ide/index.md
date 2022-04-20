@@ -222,7 +222,7 @@ To edit Markdown files in the Web IDE:
 
 1. Go to your repository, and navigate to the Markdown page you want to edit.
 1. Select **Open in Web IDE**, and GitLab loads the page in a tab in the editor.
-1. Make your changes to the file. GitLab supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
+1. Make your changes to the file. GitLab supports [GitLab Flavored Markdown (GLFM)](../../markdown.md).
 1. When your changes are complete, select **Commit** in the left sidebar.
 1. Add a commit message, select the branch you want to commit to, and select **Commit**.
 

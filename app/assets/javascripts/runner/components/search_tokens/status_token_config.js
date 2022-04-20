@@ -2,8 +2,6 @@ import { __, s__ } from '~/locale';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import {
-  STATUS_ACTIVE,
-  STATUS_PAUSED,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_NEVER_CONTACTED,
@@ -12,8 +10,6 @@ import {
 } from '../../constants';
 
 const options = [
-  { value: STATUS_ACTIVE, title: s__('Runners|Active') },
-  { value: STATUS_PAUSED, title: s__('Runners|Paused') },
   { value: STATUS_ONLINE, title: s__('Runners|Online') },
   { value: STATUS_OFFLINE, title: s__('Runners|Offline') },
   { value: STATUS_NEVER_CONTACTED, title: s__('Runners|Never contacted') },

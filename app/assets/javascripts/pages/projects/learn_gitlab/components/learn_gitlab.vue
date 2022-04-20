@@ -127,8 +127,12 @@ export default {
       </p>
       <gl-progress-bar :value="progressValue" :max="$options.maxValue" />
     </div>
-    <div class="row row-cols-1 row-cols-md-3 gl-mt-5">
-      <div v-for="section in $options.actionSections" :key="section" class="col gl-mb-6">
+    <div class="row">
+      <div
+        v-for="section in $options.actionSections"
+        :key="section"
+        class="gl-mt-5 col-sm-12 col-mb-6 col-lg-4"
+      >
         <learn-gitlab-section-card
           :section="section"
           :svg="svgFor(section)"

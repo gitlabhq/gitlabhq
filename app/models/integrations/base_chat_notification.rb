@@ -35,8 +35,9 @@ module Integrations
     validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true
 
     def initialize_properties
-      if properties.nil?
-        self.properties = {}
+      super
+
+      if properties.empty?
         self.notify_only_broken_pipelines = true
         self.branches_to_be_notified = "default"
         self.labels_to_be_notified_behavior = MATCH_ANY_LABEL

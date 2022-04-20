@@ -34,7 +34,7 @@ When enabled, GitLab periodically runs a repository check on all project reposit
 repositories to detect possible data corruption. A project is checked no more than once per month.
 Administrators can configure the frequency of repository checks. To edit the frequency:
 
-- For Omnibus GitLab installations, edit `gitlab_rails['repository_check_worker_cron']` in 
+- For Omnibus GitLab installations, edit `gitlab_rails['repository_check_worker_cron']` in
   `/etc/gitlab/gitlab.rb`.
 - For source-based installations, edit `[gitlab.cron_jobs.repository_check_worker]` in
   `/home/git/gitlab/config/gitlab.yml`.

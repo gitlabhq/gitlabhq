@@ -3,10 +3,11 @@ import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import {
-  I18N_ONLINE_RUNNER_TIMEAGO_DESCRIPTION,
-  I18N_NEVER_CONTACTED_RUNNER_DESCRIPTION,
-  I18N_OFFLINE_RUNNER_TIMEAGO_DESCRIPTION,
-  I18N_STALE_RUNNER_DESCRIPTION,
+  I18N_ONLINE_TIMEAGO_TOOLTIP,
+  I18N_NEVER_CONTACTED_TOOLTIP,
+  I18N_OFFLINE_TIMEAGO_TOOLTIP,
+  I18N_STALE_TIMEAGO_TOOLTIP,
+  I18N_STALE_NEVER_CONTACTED_TOOLTIP,
   STATUS_ONLINE,
   STATUS_NEVER_CONTACTED,
   STATUS_OFFLINE,
@@ -32,7 +33,7 @@ export default {
         return getTimeago().format(this.runner.contactedAt);
       }
       // Prevent "just now" from being rendered, in case data is missing.
-      return __('n/a');
+      return __('never');
     },
     badge() {
       switch (this.runner?.status) {
@@ -40,33 +41,37 @@ export default {
           return {
             variant: 'success',
             label: s__('Runners|online'),
-            tooltip: sprintf(I18N_ONLINE_RUNNER_TIMEAGO_DESCRIPTION, {
-              timeAgo: this.contactedAtTimeAgo,
-            }),
+            tooltip: this.timeAgoTooltip(I18N_ONLINE_TIMEAGO_TOOLTIP),
           };
         case STATUS_NEVER_CONTACTED:
           return {
             variant: 'muted',
             label: s__('Runners|never contacted'),
-            tooltip: I18N_NEVER_CONTACTED_RUNNER_DESCRIPTION,
+            tooltip: I18N_NEVER_CONTACTED_TOOLTIP,
           };
         case STATUS_OFFLINE:
           return {
             variant: 'muted',
             label: s__('Runners|offline'),
-            tooltip: sprintf(I18N_OFFLINE_RUNNER_TIMEAGO_DESCRIPTION, {
-              timeAgo: this.contactedAtTimeAgo,
-            }),
+            tooltip: this.timeAgoTooltip(I18N_OFFLINE_TIMEAGO_TOOLTIP),
           };
         case STATUS_STALE:
           return {
             variant: 'warning',
             label: s__('Runners|stale'),
-            tooltip: I18N_STALE_RUNNER_DESCRIPTION,
+            // runner may have contacted (or not) and be stale: consider both cases.
+            tooltip: this.runner.contactedAt
+              ? this.timeAgoTooltip(I18N_STALE_TIMEAGO_TOOLTIP)
+              : I18N_STALE_NEVER_CONTACTED_TOOLTIP,
           };
         default:
           return null;
       }
+    },
+  },
+  methods: {
+    timeAgoTooltip(text) {
+      return sprintf(text, { timeAgo: this.contactedAtTimeAgo });
     },
   },
 };

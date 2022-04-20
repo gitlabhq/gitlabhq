@@ -1,6 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import { n__ } from '../../locale';
+import { n__ } from '~/locale';
 import { MAX_CHILDREN_COUNT } from '../constants';
 
 export default {

@@ -18,13 +18,14 @@ actions performed across the application.
 
 To instrument an audit event, the following attributes should be provided:
 
-| Attribute    | Type                 | Required? | Description                                         |
-|:-------------|:---------------------|:----------|:----------------------------------------------------|
-| `name`       | String               | false     | Action name to be audited. Used for error tracking  |
-| `author`     | User                 | true      | User who authors the change                         |
-| `scope`      | User, Project, Group | true      | Scope which the audit event belongs to              |
-| `target`     | Object               | true      | Target object being audited                         |
-| `message`    | String               | true      | Message describing the action                       |
+| Attribute    | Type                 | Required? | Description                                                      |
+|:-------------|:---------------------|:----------|:-----------------------------------------------------------------|
+| `name`       | String               | false     | Action name to be audited. Used for error tracking               |
+| `author`     | User                 | true      | User who authors the change                                      |
+| `scope`      | User, Project, Group | true      | Scope which the audit event belongs to                           |
+| `target`     | Object               | true      | Target object being audited                                      |
+| `message`    | String               | true      | Message describing the action                                    |
+| `created_at` | DateTime             | false     | The time when the action occured. Defaults to `DateTime.current` |
 
 ## How to instrument new Audit Events
 
@@ -97,12 +98,20 @@ if merge_approval_rule.save
     author: current_user,
     scope: project_alpha,
     target: merge_approval_rule,
-    message: 'Created a new approval rule'
+    message: 'Created a new approval rule',
+    created_at: DateTime.current # Useful for pre-dating an audit event when created asynchronously.
   }
 
   ::Gitlab::Audit::Auditor.audit(audit_context)
 end
 ```
+
+### Data volume considerations
+
+Because every audit event is persisted to the database, consider the amount of data we expect to generate, and the rate of generation, for new
+audit events. For new audit events that will produce a lot of data in the database, consider adding a
+[streaming-only audit event](#event-streaming) instead. If you have questions about this, feel free to ping
+`@gitlab-org/manage/compliance/backend` in an issue or merge request.
 
 ## Audit Event instrumentation flows
 
@@ -185,5 +194,8 @@ All events where the entity is a `Group` or `Project` are recorded in the audit 
 - `Group`, events are streamed to the group's root ancestor's event streaming destinations.
 - `Project`, events are streamed to the project's root ancestor's event streaming destinations.
 
+You can add streaming-only events that are not stored in the GitLab database. This is primarily intended to be used for actions that generate
+a large amount of data. See [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76719/diffs#d56e47632f0384722d411ed3ab5b15e947bd2265_26_36)
+for an example.
 This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/epics/5925) for updates on feature
 development.

@@ -23,7 +23,7 @@ export default {
       required: false,
     },
   },
-  emits: ['deleted'],
+  emits: ['toggledPaused', 'deleted'],
   computed: {
     canUpdate() {
       return this.runner.userPermissions?.updateRunner;
@@ -33,6 +33,9 @@ export default {
     },
   },
   methods: {
+    onToggledPaused() {
+      this.$emit('toggledPaused');
+    },
     onDeleted(value) {
       this.$emit('deleted', value);
     },
@@ -43,7 +46,17 @@ export default {
 <template>
   <gl-button-group>
     <runner-edit-button v-if="canUpdate && editUrl" :href="editUrl" />
-    <runner-pause-button v-if="canUpdate" :runner="runner" :compact="true" />
-    <runner-delete-button v-if="canDelete" :runner="runner" :compact="true" @deleted="onDeleted" />
+    <runner-pause-button
+      v-if="canUpdate"
+      :runner="runner"
+      :compact="true"
+      @toggledPaused="onToggledPaused"
+    />
+    <runner-delete-button
+      :disabled="!canDelete"
+      :runner="runner"
+      :compact="true"
+      @deleted="onDeleted"
+    />
   </gl-button-group>
 </template>

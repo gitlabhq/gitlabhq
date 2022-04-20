@@ -28,7 +28,7 @@ RSpec.describe QA::Support::Loglinking do
 
         expect(QA::Support::Loglinking.failure_metadata('foo123')).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
-          Kibana Url: https://kibana.address/app/discover#/?_a=(query:(language:kuery,query:'json.correlation_id%20:%20foo123'))
+          Kibana Url: https://kibana.address/app/discover#/?_a=(query:(language:kuery,query:'json.correlation_id%20:%20foo123'))&_g=(time:(from:now-24h%2Fh,to:now))
         ERROR
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe QA::Support::Loglinking do
   describe '.logging_environment' do
     let(:staging_address) { 'https://staging.gitlab.com' }
     let(:staging_ref_address) { 'https://staging-ref.gitlab.com' }
-    let(:production_address) { 'https://www.gitlab.com' }
+    let(:production_address) { 'https://gitlab.com' }
     let(:pre_prod_address) { 'https://pre.gitlab.com' }
     let(:logging_env_array) do
       [

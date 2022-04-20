@@ -1,5 +1,6 @@
 export const propsData = {
   id: '1',
+  rootId: '1',
   name: 'test name',
   isProject: false,
   accessLevels: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },

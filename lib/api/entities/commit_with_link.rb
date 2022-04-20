@@ -29,7 +29,7 @@ module API
       end
 
       expose :signature_html, if: { type: :full } do |commit|
-        render('projects/commit/_signature', signature: commit.signature) if commit.has_signature?
+        ::CommitPresenter.new(commit).signature_html
       end
 
       expose :prev_commit_id, if: { type: :full } do |commit|
@@ -49,12 +49,6 @@ module API
         next unless pipeline&.status
 
         pipelines_project_commit_path(pipeline_project, commit.id, ref: pipeline_ref)
-      end
-
-      def render(*args)
-        return unless request.respond_to?(:render) && request.render.respond_to?(:call)
-
-        request.render.call(*args)
       end
     end
   end

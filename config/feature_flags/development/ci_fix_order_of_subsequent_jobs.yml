@@ -1,8 +1,0 @@
----
-name: ci_fix_order_of_subsequent_jobs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74394
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345587
-milestone: '14.9'
-type: development
-group: group::pipeline authoring
-default_enabled: false

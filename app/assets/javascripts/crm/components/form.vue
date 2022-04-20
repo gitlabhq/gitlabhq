@@ -61,11 +61,6 @@ export default {
       required: false,
       default: null,
     },
-    existingModel: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     additionalCreateParams: {
       type: Object,
       required: false,
@@ -76,25 +71,42 @@ export default {
       required: false,
       default: () => MSG_SAVE_CHANGES,
     },
+    existingId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
-    const initialModel = this.fields.reduce(
-      (map, field) =>
-        Object.assign(map, {
-          [field.name]: this.existingModel ? this.existingModel[field.name] : null,
-        }),
-      {},
-    );
-
     return {
-      model: initialModel,
+      model: null,
       submitting: false,
       errorMessages: [],
+      records: [],
+      loading: true,
     };
+  },
+  apollo: {
+    records: {
+      query() {
+        return this.getQuery.query;
+      },
+      variables() {
+        return this.getQuery.variables;
+      },
+      update(data) {
+        this.records = getPropValueByPath(data, this.getQueryNodePath).nodes || [];
+        this.setInitialModel();
+        this.loading = false;
+      },
+      error() {
+        this.errorMessages = [MSG_ERROR];
+      },
+    },
   },
   computed: {
     isEditMode() {
-      return this.existingModel?.id;
+      return this.existingId;
     },
     isInvalid() {
       const { fields, model } = this;
@@ -115,13 +127,24 @@ export default {
       );
 
       if (isEditMode) {
-        return { input: { id: this.existingModel.id, ...variables } };
+        return { input: { id: this.existingId, ...variables } };
       }
 
       return { input: { ...additionalCreateParams, ...variables } };
     },
   },
   methods: {
+    setInitialModel() {
+      const existingModel = this.records.find(({ id }) => id === this.existingId);
+
+      this.model = this.fields.reduce(
+        (map, field) =>
+          Object.assign(map, {
+            [field.name]: !this.isEditMode || !existingModel ? null : existingModel[field.name],
+          }),
+        {},
+      );
+    },
     formatValue(model, field) {
       if (!isEmpty(model[field.name]) && field.input?.type === 'number') {
         return parseFloat(model[field.name]);
@@ -173,7 +196,7 @@ export default {
       const sourceData = store.readQuery(getQuery);
 
       const newData = produce(sourceData, (draftState) => {
-        getPropValueByPath(draftState, getQueryNodePath).nodes.push(getFirstPropertyValue(result));
+        getPropValueByPath(draftState, getQueryNodePath).nodes.push(this.getPayload(result));
       });
 
       store.writeQuery({
@@ -185,6 +208,14 @@ export default {
       const optionalSuffix = field.required ? '' : ` ${MSG_OPTIONAL}`;
       return field.label + optionalSuffix;
     },
+    getPayload(data) {
+      if (!data) return null;
+
+      const keys = Object.keys(data);
+      if (keys[0] === '__typename') return data[keys[1]];
+
+      return data[keys[0]];
+    },
   },
   MSG_CANCEL,
   INDEX_ROUTE_NAME,
@@ -192,7 +223,7 @@ export default {
 </script>
 
 <template>
-  <mounting-portal mount-to="#js-crm-form-portal" append>
+  <mounting-portal v-if="!loading" mount-to="#js-crm-form-portal" append>
     <gl-drawer class="gl-drawer-responsive gl-absolute" :open="drawerOpen" @close="close(false)">
       <template #title>
         <h3>{{ title }}</h3>

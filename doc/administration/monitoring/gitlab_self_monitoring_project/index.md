@@ -8,18 +8,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32351) in GitLab 12.7 [with a flag](../../feature_flags.md) named `self_monitoring_project`. Disabled by default.
 > - Generally available in GitLab 12.8. [Feature flag `self_monitoring_project`](https://gitlab.com/gitlab-org/gitlab/-/issues/198511) removed.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/348909) in GitLab 14.9. Planned for removal in GitLab 15.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/348909) in GitLab 14.9. Planned for removal in GitLab 16.0.
 
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/348909)
-for use in GitLab 14.9, and is planned for removal in GitLab 15.0.
+in GitLab 14.9, and is planned for removal in GitLab 16.0.
 
 GitLab provides administrators insights into the health of their GitLab instance.
 
 To provide a native experience (similar interacting with an application deployed using GitLab), a
 project called **Monitoring** is created:
 
-- With [internal visibility](../../../public_access/public_access.md#internal-projects-and-groups).
+- With [internal visibility](../../../user/public_access.md#internal-projects-and-groups).
 - Under a group called **GitLab Instance**.
 
 The project is created specifically for visualizing and configuring the monitoring of your GitLab

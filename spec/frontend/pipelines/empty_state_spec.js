@@ -1,7 +1,7 @@
 import '~/commons';
 import { mount } from '@vue/test-utils';
 import EmptyState from '~/pipelines/components/pipelines_list/empty_state.vue';
-import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/pipelines_ci_templates.vue';
+import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
 
 describe('Pipelines Empty State', () => {
   let wrapper;

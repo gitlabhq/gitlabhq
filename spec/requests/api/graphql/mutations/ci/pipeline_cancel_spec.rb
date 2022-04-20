@@ -47,5 +47,6 @@ RSpec.describe 'PipelineCancel' do
 
     expect(response).to have_gitlab_http_status(:success)
     expect(build.reload).to be_canceled
+    expect(pipeline.reload).to be_canceled
   end
 end

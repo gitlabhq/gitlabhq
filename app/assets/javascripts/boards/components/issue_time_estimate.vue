@@ -43,7 +43,7 @@ export default {
     <gl-tooltip
       :target="() => $refs.issueTimeEstimate"
       placement="bottom"
-      class="js-issue-time-estimate"
+      data-testid="issue-time-estimate"
     >
       <span class="gl-font-weight-bold gl-display-block">{{ $options.i18n.timeEstimate }}</span>
       {{ title }}

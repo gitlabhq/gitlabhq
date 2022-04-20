@@ -1,0 +1,8 @@
+---
+name: ci_owned_runners_unnest_index
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83843
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357869
+milestone: '14.10'
+type: development
+group: group::sharding
+default_enabled: false

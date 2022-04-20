@@ -1,0 +1,9 @@
+---
+table_name: pages_domain_acme_orders
+classes:
+- PagesDomainAcmeOrder
+feature_categories:
+- pages
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14014
+milestone: '12.0'

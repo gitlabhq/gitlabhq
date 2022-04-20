@@ -25,10 +25,15 @@ module Groups
     private
 
     def proceed_to_transfer
+      old_root_ancestor_id = @group.root_ancestor.id
+      was_root_group = @group.root?
+
       Group.transaction do
         update_group_attributes
         ensure_ownership
         update_integrations
+        remove_issue_contacts(old_root_ancestor_id, was_root_group)
+        update_crm_objects(was_root_group)
       end
 
       post_update_hooks(@updated_project_ids)
@@ -53,6 +58,17 @@ module Groups
       raise_transfer_error(:group_contains_images) if group_projects_contain_registry_images?
       raise_transfer_error(:cannot_transfer_to_subgroup) if transfer_to_subgroup?
       raise_transfer_error(:group_contains_npm_packages) if group_with_npm_packages?
+      raise_transfer_error(:no_permissions_to_migrate_crm) if no_permissions_to_migrate_crm?
+    end
+
+    def no_permissions_to_migrate_crm?
+      return false unless group && @new_parent_group
+      return false if group.root_ancestor == @new_parent_group.root_ancestor
+
+      return true if group.contacts.exists? && !current_user.can?(:admin_crm_contact, @new_parent_group.root_ancestor)
+      return true if group.organizations.exists? && !current_user.can?(:admin_crm_organization, @new_parent_group.root_ancestor)
+
+      false
     end
 
     def group_with_npm_packages?
@@ -202,7 +218,8 @@ module Groups
         invalid_policies: s_("TransferGroup|You don't have enough permissions."),
         group_contains_images: s_('TransferGroup|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again.'),
         cannot_transfer_to_subgroup: s_('TransferGroup|Cannot transfer group to one of its subgroup.'),
-        group_contains_npm_packages: s_('TransferGroup|Group contains projects with NPM packages.')
+        group_contains_npm_packages: s_('TransferGroup|Group contains projects with NPM packages.'),
+        no_permissions_to_migrate_crm: s_("TransferGroup|Group contains contacts/organizations and you don't have enough permissions to move them to the new root group.")
       }.freeze
     end
 
@@ -237,6 +254,20 @@ module Groups
         namespace_traversal_ids: group.traversal_ids,
         namespace_id: group.id
       }
+    end
+
+    def update_crm_objects(was_root_group)
+      return unless was_root_group
+
+      CustomerRelations::Contact.move_to_root_group(group)
+      CustomerRelations::Organization.move_to_root_group(group)
+    end
+
+    def remove_issue_contacts(old_root_ancestor_id, was_root_group)
+      return if was_root_group
+      return if old_root_ancestor_id == @group.root_ancestor.id
+
+      CustomerRelations::IssueContact.delete_for_group(@group)
     end
   end
 end

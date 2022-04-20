@@ -420,6 +420,14 @@ module ProjectsHelper
     project.path_with_namespace
   end
 
+  def able_to_see_issues?(project, user)
+    project.issues_enabled? && can?(user, :read_issue, project)
+  end
+
+  def able_to_see_merge_requests?(project, user)
+    project.merge_requests_enabled? && can?(user, :read_merge_request, project)
+  end
+
   def fork_button_disabled_tooltip(project)
     return unless current_user
 
@@ -627,7 +635,9 @@ module ProjectsHelper
   end
 
   def can_show_last_commit_in_list?(project)
-    can?(current_user, :read_cross_project) && project.commit
+    can?(current_user, :read_cross_project) &&
+      can?(current_user, :read_commit_status, project) &&
+      project.commit
   end
 
   def pages_https_only_disabled?
@@ -638,14 +648,6 @@ module ProjectsHelper
     return unless pages_https_only_disabled?
 
     "You must enable HTTPS for all your domains first"
-  end
-
-  def pages_https_only_label_class
-    if pages_https_only_disabled?
-      "list-label disabled"
-    else
-      "list-label"
-    end
   end
 
   def filter_starrer_path(options = {})

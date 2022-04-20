@@ -1,0 +1,11 @@
+---
+table_name: snippets
+classes:
+- PersonalSnippet
+- ProjectSnippet
+- Snippet
+feature_categories:
+- snippets
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9265de3d25715aeafd38a4ef41596dca058dc18c
+milestone: "<6.0"

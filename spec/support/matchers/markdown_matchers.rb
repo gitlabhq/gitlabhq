@@ -270,7 +270,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_link(href: 'http://localhost:8000/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KzhUlCITkpNLEqJ1dWNLkgsKsoviUUSs7KLTssvzVHIzS8tyYjligUAMhEd0g==')
+      expect(actual).to have_link(href: 'http://localhost:8000/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KzhUlCITkpNLEqJ1dWNLkgsKsoviUUSs7KLTssvzVHIzS8tyYjliuUCAE_tHdw=')
     end
   end
 end

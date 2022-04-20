@@ -671,6 +671,19 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'assign command' do
+      it 'assigns to users with escaped underscores' do
+        user = create(:user)
+        base = user.username
+        user.update!(username: "#{base}_")
+        issuable.project.add_developer(user)
+
+        cmd = "/assign @#{base}\\_"
+
+        _, updates, _ = service.execute(cmd, issuable)
+
+        expect(updates).to eq(assignee_ids: [user.id])
+      end
+
       it 'assigns to a single user' do
         _, updates, _ = service.execute(content, issuable)
 
@@ -719,6 +732,17 @@ RSpec.describe QuickActions::InterpretService do
     shared_examples 'attention command' do
       it 'updates reviewers attention status' do
         _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq("Requested attention from #{developer.to_reference}.")
+
+        reviewer.reload
+
+        expect(reviewer).to be_attention_requested
+      end
+
+      it 'supports attn alias' do
+        attn_cmd = content.gsub(/attention/, 'attn')
+        _, _, message = service.execute(attn_cmd, issuable)
 
         expect(message).to eq("Requested attention from #{developer.to_reference}.")
 
@@ -800,7 +824,7 @@ RSpec.describe QuickActions::InterpretService do
         let(:project) { repository_project }
         let(:service) { described_class.new(project, developer, {}) }
 
-        it_behaves_like 'failed command', 'Merge request diff sha parameter is required for the merge quick action.' do
+        it_behaves_like 'failed command', 'The `/merge` quick action requires the SHA of the head of the branch.' do
           let(:content) { "/merge" }
           let(:issuable) { merge_request }
         end

@@ -7,7 +7,7 @@ module Environments
     def execute(environment)
       return unless can?(current_user, :stop_environment, environment)
 
-      environment.stop_with_action!(current_user)
+      environment.stop_with_actions!(current_user)
     end
 
     def execute_for_branch(branch_name)
@@ -19,7 +19,9 @@ module Environments
     end
 
     def execute_for_merge_request(merge_request)
-      merge_request.environments.each { |environment| execute(environment) }
+      merge_request.environments_in_head_pipeline(deployment_status: :success).each do |environment|
+        execute(environment)
+      end
     end
 
     private

@@ -4,6 +4,7 @@ module Gitlab
   module ImportExport
     class RepoSaver
       include Gitlab::ImportExport::CommandLineUtil
+      include DurationMeasuring
 
       attr_reader :exportable, :shared
 
@@ -13,9 +14,12 @@ module Gitlab
       end
 
       def save
-        return true unless repository_exists? # it's ok to have no repo
+        with_duration_measuring do
+          # it's ok to have no repo
+          break true unless repository_exists?
 
-        bundle_to_disk
+          bundle_to_disk
+        end
       end
 
       def repository

@@ -1,21 +1,25 @@
 <script>
-import { GlButton, GlAlert, GlLoadingIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlButton, GlAlert, GlLoadingIcon, GlFormSelect } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
+import createWorkItemFromTaskMutation from '../graphql/create_work_item_from_task.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
 
 import ItemTitle from '../components/item_title.vue';
 
 export default {
+  createErrorText: s__('WorkItem|Something went wrong when creating a work item. Please try again'),
+  fetchTypesErrorText: s__(
+    'WorkItem|Something went wrong when fetching work item types. Please try again',
+  ),
   components: {
     GlButton,
     GlAlert,
     GlLoadingIcon,
-    GlDropdown,
-    GlDropdownItem,
     ItemTitle,
+    GlFormSelect,
   },
   inject: ['fullPath'],
   props: {
@@ -29,6 +33,26 @@ export default {
       required: false,
       default: '',
     },
+    issueGid: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    lockVersion: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    lineNumberStart: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    lineNumberEnd: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -36,6 +60,7 @@ export default {
       error: null,
       workItemTypes: [],
       selectedWorkItemType: null,
+      loading: false,
     };
   },
   apollo: {
@@ -47,12 +72,13 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItemTypes?.nodes;
+        return data.workspace?.workItemTypes?.nodes.map((node) => ({
+          value: node.id,
+          text: node.name,
+        }));
       },
       error() {
-        this.error = s__(
-          'WorkItem|Something went wrong when fetching work item types. Please try again',
-        );
+        this.error = this.$options.fetchTypesErrorText;
       },
     },
   },
@@ -60,9 +86,24 @@ export default {
     dropdownButtonText() {
       return this.selectedWorkItemType?.name || s__('WorkItem|Type');
     },
+    formOptions() {
+      return [{ value: null, text: s__('WorkItem|Select type') }, ...this.workItemTypes];
+    },
+    isButtonDisabled() {
+      return this.title.trim().length === 0 || !this.selectedWorkItemType;
+    },
   },
   methods: {
     async createWorkItem() {
+      this.loading = true;
+      if (this.isModal) {
+        await this.createWorkItemFromTask();
+      } else {
+        await this.createStandaloneWorkItem();
+      }
+      this.loading = false;
+    },
+    async createStandaloneWorkItem() {
       try {
         const response = await this.$apollo.mutate({
           mutation: createWorkItemMutation,
@@ -70,7 +111,7 @@ export default {
             input: {
               title: this.title,
               projectPath: this.fullPath,
-              workItemTypeId: this.selectedWorkItemType?.id,
+              workItemTypeId: this.selectedWorkItemType,
             },
           },
           update(store, { data: { workItemCreate } }) {
@@ -87,32 +128,43 @@ export default {
                   id,
                   title,
                   workItemType,
-                  widgets: {
-                    __typename: 'LocalWorkItemWidgetConnection',
-                    nodes: [],
-                  },
                 },
               },
             });
           },
         });
-
         const {
           data: {
             workItemCreate: {
-              workItem: { id, type },
+              workItem: { id },
             },
           },
         } = response;
-        if (!this.isModal) {
-          this.$router.push({ name: 'workItem', params: { id: `${getIdFromGraphQLId(id)}` } });
-        } else {
-          this.$emit('onCreate', { id, title: this.title, type });
-        }
+        this.$router.push({ name: 'workItem', params: { id: `${getIdFromGraphQLId(id)}` } });
       } catch {
-        this.error = s__(
-          'WorkItem|Something went wrong when creating a work item. Please try again',
-        );
+        this.error = this.$options.createErrorText;
+      }
+    },
+    async createWorkItemFromTask() {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: createWorkItemFromTaskMutation,
+          variables: {
+            input: {
+              id: this.issueGid,
+              workItemData: {
+                lockVersion: this.lockVersion,
+                title: this.title,
+                lineNumberStart: Number(this.lineNumberStart),
+                lineNumberEnd: Number(this.lineNumberEnd),
+                workItemTypeId: this.selectedWorkItemType,
+              },
+            },
+          },
+        });
+        this.$emit('onCreate', data.workItemCreateFromTask.workItem.descriptionHtml);
+      } catch {
+        this.error = this.$options.createErrorText;
       }
     },
     handleTitleInput(title) {
@@ -125,9 +177,6 @@ export default {
       }
       this.$emit('closeModal');
     },
-    selectWorkItemType(type) {
-      this.selectedWorkItemType = type;
-    },
   },
 };
 </script>
@@ -136,28 +185,19 @@ export default {
   <form @submit.prevent="createWorkItem">
     <gl-alert v-if="error" variant="danger" @dismiss="error = null">{{ error }}</gl-alert>
     <div :class="{ 'gl-px-5': isModal }" data-testid="content">
-      <item-title
-        :initial-title="title"
-        data-testid="title-input"
-        @title-input="handleTitleInput"
-      />
+      <item-title :title="title" data-testid="title-input" @title-input="handleTitleInput" />
       <div>
-        <gl-dropdown :text="dropdownButtonText">
-          <gl-loading-icon
-            v-if="$apollo.queries.workItemTypes.loading"
-            size="md"
-            data-testid="loading-types"
-          />
-          <template v-else>
-            <gl-dropdown-item
-              v-for="type in workItemTypes"
-              :key="type.id"
-              @click="selectWorkItemType(type)"
-            >
-              {{ type.name }}
-            </gl-dropdown-item>
-          </template>
-        </gl-dropdown>
+        <gl-loading-icon
+          v-if="$apollo.queries.workItemTypes.loading"
+          size="md"
+          data-testid="loading-types"
+        />
+        <gl-form-select
+          v-else
+          v-model="selectedWorkItemType"
+          :options="formOptions"
+          class="gl-max-w-26"
+        />
       </div>
     </div>
     <div
@@ -166,8 +206,9 @@ export default {
     >
       <gl-button
         variant="confirm"
-        :disabled="title.length === 0"
+        :disabled="isButtonDisabled"
         :class="{ 'gl-mr-3': !isModal }"
+        :loading="loading"
         data-testid="create-button"
         type="submit"
       >

@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import * as timeago from 'timeago.js';
 import { nextTick } from 'vue';
 import UserListsTable from '~/user_lists/components/user_lists_table.vue';
-import { userList } from '../../feature_flags/mock_data';
+import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('timeago.js', () => ({
   format: jest.fn().mockReturnValue('2 weeks ago'),

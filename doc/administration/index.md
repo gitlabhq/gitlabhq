@@ -32,7 +32,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Install](../install/index.md): Requirements, directory structures, and installation methods.
 - [Reference architectures](reference_architectures/index.md): Add additional resources to support more users.
-  - [Installing GitLab on Amazon Web Services (AWS)](../install/aws/index.md): Set up GitLab on Amazon AWS.
+- [Installing GitLab on Amazon Web Services (AWS)](../install/aws/index.md): Set up GitLab on Amazon AWS.
 - [Geo](geo/index.md): Replicate your GitLab instance to other geographic locations as a read-only fully operational version.
 - [Disaster Recovery](geo/disaster_recovery/index.md): Quickly fail-over to a different site with minimal effort in a disaster situation.
 - [Add License](../user/admin_area/license.md): Add a license at install time to unlock features that are in paid tiers of GitLab.
@@ -40,7 +40,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ### Configuring GitLab
 
 - [Adjust your instance's time zone](timezone.md): Customize the default time zone of GitLab.
-- [System hooks](../system_hooks/system_hooks.md): Notifications when users, projects and keys are changed.
+- [System hooks](system_hooks.md): Notifications when users, projects and keys are changed.
 - [Security](../security/index.md): Learn what you can do to further secure your GitLab instance.
 - [Usage statistics, version check, and Service Ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.
 - [Global user settings](user_settings.md): Configure instance-wide user permissions.
@@ -126,7 +126,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Sync LDAP](auth/ldap/index.md)
   - [Kerberos authentication](../integration/kerberos.md)
   - See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
-- [Email users](../tools/email.md): Email GitLab users from GitLab.
+- [Email users](../user/admin_area/email_from_gitlab.md): Email GitLab users from GitLab.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 - [Audit events](audit_events.md): View the changes made on the GitLab server for:
   - Groups and projects.
@@ -146,7 +146,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Issue closing pattern](issue_closing_pattern.md): Customize how to close an issue from commit messages.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, the Git repository storage service for GitLab.
 - [Default labels](../user/admin_area/labels.md): Create labels that are automatically added to every new project.
-- [Restrict the use of public or internal projects](../public_access/public_access.md#restrict-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
+- [Restrict the use of public or internal projects](../user/public_access.md#restrict-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
 - [Custom project templates](../user/admin_area/custom_project_templates.md): Configure a set of projects to be used as custom templates when creating a new project.
 
 ## Package Registry administration
@@ -218,6 +218,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Troubleshooting Elasticsearch](troubleshooting/elasticsearch.md)
 - [Navigating GitLab via Rails console](troubleshooting/navigating_gitlab_via_rails_console.md)
 - [GitLab application limits](instance_limits.md)
+- [Responding to security incidents](../security/responding_to_security_incidents.md)
 
 ### Support Team Docs
 

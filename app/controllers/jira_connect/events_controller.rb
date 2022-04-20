@@ -7,10 +7,6 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   before_action :verify_asymmetric_atlassian_jwt!
 
   def installed
-    unless Feature.enabled?(:jira_connect_installation_update, default_enabled: :yaml)
-      return head :ok if current_jira_installation
-    end
-
     success = current_jira_installation ? update_installation : create_installation
 
     if success

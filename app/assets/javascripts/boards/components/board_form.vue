@@ -48,7 +48,7 @@ export default {
     fullPath: {
       default: '',
     },
-    rootPath: {
+    boardBaseUrl: {
       default: '',
     },
   },
@@ -209,7 +209,7 @@ export default {
       if (this.isDeleteForm) {
         try {
           await this.deleteBoard();
-          visitUrl(this.rootPath);
+          visitUrl(this.boardBaseUrl);
         } catch {
           this.setError({ message: this.$options.i18n.deleteErrorMessage });
         } finally {
@@ -289,7 +289,7 @@ export default {
     <p v-if="isDeleteForm" data-testid="delete-confirmation-message">
       {{ $options.i18n.deleteConfirmationMessage }}
     </p>
-    <form v-else class="js-board-config-modal" data-testid="board-form-wrapper" @submit.prevent>
+    <form v-else data-testid="board-form-wrapper" @submit.prevent>
       <div v-if="!readonly" class="gl-mb-5" data-testid="board-form">
         <label class="gl-font-weight-bold gl-font-lg" for="board-new-name">
           {{ $options.i18n.titleFieldLabel }}

@@ -1,0 +1,9 @@
+---
+table_name: requirements
+classes:
+- RequirementsManagement::Requirement
+feature_categories:
+- requirements_management
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26097
+milestone: '12.9'
