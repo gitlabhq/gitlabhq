@@ -34,9 +34,10 @@ RSpec.describe BulkImports::PipelineWorker do
         expect(logger)
           .to receive(:info)
           .with(
-            worker: described_class.name,
-            pipeline_name: 'FakePipeline',
-            entity_id: entity.id
+            hash_including(
+              'pipeline_name' => 'FakePipeline',
+              'entity_id' => entity.id
+            )
           )
       end
 
@@ -44,7 +45,7 @@ RSpec.describe BulkImports::PipelineWorker do
         .to receive(:perform_async)
         .with(entity.id, pipeline_tracker.stage)
 
-      expect(subject).to receive(:jid).and_return('jid')
+      allow(subject).to receive(:jid).and_return('jid')
 
       subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
@@ -79,10 +80,11 @@ RSpec.describe BulkImports::PipelineWorker do
         expect(logger)
           .to receive(:error)
           .with(
-            worker: described_class.name,
-            pipeline_tracker_id: pipeline_tracker.id,
-            entity_id: entity.id,
-            message: 'Unstarted pipeline not found'
+            hash_including(
+              'pipeline_tracker_id' => pipeline_tracker.id,
+              'entity_id' => entity.id,
+              'message' => 'Unstarted pipeline not found'
+            )
           )
       end
 
@@ -107,10 +109,11 @@ RSpec.describe BulkImports::PipelineWorker do
         expect(logger)
           .to receive(:error)
           .with(
-            worker: described_class.name,
-            pipeline_name: 'InexistentPipeline',
-            entity_id: entity.id,
-            message: "'InexistentPipeline' is not a valid BulkImport Pipeline"
+            hash_including(
+              'pipeline_name' => 'InexistentPipeline',
+              'entity_id' => entity.id,
+              'message' => "'InexistentPipeline' is not a valid BulkImport Pipeline"
+            )
           )
       end
 
@@ -126,7 +129,7 @@ RSpec.describe BulkImports::PipelineWorker do
         .to receive(:perform_async)
         .with(entity.id, pipeline_tracker.stage)
 
-      expect(subject).to receive(:jid).and_return('jid')
+      allow(subject).to receive(:jid).and_return('jid')
 
       subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
@@ -151,10 +154,11 @@ RSpec.describe BulkImports::PipelineWorker do
           expect(logger)
             .to receive(:error)
             .with(
-              worker: described_class.name,
-              pipeline_name: 'Pipeline',
-              entity_id: entity.id,
-              message: 'Failed entity status'
+              hash_including(
+                'pipeline_name' => 'Pipeline',
+                'entity_id' => entity.id,
+                'message' => 'Failed entity status'
+              )
             )
         end
 
@@ -183,7 +187,7 @@ RSpec.describe BulkImports::PipelineWorker do
             .and_raise(exception)
         end
 
-        expect(subject).to receive(:jid).and_return('jid').twice
+        allow(subject).to receive(:jid).and_return('jid')
 
         expect_any_instance_of(BulkImports::Tracker) do |tracker|
           expect(tracker).to receive(:retry).and_call_original
@@ -193,9 +197,10 @@ RSpec.describe BulkImports::PipelineWorker do
           expect(logger)
             .to receive(:info)
             .with(
-              worker: described_class.name,
-              pipeline_name: 'FakePipeline',
-              entity_id: entity.id
+              hash_including(
+                'pipeline_name' => 'FakePipeline',
+                'entity_id' => entity.id
+              )
             )
         end
 
@@ -292,10 +297,11 @@ RSpec.describe BulkImports::PipelineWorker do
           expect(logger)
             .to receive(:error)
             .with(
-              worker: described_class.name,
-              pipeline_name: 'NdjsonPipeline',
-              entity_id: entity.id,
-              message: 'Pipeline timeout'
+              hash_including(
+                'pipeline_name' => 'NdjsonPipeline',
+                'entity_id' => entity.id,
+                'message' => 'Pipeline timeout'
+              )
             )
         end
 
@@ -318,10 +324,11 @@ RSpec.describe BulkImports::PipelineWorker do
           expect(logger)
             .to receive(:error)
             .with(
-              worker: described_class.name,
-              pipeline_name: 'NdjsonPipeline',
-              entity_id: entity.id,
-              message: 'Error!'
+              hash_including(
+                'pipeline_name' => 'NdjsonPipeline',
+                'entity_id' => entity.id,
+                'message' => 'Error!'
+              )
             )
         end
 

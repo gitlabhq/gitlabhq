@@ -428,5 +428,25 @@ RSpec.describe Types::BaseObject do
       expect(result.dig('data', 'users', 'nodes'))
         .to contain_exactly({ 'name' => active_users.first.name })
     end
+
+    describe '.authorize' do
+      let_it_be(:read_only_type) do
+        Class.new(described_class) do
+          authorize :read_only
+        end
+      end
+
+      let_it_be(:inherited_read_only_type) { Class.new(read_only_type) }
+
+      it 'keeps track of the specified value' do
+        expect(described_class.authorize).to be_nil
+        expect(read_only_type.authorize).to match_array [:read_only]
+        expect(inherited_read_only_type.authorize).to match_array [:read_only]
+      end
+
+      it 'can not redefine the authorize value' do
+        expect { read_only_type.authorize(:write_only) }.to raise_error('Cannot redefine authorize')
+      end
+    end
   end
 end

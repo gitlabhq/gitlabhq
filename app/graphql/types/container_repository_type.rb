@@ -14,6 +14,7 @@ module Types
     field :expiration_policy_started_at, Types::TimeType, null: true, description: 'Timestamp when the cleanup done by the expiration policy was started on the container repository.'
     field :id, GraphQL::Types::ID, null: false, description: 'ID of the container repository.'
     field :location, GraphQL::Types::String, null: false, description: 'URL of the container repository.'
+    field :migration_state, GraphQL::Types::String, null: false, description: 'Migration state of the container repository.'
     field :name, GraphQL::Types::String, null: false, description: 'Name of the container repository.'
     field :path, GraphQL::Types::String, null: false, description: 'Path of the container repository.'
     field :project, Types::ProjectType, null: false, description: 'Project of the container registry.'

@@ -8,11 +8,13 @@ import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
   ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
   LIST_DELETE_BUTTON_DISABLED,
+  LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION,
   REMOVE_REPOSITORY_LABEL,
   ROW_SCHEDULED_FOR_DELETION,
   CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   IMAGE_DELETE_SCHEDULED_STATUS,
   IMAGE_FAILED_DELETED_STATUS,
+  IMAGE_MIGRATING_STATE,
   ROOT_IMAGE_TEXT,
 } from '../../constants/index';
 import DeleteButton from '../delete_button.vue';
@@ -32,6 +34,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['config'],
   props: {
     item: {
       type: Object,
@@ -44,19 +47,21 @@ export default {
     },
   },
   i18n: {
-    LIST_DELETE_BUTTON_DISABLED,
     REMOVE_REPOSITORY_LABEL,
     ROW_SCHEDULED_FOR_DELETION,
   },
   computed: {
     disabledDelete() {
-      return !this.item.canDelete || this.deleting;
+      return !this.item.canDelete || this.deleting || this.migrating;
     },
     id() {
       return getIdFromGraphQLId(this.item.id);
     },
     deleting() {
       return this.item.status === IMAGE_DELETE_SCHEDULED_STATUS;
+    },
+    migrating() {
+      return this.item.migrationState === IMAGE_MIGRATING_STATE;
     },
     failedDelete() {
       return this.item.status === IMAGE_FAILED_DELETED_STATUS;
@@ -82,6 +87,11 @@ export default {
     },
     routerLinkEvent() {
       return this.deleting ? '' : 'click';
+    },
+    deleteButtonTooltipTitle() {
+      return this.migrating
+        ? LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION
+        : LIST_DELETE_BUTTON_DISABLED;
     },
   },
 };
@@ -144,8 +154,9 @@ export default {
       <delete-button
         :title="$options.i18n.REMOVE_REPOSITORY_LABEL"
         :disabled="disabledDelete"
-        :tooltip-disabled="item.canDelete"
-        :tooltip-title="$options.i18n.LIST_DELETE_BUTTON_DISABLED"
+        :tooltip-disabled="!disabledDelete"
+        :tooltip-link="config.containerRegistryImportingHelpPagePath"
+        :tooltip-title="deleteButtonTooltipTitle"
         @delete="$emit('delete', item)"
       />
     </template>

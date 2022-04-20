@@ -36,9 +36,11 @@ RSpec.describe BulkImports::EntityWorker do
         expect(logger)
           .to receive(:info).twice
           .with(
-            worker: described_class.name,
-            entity_id: entity.id,
-            current_stage: nil
+            hash_including(
+              'entity_id' => entity.id,
+              'current_stage' => nil,
+              'message' => 'Stage starting'
+            )
           )
       end
 
@@ -58,24 +60,26 @@ RSpec.describe BulkImports::EntityWorker do
 
       expect(BulkImports::PipelineWorker)
         .to receive(:perform_async)
-              .and_raise(exception)
+        .and_raise(exception)
 
       expect_next_instance_of(Gitlab::Import::Logger) do |logger|
         expect(logger)
           .to receive(:info).twice
           .with(
-            worker: described_class.name,
-            entity_id: entity.id,
-            current_stage: nil
+            hash_including(
+              'entity_id' => entity.id,
+              'current_stage' => nil
+            )
           )
 
         expect(logger)
           .to receive(:error)
           .with(
-            worker: described_class.name,
-            entity_id: entity.id,
-            current_stage: nil,
-            error_message: 'Error!'
+            hash_including(
+              'entity_id' => entity.id,
+              'current_stage' => nil,
+              'message' => 'Error!'
+            )
           )
       end
 
@@ -90,6 +94,18 @@ RSpec.describe BulkImports::EntityWorker do
       let(:job_args) { [entity.id, 0] }
 
       it 'do not enqueue a new pipeline job if the current stage still running' do
+        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect(logger)
+            .to receive(:info).twice
+            .with(
+              hash_including(
+                'entity_id' => entity.id,
+                'current_stage' => 0,
+                'message' => 'Stage running'
+              )
+            )
+        end
+
         expect(BulkImports::PipelineWorker)
           .not_to receive(:perform_async)
 
@@ -110,9 +126,10 @@ RSpec.describe BulkImports::EntityWorker do
           expect(logger)
             .to receive(:info).twice
             .with(
-              worker: described_class.name,
-              entity_id: entity.id,
-              current_stage: 0
+              hash_including(
+                'entity_id' => entity.id,
+                'current_stage' => 0
+              )
             )
         end
 

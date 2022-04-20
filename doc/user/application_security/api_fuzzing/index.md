@@ -592,6 +592,7 @@ profile increases as the number of tests increases.
 | `FUZZAPI_CONFIG`                                            | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/276395) in GitLab 13.12, replaced with default `.gitlab/gitlab-api-fuzzing-config.yml`. API Fuzzing configuration file. |
 |[`FUZZAPI_PROFILE`](#api-fuzzing-profiles)                   | Configuration profile to use during testing. Defaults to `Quick-10`. |
 |[`FUZZAPI_EXCLUDE_PATHS`](#exclude-paths)                    | Exclude API URL paths from testing. |
+|[`FUZZAPI_EXCLUDE_URLS`](#exclude-urls)                      | Exclude API URL from testing. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10. |
 |[`FUZZAPI_EXCLUDE_PARAMETER_ENV`](#exclude-parameters)       | JSON string containing excluded parameters. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292196) in GitLab 14.10. |
 |[`FUZZAPI_EXCLUDE_PARAMETER_FILE`](#exclude-parameters)      | Path to a JSON file containing excluded parameters. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292196) in GitLab 14.10. |
 |[`FUZZAPI_OPENAPI`](#openapi-specification)                  | OpenAPI Specification file or URL. |
@@ -1294,6 +1295,65 @@ variables:
 ```
 
 The `api-fuzzing-exclude-parameters.json` is a JSON document that follows the structure of [exclude parameters document](#exclude-parameters-using-a-json-document). 
+
+### Exclude URLS
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10.
+
+As an alternative to excluding by paths, you can filter by any other component in the URL by using the `FUZZAPI_EXCLUDE_URLS` CI/CD variable. This variable can be set in your `.gitlab-ci.yml` file. The variable can store multiple values, separated by commas (`,`). Each value is a regular expression. Because each entry is a regular expression, an entry such as `.*` excludes all URLs because it is a regular expression that matches everything.
+
+In your job output you can check if any URLs matched any provided regular expression from `FUZZAPI_EXCLUDE_URLS`. Matching operations are listed in the **Excluded Operations** section. Operations listed in the **Excluded Operations** should not be listed in the **Tested Operations** section. For example the following portion of a job output:
+
+```plaintext
+2021-05-27 21:51:08 [INF] API Security: --[ Tested Operations ]-------------------------
+2021-05-27 21:51:08 [INF] API Security: 201 POST http://target:7777/api/users CREATED
+2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
+2021-05-27 21:51:08 [INF] API Security: --[ Excluded Operations ]-----------------------
+2021-05-27 21:51:08 [INF] API Security: GET http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] API Security: POST http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
+```
+
+NOTE:
+Each value in `FUZZAPI_EXCLUDE_URLS` is a regular expression. Characters such as `.` , `*` and `$` among many others have special meanings in [regular expressions](https://en.wikipedia.org/wiki/Regular_expression#Standards).
+
+#### Examples
+
+##### Excluding a URL and child resources
+
+The following example excludes the URL `http://target/api/auth` and its child resources.
+
+```yaml
+variables:
+  FUZZAPI_EXCLUDE_URLS: http://target/api/auth
+```
+
+##### Excluding two URLs and allow their child resources
+
+To exclude the URLs `http://target/api/buy` and `http://target/api/sell` but allowing to scan their child resources, for instance: `http://target/api/buy/toy` or `http://target/api/sell/chair`. You could use the value `http://target/api/buy/$,http://target/api/sell/$`. This value is using two regular expressions, each of them separated by a `,` character. Hence, it contains `http://target/api/buy$` and `http://target/api/sell$`. In each regular expression, the trailing `$` character points out where the matching URL should end.
+
+```yaml
+variables:
+  FUZZAPI_EXCLUDE_URLS: http://target/api/buy/$,http://target/api/sell/$
+```
+
+##### Excluding two URLs and their child resources
+
+In order to exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
+
+```yaml
+variables:
+  FUZZAPI_EXCLUDE_URLS: http://target/api/buy,http://target/api/sell
+```
+
+##### Excluding URL using regular expressions
+
+In order to exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there. 
+
+```yaml
+variables:
+  FUZZAPI_EXCLUDE_URLS: https://target/api/v.*/user/create$
+```
 
 ### Header Fuzzing
 

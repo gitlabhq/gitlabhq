@@ -42,10 +42,12 @@ module BulkImports
         correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
       }
 
-      Gitlab::Import::Logger.warn(
-        attributes.merge(
-          bulk_import_id: entity.bulk_import.id,
-          bulk_import_entity_type: entity.source_type
+      Gitlab::Import::Logger.error(
+        structured_payload(
+          attributes.merge(
+            bulk_import_id: entity.bulk_import.id,
+            bulk_import_entity_type: entity.source_type
+          )
         )
       )
 

@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['ContainerRepositoryDetails'] do
-  fields = %i[id name path location created_at updated_at expiration_policy_started_at status tags_count can_delete expiration_policy_cleanup_status tags size project]
+  fields = %i[id name path location created_at updated_at expiration_policy_started_at
+              status tags_count can_delete expiration_policy_cleanup_status tags size
+              project migration_state]
 
   it { expect(described_class.graphql_name).to eq('ContainerRepositoryDetails') }
 

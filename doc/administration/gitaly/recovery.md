@@ -348,12 +348,22 @@ If this occurs, run `remove-repository` again.
 
 ### Manually list untracked repositories
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3926) in GitLab 14.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3926) in GitLab 14.4.
+> - `older-than` option added in GitLab 15.0.
 
 The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster that both:
 
 - Exist for at least one Gitaly storage.
 - Aren't tracked in the Praefect database.
+
+Add the `-older-than` option to avoid showing repositories that are the process of being created and for which a record doesn't yet exist in the
+Praefect database. Replace <duration> with a time duration (for example, `5s`, `10m`, or `1h`). Defaults to `6h`.
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories -older-than <duration> 
+```
+
+Only repositories with a creation time before the specified duration are considered.
 
 The command outputs:
 

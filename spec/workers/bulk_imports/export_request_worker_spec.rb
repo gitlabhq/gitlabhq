@@ -35,14 +35,16 @@ RSpec.describe BulkImports::ExportRequestWorker do
               expect(client).to receive(:post).and_raise(BulkImports::NetworkError, 'Export error').twice
             end
 
-            expect(Gitlab::Import::Logger).to receive(:warn).with(
-              bulk_import_entity_id: entity.id,
-              pipeline_class: 'ExportRequestWorker',
-              exception_class: 'BulkImports::NetworkError',
-              exception_message: 'Export error',
-              correlation_id_value: anything,
-              bulk_import_id: bulk_import.id,
-              bulk_import_entity_type: entity.source_type
+            expect(Gitlab::Import::Logger).to receive(:error).with(
+              hash_including(
+                'bulk_import_entity_id' => entity.id,
+                'pipeline_class' => 'ExportRequestWorker',
+                'exception_class' => 'BulkImports::NetworkError',
+                'exception_message' => 'Export error',
+                'correlation_id_value' => anything,
+                'bulk_import_id' => bulk_import.id,
+                'bulk_import_entity_type' => entity.source_type
+              )
             ).twice
 
             perform_multiple(job_args)

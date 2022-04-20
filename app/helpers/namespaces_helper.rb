@@ -88,6 +88,15 @@ module NamespacesHelper
     }.to_json
   end
 
+  def pipeline_usage_quota_app_data(namespace)
+    {
+      namespace_actual_plan_name: namespace.actual_plan_name,
+      namespace_path: namespace.full_path,
+      namespace_id: namespace.id,
+      page_size: page_size
+    }
+  end
+
   private
 
   # Many importers create a temporary Group, so use the real
