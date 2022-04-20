@@ -134,9 +134,13 @@ $solarized-light-il: #2aa198;
     background-color: $solarized-light-pre-bg;
     color: $solarized-light-pre-color;
   }
+  
+  .old-line_expansion {
+    @include old-diff-expansion($solarized-light-line-bg, $solarized-light-border, $solarized-light-kd);
+  }
 
-  .line_expansion {
-    @include diff-expansion($solarized-light-line-bg, $solarized-light-border, $solarized-light-kd);
+  .diff-line-expand-button {
+    @include diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
   }
 
   // Diff line
@@ -145,6 +149,10 @@ $solarized-light-il: #2aa198;
     &.old-nonewline .line_content,
     &.new-nonewline .line_content {
       @include match-line;
+    }
+
+    &.diff-grid-row.expansion .diff-td {
+      background-color: $solarized-light-matchline-bg;
     }
 
     .diff-td.diff-line-num.hll:not(.empty-cell),

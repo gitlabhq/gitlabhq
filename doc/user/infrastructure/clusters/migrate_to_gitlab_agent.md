@@ -14,9 +14,11 @@ To connect your Kubernetes cluster with GitLab, you can use:
 
 The certificate-based integration is
 [**deprecated**](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/)
-in GitLab 14.5. It is expected to be
-[turned off by default in 15.0](../../../update/deprecations.md#certificate-based-integration-with-kubernetes)
-and removed in GitLab 15.6.
+in GitLab 14.5. The removal dates are:
+
+- [GitLab.com customers](../../../update/deprecations.md#saas-certificate-based-integration-with-kubernetes): GitLab 15.0.
+- [Self-managed customers](../../../update/deprecations.md#self-managed-certificate-based-integration-with-kubernetes):
+  Placed behind a disabled feature flag in GitLab 15.0, and removed entirely in GitLab 15.6.
 
 If you are using the certificate-based integration, you should move to another workflow as soon as possible.
 

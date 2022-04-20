@@ -582,25 +582,6 @@ table.code {
   }
 }
 
-.diff-expansion-cell {
-  flex: 1 1;
-  min-width: max-content;
-}
-
-.diff-expansion-cell-middle {
-  flex: 0 1 max-content;
-}
-
-@media only screen and (min-width: $breakpoint-xl) {
-  .diff-expansion-cell-start {
-    text-align: right;
-  }
-
-  .diff-expansion-cell-end {
-    text-align: left;
-  }
-}
-
 // Merge request diff grid layout
 .diff-grid {
   .diff-td {
@@ -612,6 +593,10 @@ table.code {
   .diff-grid-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
+
+    &.diff-grid-row-full {
+      grid-template-columns: 1fr;
+    }
   }
 
   .diff-grid-left,
@@ -624,6 +609,14 @@ table.code {
 
   .diff-grid-3-col {
     grid-template-columns: 50px 1fr !important;
+  }
+
+  .diff-grid-2-col {
+    grid-template-columns: 100px 1fr !important;
+
+    &.parallel {
+      grid-template-columns: 50px 1fr !important;
+    }
   }
 
   &.inline-diff-view .diff-grid-3-col {
@@ -1208,4 +1201,11 @@ table.code {
 .diffs .vue-recycle-scroller__item-view > div:not(.active) {
   position: absolute;
   bottom: 100vh;
+}
+
+.diff-line-expand-button {
+  &:hover,
+  &:focus {
+    @include gl-bg-gray-200;
+  }
 }

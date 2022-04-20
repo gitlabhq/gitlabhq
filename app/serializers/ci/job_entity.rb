@@ -8,6 +8,7 @@ module Ci
     expose :name
 
     expose :started?, as: :started
+    expose :started_at, if: -> (job) { job.started? }
     expose :complete?, as: :complete
     expose :archived?, as: :archived
 

@@ -1,42 +1,33 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
-import { mapState, mapActions } from 'vuex';
+import { GlTooltipDirective, GlSafeHtmlDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { UNFOLD_COUNT, INLINE_DIFF_VIEW_TYPE, INLINE_DIFF_LINES_KEY } from '../constants';
+import { UNFOLD_COUNT, INLINE_DIFF_LINES_KEY } from '../constants';
 import * as utils from '../store/utils';
 
 const EXPAND_ALL = 0;
 const EXPAND_UP = 1;
 const EXPAND_DOWN = 2;
 
-const lineNumberByViewType = (viewType, diffLine) => {
-  const numberGetters = {
-    [INLINE_DIFF_VIEW_TYPE]: (line) => line?.new_line,
-  };
-  const numberGetter = numberGetters[viewType];
-  return numberGetter && numberGetter(diffLine);
-};
-
-const i18n = {
-  showMore: sprintf(s__('Diffs|Show %{unfoldCount} lines'), { unfoldCount: UNFOLD_COUNT }),
-  showAll: s__('Diffs|Show all unchanged lines'),
-};
-
 export default {
-  i18n,
+  i18n: {
+    showMore: sprintf(s__('Diffs|Show %{unfoldCount} lines'), { unfoldCount: UNFOLD_COUNT }),
+    showAll: s__('Diffs|Show all unchanged lines'),
+  },
   components: {
     GlIcon,
+    GlLoadingIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    fileHash: {
-      type: String,
-      required: true,
-    },
-    contextLinesPath: {
-      type: String,
+    file: {
+      type: Object,
       required: true,
     },
     line: {
@@ -53,34 +44,45 @@ export default {
       required: false,
       default: false,
     },
+    inline: {
+      type: Boolean,
+      required: true,
+    },
+    lineCountBetween: {
+      type: Number,
+      required: false,
+      default: -1,
+    },
+  },
+  data() {
+    return { loading: { up: false, down: false, all: false } };
   },
   computed: {
-    ...mapState({
-      diffFiles: (state) => state.diffs.diffFiles,
-    }),
     canExpandUp() {
       return !this.isBottom;
     },
     canExpandDown() {
       return this.isBottom || !this.isTop;
     },
-  },
-  created() {
-    this.EXPAND_DOWN = EXPAND_DOWN;
-    this.EXPAND_UP = EXPAND_UP;
+    isLineCountSmall() {
+      return this.lineCountBetween >= 20 || this.lineCountBetween === -1;
+    },
+    showExpandDown() {
+      return this.canExpandDown && this.isLineCountSmall;
+    },
+    showExpandUp() {
+      return this.canExpandUp && this.isLineCountSmall;
+    },
   },
   methods: {
     ...mapActions('diffs', ['loadMoreLines']),
     getPrevLineNumber(oldLineNumber, newLineNumber) {
-      const diffFile = utils.findDiffFile(this.diffFiles, this.fileHash);
-      const index = utils.getPreviousLineIndex(INLINE_DIFF_VIEW_TYPE, diffFile, {
+      const index = utils.getPreviousLineIndex(this.file, {
         oldLineNumber,
         newLineNumber,
       });
 
-      return (
-        lineNumberByViewType(INLINE_DIFF_VIEW_TYPE, diffFile[INLINE_DIFF_LINES_KEY][index - 2]) || 0
-      );
+      return this.file[INLINE_DIFF_LINES_KEY][index - 2]?.new_line || 0;
     },
     callLoadMoreLines(
       endpoint,
@@ -99,6 +101,9 @@ export default {
             message: s__('Diffs|Something went wrong while fetching diff lines.'),
           });
           this.isRequesting = false;
+        })
+        .finally(() => {
+          this.loading = { up: false, down: false, all: false };
         });
     },
     handleExpandLines(type = EXPAND_ALL) {
@@ -107,25 +112,26 @@ export default {
       }
 
       this.isRequesting = true;
-      const endpoint = this.contextLinesPath;
-      const { fileHash } = this;
-      const view = INLINE_DIFF_VIEW_TYPE;
+      const endpoint = this.file.context_lines_path;
       const oldLineNumber = this.line.meta_data.old_pos || 0;
       const newLineNumber = this.line.meta_data.new_pos || 0;
       const offset = newLineNumber - oldLineNumber;
 
-      const expandOptions = { endpoint, fileHash, view, oldLineNumber, newLineNumber, offset };
+      const expandOptions = { endpoint, oldLineNumber, newLineNumber, offset };
 
       if (type === EXPAND_UP) {
+        this.loading.up = true;
         this.handleExpandUpLines(expandOptions);
       } else if (type === EXPAND_DOWN) {
+        this.loading.down = true;
         this.handleExpandDownLines(expandOptions);
       } else {
+        this.loading.all = true;
         this.handleExpandAllLines(expandOptions);
       }
     },
     handleExpandUpLines(expandOptions) {
-      const { endpoint, fileHash, view, oldLineNumber, newLineNumber, offset } = expandOptions;
+      const { endpoint, oldLineNumber, newLineNumber, offset } = expandOptions;
 
       const bottom = this.isBottom;
       const lineNumber = newLineNumber - 1;
@@ -139,15 +145,13 @@ export default {
         unfold = false;
       }
 
-      const params = { since, to, bottom, offset, unfold, view };
+      const params = { since, to, bottom, offset, unfold };
       const lineNumbers = { oldLineNumber, newLineNumber };
-      this.callLoadMoreLines(endpoint, params, lineNumbers, fileHash);
+      this.callLoadMoreLines(endpoint, params, lineNumbers, this.file.file_hash);
     },
     handleExpandDownLines(expandOptions) {
       const {
         endpoint,
-        fileHash,
-        view,
         oldLineNumber: metaOldPos,
         newLineNumber: metaNewPos,
         offset,
@@ -183,19 +187,19 @@ export default {
         }
       }
 
-      const params = { since, to, bottom, offset, unfold, view };
+      const params = { since, to, bottom, offset, unfold };
       const lineNumbers = { oldLineNumber, newLineNumber };
       this.callLoadMoreLines(
         endpoint,
         params,
         lineNumbers,
-        fileHash,
+        this.file.file_hash,
         isExpandDown,
         nextLineNumbers,
       );
     },
     handleExpandAllLines(expandOptions) {
-      const { endpoint, fileHash, view, oldLineNumber, newLineNumber, offset } = expandOptions;
+      const { endpoint, oldLineNumber, newLineNumber, offset } = expandOptions;
       const bottom = this.isBottom;
       const unfold = false;
       let since;
@@ -213,21 +217,71 @@ export default {
         to = newLineNumber - 1;
       }
 
-      const params = { since, to, bottom, offset, unfold, view };
+      const params = { since, to, bottom, offset, unfold };
       const lineNumbers = { oldLineNumber, newLineNumber };
-      this.callLoadMoreLines(endpoint, params, lineNumbers, fileHash);
+      this.callLoadMoreLines(endpoint, params, lineNumbers, this.file.file_hash);
     },
   },
+  EXPAND_DOWN,
+  EXPAND_UP,
 };
 </script>
 
 <template>
-  <div class="content js-line-expansion-content">
+  <div
+    v-if="glFeatures.updatedDiffExpansionButtons"
+    class="diff-grid-row diff-grid-row-full diff-tr line_holder match expansion"
+  >
+    <div :class="{ parallel: !inline }" class="diff-grid-left diff-grid-2-col left-side">
+      <div
+        class="diff-td diff-line-num gl-text-center! gl-p-0! gl-w-full! gl-display-flex gl-flex-direction-column"
+      >
+        <button
+          v-if="showExpandDown"
+          v-gl-tooltip
+          :title="s__('Diffs|Next 20 lines')"
+          type="button"
+          class="js-unfold-down gl-rounded-0 gl-border-0 diff-line-expand-button"
+          @click="handleExpandLines($options.EXPAND_DOWN)"
+        >
+          <gl-loading-icon v-if="loading.down" size="sm" color="dark" inline />
+          <gl-icon v-else name="expand-down" />
+        </button>
+        <button
+          v-if="lineCountBetween !== -1 && lineCountBetween < 20"
+          v-gl-tooltip
+          :title="s__('Diffs|Expand all lines')"
+          type="button"
+          class="js-unfold-all gl-rounded-0 gl-border-0 diff-line-expand-button"
+          @click="handleExpandLines()"
+        >
+          <gl-loading-icon v-if="loading.all" size="sm" color="dark" inline />
+          <gl-icon v-else name="expand" />
+        </button>
+        <button
+          v-if="showExpandUp"
+          v-gl-tooltip
+          :title="s__('Diffs|Previous 20 lines')"
+          type="button"
+          class="js-unfold gl-rounded-0 gl-border-0 diff-line-expand-button"
+          @click="handleExpandLines($options.EXPAND_UP)"
+        >
+          <gl-loading-icon v-if="loading.up" size="sm" color="dark" inline />
+          <gl-icon v-else name="expand-up" />
+        </button>
+      </div>
+      <div
+        v-safe-html="line.rich_text"
+        class="gl-display-flex! gl-flex-direction-column gl-justify-content-center diff-td line_content left-side gl-white-space-normal!"
+      ></div>
+    </div>
+  </div>
+  <div v-else class="content js-line-expansion-content">
     <button
       type="button"
       :disabled="!canExpandDown"
       class="js-unfold-down gl-mx-2 gl-py-4 gl-cursor-pointer"
-      @click="handleExpandLines(EXPAND_DOWN)"
+      @click="handleExpandLines($options.EXPAND_DOWN)"
     >
       <gl-icon :size="12" name="expand-down" />
       <span>{{ $options.i18n.showMore }}</span>
@@ -244,7 +298,7 @@ export default {
       type="button"
       :disabled="!canExpandUp"
       class="js-unfold gl-mx-2 gl-py-4 gl-cursor-pointer"
-      @click="handleExpandLines(EXPAND_UP)"
+      @click="handleExpandLines($options.EXPAND_UP)"
     >
       <gl-icon :size="12" name="expand-up" />
       <span>{{ $options.i18n.showMore }}</span>

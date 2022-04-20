@@ -44,6 +44,18 @@ Most of the deprecations are **planned for removal in 15.0**, and many of them a
 
 ## 14.10
 
+### Dependency Scanning default Java version changed to 17
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GitLab 15.0, for Dependency Scanning, the default version of Java will be updated to 17. This is the same as [the most up-to-date Long Term Support (LTS) version](https://en.wikipedia.org/wiki/Java_version_history). GitLab still [supports the same versions as it does today (8, 11, 13, 14, 15, 16, 17)](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning). Only the enabled default is changing. To change the default, set the `DS_Java_Version` variable.
+
+**Planned removal milestone: 15.0 (2021-05-22)**
+
 ### Manual iteration management
 
 WARNING:
@@ -1250,33 +1262,6 @@ If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you wi
 
 ## 14.5
 
-### Certificate-based integration with Kubernetes
-
-WARNING:
-This feature will be changed or removed in 15.6
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-[The certificate-based integration with Kubernetes will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
-
-If you are a self-managed customer, in GitLab 15.0, a feature flag will be introduced so you can keep
-certificate-based integration enabled. The flag will be disabled by default.
-The flag and the related code will be removed in GitLab 15.6.
-
-Until the final removal in 15.6, features built on the integration will continue to work, and
-GitLab will continue to fix security and critical issues.
-
-If you use GitLab.com, certificate-based integrations will cease functioning in 15.0.
-
-For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
-[agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab.
-See the documentation for [how to migrate](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html).
-
-For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
-
-**Planned removal milestone: 15.6 (2022-11-22)**
-
 ### Converting an instance (shared) runner to a project (specific) runner
 
 WARNING:
@@ -1348,6 +1333,44 @@ When checking if a runner is `paused`, API users are advised to check the boolea
 `paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
 
 **Planned removal milestone: 16.0 (2023-04-22)**
+
+### SaaS certificate-based integration with Kubernetes
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab SaaS customer, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0.
+
+For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
+[agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
+
+For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Self-managed certificate-based integration with Kubernetes
+
+WARNING:
+This feature will be changed or removed in 15.6
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
+
+As a self-managed customer, we are introducing a feature flag in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
+
+In GitLab 15.6 we will remove both the feature, and its related code. Until the final removal in 15.6, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
+
+For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
+[agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
+
+For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+**Planned removal milestone: 15.6 (2022-11-22)**
 
 ### Support for SLES 12 SP2
 

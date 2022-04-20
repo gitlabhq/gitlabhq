@@ -1,0 +1,17 @@
+- name: "SaaS certificate-based integration with Kubernetes"
+  announcement_milestone: "14.5"
+  announcement_date: "2021-11-15"
+  removal_milestone: "15.0"
+  removal_date: "2022-05-22"  # the date of the milestone release when this feature is planned to be removed
+  breaking_change: true
+  body: |
+    The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab SaaS customer, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0.
+
+    For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
+    [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
+
+    For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+  stage: Configure
+  tiers: [Free, Premium, Ultimate]
+  issue_url: 'https://gitlab.com/groups/gitlab-org/configure/-/epics/8'
+  documentation_url: 'https://docs.gitlab.com/ee/user/infrastructure/clusters/#certificate-based-kubernetes-integration-deprecated'

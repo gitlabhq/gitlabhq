@@ -19,7 +19,17 @@
   background: $dark-diff-match-color;
 }
 
-@mixin diff-expansion($background, $border, $link) {
+@mixin diff-expansion($background, $color, $hover-background, $hover-color) {
+  background-color: $background;
+  color: $color;
+
+  &:hover {
+    background-color: $hover-background;
+    color: $hover-color;
+  }
+}
+
+@mixin old-diff-expansion($background, $border, $link) {
   background-color: $background;
 
   .diff-td,
@@ -46,6 +56,13 @@
     &:not(:focus-visible) {
       outline: 0;
     }
+  }
+}
+
+
+@mixin dark-diff-expansion-line {
+  &.expansion .diff-td {
+    background-color: $dark-diff-match-color;
   }
 }
 

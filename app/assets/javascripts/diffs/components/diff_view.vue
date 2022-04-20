@@ -141,6 +141,18 @@ export default {
         table.classList.add(`${lineClass}-selected`);
       }
     },
+    getCountBetweenIndex(index) {
+      if (index === 0) {
+        return -1;
+      } else if (!this.diffLines[index + 1]) {
+        return -1;
+      }
+
+      return (
+        Number(this.diffLines[index + 1].left.new_line) -
+        Number(this.diffLines[index - 1].left.new_line)
+      );
+    },
   },
   userColorScheme: window.gon.user_color_scheme,
 };
@@ -158,38 +170,51 @@ export default {
   >
     <template v-for="(line, index) in diffLines">
       <template v-if="line.isMatchLineLeft || line.isMatchLineRight">
-        <div :key="`expand-${index}`" class="diff-tr line_expansion match">
-          <div class="diff-td text-center gl-font-regular">
-            <diff-expansion-cell
-              :file-hash="diffFile.file_hash"
-              :context-lines-path="diffFile.context_lines_path"
-              :line="line.left"
-              :is-top="index === 0"
-              :is-bottom="index + 1 === diffLinesLength"
-            />
+        <diff-expansion-cell
+          v-if="glFeatures.updatedDiffExpansionButtons"
+          :key="`expand-${index}`"
+          :file="diffFile"
+          :line="line.left"
+          :is-top="index === 0"
+          :is-bottom="index + 1 === diffLinesLength"
+          :inline="inline"
+          :line-count-between="getCountBetweenIndex(index)"
+        />
+        <template v-else>
+          <div :key="`expand-${index}`" class="diff-tr line_expansion old-line_expansion match">
+            <div class="diff-td text-center gl-font-regular">
+              <diff-expansion-cell
+                :file="diffFile"
+                :context-lines-path="diffFile.context_lines_path"
+                :line="line.left"
+                :is-top="index === 0"
+                :is-bottom="index + 1 === diffLinesLength"
+                :inline="inline"
+              />
+            </div>
           </div>
-        </div>
-        <div
-          v-if="line.left.rich_text"
-          :key="`expand-definition-${index}`"
-          class="diff-grid-row diff-tr line_holder match"
-        >
-          <div class="diff-grid-left diff-grid-3-col left-side">
-            <div class="diff-td diff-line-num"></div>
-            <div v-if="inline" class="diff-td diff-line-num"></div>
-            <div
-              v-safe-html="line.left.rich_text"
-              class="diff-td line_content left-side gl-white-space-normal!"
-            ></div>
+          <div
+            v-if="line.left.rich_text"
+            :key="`expand-definition-${index}`"
+            class="diff-grid-row diff-tr line_holder match"
+          >
+            <div class="diff-grid-left diff-grid-3-col left-side">
+              <div class="diff-td diff-line-num"></div>
+              <div v-if="inline" class="diff-td diff-line-num"></div>
+              <div
+                v-safe-html="line.left.rich_text"
+                class="diff-td line_content left-side gl-white-space-normal!"
+              ></div>
+            </div>
+            <div v-if="!inline" class="diff-grid-right diff-grid-3-col right-side">
+              <div class="diff-td diff-line-num"></div>
+              <div
+                v-safe-html="line.left.rich_text"
+                class="diff-td line_content right-side gl-white-space-normal!"
+              ></div>
+            </div>
           </div>
-          <div v-if="!inline" class="diff-grid-right diff-grid-3-col right-side">
-            <div class="diff-td diff-line-num"></div>
-            <div
-              v-safe-html="line.left.rich_text"
-              class="diff-td line_content right-side gl-white-space-normal!"
-            ></div>
-          </div>
-        </div>
+        </template>
       </template>
       <diff-row
         v-if="!line.isMatchLineLeft && !line.isMatchLineRight"

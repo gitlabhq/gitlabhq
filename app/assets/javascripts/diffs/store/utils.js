@@ -15,13 +15,15 @@ import {
   CONFLICT_MARKER,
   CONFLICT_MARKER_OUR,
   CONFLICT_MARKER_THEIR,
+  EXPANDED_LINE_TYPE,
 } from '../constants';
 import { prepareRawDiffFile } from '../utils/diff_file';
 
 export const isAdded = (line) => ['new', 'new-nonewline'].includes(line.type);
 export const isRemoved = (line) => ['old', 'old-nonewline'].includes(line.type);
 export const isUnchanged = (line) => !line.type;
-export const isMeta = (line) => ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
+export const isMeta = (line) =>
+  ['match', EXPANDED_LINE_TYPE, 'new-nonewline', 'old-nonewline'].includes(line.type);
 export const isConflictMarker = (line) =>
   [CONFLICT_MARKER_OUR, CONFLICT_MARKER_THEIR].includes(line.type);
 export const isConflictSeperator = (line) => line.type === CONFLICT_MARKER;
@@ -205,7 +207,7 @@ export const findIndexInInlineLines = (lines, lineNumbers) => {
   );
 };
 
-export const getPreviousLineIndex = (diffViewType, file, lineNumbers) => {
+export const getPreviousLineIndex = (file, lineNumbers) => {
   return findIndexInInlineLines(file[INLINE_DIFF_LINES_KEY], lineNumbers);
 };
 

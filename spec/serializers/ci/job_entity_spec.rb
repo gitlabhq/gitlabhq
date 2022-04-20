@@ -128,6 +128,15 @@ RSpec.describe Ci::JobEntity do
     end
   end
 
+  context 'when job is running' do
+    let_it_be(:job) { create(:ci_build, :running) }
+
+    it 'contains started_at' do
+      expect(subject[:started]).to be_truthy
+      expect(subject[:started_at]).to eq(job.started_at)
+    end
+  end
+
   context 'when job is generic commit status' do
     let(:job) { create(:generic_commit_status, target_url: 'http://google.com') }
 

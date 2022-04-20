@@ -46,12 +46,6 @@ Lint/RedundantCopDisableDirective:
 Lint/UselessMethodDefinition:
   Enabled: false
 
-# Offense count: 321
-# Configuration parameters: ForbiddenDelimiters.
-# ForbiddenDelimiters: (?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-
 # Offense count: 218
 # Cop supports --auto-correct.
 # Configuration parameters: PreferredName.

@@ -20,7 +20,6 @@ function makeLoadMoreLinesPayload({
   sinceLine,
   toLine,
   oldLineNumber,
-  diffViewType,
   fileHash,
   nextLineNumbers = {},
   unfold = false,
@@ -28,12 +27,11 @@ function makeLoadMoreLinesPayload({
   isExpandDown = false,
 }) {
   return {
-    endpoint: 'contextLinesPath',
+    endpoint: diffFileMockData.context_lines_path,
     params: {
       since: sinceLine,
       to: toLine,
       offset: toLine + 1 - oldLineNumber,
-      view: diffViewType,
       unfold,
       bottom,
     },
@@ -70,10 +68,11 @@ describe('DiffExpansionCell', () => {
   const createComponent = (options = {}) => {
     const defaults = {
       fileHash: mockFile.file_hash,
-      contextLinesPath: 'contextLinesPath',
       line: mockLine,
       isTop: false,
       isBottom: false,
+      file: mockFile,
+      inline: true,
     };
     const propsData = { ...defaults, ...options };
 
@@ -124,7 +123,7 @@ describe('DiffExpansionCell', () => {
 
   describe('any row', () => {
     [
-      { diffViewType: INLINE_DIFF_VIEW_TYPE, lineIndex: 8, file: { parallel_diff_lines: [] } },
+      { diffViewType: INLINE_DIFF_VIEW_TYPE, lineIndex: 8, file: cloneDeep(diffFileMockData) },
     ].forEach(({ diffViewType, file, lineIndex }) => {
       describe(`with diffViewType (${diffViewType})`, () => {
         beforeEach(() => {
@@ -140,12 +139,12 @@ describe('DiffExpansionCell', () => {
         it('on expand all clicked, dispatch loadMoreLines', () => {
           const oldLineNumber = mockLine.meta_data.old_pos;
           const newLineNumber = mockLine.meta_data.new_pos;
-          const previousIndex = getPreviousLineIndex(diffViewType, mockFile, {
+          const previousIndex = getPreviousLineIndex(mockFile, {
             oldLineNumber,
             newLineNumber,
           });
 
-          const wrapper = createComponent();
+          const wrapper = createComponent({ file });
 
           findExpandAll(wrapper).click();
 
@@ -156,7 +155,6 @@ describe('DiffExpansionCell', () => {
               toLine: newLineNumber - 1,
               sinceLine: previousIndex,
               oldLineNumber,
-              diffViewType,
             }),
           );
         });
@@ -168,7 +166,7 @@ describe('DiffExpansionCell', () => {
           const oldLineNumber = mockLine.meta_data.old_pos;
           const newLineNumber = mockLine.meta_data.new_pos;
 
-          const wrapper = createComponent();
+          const wrapper = createComponent({ file });
 
           findExpandUp(wrapper).trigger('click');
 
@@ -196,17 +194,16 @@ describe('DiffExpansionCell', () => {
           mockLine.meta_data.old_pos = 200;
           mockLine.meta_data.new_pos = 200;
 
-          const wrapper = createComponent();
+          const wrapper = createComponent({ file });
 
           findExpandDown(wrapper).trigger('click');
 
           expect(store.dispatch).toHaveBeenCalledWith('diffs/loadMoreLines', {
-            endpoint: 'contextLinesPath',
+            endpoint: diffFileMockData.context_lines_path,
             params: {
               since: 1,
               to: 21, // the load amount, plus 1 line
               offset: 0,
-              view: diffViewType,
               unfold: true,
               bottom: true,
             },

@@ -10,6 +10,7 @@ import {
   CONFLICT_MARKER_THEIR,
   CONFLICT_THEIR,
   CONFLICT_OUR,
+  EXPANDED_LINE_TYPE,
 } from '../constants';
 
 export const isHighlighted = (highlightedRow, line, isCommented) => {
@@ -118,10 +119,12 @@ export const mapParallel = (content) => (line) => {
   if (right) {
     right = {
       ...right,
-      renderDiscussion: Boolean(hasExpandedDiscussionOnRight && right.type),
+      renderDiscussion: Boolean(
+        hasExpandedDiscussionOnRight && right.type && right.type !== EXPANDED_LINE_TYPE,
+      ),
       hasDraft: content.hasParallelDraftRight(content.diffFile.file_hash, line),
       lineDraft: content.draftForLine(content.diffFile.file_hash, line, 'right'),
-      hasCommentForm: Boolean(right.hasForm && right.type),
+      hasCommentForm: Boolean(right.hasForm && right.type && right.type !== EXPANDED_LINE_TYPE),
       emptyCellClassMap: { conflict_their: line.left?.type === CONFLICT_OUR },
       addCommentTooltip: addCommentTooltip(line.right),
     };

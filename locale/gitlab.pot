@@ -13076,7 +13076,16 @@ msgid_plural "Diffs|%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Diffs|Expand all lines"
+msgstr ""
+
+msgid "Diffs|Next 20 lines"
+msgstr ""
+
 msgid "Diffs|No file name available"
+msgstr ""
+
+msgid "Diffs|Previous 20 lines"
 msgstr ""
 
 msgid "Diffs|Show %{unfoldCount} lines"
