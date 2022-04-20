@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::ContainerRegistry::Migration do
+RSpec.describe API::Internal::ContainerRegistry::Migration, :aggregate_failures do
   let_it_be_with_reload(:repository) { create(:container_repository) }
 
   let(:secret_token) { 'secret_token' }
@@ -146,6 +146,17 @@ RSpec.describe API::Internal::ContainerRegistry::Migration do
         let(:repository_path) { nil }
 
         it_behaves_like 'returning an error', returning_status: :not_found
+      end
+
+      context 'query read location' do
+        it 'reads from the primary' do
+          expect(ContainerRepository).to receive(:find_by_path!).and_wrap_original do |m, *args|
+            expect(::Gitlab::Database::LoadBalancing::Session.current.use_primary?).to eq(true)
+            m.call(*args)
+          end
+
+          subject
+        end
       end
     end
 

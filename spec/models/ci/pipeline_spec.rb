@@ -11,7 +11,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   let_it_be(:namespace) { create_default(:namespace).freeze }
   let_it_be(:project) { create_default(:project, :repository).freeze }
 
-  it 'paginates 15 pipeleines per page' do
+  it 'paginates 15 pipelines per page' do
     expect(described_class.default_per_page).to eq(15)
   end
 
@@ -552,7 +552,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it { is_expected.to be_truthy }
     end
 
-    context 'when both sha and source_sha do not matche' do
+    context 'when both sha and source_sha do not match' do
       let(:pipeline) { build(:ci_pipeline, sha: 'test', source_sha: 'test') }
 
       it { is_expected.to be_falsy }
@@ -1532,6 +1532,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           pipeline.succeed
 
           expect(pipeline.started_at).to be_nil
+        end
+      end
+
+      context 'from success' do
+        let(:started_at) { 2.days.ago }
+        let(:from_status) { :success }
+
+        before do
+          pipeline.update!(started_at: started_at)
+        end
+
+        it 'does not update on transitioning to running' do
+          pipeline.run
+
+          expect(pipeline.started_at).to eq started_at
         end
       end
     end

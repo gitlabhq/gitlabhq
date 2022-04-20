@@ -19338,7 +19338,9 @@ CREATE TABLE project_repository_states (
     repository_retry_count integer,
     wiki_retry_count integer,
     last_repository_verification_ran_at timestamp with time zone,
-    last_wiki_verification_ran_at timestamp with time zone
+    last_wiki_verification_ran_at timestamp with time zone,
+    last_repository_updated_at timestamp with time zone,
+    last_wiki_updated_at timestamp with time zone
 );
 
 CREATE SEQUENCE project_repository_states_id_seq

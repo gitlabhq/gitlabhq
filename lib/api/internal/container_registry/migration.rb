@@ -36,23 +36,25 @@ module API
           requires :status, type: String, values: POSSIBLE_VALUES, desc: 'The migration step status'
         end
         put 'internal/registry/repositories/*repository_path/migration/status' do
-          repository = find_repository!(declared_params[:repository_path])
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
+            repository = find_repository!(declared_params[:repository_path])
 
-          unless repository.migration_in_active_state?
-            bad_request!("Wrong migration state (#{repository.migration_state})")
-          end
+            unless repository.migration_in_active_state?
+              bad_request!("Wrong migration state (#{repository.migration_state})")
+            end
 
-          case declared_params[:status]
-          when STATUS_PRE_IMPORT_COMPLETE
-            unless repository.finish_pre_import_and_start_import
-              bad_request!("Couldn't transition from pre_importing to importing")
+            case declared_params[:status]
+            when STATUS_PRE_IMPORT_COMPLETE
+              unless repository.finish_pre_import_and_start_import
+                bad_request!("Couldn't transition from pre_importing to importing")
+              end
+            when STATUS_IMPORT_COMPLETE
+              unless repository.finish_import
+                bad_request!("Couldn't transition from importing to import_done")
+              end
+            when STATUS_IMPORT_FAILED, STATUS_PRE_IMPORT_FAILED
+              repository.abort_import
             end
-          when STATUS_IMPORT_COMPLETE
-            unless repository.finish_import
-              bad_request!("Couldn't transition from importing to import_done")
-            end
-          when STATUS_IMPORT_FAILED, STATUS_PRE_IMPORT_FAILED
-            repository.abort_import
           end
 
           status 200

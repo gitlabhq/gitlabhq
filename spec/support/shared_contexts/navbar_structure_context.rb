@@ -95,7 +95,7 @@ RSpec.shared_context 'project navbar structure' do
       },
       {
         nav_item: _('Analytics'),
-        nav_sub_items: analytics_sub_nav_item
+        nav_sub_items: project_analytics_sub_nav_item
       },
       {
         nav_item: _('Wiki'),
@@ -126,9 +126,7 @@ RSpec.shared_context 'group navbar structure' do
   let(:analytics_nav_item) do
     {
       nav_item: _('Analytics'),
-      nav_sub_items: [
-        _('Contribution')
-      ]
+      nav_sub_items: group_analytics_sub_nav_item
     }
   end
 

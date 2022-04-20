@@ -10,6 +10,8 @@ module Routing
         sortDesc
         state
         tab
+        glm_source
+        glm_content
       ].freeze
 
       def initialize(request_object, group, project)

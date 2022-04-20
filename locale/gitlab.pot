@@ -40870,7 +40870,7 @@ msgstr ""
 msgid "Use hashed storage"
 msgstr ""
 
-msgid "Use hashed storage paths for newly created and renamed repositories. Always enabled since 13.0."
+msgid "Use hashed storage paths for newly created and renamed repositories. Always enabled since 13.0. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Use issue count"

@@ -198,7 +198,7 @@ module Ci
       # Create a separate worker for each new operation
 
       before_transition [:created, :waiting_for_resource, :preparing, :pending] => :running do |pipeline|
-        pipeline.started_at = Time.current
+        pipeline.started_at ||= Time.current
       end
 
       before_transition any => [:success, :failed, :canceled] do |pipeline|
