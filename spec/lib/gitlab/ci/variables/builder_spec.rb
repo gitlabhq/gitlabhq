@@ -246,7 +246,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
     subject { builder.kubernetes_variables(environment: nil, job: job) }
 
     before do
-      allow(Ci::GenerateKubeconfigService).to receive(:new).with(job).and_return(service)
+      allow(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token).and_return(service)
     end
 
     it { is_expected.to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }

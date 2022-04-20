@@ -33,7 +33,7 @@ permission level, who added a new user, or who removed a user.
 ## Retention policy
 
 There is no retention policy in place for audit events.
-See the [Specify a retention period for audit events](https://gitlab.com/gitlab-org/gitlab/-/issues/8137) for more information.
+See the [Specify a retention period for audit events](https://gitlab.com/groups/gitlab-org/-/epics/7917) for more information.
 
 ## List of events
 
