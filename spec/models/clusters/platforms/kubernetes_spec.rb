@@ -457,7 +457,23 @@ RSpec.describe Clusters::Platforms::Kubernetes do
         stub_kubeclient_ingresses(namespace, status: 500)
       end
 
-      it { expect { subject }.to raise_error(Kubeclient::HttpError) }
+      it 'does not raise error' do
+        expect { subject }.not_to raise_error(Kubeclient::HttpError)
+      end
+
+      it 'logs the error' do
+        expect_next_instance_of(Gitlab::Kubernetes::Logger) do |logger|
+          expect(logger).to receive(:error)
+            .with(hash_including(event: :kube_connection_error))
+            .and_call_original
+        end
+
+        subject
+      end
+
+      it 'returns empty array for the k8s component keys' do
+        expect(subject).to include({ pods: [], deployments: [], ingresses: [] })
+      end
     end
 
     context 'when kubernetes responds with 404s' do
@@ -753,6 +769,18 @@ RSpec.describe Clusters::Platforms::Kubernetes do
 
       it 'returns each pod once' do
         expect(rollout_status.instances.map { |p| p[:pod_name] }).to eq(['pod-a-1', 'pod-a-2', 'pod-b-1', 'pod-b-2'])
+      end
+    end
+
+    # Scenario when there are K8s connection errors.
+    context 'when cache keys are defaulted' do
+      let(:cache_data) { Hash(deployments: [], pods: [], ingresses: []) }
+
+      it 'does not raise error' do
+        expect { rollout_status }.not_to raise_error
+
+        expect(rollout_status).to be_kind_of(::Gitlab::Kubernetes::RolloutStatus)
+        expect(rollout_status).to be_not_found
       end
     end
   end

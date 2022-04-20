@@ -11,6 +11,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Value stream analytics provides metrics about each stage of your software development process.
 
+A **value stream** is the entire work process that delivers value to customers. For example,
+the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts
+with the "manage" and ends with the "protect" stage.
+
 Use value stream analytics to identify:
 
 - The amount of time it takes to go from an idea to production.
@@ -91,7 +95,7 @@ To view the median time spent in each stage by a group:
 Value stream analytics shows the lead time and cycle time for issues in your groups:
 
 - Lead time: Median time from when the issue was created to when it was closed.
-- Cycle time: Median time from first commit to issue closed. Commits are associated with issues when users [cross-link them in the commit message](../../project/issues/crosslinking_issues.md#from-commit-messages).
+- Cycle time: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a [linked issue's merge request](../../project/issues/crosslinking_issues.md#from-commit-messages) to when that issue is closed. The cycle time approach underestimates the lead time because merge request creation is always later than commit time.
 
 To view the lead time and cycle time for issues:
 

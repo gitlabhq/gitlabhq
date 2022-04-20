@@ -406,7 +406,7 @@ function deduplicateFilesList(files) {
 
 export function prepareDiffData({ diff, priorFiles = [], meta = false }) {
   const cleanedFiles = (diff.diff_files || [])
-    .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles, meta }))
+    .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles, meta, index }))
     .map(ensureBasicDiffFileLines)
     .map(prepareDiffFileLines)
     .map((file) => finalizeDiffFile(file));

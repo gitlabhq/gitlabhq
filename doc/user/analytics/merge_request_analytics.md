@@ -48,7 +48,8 @@ To view the number of merge requests merged per month:
        - In the **From** field, select a start date.
        - In the **To** field, select an end date.
 
-The **Throughput** chart shows the number of merge requests merged per month.
+The **Throughput** chart shows issues closed or merge requests merged (not closed) over a period of
+time.
 
 The table shows up to 20 merge requests per page, and includes
 information about each merge request.
@@ -58,9 +59,10 @@ information about each merge request.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229389) in GitLab 13.9.
 
 Use the number in **Mean time to merge** to view the average time between when a merge request is
-created and when it's merged.
+created and when it's merged. Closed and un-merged merge requests are not included.
 
 To view **Mean time to merge**:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Merge request**.
+1. On the left sidebar, select **Analytics > Merge request**. The **Mean time to merge** number
+is shown on the dashboard.

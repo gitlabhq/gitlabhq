@@ -14,6 +14,8 @@ const LIST_LINE_HEAD_PATTERN = /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl
 // detect a horizontal rule that might be mistaken for a list item (not full pattern for an <hr>)
 const HR_PATTERN = /^((\s{0,3}-+\s*-+\s*-+\s*[\s-]*)|(\s{0,3}\*+\s*\*+\s*\*+\s*[\s*]*))$/;
 
+let compositioningNoteText = false;
+
 function selectedText(text, textarea) {
   return text.substring(textarea.selectionStart, textarea.selectionEnd);
 }
@@ -367,6 +369,8 @@ function handleContinueList(e, textArea) {
   if (!(e.key === 'Enter')) return;
   if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
   if (textArea.selectionStart !== textArea.selectionEnd) return;
+  // prevent unintended line breaks were inserted using Japanese IME on MacOS
+  if (compositioningNoteText) return;
 
   const currentLine = lineBefore(textArea.value, textArea, false);
   const result = currentLine.match(LIST_LINE_HEAD_PATTERN);
@@ -420,6 +424,14 @@ export function keypressNoteText(e) {
   handleSurroundSelectedText(e, textArea);
 }
 
+export function compositionStartNoteText() {
+  compositioningNoteText = true;
+}
+
+export function compositionEndNoteText() {
+  compositioningNoteText = false;
+}
+
 export function updateTextForToolbarBtn($toolbarBtn) {
   return updateText({
     textArea: $toolbarBtn.closest('.md-area').find('textarea'),
@@ -435,6 +447,8 @@ export function updateTextForToolbarBtn($toolbarBtn) {
 export function addMarkdownListeners(form) {
   $('.markdown-area', form)
     .on('keydown', keypressNoteText)
+    .on('compositionstart', compositionStartNoteText)
+    .on('compositionend', compositionEndNoteText)
     .each(function attachTextareaShortcutHandlers() {
       Shortcuts.initMarkdownEditorShortcuts($(this), updateTextForToolbarBtn);
     });
@@ -474,6 +488,8 @@ export function addEditorMarkdownListeners(editor) {
 export function removeMarkdownListeners(form) {
   $('.markdown-area', form)
     .off('keydown', keypressNoteText)
+    .off('compositionstart', compositionStartNoteText)
+    .off('compositionend', compositionEndNoteText)
     .each(function removeTextareaShortcutHandlers() {
       Shortcuts.removeMarkdownEditorShortcuts($(this));
     });

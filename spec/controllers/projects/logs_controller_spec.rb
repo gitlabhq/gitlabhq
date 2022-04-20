@@ -103,14 +103,6 @@ RSpec.describe Projects::LogsController do
         expect(json_response).to eq(service_result_json)
       end
 
-      it 'registers a usage of the endpoint' do
-        expect(::Gitlab::UsageCounters::PodLogs).to receive(:increment).with(project.id)
-
-        get endpoint, params: environment_params(pod_name: pod_name, format: :json)
-
-        expect(response).to have_gitlab_http_status(:success)
-      end
-
       it 'sets the polling header' do
         get endpoint, params: environment_params(pod_name: pod_name, format: :json)
 

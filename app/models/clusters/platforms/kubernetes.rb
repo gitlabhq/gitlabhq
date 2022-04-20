@@ -11,6 +11,16 @@ module Clusters
 
       RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
 
+      IGNORED_CONNECTION_EXCEPTIONS = [
+        Gitlab::UrlBlocker::BlockedUrlError,
+        Kubeclient::HttpError,
+        Errno::ECONNREFUSED,
+        URI::InvalidURIError,
+        Errno::EHOSTUNREACH,
+        OpenSSL::X509::StoreError,
+        OpenSSL::SSL::SSLError
+      ].freeze
+
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_work_type = :external_dependency
 
@@ -102,10 +112,23 @@ module Clusters
       def calculate_reactive_cache_for(environment)
         return unless enabled?
 
-        pods = read_pods(environment.deployment_namespace)
-        deployments = read_deployments(environment.deployment_namespace)
+        pods = []
+        deployments = []
+        ingresses = []
 
-        ingresses = read_ingresses(environment.deployment_namespace)
+        begin
+          pods = read_pods(environment.deployment_namespace)
+          deployments = read_deployments(environment.deployment_namespace)
+
+          ingresses = read_ingresses(environment.deployment_namespace)
+        rescue *IGNORED_CONNECTION_EXCEPTIONS => e
+          log_kube_connection_error(e)
+
+          # Return hash with default values so that it is cached.
+          return {
+            pods: pods, deployments: deployments, ingresses: ingresses
+          }
+        end
 
         # extract only the data required for display to avoid unnecessary caching
         {
@@ -291,6 +314,23 @@ module Clusters
             'metadata' => ingress.fetch('metadata', {}).slice('name', 'labels', 'annotations')
           }
         end
+      end
+
+      def log_kube_connection_error(error)
+        logger.error({
+          exception: {
+            class: error.class.name,
+            message: error.message
+          },
+          status_code: error.error_code,
+          namespace: self.namespace,
+          class_name: self.class.name,
+          event: :kube_connection_error
+        })
+      end
+
+      def logger
+        @logger ||= Gitlab::Kubernetes::Logger.build
       end
     end
   end

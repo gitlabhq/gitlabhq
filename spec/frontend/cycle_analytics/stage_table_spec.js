@@ -329,7 +329,7 @@ describe('StageTable', () => {
       ]);
     });
 
-    it('with sortDesc=false will toggle the direction field', async () => {
+    it('with sortDesc=false will toggle the direction field', () => {
       expect(wrapper.emitted('handleUpdatePagination')).toBeUndefined();
       triggerTableSort(false);
 

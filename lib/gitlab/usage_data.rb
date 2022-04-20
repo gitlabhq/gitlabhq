@@ -9,7 +9,7 @@
 #   active_user_count: count(User.active)
 #   alt_usage_data { Gitlab::VERSION }
 #   redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
-#   redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
+#   redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'users_expanding_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }
 
 # NOTE:
 # Implementing metrics direct in `usage_data.rb` is deprecated,

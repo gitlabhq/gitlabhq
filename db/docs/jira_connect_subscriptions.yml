@@ -4,6 +4,6 @@ classes:
 - JiraConnectSubscription
 feature_categories:
 - integrations
-description: TODO
+description: GitLab.com for Jira Cloud app subscriptions data, formerly Jira Connect App.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10453
 milestone: '11.11'

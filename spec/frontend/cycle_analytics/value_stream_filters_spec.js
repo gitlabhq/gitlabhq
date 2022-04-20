@@ -115,10 +115,10 @@ describe('ValueStreamFilters', () => {
       expect(findAggregationToggle().props('value')).toBe(true);
     });
 
-    it('will emit `toggleAggregation` when the toggle is changed', async () => {
+    it('will emit `toggleAggregation` when the toggle is changed', () => {
       expect(wrapper.emitted('toggleAggregation')).toBeUndefined();
 
-      await findAggregationToggle().vm.$emit('change', true);
+      findAggregationToggle().vm.$emit('change', true);
 
       expect(wrapper.emitted('toggleAggregation')).toHaveLength(1);
       expect(wrapper.emitted('toggleAggregation')).toEqual([[true]]);
@@ -134,10 +134,10 @@ describe('ValueStreamFilters', () => {
       expect(findAggregationToggle().props('disabled')).toBe(true);
     });
 
-    it('will not emit `toggleAggregation` when the toggle is changed', async () => {
+    it('will not emit `toggleAggregation` when the toggle is changed', () => {
       expect(wrapper.emitted('toggleAggregation')).toBeUndefined();
 
-      await findAggregationToggle().vm.$emit('change', true);
+      findAggregationToggle().vm.$emit('change', true);
 
       expect(wrapper.emitted('toggleAggregation')).toBeUndefined();
     });

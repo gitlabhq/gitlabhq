@@ -4,6 +4,6 @@ classes:
 - JiraConnectInstallation
 feature_categories:
 - integrations
-description: TODO
+description: GitLab.com for Jira Cloud app installation data, formerly Jira Connect App.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9593
 milestone: '11.9'

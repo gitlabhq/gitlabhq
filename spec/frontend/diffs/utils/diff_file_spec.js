@@ -149,6 +149,38 @@ describe('diff_file utilities', () => {
 
       expect(preppedFile).not.toHaveProp('id');
     });
+
+    it.each`
+      index
+      ${null}
+      ${undefined}
+      ${-1}
+      ${false}
+      ${true}
+      ${'idx'}
+      ${'42'}
+    `('does not set the order property if an invalid index ($index) is provided', ({ index }) => {
+      const preppedFile = prepareRawDiffFile({
+        file: files[0],
+        allFiles: files,
+        index,
+      });
+
+      /* expect.anything() doesn't match null or undefined */
+      expect(preppedFile).toEqual(expect.not.objectContaining({ order: null }));
+      expect(preppedFile).toEqual(expect.not.objectContaining({ order: undefined }));
+      expect(preppedFile).toEqual(expect.not.objectContaining({ order: expect.anything() }));
+    });
+
+    it('sets the provided valid index to the order property', () => {
+      const preppedFile = prepareRawDiffFile({
+        file: files[0],
+        allFiles: files,
+        index: 42,
+      });
+
+      expect(preppedFile).toEqual(expect.objectContaining({ order: 42 }));
+    });
   });
 
   describe('getShortShaFromFile', () => {

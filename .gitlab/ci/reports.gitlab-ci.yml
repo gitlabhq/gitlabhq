@@ -103,7 +103,7 @@ yarn-audit-dependency_scanning:
   extends: .default-retry
   stage: test
   image:
-    name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:1.1.0
+    name: registry.gitlab.com/gitlab-org/security-products/package-hunter-cli:v1.3.0@sha256:6cb717d1772cf5a8a68dd8268e44925f71b7867d9f3fa41a4ba2c291b7446c50
     entrypoint: [""]
   variables:
     HTR_user: '$PACKAGE_HUNTER_USER'

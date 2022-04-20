@@ -127,12 +127,6 @@ To retrieve metrics for change failure rate, use the [GraphQL](../../api/graphql
 
 We use the following terms to describe GitLab analytics:
 
-- **Cycle time:** The duration of only the execution work. Cycle time is often displayed in combination with the lead time, which is longer than the cycle time. GitLab measures cycle time from the earliest commit of a [linked issue's merge request](../project/issues/crosslinking_issues.md) to when that issue is closed. The cycle time approach underestimates the lead time because merge request creation is always later than commit time. GitLab displays cycle time in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md) and [project-level Value Stream Analytics](../analytics/value_stream_analytics.md).
-- **Deploys:** The total number of successful deployments to production in the given time frame (across all applicable projects). GitLab displays deploys in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md) and [project-level Value Stream Analytics](value_stream_analytics.md).
-- **Lead time:** The duration of your value stream, from start to finish. Different to
-[Lead time for changes](#lead-time-for-changes). Often displayed in combination with "cycle time,"
-which is shorter. GitLab measures lead time from issue creation to issue close. GitLab displays lead
-time in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
 - **Mean Time to Change (MTTC):** The average duration between idea and delivery. GitLab measures
 MTTC from issue creation to the issue's latest related merge request's deployment to production.
 - **Mean Time to Detect (MTTD):** The average duration that a bug goes undetected in production.
@@ -142,11 +136,6 @@ merge request creation to merge request merge (and closed/un-merged merge reques
 For more information, see [Merge Request Analytics](merge_request_analytics.md).
 - **Mean Time to Recover/Repair/Resolution/Resolve/Restore (MTTR):** The average duration that a bug
 is not fixed in production. GitLab measures MTTR from deployment of bug to deployment of fix.
-- **Throughput:** The number of issues closed or merge requests merged (not closed) in a period of
-time. Often measured per sprint. GitLab displays merge request throughput in [Merge Request Analytics](merge_request_analytics.md).
-- **Value Stream:** The entire work process that is followed to deliver value to customers. For example,
-the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts
-with "plan" and ends with "monitor". GitLab helps you track your value stream using [Value Stream Analytics](value_stream_analytics.md).
 - **Velocity:** The total issue burden completed in some period of time. The burden is usually measured
 in points or weight, often per sprint. For example, your velocity may be "30 points per sprint". GitLab
 measures velocity as the total points or weight of issues closed in a given period of time.

@@ -4,6 +4,6 @@ classes:
 - Integrations::ZentaoTrackerData
 feature_categories:
 - integrations
-description: TODO
+description: Data related to the ZenTao integration.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67938
 milestone: '14.2'

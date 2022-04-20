@@ -3,7 +3,7 @@ table_name: clusters_integration_elasticstack
 classes:
 - Clusters::Integrations::ElasticStack
 feature_categories:
-- integrations
+- configure
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61077
 milestone: '13.12'

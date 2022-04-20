@@ -50,7 +50,7 @@ function identifier(file) {
 
 export const isNotDiffable = (file) => file?.viewer?.name === viewerModes.not_diffable;
 
-export function prepareRawDiffFile({ file, allFiles, meta = false }) {
+export function prepareRawDiffFile({ file, allFiles, meta = false, index = -1 }) {
   const additionalProperties = {
     brokenSymlink: fileSymlinkInformation(file, allFiles),
     viewer: {
@@ -64,6 +64,10 @@ export function prepareRawDiffFile({ file, allFiles, meta = false }) {
   // We don't want duplicate IDs if that's the case, so we just don't assign an ID
   if (!meta && file.blob?.id && file.load_collapsed_diff_url) {
     additionalProperties.id = identifier(file);
+  }
+
+  if (index >= 0 && Number(index) === index) {
+    additionalProperties.order = index;
   }
 
   return Object.assign(file, additionalProperties);

@@ -33764,6 +33764,9 @@ msgstr ""
 msgid "SecurityPolicies|Policy type"
 msgstr ""
 
+msgid "SecurityReports|%{count} Selected"
+msgstr ""
+
 msgid "SecurityReports|%{count}+ projects"
 msgstr ""
 
