@@ -26,12 +26,6 @@ RSpec.describe Admin::RunnersController do
   describe '#show' do
     render_views
 
-    let_it_be(:project) { create(:project) }
-
-    before_all do
-      create(:ci_build, runner: runner, project: project)
-    end
-
     it 'shows a runner show page' do
       get :show, params: { id: runner.id }
 
@@ -55,11 +49,6 @@ RSpec.describe Admin::RunnersController do
     let_it_be(:project) { create(:project) }
     let_it_be(:project_two) { create(:project) }
 
-    before_all do
-      create(:ci_build, runner: runner, project: project)
-      create(:ci_build, runner: runner, project: project_two)
-    end
-
     it 'shows a runner edit page' do
       get :edit, params: { id: runner.id }
 
@@ -77,9 +66,6 @@ RSpec.describe Admin::RunnersController do
 
       control_count = ActiveRecord::QueryRecorder.new { get :edit, params: { id: runner.id } }.count
 
-      new_project = create(:project)
-      create(:ci_build, runner: runner, project: new_project)
-
       # There is one additional query looking up subject.group in ProjectPolicy for the
       # needs_new_sso_session permission
       expect { get :edit, params: { id: runner.id } }.not_to exceed_query_limit(control_count + 1)
@@ -89,17 +75,42 @@ RSpec.describe Admin::RunnersController do
   end
 
   describe '#update' do
-    it 'updates the runner and ticks the queue' do
-      new_desc = runner.description.swapcase
+    let(:new_desc) { runner.description.swapcase }
+    let(:runner_params) { { id: runner.id, runner: { description: new_desc } } }
 
-      expect do
-        post :update, params: { id: runner.id, runner: { description: new_desc } }
-      end.to change { runner.ensure_runner_queue_value }
+    subject(:request) { post :update, params: runner_params }
 
-      runner.reload
+    context 'with update succeeding' do
+      before do
+        expect_next_instance_of(Ci::Runners::UpdateRunnerService, runner) do |service|
+          expect(service).to receive(:update).with(anything).and_call_original
+        end
+      end
 
-      expect(response).to have_gitlab_http_status(:found)
-      expect(runner.description).to eq(new_desc)
+      it 'updates the runner and ticks the queue' do
+        expect { request }.to change { runner.ensure_runner_queue_value }
+
+        runner.reload
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(runner.description).to eq(new_desc)
+      end
+    end
+
+    context 'with update failing' do
+      before do
+        expect_next_instance_of(Ci::Runners::UpdateRunnerService, runner) do |service|
+          expect(service).to receive(:update).with(anything).and_return(false)
+        end
+      end
+
+      it 'does not update runner or tick the queue' do
+        expect { request }.not_to change { runner.ensure_runner_queue_value }
+        expect { request }.not_to change { runner.reload.description }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:show)
+      end
     end
   end
 

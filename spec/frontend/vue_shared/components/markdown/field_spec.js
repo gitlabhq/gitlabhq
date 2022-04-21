@@ -187,6 +187,11 @@ describe('Markdown field component', () => {
     });
 
     describe('markdown buttons', () => {
+      beforeEach(() => {
+        // needed for the underlying insertText to work
+        document.execCommand = jest.fn(() => false);
+      });
+
       it('converts single words', async () => {
         const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 7);

@@ -1,4 +1,5 @@
 {
+  "ee/*": { "type": "ee" },
   "config/initializers/*.rb": {
     "alternate": "spec/initializers/{}_spec.rb",
     "type": "source"
@@ -6,6 +7,82 @@
   "spec/initializers/*_spec.rb": {
     "alternate": "config/initializers/{}.rb",
     "type": "test"
+  },
+  "app/channels/*.rb": {
+    "related": "ee/app/channels/ee/{}.rb",
+    "type": "source"
+  },
+  "app/components/*.rb": {
+    "related": "ee/app/components/ee/{}.rb",
+    "type": "source"
+  },
+  "app/controllers/*.rb": {
+    "related": "ee/app/controllers/ee/{}.rb",
+    "type": "source"
+  },
+  "app/enums/*.rb": {
+    "related": "ee/app/enums/ee/{}.rb",
+    "type": "source"
+  },
+  "app/events/*.rb": {
+    "related": "ee/app/events/ee/{}.rb",
+    "type": "source"
+  },
+  "app/experiments/*.rb": {
+    "related": "ee/app/experiments/ee/{}.rb",
+    "type": "source"
+  },
+  "app/finders/*.rb": {
+    "related": "ee/app/finders/ee/{}.rb",
+    "type": "source"
+  },
+  "app/graphql/*.rb": {
+    "related": "ee/app/graphql/ee/{}.rb",
+    "type": "source"
+  },
+  "app/helpers/*.rb": {
+    "related": "ee/app/helpers/ee/{}.rb",
+    "type": "source"
+  },
+  "app/mailers/*.rb": {
+    "related": "ee/app/mailers/ee/{}.rb",
+    "type": "source"
+  },
+  "app/models/*.rb": {
+    "related": "ee/app/models/ee/{}.rb",
+    "type": "source"
+  },
+  "app/policies/*.rb": {
+    "related": "ee/app/policies/ee/{}.rb",
+    "type": "source"
+  },
+  "app/presenters/*.rb": {
+    "related": "ee/app/presenters/ee/{}.rb",
+    "type": "source"
+  },
+  "app/serializers/*.rb": {
+    "related": "ee/app/serializers/ee/{}.rb",
+    "type": "source"
+  },
+  "app/services/*.rb": {
+    "related": "ee/app/services/ee/{}.rb",
+    "type": "source"
+  },
+  "app/uploaders/*.rb": {
+    "related": "ee/app/uploaders/ee/{}.rb",
+    "type": "source"
+  },
+  "app/validators/*.rb": {
+    "related": "ee/app/validators/ee/{}.rb",
+    "type": "source"
+  },
+  "app/views/*.rb": {
+    "related": "ee/app/views/ee/{}.rb",
+    "type": "source"
+  },
+  "app/workers/*.rb": {
+    "related": "ee/app/workers/ee/{}.rb",
+    "type": "source"
   },
   "app/*.rb": {
     "alternate": "spec/{}_spec.rb",

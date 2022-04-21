@@ -1,5 +1,3 @@
-- add_page_specific_style 'page_bundles/ci_status'
-
 - runner_name = "##{@runner.id} (#{@runner.short_sha})"
 - if Feature.enabled?(:runner_read_only_admin_view, default_enabled: :yaml)
   - breadcrumb_title _('Edit')
@@ -12,84 +10,47 @@
 
 #js-admin-runner-edit{ data: {runner_id: @runner.id} }
 
-.row
-  .col-md-6
-    %h4= _('Restrict projects for this runner')
-    - if @runner.runner_projects.any?
-      %table.table{ data: { testid: 'assigned-projects' } }
-        %thead
-          %tr
-            %th= _('Assigned projects')
-        - @runner.runner_projects.each do |runner_project|
-          - project = runner_project.project
-          - if project
-            %tr
-              %td
-                = render Pajamas::AlertComponent.new(variant: :danger,
-                  dismissible: false,
-                  title: project.full_name) do
-                  .gl-alert-actions
-                    = link_to _('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
+.gl-overflow-auto
+  %h4= _('Restrict projects for this runner')
 
-    %table.table{ data: { testid: 'unassigned-projects' } }
-      %thead
-        %tr
-          %th= _('Project')
-          %th
-
+- if @runner.runner_projects.any?
+  %table.table{ data: { testid: 'assigned-projects' } }
+    %thead
       %tr
-        %td
-          = form_tag edit_admin_runner_path(@runner), id: 'runner-projects-search', class: 'form-inline', method: :get do
-            .input-group
-              = search_field_tag :search, params[:search], class: 'form-control gl-form-input', spellcheck: false
-              .input-group-append
-                = submit_tag _('Search'), class: 'gl-button btn btn-default'
-
-        %td
-      - @projects.each do |project|
+        %th= _('Assigned projects')
+    - @runner.runner_projects.each do |runner_project|
+      - project = runner_project.project
+      - if project
         %tr
           %td
-            = project.full_name
-          %td
-            .float-right
-              = form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
-                = f.hidden_field :runner_id, value: @runner.id
-                = f.submit _('Enable'), aria: { label: s_('Runners|Change to project runner') }, class: 'gl-button btn btn-sm', data: { confirm: (s_('Runners|You are about to change this instance runner to a project runner. This operation is not reversible. Are you sure you want to continue?') if @runner.instance_type?), confirm_btn_variant: 'danger' }
-    = paginate_without_count @projects
+            = render Pajamas::AlertComponent.new(variant: :danger,
+              dismissible: false,
+              title: project.full_name) do
+              .gl-alert-actions
+                = link_to _('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
 
-  .col-md-6
-    %h4= _('Recent jobs served by this runner')
-    %table.table.ci-table.runner-builds
-      %thead
-        %tr
-          %th= _('Job')
-          %th= _('Status')
-          %th= _('Project')
-          %th= _('Commit')
-          %th= _('Finished at')
+%table.table{ data: { testid: 'unassigned-projects' } }
+  %thead
+    %tr
+      %th= _('Project')
+      %th
 
-      - @builds.each do |build|
-        - project = build.project
-        %tr.build
-          %td.id
-            - if project
-              = link_to project_job_path(project, build) do
-                %strong ##{build.id}
-            - else
-              %strong ##{build.id}
+  %tr
+    %td
+      = form_tag edit_admin_runner_path(@runner), id: 'runner-projects-search', class: 'form-inline', method: :get do
+        .input-group
+          = search_field_tag :search, params[:search], class: 'form-control gl-form-input', spellcheck: false
+          .input-group-append
+            = submit_tag _('Search'), class: 'gl-button btn btn-default'
 
-          %td.status
-            = render 'ci/status/badge', status: build.detailed_status(current_user)
-
-          %td.status
-            - if project
-              = project.full_name
-
-          %td.build-link
-            - if project
-              = link_to pipeline_path(build.pipeline) do
-                %strong= build.pipeline.short_sha
-
-          %td.timestamp
-            - if build.finished_at
-              %span= time_ago_with_tooltip build.finished_at
+    %td
+  - @projects.each do |project|
+    %tr
+      %td
+        = project.full_name
+      %td
+        .float-right
+          = form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
+            = f.hidden_field :runner_id, value: @runner.id
+            = f.submit _('Enable'), aria: { label: s_('Runners|Change to project runner') }, class: 'gl-button btn btn-sm', data: { confirm: (s_('Runners|You are about to change this instance runner to a project runner. This operation is not reversible. Are you sure you want to continue?') if @runner.instance_type?), confirm_btn_variant: 'danger' }
+= paginate_without_count @projects

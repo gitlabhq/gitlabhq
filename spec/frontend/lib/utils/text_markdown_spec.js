@@ -14,6 +14,9 @@ describe('init markdown', () => {
     textArea = document.createElement('textarea');
     document.querySelector('body').appendChild(textArea);
     textArea.focus();
+
+    // needed for the underlying insertText to work
+    document.execCommand = jest.fn(() => false);
   });
 
   afterAll(() => {

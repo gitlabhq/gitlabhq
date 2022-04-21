@@ -16040,9 +16040,6 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
-msgid "Finished at"
-msgstr ""
-
 msgid "First Name"
 msgstr ""
 
@@ -31001,9 +30998,6 @@ msgid "Recent Searches Service is unavailable"
 msgstr ""
 
 msgid "Recent events"
-msgstr ""
-
-msgid "Recent jobs served by this runner"
 msgstr ""
 
 msgid "Recent searches"

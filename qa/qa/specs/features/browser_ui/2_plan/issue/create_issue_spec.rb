@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # TODO: Remove :requires_admin when the `Runtime::Feature.enable` method call is removed
-  RSpec.describe 'Plan', :smoke, :requires_admin do
+  RSpec.describe 'Plan', :smoke, feature_flag: { name: 'vue_issues_list', scope: :group } do
     describe 'Issue creation' do
       let(:project) { Resource::Project.fabricate_via_api! }
       let(:closed_issue) { Resource::Issue.fabricate_via_api! { |issue| issue.project = project } }

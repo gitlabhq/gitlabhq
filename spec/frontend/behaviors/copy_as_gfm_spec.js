@@ -8,6 +8,9 @@ describe('CopyAsGFM', () => {
     beforeEach(() => {
       target = document.createElement('input');
       target.value = 'This is code: ';
+
+      // needed for the underlying insertText to work
+      document.execCommand = jest.fn(() => false);
     });
 
     // When GFM code is copied, we put the regular plain text

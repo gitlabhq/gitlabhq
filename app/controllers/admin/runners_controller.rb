@@ -22,7 +22,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def edit
-    assign_builds_and_projects
+    assign_projects
   end
 
   def update
@@ -31,7 +31,7 @@ class Admin::RunnersController < Admin::ApplicationController
         format.html { redirect_to edit_admin_runner_path(@runner) }
       end
     else
-      assign_builds_and_projects
+      assign_projects
       render 'show'
     end
   end
@@ -87,12 +87,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def assign_builds_and_projects
-    @builds = runner
-      .builds
-      .order_id_desc
-      .preload_project_and_pipeline_project.first(30)
-
+  def assign_projects
     @projects =
       if params[:search].present?
         ::Project.search(params[:search])

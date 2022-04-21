@@ -58,11 +58,6 @@ Performance/AncestorsInclude:
   Exclude:
     - 'lib/gitlab/ci/config/extendable/entry.rb'
 
-# Offense count: 40
-# Cop supports --auto-correct.
-Performance/BlockGivenWithExplicitBlock:
-  Enabled: false
-
 # Offense count: 29
 # Configuration parameters: MinSize.
 Performance/CollectionLiteralInLoop:

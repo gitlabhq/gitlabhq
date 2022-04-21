@@ -1,6 +1,6 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 0.3.6
+    ref: 0.3.9
     file:
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
