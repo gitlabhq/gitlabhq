@@ -20,7 +20,7 @@ Broadcast messages can be managed using the [broadcast messages API](../../api/b
 
 Banners are shown on the top of a page and in Git remote responses.
 
-![Broadcast Message Banner](img/broadcast_messages_banner_v12_10.png)
+![Broadcast Message Banner](img/broadcast_messages_banner_v15_0.png)
 
 ```shell
 $ git push
@@ -66,17 +66,12 @@ To add a broadcast message:
     - `padding`
     - `margin`
     - `text-decoration`
-1. Select one of the suggested background colors, or add the hex code of a different color. The default color is orange.
+1. Select a **Theme**. The default theme is `indigo`.
 1. Select the **Dismissable** checkbox to enable users to dismiss the broadcast message.
 1. Optional. Select **Target roles** to only show the broadcast message to users with the selected roles. The message displays on group, subgroup, and project pages, and does not display in Git remote responses.
 1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `mygroup/myproject*`.
 1. Select a date for the message to start and end.
 1. Select **Add broadcast message**.
-
-NOTE:
-The **Background color** field expects the value to be a hexadecimal code because
-the form uses the [color_field](https://api.rubyonrails.org/v6.0.3.4/classes/ActionView/Helpers/FormHelper.html#method-i-color_field)
-helper method, which generates the proper HTML to render.
 
 When a broadcast message expires, it no longer displays in the user interface but is still listed in the
 list of broadcast messages.

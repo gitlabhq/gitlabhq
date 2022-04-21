@@ -1,4 +1,0 @@
-fragment PageInfo on PageInfo {
-  startCursor
-  endCursor
-}

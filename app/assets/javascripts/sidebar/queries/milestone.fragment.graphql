@@ -1,4 +1,4 @@
-fragment MilestoneFragment on Milestone {
+fragment SidebarMilestoneFragment on Milestone {
   id
   title
   webUrl: webPath

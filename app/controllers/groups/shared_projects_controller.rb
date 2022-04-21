@@ -7,6 +7,7 @@ module Groups
     skip_cross_project_access_check :index
 
     feature_category :subgroups
+    urgency :low, [:index]
 
     def index
       shared_projects = GroupProjectsFinder.new(

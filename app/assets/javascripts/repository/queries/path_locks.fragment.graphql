@@ -1,3 +1,5 @@
+# This fragment is used as ee-else-ce
+# eslint-disable-next-line @graphql-eslint/unique-fragment-name
 fragment ProjectPathLocksFragment on Project {
   id
 }

@@ -203,7 +203,7 @@ do this work in a regular migration.
      def up
        queue_batched_background_migration(
          MIGRATION,
-         :migrations,
+         :integrations,
          :id,
          job_interval: DELAY_INTERVAL
        )
@@ -211,7 +211,7 @@ do this work in a regular migration.
 
      def down
        Gitlab::Database::BackgroundMigration::BatchedMigration
-         .for_configuration(MIGRATION, :migrations, :id, []).delete_all
+         .for_configuration(MIGRATION, :integrations, :id, []).delete_all
      end
    end
    ```

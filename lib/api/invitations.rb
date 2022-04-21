@@ -28,7 +28,7 @@ module API
           optional :tasks_to_be_done, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Tasks the inviter wants the member to do'
           optional :tasks_project_id, type: Integer, desc: 'The project ID in which to create the task issues'
         end
-        post ":id/invitations" do
+        post ":id/invitations", urgency: :low do
           ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/354016')
 
           bad_request!('Must provide either email or user_id as a parameter') if params[:email].blank? && params[:user_id].blank?

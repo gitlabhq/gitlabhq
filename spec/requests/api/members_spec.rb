@@ -543,7 +543,7 @@ RSpec.describe API::Members do
       end
 
       it 'returns 409 if member does not exist' do
-        put api("/#{source_type.pluralize}/#{source.id}/members/123", maintainer),
+        put api("/#{source_type.pluralize}/#{source.id}/members/#{non_existing_record_id}", maintainer),
             params: { access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -618,7 +618,7 @@ RSpec.describe API::Members do
       end
 
       it 'returns 404 if member does not exist' do
-        delete api("/#{source_type.pluralize}/#{source.id}/members/123", maintainer)
+        delete api("/#{source_type.pluralize}/#{source.id}/members/#{non_existing_record_id}", maintainer)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

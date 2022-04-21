@@ -72,7 +72,7 @@ module API
         params do
           requires :badge_id, type: Integer, desc: 'The badge ID'
         end
-        get ":id/badges/:badge_id" do
+        get ":id/badges/:badge_id", urgency: :default do
           source = find_source(source_type, params[:id])
           badge = find_badge(source)
 
@@ -88,7 +88,7 @@ module API
           requires :image_url, type: String, desc: 'URL of the badge image'
           optional :name, type: String, desc: 'Name for the badge'
         end
-        post ":id/badges" do
+        post ":id/badges", urgency: :default do
           source = find_source_if_admin(source_type)
 
           badge = ::Badges::CreateService.new(declared_params(include_missing: false)).execute(source)

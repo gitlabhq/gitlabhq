@@ -6,6 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Monitor your environment's metrics **(FREE)**
 
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
+for use in GitLab 14.7, and is planned for removal in GitLab 16.0.
+
 GitLab helps your team monitor the health and performance of your applications
 and infrastructure by turning statistics and log files into charts and graphs
 that are easy to understand, especially when time is short and decisions are

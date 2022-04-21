@@ -15,16 +15,18 @@ function retry() {
 
 function test_url() {
   local url="${1}"
-  local curl_output="${2}"
   local status
 
-  status=$(curl -s -o "${curl_output}" -L -w ''%{http_code}'' "${url}")
+  status=$(curl --output /dev/null -L -s -w ''%{http_code}'' "${url}")
 
   if [[ $status == "200" ]]; then
     return 0
+  else
+    # We display the error in the job to allow for better debugging
+    curl -L --fail --output /dev/null "${url}"
+    echo -e "\nExpected HTTP status 200: received ${status}\n"
+    return 1
   fi
-
-  return 1
 }
 
 function bundle_install_script() {

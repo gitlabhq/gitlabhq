@@ -342,7 +342,7 @@ module API
                            desc: 'Include project license data'
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/357622
-      get ":id", feature_category: :projects, urgency: :default do
+      get ":id", feature_category: :projects, urgency: :low do
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,

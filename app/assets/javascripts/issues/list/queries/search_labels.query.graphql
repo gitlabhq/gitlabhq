@@ -1,4 +1,4 @@
-#import "./label.fragment.graphql"
+#import "~/graphql_shared/fragments/label.fragment.graphql"
 
 query searchLabels($fullPath: ID!, $search: String, $isProject: Boolean = false) {
   group(fullPath: $fullPath) @skip(if: $isProject) {

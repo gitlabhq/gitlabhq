@@ -231,9 +231,13 @@ module Gitlab
 
       def encode_diff_to_utf8(replace_invalid_utf8_chars)
         return unless Feature.enabled?(:convert_diff_to_utf8_with_replacement_symbol, default_enabled: :yaml)
-        return unless replace_invalid_utf8_chars && !detect_binary?(@diff)
+        return unless replace_invalid_utf8_chars && diff_should_be_converted?
 
         @diff = Gitlab::EncodingHelper.encode_utf8_with_replacement_character(@diff)
+      end
+
+      def diff_should_be_converted?
+        !detect_binary?(@diff) || !@diff&.valid_encoding?
       end
 
       def init_from_hash(hash)

@@ -50,19 +50,43 @@ strategies to deploy to your cluster with restricted account access. To do so:
 
 ### Migrate from Auto DevOps
 
-To configure your Auto DevOps project to use the GitLab agent:
+In your Auto DevOps project, you can use the GitLab agent to connect with your Kubernetes cluster.
 
-1. Follow the steps to [install an agent](../../clusters/agent/install/index.md) in your cluster.
-1. Go to the project where you use Auto DevOps.
-1. On the left sidebar, select **Settings > CI/CD** and expand **Variables**.
-1. Select **Add new variable**.
-1. Add `KUBE_CONTEXT` as the key, `path/to/agent/project:agent-name` as the value, and select the environment scope of your choice.
+1. [Install an agent](../../clusters/agent/install/index.md) in your cluster.
+1. In GitLab, go to the project where you use Auto DevOps.
+1. Add three variables. On the left sidebar, select **Settings > CI/CD** and expand **Variables**.
+   - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value.
+   - Add a key called `KUBE_CONTEXT` with a value like `path/to/agent/project:agent-name`.
+     Select the environment scope of your choice.
+     If you are not sure what your agent’s context is, edit your `.gitlab-ci.yml` file and add a job to see the available contexts:
+
+     ```yaml
+      deploy:
+       image:
+         name: bitnami/kubectl:latest
+         entrypoint: [""]
+       script:
+       - kubectl config get-contexts
+      ```
+
+   - Add a key called `KUBE_NAMESPACE` with a value of the Kubernetes namespace for your deployments to target. Set the same environment scope.
 1. Select **Add variable**.
-1. Repeat the process to add another variable, `KUBE_NAMESPACE`, setting the value for the Kubernetes namespace you want your deployments to target, and set the same environment scope from the previous step.
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
 1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
 1. Select the **Details** tab and disable the cluster.
-1. To activate the changes, on the left sidebar, select **CI/CD > Pipelines** and then **Run pipeline**.
+1. Edit your `.gitlab-ci.yml` file and ensure it's using the Auto DevOps template. For example:
+
+   ```yaml
+   include:
+     template: Auto-DevOps.gitlab-ci.yml
+
+   variables:
+     KUBE_INGRESS_BASE_DOMAIN: 74.220.23.215.nip.io
+     KUBE_CONTEXT: "gitlab-examples/ops/gitops-demo/k8s-agents:demo-agent"
+     KUBE_NAMESPACE: "demo-agent"
+   ```
+
+1. To test your pipeline, on the left sidebar, select **CI/CD > Pipelines** and then **Run pipeline**.
 
 For an example, [view this project](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service).
 

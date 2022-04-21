@@ -10,6 +10,8 @@ module API
 
     feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
 
+    urgency :high, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       include CustomAttributesEndpoints
 
@@ -781,7 +783,7 @@ module API
         optional :type, type: String, values: %w[Project Namespace]
         use :pagination
       end
-      get ":user_id/memberships", feature_category: :users do
+      get ":user_id/memberships", feature_category: :users, urgency: :high do
         authenticated_as_admin!
         user = find_user_by_id(params)
 

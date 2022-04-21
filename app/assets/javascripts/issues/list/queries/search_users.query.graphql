@@ -1,4 +1,4 @@
-#import "./user.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
 
 query searchUsers($fullPath: ID!, $search: String, $isProject: Boolean = false) {
   group(fullPath: $fullPath) @skip(if: $isProject) {

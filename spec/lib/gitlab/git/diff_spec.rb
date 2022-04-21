@@ -165,17 +165,21 @@ EOT
     context 'when diff contains invalid characters' do
       let(:bad_string) { [0xae].pack("C*") }
       let(:bad_string_two) { [0x89].pack("C*") }
+      let(:bad_string_three) { "@@ -1,5 +1,6 @@\n \xFF\xFE#\x00l\x00a\x00n\x00g\x00u\x00" }
 
       let(:diff) { described_class.new(@raw_diff_hash.merge({ diff: bad_string })) }
       let(:diff_two) { described_class.new(@raw_diff_hash.merge({ diff: bad_string_two })) }
+      let(:diff_three) { described_class.new(@raw_diff_hash.merge({ diff: bad_string_three })) }
 
       context 'when replace_invalid_utf8_chars is true' do
         it 'will convert invalid characters and not cause an encoding error' do
           expect(diff.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
           expect(diff_two.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
+          expect(diff_three.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
 
           expect { Oj.dump(diff) }.not_to raise_error(EncodingError)
           expect { Oj.dump(diff_two) }.not_to raise_error(EncodingError)
+          expect { Oj.dump(diff_three) }.not_to raise_error(EncodingError)
         end
 
         context 'when the diff is binary' do

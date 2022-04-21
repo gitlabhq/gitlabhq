@@ -1,4 +1,4 @@
-fragment PageInfo on PageInfo {
+fragment LocalPageInfo on PageInfo {
   __typename
   hasNextPage
   hasPreviousPage
@@ -6,7 +6,7 @@ fragment PageInfo on PageInfo {
   endCursor
 }
 
-fragment TreeEntry on Entry {
+fragment LocalTreeEntry on Entry {
   __typename
   id
   sha
@@ -34,12 +34,12 @@ query getFiles(
           edges {
             __typename
             node {
-              ...TreeEntry
+              ...LocalTreeEntry
               webPath
             }
           }
           pageInfo {
-            ...PageInfo
+            ...LocalPageInfo
           }
         }
         submodules(first: $pageSize, after: $nextPageCursor) {
@@ -47,13 +47,13 @@ query getFiles(
           edges {
             __typename
             node {
-              ...TreeEntry
+              ...LocalTreeEntry
               webUrl
               treeUrl
             }
           }
           pageInfo {
-            ...PageInfo
+            ...LocalPageInfo
           }
         }
         blobs(first: $pageSize, after: $nextPageCursor) {
@@ -61,14 +61,14 @@ query getFiles(
           edges {
             __typename
             node {
-              ...TreeEntry
+              ...LocalTreeEntry
               mode
               webPath
               lfsOid
             }
           }
           pageInfo {
-            ...PageInfo
+            ...LocalPageInfo
           }
         }
       }

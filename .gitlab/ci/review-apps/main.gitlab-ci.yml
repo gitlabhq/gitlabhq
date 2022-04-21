@@ -111,7 +111,6 @@ review-deploy:
   artifacts:
     paths:
       - environment_url.txt
-      - curl_output.txt
     expire_in: 7 days
     when: always
 

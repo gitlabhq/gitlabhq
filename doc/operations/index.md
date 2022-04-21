@@ -11,11 +11,11 @@ your applications.
 
 ## Measure reliability and stability with metrics (DEPRECATED)
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485) in GitLab 14.7.
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
 
 WARNING:
-This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485)
-in GitLab 14.7, and is planned for removal in GitLab 15.0.
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
+for use in GitLab 14.7, and is planned for removal in GitLab 16.0.
 
 Metrics help you understand the health and performance of your infrastructure,
 applications, and systems by providing insights into your application's reliability,
