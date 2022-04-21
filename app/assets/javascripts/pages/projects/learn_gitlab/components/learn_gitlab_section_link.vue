@@ -1,5 +1,6 @@
 <script>
-import { GlLink, GlIcon, GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
+import { GlLink, GlIcon, GlButton, GlPopover, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import { isExperimentVariant } from '~/experimentation/utils';
 import eventHub from '~/invite_members/event_hub';
@@ -12,6 +13,7 @@ export default {
     GlLink,
     GlIcon,
     GlButton,
+    GlPopover,
     GitlabExperiment,
   },
   directives: {
@@ -19,6 +21,8 @@ export default {
   },
   i18n: {
     trialOnly: s__('LearnGitlab|Trial only'),
+    contactAdmin: s__('LearnGitlab|Contact your administrator to start a free Ultimate trial.'),
+    viewAdminList: s__('LearnGitlab|View administrator list'),
     watchHow: __('Watch how'),
   },
   props: {
@@ -30,6 +34,11 @@ export default {
       required: true,
       type: Object,
     },
+  },
+  data() {
+    return {
+      popoverId: uniqueId('contact-admin-'),
+    };
   },
   computed: {
     linkTitle() {
@@ -78,7 +87,7 @@ export default {
         {{ linkTitle }}
       </gl-link>
       <gl-link
-        v-else
+        v-else-if="value.enabled"
         :target="openInNewTab ? '_blank' : '_self'"
         :href="value.url"
         data-testid="uncompleted-learn-gitlab-link"
@@ -87,6 +96,33 @@ export default {
       >
         {{ linkTitle }}
       </gl-link>
+      <template v-else>
+        <div data-testid="disabled-learn-gitlab-link">{{ linkTitle }}</div>
+        <gl-button
+          :id="popoverId"
+          category="tertiary"
+          icon="question-o"
+          class="ml-auto"
+          :aria-label="$options.i18n.contactAdmin"
+          size="small"
+          data-testid="contact-admin-popover-trigger"
+        />
+        <gl-popover
+          :target="popoverId"
+          placement="top"
+          triggers="hover focus"
+          data-testid="contact-admin-popover"
+        >
+          <p>{{ $options.i18n.contactAdmin }}</p>
+          <gl-link
+            :href="value.url"
+            class="font-size-inherit"
+            data-testid="view-administrator-link-text"
+          >
+            {{ $options.i18n.viewAdminList }}
+          </gl-link>
+        </gl-popover>
+      </template>
       <gitlab-experiment name="video_tutorials_continuous_onboarding">
         <template #control></template>
         <template #candidate>
@@ -100,6 +136,7 @@ export default {
             :href="linkToVideoTutorial"
             target="_blank"
             class="ml-auto"
+            size="small"
             data-testid="video-tutorial-link"
             data-track-action="click_video_link"
             :data-track-label="linkTitle"

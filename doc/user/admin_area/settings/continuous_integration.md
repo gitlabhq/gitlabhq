@@ -224,13 +224,9 @@ To enable or disable the banner:
 1. Select or clear the **Enable pipeline suggestion banner** checkbox.
 1. Select **Save changes**.
 
-## Required pipeline configuration **(PREMIUM SELF)**
+## Required pipeline configuration **(ULTIMATE SELF)**
 
-WARNING:
-Required pipeline configurations is in its end-of-life process for Premium users. It's
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) in GitLab 14.8,
-and planned to be unavailable for Premium users in GitLab 15.0. This feature is planned to continue
-to be available for Ultimate users. Ultimate users are not impacted by this deprecation and removal.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 
 NOTE:
 An alternative [compliance solution](../../project/settings/index.md#compliance-pipeline-configuration)

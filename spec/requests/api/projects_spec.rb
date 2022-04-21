@@ -2522,6 +2522,7 @@ RSpec.describe API::Projects do
           expect(links['labels']).to end_with("/api/v4/projects/#{project.id}/labels")
           expect(links['events']).to end_with("/api/v4/projects/#{project.id}/events")
           expect(links['members']).to end_with("/api/v4/projects/#{project.id}/members")
+          expect(links['cluster_agents']).to end_with("/api/v4/projects/#{project.id}/cluster_agents")
         end
 
         it 'filters related URIs when their feature is not enabled' do

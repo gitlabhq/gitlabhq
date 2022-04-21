@@ -30,6 +30,7 @@ export const ACTION_LABELS = {
     description: s__('LearnGitLab|Try all GitLab features for 30 days, no credit card required.'),
     section: 'workspace',
     position: 3,
+    openInNewTab: true,
   },
   codeOwnersEnabled: {
     title: s__('LearnGitLab|Add code owners'),
@@ -40,6 +41,7 @@ export const ACTION_LABELS = {
     trialRequired: true,
     section: 'workspace',
     position: 4,
+    openInNewTab: true,
     videoTutorial: 'https://vimeo.com/670896787',
   },
   requiredMrApprovalsEnabled: {
@@ -49,6 +51,7 @@ export const ACTION_LABELS = {
     trialRequired: true,
     section: 'workspace',
     position: 5,
+    openInNewTab: true,
     videoTutorial: 'https://vimeo.com/670904904',
   },
   mergeRequestCreated: {

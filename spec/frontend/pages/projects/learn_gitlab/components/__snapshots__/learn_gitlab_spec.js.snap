@@ -178,7 +178,8 @@ exports[`Learn GitLab renders correctly 1`] = `
                 data-track-action="click_link"
                 data-track-label="Start a free Ultimate trial"
                 href="http://example.com/"
-                target="_self"
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 
       Start a free Ultimate trial
@@ -209,7 +210,8 @@ exports[`Learn GitLab renders correctly 1`] = `
                 data-track-action="click_link"
                 data-track-label="Add code owners"
                 href="http://example.com/"
-                target="_self"
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 
       Add code owners
@@ -240,7 +242,8 @@ exports[`Learn GitLab renders correctly 1`] = `
                 data-track-action="click_link"
                 data-track-label="Add merge request approval"
                 href="http://example.com/"
-                target="_self"
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 
       Add merge request approval

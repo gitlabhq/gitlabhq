@@ -33,7 +33,8 @@ RSpec.describe 'Query.work_item(id)' do
         'lockVersion' => work_item.lock_version,
         'state' => "OPEN",
         'title' => work_item.title,
-        'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s)
+        'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
+        'userPermissions' => { 'readWorkItem' => true, 'updateWorkItem' => true, 'deleteWorkItem' => false }
       )
     end
 

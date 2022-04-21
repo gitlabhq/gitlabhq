@@ -35,6 +35,10 @@ module API
         expose :members do |project|
           expose_url(api_v4_projects_members_path(id: project.id))
         end
+
+        expose :cluster_agents do |project|
+          expose_url(api_v4_projects_cluster_agents_path(id: project.id))
+        end
       end
 
       expose :packages_enabled

@@ -1,8 +1,11 @@
+import { GlPopover, GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { stubExperiments } from 'helpers/experimentation_helper';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
 import eventHub from '~/invite_members/event_hub';
 import LearnGitlabSectionLink from '~/pages/projects/learn_gitlab/components/learn_gitlab_section_link.vue';
+import { ACTION_LABELS } from '~/pages/projects/learn_gitlab/constants';
 
 const defaultAction = 'gitWrite';
 const defaultProps = {
@@ -10,6 +13,7 @@ const defaultProps = {
   description: 'Some description',
   url: 'https://example.com',
   completed: false,
+  enabled: true,
 };
 
 const openInNewTabProps = {
@@ -26,16 +30,21 @@ describe('Learn GitLab Section Link', () => {
   });
 
   const createWrapper = (action = defaultAction, props = {}) => {
-    wrapper = mount(LearnGitlabSectionLink, {
-      propsData: { action, value: { ...defaultProps, ...props } },
-    });
+    wrapper = extendedWrapper(
+      mount(LearnGitlabSectionLink, {
+        propsData: { action, value: { ...defaultProps, ...props } },
+      }),
+    );
   };
 
   const openInviteMembesrModalLink = () =>
     wrapper.find('[data-testid="invite-for-help-continuous-onboarding-experiment-link"]');
 
   const findUncompletedLink = () => wrapper.find('[data-testid="uncompleted-learn-gitlab-link"]');
-
+  const findDisabledLink = () => wrapper.findByTestId('disabled-learn-gitlab-link');
+  const findPopoverTrigger = () => wrapper.findByTestId('contact-admin-popover-trigger');
+  const findPopover = () => wrapper.findComponent(GlPopover);
+  const findPopoverLink = () => findPopover().findComponent(GlLink);
   const videoTutorialLink = () => wrapper.find('[data-testid="video-tutorial-link"]');
 
   it('renders no icon when not completed', () => {
@@ -60,6 +69,36 @@ describe('Learn GitLab Section Link', () => {
     createWrapper('codeOwnersEnabled');
 
     expect(wrapper.find('[data-testid="trial-only"]').exists()).toBe(true);
+  });
+
+  describe('disabled links', () => {
+    beforeEach(() => {
+      createWrapper('trialStarted', { enabled: false });
+    });
+
+    it('renders text without a link', () => {
+      expect(findDisabledLink().exists()).toBe(true);
+      expect(findDisabledLink().text()).toBe(ACTION_LABELS.trialStarted.title);
+      expect(findDisabledLink().attributes('href')).toBeUndefined();
+    });
+
+    it('renders a popover trigger with question icon', () => {
+      expect(findPopoverTrigger().exists()).toBe(true);
+      expect(findPopoverTrigger().props('icon')).toBe('question-o');
+    });
+
+    it('renders a popover', () => {
+      expect(findPopoverTrigger().attributes('id')).toBe(findPopover().props('target'));
+      expect(findPopover().props()).toMatchObject({
+        placement: 'top',
+        triggers: 'hover focus',
+      });
+    });
+
+    it('renders a link inside the popover', () => {
+      expect(findPopoverLink().exists()).toBe(true);
+      expect(findPopoverLink().attributes('href')).toBe(defaultProps.url);
+    });
   });
 
   describe('links marked with openInNewTab', () => {

@@ -36,6 +36,8 @@ There are three options for `merge_method` to choose from:
 
 ## List all projects
 
+> The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
+
 Get a list of all visible projects across GitLab for the authenticated user.
 When accessed without authentication, only public projects with _simple_ fields
 are returned.
@@ -208,7 +210,8 @@ When the user is authenticated and `simple` is not set this returns something li
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   },
   {
@@ -325,7 +328,8 @@ When the user is authenticated and `simple` is not set this returns something li
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   }
 ]
@@ -370,6 +374,8 @@ projects beyond this limit.
 Keyset pagination supports only `order_by=id`. Other sorting options aren't available.
 
 ## List user projects
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Get a list of visible projects owned by the given user. When accessed without
 authentication, only public projects are returned.
@@ -499,7 +505,8 @@ GET /users/:user_id/projects
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   },
   {
@@ -616,13 +623,16 @@ GET /users/:user_id/projects
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   }
 ]
 ```
 
 ## List projects starred by a user
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Get a list of visible projects starred by the given user. When accessed without
 authentication, only public projects are returned.
@@ -744,7 +754,8 @@ Example response:
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   },
   {
@@ -858,13 +869,16 @@ Example response:
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   }
 ]
 ```
 
 ## Get single project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Get a specific project. This endpoint can be accessed without authentication if
 the project is publicly accessible.
@@ -1032,7 +1046,8 @@ GET /projects/:id
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
@@ -1483,6 +1498,8 @@ POST /projects/:id/fork
 
 ## List forks of a project
 
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
+
 List the projects accessible to the calling user that have an established,
 forked relationship with the specified project
 
@@ -1585,13 +1602,16 @@ Example responses:
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   }
 ]
 ```
 
 ## Star a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Stars a given project. Returns status code `304` if the project is already
 starred.
@@ -1688,12 +1708,15 @@ Example response:
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
 
 ## Unstar a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Unstars a given project. Returns status code `304` if the project is not starred.
 
@@ -1789,7 +1812,8 @@ Example response:
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
@@ -1868,6 +1892,8 @@ Example response:
 ```
 
 ## Archive a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Archives the project if the user is either an administrator or the owner of this
 project. This action is idempotent, thus archiving an already archived project
@@ -1984,12 +2010,15 @@ Example response:
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
 
 ## Unarchive a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Unarchives the project if the user is either an administrator or the owner of
 this project. This action is idempotent, thus unarchiving a non-archived project
@@ -2106,7 +2135,8 @@ Example response:
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
@@ -2613,6 +2643,8 @@ DELETE /projects/:id/push_rule
 | `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 
 ## Transfer a project to a new namespace
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 See the [Project documentation](../user/project/settings/index.md#transferring-an-existing-project-into-another-namespace)
 for prerequisites to transfer a project.
