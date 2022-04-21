@@ -11,6 +11,7 @@ RSpec.describe API::Entities::Projects::Topic do
     expect(subject).to include(
       :id,
       :name,
+      :title,
       :description,
       :total_projects_count,
       :avatar_url

@@ -99,7 +99,7 @@ rules:
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
 overrides:
   - files:
-      - '{,ee/,jh/}spec/frontend*/**/*'
+    - '{,ee/,jh/}spec/frontend*/**/*'
     rules:
       '@gitlab/require-i18n-strings': off
       '@gitlab/no-runtime-template-compiler': off
@@ -139,11 +139,13 @@ overrides:
       parser: '@graphql-eslint/eslint-plugin'
       operations:
         - '{,ee/,jh/}app/**/*.graphql'
-      # You can run `bundle exec rake gitlab:graphql:schema:dump` and then uncomment this line
-      # schema: './tmp/tests/graphql/gitlab_schema.graphql'
+        # You can run `bundle exec rake gitlab:graphql:schema:dump` and then uncomment this line
+        # schema: './tmp/tests/graphql/gitlab_schema.graphql'
     rules:
       filenames/match-regex: off
       spaced-comment: off
+      # TODO: We need a way to include this rule + support ee_else_ce fragments
+      #'@graphql-eslint/unique-fragment-name': error
       # TODO: Uncomment these rules when then `schema` is available
       #'@graphql-eslint/fragments-on-composite-type': error
       #'@graphql-eslint/known-argument-names': error
@@ -151,4 +153,3 @@ overrides:
       '@graphql-eslint/no-anonymous-operations': error
       '@graphql-eslint/unique-operation-name': error
       '@graphql-eslint/require-id-when-available': error
-      '@graphql-eslint/unique-fragment-name': error

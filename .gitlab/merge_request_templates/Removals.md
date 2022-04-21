@@ -5,11 +5,11 @@
 /milestone %
 /assign `@EM/PM` (choose the DRI; remove backticks here, and below)
 
-**Be sure to link this MR to the relevant issue(s).**
+**Be sure to link this MR to the relevant issues.**
 
 - Deprecation issue:
 - Removal issue:
-- MR that removes the feature (optional):
+- MR that removed (or _will_ remove) the feature:
 
 If there is no relevant deprecation issue, hit pause and:
 
@@ -45,6 +45,7 @@ Please review the [guidelines for removals](https://about.gitlab.com/handbook/ma
 - [ ] Follow the process to [create a removal YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-removal-entry).
 - [ ] Add reviewers by the 10th.
 - [ ] When ready to be merged and not later than the 15th, add the ~ready label and @ message the TW for final review and merge.
+  - Removal notices should not be merged before the code is removed from the product. Do not mark ~ready until the removal is complete, or you are certain it will be completed within the current milestone and released. If PMs are not sure, they should confirm with their Engineering Manager.
 
 ## Reviewers
 
@@ -65,6 +66,8 @@ The TW should review according to the criteria listed below. Review a removal MR
 with the same process as regular docs MRs. Add suggestions as needed, @ message
 the PM to inform them the first review is complete, and remove
 yourself as a reviewer if it's not yet ready for merge.
+
+**Removal notices should not be merged before the code is removed from the product.** 
 
 <details>
 <summary>Expand for Details</summary>

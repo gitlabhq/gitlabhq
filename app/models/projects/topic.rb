@@ -9,6 +9,7 @@ module Projects
 
     validates :name, presence: true, length: { maximum: 255 }
     validates :name, uniqueness: { case_sensitive: false }, if: :name_changed?
+    validates :title, presence: true, length: { maximum: 255 }, on: :create
     validates :description, length: { maximum: 1024 }
 
     has_many :project_topics, class_name: 'Projects::ProjectTopic'

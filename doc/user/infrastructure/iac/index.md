@@ -107,13 +107,9 @@ workflows.
 
 ## The GitLab Terraform provider
 
-NOTE:
-The GitLab Terraform provider is released separately from GitLab.
-We are working on migrating the GitLab Terraform provider to GitLab.com.
-
-The [GitLab Terraform provider](https://github.com/gitlabhq/terraform-provider-gitlab) is a plugin for Terraform to facilitate
-managing of GitLab resources such as users, groups, and projects.
-Its documentation is available on [Terraform](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs).
+The [GitLab Terraform provider](https://github.com/gitlabhq/terraform-provider-gitlab) is a Terraform plugin to facilitate
+managing of GitLab resources such as users, groups, and projects. It is released separately from GitLab
+and its documentation is available on [Terraform](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs).
 
 ## Create a new cluster through IaC
 

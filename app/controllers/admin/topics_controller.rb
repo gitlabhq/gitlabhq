@@ -51,7 +51,8 @@ class Admin::TopicsController < Admin::ApplicationController
     [
       :avatar,
       :description,
-      :name
+      :name,
+      :title
     ]
   end
 end

@@ -1,7 +1,5 @@
 #import "./runner_details_shared.fragment.graphql"
 
-# This fragment is used as ee-else-ce
-# eslint-disable-next-line @graphql-eslint/unique-fragment-name
 fragment RunnerDetails on CiRunner {
   ...RunnerDetailsShared
 }

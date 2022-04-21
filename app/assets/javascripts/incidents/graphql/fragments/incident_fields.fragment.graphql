@@ -1,5 +1,4 @@
-# This fragment is used as ee-else-ce
-# eslint-disable-next-line @graphql-eslint/require-id-when-available, @graphql-eslint/unique-fragment-name
+# eslint-disable-next-line @graphql-eslint/require-id-when-available
 fragment IncidentFields on Issue {
   severity
   escalationStatus

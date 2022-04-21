@@ -77,22 +77,29 @@ RSpec.describe Admin::TopicsController do
   describe 'POST #create' do
     it 'creates topic' do
       expect do
-        post :create, params: { projects_topic: { name: 'test' } }
+        post :create, params: { projects_topic: { name: 'test', title: 'Test' } }
       end.to change { Projects::Topic.count }.by(1)
     end
 
-    it 'shows error message for invalid topic' do
-      post :create, params: { projects_topic: { name: nil } }
+    it 'shows error message for invalid topic name' do
+      post :create, params: { projects_topic: { name: nil, title: 'Test' } }
 
       errors = assigns[:topic].errors
       expect(errors).to contain_exactly(errors.full_message(:name, I18n.t('errors.messages.blank')))
     end
 
-    it 'shows error message if topic not unique (case insensitive)' do
-      post :create, params: { projects_topic: { name: topic.name.upcase } }
+    it 'shows error message if topic name not unique (case insensitive)' do
+      post :create, params: { projects_topic: { name: topic.name.upcase, title: topic.title } }
 
       errors = assigns[:topic].errors
       expect(errors).to contain_exactly(errors.full_message(:name, I18n.t('errors.messages.taken')))
+    end
+
+    it 'shows error message for invalid topic title' do
+      post :create, params: { projects_topic: { name: 'test', title: nil } }
+
+      errors = assigns[:topic].errors
+      expect(errors).to contain_exactly(errors.full_message(:title, I18n.t('errors.messages.blank')))
     end
 
     context 'as a normal user' do

@@ -83,7 +83,7 @@ module Trigger
     # Override to trigger and work with pipeline on different GitLab instance
     # type: :downstream -> downstream build and pipeline status
     # type: :upstream -> this project, e.g. for posting comments
-    def gitlab_client(type)
+    def gitlab_client(_type)
       # By default, always use the same client
       @gitlab_client ||= Gitlab.client(
         endpoint: 'https://gitlab.com/api/v4',
@@ -97,8 +97,13 @@ module Trigger
     end
 
     # Must be overridden
-    def ref
+    def ref_param_name
       raise NotImplementedError
+    end
+
+    # Can be overridden
+    def primary_ref
+      'main'
     end
 
     # Can be overridden
@@ -114,6 +119,27 @@ module Trigger
     # Can be overridden
     def version_param_value(version_file)
       ENV[version_file]&.strip || File.read(version_file).strip
+    end
+
+    # Can be overridden
+    def trigger_stable_branch_if_detected?
+      false
+    end
+
+    def stable_branch?
+      ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee)?$/
+    end
+
+    def fallback_ref
+      if trigger_stable_branch_if_detected? && stable_branch?
+        ENV['CI_COMMIT_REF_NAME'].delete_suffix('-ee')
+      else
+        primary_ref
+      end
+    end
+
+    def ref
+      ENV.fetch(ref_param_name, fallback_ref)
     end
 
     def base_variables
@@ -146,8 +172,16 @@ module Trigger
       ENV.fetch('OMNIBUS_PROJECT_PATH', 'gitlab-org/build/omnibus-gitlab-mirror')
     end
 
-    def ref
-      ENV.fetch('OMNIBUS_BRANCH', 'master')
+    def ref_param_name
+      'OMNIBUS_BRANCH'
+    end
+
+    def primary_ref
+      'master'
+    end
+
+    def trigger_stable_branch_if_detected?
+      true
     end
 
     def extra_variables
@@ -184,10 +218,16 @@ module Trigger
 
     private
 
-    def ref
-      return ENV['CI_COMMIT_REF_NAME'] if ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee)?$/
+    def ref_param_name
+      'CNG_BRANCH'
+    end
 
-      ENV.fetch('CNG_BRANCH', 'master')
+    def primary_ref
+      'master'
+    end
+
+    def trigger_stable_branch_if_detected?
+      true
     end
 
     def extra_variables
@@ -272,8 +312,8 @@ module Trigger
       ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/gitlab-docs')
     end
 
-    def ref
-      ENV.fetch('DOCS_BRANCH', 'main')
+    def ref_param_name
+      'DOCS_BRANCH'
     end
 
     # `gitlab-org/gitlab-docs` pipeline trigger "Triggered from gitlab-org/gitlab 'review-docs-deploy' job"
@@ -377,8 +417,12 @@ module Trigger
       }
     end
 
-    def ref
-      ENV['GITLABCOM_DATABASE_TESTING_TRIGGER_REF'] || 'master'
+    def ref_param_name
+      'GITLABCOM_DATABASE_TESTING_TRIGGER_REF'
+    end
+
+    def primary_ref
+      'master'
     end
   end
 

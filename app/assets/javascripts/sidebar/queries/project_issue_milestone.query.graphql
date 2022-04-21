@@ -8,7 +8,7 @@ query projectIssueMilestone($fullPath: ID!, $iid: String!) {
       __typename
       id
       attribute: milestone {
-        ...SidebarMilestoneFragment
+        ...MilestoneFragment
       }
     }
   }

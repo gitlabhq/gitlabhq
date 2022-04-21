@@ -28294,6 +28294,9 @@ msgstr ""
 msgid "Please fill in a name for your topic."
 msgstr ""
 
+msgid "Please fill in a title for your topic."
+msgstr ""
+
 msgid "Please fill out this field."
 msgstr ""
 
@@ -39730,7 +39733,10 @@ msgstr ""
 msgid "Topic avatar for %{name} will be removed. This cannot be undone."
 msgstr ""
 
-msgid "Topic name"
+msgid "Topic slug (name)"
+msgstr ""
+
+msgid "Topic title"
 msgstr ""
 
 msgid "Topic was successfully updated."
@@ -45342,6 +45348,9 @@ msgid "my-awesome-group"
 msgstr ""
 
 msgid "my-channel"
+msgstr ""
+
+msgid "my-topic"
 msgstr ""
 
 msgid "need attention"

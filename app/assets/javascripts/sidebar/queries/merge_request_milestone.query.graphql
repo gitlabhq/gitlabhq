@@ -8,7 +8,7 @@ query mergeRequestMilestone($fullPath: ID!, $iid: String!) {
       __typename
       id
       attribute: milestone {
-        ...SidebarMilestoneFragment
+        ...MilestoneFragment
       }
     }
   }

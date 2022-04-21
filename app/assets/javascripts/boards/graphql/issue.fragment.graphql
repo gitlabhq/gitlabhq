@@ -1,7 +1,5 @@
 #import "~/graphql_shared/fragments/issue.fragment.graphql"
 
-# This fragment is used as ee-else-ce
-# eslint-disable-next-line @graphql-eslint/unique-fragment-name
 fragment Issue on Issue {
   id
   ...IssueNode

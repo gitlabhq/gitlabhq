@@ -21050,6 +21050,8 @@ CREATE TABLE topics (
     description text,
     total_projects_count bigint DEFAULT 0 NOT NULL,
     non_private_projects_count bigint DEFAULT 0 NOT NULL,
+    title text,
+    CONSTRAINT check_223b50f9be CHECK ((char_length(title) <= 255)),
     CONSTRAINT check_26753fb43a CHECK ((char_length(avatar) <= 255)),
     CONSTRAINT check_5d1a07c8c8 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_7a90d4c757 CHECK ((char_length(name) <= 255))

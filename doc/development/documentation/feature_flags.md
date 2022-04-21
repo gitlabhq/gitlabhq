@@ -45,7 +45,7 @@ You can combine entries if they happened in the same release:
 
 ## Use a note to describe the state of the feature flag
 
-Information about feature flags should be in a **Note** at the start of the topic (just below the version history).
+Information about feature flags should be in a `FLAG` note at the start of the topic (just below the version history).
 
 The note has three parts, and follows this structure:
 
@@ -62,6 +62,7 @@ FLAG:
 |--------------------------|---------------|
 | Available                | `On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](<path to>/administration/feature_flags.md) named <flag name>.` |
 | Unavailable              | `On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](<path to>/administration/feature_flags.md) named <flag name>.` |
+| Available to some users  | `On self-managed GitLab, by default this feature is available to a subset of users. To show or hide the feature for all, ask an administrator to [change the status of the feature flag](<path to>/administration/feature_flags.md) named <flag name>.` |
 | Available, per-group     | `On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the feature flag](<path to>/administration/feature_flags.md) named <flag name>.` |
 | Unavailable, per-group   | `On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](<path to>/administration/feature_flags.md) named <flag name>.` |
 | Available, per-project   | `On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the feature flag](<path to>/administration/feature_flags.md) named <flag name>.` |

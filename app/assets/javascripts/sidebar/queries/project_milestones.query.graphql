@@ -12,7 +12,7 @@ query projectMilestones($fullPath: ID!, $title: String, $state: MilestoneStateEn
       includeAncestors: true
     ) {
       nodes {
-        ...SidebarMilestoneFragment
+        ...MilestoneFragment
         state
       }
     }

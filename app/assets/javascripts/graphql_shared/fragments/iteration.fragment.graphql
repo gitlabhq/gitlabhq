@@ -1,4 +1,4 @@
-fragment IterationShared on Iteration {
+fragment Iteration on Iteration {
   id
   title
 }
