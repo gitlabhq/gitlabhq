@@ -156,7 +156,7 @@ export default {
             :link-href="author.path"
             :img-src="author.avatar_url"
             :img-alt="author.name"
-            :img-size="40"
+            :img-size="48"
             class="d-none d-sm-block new-comment"
           />
           <diff-discussions

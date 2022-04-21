@@ -18,18 +18,24 @@ module Gitlab
       end
 
       def with_value
-        unflatten_key_path(intrumentation_object.value)
+        with_availability(proc { instrumentation_object.value })
       end
 
       def with_instrumentation
-        unflatten_key_path(intrumentation_object.instrumentation)
+        with_availability(proc { instrumentation_object.instrumentation })
       end
 
       def with_suggested_name
-        unflatten_key_path(intrumentation_object.suggested_name)
+        with_availability(proc { instrumentation_object.suggested_name })
       end
 
       private
+
+      def with_availability(value_proc)
+        return {} unless instrumentation_object.available?
+
+        unflatten_key_path(value_proc.call)
+      end
 
       def unflatten_key_path(value)
         ::Gitlab::Usage::Metrics::KeyPathProcessor.process(definition.key_path, value)
@@ -39,8 +45,8 @@ module Gitlab
         "Gitlab::Usage::Metrics::Instrumentations::#{definition.instrumentation_class}"
       end
 
-      def intrumentation_object
-        instrumentation_class.constantize.new(
+      def instrumentation_object
+        @instrumentation_object ||= instrumentation_class.constantize.new(
           time_frame: definition.time_frame,
           options: definition.attributes[:options]
         )

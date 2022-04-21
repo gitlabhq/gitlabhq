@@ -20,4 +20,28 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
   it 'raises an exception if counter_class option is not present' do
     expect { described_class.new(event: 'pushes') }.to raise_error(ArgumentError)
   end
+
+  describe 'children classes' do
+    let(:options) { { event: 'pushes', counter_class: 'SourceCodeCounter' } }
+
+    context 'availability not defined' do
+      subject { Class.new(described_class).new(time_frame: nil, options: options) }
+
+      it 'returns default availability' do
+        expect(subject.available?).to eq(true)
+      end
+    end
+
+    context 'availability defined' do
+      subject do
+        Class.new(described_class) do
+          available? { false }
+        end.new(time_frame: nil, options: options)
+      end
+
+      it 'returns defined availability' do
+        expect(subject.available?).to eq(false)
+      end
+    end
+  end
 end

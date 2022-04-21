@@ -40,6 +40,7 @@ We have built a domain-specific language (DSL) to define the metrics instrumenta
 - `start`: Specifies the start value of the batch counting, by default is `relation.minimum(:id)`.
 - `finish`: Specifies the end value of the batch counting, by default is `relation.maximum(:id)`.
 - `cache_start_and_finish_as`: Specifies the cache key for `start` and `finish` values and sets up caching them. Use this call when `start` and `finish` are expensive queries that should be reused between different metric calculations.
+- `available?`: Specifies whether the metric should be reported. The default is `true`.
 
 [Example of a merge request that adds a database metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60022).
 
@@ -123,6 +124,37 @@ options:
   counter_class: SourceCodeCounter
 ```
 
+### Availability-restrained Redis metrics
+
+If the Redis metric should only be available in the report under some conditions, then you must specify these conditions in a new class that is a child of the `RedisMetric` class.
+
+```ruby
+# frozen_string_literal: true
+
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+        class MergeUsageCountRedisMetric < RedisMetric
+          available? { Feature.enabled?(:merge_usage_data_missing_key_paths) }
+        end
+      end
+    end
+  end
+end
+```
+
+You must also use the class's name in the YAML setup.
+
+```yaml
+time_frame: all
+data_source: redis
+instrumentation_class: 'MergeUsageCountRedisMetric'
+options:
+  event: pushes
+  counter_class: SourceCodeCounter
+```
+
 ## Redis HyperLogLog metrics
 
 [Example of a merge request that adds a `RedisHLL` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61685).
@@ -138,7 +170,41 @@ options:
     - i_quickactions_approve
 ```
 
+### Availability-restrained Redis HyperLogLog metrics
+
+If the Redis HyperLogLog metric should only be available in the report under some conditions, then you must specify these conditions in a new class that is a child of the `RedisHLLMetric` class.
+
+```ruby
+# frozen_string_literal: true
+
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+        class MergeUsageCountRedisHLLMetric < RedisHLLMetric
+          available? { Feature.enabled?(:merge_usage_data_missing_key_paths) }
+        end
+      end
+    end
+  end
+end
+```
+
+You must also use the class's name in the YAML setup.
+
+```yaml
+time_frame: 28d
+data_source: redis_hll
+instrumentation_class: 'MergeUsageCountRedisHLLMetric'
+options:
+  events:
+    - i_quickactions_approve
+```
+
 ## Generic metrics
+
+- `value`: Specifies the value of the metric.
+- `available?`: Specifies whether the metric should be reported. The default is `true`.
 
 [Example of a merge request that adds a generic metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60256).
 

@@ -26,13 +26,15 @@ module Issuable
     end
 
     def delete_todos(actor, issuable)
-      TodosDestroyer::DestroyedIssuableWorker
-        .perform_async(issuable.id, issuable.class.name)
+      issuable.run_after_commit_or_now do
+        TodosDestroyer::DestroyedIssuableWorker.perform_async(issuable.id, issuable.class.name)
+      end
     end
 
     def delete_label_links(actor, issuable)
-      Issuable::LabelLinksDestroyWorker
-        .perform_async(issuable.id, issuable.class.name)
+      issuable.run_after_commit_or_now do
+        Issuable::LabelLinksDestroyWorker.perform_async(issuable.id, issuable.class.name)
+      end
     end
   end
 end

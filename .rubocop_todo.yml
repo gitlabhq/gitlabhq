@@ -81,10 +81,6 @@ RSpec/ContextWording:
 RSpec/ExpectChange:
   Enabled: false
 
-# Offense count: 930
-RSpec/ExpectInHook:
-  Enabled: false
-
 # Offense count: 2352
 # Cop supports --auto-correct.
 # Configuration parameters: Strict, EnforcedStyle, AllowedExplicitMatchers.

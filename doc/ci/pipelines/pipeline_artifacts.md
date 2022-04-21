@@ -11,7 +11,7 @@ different to [job artifacts](job_artifacts.md) because they are not explicitly m
 `.gitlab-ci.yml` definitions.
 
 Pipeline artifacts are used by the [test coverage visualization feature](../../user/project/merge_requests/test_coverage_visualization.md)
-to collect coverage information. It uses the [`artifacts: reports`](../yaml/index.md#artifactsreports) CI/CD keyword.
+to collect coverage information.
 
 ## Storage
 

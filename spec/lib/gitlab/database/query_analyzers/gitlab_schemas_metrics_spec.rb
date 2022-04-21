@@ -140,7 +140,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
   def process_sql(model, sql)
     Gitlab::Database::QueryAnalyzer.instance.within do
       # Skip load balancer and retrieve connection assigned to model
-      Gitlab::Database::QueryAnalyzer.instance.process_sql(sql, model.retrieve_connection)
+      Gitlab::Database::QueryAnalyzer.instance.send(:process_sql, sql, model.retrieve_connection)
     end
   end
 end
