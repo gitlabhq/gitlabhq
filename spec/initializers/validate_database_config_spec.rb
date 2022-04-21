@@ -39,47 +39,23 @@ RSpec.describe 'validate database config' do
   end
 
   context 'when config/database.yml is valid' do
-    context 'uses legacy syntax' do
-      let(:database_yml) do
-        <<-EOS
-          production:
+    let(:database_yml) do
+      <<-EOS
+        production:
+          main:
             adapter: postgresql
             encoding: unicode
             database: gitlabhq_production
             username: git
             password: "secure password"
             host: localhost
-        EOS
-      end
-
-      it 'validates configuration with a warning' do
-        expect(main_object).to receive(:warn).with /uses a deprecated syntax for/
-
-        expect { subject }.not_to raise_error
-      end
-
-      it_behaves_like 'with SKIP_DATABASE_CONFIG_VALIDATION=true'
+      EOS
     end
 
-    context 'uses new syntax' do
-      let(:database_yml) do
-        <<-EOS
-          production:
-            main:
-              adapter: postgresql
-              encoding: unicode
-              database: gitlabhq_production
-              username: git
-              password: "secure password"
-              host: localhost
-        EOS
-      end
+    it 'validates configuration without errors and warnings' do
+      expect(main_object).not_to receive(:warn)
 
-      it 'validates configuration without errors and warnings' do
-        expect(main_object).not_to receive(:warn)
-
-        expect { subject }.not_to raise_error
-      end
+      expect { subject }.not_to raise_error
     end
   end
 

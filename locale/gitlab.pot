@@ -38577,6 +38577,9 @@ msgstr ""
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
+msgid "This epic would exceed maximum number of related epics."
+msgstr ""
+
 msgid "This feature requires local storage to be enabled"
 msgstr ""
 

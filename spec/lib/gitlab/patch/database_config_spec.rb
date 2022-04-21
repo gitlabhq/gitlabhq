@@ -34,9 +34,8 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
       end
     end
 
-    context 'when a new syntax is used' do
-      let(:database_yml) do
-        <<-EOS
+    let(:database_yml) do
+      <<-EOS
           production:
             main:
               adapter: postgresql
@@ -68,59 +67,9 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
               prepared_statements: false
               variables:
                 statement_timeout: 15s
-        EOS
-      end
-
-      include_examples 'hash containing main: connection name'
-
-      it 'configuration is not legacy one' do
-        configuration.database_configuration
-
-        expect(configuration.uses_legacy_database_config).to eq(false)
-      end
+      EOS
     end
 
-    context 'when a legacy syntax is used' do
-      let(:database_yml) do
-        <<-EOS
-          production:
-            adapter: postgresql
-            encoding: unicode
-            database: gitlabhq_production
-            username: git
-            password: "secure password"
-            host: localhost
-
-          development:
-            adapter: postgresql
-            encoding: unicode
-            database: gitlabhq_development
-            username: postgres
-            password: "secure password"
-            host: localhost
-            variables:
-              statement_timeout: 15s
-
-          test: &test
-            adapter: postgresql
-            encoding: unicode
-            database: gitlabhq_test
-            username: postgres
-            password:
-            host: localhost
-            prepared_statements: false
-            variables:
-              statement_timeout: 15s
-        EOS
-      end
-
-      include_examples 'hash containing main: connection name'
-
-      it 'configuration is legacy' do
-        configuration.database_configuration
-
-        expect(configuration.uses_legacy_database_config).to eq(true)
-      end
-    end
+    include_examples 'hash containing main: connection name'
   end
 end
