@@ -100,7 +100,7 @@ export default {
         ><gl-icon name="question-o"
       /></gl-link>
     </div>
-    <div class="title hide-collapsed gl-mb-2 gl-line-height-20">
+    <div class="title hide-collapsed gl-mb-2 gl-line-height-20 gl-font-weight-bold">
       {{ contactsLabel }}
     </div>
     <div class="hide-collapsed gl-display-flex gl-flex-wrap">

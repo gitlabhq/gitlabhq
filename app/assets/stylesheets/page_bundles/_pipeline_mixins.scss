@@ -94,7 +94,14 @@
   &.ci-status-icon-scheduled,
   &.ci-status-icon-disabled,
   &.ci-status-icon-manual {
-    @include mini-pipeline-graph-color(var(--white, $white), $gray-500, $gray-700, $gray-900, $gray-950, $black);
+    @include mini-pipeline-graph-color(
+      var(--white, $white),
+      var(--gray-500, $gray-500),
+      var(--gray-700, $gray-700),
+      var(--gray-900, $gray-900),
+      var(--gray-950, $gray-950),
+      var(--black, $black)
+    );
   }
 
   &.ci-status-icon-preparing,

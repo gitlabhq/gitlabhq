@@ -45,8 +45,6 @@ describe('ZenMode', () => {
 
     // Set this manually because we can't actually scroll the window
     zen.scroll_position = 456;
-
-    gon.features = { markdownContinueLists: true };
   });
 
   describe('enabling dropzone', () => {

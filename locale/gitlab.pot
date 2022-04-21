@@ -3713,9 +3713,6 @@ msgstr ""
 msgid "Allowed"
 msgstr ""
 
-msgid "Allowed Geo IP"
-msgstr ""
-
 msgid "Allowed characters: +, 0-9, -, and spaces."
 msgstr ""
 
@@ -8995,9 +8992,6 @@ msgstr ""
 msgid "Comma-separated list of email addresses."
 msgstr ""
 
-msgid "Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
-msgstr ""
-
 msgid "Command"
 msgstr ""
 
@@ -9580,9 +9574,6 @@ msgid "Connection failure"
 msgstr ""
 
 msgid "Connection timed out"
-msgstr ""
-
-msgid "Connection timeout"
 msgstr ""
 
 msgid "Consistency guarantee method"
@@ -14558,6 +14549,9 @@ msgstr ""
 msgid "Epics|start"
 msgstr ""
 
+msgid "Erased"
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -16458,6 +16452,9 @@ msgstr ""
 msgid "Geo|Allow this secondary site to replicate content on Object Storage"
 msgstr ""
 
+msgid "Geo|Allowed Geo IP"
+msgstr ""
+
 msgid "Geo|Allowed Geo IP can't be blank"
 msgstr ""
 
@@ -16474,6 +16471,12 @@ msgid "Geo|Checksummed"
 msgstr ""
 
 msgid "Geo|Choose specific groups or storage shards"
+msgstr ""
+
+msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
+msgstr ""
+
+msgid "Geo|Connection timeout"
 msgstr ""
 
 msgid "Geo|Connection timeout can't be blank"
@@ -16534,6 +16537,9 @@ msgid "Geo|Filter by name"
 msgstr ""
 
 msgid "Geo|Filter by status"
+msgstr ""
+
+msgid "Geo|Geo Settings"
 msgstr ""
 
 msgid "Geo|Geo Status"
@@ -16776,6 +16782,9 @@ msgstr ""
 msgid "Geo|Selective synchronization"
 msgstr ""
 
+msgid "Geo|Set the timeout in seconds to send a secondary site status to the primary and IPs allowed for the secondary sites."
+msgstr ""
+
 msgid "Geo|Set verification limit and frequency."
 msgstr ""
 
@@ -16836,6 +16845,9 @@ msgstr ""
 msgid "Geo|There was an error deleting the Geo Site"
 msgstr ""
 
+msgid "Geo|There was an error fetching the Geo Settings"
+msgstr ""
+
 msgid "Geo|There was an error fetching the Geo Sites"
 msgstr ""
 
@@ -16845,6 +16857,9 @@ msgstr ""
 msgid "Geo|There was an error saving this Geo Site"
 msgstr ""
 
+msgid "Geo|There was an error updating the Geo Settings"
+msgstr ""
+
 msgid "Geo|This will resync all %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
@@ -16852,6 +16867,9 @@ msgid "Geo|This will resync all projects. It may take some time to complete. Are
 msgstr ""
 
 msgid "Geo|This will reverify all projects. It may take some time to complete. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Geo|Time in seconds"
 msgstr ""
 
 msgid "Geo|Tracking database entry will be removed. Are you sure?"
@@ -32387,6 +32405,9 @@ msgstr ""
 msgid "Run untagged jobs"
 msgstr ""
 
+msgid "Runner"
+msgstr ""
+
 msgid "Runner API"
 msgstr ""
 
@@ -34695,9 +34716,6 @@ msgid "Set the per-user rate limit for getting a user by ID via the API."
 msgstr ""
 
 msgid "Set the per-user rate limit for notes created by web or API requests."
-msgstr ""
-
-msgid "Set the timeout in seconds to send a secondary site status to the primary and IPs allowed for the secondary sites."
 msgstr ""
 
 msgid "Set this number to 0 to disable the limit."
@@ -38265,9 +38283,6 @@ msgstr ""
 msgid "There was an error fetching the %{replicableType}"
 msgstr ""
 
-msgid "There was an error fetching the Geo Settings"
-msgstr ""
-
 msgid "There was an error fetching the deploy freezes."
 msgstr ""
 
@@ -38329,9 +38344,6 @@ msgid "There was an error syncing the %{replicableType}"
 msgstr ""
 
 msgid "There was an error trying to validate your query"
-msgstr ""
-
-msgid "There was an error updating the Geo Settings"
 msgstr ""
 
 msgid "There was an error updating the Maintenance Mode Settings"
@@ -39160,9 +39172,6 @@ msgid "Time from first commit until first comment"
 msgstr ""
 
 msgid "Time from last commit to merge"
-msgstr ""
-
-msgid "Time in seconds"
 msgstr ""
 
 msgid "Time of import: %{importTime}"
@@ -39998,6 +40007,9 @@ msgid "Troubleshoot and monitor your application with tracing"
 msgstr ""
 
 msgid "Trusted"
+msgstr ""
+
+msgid "Trusted applications are automatically authorized on GitLab OAuth flow. It's highly recommended for the security of users that trusted applications have the confidential setting set to true."
 msgstr ""
 
 msgid "Try again"

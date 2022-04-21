@@ -195,4 +195,37 @@ RSpec.describe GroupMembersFinder, '#execute' do
       expect(result.to_a).to match_array([member1])
     end
   end
+
+  context 'filter by access levels' do
+    let!(:owner1) { group.add_owner(user2) }
+    let!(:owner2) { group.add_owner(user3) }
+    let!(:maintainer1) { group.add_maintainer(user4) }
+    let!(:maintainer2) { group.add_maintainer(user5) }
+
+    subject(:by_access_levels) { described_class.new(group, user1, params: { access_levels: access_levels }).execute }
+
+    context 'by owner' do
+      let(:access_levels) { ::Gitlab::Access::OWNER }
+
+      it 'returns owners' do
+        expect(by_access_levels).to match_array([owner1, owner2])
+      end
+    end
+
+    context 'by maintainer' do
+      let(:access_levels) { ::Gitlab::Access::MAINTAINER }
+
+      it 'returns owners' do
+        expect(by_access_levels).to match_array([maintainer1, maintainer2])
+      end
+    end
+
+    context 'by owner and maintainer' do
+      let(:access_levels) { [::Gitlab::Access::OWNER, ::Gitlab::Access::MAINTAINER] }
+
+      it 'returns owners and maintainers' do
+        expect(by_access_levels).to match_array([owner1, owner2, maintainer1, maintainer2])
+      end
+    end
+  end
 end

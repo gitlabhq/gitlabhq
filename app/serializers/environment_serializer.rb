@@ -81,7 +81,10 @@ class EnvironmentSerializer < BaseSerializer
     {
       user: [],
       cluster: [],
-      project: [],
+      project: {
+        route: [],
+        namespace: :route
+      },
       deployable: {
         user: [],
         metadata: [],

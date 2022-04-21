@@ -383,6 +383,75 @@ RSpec.describe Member do
       end
     end
 
+    describe '.by_access_level' do
+      subject { described_class.by_access_level(access_levels) }
+
+      context 'by owner' do
+        let(:access_levels) { [Gitlab::Access::OWNER] }
+
+        it { is_expected.to include @owner }
+        it { is_expected.not_to include @maintainer }
+        it { is_expected.not_to include @invited_member }
+        it { is_expected.not_to include @accepted_invite_member }
+        it { is_expected.not_to include @requested_member }
+        it { is_expected.not_to include @accepted_requested_member }
+        it { is_expected.not_to include @blocked_maintainer }
+        it { is_expected.not_to include @blocked_developer }
+      end
+
+      context 'by maintainer' do
+        let(:access_levels) { [Gitlab::Access::MAINTAINER] }
+
+        it { is_expected.not_to include @owner }
+        it { is_expected.to include @maintainer }
+        it { is_expected.not_to include @invited_member }
+        it { is_expected.not_to include @accepted_invite_member }
+        it { is_expected.not_to include @requested_member }
+        it { is_expected.not_to include @accepted_requested_member }
+        it { is_expected.not_to include @blocked_maintainer }
+        it { is_expected.not_to include @blocked_developer }
+      end
+
+      context 'by developer' do
+        let(:access_levels) { [Gitlab::Access::DEVELOPER] }
+
+        it { is_expected.not_to include @owner }
+        it { is_expected.not_to include @maintainer }
+        it { is_expected.to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.not_to include @requested_member }
+        it { is_expected.not_to include @accepted_requested_member }
+        it { is_expected.not_to include @blocked_maintainer }
+        it { is_expected.not_to include @blocked_developer }
+      end
+
+      context 'by owner and maintainer' do
+        let(:access_levels) { [Gitlab::Access::OWNER, Gitlab::Access::MAINTAINER] }
+
+        it { is_expected.to include @owner }
+        it { is_expected.to include @maintainer }
+        it { is_expected.not_to include @invited_member }
+        it { is_expected.not_to include @accepted_invite_member }
+        it { is_expected.not_to include @requested_member }
+        it { is_expected.not_to include @accepted_requested_member }
+        it { is_expected.not_to include @blocked_maintainer }
+        it { is_expected.not_to include @blocked_developer }
+      end
+
+      context 'by owner, maintainer and developer' do
+        let(:access_levels) { [Gitlab::Access::OWNER, Gitlab::Access::MAINTAINER, Gitlab::Access::DEVELOPER] }
+
+        it { is_expected.to include @owner }
+        it { is_expected.to include @maintainer }
+        it { is_expected.to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.not_to include @requested_member }
+        it { is_expected.not_to include @accepted_requested_member }
+        it { is_expected.not_to include @blocked_maintainer }
+        it { is_expected.not_to include @blocked_developer }
+      end
+    end
+
     describe '.developers' do
       subject { described_class.developers.to_a }
 

@@ -11729,7 +11729,7 @@ CREATE TABLE batched_background_migrations (
     batch_class_name text DEFAULT 'PrimaryKeyBatchingStrategy'::text NOT NULL,
     table_name text NOT NULL,
     column_name text NOT NULL,
-    job_arguments jsonb DEFAULT '"[]"'::jsonb NOT NULL,
+    job_arguments jsonb DEFAULT '[]'::jsonb NOT NULL,
     total_tuple_count bigint,
     pause_ms integer DEFAULT 100 NOT NULL,
     max_batch_size integer,

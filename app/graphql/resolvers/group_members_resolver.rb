@@ -11,6 +11,10 @@ module Resolvers
               required: false,
               default_value: GroupMembersFinder::DEFAULT_RELATIONS
 
+    argument :access_levels, [Types::AccessLevelEnum],
+              description: 'Filter members by the given access levels.',
+              required: false
+
     private
 
     def finder_class

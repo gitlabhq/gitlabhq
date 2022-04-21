@@ -46,6 +46,7 @@ module Gitlab
         # ActiveRecord::Base depending where the migration runs.
         # This helper class is provided to avoid confusion using `ActiveRecord::Base`
         class MigrationRecord < ActiveRecord::Base
+          self.abstract_class = true # Prevent STI behavior
         end
       end
 

@@ -115,7 +115,7 @@ export default {
             },
           },
           update(store, { data: { workItemCreate } }) {
-            const { id, title, workItemType } = workItemCreate.workItem;
+            const { id, title, workItemType, state } = workItemCreate.workItem;
 
             store.writeQuery({
               query: workItemQuery,
@@ -127,6 +127,7 @@ export default {
                   __typename: 'WorkItem',
                   id,
                   title,
+                  state,
                   workItemType,
                 },
               },

@@ -101,7 +101,10 @@ export default {
       <gl-loading-icon v-if="loading" size="sm" />
       <span v-else data-testid="collapsed-count"> {{ participantCount }} </span>
     </div>
-    <div v-if="showParticipantLabel" class="title hide-collapsed gl-mb-2 gl-line-height-20">
+    <div
+      v-if="showParticipantLabel"
+      class="title hide-collapsed gl-mb-2 gl-line-height-20 gl-font-weight-bold"
+    >
       <gl-loading-icon v-if="loading" size="sm" :inline="true" />
       {{ participantLabel }}
     </div>

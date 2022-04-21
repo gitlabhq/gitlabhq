@@ -365,7 +365,6 @@ function continueOlText(result, nextLineResult) {
 }
 
 function handleContinueList(e, textArea) {
-  if (!gon.features?.markdownContinueLists) return;
   if (!(e.key === 'Enter')) return;
   if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
   if (textArea.selectionStart !== textArea.selectionEnd) return;

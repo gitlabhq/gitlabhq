@@ -77,6 +77,48 @@ RSpec.describe 'getting group members information' do
     end
   end
 
+  context 'by access levels' do
+    before do
+      parent_group.add_owner(user_1)
+      parent_group.add_maintainer(user_2)
+    end
+
+    subject(:by_access_levels) { fetch_members(group: parent_group, args: { access_levels: access_levels }) }
+
+    context 'by owner' do
+      let(:access_levels) { :OWNER }
+
+      it 'returns owner' do
+        by_access_levels
+
+        expect(graphql_errors).to be_nil
+        expect_array_response(user_1)
+      end
+    end
+
+    context 'by maintainer' do
+      let(:access_levels) { :MAINTAINER }
+
+      it 'returns maintainer' do
+        by_access_levels
+
+        expect(graphql_errors).to be_nil
+        expect_array_response(user_2)
+      end
+    end
+
+    context 'by owner and maintainer' do
+      let(:access_levels) { [:OWNER, :MAINTAINER] }
+
+      it 'returns owner and maintainer' do
+        by_access_levels
+
+        expect(graphql_errors).to be_nil
+        expect_array_response(user_1, user_2)
+      end
+    end
+  end
+
   context 'member relations' do
     let_it_be(:child_group) { create(:group, :public, parent: parent_group) }
     let_it_be(:grandchild_group) { create(:group, :public, parent: child_group) }

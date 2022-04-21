@@ -71,10 +71,19 @@ export default {
         return '';
       }
 
-      return sprintf(__(` (from %{timeoutSource})`), {
+      return sprintf(__(' (from %{timeoutSource})'), {
         timeoutSource: this.job.metadata.timeout_source,
       });
     },
+  },
+  i18n: {
+    COVERAGE: __('Coverage'),
+    FINISHED: __('Finished'),
+    ERASED: __('Erased'),
+    QUEUED: __('Queued'),
+    RUNNER: __('Runner'),
+    TAGS: __('Tags:'),
+    TIMEOUT: __('Timeout'),
   },
 };
 </script>
@@ -86,22 +95,22 @@ export default {
       v-if="job.finished_at"
       :value="finishedAt"
       data-testid="job-finished"
-      title="Finished"
+      :title="$options.i18n.FINISHED"
     />
-    <detail-row v-if="job.erased_at" :value="erasedAt" title="Erased" />
-    <detail-row v-if="job.queued" :value="queued" title="Queued" />
+    <detail-row v-if="job.erased_at" :value="erasedAt" :title="$options.i18n.ERASED" />
+    <detail-row v-if="job.queued" :value="queued" :title="$options.i18n.QUEUED" />
     <detail-row
       v-if="hasTimeout"
       :help-url="runnerHelpUrl"
       :value="timeout"
       data-testid="job-timeout"
-      title="Timeout"
+      :title="$options.i18n.TIMEOUT"
     />
-    <detail-row v-if="job.runner" :value="runnerId" title="Runner" />
-    <detail-row v-if="job.coverage" :value="coverage" title="Coverage" />
+    <detail-row v-if="job.runner" :value="runnerId" :title="$options.i18n.RUNNER" />
+    <detail-row v-if="job.coverage" :value="coverage" :title="$options.i18n.COVERAGE" />
 
     <p v-if="hasTags" class="build-detail-row" data-testid="job-tags">
-      <span class="font-weight-bold">{{ __('Tags:') }}</span>
+      <span class="font-weight-bold">{{ $options.i18n.TAGS }}</span>
       <gl-badge v-for="(tag, i) in job.tags" :key="i" variant="info">{{ tag }}</gl-badge>
     </p>
   </div>

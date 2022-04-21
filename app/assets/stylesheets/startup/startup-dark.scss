@@ -817,7 +817,7 @@ input {
   display: flex;
   align-items: center;
   padding: 2px 8px;
-  margin: 5px 2px 5px -8px;
+  margin: 5px 2px 5px -12px;
   border-radius: 4px;
 }
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
@@ -853,7 +853,7 @@ input {
   border-radius: 0;
   min-width: 45px;
   padding: 0;
-  margin: 8px -7px 8px 0;
+  margin: 8px 8px 8px 0;
   font-size: 14px;
   text-align: center;
   color: currentColor;

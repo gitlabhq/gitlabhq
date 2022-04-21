@@ -6,6 +6,7 @@ module Ci
   # specifications.
   class CreateDownstreamPipelineService < ::BaseService
     include Gitlab::Utils::StrongMemoize
+    include Ci::DownstreamPipelineHelpers
 
     DuplicateDownstreamPipelineError = Class.new(StandardError)
 
@@ -36,6 +37,8 @@ module Ci
       downstream_pipeline = service
         .execute(pipeline_params.fetch(:source), **pipeline_params[:execute_params])
         .payload
+
+      log_downstream_pipeline_creation(downstream_pipeline)
 
       downstream_pipeline.tap do |pipeline|
         update_bridge_status!(@bridge, pipeline)

@@ -331,7 +331,7 @@ export default {
         :data-testid="`select-${formatIssuableAttribute.kebab}`"
         :class="isClassicSidebar ? 'hide-collapsed' : 'gl-mt-3'"
       >
-        <span v-if="updating" class="gl-font-weight-bold">{{ selectedTitle }}</span>
+        <span v-if="updating">{{ selectedTitle }}</span>
         <span v-else-if="!currentAttribute" class="gl-text-gray-500">
           {{ $options.i18n.none }}
         </span>
@@ -344,7 +344,6 @@ export default {
         >
           <gl-link
             v-gl-tooltip="tooltipText"
-            class="gl-text-gray-900! gl-font-weight-bold"
             :href="attributeUrl"
             :data-qa-selector="`${formatIssuableAttribute.snake}_link`"
           >

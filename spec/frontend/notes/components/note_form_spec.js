@@ -45,8 +45,6 @@ describe('issue_note_form component', () => {
       noteBody: 'Magni suscipit eius consectetur enim et ex et commodi.',
       noteId: '545',
     };
-
-    gon.features = { markdownContinueLists: true };
   });
 
   afterEach(() => {

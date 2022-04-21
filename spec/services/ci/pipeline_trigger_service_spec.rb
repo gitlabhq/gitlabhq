@@ -187,6 +187,14 @@ RSpec.describe Ci::PipelineTriggerService do
             expect(result[:status]).to eq(:success)
           end
 
+          it_behaves_like 'logs downstream pipeline creation' do
+            subject { result[:pipeline] }
+
+            let(:expected_root_pipeline) { pipeline }
+            let(:expected_hierarchy_size) { 2 }
+            let(:expected_downstream_relationship) { :multi_project }
+          end
+
           context 'when commit message has [ci skip]' do
             before do
               allow_next_instance_of(Ci::Pipeline) do |instance|

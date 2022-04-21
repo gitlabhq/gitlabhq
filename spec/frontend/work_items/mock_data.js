@@ -4,6 +4,7 @@ export const workItemQueryResponse = {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
       title: 'Test',
+      state: 'OPEN',
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -21,6 +22,7 @@ export const updateWorkItemMutationResponse = {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
         title: 'Updated title',
+        state: 'OPEN',
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -53,6 +55,7 @@ export const createWorkItemMutationResponse = {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
         title: 'Updated title',
+        state: 'OPEN',
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',

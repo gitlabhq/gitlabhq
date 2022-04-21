@@ -71,7 +71,7 @@
         display: flex;
         align-items: center;
         padding: 2px 8px;
-        margin: 5px 2px 5px -8px;
+        margin: 5px 2px 5px -12px;
         border-radius: $border-radius-default;
       }
 
@@ -127,7 +127,7 @@
       border-radius: 0;
       min-width: 45px;
       padding: 0;
-      margin: $gl-padding-8 -7px $gl-padding-8 0;
+      margin: $gl-padding-8 $gl-padding-8 $gl-padding-8 0;
       font-size: 14px;
       text-align: center;
       color: currentColor;

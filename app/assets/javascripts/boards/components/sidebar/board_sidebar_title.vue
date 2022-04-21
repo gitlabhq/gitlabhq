@@ -130,7 +130,7 @@ export default {
     @off-click="handleOffClick"
   >
     <template #title>
-      <span class="gl-font-weight-bold" data-testid="item-title">{{ item.title }}</span>
+      <span data-testid="item-title">{{ item.title }}</span>
     </template>
     <template #collapsed>
       <span class="gl-text-gray-800">{{ item.referencePath }}</span>

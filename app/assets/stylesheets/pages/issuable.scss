@@ -130,7 +130,6 @@
   bottom: var(--review-bar-height, 0px);
   right: 0;
   transition: width $sidebar-transition-duration;
-  background: $gray-light;
   z-index: 200;
   overflow: hidden;
 

@@ -71,7 +71,7 @@
 }
 
 .right-sidebar {
-  border-left: 1px solid $border-color;
+  border-left: 1px solid $gray-50;
 
   .sidebar-container,
   .issuable-sidebar {
@@ -135,7 +135,11 @@
   // rest of the sidebar, and could be removed once the sidebar has been fully converted to use
   // gitlab-ui components.
   .title .gl-button {
-    color: $gl-text-color;
+    font-weight: $gl-font-weight-bold;
+
+    .gl-button {
+      color: $gl-text-color;
+    }
   }
 }
 

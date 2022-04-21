@@ -21,25 +21,19 @@
     .col-sm-2.col-form-label.pt-0
       = f.label :trusted
     .col-sm-10
-      = f.check_box :trusted
-      %span.form-text.text-muted
-        Trusted applications are automatically authorized on GitLab OAuth flow. It's highly recommended for the security of users that trusted applications have the confidential setting set to true.
+      = f.gitlab_ui_checkbox_component :trusted, _('Trusted applications are automatically authorized on GitLab OAuth flow. It\'s highly recommended for the security of users that trusted applications have the confidential setting set to true.')
 
   = content_tag :div, class: 'form-group row' do
     .col-sm-2.col-form-label.pt-0
       = f.label :confidential
     .col-sm-10
-      = f.check_box :confidential
-      %span.form-text.text-muted
-        = _('The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.')
+      = f.gitlab_ui_checkbox_component :confidential, _('The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.')
 
   = content_tag :div, class: 'form-group row' do
     .col-sm-2.col-form-label.pt-0
       = f.label :expire_access_tokens
     .col-sm-10
-      = f.check_box :expire_access_tokens
-      %span.form-text.text-muted
-        = _('Access tokens expire after 2 hours. A refresh token may be used at any time to generate a new access token. Non-expiring access tokens are deprecated. Clear this setting to enable backward compatibility.')
+      = f.gitlab_ui_checkbox_component :expire_access_tokens, _('Access tokens expire after 2 hours. A refresh token may be used at any time to generate a new access token. Non-expiring access tokens are deprecated. Clear this setting to enable backward compatibility.')
 
   .form-group.row
     .col-sm-2.col-form-label.pt-0

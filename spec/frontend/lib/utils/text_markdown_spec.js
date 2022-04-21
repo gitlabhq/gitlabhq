@@ -180,8 +180,6 @@ describe('init markdown', () => {
         const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
 
         beforeEach(() => {
-          gon.features = { markdownContinueLists: true };
-
           textArea.addEventListener('keydown', keypressNoteText);
           textArea.addEventListener('compositionstart', compositionStartNoteText);
           textArea.addEventListener('compositionend', compositionEndNoteText);
@@ -281,21 +279,6 @@ describe('init markdown', () => {
             expect(textArea.value).toEqual(expected);
           },
         );
-
-        it('does nothing if feature flag disabled', () => {
-          gon.features = { markdownContinueLists: false };
-
-          const text = '- item';
-          const expected = '- item';
-
-          textArea.value = text;
-          textArea.setSelectionRange(text.length, text.length);
-
-          textArea.dispatchEvent(enterEvent);
-
-          expect(textArea.value).toEqual(expected);
-          expect(textArea.selectionStart).toBe(expected.length);
-        });
 
         it('does not duplicate a line item for IME characters', () => {
           const text = '- 日本語';
