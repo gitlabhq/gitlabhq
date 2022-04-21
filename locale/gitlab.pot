@@ -4082,6 +4082,9 @@ msgstr ""
 msgid "An error occurred while pasting text in the editor. Please try again."
 msgstr ""
 
+msgid "An error occurred while performing this action."
+msgstr ""
+
 msgid "An error occurred while removing epics."
 msgstr ""
 
@@ -6786,6 +6789,9 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Cancel and close"
+msgstr ""
+
+msgid "Cancel downstream pipeline"
 msgstr ""
 
 msgid "Cancel editing"
@@ -10930,6 +10936,9 @@ msgid "CurrentUser|Preferences"
 msgstr ""
 
 msgid "CurrentUser|Start an Ultimate trial"
+msgstr ""
+
+msgid "Currently unable to fetch data for this pipeline."
 msgstr ""
 
 msgid "Custom (%{language})"
@@ -32242,6 +32251,9 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
+msgid "Retry downstream pipeline"
+msgstr ""
+
 msgid "Retry failed jobs"
 msgstr ""
 
@@ -42170,9 +42182,6 @@ msgid "We are currently unable to fetch data for the pipeline header."
 msgstr ""
 
 msgid "We are currently unable to fetch data for this graph."
-msgstr ""
-
-msgid "We are currently unable to fetch data for this pipeline."
 msgstr ""
 
 msgid "We could not determine the path to remove the epic"

@@ -212,7 +212,7 @@ rails g geo_migration [args] [options]
 To migrate the tracking database, run:
 
 ```shell
-bundle exec rake geo:db:migrate
+bundle exec rake db:migrate:geo
 ```
 
 ## Finders

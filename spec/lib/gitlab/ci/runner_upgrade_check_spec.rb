@@ -22,8 +22,8 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
       context 'with nil runner_version' do
         let(:runner_version) { nil }
 
-        it 'raises :unknown' do
-          is_expected.to eq(:unknown)
+        it 'returns :invalid' do
+          is_expected.to eq(:invalid)
         end
       end
 

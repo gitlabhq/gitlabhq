@@ -215,6 +215,7 @@ export default {
             @downstreamHovered="onDownstreamHovered"
             @pipelineClicked="onPipelineClick(pipeline)"
             @pipelineExpandToggle="onPipelineExpandToggle"
+            @refreshPipelineGraph="$emit('refreshPipelineGraph')"
           />
           <div
             v-if="showContainer(pipeline.id)"

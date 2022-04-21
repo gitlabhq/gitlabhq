@@ -699,6 +699,11 @@ export const downstream = {
       id: 175,
       iid: '31',
       path: '/root/elemenohpee/-/pipelines/175',
+      retryable: true,
+      cancelable: false,
+      userPermissions: {
+        updatePipeline: true,
+      },
       status: {
         id: '70',
         group: 'success',
@@ -724,6 +729,11 @@ export const downstream = {
       id: 181,
       iid: '27',
       path: '/root/abcd-dag/-/pipelines/181',
+      retryable: true,
+      cancelable: false,
+      userPermissions: {
+        updatePipeline: true,
+      },
       status: {
         id: '72',
         group: 'success',
@@ -752,6 +762,11 @@ export const upstream = {
   id: 161,
   iid: '24',
   path: '/root/abcd-dag/-/pipelines/161',
+  retryable: true,
+  cancelable: false,
+  userPermissions: {
+    updatePipeline: true,
+  },
   status: {
     id: '74',
     group: 'success',
@@ -786,6 +801,11 @@ export const wrappedPipelineReturn = {
           updatePipeline: true,
         },
         downstream: {
+          retryable: true,
+          cancelable: false,
+          userPermissions: {
+            updatePipeline: true,
+          },
           __typename: 'PipelineConnection',
           nodes: [],
         },
@@ -793,6 +813,11 @@ export const wrappedPipelineReturn = {
           id: 'gid://gitlab/Ci::Pipeline/174',
           iid: '37',
           path: '/root/elemenohpee/-/pipelines/174',
+          retryable: true,
+          cancelable: false,
+          userPermissions: {
+            updatePipeline: true,
+          },
           __typename: 'Pipeline',
           status: {
             __typename: 'DetailedStatus',

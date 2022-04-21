@@ -557,7 +557,7 @@ On each **secondary** node, executing the following:
 1. Run post-deployment database migrations, specific to the Geo database
 
    ```shell
-   sudo gitlab-rake geo:db:migrate
+   sudo gitlab-rake db:migrate:geo
    ```
 
 After all **secondary** nodes are updated, finalize
@@ -790,7 +790,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
    ```shell
    sudo gitlab-ctl reconfigure
-   sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake geo:db:migrate
+   sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate:geo
    ```
 
 1. If this deploy node is normally used to serve requests or perform
@@ -866,7 +866,7 @@ sudo gitlab-ctl restart geo-logcursor
 1. Run post-deployment database migrations, specific to the Geo database:
 
    ```shell
-   sudo gitlab-rake geo:db:migrate
+   sudo gitlab-rake db:migrate:geo
    ```
 
 1. Verify Geo configuration and dependencies

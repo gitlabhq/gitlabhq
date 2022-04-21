@@ -637,9 +637,9 @@ to start again from scratch, there are a few steps that can help you:
 1. Reset the Tracking Database.
 
    ```shell
-   gitlab-rake geo:db:drop  # on a secondary app node
+   gitlab-rake db:drop:geo  # on a secondary app node
    gitlab-ctl reconfigure   # on the tracking database node
-   gitlab-rake geo:db:setup # on a secondary app node
+   gitlab-rake db:setup:geo # on a secondary app node
    ```
 
 1. Restart previously stopped services.
@@ -1042,7 +1042,7 @@ Make sure you follow the [Geo database replication](../setup/database.md) instru
 If you are using Omnibus GitLab installation, something might have failed during upgrade. You can:
 
 - Run `sudo gitlab-ctl reconfigure`.
-- Manually trigger the database migration by running: `sudo gitlab-rake geo:db:migrate` as root on the **secondary** node.
+- Manually trigger the database migration by running: `sudo gitlab-rake db:migrate:geo` as root on the **secondary** node.
 
 ### GitLab indicates that more than 100% of repositories were synced
 

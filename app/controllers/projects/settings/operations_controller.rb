@@ -17,6 +17,7 @@ module Projects
       helper_method :tracing_setting
 
       feature_category :incident_management
+      urgency :low
 
       def update
         result = ::Projects::Operations::UpdateService.new(project, current_user, update_params).execute

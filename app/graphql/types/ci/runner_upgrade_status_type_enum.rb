@@ -5,17 +5,9 @@ module Types
     class RunnerUpgradeStatusTypeEnum < BaseEnum
       graphql_name 'CiRunnerUpgradeStatusType'
 
-      value 'NOT_AVAILABLE',
-            description: "An update is not available for the runner.",
-            value: :not_available
-
-      value 'AVAILABLE',
-            description: "An update is available for the runner.",
-            value: :available
-
-      value 'RECOMMENDED',
-            description: "An update is available and recommended for the runner.",
-            value: :recommended
+      Gitlab::Ci::RunnerUpgradeCheck::STATUSES.each do |status, description|
+        value status.to_s.upcase, description: description, value: status
+      end
     end
   end
 end

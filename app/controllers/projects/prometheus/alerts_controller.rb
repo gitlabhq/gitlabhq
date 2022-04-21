@@ -17,6 +17,7 @@ module Projects
       before_action :alert, only: [:update, :show, :destroy, :metrics_dashboard]
 
       feature_category :incident_management
+      urgency :low
 
       def index
         render json: serialize_as_json(alerts)

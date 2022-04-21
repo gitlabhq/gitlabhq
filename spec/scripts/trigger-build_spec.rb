@@ -20,7 +20,8 @@ RSpec.describe Trigger do
       'CI_JOB_TOKEN' => 'job-token',
       'GITLAB_USER_NAME' => 'gitlab_user_name',
       'GITLAB_USER_LOGIN' => 'gitlab_user_login',
-      'QA_IMAGE' => 'qa_image'
+      'QA_IMAGE' => 'qa_image',
+      'OMNIBUS_GITLAB_CACHE_UPDATE' => 'omnibus_gitlab_cache_update'
     }
   end
 
@@ -405,7 +406,6 @@ RSpec.describe Trigger do
         super().merge(
           'QA_IMAGE' => 'qa_image',
           'OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN' => nil,
-          'OMNIBUS_GITLAB_CACHE_UPDATE' => 'omnibus_gitlab_cache_update',
           'GITLAB_QA_OPTIONS' => 'gitlab_qa_options',
           'QA_TESTS' => 'qa_tests',
           'ALLURE_JOB_NAME' => 'allure_job_name'

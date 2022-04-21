@@ -312,3 +312,11 @@ In the merge request, on the **Pipelines** tab, multi-project pipeline mini-grap
 They expand and are shown adjacent to each other when hovering (or tapping on touchscreen devices).
 
 ![Multi-project mini graph](img/multi_pipeline_mini_graph.gif)
+
+## Retry or cancel multi-project pipelines
+
+If you have permission to trigger pipelines in the downstream project, you can
+retry or cancel multi-project pipelines:
+
+- [In the main graph view](index.md#downstream-pipelines).
+- From the downstream pipeline's details page.

@@ -15,4 +15,5 @@ export const VIEW_TYPE_KEY = 'pipeline_graph_view_type';
 export const SINGLE_JOB = 'single_job';
 export const JOB_DROPDOWN = 'job_dropdown';
 
+export const ACTION_FAILURE = 'action_failure';
 export const IID_FAILURE = 'missing_iid';

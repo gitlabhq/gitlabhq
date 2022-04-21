@@ -3,6 +3,7 @@
 module API
   class AlertManagementAlerts < ::API::Base
     feature_category :incident_management
+    urgency :low
 
     params do
       requires :id, type: String, desc: 'The ID of a project'

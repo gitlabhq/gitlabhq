@@ -33,9 +33,11 @@ module Ci
 
         destroy_related_records(@job_artifacts)
 
-        Ci::DeletedObject.transaction do
-          Ci::DeletedObject.bulk_import(@job_artifacts, @pick_up_at)
-          Ci::JobArtifact.id_in(@job_artifacts.map(&:id)).delete_all
+        destroy_around_hook(@job_artifacts) do
+          Ci::DeletedObject.transaction do
+            Ci::DeletedObject.bulk_import(@job_artifacts, @pick_up_at)
+            Ci::JobArtifact.id_in(@job_artifacts.map(&:id)).delete_all
+          end
         end
 
         after_batch_destroy_hook(@job_artifacts)
@@ -50,6 +52,13 @@ module Ci
       # rubocop: enable CodeReuse/ActiveRecord
 
       private
+
+      # Overriden in EE
+      # :nocov:
+      def destroy_around_hook(artifacts)
+        yield
+      end
+      # :nocov:
 
       # Overriden in EE
       def destroy_related_records(artifacts); end

@@ -1061,7 +1061,7 @@ For each node running the `gitlab-rails`, `sidekiq`, and `geo-logcursor` service
 1. Run the tracking database migrations:
 
    ```shell
-   gitlab-rake geo:db:migrate
+   gitlab-rake db:migrate:geo
    ```
 
 ### Migrating a single tracking database node to Patroni

@@ -579,58 +579,6 @@ ensures that we forbid destroying the parent object if something is not cleaned 
 If all you need to do is clean up the child records themselves from PostgreSQL,
 consider using [loose foreign keys](loose_foreign_keys.md).
 
-## `config/database.yml`
-
-GitLab is adding support to run multiple databases, for example to
-[separate tables for the continuous integration features](https://gitlab.com/groups/gitlab-org/-/epics/6167)
-from the main database. In order to prepare for this change, we
-[validate the structure of the configuration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67877)
-in `database.yml` to ensure that only known databases are used.
-
-Previously, the `config/database.yml` looked like this:
-
-```yaml
-production:
-  adapter: postgresql
-  encoding: unicode
-  database: gitlabhq_production
-  ...
-```
-
-With the support for many databases this
-syntax is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338182)
-and will be removed in [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338182).
-
-The new `config/database.yml` needs to include a database name
-to define a database configuration. Only `main:` and `ci:` database
-names are supported. The `main:` database must always be a first
-entry in a hash. This change applies to decomposed and non-decomposed
-change. If an invalid or deprecated syntax is used the error
-or warning is printed during application start.
-
-```yaml
-# Non-decomposed database
-production:
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_production
-    ...
-
-# Decomposed database
-production:
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_production
-    ...
-  ci:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_production_ci
-    ...
-```
-
 ## Foreign keys that cross databases
 
 There are many places where we use foreign keys that reference across the two

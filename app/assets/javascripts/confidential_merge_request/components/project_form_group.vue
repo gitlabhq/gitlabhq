@@ -58,6 +58,7 @@ export default {
         }
       } else if (this.createBtn) {
         this.createBtn.setAttribute('disabled', 'disabled');
+        this.createBtn.classList.add('disabled');
       }
     },
     normalizeProjectData(data) {
@@ -88,11 +89,6 @@ export default {
     showWarning() {
       if (this.warningText) {
         this.warningText.classList.remove('gl-display-none');
-      }
-
-      if (this.createBtn) {
-        this.createBtn.classList.add('btn-warning');
-        this.createBtn.classList.remove('btn-success');
       }
     },
   },

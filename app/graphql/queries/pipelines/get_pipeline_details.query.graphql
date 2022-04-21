@@ -18,6 +18,11 @@ fragment LinkedPipelineData on Pipeline {
   id
   iid
   path
+  cancelable
+  retryable
+  userPermissions {
+    updatePipeline
+  }
   status: detailedStatus {
     __typename
     id

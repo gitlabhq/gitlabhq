@@ -5,12 +5,19 @@ module Gitlab
     class RunnerUpgradeCheck
       include Singleton
 
+      STATUSES = {
+        invalid: 'The runner version is invalid.',
+        not_available: 'An update is not available for the runner.',
+        available: 'An update is available for the runner.',
+        recommended: 'An update is available and recommended for the runner.'
+      }.freeze
+
       def initialize
         reset!
       end
 
       def check_runner_upgrade_status(runner_version)
-        return :unknown unless runner_version
+        return :invalid unless runner_version
 
         releases = RunnerReleases.instance.releases
         parsed_runner_version = runner_version.is_a?(::Gitlab::VersionInfo) ? runner_version : ::Gitlab::VersionInfo.parse(runner_version)

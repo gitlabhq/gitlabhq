@@ -19,6 +19,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:pipeline_tabs_vue, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:downstream_retry_action, @project, default_enabled: :yaml)
   end
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596

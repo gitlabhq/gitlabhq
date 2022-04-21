@@ -1,10 +1,15 @@
 <script>
 import { GlBadge, GlButton, GlLink, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
+import CancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
+import RetryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { PIPELINE_GRAPHQL_TYPE } from '../../constants';
 import { reportToSentry } from '../../utils';
-import { DOWNSTREAM, UPSTREAM } from './constants';
+import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from './constants';
 
 export default {
   directives: {
@@ -17,6 +22,8 @@ export default {
     GlLink,
     GlLoadingIcon,
   },
+  actionSizeClasses: ['gl-h-7 gl-w-7'],
+  mixins: [glFeatureFlagMixin()],
   props: {
     columnTitle: {
       type: String,
@@ -39,7 +46,31 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isActionLoading: false,
+    };
+  },
   computed: {
+    action() {
+      if (this.glFeatures?.downstreamRetryAction && this.isDownstream) {
+        if (this.isCancelable) {
+          return {
+            icon: 'cancel',
+            method: this.cancelPipeline,
+            ariaLabel: __('Cancel downstream pipeline'),
+          };
+        } else if (this.isRetryable) {
+          return {
+            icon: 'retry',
+            method: this.retryPipeline,
+            ariaLabel: __('Retry downstream pipeline'),
+          };
+        }
+      }
+
+      return {};
+    },
     buttonBorderClass() {
       return this.isUpstream ? 'gl-border-r-1!' : 'gl-border-l-1!';
     },
@@ -64,8 +95,20 @@ export default {
     flexDirection() {
       return this.isUpstream ? 'gl-flex-direction-row-reverse' : 'gl-flex-direction-row';
     },
+    graphqlPipelineId() {
+      return convertToGraphQLId(PIPELINE_GRAPHQL_TYPE, this.pipeline.id);
+    },
+    hasUpdatePipelinePermissions() {
+      return Boolean(this.pipeline?.userPermissions?.updatePipeline);
+    },
+    isCancelable() {
+      return Boolean(this.pipeline?.cancelable && this.hasUpdatePipelinePermissions);
+    },
     isDownstream() {
       return this.type === DOWNSTREAM;
+    },
+    isRetryable() {
+      return Boolean(this.pipeline?.retryable && this.hasUpdatePipelinePermissions);
     },
     isSameProject() {
       return !this.pipeline.multiproject;
@@ -93,6 +136,9 @@ export default {
     projectName() {
       return this.pipeline.project.name;
     },
+    showAction() {
+      return Boolean(this.action?.method && this.action?.icon && this.action?.ariaLabel);
+    },
     sourceJobName() {
       return this.pipeline.sourceJob?.name ?? '';
     },
@@ -108,6 +154,26 @@ export default {
     reportToSentry('linked_pipeline', `error: ${err}, info: ${info}`);
   },
   methods: {
+    cancelPipeline() {
+      this.executePipelineAction(CancelPipelineMutation);
+    },
+    async executePipelineAction(mutation) {
+      try {
+        this.isActionLoading = true;
+
+        await this.$apollo.mutate({
+          mutation,
+          variables: {
+            id: this.graphqlPipelineId,
+          },
+        });
+        this.$emit('refreshPipelineGraph');
+      } catch {
+        this.$emit('error', { type: ACTION_FAILURE });
+      } finally {
+        this.isActionLoading = false;
+      }
+    },
     hideTooltips() {
       this.$root.$emit(BV_HIDE_TOOLTIP);
     },
@@ -121,6 +187,9 @@ export default {
     },
     onDownstreamHoverLeave() {
       this.$emit('downstreamHovered', '');
+    },
+    retryPipeline() {
+      this.executePipelineAction(RetryPipelineMutation);
     },
   },
 };
@@ -156,6 +225,16 @@ export default {
             >
           </div>
         </div>
+        <gl-button
+          v-if="showAction"
+          :loading="isActionLoading"
+          :icon="action.icon"
+          class="gl-rounded-full!"
+          :class="$options.actionSizeClasses"
+          :aria-label="action.ariaLabel"
+          @click="action.method"
+        />
+        <div v-else :class="$options.actionSizeClasses"></div>
       </div>
       <div class="gl-pt-2">
         <gl-badge size="sm" variant="info" data-testid="downstream-pipeline-label">

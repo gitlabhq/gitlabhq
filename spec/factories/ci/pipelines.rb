@@ -79,6 +79,10 @@ FactoryBot.define do
         status { :running }
       end
 
+      trait :canceled do
+        status { :canceled }
+      end
+
       trait :failed do
         status { :failed }
       end

@@ -104,7 +104,7 @@ gem 'graphql', '~> 1.11.10'
 gem 'graphiql-rails', '~> 1.8'
 gem 'apollo_upload_server', '~> 2.1.0'
 gem 'graphql-docs', '~> 1.6.0', group: [:development, :test]
-gem 'graphlient', '~> 0.4.0' # Used by BulkImport feature (group::import)
+gem 'graphlient', '~> 0.5.0' # Used by BulkImport feature (group::import)
 
 gem 'hashie'
 # Disable strong_params so that Mash does not respond to :permitted?

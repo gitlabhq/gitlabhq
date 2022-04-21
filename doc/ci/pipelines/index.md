@@ -449,6 +449,22 @@ Pipeline analytics are available on the [**CI/CD Analytics** page](../../user/an
 Pipeline status and test coverage report badges are available and configurable for each project.
 For information on adding pipeline badges to projects, see [Pipeline badges](settings.md#pipeline-badges).
 
+### Downstream pipelines
+
+> Cancel or retry downstream pipelines from the graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `downstream_retry_action`. Disabled by default.
+
+In the pipeline graph view, downstream pipelines ([Multi-project pipelines](multi_project_pipelines.md)
+and [Parent-child pipelines](parent_child_pipelines.md)) display as a list of cards
+on the right of the graph.
+
+To cancel a downstream pipeline that is still running, select **Cancel** (**{cancel}**)
+on the pipeline's card.
+
+To retry a failed downstream pipeline, select **Retry** (**{retry}**)
+on the pipeline's card.
+
+![downstream pipeline actions](img/downstream_pipeline_actions.png)
+
 ## Pipelines API
 
 GitLab provides API endpoints to:

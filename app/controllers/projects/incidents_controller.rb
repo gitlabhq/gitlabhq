@@ -12,6 +12,7 @@ class Projects::IncidentsController < Projects::ApplicationController
   end
 
   feature_category :incident_management
+  urgency :low
 
   def index
   end

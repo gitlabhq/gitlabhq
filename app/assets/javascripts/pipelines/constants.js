@@ -9,6 +9,7 @@ export const FILTER_TAG_IDENTIFIER = 'tag';
 export const SCHEDULE_ORIGIN = 'schedule';
 export const NEEDS_PROPERTY = 'needs';
 export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
+export const PIPELINE_GRAPHQL_TYPE = 'Ci::Pipeline';
 
 export const ICONS = {
   TAG: 'tag',
