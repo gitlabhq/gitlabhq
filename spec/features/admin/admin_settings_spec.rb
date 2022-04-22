@@ -370,7 +370,7 @@ RSpec.describe 'Admin updates settings' do
             expect(current_settings.valid_runner_registrars).to eq(ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
 
             page.within('.as-runner') do
-              find_all('.form-check-input').each(&:click)
+              find_all('input[type="checkbox"]').each(&:click)
 
               click_button 'Save changes'
             end

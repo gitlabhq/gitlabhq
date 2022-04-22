@@ -773,8 +773,8 @@ settings:
 Clone traffic can put a large strain on your Gitaly service. The bulk of the work gets done in the
 either of the following RPCs:
 
-- `SSHUploadPack` (for Git SSH).
-- `PostUploadPack` (for Git HTTP).
+- `SSHUploadPackWithSidechannel` (for Git SSH).
+- `PostUploadPackWithSidechannel` (for Git HTTP).
 
 To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in
 Gitaly's configuration file. For example:
@@ -784,26 +784,39 @@ Gitaly's configuration file. For example:
 
 gitaly['concurrency'] = [
   {
-    'rpc' => "/gitaly.SmartHTTPService/PostUploadPack",
-    'max_per_repo' => 20
+    'rpc' => "/gitaly.SmartHTTPService/PostUploadPackWithSidechanel",
+    'max_per_repo' => 20,
+    'max_queue_time' => "1s",
+    'max_queue_size' => 10
   },
   {
-    'rpc' => "/gitaly.SSHService/SSHUploadPack",
+    'rpc' => "/gitaly.SSHService/SSHUploadPackWithSidechannel",
     'max_per_repo' => 20
+    'max_queue_time' => "1s",
+    'max_queue_size' => 10
   }
 ]
 ```
 
+- `rpc` is the name of the RPC to set a concurrency limit for per repository.
+- `max_per_repo` is the maximum number of in-flight RPC calls for the given RPC per repository.
+- `max_queue_time` is the maximum amount of time a request can wait in the concurrency queue to 
+  be picked up by Gitaly.
+- `max_queue_size` is the maximum size the concurrency queue can grow to before requests are rejected by
+  Gitaly.
+
 This limits the number of in-flight RPC calls for the given RPCs. The limit is applied per
 repository. In the example above:
 
-- Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPack` RPC
-  calls in flight, and the same for `SSHUploadPack`.
+- Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPackWithSidechannel` and 
+  `SSHUploadPackWithSidechannel` RPC calls in flight.
 - If another request comes in for a repository that has used up its 20 slots, that request gets
   queued.
+- If a request waits in the queue for more than 1 second, it is rejected with an error.
+- If the queue grows beyond 10, subsequent requests are rejected with an error.
 
 You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
-information, see the [relevant documentation](index.md#monitor-gitaly).
+information, see the [relevant documentation](index.md#monitor-gitaly-concurrency-limiting).
 
 ## Background Repository Optimization
 
@@ -1068,7 +1081,7 @@ closed it.
 
 ### Observe the cache
 
-The cache can be observed [using metrics](index.md#monitor-gitaly) and in the following logged
+The cache can be observed [using metrics](index.md#pack-objects-cache) and in the following logged
 information:
 
 |Message|Fields|Description|

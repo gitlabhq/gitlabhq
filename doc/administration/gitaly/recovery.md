@@ -357,7 +357,7 @@ The `list-untracked-repositories` Praefect sub-command lists repositories of the
 - Aren't tracked in the Praefect database.
 
 Add the `-older-than` option to avoid showing repositories that are the process of being created and for which a record doesn't yet exist in the
-Praefect database. Replace <duration> with a time duration (for example, `5s`, `10m`, or `1h`). Defaults to `6h`.
+Praefect database. Replace `<duration>` with a time duration (for example, `5s`, `10m`, or `1h`). Defaults to `6h`.
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories -older-than <duration> 

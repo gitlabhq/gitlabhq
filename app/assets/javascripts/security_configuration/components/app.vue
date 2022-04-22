@@ -1,7 +1,6 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
@@ -50,7 +49,6 @@ export default {
     UserCalloutDismisser,
     TrainingProviderList,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
   props: {
     augmentedSecurityFeatures: {
@@ -252,7 +250,6 @@ export default {
         </section-layout>
       </gl-tab>
       <gl-tab
-        v-if="glFeatures.secureVulnerabilityTraining"
         data-testid="vulnerability-management-tab"
         :title="$options.i18n.vulnerabilityManagement"
         query-param-value="vulnerability-management"

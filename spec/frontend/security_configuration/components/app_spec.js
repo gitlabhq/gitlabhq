@@ -41,11 +41,7 @@ describe('App component', () => {
   let wrapper;
   let userCalloutDismissSpy;
 
-  const createComponent = ({
-    shouldShowCallout = true,
-    secureVulnerabilityTraining = true,
-    ...propsData
-  }) => {
+  const createComponent = ({ shouldShowCallout = true, ...propsData }) => {
     userCalloutDismissSpy = jest.fn();
 
     wrapper = extendedWrapper(
@@ -57,9 +53,6 @@ describe('App component', () => {
           autoDevopsPath,
           projectFullPath,
           vulnerabilityTrainingDocsPath,
-          glFeatures: {
-            secureVulnerabilityTraining,
-          },
         },
         stubs: {
           ...stubChildren(SecurityConfigurationApp),
@@ -465,24 +458,6 @@ describe('App component', () => {
 
       expect(trainingLink.text()).toBe('Learn more about vulnerability training');
       expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
-    });
-  });
-
-  describe('when secureVulnerabilityTraining feature flag is disabled', () => {
-    beforeEach(() => {
-      createComponent({
-        augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
-        secureVulnerabilityTraining: false,
-      });
-    });
-
-    it('renders correct amount of tabs', () => {
-      expect(findTabs()).toHaveLength(2);
-    });
-
-    it('does not render the vulnerability-management tab', () => {
-      expect(wrapper.findByTestId('vulnerability-management-tab').exists()).toBe(false);
     });
   });
 });

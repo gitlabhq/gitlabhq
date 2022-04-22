@@ -394,6 +394,7 @@ export default {
         <gl-dropdown
           v-gl-tooltip.hover.focus="$options.i18n.optionsDropdownTitle"
           size="small"
+          category="tertiary"
           right
           toggle-class="btn-icon js-diff-more-actions"
           class="gl-pt-0!"
@@ -402,7 +403,7 @@ export default {
           @hidden="setMoreActionsShown(false)"
         >
           <template #button-content>
-            <gl-icon name="ellipsis_v" class="mr-0" :size="12" />
+            <gl-icon name="ellipsis_v" class="mr-0" />
             <span class="sr-only">{{ $options.i18n.optionsDropdownTitle }}</span>
           </template>
           <gl-dropdown-item

@@ -38,7 +38,7 @@ module Ci
         job_timeout_source: 4
     }
 
-    ignore_columns :runner_features, remove_with: '14.7', remove_after: '2021-11-22'
+    ignore_columns :runner_features, remove_with: '15.1', remove_after: '2022-05-22'
 
     def update_timeout_state
       timeout = timeout_with_highest_precedence

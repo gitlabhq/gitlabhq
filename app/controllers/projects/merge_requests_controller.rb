@@ -41,7 +41,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:refactor_mr_widgets_extensions, project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_mr_widget_test_summary, project, default_enabled: :yaml)
     push_frontend_feature_flag(:rebase_without_ci_ui, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:secure_vulnerability_training, project, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:realtime_labels, project, default_enabled: :yaml)
     push_frontend_feature_flag(:updated_diff_expansion_buttons, project, default_enabled: :yaml)

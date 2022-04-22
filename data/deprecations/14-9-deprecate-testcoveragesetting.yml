@@ -12,3 +12,4 @@
 
       Instead, using the project’s `.gitlab-ci.yml`, provide a regular expression with the `coverage` keyword to set
       testing coverage results in merge requests.
+  stage: verify

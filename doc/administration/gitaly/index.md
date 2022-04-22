@@ -403,23 +403,38 @@ Metric definitions are available:
 - Using [Grafana Explore](https://grafana.com/docs/grafana/latest/explore/) on a
   Grafana instance configured against Prometheus.
 
-### Monitor Gitaly
+### Monitor Gitaly rate limiting
 
-You can observe the behavior of [queued requests](configure_gitaly.md#limit-rpc-concurrency) using
+Gitaly can be configured to limit requests based on:
+
+- Concurrency of requests.
+- A rate limit.
+
+Monitor Gitaly request limiting with the `gitaly_requests_dropped_total` Prometheus metric. This metric provides a total count
+of requests dropped due to request limiting. The `reason` label indicates why a request was dropped:
+
+- `rate`, due to rate limiting. 
+- `max_size`, because the concurrency queue size was reached. 
+- `max_time`, because the request exceeded the maximum queue wait time as configured in Gitaly.
+
+### Monitor Gitaly concurrency limiting
+
+You can observe specific behavior of [concurrency-queued requests](configure_gitaly.md#limit-rpc-concurrency) using
 the Gitaly logs and Prometheus:
 
 - In the [Gitaly logs](../logs.md#gitaly-logs), look for the string (or structured log field)
   `acquire_ms`. Messages that have this field are reporting about the concurrency limiter.
 - In Prometheus, look for the following metrics:
-  - `gitaly_rate_limiting_in_progress`.
-  - `gitaly_rate_limiting_queued`.
-  - `gitaly_rate_limiting_seconds`.
+  - `gitaly_concurrency_limiting_in_progress` indicates how many concurrent requests are
+    being processed.
+  - `gitaly_concurrency_limiting_queued` indicates how many requests for an RPC for a given 
+    repository are waiting due to the concurrency limit being reached.
+  - `gitaly_concurrency_limiting_acquiring_seconds` indiciates how long a request has to
+    wait due to concurrency limits before being processed.
 
-  Although the name of the Prometheus metric contains `rate_limiting`, it's a concurrency limiter,
-  not a rate limiter. If a Gitaly client makes 1,000 requests in a row very quickly, concurrency
-  doesn't exceed 1, and the concurrency limiter has no effect.
+### `pack-objects` cache
 
-The following [pack-objects cache](configure_gitaly.md#pack-objects-cache) metrics are available:
+The following [`pack-objects` cache](configure_gitaly.md#pack-objects-cache) metrics are available:
 
 - `gitaly_pack_objects_cache_enabled`, a gauge set to `1` when the cache is enabled. Available
   labels: `dir` and `max_age`.
@@ -448,7 +463,7 @@ gitaly_streamcache_filestore_removed_total{dir="/var/opt/gitlab/git-data/reposit
 gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
 ```
 
-#### Useful queries
+### Useful queries
 
 The following are useful queries for monitoring Gitaly:
 
