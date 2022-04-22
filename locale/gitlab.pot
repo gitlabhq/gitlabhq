@@ -10101,6 +10101,9 @@ msgstr ""
 msgid "Copy branch name"
 msgstr ""
 
+msgid "Copy code"
+msgstr ""
+
 msgid "Copy codes"
 msgstr ""
 
@@ -36421,27 +36424,6 @@ msgid "SubscriptionBanner|Add new license"
 msgstr ""
 
 msgid "SubscriptionBanner|Export license usage file"
-msgstr ""
-
-msgid "SubscriptionEmail|%{doc_link_start}Please reach out if you have questions%{doc_link_end}, and we'll be happy to assist."
-msgstr ""
-
-msgid "SubscriptionEmail|Additional charges for your GitLab subscription"
-msgstr ""
-
-msgid "SubscriptionEmail|Dear %{customer_name},"
-msgstr ""
-
-msgid "SubscriptionEmail|GitLab Billing Team"
-msgstr ""
-
-msgid "SubscriptionEmail|Thank you for your business!"
-msgstr ""
-
-msgid "SubscriptionEmail|You can find more information about the quarterly reconciliation process in %{doc_link_start}our documentation%{doc_link_end}."
-msgstr ""
-
-msgid "SubscriptionEmail|You have exceeded the number of seats in your GitLab subscription %{subscription_name} by %{seat_quantity}. Even if you've exceeded the seats in your subscription, you can continue to add users, and GitLab will bill you a prorated amount for any seat overages on a quarterly basis."
 msgstr ""
 
 msgid "SubscriptionTable|Add seats"

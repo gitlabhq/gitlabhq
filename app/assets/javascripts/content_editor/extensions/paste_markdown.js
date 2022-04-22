@@ -10,10 +10,14 @@ import {
   LOADING_ERROR_EVENT,
   EXTENSION_PRIORITY_HIGHEST,
 } from '../constants';
+import CodeBlockHighlight from './code_block_highlight';
+import Diagram from './diagram';
+import Frontmatter from './frontmatter';
 
 const TEXT_FORMAT = 'text/plain';
 const HTML_FORMAT = 'text/html';
 const VS_CODE_FORMAT = 'vscode-editor-data';
+const CODE_BLOCK_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name];
 
 export default Extension.create({
   name: 'pasteMarkdown',
@@ -72,6 +76,11 @@ export default Extension.create({
             const language = vsCodeMeta.mode;
 
             if (!content || (hasHTML && !hasVsCode) || (hasVsCode && language !== 'markdown')) {
+              return false;
+            }
+
+            // if a code block is active, paste as plain text
+            if (CODE_BLOCK_NODE_TYPES.some((type) => this.editor.isActive(type))) {
               return false;
             }
 

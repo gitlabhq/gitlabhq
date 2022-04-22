@@ -1,5 +1,5 @@
 import { BubbleMenu } from '@tiptap/vue-2';
-import { GlButton, GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import Vue from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CodeBlockBubbleMenu from '~/content_editor/components/code_block_bubble_menu.vue';
@@ -82,12 +82,26 @@ describe('content_editor/components/code_block_bubble_menu', () => {
     expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Custom (nomnoml)');
   });
 
-  it('delete button deletes the code block', async () => {
-    tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+  describe('copy button', () => {
+    it('copies the text of the code block', async () => {
+      jest.spyOn(navigator.clipboard, 'writeText');
 
-    await wrapper.findComponent(GlButton).vm.$emit('click');
+      tiptapEditor.commands.insertContent('<pre lang="javascript">var a = Math.PI / 2;</pre>');
 
-    expect(tiptapEditor.getText()).toBe('');
+      await wrapper.findByTestId('copy-code-block').vm.$emit('click');
+
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('var a = Math.PI / 2;');
+    });
+  });
+
+  describe('delete button', () => {
+    it('deletes the code block', async () => {
+      tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+
+      await wrapper.findByTestId('delete-code-block').vm.$emit('click');
+
+      expect(tiptapEditor.getText()).toBe('');
+    });
   });
 
   describe('when opened and search is changed', () => {

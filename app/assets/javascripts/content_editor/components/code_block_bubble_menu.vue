@@ -8,6 +8,7 @@ import {
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { BubbleMenu } from '@tiptap/vue-2';
+import { getParentByTagName } from '~/lib/utils/dom_utils';
 import codeBlockLanguageLoader from '../services/code_block_language_loader';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
 import Diagram from '../extensions/diagram';
@@ -32,6 +33,7 @@ export default {
   inject: ['tiptapEditor'],
   data() {
     return {
+      codeBlockType: undefined,
       selectedLanguage: {},
       filterTerm: '',
       filteredLanguages: [],
@@ -50,13 +52,24 @@ export default {
       return CODE_BLOCK_NODE_TYPES.some((type) => editor.isActive(type));
     },
 
-    getSelectedLanguage() {
-      const { language } = this.tiptapEditor.getAttributes(this.getCodeBlockType());
+    updateSelectedLanguage() {
+      this.codeBlockType = CODE_BLOCK_NODE_TYPES.find((type) => this.tiptapEditor.isActive(type));
 
-      this.selectedLanguage = codeBlockLanguageLoader.findLanguageBySyntax(language);
+      if (this.codeBlockType) {
+        const { language } = this.tiptapEditor.getAttributes(this.codeBlockType);
+        this.selectedLanguage = codeBlockLanguageLoader.findLanguageBySyntax(language);
+      }
     },
 
-    async setSelectedLanguage(language) {
+    copyCodeBlockText() {
+      const { view } = this.tiptapEditor;
+      const { from } = this.tiptapEditor.state.selection;
+      const node = getParentByTagName(view.domAtPos(from).node, 'pre');
+
+      navigator.clipboard.writeText(node?.textContent || '');
+    },
+
+    async applySelectedLanguage(language) {
       this.selectedLanguage = language;
 
       await codeBlockLanguageLoader.loadLanguages([language.syntax]);
@@ -71,11 +84,8 @@ export default {
           const { view } = this.tiptapEditor;
           const { from } = this.tiptapEditor.state.selection;
 
-          for (let { node } = view.domAtPos(from); node; node = node.parentElement) {
-            if (node.nodeName?.toLowerCase() === 'pre') {
-              return node.getBoundingClientRect();
-            }
-          }
+          const node = getParentByTagName(view.domAtPos(from).node, 'pre');
+          if (node) return node.getBoundingClientRect();
 
           return new DOMRect(-1000, -1000, 0, 0);
         };
@@ -83,14 +93,7 @@ export default {
     },
 
     deleteCodeBlock() {
-      this.tiptapEditor.chain().focus().deleteNode(this.getCodeBlockType()).run();
-    },
-
-    getCodeBlockType() {
-      return (
-        CODE_BLOCK_NODE_TYPES.find((type) => this.tiptapEditor.isActive(type)) ||
-        CodeBlockHighlight.name
-      );
+      this.tiptapEditor.chain().focus().deleteNode(this.codeBlockType).run();
     },
   },
 };
@@ -104,7 +107,7 @@ export default {
     :should-show="shouldShow"
     :tippy-options="{ onBeforeUpdate: tippyOnBeforeUpdate }"
   >
-    <editor-state-observer @transaction="getSelectedLanguage">
+    <editor-state-observer @transaction="updateSelectedLanguage">
       <gl-button-group>
         <gl-dropdown contenteditable="false" boundary="viewport" :text="selectedLanguage.label">
           <template #header>
@@ -125,7 +128,7 @@ export default {
             v-for="language in filteredLanguages"
             v-show="selectedLanguage.syntax !== language.syntax"
             :key="language.syntax"
-            @click="setSelectedLanguage(language)"
+            @click="applySelectedLanguage(language)"
           >
             {{ language.label }}
           </gl-dropdown-item>
@@ -135,6 +138,18 @@ export default {
           variant="default"
           category="primary"
           size="medium"
+          data-testid="copy-code-block"
+          :aria-label="__('Copy code')"
+          :title="__('Copy code')"
+          icon="copy-to-clipboard"
+          @click="copyCodeBlockText"
+        />
+        <gl-button
+          v-gl-tooltip
+          variant="default"
+          category="primary"
+          size="medium"
+          data-testid="delete-code-block"
           :aria-label="__('Delete code block')"
           :title="__('Delete code block')"
           icon="remove"

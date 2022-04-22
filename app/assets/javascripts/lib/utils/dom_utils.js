@@ -90,6 +90,20 @@ export const getParents = (element) => {
   return parents;
 };
 
+export const getParentByTagName = (element, tagName) => {
+  let parent = element.parentNode;
+
+  do {
+    if (parent.nodeName?.toLowerCase() === tagName?.toLowerCase()) {
+      return parent;
+    }
+
+    parent = parent.parentElement;
+  } while (parent);
+
+  return undefined;
+};
+
 /**
  * This method takes a HTML element and an object of attributes
  * to save repeated calls to `setAttribute` when multiple

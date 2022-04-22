@@ -1,4 +1,7 @@
 import PasteMarkdown from '~/content_editor/extensions/paste_markdown';
+import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Diagram from '~/content_editor/extensions/diagram';
+import Frontmatter from '~/content_editor/extensions/frontmatter';
 import Bold from '~/content_editor/extensions/bold';
 import { VARIANT_DANGER } from '~/flash';
 import eventHubFactory from '~/helpers/event_hub_factory';
@@ -10,6 +13,12 @@ import {
 } from '~/content_editor/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createTestEditor, createDocBuilder, waitUntilNextDocTransaction } from '../test_utils';
+
+const CODE_BLOCK_HTML = '<pre lang="javascript">var a = 2;</pre>';
+const DIAGRAM_HTML =
+  '<img data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,WzxmcmFtZT5EZWNvcmF0b3IgcGF0dGVybl0=">';
+const FRONTMATTER_HTML = '<pre lang="yaml" data-lang-params="frontmatter">key: value</pre>';
+const PARAGRAPH_HTML = '<p>Just a regular paragraph</p>';
 
 describe('content_editor/extensions/paste_markdown', () => {
   let tiptapEditor;
@@ -27,7 +36,13 @@ describe('content_editor/extensions/paste_markdown', () => {
     jest.spyOn(eventHub, '$emit');
 
     tiptapEditor = createTestEditor({
-      extensions: [PasteMarkdown.configure({ renderMarkdown, eventHub }), Bold],
+      extensions: [
+        Bold,
+        CodeBlockHighlight,
+        Diagram,
+        Frontmatter,
+        PasteMarkdown.configure({ renderMarkdown, eventHub }),
+      ],
     });
 
     ({
@@ -35,7 +50,7 @@ describe('content_editor/extensions/paste_markdown', () => {
     } = createDocBuilder({
       tiptapEditor,
       names: {
-        Bold: { markType: Bold.name },
+        bold: { markType: Bold.name },
       },
     }));
   });
@@ -47,13 +62,11 @@ describe('content_editor/extensions/paste_markdown', () => {
   };
 
   const triggerPasteEventHandler = (event) => {
-    let handled = false;
-
-    tiptapEditor.view.someProp('handlePaste', (eventHandler) => {
-      handled = eventHandler(tiptapEditor.view, event);
+    return new Promise((resolve) => {
+      tiptapEditor.view.someProp('handlePaste', (eventHandler) => {
+        resolve(eventHandler(tiptapEditor.view, event));
+      });
     });
-
-    return handled;
   };
 
   const triggerPasteEventHandlerAndWaitForTransaction = (event) => {
@@ -73,8 +86,20 @@ describe('content_editor/extensions/paste_markdown', () => {
     ${['text/plain', 'text/html']}                       | ${{}}                                                 | ${false} | ${'doesn’t handle html format'}
     ${['text/plain', 'text/html', 'vscode-editor-data']} | ${{ 'vscode-editor-data': '{ "mode": "markdown" }' }} | ${true}  | ${'handles vscode markdown'}
     ${['text/plain', 'text/html', 'vscode-editor-data']} | ${{ 'vscode-editor-data': '{ "mode": "ruby" }' }}     | ${false} | ${'doesn’t vscode code snippet'}
-  `('$desc', ({ types, handled, data }) => {
-    expect(triggerPasteEventHandler(buildClipboardEvent({ types, data }))).toBe(handled);
+  `('$desc', async ({ types, handled, data }) => {
+    expect(await triggerPasteEventHandler(buildClipboardEvent({ types, data }))).toBe(handled);
+  });
+
+  it.each`
+    nodeType         | html                | handled  | desc
+    ${'codeBlock'}   | ${CODE_BLOCK_HTML}  | ${false} | ${'does not handle'}
+    ${'diagram'}     | ${DIAGRAM_HTML}     | ${false} | ${'does not handle'}
+    ${'frontmatter'} | ${FRONTMATTER_HTML} | ${false} | ${'does not handle'}
+    ${'paragraph'}   | ${PARAGRAPH_HTML}   | ${true}  | ${'handles'}
+  `('$desc paste if currently a `$nodeType` is in focus', async ({ html, handled }) => {
+    tiptapEditor.commands.insertContent(html);
+
+    expect(await triggerPasteEventHandler(buildClipboardEvent())).toBe(handled);
   });
 
   describe('when pasting raw markdown source', () => {
@@ -105,16 +130,14 @@ describe('content_editor/extensions/paste_markdown', () => {
       });
 
       it(`triggers ${LOADING_ERROR_EVENT} event`, async () => {
-        triggerPasteEventHandler(buildClipboardEvent());
-
+        await triggerPasteEventHandler(buildClipboardEvent());
         await waitForPromises();
 
         expect(eventHub.$emit).toHaveBeenCalledWith(LOADING_ERROR_EVENT);
       });
 
       it(`triggers ${ALERT_EVENT} event`, async () => {
-        triggerPasteEventHandler(buildClipboardEvent());
-
+        await triggerPasteEventHandler(buildClipboardEvent());
         await waitForPromises();
 
         expect(eventHub.$emit).toHaveBeenCalledWith(ALERT_EVENT, {
