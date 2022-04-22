@@ -7,6 +7,7 @@ class Integration < ApplicationRecord
   include Importable
   include ProjectServicesLoggable
   include Integrations::HasDataFields
+  include Integrations::ResetSecretFields
   include FromUnion
   include EachBatch
   include IgnorableColumns
@@ -447,6 +448,7 @@ class Integration < ApplicationRecord
 
   # TODO: Once all integrations use `Integrations::Field` we can
   # use `#secret?` here.
+  # See: https://gitlab.com/groups/gitlab-org/-/epics/7652
   def secret_fields
     fields.select { |f| f[:type] == 'password' }.pluck(:name)
   end

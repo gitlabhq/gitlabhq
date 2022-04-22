@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 module Projects
-  class AfterImportService
+  class AfterImportWorker
+    include ApplicationWorker
+
     RESERVED_REF_PREFIXES = Repository::RESERVED_REFS_NAMES.map { |n| File.join('refs', n, '/') }
 
-    def initialize(project)
-      @project = project
-    end
+    data_consistency :always
+    idempotent!
+    urgency :low
+    feature_category :importers
 
-    def execute
+    def perform(project_id)
+      @project = Project.find(project_id)
+
       service = Repositories::HousekeepingService.new(@project)
 
       service.execute do

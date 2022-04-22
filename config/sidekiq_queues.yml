@@ -355,6 +355,8 @@
   - 1
 - - project_template_export
   - 1
+- - projects_after_import
+  - 1
 - - projects_git_garbage_collect
   - 1
 - - projects_post_creation

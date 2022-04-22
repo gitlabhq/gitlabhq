@@ -69,11 +69,9 @@ class ProjectImportState < ApplicationRecord
       project.reset_cache_and_import_attrs
 
       if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
-        # rubocop: disable CodeReuse/ServiceClass
         state.run_after_commit do
-          Projects::AfterImportService.new(project).execute
+          Projects::AfterImportWorker.perform_async(project.id)
         end
-        # rubocop: enable CodeReuse/ServiceClass
       end
     end
   end

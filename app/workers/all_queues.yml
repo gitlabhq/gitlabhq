@@ -2803,6 +2803,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: projects_after_import
+  :worker_name: Projects::AfterImportWorker
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_git_garbage_collect
   :worker_name: Projects::GitGarbageCollectWorker
   :feature_category: :gitaly

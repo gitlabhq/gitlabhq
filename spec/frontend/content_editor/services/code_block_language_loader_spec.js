@@ -76,24 +76,6 @@ describe('content_editor/services/code_block_language_loader', () => {
     });
   });
 
-  describe('loadLanguagesFromDOM', () => {
-    it('loads highlight.js language packages identified by pre tags in a DOM fragment', async () => {
-      const parser = new DOMParser();
-      const { body } = parser.parseFromString(
-        `
-      <pre lang="javascript"></pre>
-      <pre lang="ruby"></pre>
-      `,
-        'text/html',
-      );
-
-      await languageLoader.loadLanguagesFromDOM(body);
-
-      expect(lowlight.registerLanguage).toHaveBeenCalledWith('javascript', expect.any(Function));
-      expect(lowlight.registerLanguage).toHaveBeenCalledWith('ruby', expect.any(Function));
-    });
-  });
-
   describe('loadLanguageFromInputRule', () => {
     it('loads highlight.js language packages identified from the input rule', async () => {
       const match = new RegExp(backtickInputRegex).exec('```js ');

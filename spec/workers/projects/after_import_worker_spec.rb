@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AfterImportService do
+RSpec.describe Projects::AfterImportWorker do
   include GitHelpers
 
-  subject { described_class.new(project) }
+  subject { worker.perform(project.id) }
 
+  let(:worker) { described_class.new }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:sha) { project.commit.sha }
@@ -24,7 +25,7 @@ RSpec.describe Projects::AfterImportService do
     end
 
     it 'performs housekeeping' do
-      subject.execute
+      subject
 
       expect(housekeeping_service).to have_received(:execute)
     end
@@ -34,7 +35,7 @@ RSpec.describe Projects::AfterImportService do
         repository.write_ref('refs/pull/1/head', sha)
         repository.write_ref('refs/pull/1/merge', sha)
 
-        subject.execute
+        subject
       end
 
       it 'removes refs/pull/**/*' do
@@ -48,7 +49,7 @@ RSpec.describe Projects::AfterImportService do
         before do
           repository.write_ref("refs/#{name}/tmp", sha)
 
-          subject.execute
+          subject
         end
 
         it "does not remove refs/#{name}/tmp" do
@@ -62,13 +63,14 @@ RSpec.describe Projects::AfterImportService do
       let(:exception) { StandardError.new('after import error') }
 
       before do
-        allow(repository)
-          .to receive(:delete_all_refs_except)
+        allow_next_instance_of(Repository) do |repository|
+          allow(repository).to receive(:delete_all_refs_except)
           .and_raise(exception)
+        end
       end
 
       it 'throws after import error' do
-        expect { subject.execute }.to raise_exception('after import error')
+        expect { subject }.to raise_exception('after import error')
       end
     end
 
@@ -88,30 +90,28 @@ RSpec.describe Projects::AfterImportService do
             'error.message' => exception.to_s
           }).and_call_original
 
-        subject.execute
+        subject
       end
     end
 
     context 'when after import action throw retriable exception one time' do
       let(:exception) { GRPC::DeadlineExceeded.new }
 
-      before do
-        expect(repository)
-          .to receive(:delete_all_refs_except)
-          .and_raise(exception)
-        expect(repository)
-          .to receive(:delete_all_refs_except)
-          .and_call_original
-
-        subject.execute
-      end
-
       it 'removes refs/pull/**/*' do
+        subject
+
         expect(rugged.references.map(&:name))
           .not_to include(%r{\Arefs/pull/})
       end
 
       it 'records the failures in the database', :aggregate_failures do
+        expect_next_instance_of(Repository) do |repository|
+          expect(repository).to receive(:delete_all_refs_except).and_raise(exception)
+          expect(repository).to receive(:delete_all_refs_except).and_call_original
+        end
+
+        subject
+
         import_failure = ImportFailure.last
 
         expect(import_failure.source).to eq('delete_all_refs')

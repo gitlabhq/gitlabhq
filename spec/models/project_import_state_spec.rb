@@ -131,20 +131,6 @@ RSpec.describe ProjectImportState, type: :model do
 
   describe 'import state transitions' do
     context 'state transition: [:started] => [:finished]' do
-      let(:after_import_service) { spy(:after_import_service) }
-      let(:housekeeping_service) { spy(:housekeeping_service) }
-
-      before do
-        allow(Projects::AfterImportService)
-          .to receive(:new) { after_import_service }
-
-        allow(after_import_service)
-          .to receive(:execute) { housekeeping_service.execute }
-
-        allow(Repositories::HousekeepingService)
-          .to receive(:new) { housekeeping_service }
-      end
-
       it 'resets last_error' do
         error_message = 'Some error'
         import_state = create(:import_state, :started, last_error: error_message)
@@ -152,29 +138,28 @@ RSpec.describe ProjectImportState, type: :model do
         expect { import_state.finish }.to change { import_state.last_error }.from(error_message).to(nil)
       end
 
-      it 'performs housekeeping when an import of a fresh project is completed' do
+      it 'enqueues housekeeping when an import of a fresh project is completed' do
         project = create(:project_empty_repo, :import_started, import_type: :github)
 
-        project.import_state.finish
+        expect(Projects::AfterImportWorker).to receive(:perform_async).with(project.id)
 
-        expect(after_import_service).to have_received(:execute)
-        expect(housekeeping_service).to have_received(:execute)
+        project.import_state.finish
       end
 
       it 'does not perform housekeeping when project repository does not exist' do
         project = create(:project, :import_started, import_type: :github)
 
-        project.import_state.finish
+        expect(Projects::AfterImportWorker).not_to receive(:perform_async)
 
-        expect(housekeeping_service).not_to have_received(:execute)
+        project.import_state.finish
       end
 
-      it 'does not perform housekeeping when project does not have a valid import type' do
+      it 'does not qneueue housekeeping when project does not have a valid import type' do
         project = create(:project, :import_started, import_type: nil)
 
-        project.import_state.finish
+        expect(Projects::AfterImportWorker).not_to receive(:perform_async)
 
-        expect(housekeeping_service).not_to have_received(:execute)
+        project.import_state.finish
       end
     end
   end

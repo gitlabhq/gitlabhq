@@ -52,9 +52,9 @@ export class ContentEditor {
       });
 
       if (Object.keys(result).length !== 0) {
-        const { document, dom } = result;
+        const { document, languages } = result;
 
-        await languageLoader.loadLanguagesFromDOM(dom);
+        await languageLoader.loadLanguages(languages);
 
         tr.setSelection(selection)
           .replaceSelectionWith(document, false)

@@ -32,7 +32,7 @@ module Packages
     end
 
     def next_item
-      model.next_pending_destruction
+      model.next_pending_destruction(order_by: :id)
     end
 
     def log_metadata(package_file)

@@ -23,6 +23,11 @@ RSpec.describe Banzai::Filter::ImageLazyLoadFilter do
     expect(doc.at_css('img')['class']).to eq 'test lazy'
   end
 
+  it 'adds a async decoding attribute' do
+    doc = filter(image_with_class('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg', 'test'))
+    expect(doc.at_css('img')['decoding']).to eq 'async'
+  end
+
   it 'transforms the image src to a data-src' do
     doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
     expect(doc.at_css('img')['data-src']).to eq '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'

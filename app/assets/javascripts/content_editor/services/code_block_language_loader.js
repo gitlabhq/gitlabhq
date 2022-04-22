@@ -36,16 +36,6 @@ const codeBlockLanguageLoader = {
     return this.lowlight.registered(language);
   },
 
-  loadLanguagesFromDOM(domTree) {
-    const languages = [];
-
-    domTree.querySelectorAll('pre').forEach((preElement) => {
-      languages.push(preElement.getAttribute('lang'));
-    });
-
-    return this.loadLanguages(languages);
-  },
-
   loadLanguageFromInputRule(match) {
     const { syntax } = this.findLanguageBySyntax(match[1]);
 

@@ -2,7 +2,7 @@ import { Extension } from '@tiptap/core';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import ListItem from '~/content_editor/extensions/list_item';
 import Paragraph from '~/content_editor/extensions/paragraph';
-import markdownDeserializer from '~/content_editor/services/markdown_deserializer';
+import markdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
 import { getMarkdownSource, getFullSource } from '~/content_editor/services/markdown_sourcemap';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 

@@ -73,6 +73,9 @@ To enable merge trains:
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).
 
+Merge trains do not work with [Semi-linear history merge requests](../../user/project/merge_requests/reviews/index.md)
+or [fast-forward merge requests](../../user/project/merge_requests/fast_forward_merge.md).
+
 ## Enable merge trains
 
 To enable merge trains for your project:
@@ -84,7 +87,6 @@ To enable merge trains for your project:
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Merge requests**.
 1. In the **Merge method** section, verify that **Merge commit** is selected.
-   You cannot use **Merge commit with semi-linear history** or **Fast-forward merge** with merge trains.
 1. In the **Merge options** section, select **Enable merged results pipelines** (if not already selected) and **Enable merge trains**.
 1. Select **Save changes**.
 

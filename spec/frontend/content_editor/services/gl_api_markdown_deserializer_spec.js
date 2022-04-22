@@ -1,8 +1,8 @@
-import createMarkdownDeserializer from '~/content_editor/services/markdown_deserializer';
+import createMarkdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
 import Bold from '~/content_editor/extensions/bold';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
-describe('content_editor/services/markdown_deserializer', () => {
+describe('content_editor/services/gl_api_markdown_deserializer', () => {
   let renderMarkdown;
   let doc;
   let p;
@@ -32,7 +32,9 @@ describe('content_editor/services/markdown_deserializer', () => {
     beforeEach(async () => {
       const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-      renderMarkdown.mockResolvedValueOnce(`<p><strong>${text}</strong></p>`);
+      renderMarkdown.mockResolvedValueOnce(
+        `<p><strong>${text}</strong></p><pre lang="javascript"></pre>`,
+      );
 
       result = await deserializer.deserialize({
         content: 'content',
@@ -40,13 +42,13 @@ describe('content_editor/services/markdown_deserializer', () => {
       });
     });
     it('transforms HTML returned by render function to a ProseMirror document', async () => {
-      const expectedDoc = doc(p(bold(text)));
+      const document = doc(p(bold(text)));
 
-      expect(result.document.toJSON()).toEqual(expectedDoc.toJSON());
+      expect(result.document.toJSON()).toEqual(document.toJSON());
     });
 
-    it('returns parsed HTML as a DOM object', () => {
-      expect(result.dom.innerHTML).toEqual(`<p><strong>${text}</strong></p><!--content-->`);
+    it('returns languages of code blocks found in the document', () => {
+      expect(result.languages).toEqual(['javascript']);
     });
   });
 

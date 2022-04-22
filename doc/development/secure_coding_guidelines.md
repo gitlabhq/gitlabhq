@@ -461,7 +461,9 @@ References:
 
 ### Description
 
-Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application, including data, code or credentials.
+Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application. This data can include data, code or credentials.
+
+Traversal can occur when a path includes directories. A typical malicious example includes one or more `../`, which tells the file system to look in the parent directory. Supplying many of them in a path, for example `../../../../../../../etc/passwd`, usually resolves to `/etc/passwd`. If the file system is instructed to look back to the root directory and can't go back any further, then extra `../` are ignored. The file system then looks from the root, resulting in `/etc/passwd` - a file you definitely do not want exposed to a malicious attacker!
 
 ### Impact
 
@@ -509,6 +511,44 @@ requires :file_path, type: String, file_path: true
 
 Absolute paths are not allowed by default. If allowing an absolute path is required, you
 need to provide an array of paths to the parameter `allowlist`.
+
+### Misleading behavior
+
+Some methods used to construct file paths can have non-intuitive behavior. To properly validate user input, be aware
+of these behaviors.
+
+#### Ruby
+
+The Ruby method [`Pathname.join`](https://ruby-doc.org/stdlib-2.7.4/libdoc/pathname/rdoc/Pathname.html#method-i-join)
+joins path names. Using methods in a specific way can result in a path name typically prohibited in
+normal use. In the examples below, we see attempts to access `/etc/passwd`, which is a sensitive file:
+
+```ruby
+require 'pathname'
+
+p = Pathname.new('tmp')
+print(p.join('log', 'etc/passwd', 'foo'))
+# => tmp/log/etc/passwd/foo
+```
+
+Assuming the second parameter is user-supplied and not validated, submitting a new absolute path
+results in a different path:
+
+```ruby
+print(p.join('log', '/etc/passwd', ''))
+# renders the path to "/etc/passwd", which is not what we expect!
+```
+
+#### Golang
+
+Golang has similar behavior with [`path.Clean`](https://pkg.go.dev/path#example-Clean). Remember that with many file systems, using `../../../../` traverses up to the root directory. Any remaining `../` are ignored. This example may give an attacker access to `/etc/passwd`:
+
+```golang
+path.Clean("/../../etc/passwd")
+// renders the path to "etc/passwd"; the file path is relative to whatever the current directory is
+path.Clean("../../etc/passwd")
+// renders the path to "../../etc/passwd"; the file path will look back up to two parent directories!
+```
 
 ## OS command injection guidelines
 

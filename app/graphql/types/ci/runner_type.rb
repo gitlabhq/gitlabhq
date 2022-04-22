@@ -34,8 +34,7 @@ module Types
             description: 'Admin form URL of the runner. Only available for administrators.'
       field :executor_name, GraphQL::Types::String, null: true,
             description: 'Executor last advertised by the runner.',
-            method: :executor_name,
-            feature_flag: :graphql_ci_runner_executor
+            method: :executor_name
       field :groups, ::Types::GroupType.connection_type, null: true,
             description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,

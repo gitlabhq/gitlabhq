@@ -2,7 +2,7 @@ import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from 'prosemirror-state';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/flash';
-import createMarkdownDeserializer from '../services/markdown_deserializer';
+import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
 import {
   ALERT_EVENT,
   LOADING_CONTENT_EVENT,

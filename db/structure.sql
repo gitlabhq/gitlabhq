@@ -28572,6 +28572,8 @@ CREATE INDEX index_packages_package_file_build_infos_on_pipeline_id ON packages_
 
 CREATE INDEX index_packages_package_files_on_file_store ON packages_package_files USING btree (file_store);
 
+CREATE INDEX index_packages_package_files_on_id_for_cleanup ON packages_package_files USING btree (id) WHERE (status = 1);
+
 CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON packages_package_files USING btree (package_id, file_name);
 
 CREATE INDEX index_packages_package_files_on_package_id_id ON packages_package_files USING btree (package_id, id);

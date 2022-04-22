@@ -1,12 +1,12 @@
 <script>
-import { GlSegmentedControl } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import SegmentedControlButtonGroup from '~/vue_shared/components/segmented_control_button_group.vue';
 import CiCdAnalyticsAreaChart from './ci_cd_analytics_area_chart.vue';
 
 export default {
   components: {
-    GlSegmentedControl,
     CiCdAnalyticsAreaChart,
+    SegmentedControlButtonGroup,
   },
   props: {
     charts: {
@@ -38,7 +38,11 @@ export default {
 </script>
 <template>
   <div>
-    <gl-segmented-control v-model="selectedChart" :options="chartRanges" class="gl-mb-4" />
+    <segmented-control-button-group
+      v-model="selectedChart"
+      :options="chartRanges"
+      class="gl-mb-4"
+    />
     <ci-cd-analytics-area-chart
       v-if="chart"
       v-bind="$attrs"

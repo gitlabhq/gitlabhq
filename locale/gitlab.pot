@@ -11530,6 +11530,12 @@ msgstr ""
 msgid "DastProfiles|Spider timeout"
 msgstr ""
 
+msgid "DastProfiles|Submit button"
+msgstr ""
+
+msgid "DastProfiles|Submit button (optional)"
+msgstr ""
+
 msgid "DastProfiles|Target URL"
 msgstr ""
 
