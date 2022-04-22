@@ -128,17 +128,11 @@ To remove an agent from the UI:
    }
    ```
 
-1. Remove an agent record with GraphQL by deleting the `clusterAgentToken`.
+1. Remove an agent record with GraphQL by deleting the `clusterAgent`.
 
    ```graphql
    mutation deleteAgent {
      clusterAgentDelete(input: { id: "<cluster-agent-id>" } ) {
-       errors
-     }
-   }
-
-   mutation deleteToken {
-     clusterAgentTokenDelete(input: { id: "<cluster-agent-token-id>" }) {
        errors
      }
    }

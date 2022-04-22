@@ -10,6 +10,16 @@ GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
 According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
 
+## GitLab 15.0
+
+Fields [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85382) in GitLab 15.0:
+
+### GraphQL Mutations
+
+| Argument name        | Mutation                 | Deprecated in | Use instead                |
+| -------------------- | --------------------     | ------------- | -------------------------- |
+| -                    | `clusterAgentTokenDelete`| 14.7          | `clusterAgentTokenRevoke`                    |
+
 ## GitLab 14.0
 
 Fields [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63293) in GitLab 14.0:

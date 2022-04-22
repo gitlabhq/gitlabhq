@@ -103,7 +103,7 @@ Example response:
 ```
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
-the `file_template_project_id`, `delayed_project_deletion`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
+the `file_template_project_id`, `delayed_project_deletion`, `delayed_group_deletion`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
 
 ```json
 {
@@ -112,6 +112,7 @@ the `file_template_project_id`, `delayed_project_deletion`, `deletion_adjourned_
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "delayed_project_deletion": false,
+  "delayed_group_deletion": false,
   "deletion_adjourned_period": 7,
   ...
 }
@@ -216,7 +217,8 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
-- `delayed_project_delection`
+- `delayed_project_deletion`
+- `delayed_group_deletion`
 - `deletion_adjourned_period`
 
 Example responses: **(PREMIUM SELF)**
@@ -274,8 +276,9 @@ listed in the descriptions of the relevant settings.
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `delayed_project_deletion` **(PREMIUM SELF)** | boolean     | no                                   | Enable delayed project deletion by default in new groups. Default is `false`. |
+| `delayed_group_deletion` **(PREMIUM SELF)**   | boolean     | no                                   | Enable delayed group deletion by default in new groups. Requires both `delayed_group_deletion` to be true and `deletion_adjourned_period` to be greater than 0. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352959) in GitLab 15.0. |
 | `delete_inactive_projects`               | boolean          | no                                   | Enable inactive project deletion feature. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84519) in GitLab 14.10. |
-| `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between 0 and 90.
+| `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between 0 and 90. On every update, a hook on `deletion_adjourned_period` sets the value of `delayed_group_deletion` to `true` if `deletion_adjourned_period` is greater than 0 and `false` if `deletion_adjourned_period` is 0.
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../user/admin_area/diff_limits.md), in bytes. |
 | `diff_max_files`                         | integer          | no                                   | Maximum [files in a diff](../user/admin_area/diff_limits.md). |
 | `diff_max_lines`                         | integer          | no                                   | Maximum [lines in a diff](../user/admin_area/diff_limits.md). |

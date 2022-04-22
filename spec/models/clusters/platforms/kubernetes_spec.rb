@@ -450,6 +450,42 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       it { is_expected.to be_nil }
     end
 
+    context 'when there are ignored K8s connections errors' do
+      described_class::IGNORED_CONNECTION_EXCEPTIONS.each do |exception|
+        context "#{exception}" do
+          before do
+            exception_args = ['arg1']
+            exception_args.push('arg2', 'arg3') if exception.name == 'Kubeclient::HttpError'
+            exception_instance = exception.new(*exception_args)
+
+            allow_next_instance_of(Gitlab::Kubernetes::KubeClient) do |kube_client|
+              allow(kube_client).to receive(:get_pods).with(namespace: namespace).and_raise(exception_instance)
+              allow(kube_client).to receive(:get_deployments).with(namespace: namespace).and_raise(exception_instance)
+              allow(kube_client).to receive(:get_ingresses).with(namespace: namespace).and_raise(exception_instance)
+            end
+          end
+
+          it 'does not raise error' do
+            expect { subject }.not_to raise_error
+          end
+
+          it 'returns empty array for the K8s component keys' do
+            expect(subject).to include({ pods: [], deployments: [], ingresses: [] })
+          end
+
+          it 'logs the error' do
+            expect_next_instance_of(Gitlab::Kubernetes::Logger) do |logger|
+              expect(logger).to receive(:error)
+                .with(hash_including(event: :kube_connection_error))
+                .and_call_original
+            end
+
+            subject
+          end
+        end
+      end
+    end
+
     context 'when kubernetes responds with 500s' do
       before do
         stub_kubeclient_pods(namespace, status: 500)
@@ -457,22 +493,8 @@ RSpec.describe Clusters::Platforms::Kubernetes do
         stub_kubeclient_ingresses(namespace, status: 500)
       end
 
-      it 'does not raise error' do
+      it 'does not raise kubeclient http error' do
         expect { subject }.not_to raise_error(Kubeclient::HttpError)
-      end
-
-      it 'logs the error' do
-        expect_next_instance_of(Gitlab::Kubernetes::Logger) do |logger|
-          expect(logger).to receive(:error)
-            .with(hash_including(event: :kube_connection_error))
-            .and_call_original
-        end
-
-        subject
-      end
-
-      it 'returns empty array for the k8s component keys' do
-        expect(subject).to include({ pods: [], deployments: [], ingresses: [] })
       end
     end
 

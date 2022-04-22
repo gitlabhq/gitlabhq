@@ -973,28 +973,6 @@ Input type: `ClusterAgentTokenCreateInput`
 | <a id="mutationclusteragenttokencreatesecret"></a>`secret` | [`String`](#string) | Token secret value. Make sure you save it - you won't be able to access it again. |
 | <a id="mutationclusteragenttokencreatetoken"></a>`token` | [`ClusterAgentToken`](#clusteragenttoken) | Token created after mutation. |
 
-### `Mutation.clusterAgentTokenDelete`
-
-WARNING:
-**Deprecated** in 14.7.
-Tokens must be revoked with ClusterAgentTokenRevoke.
-
-Input type: `ClusterAgentTokenDeleteInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationclusteragenttokendeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationclusteragenttokendeleteid"></a>`id` | [`ClustersAgentTokenID!`](#clustersagenttokenid) | Global ID of the cluster agent token that will be deleted. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationclusteragenttokendeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationclusteragenttokendeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-
 ### `Mutation.clusterAgentTokenRevoke`
 
 Input type: `ClusterAgentTokenRevokeInput`

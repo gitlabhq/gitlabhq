@@ -322,7 +322,7 @@ module Clusters
             class: error.class.name,
             message: error.message
           },
-          status_code: error.error_code,
+          status_code: error.try(:error_code),
           namespace: self.namespace,
           class_name: self.class.name,
           event: :kube_connection_error
