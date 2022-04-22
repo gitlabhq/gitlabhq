@@ -331,6 +331,12 @@ busy_resources.pluck(:build_id)
 busy_resources.update_all(build_id: nil)
 ```
 
+### Job log slow to update
+
+When you visit the job log page for a running job, there could be a delay of up to
+60 seconds before the log updates. The default refresh time is 60 seconds, but after
+the log is viewed in the UI, the following log updates should occur every 3 seconds.
+
 ## How to get help
 
 If you are unable to resolve pipeline issues, you can get help from:

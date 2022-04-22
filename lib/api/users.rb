@@ -1122,7 +1122,7 @@ module API
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
         at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs
       end
-      put "preferences", feature_category: :users do
+      put "preferences", feature_category: :users, urgency: :high do
         authenticate!
 
         preferences = current_user.user_preference

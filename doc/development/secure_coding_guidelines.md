@@ -1210,3 +1210,36 @@ An example of well implemented `Gitlab::UrlBlocker.validate!` call that prevents
 ### Resources
 
 - [CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition](https://cwe.mitre.org/data/definitions/367.html)
+
+## Handling credentials
+
+Credentials can be:
+
+- Login details like username and password.
+- Private keys.
+- Tokens (PAT, runner tokens, JWT token, CSRF tokens, project access tokens, etc).
+- Session cookies.
+- Any other piece of information that can be used for authentication or authorization purposes.
+
+This sensitive data must be handled carefully to avoid leaks which could lead to unauthorized access. If you have questions or need help with any of the following guidance, talk to the GitLab AppSec team on Slack (`#sec-appsec`).
+
+### At rest
+
+- Credentials must be encrypted while at rest (database or file) with `attr_encrypted`. See [issue #26243](https://gitlab.com/gitlab-org/gitlab/-/issues/26243) before using `attr_encrypted`.
+  - Store the encryption keys separately from the encrypted credentials with proper access control. For instance, store the keys in a vault, KMS, or file. Here is an [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/user.rb#L70-74) use of `attr_encrypted` for encryption with keys stored in separate access controlled file.
+  - When the intention is to only compare secrets, store only the salted hash of the secret instead of the encrypted value.
+- Never commit credentials to repositories.
+  - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
+- Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
+- When credentials are required in a CI/CD job, use [masked variables](../ci/variables/index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/index.md#debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or tags.
+- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://about.gitlab.com/handbook/engineering/security/security-engineering-and-research/application-security/inventory.html#policies) and our [Data Classification Standards](https://about.gitlab.com/handbook/engineering/security/data-classification-standard.html#data-classification-standards).
+- To store and/or share credentials between teams, refer to [1Password for Teams](https://about.gitlab.com/handbook/security/#1password-for-teams) and follow [the 1Password Guidelines](https://about.gitlab.com/handbook/security/#1password-guidelines).
+- If you need to share a secret with a team member, use 1Password. Do not share a secret over email, Slack, or other service on the Internet.
+
+### In transit
+
+- Use an encrypted channel like TLS to transmit credentials. See [our TLS minimum recommendation guidelines](#tls-minimum-recommended-version).
+- Avoid including credentials as part of an HTTP response unless it is absolutely necessary as part of the workflow. For example, generating a PAT for users.
+- Avoid sending credentials in URL parameters, as these can be more easily logged inadvertently during transit.
+
+In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/engineering/security/security-operations/sirt/#-engaging-sirt).

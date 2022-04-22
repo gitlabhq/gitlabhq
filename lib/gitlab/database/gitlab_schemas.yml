@@ -388,6 +388,7 @@ plan_limits: :gitlab_main
 plans: :gitlab_main
 pool_repositories: :gitlab_main
 postgres_async_indexes: :gitlab_shared
+postgres_autovacuum_activity: :gitlab_shared
 postgres_foreign_keys: :gitlab_shared
 postgres_index_bloat_estimates: :gitlab_shared
 postgres_indexes: :gitlab_shared

@@ -72,7 +72,10 @@ module API
         params do
           requires :badge_id, type: Integer, desc: 'The badge ID'
         end
-        get ":id/badges/:badge_id", urgency: :default do
+        # TODO: Set PUT /projects/:id/badges/:badge_id to low urgency and GET to default urgency
+        # after different urgencies are supported for different HTTP verbs.
+        # See https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1670
+        get ":id/badges/:badge_id", urgency: :low do
           source = find_source(source_type, params[:id])
           badge = find_badge(source)
 

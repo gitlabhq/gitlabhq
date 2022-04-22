@@ -61,7 +61,7 @@ class GroupsController < Groups::ApplicationController
   urgency :high, [:unfoldered_environment_names]
 
   # TODO: Set #show to higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/334795
-  urgency :low, [:merge_requests, :show, :create, :new, :update]
+  urgency :low, [:merge_requests, :show, :create, :new, :update, :projects, :destroy]
 
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)

@@ -7,6 +7,7 @@ class Projects::LearnGitlabController < Projects::ApplicationController
   before_action :enable_video_tutorials_continuous_onboarding_experiment
 
   feature_category :users
+  urgency :low, [:index]
 
   def index
   end

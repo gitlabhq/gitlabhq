@@ -14,6 +14,7 @@ class AutocompleteController < ApplicationController
 
   urgency :low, [:merge_request_target_branches]
   urgency :default, [:users]
+  urgency :medium, [:projects]
 
   def users
     group = Autocomplete::GroupFinder

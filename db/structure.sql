@@ -106,6 +106,17 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS SETOF pg_stat_activity
+    LANGUAGE sql SECURITY DEFINER
+    SET search_path TO 'pg_catalog', 'pg_temp'
+    AS $$
+  SELECT *
+  FROM pg_stat_activity
+  WHERE datname = current_database()
+    AND state = 'active'
+    AND backend_type = 'autovacuum worker'
+$$;
+
 CREATE FUNCTION set_has_external_issue_tracker() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18727,6 +18738,22 @@ CREATE SEQUENCE postgres_async_indexes_id_seq
     CACHE 1;
 
 ALTER SEQUENCE postgres_async_indexes_id_seq OWNED BY postgres_async_indexes.id;
+
+CREATE VIEW postgres_autovacuum_activity AS
+ WITH processes AS (
+         SELECT postgres_pg_stat_activity_autovacuum.query,
+            postgres_pg_stat_activity_autovacuum.query_start,
+            regexp_matches(postgres_pg_stat_activity_autovacuum.query, '^autovacuum: VACUUM (w+).(w+)'::text) AS matches
+           FROM postgres_pg_stat_activity_autovacuum() postgres_pg_stat_activity_autovacuum(datid, datname, pid, usesysid, usename, application_name, client_addr, client_hostname, client_port, backend_start, xact_start, query_start, state_change, wait_event_type, wait_event, state, backend_xid, backend_xmin, query, backend_type)
+          WHERE (postgres_pg_stat_activity_autovacuum.query ~* '^autovacuum: VACUUM w+.w+'::text)
+        )
+ SELECT ((processes.matches[1] || '.'::text) || processes.matches[2]) AS table_identifier,
+    processes.matches[1] AS schema,
+    processes.matches[2] AS "table",
+    processes.query_start AS vacuum_start
+   FROM processes;
+
+COMMENT ON VIEW postgres_autovacuum_activity IS 'Contains information about PostgreSQL backends currently performing autovacuum operations on the tables indicated here.';
 
 CREATE VIEW postgres_foreign_keys AS
  SELECT pg_constraint.oid,

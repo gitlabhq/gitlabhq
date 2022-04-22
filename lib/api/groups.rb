@@ -266,7 +266,7 @@ module API
       end
 
       desc 'Remove a group.'
-      delete ":id", feature_category: :subgroups do
+      delete ":id", feature_category: :subgroups, urgency: :low do
         group = find_group!(params[:id])
         authorize! :admin_group, group
         check_subscription! group

@@ -231,7 +231,7 @@ module API
         use :collection_params
         use :statistics_params
       end
-      get ":user_id/starred_projects", feature_category: :projects do
+      get ":user_id/starred_projects", feature_category: :projects, urgency: :low do
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -469,7 +469,7 @@ module API
       desc 'Unarchive a project' do
         success Entities::Project
       end
-      post ':id/unarchive', feature_category: :projects do
+      post ':id/unarchive', feature_category: :projects, urgency: :default do
         authorize!(:archive_project, user_project)
 
         ::Projects::UpdateService.new(user_project, current_user, archived: false).execute

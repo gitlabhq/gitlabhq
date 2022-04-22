@@ -26,8 +26,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   feature_category :projects
   # TODO: Set higher urgency after addressing https://gitlab.com/gitlab-org/gitlab/-/issues/357913
   # and https://gitlab.com/gitlab-org/gitlab/-/issues/358945
-  urgency :low, [:index, :trending]
-  urgency :low, [:index]
+  urgency :low, [:index, :topics, :trending]
 
   def index
     show_alert_if_search_is_disabled
