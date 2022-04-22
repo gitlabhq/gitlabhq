@@ -7901,7 +7901,7 @@ msgstr ""
 msgid "ClusterAgents|An error occurred while loading your agents"
 msgstr ""
 
-msgid "ClusterAgents|An error occurred while retrieving GitLab Agent activity. Reload the page to try again."
+msgid "ClusterAgents|An error occurred while retrieving agent activity. Reload the page to try again."
 msgstr ""
 
 msgid "ClusterAgents|An unknown error occurred. Please try again."
@@ -8036,6 +8036,11 @@ msgstr ""
 msgid "ClusterAgents|Never connected"
 msgstr ""
 
+msgid "ClusterAgents|No activity occurred in the past day"
+msgid_plural "ClusterAgents|No activity occurred in the past %d days"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ClusterAgents|No agents"
 msgstr ""
 
@@ -8063,7 +8068,7 @@ msgstr ""
 msgid "ClusterAgents|Security"
 msgstr ""
 
-msgid "ClusterAgents|See Agent activity updates such as tokens created or revoked and clusters connected or not connected."
+msgid "ClusterAgents|See agent activity updates, like tokens created or revoked and clusters connected or not connected."
 msgstr ""
 
 msgid "ClusterAgents|Select an agent or enter a name to create new"
@@ -8083,11 +8088,6 @@ msgstr ""
 
 msgid "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods."
 msgstr ""
-
-msgid "ClusterAgents|There's no activity from the past day"
-msgid_plural "ClusterAgents|There's no activity from the past %d days"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "ClusterAgents|This agent has no tokens"
 msgstr ""
@@ -8113,7 +8113,7 @@ msgstr ""
 msgid "ClusterAgents|We would love to learn more about your experience with the GitLab Agent."
 msgstr ""
 
-msgid "ClusterAgents|What is GitLab Agent activity?"
+msgid "ClusterAgents|What is agent activity?"
 msgstr ""
 
 msgid "ClusterAgents|What is default configuration?"

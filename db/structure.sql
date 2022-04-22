@@ -15665,7 +15665,7 @@ CREATE TABLE group_deploy_keys (
     expires_at timestamp with time zone,
     key text NOT NULL,
     title text,
-    fingerprint text NOT NULL,
+    fingerprint text,
     fingerprint_sha256 bytea,
     CONSTRAINT check_cc0365908d CHECK ((char_length(title) <= 255)),
     CONSTRAINT check_e4526dcf91 CHECK ((char_length(fingerprint) <= 255)),
@@ -29706,10 +29706,6 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, taggable_type, context, tagger_id, tagger_type);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
-
-CREATE INDEX tmp_gitlab_subscriptions_max_seats_used_migration ON gitlab_subscriptions USING btree (id) WHERE ((start_date >= '2021-08-02'::date) AND (start_date <= '2021-11-20'::date) AND (max_seats_used <> 0) AND (max_seats_used > seats_in_use) AND (max_seats_used > seats));
-
-CREATE INDEX tmp_gitlab_subscriptions_max_seats_used_migration_2 ON gitlab_subscriptions USING btree (id) WHERE ((start_date < '2021-08-02'::date) AND (max_seats_used <> 0) AND (max_seats_used > seats_in_use) AND (max_seats_used > seats));
 
 CREATE INDEX tmp_idx_container_repos_on_non_migrated ON container_repositories USING btree (project_id, id) WHERE ((migration_state <> 'import_done'::text) AND (created_at < '2022-01-23 00:00:00'::timestamp without time zone));
 

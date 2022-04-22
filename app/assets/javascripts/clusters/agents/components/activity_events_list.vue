@@ -28,17 +28,17 @@ export default {
   },
   i18n: {
     emptyText: s__(
-      'ClusterAgents|See Agent activity updates such as tokens created or revoked and clusters connected or not connected.',
+      'ClusterAgents|See agent activity updates, like tokens created or revoked and clusters connected or not connected.',
     ),
-    emptyTooltip: s__('ClusterAgents|What is GitLab Agent activity?'),
+    emptyTooltip: s__('ClusterAgents|What is agent activity?'),
     error: s__(
-      'ClusterAgents|An error occurred while retrieving GitLab Agent activity. Reload the page to try again.',
+      'ClusterAgents|An error occurred while retrieving agent activity. Reload the page to try again.',
     ),
     today: __('Today'),
     yesterday: __('Yesterday'),
   },
-  emptyHelpLink: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'view-agent-activity',
+  emptyHelpLink: helpPagePath('user/clusters/agent/work_with_agent', {
+    anchor: 'view-an-agents-activity-information',
   }),
   borderClasses: 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100',
   apollo: {
@@ -68,8 +68,8 @@ export default {
     },
     emptyStateTitle() {
       return n__(
-        "ClusterAgents|There's no activity from the past day",
-        "ClusterAgents|There's no activity from the past %d days",
+        'ClusterAgents|No activity occurred in the past day',
+        'ClusterAgents|No activity occurred in the past %d days',
         EVENTS_STORED_DAYS,
       );
     },

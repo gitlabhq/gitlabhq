@@ -238,7 +238,7 @@ export default {
       >
         <button
           v-if="showExpandDown"
-          v-gl-tooltip
+          v-gl-tooltip.left
           :title="s__('Diffs|Next 20 lines')"
           type="button"
           class="js-unfold-down gl-rounded-0 gl-border-0 diff-line-expand-button"
@@ -249,7 +249,7 @@ export default {
         </button>
         <button
           v-if="lineCountBetween !== -1 && lineCountBetween < 20"
-          v-gl-tooltip
+          v-gl-tooltip.left
           :title="s__('Diffs|Expand all lines')"
           type="button"
           class="js-unfold-all gl-rounded-0 gl-border-0 diff-line-expand-button"
@@ -260,7 +260,7 @@ export default {
         </button>
         <button
           v-if="showExpandUp"
-          v-gl-tooltip
+          v-gl-tooltip.left
           :title="s__('Diffs|Previous 20 lines')"
           type="button"
           class="js-unfold gl-rounded-0 gl-border-0 diff-line-expand-button"

@@ -510,7 +510,7 @@ export default {
               class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
             >
               <p
-                class="issuable-status-box status-box gl-my-0"
+                class="issuable-status-box status-box gl-white-space-nowrap gl-my-0"
                 :class="[isClosed ? 'status-box-issue-closed' : 'status-box-open']"
               >
                 <gl-icon :name="statusIcon" class="gl-display-block d-sm-none gl-h-6!" />

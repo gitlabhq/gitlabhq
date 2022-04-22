@@ -286,9 +286,6 @@ const bindEvents = () => {
   });
 
   $('.js-import-git-toggle-button').on('click', () => {
-    const $projectMirror = $('#project_mirror');
-
-    $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
     setProjectNamePathHandlers(
       $('.tab-pane.active #project_name'),
       $('.tab-pane.active #project_path'),
