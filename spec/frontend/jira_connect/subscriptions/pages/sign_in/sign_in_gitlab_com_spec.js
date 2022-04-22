@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import SignInPage from '~/jira_connect/subscriptions/pages/sign_in.vue';
+import SignInGitlabCom from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_com.vue';
 import SignInLegacyButton from '~/jira_connect/subscriptions/components/sign_in_legacy_button.vue';
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
@@ -15,7 +15,7 @@ const defaultProvide = {
   usersPath: mockUsersPath,
 };
 
-describe('SignInPage', () => {
+describe('SignInGitlabCom', () => {
   let wrapper;
   let store;
 
@@ -26,7 +26,7 @@ describe('SignInPage', () => {
   const createComponent = ({ props, jiraConnectOauthEnabled } = {}) => {
     store = createStore();
 
-    wrapper = shallowMount(SignInPage, {
+    wrapper = shallowMount(SignInGitlabCom, {
       store,
       provide: {
         ...defaultProvide,
@@ -49,7 +49,7 @@ describe('SignInPage', () => {
   describe('template', () => {
     describe.each`
       scenario                   | hasSubscriptions | signInButtonText
-      ${'with subscriptions'}    | ${true}          | ${SignInPage.i18n.signInButtonTextWithSubscriptions}
+      ${'with subscriptions'}    | ${true}          | ${SignInGitlabCom.i18n.signInButtonTextWithSubscriptions}
       ${'without subscriptions'} | ${false}         | ${I18N_DEFAULT_SIGN_IN_BUTTON_TEXT}
     `('$scenario', ({ hasSubscriptions, signInButtonText }) => {
       describe('when `jiraConnectOauthEnabled` feature flag is disabled', () => {

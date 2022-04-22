@@ -4,6 +4,6 @@ classes:
 - BulkImports::Tracker
 feature_categories:
 - importers
-description: TODO
+description: Used to store and track the status of each pipeline associated with the migration of groups or projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47009
 milestone: '13.6'

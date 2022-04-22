@@ -1,10 +1,12 @@
 <script>
 import {
   GlButton,
+  GlIcon,
   GlForm,
   GlFormCheckbox,
   GlFormGroup,
   GlFormInputGroup,
+  GlSkeletonLoader,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import {
@@ -21,10 +23,12 @@ export default {
   name: 'RunnerUpdateForm',
   components: {
     GlButton,
+    GlIcon,
     GlForm,
     GlFormCheckbox,
     GlFormGroup,
     GlFormInputGroup,
+    GlSkeletonLoader,
     RunnerUpdateCostFactorFields: () =>
       import('ee_component/runner/components/runner_update_cost_factor_fields.vue'),
   },
@@ -34,6 +38,16 @@ export default {
   props: {
     runner: {
       type: Object,
+      required: false,
+      default: null,
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    runnerUrl: {
+      type: String,
       required: false,
       default: null,
     },
@@ -47,9 +61,6 @@ export default {
   computed: {
     canBeLockedToProject() {
       return this.runner?.runnerType === PROJECT_TYPE;
-    },
-    readonlyIpAddress() {
-      return this.runner?.ipAddress;
     },
   },
   watch: {
@@ -100,103 +111,107 @@ export default {
 </script>
 <template>
   <gl-form @submit.prevent="onSubmit">
-    <gl-form-checkbox
-      v-model="model.active"
-      data-testid="runner-field-paused"
-      :value="false"
-      :unchecked-value="true"
-    >
-      {{ __('Paused') }}
-      <template #help>
-        {{ s__('Runners|Stop the runner from accepting new jobs.') }}
-      </template>
-    </gl-form-checkbox>
+    <h4 class="gl-font-lg gl-my-5">{{ s__('Runners|Details') }}</h4>
 
-    <gl-form-checkbox
-      v-model="model.accessLevel"
-      data-testid="runner-field-protected"
-      :value="$options.ACCESS_LEVEL_REF_PROTECTED"
-      :unchecked-value="$options.ACCESS_LEVEL_NOT_PROTECTED"
-    >
-      {{ __('Protected') }}
-      <template #help>
-        {{ s__('Runners|Use the runner on pipelines for protected branches only.') }}
-      </template>
-    </gl-form-checkbox>
-
-    <gl-form-checkbox v-model="model.runUntagged" data-testid="runner-field-run-untagged">
-      {{ __('Run untagged jobs') }}
-      <template #help>
-        {{ s__('Runners|Use the runner for jobs without tags, in addition to tagged jobs.') }}
-      </template>
-    </gl-form-checkbox>
-
-    <gl-form-checkbox
-      v-if="canBeLockedToProject"
-      v-model="model.locked"
-      data-testid="runner-field-locked"
-    >
-      {{ __('Lock to current projects') }}
-      <template #help>
-        {{
-          s__(
-            'Runners|Use the runner for the currently assigned projects only. Only administrators can change the assigned projects.',
-          )
-        }}
-      </template>
-    </gl-form-checkbox>
-
-    <gl-form-group :label="__('IP Address')" data-testid="runner-field-ip-address">
-      <gl-form-input-group :value="readonlyIpAddress" readonly select-on-click>
-        <template #append>
-          <gl-button
-            v-gl-tooltip.hover
-            :title="__('Copy IP Address')"
-            :aria-label="__('Copy IP Address')"
-            :data-clipboard-text="readonlyIpAddress"
-            icon="copy-to-clipboard"
-            class="d-inline-flex"
-          />
-        </template>
-      </gl-form-input-group>
-    </gl-form-group>
-
-    <gl-form-group :label="__('Description')" data-testid="runner-field-description">
+    <gl-skeleton-loader v-if="loading" />
+    <gl-form-group v-else :label="__('Description')" data-testid="runner-field-description">
       <gl-form-input-group v-model="model.description" />
     </gl-form-group>
 
-    <gl-form-group
-      data-testid="runner-field-max-timeout"
-      :label="__('Maximum job timeout')"
-      :description="
-        s__(
-          'Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project.',
-        )
-      "
-    >
-      <gl-form-input-group v-model.number="model.maximumTimeout" type="number" />
-    </gl-form-group>
+    <hr />
 
-    <gl-form-group
-      data-testid="runner-field-tags"
-      :label="__('Tags')"
-      :description="
-        __('You can set up jobs to only use runners with specific tags. Separate tags with commas.')
-      "
-    >
-      <gl-form-input-group v-model="model.tagList" />
-    </gl-form-group>
+    <h4 class="gl-font-lg gl-my-5">{{ s__('Runners|Configuration') }}</h4>
 
-    <runner-update-cost-factor-fields v-model="model" />
+    <template v-if="loading">
+      <gl-skeleton-loader v-for="i in 3" :key="i" />
+    </template>
+    <template v-else>
+      <div class="gl-mb-5">
+        <gl-form-checkbox
+          v-model="model.active"
+          data-testid="runner-field-paused"
+          :value="false"
+          :unchecked-value="true"
+        >
+          {{ __('Paused') }}
+          <template #help>
+            {{ s__('Runners|Stop the runner from accepting new jobs.') }}
+          </template>
+        </gl-form-checkbox>
 
-    <div class="form-actions">
+        <gl-form-checkbox
+          v-model="model.accessLevel"
+          data-testid="runner-field-protected"
+          :value="$options.ACCESS_LEVEL_REF_PROTECTED"
+          :unchecked-value="$options.ACCESS_LEVEL_NOT_PROTECTED"
+        >
+          {{ __('Protected') }}
+          <template #help>
+            {{ s__('Runners|Use the runner on pipelines for protected branches only.') }}
+          </template>
+        </gl-form-checkbox>
+
+        <gl-form-checkbox v-model="model.runUntagged" data-testid="runner-field-run-untagged">
+          {{ __('Run untagged jobs') }}
+          <template #help>
+            {{ s__('Runners|Use the runner for jobs without tags, in addition to tagged jobs.') }}
+          </template>
+        </gl-form-checkbox>
+
+        <gl-form-checkbox
+          v-if="canBeLockedToProject"
+          v-model="model.locked"
+          data-testid="runner-field-locked"
+        >
+          {{ __('Lock to current projects') }} <gl-icon name="lock" />
+          <template #help>
+            {{
+              s__(
+                'Runners|Use the runner for the currently assigned projects only. Only administrators can change the assigned projects.',
+              )
+            }}
+          </template>
+        </gl-form-checkbox>
+      </div>
+
+      <gl-form-group
+        data-testid="runner-field-max-timeout"
+        :label="__('Maximum job timeout')"
+        :description="
+          s__(
+            'Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project.',
+          )
+        "
+      >
+        <gl-form-input-group v-model.number="model.maximumTimeout" type="number" />
+      </gl-form-group>
+
+      <gl-form-group
+        data-testid="runner-field-tags"
+        :label="__('Tags')"
+        :description="
+          __(
+            'You can set up jobs to only use runners with specific tags. Separate tags with commas.',
+          )
+        "
+      >
+        <gl-form-input-group v-model="model.tagList" />
+      </gl-form-group>
+
+      <runner-update-cost-factor-fields v-model="model" />
+    </template>
+
+    <div class="gl-mt-6">
       <gl-button
         type="submit"
         variant="confirm"
         class="js-no-auto-disable"
-        :loading="saving || !runner"
+        :loading="loading || saving"
       >
         {{ __('Save changes') }}
+      </gl-button>
+      <gl-button :href="runnerUrl">
+        {{ __('Cancel') }}
       </gl-button>
     </div>
   </gl-form>

@@ -3,7 +3,7 @@ table_name: atlassian_identities
 classes:
 - Atlassian::Identity
 feature_categories:
-- importers
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9af97ee69a36de1dc4e73f4030d6316d3f0a82c5
+- authentication_and_authorization
+description: Stores Atlassian credentials that are used to integrate with Atlassian API
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40176
 milestone: '13.4'

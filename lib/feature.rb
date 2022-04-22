@@ -88,11 +88,7 @@ class Feature
 
       feature = get(key)
 
-      # If we're not default enabling the flag or the feature has been set, always evaluate.
-      # `persisted?` can potentially generate DB queries and also checks for inclusion
-      # in an array of feature names (177 at last count), possibly reducing performance by half.
-      # So we only perform the `persisted` check if `default_enabled: true`
-      feature_value = !default_enabled || Feature.persisted_name?(feature.name) ? feature.enabled?(thing) : true
+      feature_value = current_feature_value(feature, thing, default_enabled: default_enabled)
 
       # If we don't filter out this flag here we will enter an infinite loop
       log_feature_flag_state(key, feature_value) if log_feature_flag_states?(key)
@@ -180,6 +176,16 @@ class Feature
     end
 
     private
+
+    # Evaluate if `default enabled: false` or the feature has been persisted.
+    # `persisted_name?` can potentially generate DB queries and also checks for inclusion
+    # in an array of feature names (177 at last count), possibly reducing performance by half.
+    # So we only perform the `persisted` check if `default_enabled: true`
+    def current_feature_value(feature, thing, default_enabled:)
+      return true if default_enabled && !Feature.persisted_name?(feature.name)
+
+      feature.enabled?(thing)
+    end
 
     def flipper
       if Gitlab::SafeRequestStore.active?

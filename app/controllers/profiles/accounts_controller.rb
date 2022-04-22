@@ -4,6 +4,7 @@ class Profiles::AccountsController < Profiles::ApplicationController
   include AuthHelper
 
   feature_category :users
+  urgency :low, [:show]
 
   def show
     render(locals: show_view_variables)

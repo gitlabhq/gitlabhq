@@ -3,8 +3,8 @@ import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
-import SignInPage from '~/jira_connect/subscriptions/pages/sign_in.vue';
-import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions.vue';
+import SignInPage from '~/jira_connect/subscriptions/pages/sign_in/sign_in_page.vue';
+import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions_page.vue';
 import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
 import BrowserSupportAlert from '~/jira_connect/subscriptions/components/browser_support_alert.vue';
 import createStore from '~/jira_connect/subscriptions/store';

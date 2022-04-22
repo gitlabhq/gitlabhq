@@ -4,6 +4,6 @@ classes:
 - ProjectExportJob
 feature_categories:
 - importers
-description: TODO
+description: Used to track and control project export status
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23664
 milestone: '12.9'

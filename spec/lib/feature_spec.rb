@@ -354,6 +354,28 @@ RSpec.describe Feature, stub_feature_flags: false do
           it 'reads the default from the YAML definition' do
             expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(true)
           end
+
+          context 'and feature has been disabled' do
+            before do
+              described_class.disable(:my_feature_flag)
+            end
+
+            it 'is not enabled' do
+              expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(false)
+            end
+          end
+        end
+
+        context 'with a cached value and the YAML definition is changed thereafter' do
+          before do
+            described_class.enabled?(:my_feature_flag, default_enabled: :yaml)
+          end
+
+          it 'reads new default value' do
+            allow(definition).to receive(:default_enabled).and_return(true)
+
+            expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(true)
+          end
         end
 
         context 'when YAML definition does not exist for an optional type' do

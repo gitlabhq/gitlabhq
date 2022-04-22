@@ -67,17 +67,6 @@ end
 
 RSpec::Matchers.define :have_scheduled_batched_migration do |table_name: nil, column_name: nil, job_arguments: [], **attributes|
   define_method :matches? do |migration|
-    # Default arguments passed by BatchedMigrationWrapper (values don't matter here)
-    expect(migration).to be_background_migration_with_arguments([
-      _start_id = 1,
-      _stop_id = 2,
-      table_name,
-      column_name,
-      _sub_batch_size = 10,
-      _pause_ms = 100,
-      *job_arguments
-    ])
-
     batched_migrations =
       Gitlab::Database::BackgroundMigration::BatchedMigration
         .for_configuration(migration, table_name, column_name, job_arguments)

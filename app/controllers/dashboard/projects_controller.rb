@@ -15,6 +15,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   skip_cross_project_access_check :index, :starred
 
   feature_category :projects
+  urgency :low, [:starred]
 
   def index
     respond_to do |format|

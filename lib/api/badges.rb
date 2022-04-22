@@ -32,7 +32,7 @@ module API
         params do
           use :pagination
         end
-        get ":id/badges" do
+        get ":id/badges", urgency: :default do
           source = find_source(source_type, params[:id])
 
           badges = source.badges

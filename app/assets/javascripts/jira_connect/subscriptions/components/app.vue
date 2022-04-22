@@ -7,8 +7,8 @@ import AccessorUtilities from '~/lib/utils/accessor';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '../constants';
 import { SET_ALERT } from '../store/mutation_types';
-import SignInPage from '../pages/sign_in.vue';
-import SubscriptionsPage from '../pages/subscriptions.vue';
+import SignInPage from '../pages/sign_in/sign_in_page.vue';
+import SubscriptionsPage from '../pages/subscriptions_page.vue';
 import UserLink from './user_link.vue';
 import CompatibilityAlert from './compatibility_alert.vue';
 import BrowserSupportAlert from './browser_support_alert.vue';
@@ -111,7 +111,6 @@ export default {
 
     <user-link :user-signed-in="userSignedIn" :has-subscriptions="hasSubscriptions" :user="user" />
 
-    <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
     <div class="gl-layout-w-limited gl-mx-auto gl-px-5 gl-mb-7">
       <sign-in-page
         v-if="!userSignedIn"

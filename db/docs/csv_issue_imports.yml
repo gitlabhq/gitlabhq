@@ -4,6 +4,6 @@ classes:
 - Issues::CsvImport
 feature_categories:
 - importers
-description: TODO
+description: Used to report the unique user usage of the CSV Issue Import feature
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44742
 milestone: '13.6'

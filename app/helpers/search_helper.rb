@@ -374,8 +374,6 @@ module SearchHelper
         autocomplete: 'off'
       }
 
-    opts[:data]['runner-tags-endpoint'] = tag_list_admin_runners_path
-
     if @project.present?
       opts[:data]['project-id'] = @project.id
       opts[:data]['labels-endpoint'] = project_labels_path(@project)

@@ -3,8 +3,6 @@
 module Groups
   module Settings
     class CiCdController < Groups::ApplicationController
-      include RunnerSetupScripts
-
       layout 'group_settings'
       skip_cross_project_access_check :show
       before_action :authorize_admin_group!
@@ -14,15 +12,7 @@ module Groups
 
       feature_category :continuous_integration
 
-      NUMBER_OF_RUNNERS_PER_PAGE = 4
-
       def show
-        runners_finder = Ci::RunnersFinder.new(current_user: current_user, params: params.merge({ group: @group }))
-        # We need all runners for count
-        @all_group_runners = runners_finder.execute.except(:limit, :offset)
-        @group_runners = runners_finder.execute.page(params[:page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
-
-        @sort = runners_finder.sort_key
       end
 
       def update
@@ -35,13 +25,6 @@ module Groups
         redirect_to group_settings_ci_cd_path
       end
 
-      def reset_registration_token
-        ::Ci::Runners::ResetRegistrationTokenService.new(@group, current_user).execute
-
-        flash[:notice] = _('GroupSettings|New runners registration token has been generated!')
-        redirect_to group_settings_ci_cd_path
-      end
-
       def update_auto_devops
         if auto_devops_service.execute
           flash[:notice] = s_('GroupSettings|Auto DevOps pipeline was updated for the group')
@@ -50,10 +33,6 @@ module Groups
         end
 
         redirect_to group_settings_ci_cd_path
-      end
-
-      def runner_setup_scripts
-        private_runner_setup_scripts
       end
 
       private

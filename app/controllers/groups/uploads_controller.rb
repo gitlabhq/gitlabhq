@@ -10,6 +10,7 @@ class Groups::UploadsController < Groups::ApplicationController
   before_action :verify_workhorse_api!, only: [:authorize]
 
   feature_category :subgroups
+  urgency :low, [:show]
 
   private
 

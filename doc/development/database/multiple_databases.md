@@ -74,7 +74,14 @@ in GitLab 14.1. This feature is still under development, and is not ready for pr
 
 ### Configure single database
 
-By default, GDK is configured to run with multiple databases. To configure GDK to use a single database:
+By default, GDK is configured to run with multiple databases.
+
+WARNING:
+Switching back-and-forth between single and multiple databases in
+the same development instance is discouraged. Any data in the `ci`
+database will not be accessible in single database mode. For single database, you should use a separate development instance.
+
+To configure GDK to use a single database:
 
 1. On the GDK root directory, run:
 

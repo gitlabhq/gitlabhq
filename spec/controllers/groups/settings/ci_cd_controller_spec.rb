@@ -6,14 +6,7 @@ RSpec.describe Groups::Settings::CiCdController do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:sub_group) { create(:group, parent: group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:project_2) { create(:project, group: sub_group) }
-  let_it_be(:runner_group) { create(:ci_runner, :group, groups: [group]) }
-  let_it_be(:runner_project_1) { create(:ci_runner, :project, projects: [project])}
-  let_it_be(:runner_project_2) { create(:ci_runner, :project, projects: [project_2])}
-  let_it_be(:runner_project_3) { create(:ci_runner, :project, projects: [project, project_2])}
 
   before do
     sign_in(user)
@@ -25,23 +18,11 @@ RSpec.describe Groups::Settings::CiCdController do
         group.add_owner(user)
       end
 
-      it 'renders show with 200 status code and correct runners' do
+      it 'renders show with 200 status code' do
         get :show, params: { group_id: group }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:show)
-        expect(assigns(:group_runners)).to match_array([runner_group, runner_project_1, runner_project_2, runner_project_3])
-      end
-
-      it 'paginates runners' do
-        stub_const("Groups::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE", 1)
-
-        create(:ci_runner)
-
-        get :show, params: { group_id: group }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:group_runners).count).to be(1)
       end
     end
 
@@ -54,7 +35,6 @@ RSpec.describe Groups::Settings::CiCdController do
         get :show, params: { group_id: group }
 
         expect(response).to have_gitlab_http_status(:not_found)
-        expect(assigns(:group_runners)).to be_nil
       end
     end
 
@@ -68,38 +48,6 @@ RSpec.describe Groups::Settings::CiCdController do
         get :show, params: { group_id: group }
 
         expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-  end
-
-  describe 'PUT #reset_registration_token' do
-    subject { put :reset_registration_token, params: { group_id: group } }
-
-    context 'when user is owner' do
-      before do
-        group.add_owner(user)
-      end
-
-      it 'resets runner registration token' do
-        expect { subject }.to change { group.reload.runners_token }
-      end
-
-      it 'redirects the user to admin runners page' do
-        subject
-
-        expect(response).to redirect_to(group_settings_ci_cd_path)
-      end
-    end
-
-    context 'when user is not owner' do
-      before do
-        group.add_maintainer(user)
-      end
-
-      it 'renders a 404' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -234,27 +182,6 @@ RSpec.describe Groups::Settings::CiCdController do
           end
         end
       end
-    end
-  end
-
-  describe 'GET #runner_setup_scripts' do
-    before do
-      group.add_owner(user)
-    end
-
-    it 'renders the setup scripts' do
-      get :runner_setup_scripts, params: { os: 'linux', arch: 'amd64', group_id: group }
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to have_key("install")
-      expect(json_response).to have_key("register")
-    end
-
-    it 'renders errors if they occur' do
-      get :runner_setup_scripts, params: { os: 'foo', arch: 'bar', group_id: group }
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response).to have_key("errors")
     end
   end
 end

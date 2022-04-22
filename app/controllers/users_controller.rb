@@ -35,6 +35,7 @@ class UsersController < ApplicationController
 
   # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357914
   urgency :low, [:show, :calendar_activities]
+  urgency :high, [:exists]
 
   def show
     respond_to do |format|

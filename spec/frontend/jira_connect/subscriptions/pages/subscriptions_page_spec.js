@@ -1,6 +1,6 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions.vue';
+import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions_page.vue';
 import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
 import createStore from '~/jira_connect/subscriptions/store';
@@ -19,6 +19,9 @@ describe('SubscriptionsPage', () => {
     wrapper = shallowMount(SubscriptionsPage, {
       store,
       propsData: props,
+      stubs: {
+        GlEmptyState,
+      },
     });
   };
 

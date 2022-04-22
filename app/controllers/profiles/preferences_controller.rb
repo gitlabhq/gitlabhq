@@ -4,6 +4,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   before_action :user
 
   feature_category :users
+  urgency :medium, [:update]
 
   def show
   end

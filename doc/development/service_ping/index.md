@@ -22,7 +22,7 @@ and sales teams understand how GitLab is used. The data helps to:
 Service Ping information is not anonymous. It's linked to the instance's hostname, but does
 not contain project names, usernames, or any other specific data.
 
-Sending a Service Ping payload is optional and you can [disable](#disable-service-ping) it on any
+Sending a Service Ping payload is optional and you can [disable](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics) it on any
 self-managed instance. When Service Ping is enabled, GitLab gathers data from the other instances
 and can show your instance's usage statistics to your users.
 
@@ -38,23 +38,6 @@ We use the following terminology to describe the Service Ping components:
 - **MAU**: monthly active users.
 - **WAU**: weekly active users.
 
-### Why enable Service Ping?
-
-The main purpose of Service Ping is to build a better GitLab. We collect data about how GitLab is used
-to understand feature or stage adoption and usage. This data gives an insight into how GitLab adds
-value and helps our team understand the reasons why people use GitLab, and with this knowledge we're able to
-make better product decisions.
-
-There are several other benefits to enabling Service Ping:
-
-- As a benefit of having Service Ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
-- As a benefit of having Service Ping active, GitLab provides you with [DevOps Score](../../user/admin_area/analytics/dev_ops_reports.md#devops-score), which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
-- You get better, more proactive support (assuming that our TAMs and support organization used the data to deliver more value).
-- You get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
-- You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
-- Service Ping is enabled by default. To disable it, see [Disable Service Ping](#disable-service-ping).
-- When Service Ping is enabled, you have the option to participate in our [Registration Features Program](#registration-features-program) and receive free paid features.
-
 ### Limitations
 
 - Service Ping does not track frontend events things like page views, link clicks, or user sessions.
@@ -64,107 +47,6 @@ Because of these limitations we recommend you:
 
 - Instrument your products with Snowplow for more detailed analytics on GitLab.com.
 - Use Service Ping to track aggregated backend events on self-managed instances.
-
-### Registration Features Program
-
-> Introduced in GitLab 14.1.
-
-In GitLab versions 14.1 and later, GitLab Free customers with a self-managed instance running
-[GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us
-activity data through Service Ping. Features introduced here do not remove the feature from its paid
-tier. Users can continue to access the features in a paid tier without sharing usage data.
-
-#### Features available in 14.1 and later
-
-1. [Email from GitLab](../../user/admin_area/email_from_gitlab.md).
-
-#### Features available in 14.4 and later
-
-1. [Repository size limit](../../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit).
-1. [Restrict group access by IP address](../../user/group/index.md#restrict-group-access-by-ip-address).
-
-NOTE:
-Registration is not yet required for participation, but will be added in a future milestone.
-
-#### Enable Registration Features
-
-1. Sign in as a user with administrator access.
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
-1. Expand the **Usage statistics** section.
-1. If not enabled, select the **Enable Service Ping** checkbox.
-1. Select the **Enable Registration Features** checkbox.
-1. Select **Save changes**.
-
-## View the Service Ping payload **(FREE SELF)**
-
-You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
-
-1. Sign in as a user with administrator access.
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
-1. Expand the **Usage statistics** section.
-1. Select **Preview payload**.
-
-For an example payload, see [Example Service Ping payload](#example-service-ping-payload).
-
-## Disable Service Ping **(FREE SELF)**
-
-NOTE:
-The method to disable Service Ping in the GitLab configuration file does not work in
-GitLab versions 9.3 to 13.12.3. See the [troubleshooting section](#cannot-disable-service-ping-using-the-configuration-file)
-on how to disable it.
-
-You can disable Service Ping either using the GitLab UI, or editing the GitLab
-configuration file.
-
-### Disable Service Ping using the UI
-
-To disable Service Ping in the GitLab UI:
-
-1. Sign in as a user with administrator access.
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
-1. Expand the **Usage statistics** section.
-1. Clear the **Enable Service Ping** checkbox.
-1. Select **Save changes**.
-
-### Disable Service Ping using the configuration file
-
-To disable Service Ping and prevent it from being configured in the future through
-the Admin Area:
-
-**For installations using the Linux package:**
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['usage_ping_enabled'] = false
-   ```
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-**For installations from source:**
-
-1. Edit `/home/git/gitlab/config/gitlab.yml`:
-
-   ```yaml
-   production: &base
-     # ...
-     gitlab:
-       # ...
-       usage_ping_enabled: false
-   ```
-
-1. Restart GitLab:
-
-   ```shell
-   sudo service gitlab restart
-   ```
 
 ## Service Ping request flow
 
@@ -579,28 +461,6 @@ To skip database write operations, DevOps report creation, and storage of usage 
 skip_db_write:
 ServicePing::SubmitService.new(skip_db_write: true).execute
 ```
-
-## Manually upload Service Ping payload
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83265) in GitLab 14.10.
-
-Service Ping payload can be uploaded to GitLab even if your application instance doesn't have access to the internet,
-or you don't have Service Ping [cron job](#how-service-ping-works) enabled.
-
-To upload payload manually:
-
-1. Sign in as a user with administrator access.
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Service** usage data.
-1. Select **Download payload**.
-1. Save the JSON file.
-1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).
-1. Select **Choose file** and choose the file from p5.
-1. Select **Upload**.
-
-The uploaded file is encrypted and sent using secure [HTTPS protocol](https://en.wikipedia.org/wiki/HTTPS). HTTPS creates a secure
-communication channel between web browser and the server, and protects transmitted data against man-in-the-middle attacks.
 
 ## Monitoring
 

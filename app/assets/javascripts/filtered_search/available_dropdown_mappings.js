@@ -1,18 +1,15 @@
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 import { mergeUrlParams } from '../lib/utils/url_utility';
-import DropdownAjaxFilter from './dropdown_ajax_filter';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownHint from './dropdown_hint';
 import DropdownNonUser from './dropdown_non_user';
 import DropdownOperator from './dropdown_operator';
 import DropdownUser from './dropdown_user';
 import DropdownUtils from './dropdown_utils';
-import NullDropdown from './null_dropdown';
 
 export default class AvailableDropdownMappings {
   constructor({
     container,
-    runnerTagsEndpoint,
     labelsEndpoint,
     milestonesEndpoint,
     releasesEndpoint,
@@ -22,7 +19,6 @@ export default class AvailableDropdownMappings {
     includeDescendantGroups,
   }) {
     this.container = container;
-    this.runnerTagsEndpoint = runnerTagsEndpoint;
     this.labelsEndpoint = labelsEndpoint;
     this.milestonesEndpoint = milestonesEndpoint;
     this.releasesEndpoint = releasesEndpoint;
@@ -135,25 +131,6 @@ export default class AvailableDropdownMappings {
         gl: DropdownNonUser,
         element: this.container.querySelector('#js-dropdown-confidential'),
       },
-      status: {
-        reference: null,
-        gl: NullDropdown,
-        element: this.container.querySelector('#js-dropdown-admin-runner-status'),
-      },
-      type: {
-        reference: null,
-        gl: NullDropdown,
-        element: this.container.querySelector('#js-dropdown-admin-runner-type'),
-      },
-      tag: {
-        reference: null,
-        gl: DropdownAjaxFilter,
-        extraArguments: {
-          endpoint: this.getRunnerTagsEndpoint(),
-          symbol: '~',
-        },
-        element: this.container.querySelector('#js-dropdown-runner-tag'),
-      },
       'target-branch': {
         reference: null,
         gl: DropdownNonUser,
@@ -200,10 +177,6 @@ export default class AvailableDropdownMappings {
     }
 
     return endpoint;
-  }
-
-  getRunnerTagsEndpoint() {
-    return `${this.runnerTagsEndpoint}.json`;
   }
 
   getMergeRequestTargetBranchesEndpoint() {

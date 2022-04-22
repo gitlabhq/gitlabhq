@@ -129,7 +129,9 @@ describe('Job App', () => {
           const aYearAgo = new Date();
           aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
 
-          return setupAndMount({ jobData: { started: aYearAgo.toISOString() } });
+          return setupAndMount({
+            jobData: { started: aYearAgo.toISOString(), started_at: aYearAgo.toISOString() },
+          });
         });
 
         it('should render provided job information', () => {

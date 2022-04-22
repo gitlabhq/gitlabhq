@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlTruncate } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -76,8 +76,8 @@ describe('ProjectsDropdownFilter component', () => {
 
   const findHighlightedItems = () => wrapper.findByTestId('vsa-highlighted-items');
   const findUnhighlightedItems = () => wrapper.findByTestId('vsa-default-items');
-  const findHighlightedItemsTitle = () => wrapper.findByText('Selected');
   const findClearAllButton = () => wrapper.findByText('Clear all');
+  const findSelectedProjectsLabel = () => wrapper.findComponent(GlTruncate);
 
   const findDropdown = () => wrapper.find(GlDropdown);
 
@@ -158,8 +158,8 @@ describe('ProjectsDropdownFilter component', () => {
         expect(findSelectedDropdownItems().length).toBe(0);
       });
 
-      it('does not render the highlighted items title', () => {
-        expect(findHighlightedItemsTitle().exists()).toBe(false);
+      it('renders the default project label text', () => {
+        expect(findSelectedProjectsLabel().text()).toBe('Select projects');
       });
 
       it('does not render the clear all button', () => {
@@ -180,7 +180,7 @@ describe('ProjectsDropdownFilter component', () => {
       });
 
       it('renders the highlighted items title', () => {
-        expect(findHighlightedItemsTitle().exists()).toBe(true);
+        expect(findSelectedProjectsLabel().text()).toBe(projects[0].name);
       });
 
       it('renders the clear all button', () => {
@@ -190,13 +190,12 @@ describe('ProjectsDropdownFilter component', () => {
       it('clears all selected items when the clear all button is clicked', async () => {
         await selectDropdownItemAtIndex(1);
 
-        expect(wrapper.text()).toContain('2 projects selected');
+        expect(findSelectedProjectsLabel().text()).toBe('2 projects selected');
 
         findClearAllButton().trigger('click');
         await nextTick();
 
-        expect(wrapper.text()).not.toContain('2 projects selected');
-        expect(wrapper.text()).toContain('Select projects');
+        expect(findSelectedProjectsLabel().text()).toBe('Select projects');
       });
     });
   });

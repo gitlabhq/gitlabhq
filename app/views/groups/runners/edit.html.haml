@@ -1,11 +1,7 @@
 - breadcrumb_title _('Edit')
 - page_title _('Edit'), "##{@runner.id} (#{@runner.short_sha})"
 
-- if Feature.enabled?(:runner_list_group_view_vue_ui, @group, default_enabled: :yaml)
-  - add_to_breadcrumbs _('Runners'), group_runners_path(@group)
-- else
-  - add_to_breadcrumbs _('CI/CD Settings'), group_settings_ci_cd_path(@group)
-
+- add_to_breadcrumbs _('Runners'), group_runners_path(@group)
 - add_to_breadcrumbs "#{@runner.short_sha}", group_runner_path(@group, @runner)
 
 

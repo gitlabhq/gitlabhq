@@ -19,6 +19,11 @@ export default {
       type: String,
       required: true,
     },
+    runnerUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -40,6 +45,11 @@ export default {
       },
     },
   },
+  computed: {
+    loading() {
+      return this.$apollo.queries.runner.loading;
+    },
+  },
   errorCaptured(error) {
     this.reportToSentry(error);
   },
@@ -53,6 +63,11 @@ export default {
 <template>
   <div>
     <runner-header v-if="runner" :runner="runner" />
-    <runner-update-form :runner="runner" class="gl-my-5" />
+    <runner-update-form
+      :loading="loading"
+      :runner="runner"
+      :runner-url="runnerUrl"
+      class="gl-my-5"
+    />
   </div>
 </template>

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Namespaces
+module Users
   class InProductMarketingEmailRecords
     attr_reader :records
 
@@ -13,9 +13,10 @@ module Namespaces
       @records = []
     end
 
-    def add(user, track, series)
+    def add(user, campaign: nil, track: nil, series: nil)
       @records << Users::InProductMarketingEmail.new(
         user: user,
+        campaign: campaign,
         track: track,
         series: series,
         created_at: Time.zone.now,

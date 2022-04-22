@@ -2,6 +2,7 @@
 
 class Profiles::KeysController < Profiles::ApplicationController
   feature_category :users
+  urgency :low, [:create]
 
   def index
     @keys = current_user.keys.order_id_desc

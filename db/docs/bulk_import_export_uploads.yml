@@ -4,6 +4,6 @@ classes:
 - BulkImports::ExportUpload
 feature_categories:
 - importers
-description: TODO
+description: Used to store information of the exported files containing the data of groups or projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59976
 milestone: '13.12'

@@ -1,8 +1,5 @@
-import initTree from 'ee_else_ce/repository';
-import Activities from '~/activities';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import { BlobViewer } from '~/blob/viewer';
-import { initUploadForm } from '~/blob_edit/blob_bundle';
+
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import leaveByUrl from '~/namespaces/leave_by_url';
@@ -10,33 +7,38 @@ import initVueNotificationsDropdown from '~/notifications';
 import Star from '~/projects/star';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
-import UserCallout from '~/user_callout';
-
-initReadMore();
-new Star(); // eslint-disable-line no-new
-
-// eslint-disable-next-line no-new
-new UserCallout({
-  setCalloutPerProject: false,
-  className: 'js-autodevops-banner',
-});
 
 // Project show page loads different overview content based on user preferences
-
 if (document.querySelector('.js-upload-blob-form')) {
-  initUploadForm();
+  import(/* webpackChunkName: 'blobBundle' */ '~/blob_edit/blob_bundle')
+    .then(({ initUploadForm }) => {
+      initUploadForm();
+    })
+    .catch(() => {});
 }
 
 if (document.getElementById('js-tree-list')) {
-  initTree();
+  import(/* webpackChunkName: 'treeList' */ 'ee_else_ce/repository')
+    .then(({ default: initTree }) => {
+      initTree();
+    })
+    .catch(() => {});
 }
 
 if (document.querySelector('.blob-viewer')) {
-  new BlobViewer(); // eslint-disable-line no-new
+  import(/* webpackChunkName: 'blobViewer' */ '~/blob/viewer')
+    .then(({ BlobViewer }) => {
+      new BlobViewer(); // eslint-disable-line no-new
+    })
+    .catch(() => {});
 }
 
 if (document.querySelector('.project-show-activity')) {
-  new Activities(); // eslint-disable-line no-new
+  import(/* webpackChunkName: 'activitiesList' */ '~/activities')
+    .then(({ default: Activities }) => {
+      new Activities(); // eslint-disable-line no-new
+    })
+    .catch(() => {});
 }
 
 leaveByUrl('project');
@@ -48,3 +50,18 @@ new ShortcutsNavigation(); // eslint-disable-line no-new
 initUploadFileTrigger();
 initInviteMembersModal();
 initInviteMembersTrigger();
+
+initReadMore();
+new Star(); // eslint-disable-line no-new
+
+if (document.querySelector('.js-autodevops-banner')) {
+  import(/* webpackChunkName: 'userCallOut' */ '~/user_callout')
+    .then(({ default: UserCallout }) => {
+      // eslint-disable-next-line no-new
+      new UserCallout({
+        setCalloutPerProject: false,
+        className: 'js-autodevops-banner',
+      });
+    })
+    .catch(() => {});
+}

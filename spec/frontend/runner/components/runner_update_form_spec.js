@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlForm } from '@gitlab/ui';
+import { GlForm, GlSkeletonLoader } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -33,8 +33,7 @@ describe('RunnerUpdateForm', () => {
   const findProtectedCheckbox = () => wrapper.findByTestId('runner-field-protected');
   const findRunUntaggedCheckbox = () => wrapper.findByTestId('runner-field-run-untagged');
   const findLockedCheckbox = () => wrapper.findByTestId('runner-field-locked');
-
-  const findIpInput = () => wrapper.findByTestId('runner-field-ip-address').find('input');
+  const findFields = () => wrapper.findAll('[data-testid^="runner-field"');
 
   const findDescriptionInput = () => wrapper.findByTestId('runner-field-description').find('input');
   const findMaxJobTimeoutInput = () =>
@@ -53,7 +52,6 @@ describe('RunnerUpdateForm', () => {
       : ACCESS_LEVEL_NOT_PROTECTED,
     runUntagged: findRunUntaggedCheckbox().element.checked,
     locked: findLockedCheckbox().element?.checked || false,
-    ipAddress: findIpInput().element.value,
     maximumTimeout: findMaxJobTimeoutInput().element.value || null,
     tagList: findTagsInput().element.value.split(',').filter(Boolean),
   });
@@ -142,7 +140,12 @@ describe('RunnerUpdateForm', () => {
 
   describe('When data is being loaded', () => {
     beforeEach(() => {
-      createComponent({ props: { runner: null } });
+      createComponent({ props: { loading: true } });
+    });
+
+    it('Form skeleton is shown', () => {
+      expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
+      expect(findFields()).toHaveLength(0);
     });
 
     it('Form cannot be submitted', () => {
@@ -151,11 +154,12 @@ describe('RunnerUpdateForm', () => {
 
     it('Form is updated when data loads', async () => {
       wrapper.setProps({
-        runner: mockRunner,
+        loading: false,
       });
 
       await nextTick();
 
+      expect(findFields()).not.toHaveLength(0);
       expect(mockRunner).toMatchObject(getFieldsModel());
     });
   });

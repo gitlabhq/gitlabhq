@@ -30,7 +30,7 @@ module API
         use :pagination
         use :optional_list_params_ee
       end
-      get feature_category: :subgroups do
+      get feature_category: :subgroups, urgency: :low do
         owned_only = params[:owned_only] == true
 
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces(owned_only: owned_only)

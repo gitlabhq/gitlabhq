@@ -138,4 +138,4 @@ variables:
 
 include:
   - local: .gitlab/ci/*.gitlab-ci.yml
-  - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/.gitlab-ci-template.yml'
+  - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/templates/merge_request_pipelines.yml'

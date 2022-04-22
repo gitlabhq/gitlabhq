@@ -196,7 +196,7 @@ module API
 
         use :optional_params
       end
-      post feature_category: :subgroups do
+      post feature_category: :subgroups, urgency: :low do
         parent_group = find_group!(params[:parent_id]) if params[:parent_id].present?
         if parent_group
           authorize! :create_subgroup, parent_group
@@ -229,7 +229,7 @@ module API
         use :optional_update_params
         use :optional_update_params_ee
       end
-      put ':id', feature_category: :subgroups do
+      put ':id', feature_category: :subgroups, urgency: :low do
         group = find_group!(params[:id])
         group.preload_shared_group_links
 

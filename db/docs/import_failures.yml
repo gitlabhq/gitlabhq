@@ -4,6 +4,6 @@ classes:
 - ImportFailure
 feature_categories:
 - importers
-description: TODO
+description: Used to store group or project import failures that occur when using the Import/Export feature
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20727
 milestone: '12.6'

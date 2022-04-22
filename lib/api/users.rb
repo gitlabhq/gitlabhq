@@ -1080,7 +1080,7 @@ module API
       params do
         use :pagination
       end
-      get "emails", feature_category: :users do
+      get "emails", feature_category: :users, urgency: :high do
         present paginate(current_user.emails), with: Entities::Email
       end
 

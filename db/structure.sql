@@ -15888,10 +15888,13 @@ CREATE TABLE in_product_marketing_emails (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     cta_clicked_at timestamp with time zone,
-    track smallint NOT NULL,
-    series smallint NOT NULL,
+    track smallint,
+    series smallint,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    campaign text,
+    CONSTRAINT check_9d8b29f74f CHECK ((char_length(campaign) <= 255)),
+    CONSTRAINT in_product_marketing_emails_track_and_series_or_campaign CHECK ((((track IS NOT NULL) AND (series IS NOT NULL) AND (campaign IS NULL)) OR ((track IS NULL) AND (series IS NULL) AND (campaign IS NOT NULL))))
 );
 
 CREATE SEQUENCE in_product_marketing_emails_id_seq
@@ -27909,6 +27912,8 @@ CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USI
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
 
 CREATE INDEX index_imported_projects_on_import_type_id ON projects USING btree (import_type, id) WHERE (import_type IS NOT NULL);
+
+CREATE UNIQUE INDEX index_in_product_marketing_emails_on_user_campaign ON in_product_marketing_emails USING btree (user_id, campaign);
 
 CREATE INDEX index_in_product_marketing_emails_on_user_id ON in_product_marketing_emails USING btree (user_id);
 

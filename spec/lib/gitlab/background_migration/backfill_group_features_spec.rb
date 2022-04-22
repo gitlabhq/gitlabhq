@@ -6,7 +6,15 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillGroupFeatures, :migration, s
   let(:group_features) { table(:group_features) }
   let(:namespaces) { table(:namespaces) }
 
-  subject { described_class.new(connection: ActiveRecord::Base.connection) }
+  subject do
+    described_class.new(start_id: 1,
+                        end_id: 4,
+                        batch_table: :namespaces,
+                        batch_column: :id,
+                        sub_batch_size: 10,
+                        pause_ms: 0,
+                        connection: ActiveRecord::Base.connection)
+  end
 
   describe '#perform' do
     it 'creates settings for all group namespaces in range' do
@@ -19,7 +27,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillGroupFeatures, :migration, s
       group_features.create!(id: 1, group_id: 4)
       expect(group_features.count).to eq 1
 
-      expect { subject.perform(1, 4, :namespaces, :id, 10, 0, 4) }.to change { group_features.count }.by(2)
+      expect { subject.perform(4) }.to change { group_features.count }.by(2)
 
       expect(group_features.count).to eq 3
       expect(group_features.all.pluck(:group_id)).to contain_exactly(1, 3, 4)

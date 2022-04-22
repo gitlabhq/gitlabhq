@@ -267,7 +267,7 @@ module API
         use :optional_create_project_params
         use :create_params
       end
-      post do
+      post urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)

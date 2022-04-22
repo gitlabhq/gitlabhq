@@ -328,7 +328,6 @@ RSpec.describe SearchHelper do
       end
 
       it 'includes project endpoints' do
-        expect(search_filter_input_options('')[:data]['runner-tags-endpoint']).to eq(tag_list_admin_runners_path)
         expect(search_filter_input_options('')[:data]['labels-endpoint']).to eq(project_labels_path(@project))
         expect(search_filter_input_options('')[:data]['milestones-endpoint']).to eq(project_milestones_path(@project))
         expect(search_filter_input_options('')[:data]['releases-endpoint']).to eq(project_releases_path(@project))
@@ -349,7 +348,6 @@ RSpec.describe SearchHelper do
       end
 
       it 'includes group endpoints' do
-        expect(search_filter_input_options('')[:data]['runner-tags-endpoint']).to eq(tag_list_admin_runners_path)
         expect(search_filter_input_options('')[:data]['labels-endpoint']).to eq(group_labels_path(@group))
         expect(search_filter_input_options('')[:data]['milestones-endpoint']).to eq(group_milestones_path(@group))
       end
@@ -362,7 +360,6 @@ RSpec.describe SearchHelper do
       end
 
       it 'includes dashboard endpoints' do
-        expect(search_filter_input_options('')[:data]['runner-tags-endpoint']).to eq(tag_list_admin_runners_path)
         expect(search_filter_input_options('')[:data]['labels-endpoint']).to eq(dashboard_labels_path)
         expect(search_filter_input_options('')[:data]['milestones-endpoint']).to eq(dashboard_milestones_path)
       end

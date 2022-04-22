@@ -9,7 +9,6 @@ import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
   constructor({
-    runnerTagsEndpoint = '',
     labelsEndpoint = '',
     milestonesEndpoint = '',
     iterationsEndpoint = '',
@@ -26,7 +25,6 @@ export default class FilteredSearchDropdownManager {
     const removeTrailingSlash = (url) => url.replace(/\/$/, '');
 
     this.container = FilteredSearchContainer.container;
-    this.runnerTagsEndpoint = removeTrailingSlash(runnerTagsEndpoint);
     this.labelsEndpoint = removeTrailingSlash(labelsEndpoint);
     this.milestonesEndpoint = removeTrailingSlash(milestonesEndpoint);
     this.iterationsEndpoint = removeTrailingSlash(iterationsEndpoint);

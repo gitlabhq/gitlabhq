@@ -114,7 +114,6 @@ export default class FilteredSearchManager {
       this.tokenizer = FilteredSearchTokenizer;
 
       const {
-        runnerTagsEndpoint = '',
         labelsEndpoint = '',
         milestonesEndpoint = '',
         releasesEndpoint = '',
@@ -124,7 +123,6 @@ export default class FilteredSearchManager {
       } = this.filteredSearchInput.dataset;
 
       this.dropdownManager = new FilteredSearchDropdownManager({
-        runnerTagsEndpoint,
         labelsEndpoint,
         milestonesEndpoint,
         releasesEndpoint,
