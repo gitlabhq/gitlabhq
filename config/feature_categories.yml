@@ -32,6 +32,7 @@
 - continuous_integration
 - continuous_integration_scaling
 - continuous_verification
+- credential_management
 - database
 - dataops
 - delivery
@@ -87,6 +88,7 @@
 - package_registry
 - pages
 - performance_testing
+- permissions
 - pipeline_authoring
 - planning_analytics
 - portfolio_management
@@ -118,8 +120,10 @@
 - static_application_security_testing
 - static_site_editor
 - subgroups
+- system_access
 - team_planning
 - tracing
+- user_management
 - users
 - utilization
 - value_stream_management

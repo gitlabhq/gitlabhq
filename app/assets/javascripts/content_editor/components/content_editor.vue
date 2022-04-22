@@ -4,8 +4,8 @@ import { createContentEditor } from '../services/create_content_editor';
 import ContentEditorAlert from './content_editor_alert.vue';
 import ContentEditorProvider from './content_editor_provider.vue';
 import EditorStateObserver from './editor_state_observer.vue';
-import FormattingBubbleMenu from './formatting_bubble_menu.vue';
-import CodeBlockBubbleMenu from './code_block_bubble_menu.vue';
+import FormattingBubbleMenu from './bubble_menus/formatting.vue';
+import CodeBlockBubbleMenu from './bubble_menus/code_block.vue';
 import TopToolbar from './top_toolbar.vue';
 import LoadingIndicator from './loading_indicator.vue';
 

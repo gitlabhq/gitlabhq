@@ -4543,6 +4543,25 @@ Input type: `TimelineEventUpdateInput`
 | <a id="mutationtimelineeventupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationtimelineeventupdatetimelineevent"></a>`timelineEvent` | [`TimelineEventType`](#timelineeventtype) | Timeline event. |
 
+### `Mutation.timelogDelete`
+
+Input type: `TimelogDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelogdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelogdeleteid"></a>`id` | [`TimelogID!`](#timelogid) | Global ID of the timelog. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelogdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelogdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationtimelogdeletetimelog"></a>`timelog` | [`Timelog`](#timelog) | Deleted timelog. |
+
 ### `Mutation.todoCreate`
 
 Input type: `TodoCreateInput`
@@ -16591,6 +16610,7 @@ Describes an incident management timeline event.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="timelogid"></a>`id` | [`ID!`](#id) | Internal ID of the timelog. |
 | <a id="timelogissue"></a>`issue` | [`Issue`](#issue) | Issue that logged time was added to. |
 | <a id="timelogmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that logged time was added to. |
 | <a id="timelognote"></a>`note` | [`Note`](#note) | Note where the quick action was executed to add the logged time. |
@@ -19823,6 +19843,12 @@ Time represented in ISO 8601.
 For example: "2021-03-09T14:58:50+00:00".
 
 See `https://www.iso.org/iso-8601-date-and-time-format.html`.
+
+### `TimelogID`
+
+A `TimelogID` is a global ID. It is encoded as a string.
+
+An example `TimelogID` is: `"gid://gitlab/Timelog/1"`.
 
 ### `TodoID`
 

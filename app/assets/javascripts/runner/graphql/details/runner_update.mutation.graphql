@@ -5,8 +5,6 @@
 
 mutation runnerUpdate($input: RunnerUpdateInput!) {
   runnerUpdate(input: $input) {
-    # We have an id in deep nested fragment
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     runner {
       ...RunnerDetails
     }

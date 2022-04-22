@@ -181,67 +181,6 @@ _The artifacts are stored by default in
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. [Migrate any existing local artifacts to the object storage](#migrating-to-object-storage).
 
-### OpenStack example
-
-See [the available connection settings for OpenStack](object_storage.md#openstack-compatible-connection-settings).
-
-**In Omnibus installations:**
-
-_The uploads are stored by default in
-`/var/opt/gitlab/gitlab-rails/shared/artifacts`._
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
-   the values you want:
-
-   ```ruby
-   gitlab_rails['artifacts_enabled'] = true
-   gitlab_rails['artifacts_object_store_enabled'] = true
-   gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
-   gitlab_rails['artifacts_object_store_connection'] = {
-    'provider' => 'OpenStack',
-    'openstack_username' => 'OS_USERNAME',
-    'openstack_api_key' => 'OS_PASSWORD',
-    'openstack_temp_url_key' => 'OS_TEMP_URL_KEY',
-    'openstack_auth_url' => 'https://auth.cloud.ovh.net',
-    'openstack_region' => 'GRA',
-    'openstack_tenant_id' => 'OS_TENANT_ID',
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. [Migrate any existing local artifacts to the object storage](#migrating-to-object-storage).
-
----
-
-**In installations from source:**
-
-_The uploads are stored by default in
-`/home/git/gitlab/shared/artifacts`._
-
-1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines:
-
-   ```yaml
-   uploads:
-     object_store:
-       enabled: true
-       direct_upload: false
-       background_upload: true
-       proxy_download: false
-       remote_directory: "artifacts"
-       connection:
-         provider: OpenStack
-         openstack_username: OS_USERNAME
-         openstack_api_key: OS_PASSWORD
-         openstack_temp_url_key: OS_TEMP_URL_KEY
-         openstack_auth_url: 'https://auth.cloud.ovh.net'
-         openstack_region: GRA
-         openstack_tenant_id: OS_TENANT_ID
-   ```
-
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. [Migrate any existing local artifacts to the object storage](#migrating-to-object-storage).
-
 ### Migrating to object storage
 
 After [configuring the object storage](#using-object-storage), use the following task to

@@ -84,6 +84,7 @@ export default {
     :suggestions="milestones"
     :suggestions-loading="loading"
     :get-active-token-value="getActiveMilestone"
+    v-bind="$attrs"
     @fetch-suggestions="fetchMilestones"
     v-on="$listeners"
   >

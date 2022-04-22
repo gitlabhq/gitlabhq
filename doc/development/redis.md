@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab uses [Redis](https://redis.io) for the following distinct purposes:
 
 - Caching (mostly via `Rails.cache`).
-- As a job processing queue with [Sidekiq](sidekiq_style_guide.md).
+- As a job processing queue with [Sidekiq](sidekiq/index.md).
 - To manage the shared application state.
 - To store CI trace chunks.
 - As a Pub/Sub queue backend for ActionCable.

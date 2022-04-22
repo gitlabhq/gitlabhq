@@ -9,11 +9,11 @@ import {
 } from '@gitlab/ui';
 import { BubbleMenu } from '@tiptap/vue-2';
 import { getParentByTagName } from '~/lib/utils/dom_utils';
-import codeBlockLanguageLoader from '../services/code_block_language_loader';
-import CodeBlockHighlight from '../extensions/code_block_highlight';
-import Diagram from '../extensions/diagram';
-import Frontmatter from '../extensions/frontmatter';
-import EditorStateObserver from './editor_state_observer.vue';
+import codeBlockLanguageLoader from '../../services/code_block_language_loader';
+import CodeBlockHighlight from '../../extensions/code_block_highlight';
+import Diagram from '../../extensions/diagram';
+import Frontmatter from '../../extensions/frontmatter';
+import EditorStateObserver from '../editor_state_observer.vue';
 
 const CODE_BLOCK_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name];
 

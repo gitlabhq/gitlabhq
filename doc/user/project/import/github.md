@@ -52,7 +52,7 @@ self-managed GitLab instance.
   pull requests) with matching GitLab users.
 - If you're importing to a self-managed GitLab instance, you can alternatively use the
   [GitHub Rake task](../../../administration/raketasks/github_import.md) to import
-  projects without the constraints of a [Sidekiq](../../../development/sidekiq_style_guide.md) worker.
+  projects without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
 - If you're importing from GitHub Enterprise to your self-managed GitLab instance:
   - You must first enable [GitHub integration](../../../integration/github.md).
   - To import projects from GitHub Enterprise to GitLab.com, use the [Import API](../../../api/import.md).

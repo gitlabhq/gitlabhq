@@ -6,6 +6,11 @@ module Types
 
     authorize :read_issue
 
+    field :id,
+          GraphQL::Types::ID,
+          null: false,
+          description: 'Internal ID of the timelog.'
+
     field :spent_at,
           Types::TimeType,
           null: true,

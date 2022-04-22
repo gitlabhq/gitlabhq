@@ -385,20 +385,57 @@ subgraph output:<br/>GLFM specification files
 end
 ```
 
+#### `canonicalize-html.rb` script
+
+The `scripts/glfm/canonicalize-html.rb` handles the
+["canonicalization" of HTML](#canonicalization-of-html). It is a pipe-through
+helper script which takes as input a static or WYSIWYG HTML string containing
+extra HTML, and outputs a canonical HTML string.
+
+It is implemented as a standalone, modular, single-purpose script, based on the
+[Unix philosophy](https://en.wikipedia.org/wiki/Unix_philosophy#:~:text=The%20Unix%20philosophy%20emphasizes%20building,developers%20other%20than%20its%20creators.).
+It's easy to use when running the standard CommonMark `spec_tests.py`
+script, which expects canonical HTML, against the GitLab renderer implementations.
+
+#### `run-spec-tests.sh` script
+
+`scripts/glfm/run-spec-tests.sh` is a convenience shell script which runs
+conformance specs via the CommonMark standard `spec_tests.py` script,
+which uses the `glfm_specification/output/spec.txt` file and `scripts/glfm/canonicalize-html.rb`
+helper script to test the GLFM renderer implementations' support for rendering Markdown
+specification examples to canonical HTML.
+
+```mermaid
+graph LR
+subgraph scripts:
+  A{run-spec-tests.sh} --> C
+  subgraph specification testing process
+    B[canonicalize-html.sh] --> C
+    C[spec_tests.py]
+  end
+end
+subgraph input
+  D[spec.txt GLFM specification] --> C
+  E((GLFM static<br/>renderer implementation)) --> B
+  F((GLFM WYSIWYG<br/>renderer implementation)) --> B
+end
+subgraph output:<br/>test results/output
+  C --> G[spec_tests.py output]
+end
+```
+
 #### `update-example-snapshots.rb` script
 
-The `scripts/glfm/update-example-snapshots.rb` script uses input specification
-files to update example snapshots:
+The `scripts/glfm/update-example-snapshots.rb` script uses the GLFM `spec.txt` specification
+file to update example snapshots:
 
 ```mermaid
 graph LR
 subgraph script:
   A{update-example-snapshots.rb}
 end
-subgraph input:<br/>input specification files
-  B[downloaded gfm_spec_v_0.29.txt] --> A
-  C[glfm_canonical_examples.txt] --> A
-  D[glfm_example_status.yml] --> A
+subgraph input:<br/>input specification file
+  B[spec.txt] --> A
 end
 subgraph output:<br/>example snapshot files
   A --> E[examples_index.yml]
@@ -437,7 +474,7 @@ code. It contains only shell scripting commands for the relevant
 graph LR
 subgraph script:
   A{run-snapshopt-tests.sh} --> B
-  B[relevant rspec/jest test files]
+  B[relevant rspec+jest test files]
 end
 subgraph input:<br/>YAML
   C[examples_index.yml] --> B
@@ -447,45 +484,6 @@ subgraph input:<br/>YAML
 end
 subgraph output:<br/>test results/output
   B --> G[rspec/jest output]
-end
-```
-
-#### `canonicalize-html.rb` script
-
-The `scripts/glfm/canonicalize-html.rb` handles the
-["canonicalization" of HTML](#canonicalization-of-html). It is a pipe-through
-helper script which takes as input a static or WYSIWYG HTML string containing
-extra HTML, and outputs a canonical HTML string.
-
-It is implemented as a standalone, modular, single-purpose script, based on the
-[Unix philosophy](https://en.wikipedia.org/wiki/Unix_philosophy#:~:text=The%20Unix%20philosophy%20emphasizes%20building,developers%20other%20than%20its%20creators.).
-It's easy to use when running the standard CommonMark `spec_tests.py`
-script, which expects canonical HTML, against the GitLab renderer implementations.
-
-#### `run-spec-tests.sh` script
-
-`scripts/glfm/run-spec-tests.sh` is a convenience shell script which runs
-conformance specs via the CommonMark standard `spec_tests.py` script,
-which uses the `glfm_specification/output/spec.txt` file and `scripts/glfm/canonicalize-html.rb`
-helper script to test the GLFM renderer implementations' support for rendering Markdown
-specification examples to canonical HTML.
-
-```mermaid
-graph LR
-subgraph scripts:
-  A{run-spec-tests.sh} --> C
-  subgraph specification testing process
-    B[canonicalize-html.sh] --> C
-    C[spec_tests.py]
-  end
-end
-subgraph input
-  D[spec.txt GLFM specification] --> C
-  E((GLFM static<br/>renderer implementation)) --> B
-  F((GLFM WYSIWYG<br/>renderer implementation)) --> B
-end
-subgraph output:<br/>test results/output
-  C --> G[spec_tests.py output]
 end
 ```
 
@@ -528,12 +526,14 @@ updated, as in the case of all GFM files.
 
 ```yaml
 07_99_an_example_with_incomplete_wysiwyg_implementation_1:
-  skip_update_example_snapshots: true
-  skip_running_snapshot_static_html_tests: false
-  skip_running_snapshot_wysiwyg_html_tests: true
-  skip_running_snapshot_prosemirror_json_tests: true
+  skip_update_example_snapshots: false
+  skip_update_example_snapshot_html_static: false
+  skip_update_example_snapshot_html_wysiwyg: false
   skip_running_conformance_static_tests: false
-  skip_running_conformance_wysiwyg_tests: true
+  skip_running_conformance_wysiwyg_tests: false
+  skip_running_snapshot_static_html_tests: false
+  skip_running_snapshot_wysiwyg_html_tests: false
+  skip_running_snapshot_prosemirror_json_tests: false
 ```
 
 #### Output specification files
@@ -634,7 +634,7 @@ for each entry in `spec/fixtures/glfm/example_snapshots/examples_index.yml`
 `spec/fixtures/glfm/example_snapshots/markdown.yml` sample entry:
 
 ```yaml
-06_04_inlines_emphasis_and_strong_emphasis_1: |-
+06_04_inlines_emphasis_and_strong_emphasis_1: |
   *foo bar*
 ```
 
@@ -670,11 +670,11 @@ Any exceptions or failures which occur when generating HTML are replaced with an
 
 ```yaml
 06_04_inlines_emphasis_and_strong_emphasis_1:
- canonical: |-
+ canonical: |
    <p><em>foo bar</em></p>
- static: |-
+ static: |
    <p data-sourcepos="1:1-1:9" dir="auto"><strong>foo bar</strong></p>
- wysiwyg: |-
+ wysiwyg: |
    <p><strong>foo bar</strong></p>
 ```
 
@@ -715,3 +715,28 @@ JSON for each entry in `spec/fixtures/glfm/example_snapshots/examples_index.yml`
     ]
   }
 ```
+
+## Workflows
+
+This section describes how the scripts can be used to manage the GLFM specification and tests.
+
+### Update the GLFM specification and run conformance tests
+
+1. Run [`update-specification.rb`](#update-specificationrb-script) to update the GLFM specification [output specification files](#output-specification-files).
+1. Visually inspect and confirm any resulting changes to the [output specification files](#output-specification-files).
+1. Run [`run-spec-tests.sh`](http://gdk.test:3005/ee/development/gitlab_flavored_markdown/specification_guide/index.html#run-spec-testssh-script) to run the conformance tests against the canonicalized GLFM specification.
+1. Commit any changes to the [output specification files](#output-specification-files).
+
+### Update the example snapshots and run snapshot tests
+
+1. If you are working on an in-progress feature or bug, make any necessary manual updates to the [input specification files](#input-specification-files). This may include:
+   1. Updating the canonical Markdown or HTML examples in `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt`.
+   1. Updating `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` to reflect the current status of the examples or tests.
+1. Run [`update-specification.rb`](#update-specificationrb-script) to update the `spec.txt` to reflect any changes which were made to the [input specification files](#input-specification-files).
+1. Visually inspect and confirm any resulting changes to the [output specification files](#output-specification-files).
+1. Run [`update-example-snapshots.rb`](#update-example-snapshotsrb-script) to update the [example snapshot files](#example-snapshot-files).
+1. Visually inspect and confirm any resulting changes to the [example snapshot files](#example-snapshot-files).
+1. Run [`run-snapshot-tests.sh`](#run-snapshot-testssh-script) as a convenience script to run all relevant frontend (RSpec) and backend (Jest) tests which use the example snapshots.
+   1. Any frontend or backend snapshot test may also be run individually.
+   1. All frontend and backend tests are also run as part of the continuous integration suite, as they normally are.
+1. Commit any changes to the [input specification files](#input-specification-files), [output specification files](#output-specification-files), or [example snapshot files](#example-snapshot-files).

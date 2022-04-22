@@ -67,5 +67,5 @@ The concept of [project-level](../../project/clusters/index.md),
 [instance-level](../../instance/clusters/index.md) clusters becomes
 extinct in the new model, although the functionality remains to some extent.
 
-The agent is always configured in a single GitLab project and you can expose the cluster connection to other projects and groups to [access it from GitLab CI/CD](../../clusters/agent/ci_cd_tunnel.md).
+The agent is always configured in a single GitLab project and you can expose the cluster connection to other projects and groups to [access it from GitLab CI/CD](../../clusters/agent/ci_cd_workflow.md).
 By doing so, you are granting these projects and groups access to the same cluster, which is similar to group-level clusters' use case.

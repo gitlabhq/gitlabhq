@@ -111,6 +111,21 @@ module SystemNoteService
     ::SystemNotes::TimeTrackingService.new(noteable: noteable, project: project, author: author).change_time_spent
   end
 
+  # Called when a timelog is removed from a Noteable
+  #
+  # noteable  - Noteable object
+  # project   - Project owning the noteable
+  # author    - User performing the change
+  # timelog   - The removed timelog
+  #
+  # Example Note text:
+  #   "deleted 2h 30m of time spent from 22-03-2022"
+  #
+  # Returns the created Note object
+  def remove_timelog(noteable, project, author, timelog)
+    ::SystemNotes::TimeTrackingService.new(noteable: noteable, project: project, author: author).remove_timelog(timelog)
+  end
+
   def close_after_error_tracking_resolve(issue, project, author)
     ::SystemNotes::IssuablesService.new(noteable: issue, project: project, author: author).close_after_error_tracking_resolve
   end

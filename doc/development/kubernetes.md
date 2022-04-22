@@ -54,7 +54,7 @@ webserver, and can lead to a denial-of-service (DoS) attack in GitLab as
 the Kubernetes cluster response times are outside of our control.
 
 The easiest way to ensure your calls happen a background process is to
-delegate any such work to happen in a [Sidekiq worker](sidekiq_style_guide.md).
+delegate any such work to happen in a [Sidekiq worker](sidekiq/index.md).
 
 You may want to make calls to Kubernetes and return the response, but a background
 worker isn't a good fit. Consider using

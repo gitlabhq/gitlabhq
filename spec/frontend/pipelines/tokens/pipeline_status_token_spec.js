@@ -20,6 +20,7 @@ describe('Pipeline Status Token', () => {
     value: {
       data: '',
     },
+    cursorPosition: 'start',
   };
 
   const createComponent = () => {

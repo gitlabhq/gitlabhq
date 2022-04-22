@@ -9,6 +9,7 @@ export const getIssueTimelogsQueryResponse = {
         nodes: [
           {
             __typename: 'Timelog',
+            id: 'gid://gitlab/Timelog/18',
             timeSpent: 14400,
             user: {
               id: 'user-1',
@@ -25,6 +26,7 @@ export const getIssueTimelogsQueryResponse = {
           },
           {
             __typename: 'Timelog',
+            id: 'gid://gitlab/Timelog/20',
             timeSpent: 1800,
             user: {
               id: 'user-2',
@@ -37,6 +39,7 @@ export const getIssueTimelogsQueryResponse = {
           },
           {
             __typename: 'Timelog',
+            id: 'gid://gitlab/Timelog/25',
             timeSpent: 14400,
             user: {
               id: 'user-2',
@@ -68,6 +71,7 @@ export const getMrTimelogsQueryResponse = {
         nodes: [
           {
             __typename: 'Timelog',
+            id: 'gid://gitlab/Timelog/13',
             timeSpent: 1800,
             user: {
               id: 'user-1',
@@ -84,6 +88,7 @@ export const getMrTimelogsQueryResponse = {
           },
           {
             __typename: 'Timelog',
+            id: 'gid://gitlab/Timelog/22',
             timeSpent: 3600,
             user: {
               id: 'user-1',
@@ -96,6 +101,7 @@ export const getMrTimelogsQueryResponse = {
           },
           {
             __typename: 'Timelog',
+            id: 'gid://gitlab/Timelog/64',
             timeSpent: 300,
             user: {
               id: 'user-1',

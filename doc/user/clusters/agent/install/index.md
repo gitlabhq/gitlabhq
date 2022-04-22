@@ -44,7 +44,7 @@ In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `ce
 
 Prerequisites:
 
-- For a [GitLab CI/CD workflow](../ci_cd_tunnel.md), ensure that
+- For a [GitLab CI/CD workflow](../ci_cd_workflow.md), ensure that
   [GitLab CI/CD is enabled](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
 
 To register an agent with GitLab:
@@ -68,7 +68,7 @@ The agent is configured through a configuration file. This file is optional. Wit
 You need a configuration file if:
 
 - You want to use [a GitOps workflow](../gitops.md#gitops-configuration-reference).
-- You want to authorize a different project to use the agent for a [GitLab CI/CD workflow](../ci_cd_tunnel.md#authorize-the-agent).
+- You want to authorize a different project to use the agent for a [GitLab CI/CD workflow](../ci_cd_workflow.md#authorize-the-agent).
 
 To create an agent configuration file, go to the GitLab project. In the repository, create a file called `config.yaml` at this path:
 

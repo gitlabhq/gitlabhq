@@ -114,6 +114,18 @@ so if you remove more time than already entered, GitLab ignores the subtraction.
 
 To remove all the time spent at once, use the `/remove_time_spent` [quick action](quick_actions.md).
 
+### Delete time spent
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 15.0.
+
+A timelog is a single entry of time spent, either positive or negative.
+
+Prerequisites:
+
+- You must be the author of the timelog or have at least the Maintainer role for the project.
+
+You can [delete timelogs](../../api/graphql/reference/index.md#mutationtimelogdelete) using the GraphQL API.
+
 ## View a time tracking report
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271409) in GitLab 13.12.

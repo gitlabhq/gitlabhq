@@ -1,13 +1,13 @@
 <script>
 import { GlButtonGroup } from '@gitlab/ui';
 import { BubbleMenu } from '@tiptap/vue-2';
-import { BUBBLE_MENU_TRACKING_ACTION } from '../constants';
-import trackUIControl from '../services/track_ui_control';
-import Code from '../extensions/code';
-import CodeBlockHighlight from '../extensions/code_block_highlight';
-import Diagram from '../extensions/diagram';
-import Frontmatter from '../extensions/frontmatter';
-import ToolbarButton from './toolbar_button.vue';
+import { BUBBLE_MENU_TRACKING_ACTION } from '../../constants';
+import trackUIControl from '../../services/track_ui_control';
+import Code from '../../extensions/code';
+import CodeBlockHighlight from '../../extensions/code_block_highlight';
+import Diagram from '../../extensions/diagram';
+import Frontmatter from '../../extensions/frontmatter';
+import ToolbarButton from '../toolbar_button.vue';
 
 export default {
   components: {

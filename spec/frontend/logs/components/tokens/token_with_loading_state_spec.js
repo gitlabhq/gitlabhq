@@ -11,7 +11,10 @@ describe('TokenWithLoadingState', () => {
 
   const initWrapper = (props = {}, options) => {
     wrapper = shallowMount(TokenWithLoadingState, {
-      propsData: props,
+      propsData: {
+        cursorPosition: 'start',
+        ...props,
+      },
       ...options,
     });
   };

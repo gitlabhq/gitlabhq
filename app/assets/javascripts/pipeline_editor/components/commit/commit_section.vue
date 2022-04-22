@@ -75,7 +75,7 @@ export default {
     },
   },
   methods: {
-    async onCommitSubmit({ message, targetBranch, openMergeRequest }) {
+    async onCommitSubmit({ message, sourceBranch, openMergeRequest }) {
       this.isSaving = true;
 
       try {
@@ -88,7 +88,7 @@ export default {
           variables: {
             action: this.action,
             projectPath: this.projectFullPath,
-            branch: targetBranch,
+            branch: sourceBranch,
             startBranch: this.currentBranch,
             message,
             filePath: this.ciConfigPath,
@@ -104,12 +104,11 @@ export default {
         if (errors?.length) {
           this.$emit('showError', { type: COMMIT_FAILURE, reasons: errors });
         } else {
-          const commitBranch = targetBranch;
           const params = openMergeRequest
             ? {
                 type: COMMIT_SUCCESS_WITH_REDIRECT,
                 params: {
-                  sourceBranch: commitBranch,
+                  sourceBranch,
                   targetBranch: this.currentBranch,
                 },
               }
@@ -119,10 +118,10 @@ export default {
             ...params,
           });
 
-          this.updateLastCommitBranch(targetBranch);
-          this.updateCurrentBranch(targetBranch);
+          this.updateLastCommitBranch(sourceBranch);
+          this.updateCurrentBranch(sourceBranch);
 
-          if (this.currentBranch === targetBranch) {
+          if (this.currentBranch === sourceBranch) {
             this.$emit('updateCommitSha');
           }
         }

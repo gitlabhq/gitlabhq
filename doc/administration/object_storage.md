@@ -19,7 +19,7 @@ GitLab has been tested by vendors and customers on a number of object storage pr
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [OpenStack Swift (S3 compatible mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors, whose list is not officially established.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
@@ -385,52 +385,6 @@ If you are using a custom Azure storage domain,
 `azure_storage_domain` does **not** have to be set in the Workhorse
 configuration. This information is exchanged in an API call between
 GitLab Rails and Workhorse.
-
-#### OpenStack-compatible connection settings
-
-Although OpenStack Swift provides S3 compatibility, some users may want to use
-the [Swift API](https://docs.openstack.org/swift/latest/api/object_api_v1_overview.html).
-
-This isn't compatible with the consolidated object storage form. OpenStack Swift
-is supported only with the storage-specific form. If you want to use the
-consolidated form, see the [S3 settings](#s3-compatible-connection-settings).
-
-Here are the valid connection settings for the Swift API, provided by
-[fog-openstack](https://github.com/fog/fog-openstack):
-
-| Setting                  | Description          | Default |
-|--------------------------|----------------------|---------|
-| `provider`               | Always `OpenStack` for compatible hosts. | `OpenStack` |
-| `openstack_username`     | OpenStack username.  | |
-| `openstack_api_key`      | OpenStack API key.   | |
-| `openstack_temp_url_key` | OpenStack key for generating temporary URLs | |
-| `openstack_auth_url`     | OpenStack authentication endpoint | |
-| `openstack_region`       | OpenStack region.    | |
-| `openstack_tenant`       | OpenStack tenant ID. | |
-
-#### Rackspace Cloud Files
-
-The following table describes the valid connection parameters for
-Rackspace Cloud, provided by [fog-rackspace](https://github.com/fog/fog-rackspace/).
-
-This isn't compatible with the consolidated object storage form.
-Rackspace Cloud is supported only with the storage-specific form.
-
-| Setting                  | Description    | Example     |
-|--------------------------|----------------|-------------|
-| `provider`               | Provider name. | `Rackspace` |
-| `rackspace_username`     | Username of the Rackspace account with access to the container. | `joe.smith` |
-| `rackspace_api_key`      | API key of the Rackspace account with access to the container. | `ABC123DEF456ABC123DEF456ABC123DE` |
-| `rackspace_region`       | Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://docs.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/). | `iad` |
-| `rackspace_temp_url_key` | Private key you set in the Rackspace API for [temporary URLs](https://docs.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl). | `ABC123DEF456ABC123DEF456ABC123DE` |
-
-Regardless of whether the container has public access enabled or disabled, Fog
-uses the TempURL method to grant access to LFS objects. If you see error
-messages in logs that refer to instantiating storage with a `temp-url-key`,
-be sure you have set the key properly both in the Rackspace API and in
-`gitlab.rb`. You can verify the value of the key Rackspace has set by sending a
-GET request with token header to the service access endpoint URL and comparing
-the output of the returned headers.
 
 ### Object-specific configuration
 
@@ -799,3 +753,46 @@ to run the following command:
 ```ruby
 Feature.disable(:s3_multithreaded_uploads)
 ```
+
+## Migrate objects to a different object storage provider
+
+You may need to migrate GitLab data in object storage to a different object storage provider. The following steps show you how do this using [Rclone](https://rclone.org/).
+
+The steps assume you are moving the `uploads` bucket, but the same process works for other buckets.
+
+Prerequisites:
+
+- Choose the computer to run Rclone on. Depending on how much data you are migrating, Rclone may have to run for a long time so you should avoid using a laptop or desktop computer that can go into power saving. You can use your GitLab server to run Rclone.
+
+1. [Install](https://rclone.org/downloads/) Rclone.
+1. Configure Rclone by running the following:
+   
+   ```shell
+   rclone config
+   ```
+
+   The configuration process is interactive. Add at least two "remotes": one for the object storage provider your data is currently on (`old`), and one for the provider you are moving to (`new`).
+
+1. Verify that you can read the old data. The following example refers to the `uploads` bucket , but your bucket may have a different name:
+
+   ```shell
+   rclone ls old:uploads | head
+   ```
+
+   This should print a partial list of the objects currently stored in your `uploads` bucket. If you get an error, or if 
+   the list is empty, go back and update your Rclone configuration using `rclone config`.
+
+1. Perform an initial copy. You do not need to take your GitLab server offline for this step.
+
+   ```shell
+   rclone sync -P old:uploads new:uploads
+   ```
+
+1. After the first sync completes, use the web UI or command-line interface of your new object storage provider to
+   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running `rclone 
+   sync`, check your Rclone configuration and try again.
+
+After you have done at least one successful Rclone copy from the old location to the new location, schedule maintenance and take your GitLab server offline. During your maintenance window you must do two things:
+
+1. Perform a final `rclone sync` run, knowing that your users cannot add new objects so you will not leave any behind in the old bucket.
+1. Update the object storage configuration of your GitLab server to use the new provider for `uploads`.

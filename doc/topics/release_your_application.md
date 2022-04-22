@@ -37,7 +37,7 @@ approach to manage Kubernetes deployments.
 #### Deploy to Kubernetes from GitLab CI/CD
 
 With the [GitLab agent for Kubernetes](../user/clusters/agent/install/index.md), you can perform [push-based
-deployments](../user/clusters/agent/ci_cd_tunnel.md) from GitLab CI/CD. The agent provides
+deployments](../user/clusters/agent/ci_cd_workflow.md) from GitLab CI/CD. The agent provides
 a secure and reliable connection between GitLab and your Kubernetes cluster.
 
 ### Deploy to AWS with GitLab CI/CD

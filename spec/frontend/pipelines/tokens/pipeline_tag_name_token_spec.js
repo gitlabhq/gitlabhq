@@ -29,6 +29,7 @@ describe('Pipeline Branch Name Token', () => {
     value: {
       data: '',
     },
+    cursorPosition: 'start',
   };
 
   const createComponent = (options, data) => {

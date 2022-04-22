@@ -12,7 +12,7 @@ module QA
           end
 
           view 'app/assets/javascripts/pipeline_editor/components/commit/commit_form.vue' do
-            element :target_branch_field, required: true
+            element :source_branch_field, required: true
           end
 
           view 'app/assets/javascripts/pipeline_editor/components/editor/ci_editor_header.vue' do
@@ -57,8 +57,8 @@ module QA
             wait_for_requests
           end
 
-          def target_branch_name
-            find_element(:target_branch_field).value
+          def source_branch_name
+            find_element(:source_branch_field).value
           end
 
           def editing_content
@@ -76,8 +76,8 @@ module QA
             wait_for_requests
           end
 
-          def set_target_branch(name)
-            find_element(:target_branch_field).fill_in(with: name)
+          def set_source_branch(name)
+            find_element(:source_branch_field).fill_in(with: name)
           end
 
           def current_branch

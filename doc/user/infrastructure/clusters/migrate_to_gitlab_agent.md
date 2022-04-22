@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To connect your Kubernetes cluster with GitLab, you can use:
 
 - [A GitOps workflow](../../clusters/agent/gitops.md).
-- [A GitLab CI/CD workflow](../../clusters/agent/ci_cd_tunnel.md).
+- [A GitLab CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
 - [A certificate-based integration](index.md).
 
 The certificate-based integration is
@@ -23,7 +23,7 @@ in GitLab 14.5. The removal dates are:
 If you are using the certificate-based integration, you should move to another workflow as soon as possible.
 
 As a general rule, to migrate clusters that rely on GitLab CI/CD,
-you can use the [CI/CD workflow](../../clusters/agent/ci_cd_tunnel.md).
+you can use the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
 This workflow uses an agent to connect to your cluster. The agent:
 
 - Is not exposed to the internet.
@@ -41,7 +41,7 @@ Some features are currently available only when using certificate-based integrat
 With GitLab-managed clusters, GitLab creates separate service accounts and namespaces
 for every branch and deploys by using these resources.
 
-The GitLab agent uses [impersonation](../../clusters/agent/ci_cd_tunnel.md#use-impersonation-to-restrict-project-and-group-access)
+The GitLab agent uses [impersonation](../../clusters/agent/ci_cd_workflow.md#use-impersonation-to-restrict-project-and-group-access)
 strategies to deploy to your cluster with restricted account access. To do so:
 
 1. Choose the impersonation strategy that suits your needs.
@@ -92,7 +92,7 @@ For an example, [view this project](https://gitlab.com/gitlab-examples/ops/gitop
 
 ### Migrate generic deployments
 
-Follow the process for the [CI/CD workflow](../../clusters/agent/ci_cd_tunnel.md).
+Follow the process for the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
 
 ## Migrate from GitLab Managed applications
 

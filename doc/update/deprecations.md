@@ -1349,6 +1349,8 @@ For a more robust, secure, forthcoming, and reliable integration with Kubernetes
 
 For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
+GitLab self-managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/ee/update/deprecations.html#self-managed-certificate-based-integration-with-kubernetes).
+
 **Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Self-managed certificate-based integration with Kubernetes

@@ -54,15 +54,15 @@ export default {
     return {
       message: this.defaultMessage,
       openMergeRequest: false,
-      targetBranch: this.currentBranch,
+      sourceBranch: this.currentBranch,
     };
   },
   computed: {
     isCommitFormFilledOut() {
-      return this.message && this.targetBranch;
+      return this.message && this.sourceBranch;
     },
-    isCurrentBranchTarget() {
-      return this.targetBranch === this.currentBranch;
+    isCurrentBranchSourceBranch() {
+      return this.sourceBranch === this.currentBranch;
     },
     isSubmitDisabled() {
       return !this.isCommitFormFilledOut || (!this.hasUnsavedChanges && !this.isNewCiConfigFile);
@@ -79,7 +79,7 @@ export default {
     onSubmit() {
       this.$emit('submit', {
         message: this.message,
-        targetBranch: this.targetBranch,
+        sourceBranch: this.sourceBranch,
         openMergeRequest: this.openMergeRequest,
       });
     },
@@ -93,7 +93,7 @@ export default {
   },
   i18n: {
     commitMessage: __('Commit message'),
-    targetBranch: __('Target Branch'),
+    sourceBranch: __('Branch'),
     startMergeRequest: __('Start a %{new_merge_request} with these changes'),
     newMergeRequest: __('new merge request'),
     commitChanges: __('Commit changes'),
@@ -120,20 +120,20 @@ export default {
         />
       </gl-form-group>
       <gl-form-group
-        id="target-branch-group"
-        :label="$options.i18n.targetBranch"
+        id="source-branch-group"
+        :label="$options.i18n.sourceBranch"
         label-cols-sm="2"
-        label-for="target-branch-field"
+        label-for="source-branch-field"
       >
         <gl-form-input
-          id="target-branch-field"
-          v-model="targetBranch"
+          id="source-branch-field"
+          v-model="sourceBranch"
           class="gl-font-monospace!"
           required
-          data-qa-selector="target_branch_field"
+          data-qa-selector="source_branch_field"
         />
         <gl-form-checkbox
-          v-if="!isCurrentBranchTarget"
+          v-if="!isCurrentBranchSourceBranch"
           v-model="openMergeRequest"
           data-testid="new-mr-checkbox"
           data-qa-selector="new_mr_checkbox"

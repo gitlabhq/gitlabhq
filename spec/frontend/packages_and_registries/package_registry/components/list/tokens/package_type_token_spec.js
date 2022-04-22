@@ -11,7 +11,10 @@ describe('packages_filter', () => {
 
   const mountComponent = ({ attrs, listeners } = {}) => {
     wrapper = shallowMount(component, {
-      attrs,
+      attrs: {
+        cursorPosition: 'start',
+        ...attrs,
+      },
       listeners,
     });
   };

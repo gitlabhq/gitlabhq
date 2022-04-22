@@ -53,7 +53,7 @@ RSpec.describe 'Pipeline Editor', :js do
     end
 
     it 'displays new branch as selected after commiting on a new branch' do
-      find('#target-branch-field').set('new_branch', clear: :backspace)
+      find('#source-branch-field').set('new_branch', clear: :backspace)
 
       page.within('#source-editor-') do
         find('textarea').send_keys '123'
@@ -112,7 +112,7 @@ RSpec.describe 'Pipeline Editor', :js do
       it 'user who creates a MR is taken to the merge request page without warnings' do
         expect(page).not_to have_content('New merge request')
 
-        find_field('Target Branch').set 'new_branch'
+        find_field('Branch').set 'new_branch'
         find_field('Start a new merge request with these changes').click
 
         click_button 'Commit changes'

@@ -66,6 +66,7 @@ export default {
     :suggestions="releases"
     :suggestions-loading="loading"
     :get-active-token-value="getActiveRelease"
+    v-bind="$attrs"
     @fetch-suggestions="fetchReleases"
     v-on="$listeners"
   >

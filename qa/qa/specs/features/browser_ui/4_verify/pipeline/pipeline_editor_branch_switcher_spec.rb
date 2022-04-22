@@ -73,7 +73,7 @@ module QA
           show.select_branch_from_dropdown(random_test_string)
 
           aggregate_failures do
-            expect(show.target_branch_name).to eq(random_test_string), 'Target branch field is not showing expected branch name.'
+            expect(show.source_branch_name).to eq(random_test_string), 'Branch field is not showing expected branch name.'
             expect(show.editing_content).to have_content(random_test_string), 'Editor content does not include expected test string.'
           end
 
@@ -81,7 +81,7 @@ module QA
           show.select_branch_from_dropdown(project.default_branch)
 
           aggregate_failures do
-            expect(show.target_branch_name).to eq(project.default_branch), 'Target branch field is not showing expected branch name.'
+            expect(show.source_branch_name).to eq(project.default_branch), 'Branch field is not showing expected branch name.'
             expect(show.editing_content).to have_content(project.default_branch), 'Editor content does not include expected test string.'
           end
         end

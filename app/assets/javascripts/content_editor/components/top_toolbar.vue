@@ -1,6 +1,5 @@
 <script>
 import trackUIControl from '../services/track_ui_control';
-import Divider from './divider.vue';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarImageButton from './toolbar_image_button.vue';
 import ToolbarLinkButton from './toolbar_link_button.vue';
@@ -14,7 +13,6 @@ export default {
     ToolbarLinkButton,
     ToolbarTableButton,
     ToolbarImageButton,
-    Divider,
   },
   methods: {
     trackToolbarControlExecution({ contentType, value }) {
@@ -25,13 +23,13 @@ export default {
 </script>
 <template>
   <div
-    class="gl-display-flex gl-justify-content-end gl-pb-3 gl-pt-0 gl-border-b-solid gl-border-b-1 gl-border-b-gray-200"
+    class="gl-display-flex gl-flex-wrap gl-pb-3 gl-pt-0 gl-border-b-solid gl-border-b-1 gl-border-b-gray-200"
   >
     <toolbar-text-style-dropdown
       data-testid="text-styles"
+      class="gl-mr-3"
       @execute="trackToolbarControlExecution"
     />
-    <divider />
     <toolbar-button
       data-testid="bold"
       content-type="bold"
@@ -69,7 +67,6 @@ export default {
       @execute="trackToolbarControlExecution"
     />
     <toolbar-link-button data-testid="link" @execute="trackToolbarControlExecution" />
-    <divider />
     <toolbar-image-button
       ref="imageButton"
       data-testid="image"

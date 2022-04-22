@@ -90,22 +90,22 @@
   image_url: https://img.youtube.com/vi/-1MuKzWJXKQ/hqdefault.jpg
   published_at: 2021-07-22
   release: 14.1
-- title: CI/CD Tunnel for Kubernetes clusters
+- title: CI/CD workflow for Kubernetes clusters
   body: |
-   Until now, connecting Kubernetes clusters to GitLab CI/CD required users to open up their clusters towards GitLab. Some organizations do not encourage opening up their firewall externally due to security concerns.
+   Until now, connecting Kubernetes clusters to GitLab CI/CD required you to open up your clusters towards GitLab. Some organizations do not encourage opening up their firewall externally due to security concerns.
 
-   GitLab now ships with a CI/CD Tunnel that connects GitLab Runners with your Kubernetes cluster using the [GitLab Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/). This enables versatile GitOps workflows where the deployment logic can be coded in the pipeline.
+   GitLab now ships with a CI/CD functionality that connects runners with your Kubernetes cluster by using the [GitLab agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/). This enables versatile GitOps workflows where the deployment logic can be coded in the pipeline.
 
    You and your team can safely use your preferred tool to run the deployment itself using `kubectl`, `helm`, `kpt`, `tanka`, or anything else without security concerns.
 
-   To use the tunnel, define the `kubecontext` in your CI/CD pipeline to connect with your agent. To simplify this process, we plan to [automatically inject the `kubecontext`](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) into the CI/CD environment in a future iteration.
+   Define the `kubecontext` in your CI/CD pipeline to connect with your agent. To simplify this process, we plan to [automatically inject the `kubecontext`](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) into the CI/CD environment in a future iteration.
 
-   The CI/CD tunnel is currently supported only from the project where the agent was configured but we are working on [adding group-level support](https://gitlab.com/groups/gitlab-org/-/epics/5784). You can safely start using the tunnel on GitLab SaaS and self-managed instances.
+   This type of connection is currently supported only from the project where the agent was configured but we are working on [adding group-level support](https://gitlab.com/groups/gitlab-org/-/epics/5784). You can safely start using CI/CD in your jobs on GitLab SaaS and self-managed instances.
   stage: Configure
   self-managed: true
   gitlab-com: true
   packages: [Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_tunnel.html
+  url: https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_workflow.html
   image_url: https://img.youtube.com/vi/eXxM4ScqiJs/hqdefault.jpg
   published_at: 2021-07-22
   release: 14.1

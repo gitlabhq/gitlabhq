@@ -3,7 +3,7 @@
 class Profiles::GpgKeysController < Profiles::ApplicationController
   before_action :set_gpg_key, only: [:destroy, :revoke]
 
-  feature_category :users
+  feature_category :source_code_management
 
   def index
     @gpg_keys = current_user.gpg_keys.with_subkeys

@@ -87,6 +87,7 @@ export default {
     :get-active-token-value="getActiveAuthor"
     :default-suggestions="defaultAuthors"
     :preloaded-suggestions="preloadedAuthors"
+    v-bind="$attrs"
     @fetch-suggestions="fetchAuthors"
     v-on="$listeners"
   >

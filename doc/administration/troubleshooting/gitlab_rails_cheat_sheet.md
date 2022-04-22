@@ -798,6 +798,39 @@ To find features that can be toggled, run `pp p.project_feature`.
 Available permission levels are listed in
 [concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).
 
+### Get all error messages associated with groups, subgroups, members, and requesters
+
+Collect error messages associated with groups, subgroups, members, and requesters. This 
+captures error messages that may not appear in the Web interface. This can be especially helpful 
+for troubleshooting issues with [LDAP group sync](../auth/ldap/ldap_synchronization.md#group-sync) 
+and unexpected behavior with users and their membership in groups and subgroups.
+
+```ruby
+# Find the group and subgroup
+group = Group.find_by_full_path("parent_group")
+subgroup = Group.find_by_full_path("parent_group/child_group")
+
+# Group and subgroup errors
+group.valid?
+group.errors.map(&:full_messages)
+
+subgroup.valid?
+subgroup.errors.map(&:full_messages)
+
+# Group and subgroup errors for the members AND requesters
+group.requesters.map(&:valid?)
+group.requesters.map(&:errors).map(&:full_messages)
+group.members.map(&:valid?)
+group.members.map(&:errors).map(&:full_messages)
+group.members_and_requesters.map(&:errors).map(&:full_messages)
+
+subgroup.requesters.map(&:valid?)
+subgroup.requesters.map(&:errors).map(&:full_messages)
+subgroup.members.map(&:valid?)
+subgroup.members.map(&:errors).map(&:full_messages)
+subgroup.members_and_requesters.map(&:errors).map(&:full_messages)
+```
+
 ## Authentication
 
 ### Re-enable standard web sign-in form

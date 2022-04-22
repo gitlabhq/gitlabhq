@@ -2,13 +2,13 @@ import { BubbleMenu } from '@tiptap/vue-2';
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import Vue from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import CodeBlockBubbleMenu from '~/content_editor/components/code_block_bubble_menu.vue';
+import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
-import { createTestEditor, emitEditorEvent } from '../test_utils';
+import { createTestEditor, emitEditorEvent } from '../../test_utils';
 
-describe('content_editor/components/code_block_bubble_menu', () => {
+describe('content_editor/components/bubble_menus/code_block', () => {
   let wrapper;
   let tiptapEditor;
   let bubbleMenu;

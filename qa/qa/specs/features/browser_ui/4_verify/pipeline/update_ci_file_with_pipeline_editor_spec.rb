@@ -53,13 +53,13 @@ module QA
       it 'creates new pipeline and target branch', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349005' do
         Page::Project::PipelineEditor::Show.perform do |show|
           show.write_to_editor(random_test_string)
-          show.set_target_branch(random_test_string)
+          show.set_source_branch(random_test_string)
           show.submit_changes
 
           Support::Waiter.wait_until { project.pipelines.size > 1 }
 
           aggregate_failures do
-            expect(show.target_branch_name).to eq(random_test_string)
+            expect(show.source_branch_name).to eq(random_test_string)
             expect(show.current_branch).to eq(random_test_string)
             expect(show.editing_content).to have_content(random_test_string)
             expect { show.pipeline_id }.to eventually_eq(project.pipelines.pluck(:id).max).within(max_duration: 60, sleep_interval: 3)

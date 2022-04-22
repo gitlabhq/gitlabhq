@@ -729,7 +729,7 @@ module API
       params do
         requires :id, type: String, desc: 'ID of a project'
       end
-      get ':id/storage', feature_category: :projects do
+      get ':id/storage', feature_category: :source_code_management do
         authenticated_as_admin!
 
         present user_project, with: Entities::ProjectRepositoryStorage, current_user: current_user

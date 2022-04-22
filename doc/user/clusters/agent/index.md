@@ -35,7 +35,7 @@ In a [**GitOps** workflow](gitops.md), you keep your Kubernetes manifests in Git
 any time you update your manifests, the agent updates the cluster. This workflow is fully driven with Git and is considered pull-based,
 because the cluster is pulling updates from your GitLab repository.
 
-In a [**CI/CD** workflow](ci_cd_tunnel.md), you use GitLab CI/CD to query and update your cluster by using the Kubernetes API.
+In a [**CI/CD** workflow](ci_cd_workflow.md), you use GitLab CI/CD to query and update your cluster by using the Kubernetes API.
 This workflow is considered push-based, because GitLab is pushing requests from GitLab CI/CD to your cluster.
 
 ## Supported cluster versions
@@ -65,7 +65,7 @@ Read about how to [migrate to the agent for Kubernetes](../../infrastructure/clu
 ## Related topics
 
 - [GitOps workflow](gitops.md)
-- [GitLab CI/CD workflow](ci_cd_tunnel.md)
+- [GitLab CI/CD workflow](ci_cd_workflow.md)
 - [Install the agent](install/index.md)
 - [Work with the agent](repository.md)
 - [Troubleshooting](troubleshooting.md)
