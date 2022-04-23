@@ -146,9 +146,9 @@ RSpec.describe Backup::Manager do
     let(:incremental_env) { 'false' }
     let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz task2.tar.gz} }
     let(:backup_id) { '1546300800_2019_01_01_12.3' }
-    let(:tar_file) { "#{backup_id}_gitlab_backup.tar" }
-    let(:tar_system_options) { { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
-    let(:tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, tar_system_options] }
+    let(:pack_tar_file) { "#{backup_id}_gitlab_backup.tar" }
+    let(:pack_tar_system_options) { { out: [pack_tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
+    let(:pack_tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, pack_tar_system_options] }
     let(:backup_information) do
       {
         backup_created_at: Time.zone.parse('2019-01-01'),
@@ -182,12 +182,12 @@ RSpec.describe Backup::Manager do
     it 'executes tar' do
       subject.create # rubocop:disable Rails/SaveBang
 
-      expect(Kernel).to have_received(:system).with(*tar_cmdline)
+      expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
     end
 
     context 'tar fails' do
       before do
-        expect(Kernel).to receive(:system).with(*tar_cmdline).and_return(false)
+        expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
       end
 
       it 'logs a failure' do
@@ -195,7 +195,7 @@ RSpec.describe Backup::Manager do
           subject.create # rubocop:disable Rails/SaveBang
         end.to raise_error(Backup::Error, 'Backup failed')
 
-        expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{tar_file} failed")
+        expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
       end
     end
 
@@ -206,7 +206,7 @@ RSpec.describe Backup::Manager do
         stub_env('BACKUP', '/ignored/path/custom')
         subject.create # rubocop:disable Rails/SaveBang
 
-        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+        expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
       end
     end
 
@@ -223,7 +223,7 @@ RSpec.describe Backup::Manager do
       it 'executes tar' do
         subject.create # rubocop:disable Rails/SaveBang
 
-        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+        expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
       end
     end
 
@@ -237,7 +237,7 @@ RSpec.describe Backup::Manager do
       it 'executes tar' do
         subject.create # rubocop:disable Rails/SaveBang
 
-        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+        expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
       end
     end
 
@@ -255,7 +255,7 @@ RSpec.describe Backup::Manager do
 
         subject.create # rubocop:disable Rails/SaveBang
 
-        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+        expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
       end
     end
 
@@ -598,7 +598,8 @@ RSpec.describe Backup::Manager do
       let(:incremental_env) { 'true' }
       let(:gitlab_version) { Gitlab::VERSION }
       let(:backup_id) { "1546300800_2019_01_01_#{gitlab_version}" }
-      let(:tar_file) { "#{backup_id}_gitlab_backup.tar" }
+      let(:pack_tar_file) { "#{backup_id}_gitlab_backup.tar" }
+      let(:unpack_tar_cmdline) { ['tar', '-xf', pack_tar_file] }
       let(:backup_information) do
         {
           backup_created_at: Time.zone.parse('2019-01-01'),
@@ -663,7 +664,6 @@ RSpec.describe Backup::Manager do
 
       context 'when BACKUP variable is set to a correct file' do
         let(:backup_id) { '1451606400_2016_01_01_1.2.3' }
-        let(:tar_cmdline) { %w{tar -xf 1451606400_2016_01_01_1.2.3_gitlab_backup.tar} }
 
         before do
           allow(Gitlab::BackupLogger).to receive(:info)
@@ -678,15 +678,16 @@ RSpec.describe Backup::Manager do
           stub_env('BACKUP', '/ignored/path/1451606400_2016_01_01_1.2.3')
         end
 
-        it 'unpacks the file' do
+        it 'unpacks and packs the backup' do
           subject.create # rubocop:disable Rails/SaveBang
 
-          expect(Kernel).to have_received(:system).with(*tar_cmdline)
+          expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
+          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
         end
 
-        context 'tar fails' do
+        context 'untar fails' do
           before do
-            expect(Kernel).to receive(:system).with(*tar_cmdline).and_return(false)
+            expect(Kernel).to receive(:system).with(*unpack_tar_cmdline).and_return(false)
           end
 
           it 'logs a failure' do
@@ -695,6 +696,20 @@ RSpec.describe Backup::Manager do
             end.to raise_error(SystemExit)
 
             expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Unpacking backup failed')
+          end
+        end
+
+        context 'tar fails' do
+          before do
+            expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
+          end
+
+          it 'logs a failure' do
+            expect do
+              subject.create # rubocop:disable Rails/SaveBang
+            end.to raise_error(Backup::Error, 'Backup failed')
+
+            expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
           end
         end
 
