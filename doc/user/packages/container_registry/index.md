@@ -626,10 +626,10 @@ Use your own URLs to complete the following steps:
    docker pull gitlab.example.com/org/build/sample_project/cr:v2.9.1
    ```
 
-NOTE:
-For container registry authentication, use either a
-[personal access token](../../profile/personal_access_tokens.md) or a
-[deploy token](../../project/deploy_tokens/index.md).
+   NOTE:
+   For container registry authentication, use either a
+   [personal access token](../../profile/personal_access_tokens.md) or a
+   [deploy token](../../project/deploy_tokens/index.md).
 
 1. Rename the images to match the new project name:
 

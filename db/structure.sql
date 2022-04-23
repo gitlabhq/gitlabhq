@@ -106,11 +106,11 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS SETOF pg_stat_activity
+CREATE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS TABLE(query text, query_start timestamp with time zone)
     LANGUAGE sql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'pg_temp'
     AS $$
-  SELECT *
+  SELECT query, query_start
   FROM pg_stat_activity
   WHERE datname = current_database()
     AND state = 'active'
@@ -18747,7 +18747,7 @@ CREATE VIEW postgres_autovacuum_activity AS
          SELECT postgres_pg_stat_activity_autovacuum.query,
             postgres_pg_stat_activity_autovacuum.query_start,
             regexp_matches(postgres_pg_stat_activity_autovacuum.query, '^autovacuum: VACUUM (w+).(w+)'::text) AS matches
-           FROM postgres_pg_stat_activity_autovacuum() postgres_pg_stat_activity_autovacuum(datid, datname, pid, usesysid, usename, application_name, client_addr, client_hostname, client_port, backend_start, xact_start, query_start, state_change, wait_event_type, wait_event, state, backend_xid, backend_xmin, query, backend_type)
+           FROM postgres_pg_stat_activity_autovacuum() postgres_pg_stat_activity_autovacuum(query, query_start)
           WHERE (postgres_pg_stat_activity_autovacuum.query ~* '^autovacuum: VACUUM w+.w+'::text)
         )
  SELECT ((processes.matches[1] || '.'::text) || processes.matches[2]) AS table_identifier,
