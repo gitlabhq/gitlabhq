@@ -15,7 +15,7 @@ export default {
         id: id + 1,
         name: getRandomString(),
         username: getRandomString(),
-        user_path: getRandomUrl(),
+        web_url: getRandomUrl(),
       });
 
       id += 1;
