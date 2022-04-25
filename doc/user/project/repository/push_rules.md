@@ -28,7 +28,9 @@ The following options are available:
   by the same user as the user who pushed it, or where the committer's email address
   is not [confirmed](../../../security/user_email_confirmation.md).
 - **Reject unsigned commits** - Reject commit when it is not signed through GPG.
-  Read [signing commits with GPG](gpg_signed_commits/index.md).
+  Read [signing commits with GPG](gpg_signed_commits/index.md). This push rule
+  can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
+  and allow [unsigned commits created in the GitLab UI](#unsigned-commits-created-in-the-gitlab-ui).
 - **Removal of tags with** `git push` - Forbid users to remove Git tags with `git push`.
   Tags can be deleted through the web UI.
 - **Check whether the commit author is a GitLab user** - Restrict commits to existing
@@ -45,7 +47,8 @@ These push rules require you to create a regular expression for the rule to eval
   this regular expression can be pushed. To allow any commit message, leave empty.
   Uses multiline mode, which can be disabled using `(?-m)`.
 - **Restrict by branch name** - Only branch names that match this regular expression
-  can be pushed. To allow any branch name, leave empty.
+  can be pushed. To allow any branch name, leave empty. For more information, read
+  [Restrict branch names](#restrict-branch-names).
 - **Restrict by commit author's email** - Only the commit author's email address that matches this
   regular expression can be pushed. Checks both the commit author and committer.
   To allow any email address, leave empty.
@@ -64,7 +67,7 @@ in push rules, and you can test them at the [regex101 regex tester](https://rege
 It's possible to create custom push rules rather than the push rules available in
 **Admin Area > Push Rules** by using more advanced server hooks.
 
-See [server hooks](../../../administration/server_hooks.md) for more information.
+Refer to [server hooks](../../../administration/server_hooks.md) for more information.
 
 ## Use cases
 
@@ -86,7 +89,11 @@ is accepted.
 
 ### Restrict branch names
 
-If your company has a strict policy for branch names, you may want the branches to start
+> Default restricted branch names were introduced in GitLab 12.10.
+
+By default, GitLab restricts certain formats of branch names for security purposes.
+40-character hexadecimal names, similar to Git commit hashes, are prohibited.
+If your company has a stricter policy for branch names, you may want the branches to start
 with a certain name. This approach enables different
 GitLab CI/CD jobs (such as `feature`, `hotfix`, `docker`, `android`) that rely on the
 branch name.
@@ -96,11 +103,11 @@ various branches, and CI pipelines might not work as expected. By restricting th
 branch names globally in Push Rules, such mistakes are prevented.
 All branch names that don't match your push rule are rejected.
 
-Note that the name of your default branch is always allowed, regardless of the branch naming
+NOTE:
+The name of your default branch is always allowed, regardless of the branch naming
 regular expression (regex) specified. GitLab is configured this way
 because merges typically have the default branch as their target.
-If you have other target branches, include them in your regex. (See [Enabling push rules](#enabling-push-rules)).
-
+If you have other target branches, include them in your regex. (See [Enabling push rules](#enable-global-push-rules)).
 The default branch also defaults to being a [protected branch](../protected_branches.md),
 which already limits users from pushing directly.
 
@@ -111,14 +118,7 @@ Some example regular expressions you can use in push rules:
 - `^[a-z0-9\\-]{4,15}$` Branches must be between `4` and `15` characters long,
   accepting only lowercase letters, numbers and dashes.
 
-#### Default restricted branch names
-
-> Introduced in GitLab 12.10.
-
-By default, GitLab restricts certain formats of branch names for security purposes.
-40-character hexadecimal names, similar to Git commit hashes, are prohibited.
-
-## Enabling push rules
+## Enable global push rules
 
 You can create push rules for all new projects to inherit, but they can be overridden
 at the project level or the [group level](../../group/index.md#group-push-rules).
@@ -127,36 +127,20 @@ To create global push rules:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Push Rules**.
+1. Expand **Push rules**.
+1. Set the rule you want.
+1. Select **Save push rules**.
 
-To override global push rules in a project's settings:
+## Override global push rules per project
+
+The push rule of an individual project overrides the global push rule.
+To override global push rules for a specific project:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.
-
-### Caveat to "Reject unsigned commits" push rule
-
-This push rule ignores commits that are authenticated and created by GitLab
-(either through the UI or API). When the **Reject unsigned commits** push rule is
-enabled, unsigned commits may still show up in the commit history if a commit was
-created **in** GitLab itself. As expected, commits created outside GitLab and
-pushed to the repository are rejected. For more information about how GitLab
-plans to fix this issue, read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
-
-#### "Reject unsigned commits" push rule disables Web IDE
-
-In 13.10, if a project has the "Reject unsigned commits" push rule, the user is not allowed to
-commit through GitLab Web IDE.
-
-To allow committing through the Web IDE on a project with this push rule, a GitLab administrator
-must disable the feature flag `reject_unsigned_commits_by_gitlab`. This can be done through a
-[rails console](../../../administration/operations/rails_console.md) and running:
-
-```ruby
-Feature.disable(:reject_unsigned_commits_by_gitlab)
-```
 
 ## Prevent pushing secrets to the repository
 
@@ -231,28 +215,6 @@ Files blocked by this rule are listed below. For a complete list of criteria, se
   - `*.history`
   - `*_history`
 
-### Prevent pushing secrets to all projects
-
-To set a global push rule to prevent pushing secrets to all projects:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Push Rules**.
-1. Expand **Push rules**.
-1. Select **Prevent pushing secret files**.
-1. Select **Save push rules**.
-
-### Prevent pushing secrets to a project
-
-The push rule of a project overrides the global push rule.
-
-To prevent pushing secrets to a project:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
-1. Expand **Push rules**.
-1. Select **Prevent pushing secret files**.
-1. Select **Save push rules**.
-
 ## Prohibited file names
 
 > Moved to GitLab Premium in 13.9.
@@ -295,14 +257,26 @@ end of the grouped collection of match conditions where it is appended to all ma
 (\.exe|^config\.yml|^directory-name\/config\.yml|(^|\/)install\.exe)$
 ```
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Reject unsigned commits push rule disables Web IDE
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+In 13.10, if a project has the **Reject unsigned commits** push rule, the user is not allowed to
+commit through GitLab Web IDE.
+
+To allow committing through the Web IDE on a project with this push rule, a GitLab administrator
+must disable the feature flag `reject_unsigned_commits_by_gitlab`. This can be done through a
+[rails console](../../../administration/operations/rails_console.md) and running:
+
+```ruby
+Feature.disable(:reject_unsigned_commits_by_gitlab)
+```
+
+### Unsigned commits created in the GitLab UI
+
+This push rule ignores commits that are authenticated and created by GitLab
+(either through the UI or API). When the **Reject unsigned commits** push rule is
+enabled, unsigned commits may still show up in the commit history if a commit was
+created **in** GitLab itself. As expected, commits created outside GitLab and
+pushed to the repository are rejected. For more information about this issue,
+read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).

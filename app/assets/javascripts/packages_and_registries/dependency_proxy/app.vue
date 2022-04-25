@@ -102,10 +102,10 @@ export default {
       return { fullPath: this.groupPath, first: GRAPHQL_PAGE_SIZE };
     },
     pageInfo() {
-      return this.group.dependencyProxyManifests.pageInfo;
+      return this.group.dependencyProxyManifests?.pageInfo;
     },
     manifests() {
-      return this.group.dependencyProxyManifests.nodes;
+      return this.group.dependencyProxyManifests?.nodes;
     },
     modalTitleWithCount() {
       return sprintf(
@@ -132,7 +132,7 @@ export default {
       );
     },
     showDeleteDropdown() {
-      return this.group.dependencyProxyBlobCount > 0;
+      return this.group.dependencyProxyManifests?.nodes.length > 0;
     },
   },
   methods: {

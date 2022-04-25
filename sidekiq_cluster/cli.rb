@@ -164,8 +164,7 @@ module Gitlab
 
       def restart_metrics_server
         @logger.info("Starting metrics server on port #{sidekiq_exporter_port}")
-        MetricsServer.fork(
-          'sidekiq',
+        MetricsServer.start_for_sidekiq(
           metrics_dir: @metrics_dir,
           reset_signals: TERMINATE_SIGNALS + FORWARD_SIGNALS
         )

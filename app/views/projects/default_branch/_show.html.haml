@@ -9,7 +9,7 @@
       = _('Set the default branch for this project. All merge requests and commits are made against this branch unless you specify a different one.')
 
   .settings-content
-    = form_for @project, remote: true, html: { multipart: true, anchor: 'default-branch-settings' }, authenticity_token: true do |f|
+    = gitlab_ui_form_for @project, remote: true, html: { multipart: true, anchor: 'default-branch-settings' }, authenticity_token: true do |f|
       %fieldset
         - if @project.empty_repo?
           .text-secondary
@@ -20,12 +20,10 @@
             = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide', data: { qa_selector: 'default_branch_dropdown' }})
 
         .form-group
-          .form-check
-            = f.check_box :autoclose_referenced_issues, class: 'form-check-input'
-            = f.label :autoclose_referenced_issues, class: 'form-check-label' do
-              %strong= _("Auto-close referenced issues on default branch")
-            .form-text.text-muted
-              = _("When merge requests and commits in the default branch close, any issues they reference also close.")
-              = link_to sprite_icon('question-o'), help_page_path('user/project/issues/managing_issues.md', anchor: 'closing-issues-automatically'), target: '_blank', rel: 'noopener noreferrer'
+          - help_text = _("When merge requests and commits in the default branch close, any issues they reference also close.")
+          - help_icon = link_to sprite_icon('question-o'), help_page_path('user/project/issues/managing_issues.md', anchor: 'closing-issues-automatically'), target: '_blank', rel: 'noopener noreferrer'
+          = f.gitlab_ui_checkbox_component :autoclose_referenced_issues,
+            _("Auto-close referenced issues on default branch"),
+            help_text: (help_text + "&nbsp;" + help_icon).html_safe
 
       = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

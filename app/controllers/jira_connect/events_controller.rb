@@ -47,7 +47,7 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   end
 
   def verify_asymmetric_atlassian_jwt!
-    asymmetric_jwt = Atlassian::JiraConnect::AsymmetricJwt.new(auth_token, jwt_verification_claims)
+    asymmetric_jwt = Atlassian::JiraConnect::Jwt::Asymmetric.new(auth_token, jwt_verification_claims)
 
     return head :unauthorized unless asymmetric_jwt.valid?
 

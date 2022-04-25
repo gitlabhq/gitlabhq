@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Atlassian::JiraConnect::AsymmetricJwt do
+RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric do
   describe '#valid?' do
     subject(:asymmetric_jwt) { described_class.new(jwt, verification_claims) }
 
@@ -10,15 +10,19 @@ RSpec.describe Atlassian::JiraConnect::AsymmetricJwt do
     let(:jwt_claims) { { aud: aud, iss: client_key, qsh: qsh } }
     let(:aud) { 'https://test.host/-/jira_connect' }
     let(:client_key) { '1234' }
-    let(:qsh) { Atlassian::Jwt.create_query_string_hash('https://gitlab.test/events/installed', 'POST', 'https://gitlab.test') }
     let(:public_key_id) { '123e4567-e89b-12d3-a456-426614174000' }
     let(:jwt_headers) { { kid: public_key_id } }
     let(:private_key) { OpenSSL::PKey::RSA.generate 2048 }
     let(:jwt) { JWT.encode(jwt_claims, private_key, 'RS256', jwt_headers) }
     let(:public_key) { private_key.public_key }
+    let(:install_keys_url) { "https://connect-install-keys.atlassian.com/#{public_key_id}" }
+    let(:qsh) do
+      Atlassian::Jwt.create_query_string_hash('https://gitlab.test/events/installed', 'POST', 'https://gitlab.test')
+    end
 
     before do
-      stub_request(:get, "https://connect-install-keys.atlassian.com/#{public_key_id}").to_return(body: public_key.to_s, status: 200)
+      stub_request(:get, install_keys_url)
+        .to_return(body: public_key.to_s, status: 200)
     end
 
     it 'returns true when verified with public key from CDN' do
@@ -26,7 +30,7 @@ RSpec.describe Atlassian::JiraConnect::AsymmetricJwt do
 
       expect(asymmetric_jwt).to be_valid
 
-      expect(WebMock).to have_requested(:get, "https://connect-install-keys.atlassian.com/#{public_key_id}")
+      expect(WebMock).to have_requested(:get, install_keys_url)
     end
 
     context 'JWT does not contain a key ID' do
@@ -43,7 +47,7 @@ RSpec.describe Atlassian::JiraConnect::AsymmetricJwt do
 
     context 'public key can not be retrieved' do
       before do
-        stub_request(:get, "https://connect-install-keys.atlassian.com/#{public_key_id}").to_return(body: '', status: 404)
+        stub_request(:get, install_keys_url).to_return(body: '', status: 404)
       end
 
       it { is_expected.not_to be_valid }

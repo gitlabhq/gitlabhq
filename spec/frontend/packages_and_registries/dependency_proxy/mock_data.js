@@ -8,8 +8,18 @@ export const proxyData = () => ({
 export const proxySettings = (extend = {}) => ({ enabled: true, ...extend });
 
 export const proxyManifests = () => [
-  { id: 'proxy-1', createdAt: '2021-09-22T09:45:28Z', imageName: 'alpine:latest' },
-  { id: 'proxy-2', createdAt: '2021-09-21T09:45:28Z', imageName: 'alpine:stable' },
+  {
+    id: 'proxy-1',
+    createdAt: '2021-09-22T09:45:28Z',
+    imageName: 'alpine:latest',
+    status: 'DEFAULT',
+  },
+  {
+    id: 'proxy-2',
+    createdAt: '2021-09-21T09:45:28Z',
+    imageName: 'alpine:stable',
+    status: 'DEFAULT',
+  },
 ];
 
 export const pagination = (extend) => ({

@@ -12270,6 +12270,9 @@ msgstr ""
 msgid "DependencyProxy|Image list"
 msgstr ""
 
+msgid "DependencyProxy|Scheduled for deletion"
+msgstr ""
+
 msgid "DependencyProxy|Storage settings"
 msgstr ""
 

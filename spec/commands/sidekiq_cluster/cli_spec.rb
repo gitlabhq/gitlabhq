@@ -314,7 +314,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             let(:sidekiq_exporter_enabled) { true }
 
             it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:fork)
+              expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
               cli.run(%w(foo))
             end
@@ -324,7 +324,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             let(:sidekiq_exporter_enabled) { true }
 
             it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:fork)
+              expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
               cli.run(%w(foo))
             end
@@ -347,7 +347,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             end
 
             it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:fork)
+              expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
               cli.run(%w(foo))
             end
@@ -366,7 +366,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             end
 
             it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:fork)
+              expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
               cli.run(%w(foo))
             end
@@ -389,9 +389,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             with_them do
               specify do
                 if start_metrics_server
-                  expect(MetricsServer).to receive(:fork).with('sidekiq', metrics_dir: metrics_dir, reset_signals: trapped_signals)
+                  expect(MetricsServer).to receive(:start_for_sidekiq).with(metrics_dir: metrics_dir, reset_signals: trapped_signals)
                 else
-                  expect(MetricsServer).not_to receive(:fork)
+                  expect(MetricsServer).not_to receive(:start_for_sidekiq)
                 end
 
                 cli.run(%w(foo))
@@ -421,7 +421,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
           let(:sidekiq_exporter_enabled) { true }
 
           it 'does not start the server' do
-            expect(MetricsServer).not_to receive(:fork)
+            expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
             cli.run(%w(foo --dryrun))
           end
@@ -442,7 +442,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
       it 'stops the entire process cluster if one of the workers has been terminated' do
         expect(supervisor).to receive(:alive).and_return(true)
         expect(supervisor).to receive(:supervise).and_yield([2])
-        expect(MetricsServer).to receive(:fork).once.and_return(metrics_server_pid)
+        expect(MetricsServer).to receive(:start_for_sidekiq).once.and_return(metrics_server_pid)
         expect(Gitlab::ProcessManagement).to receive(:signal_processes).with([42, 99], :TERM)
 
         cli.run(%w(foo))
@@ -452,7 +452,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         it 'restarts the metrics server when it is down' do
           expect(supervisor).to receive(:alive).and_return(true)
           expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
-          expect(MetricsServer).to receive(:fork).twice.and_return(metrics_server_pid)
+          expect(MetricsServer).to receive(:start_for_sidekiq).twice.and_return(metrics_server_pid)
 
           cli.run(%w(foo))
         end
@@ -462,7 +462,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         it 'does not restart the metrics server' do
           expect(supervisor).to receive(:alive).and_return(false)
           expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
-          expect(MetricsServer).to receive(:fork).once.and_return(metrics_server_pid)
+          expect(MetricsServer).to receive(:start_for_sidekiq).once.and_return(metrics_server_pid)
 
           cli.run(%w(foo))
         end

@@ -11,7 +11,7 @@ GPG ([GNU Privacy Guard](https://gnupg.org/)) key. When you add a cryptographic
 signature to your commit, you provide extra assurance that a commit
 originated from you, rather than an impersonator. If GitLab can verify a commit
 author's identity with a public GPG key, the commit is marked **Verified** in the
-GitLab UI. You can then configure [push rules](../push_rules.md#enabling-push-rules)
+GitLab UI. You can then configure [push rules](../push_rules.md)
 for your project to reject individual commits not signed with GPG, or reject all
 commits from unverified users.
 

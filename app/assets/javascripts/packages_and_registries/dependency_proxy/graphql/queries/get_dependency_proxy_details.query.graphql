@@ -20,6 +20,7 @@ query getDependencyProxyDetails(
         id
         createdAt
         imageName
+        status
       }
       pageInfo {
         ...PageInfo

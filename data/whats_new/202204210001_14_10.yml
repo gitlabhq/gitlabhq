@@ -41,6 +41,6 @@
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
   url: 'https://docs.gitlab.com/ee/ci/runners/runners_scope.html#group-runners'
-  image_url: 'https://about.gitlab.com/images/14_10/group-runners-view-new-3.pn'
+  image_url: 'https://about.gitlab.com/images/14_10/group-runners-view-new-3.png'
   published_at: 2022-04-22
   release: 14.10
