@@ -1110,3 +1110,46 @@ As noted in [this authentication issue](https://github.com/git-lfs/git-lfs/issue
 requests redirected from the secondary to the primary node do not properly send the
 Authorization header. This may result in either an infinite `Authorization <-> Redirect`
 loop, or Authorization error messages.
+
+## Recovering from a partial failover
+
+The partial failover to a secondary Geo *site* may be the result of a temporary/transient issue. Therefore, first attempt to run the promote command again.
+
+1. SSH into every Sidekiq, PostgresSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
+
+   - To promote the secondary node to primary:
+     
+     ```shell
+     sudo gitlab-ctl geo promote
+     ```
+
+   - To promote the secondary node to primary **without any further confirmation**:
+
+     ```shell
+     sudo gitlab-ctl geo promote --force
+     ```
+     
+1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.  
+1. If **successful**, the **secondary** site is now promoted to the **primary** site.
+
+If the above steps are **not successful**, proceed through the next steps:
+
+1. SSH to every Sidekiq, PostgresSQL, Gitaly and Rails node in the **secondary** site and perform the following operations:
+
+   - Create a `/etc/gitlab/gitlab-cluster.json` file with the following content:
+
+     ```shell
+     {
+       "primary": true,
+       "secondary": false
+     }
+     ```
+
+   - Reconfigure GitLab for the changes to take effect:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
+
+1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.
+1. If successful, the **secondary** site is now promoted to the **primary** site.

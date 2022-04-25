@@ -1610,6 +1610,9 @@ msgstr ""
 msgid "A non-confidential epic cannot be assigned to a confidential parent epic"
 msgstr ""
 
+msgid "A page with that title already exists"
+msgstr ""
+
 msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
@@ -6409,6 +6412,9 @@ msgid "BulkImport|From source group"
 msgstr ""
 
 msgid "BulkImport|Group import history"
+msgstr ""
+
+msgid "BulkImport|History"
 msgstr ""
 
 msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
@@ -13491,6 +13497,9 @@ msgstr ""
 msgid "Due date"
 msgstr ""
 
+msgid "Duplicate page: %{error_message}"
+msgstr ""
+
 msgid "Duration"
 msgstr ""
 
@@ -14094,7 +14103,7 @@ msgstr ""
 msgid "Enforce SSH key expiration"
 msgstr ""
 
-msgid "Enforce personal access token expiration"
+msgid "Enforce access token expiration"
 msgstr ""
 
 msgid "Enforce two-factor authentication"
@@ -23358,6 +23367,9 @@ msgid "Maximum Terraform Module package file size in bytes"
 msgstr ""
 
 msgid "Maximum Users"
+msgstr ""
+
+msgid "Maximum allowable lifetime for access token (days)"
 msgstr ""
 
 msgid "Maximum allowable lifetime for personal access token (days)"
@@ -33581,9 +33593,6 @@ msgstr ""
 msgid "SecurityOrchestration|All policies"
 msgstr ""
 
-msgid "SecurityOrchestration|Allow all inbound traffic to all pods from all pods on ports 443/TCP."
-msgstr ""
-
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
@@ -33638,9 +33647,6 @@ msgstr ""
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
 msgstr ""
 
-msgid "SecurityOrchestration|If you are using Auto DevOps, your %{monospacedStart}auto-deploy-values.yaml%{monospacedEnd} file will not be updated if you change a policy in this section. Auto DevOps users should make changes by following the %{linkStart}Container Network Policy documentation%{linkEnd}."
-msgstr ""
-
 msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
@@ -33648,9 +33654,6 @@ msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
 msgid "SecurityOrchestration|Network"
-msgstr ""
-
-msgid "SecurityOrchestration|Network policy"
 msgstr ""
 
 msgid "SecurityOrchestration|New network policy"
@@ -33818,9 +33821,6 @@ msgstr ""
 msgid "SecurityOrchestration|Use a scan result policy to create rules that ensure security issues are checked before merging a merge request."
 msgstr ""
 
-msgid "SecurityOrchestration|Use network policies to create firewall rules for network connections in your Kubernetes cluster."
-msgstr ""
-
 msgid "SecurityOrchestration|View policy project"
 msgstr ""
 
@@ -33876,9 +33876,6 @@ msgid "SecurityOrchestration|vulnerability"
 msgstr ""
 
 msgid "SecurityPolicies|+%{count} more"
-msgstr ""
-
-msgid "SecurityPolicies|Environment(s)"
 msgstr ""
 
 msgid "SecurityPolicies|Policy type"
@@ -42553,7 +42550,7 @@ msgstr ""
 msgid "When enabled, cleanup polices execute faster but put more load on Redis."
 msgstr ""
 
-msgid "When enabled, existing personal access tokens may be revoked. Leave blank for no limit."
+msgid "When enabled, existing access tokens may be revoked. Leave blank for no limit."
 msgstr ""
 
 msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
@@ -42603,7 +42600,7 @@ msgstr ""
 msgid "Who will be using this group?"
 msgstr ""
 
-msgid "Why are you signing up? (Optional)"
+msgid "Why are you signing up? (optional)"
 msgstr ""
 
 msgid "Wiki"

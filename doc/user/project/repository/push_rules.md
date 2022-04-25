@@ -20,6 +20,52 @@ can enable in a user-friendly interface. They are defined either:
 - Per project, so you can have different rules applied to different
   projects depending on your needs.
 
+## Default push rules
+
+The following options are available:
+
+- **Reject unverified users** - GitLab rejects any commit that was not committed
+  by the same user as the user who pushed it, or where the committer's email address
+  is not [confirmed](../../../security/user_email_confirmation.md).
+- **Reject unsigned commits** - Reject commit when it is not signed through GPG.
+  Read [signing commits with GPG](gpg_signed_commits/index.md).
+- **Removal of tags with** `git push` - Forbid users to remove Git tags with `git push`.
+  Tags can be deleted through the web UI.
+- **Check whether the commit author is a GitLab user** - Restrict commits to existing
+  GitLab users (checked against their email addresses). Checks both the commit author and committer.
+- **Prevent pushing secret files** - GitLab rejects any files that are
+  [likely to contain secrets](#prevent-pushing-secrets-to-the-repository).
+
+These push rules require you to create a regular expression for the rule to evaluate:
+
+- **Require expression in commit messages** - Only commit messages that match this
+  regular expression can be pushed. To allow any commit message, leave empty.
+  Uses multiline mode, which can be disabled using `(?-m)`.
+- **Reject expression in commit messages** - Only commit messages that do not match
+  this regular expression can be pushed. To allow any commit message, leave empty.
+  Uses multiline mode, which can be disabled using `(?-m)`.
+- **Restrict by branch name** - Only branch names that match this regular expression
+  can be pushed. To allow any branch name, leave empty.
+- **Restrict by commit author's email** - Only the commit author's email address that matches this
+  regular expression can be pushed. Checks both the commit author and committer.
+  To allow any email address, leave empty.
+- **Prohibited file names** - Any committed file names that match this regular expression
+  and do not already exist in the repository can't be pushed. To allow all file names,
+  leave empty. See [common examples](#prohibited-file-names).
+- **Maximum file size** - Pushes that contain added or updated files that exceed this
+  file size (in MB) are rejected. To allow files of any size, set to `0`.
+  Files tracked by Git LFS are exempted.
+
+GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions
+in push rules, and you can test them at the [regex101 regex tester](https://regex101.com/).
+
+## Custom push rules **(PREMIUM SELF)**
+
+It's possible to create custom push rules rather than the push rules available in
+**Admin Area > Push Rules** by using more advanced server hooks.
+
+See [server hooks](../../../administration/server_hooks.md) for more information.
+
 ## Use cases
 
 Every push rule could have its own use case, but let's consider some examples.
@@ -72,13 +118,6 @@ Some example regular expressions you can use in push rules:
 By default, GitLab restricts certain formats of branch names for security purposes.
 40-character hexadecimal names, similar to Git commit hashes, are prohibited.
 
-### Custom Push Rules **(PREMIUM SELF)**
-
-It's possible to create custom push rules rather than the push rules available in
-**Admin Area > Push Rules** by using more advanced server hooks.
-
-See [server hooks](../../../administration/server_hooks.md) for more information.
-
 ## Enabling push rules
 
 You can create push rules for all new projects to inherit, but they can be overridden
@@ -96,25 +135,6 @@ To override global push rules in a project's settings:
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.
-
-The following options are available:
-
-| Push rule                       | Description |
-|---------------------------------|-------------|
-| Removal of tags with `git push` | Forbid users to remove Git tags with `git push`. Tags can be deleted through the web UI. |
-| Check whether the commit author is a GitLab user | Restrict commits to existing GitLab users (checked against their emails). <sup>1</sup> |
-| Reject unverified users | GitLab rejects any commit that was not committed by the same user as the user who pushed it, or where the committer's email address is not [confirmed](../../../security/user_email_confirmation.md). |
-| Check whether commit is signed through GPG | Reject commit when it is not signed through GPG. Read [signing commits with GPG](gpg_signed_commits/index.md). |
-| Prevent pushing secret files | GitLab rejects any files that are likely to contain secrets. See the [forbidden file names](#prevent-pushing-secrets-to-the-repository). |
-| Require expression in commit messages | Only commit messages that match this regular expression are allowed to be pushed. <sup>2</sup> Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
-| Reject expression in commit messages | Only commit messages that do not match this regular expression are allowed to be pushed. <sup>2</sup> Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
-| Restrict by branch name | Only branch names that match this regular expression are allowed to be pushed. <sup>2</sup> Leave empty to allow all branch names. |
-| Restrict by commit author's email | Only commit author's email that match this regular expression are allowed to be pushed. <sup>1</sup> <sup>2</sup> Leave empty to allow any email. |
-| Prohibited file names | Any committed filenames that match this regular expression and do not already exist in the repository are not allowed to be pushed. <sup>2</sup> Leave empty to allow any filenames. See [common examples](#prohibited-file-names). |
-| Maximum file size | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. Files tracked by Git LFS are exempted. |
-
-1. Checks both the commit author and committer.
-1. GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [regex101 regex tester](https://regex101.com/).
 
 ### Caveat to "Reject unsigned commits" push rule
 

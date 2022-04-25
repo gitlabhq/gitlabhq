@@ -1,5 +1,5 @@
 %p.details
-  = sprintf(s_("Notify|%{author_link}'s issue %{issue_reference_link} is due soon."), { author_link: link_to(@issue.author_name, user_url(@issue.author)), issue_reference_link: issue_reference_link(@issue) })
+  = sprintf(s_("Notify|%{author_link}'s issue %{issue_reference_link} is due soon."), { author_link: link_to(@issue.author_name, user_url(@issue.author)), issue_reference_link: issue_reference_link(@issue) }).html_safe
 
 - if @issue.assignees.any?
   %p

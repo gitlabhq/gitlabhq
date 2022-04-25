@@ -123,7 +123,7 @@ RSpec.describe Integrations::MicrosoftTeams do
         {
           title: "Awesome wiki_page",
           content: "Some text describing some thing or another",
-          format: "md",
+          format: :markdown,
           message: "user created page: Awesome wiki_page"
         }
       end

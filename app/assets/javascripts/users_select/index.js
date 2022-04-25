@@ -35,7 +35,7 @@ function UsersSelect(currentUser, els, options = {}) {
     }
   }
 
-  const { handleClick } = options;
+  const { handleClick, autoAssignToMe } = options;
   const userSelect = this;
 
   $els.each((i, dropdown) => {
@@ -172,10 +172,7 @@ function UsersSelect(currentUser, els, options = {}) {
       });
     };
 
-    $assignToMeLink.on('click', (e) => {
-      e.preventDefault();
-      $(e.currentTarget).hide();
-
+    const onAssignToMeClick = () => {
       if ($dropdown.data('multiSelect')) {
         assignYourself();
         checkMaxSelect();
@@ -194,7 +191,18 @@ function UsersSelect(currentUser, els, options = {}) {
           .text(gon.current_user_fullname)
           .removeClass('is-default');
       }
+    };
+
+    $assignToMeLink.on('click', (e) => {
+      e.preventDefault();
+      $(e.currentTarget).hide();
+      onAssignToMeClick();
     });
+
+    if (autoAssignToMe) {
+      $assignToMeLink.hide();
+      onAssignToMeClick();
+    }
 
     $block.on('click', '.js-assign-yourself', (e) => {
       e.preventDefault();

@@ -70,6 +70,7 @@ describe('import table', () => {
         groupPathRegex: /.*/,
         jobsPath: '/fake_job_path',
         sourceUrl: SOURCE_URL,
+        historyPath: '/fake_history_path',
       },
       apolloProvider,
     });

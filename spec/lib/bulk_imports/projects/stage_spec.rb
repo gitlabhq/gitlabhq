@@ -24,6 +24,7 @@ RSpec.describe BulkImports::Projects::Stage do
       [4, BulkImports::Projects::Pipelines::ProjectFeaturePipeline],
       [4, BulkImports::Projects::Pipelines::ContainerExpirationPolicyPipeline],
       [4, BulkImports::Projects::Pipelines::ServiceDeskSettingPipeline],
+      [4, BulkImports::Projects::Pipelines::ReleasesPipeline],
       [5, BulkImports::Common::Pipelines::WikiPipeline],
       [5, BulkImports::Common::Pipelines::UploadsPipeline],
       [5, BulkImports::Common::Pipelines::LfsObjectsPipeline],

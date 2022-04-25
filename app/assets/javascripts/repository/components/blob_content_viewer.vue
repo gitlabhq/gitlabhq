@@ -17,7 +17,7 @@ import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import userInfoQuery from '../queries/user_info.query.graphql';
 import applicationInfoQuery from '../queries/application_info.query.graphql';
-import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE } from '../constants';
+import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
@@ -132,7 +132,8 @@ export default {
       return this.shouldLoadLegacyViewer ? null : loadViewer(fileType, this.isUsingLfs);
     },
     shouldLoadLegacyViewer() {
-      return this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
+      const isTextFile = this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
+      return isTextFile || LEGACY_FILE_TYPES.includes(this.blobInfo.fileType);
     },
     legacyViewerLoaded() {
       return (

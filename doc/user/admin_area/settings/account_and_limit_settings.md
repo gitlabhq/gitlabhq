@@ -249,15 +249,16 @@ To allow the use of expired SSH keys:
 
 Disabling SSH key expiration immediately enables all expired SSH keys.
 
-## Limit the lifetime of personal access tokens **(ULTIMATE SELF)**
+## Limit the lifetime of access tokens **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 
 Users can optionally specify a lifetime for
-[personal access tokens](../../profile/personal_access_tokens.md).
+access tokens, this includes [personal](../../profile/personal_access_tokens.md), 
+[group](../../group/settings/group_access_tokens.md), and [project](../../project/settings/project_access_tokens.md) access tokens.
 This lifetime is not a requirement, and can be set to any arbitrary number of days.
 
-Personal access tokens are the only tokens needed for programmatic access to GitLab.
+Access tokens are the only tokens needed for programmatic access to GitLab.
 However, organizations with security requirements may want to enforce more protection by
 requiring the regular rotation of these tokens.
 
@@ -266,15 +267,15 @@ requiring the regular rotation of these tokens.
 Only a GitLab administrator can set a lifetime. Leaving it empty means
 there are no restrictions.
 
-To set a lifetime on how long personal access tokens are valid:
+To set a lifetime on how long access tokens are valid:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
-1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
+1. Fill in the **Maximum allowable lifetime for access tokens (days)** field.
 1. Click **Save changes**.
 
-Once a lifetime for personal access tokens is set, GitLab:
+Once a lifetime for access tokens is set, GitLab:
 
 - Applies the lifetime for new personal access tokens, and require users to set an expiration date
   and a date no later than the allowed lifetime.
@@ -282,7 +283,7 @@ Once a lifetime for personal access tokens is set, GitLab:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
-## Allow expired Personal Access Tokens to be used (DEPRECATED) **(ULTIMATE SELF)**
+## Allow expired access tokens to be used (DEPRECATED) **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab 13.1.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296881) in GitLab 13.9.
@@ -298,7 +299,7 @@ To allow the use of expired PATs:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
-1. Uncheck the **Enforce personal access token expiration** checkbox.
+1. Uncheck the **Enforce access token expiration** checkbox.
 
 ## Disable user profile name changes **(PREMIUM SELF)**
 

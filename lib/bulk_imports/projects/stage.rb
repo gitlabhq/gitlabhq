@@ -79,6 +79,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::ServiceDeskSettingPipeline,
             stage: 4
           },
+          releases: {
+            pipeline: BulkImports::Projects::Pipelines::ReleasesPipeline,
+            stage: 4
+          },
           wiki: {
             pipeline: BulkImports::Common::Pipelines::WikiPipeline,
             stage: 5

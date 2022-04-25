@@ -86,3 +86,24 @@ export const DEFAULT_BLOB_INFO = {
 export const TEXT_FILE_TYPE = 'text';
 
 export const LFS_STORAGE = 'lfs';
+
+/**
+ * We have some features (like linking to external dependencies) that our frontend highlighter
+ * do not yet support.
+ * These are file types that we want the legacy (backend) syntax highlighter to highlight.
+ */
+export const LEGACY_FILE_TYPES = [
+  'package_json',
+  'gemfile',
+  'gemspec',
+  'composer_json',
+  'podfile',
+  'podspec',
+  'podspec_json',
+  'cartfile',
+  'godeps_json',
+  'requirements_txt',
+  'cargo_toml',
+  'go_mod',
+  'go_sum',
+];

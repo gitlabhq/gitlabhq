@@ -304,6 +304,8 @@ FactoryBot.define do
 
     trait :wiki_repo do
       after(:create) do |project|
+        stub_feature_flags(main_branch_over_master: false)
+
         raise 'Failed to create wiki repository!' unless project.create_wiki
       end
     end

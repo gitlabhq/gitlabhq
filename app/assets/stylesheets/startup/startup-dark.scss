@@ -12,6 +12,7 @@ body.gl-dark {
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
   --black: #fff;
+  --nav-active-bg: rgba(255, 255, 255, 0.08);
 }
 :root {
   --white: #333;
@@ -1787,6 +1788,7 @@ body.gl-dark {
   --white: #333;
   --black: #fff;
   --svg-status-bg: #333;
+  --nav-active-bg: rgba(255, 255, 255, 0.08);
 }
 .nav-sidebar li a {
   color: var(--gray-600);
@@ -2023,6 +2025,7 @@ body.gl-dark {
   --white: #333;
   --black: #fff;
   --svg-status-bg: #333;
+  --nav-active-bg: rgba(255, 255, 255, 0.08);
 }
 .tab-width-8 {
   -moz-tab-size: 8;

@@ -164,7 +164,7 @@ Use lowercase for **boards**, **issue boards**, and **epic boards**.
 
 Use **text box** to refer to the UI field. Do not use **field** or **box**. For example:
 
-- In the **Variable name** text box, enter `my text`.
+- In the **Variable name** text box, enter a value.
 
 ## button
 
@@ -318,7 +318,22 @@ Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionA
 
 ## enter
 
-Use **enter** instead of **type** when talking about putting values into text boxes.
+In most cases, use **enter** rather than **type**.
+
+- **Enter** encompasses multiple ways to enter information, including speech and keyboard.
+- **Enter** assumes that the user puts a value in a field and then moves the cursor outside the field (or presses <kbd>Enter</kbd>).
+  **Enter** includes both the entering of the content and the action to validate the content.
+
+For example:
+
+- In the **Variable name** text box, enter a value.
+- In the **Variable name** text box, enter `my text`.
+
+When you use **Enter** to refer to the key on a keyboard, use the HTML `<kbd>` tag:
+
+- To view the list of results, press <kbd>Enter</kbd>.
+
+See also [**type**](#type).
 
 ## epic
 
@@ -356,7 +371,7 @@ Use **box** instead of **field** or **text box**.
 
 Use:
 
-- In the **Variable name** box, enter `my text`.
+- In the **Variable name** text box, enter `my text`.
 
 Instead of:
 
@@ -950,7 +965,17 @@ Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) 
 
 ## type
 
-Do not use **type** if you can avoid it. Use **enter** instead.
+Use **type** when the cursor remains in the field you're typing in. For example,
+in a search dialog, you begin typing and the field populates results. You do not
+click out of the field.
+
+For example:
+
+- To view all users named Alex, type `Al`.
+- To view all labels for the documentation team, type `doc`.
+- For a list of quick actions, type `/`.
+
+See also [**enter**](#enter).
 
 ## update
 

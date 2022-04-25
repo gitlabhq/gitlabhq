@@ -27,7 +27,7 @@
         - if Feature.enabled?(:user_other_role_details)
           .row
             .form-group.col-sm-12.js-other-role-group.hidden
-              = f.label :other_role, _('What is your job title? (optional)'), class: 'form-check-label gl-mb-3'
+              = f.label :other_role, _('What is your job title? (optional)')
               = f.text_field :other_role, class: 'form-control'
         = render_if_exists "registrations/welcome/jobs_to_be_done", f: f
         = render_if_exists "registrations/welcome/setup_for_company", f: f

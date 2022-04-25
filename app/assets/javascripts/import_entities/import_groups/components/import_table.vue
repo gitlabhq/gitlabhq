@@ -71,6 +71,10 @@ export default {
       type: String,
       required: true,
     },
+    historyPath: {
+      type: String,
+      required: true,
+    },
   },
 
   data() {
@@ -485,12 +489,15 @@ export default {
 
 <template>
   <div>
-    <h1
-      class="gl-my-0 gl-py-4 gl-font-size-h1 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex"
+    <div
+      class="gl-display-flex gl-align-items-center gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1"
     >
-      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
-      {{ s__('BulkImport|Import groups from GitLab') }}
-    </h1>
+      <h1 class="gl-my-0 gl-py-4 gl-font-size-h1gl-display-flex">
+        <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
+        {{ s__('BulkImport|Import groups from GitLab') }}
+      </h1>
+      <gl-link :href="historyPath" class="gl-ml-auto">{{ s__('BulkImport|History') }}</gl-link>
+    </div>
     <gl-alert
       v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"
       variant="warning"

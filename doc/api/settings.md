@@ -369,7 +369,7 @@ listed in the descriptions of the relevant settings.
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB. |
 | `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited) [Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
-| `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for personal access tokens in days. |
+| `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for access tokens in days. |
 | `max_ssh_key_lifetime` **(ULTIMATE SELF)** | integer        | no                                   | Maximum allowable lifetime for SSH keys in days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6. |
 | `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |
 | `mirror_available`                       | boolean          | no                                   | Allow repository mirroring to configured by project Maintainers. If disabled, only Administrators can configure repository mirroring. |

@@ -65,7 +65,8 @@ export default class IssuableForm {
     this.gfmAutoComplete = new GfmAutoComplete(
       gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources,
     ).setup();
-    this.usersSelect = new UsersSelect();
+    const autoAssignToMe = form.get(0).id === 'new_merge_request';
+    this.usersSelect = new UsersSelect(undefined, undefined, { autoAssignToMe });
     this.reviewersSelect = new UsersSelect(undefined, '.js-reviewer-search');
     this.zenMode = new ZenMode();
 
