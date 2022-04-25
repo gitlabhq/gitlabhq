@@ -35,8 +35,8 @@ RSpec.describe ProjectStatistics do
         build_artifacts_size: 1.exabyte,
         snippets_size: 1.exabyte,
         pipeline_artifacts_size: 512.petabytes - 1,
-        uploads_size: 512.petabytes,
-        container_registry_size: 8.exabytes - 1
+        uploads_size: 500.petabytes,
+        container_registry_size: 12.petabytes
       )
 
       statistics.reload
@@ -49,8 +49,8 @@ RSpec.describe ProjectStatistics do
       expect(statistics.storage_size).to eq(8.exabytes - 1)
       expect(statistics.snippets_size).to eq(1.exabyte)
       expect(statistics.pipeline_artifacts_size).to eq(512.petabytes - 1)
-      expect(statistics.uploads_size).to eq(512.petabytes)
-      expect(statistics.container_registry_size).to eq(8.exabytes - 1)
+      expect(statistics.uploads_size).to eq(500.petabytes)
+      expect(statistics.container_registry_size).to eq(12.petabytes)
     end
   end
 
@@ -62,6 +62,7 @@ RSpec.describe ProjectStatistics do
       statistics.build_artifacts_size = 4
       statistics.snippets_size = 5
       statistics.uploads_size = 3
+      statistics.container_registry_size = 8
 
       expect(statistics.total_repository_size).to eq 5
     end
@@ -104,6 +105,7 @@ RSpec.describe ProjectStatistics do
       allow(statistics).to receive(:update_snippets_size)
       allow(statistics).to receive(:update_storage_size)
       allow(statistics).to receive(:update_uploads_size)
+      allow(statistics).to receive(:update_container_registry_size)
     end
 
     context "without arguments" do
@@ -118,6 +120,7 @@ RSpec.describe ProjectStatistics do
         expect(statistics).to have_received(:update_lfs_objects_size)
         expect(statistics).to have_received(:update_snippets_size)
         expect(statistics).to have_received(:update_uploads_size)
+        expect(statistics).to have_received(:update_container_registry_size)
       end
     end
 
@@ -133,6 +136,7 @@ RSpec.describe ProjectStatistics do
         expect(statistics).not_to have_received(:update_wiki_size)
         expect(statistics).not_to have_received(:update_snippets_size)
         expect(statistics).not_to have_received(:update_uploads_size)
+        expect(statistics).not_to have_received(:update_container_registry_size)
       end
     end
 
@@ -148,11 +152,13 @@ RSpec.describe ProjectStatistics do
         expect(statistics).to have_received(:update_wiki_size)
         expect(statistics).to have_received(:update_snippets_size)
         expect(statistics).to have_received(:update_uploads_size)
+        expect(statistics).to have_received(:update_container_registry_size)
         expect(statistics.repository_size).to eq(0)
         expect(statistics.commit_count).to eq(0)
         expect(statistics.wiki_size).to eq(0)
         expect(statistics.snippets_size).to eq(0)
         expect(statistics.uploads_size).to eq(0)
+        expect(statistics.container_registry_size).to eq(0)
       end
     end
 
@@ -174,11 +180,13 @@ RSpec.describe ProjectStatistics do
         expect(statistics).to have_received(:update_wiki_size)
         expect(statistics).to have_received(:update_snippets_size)
         expect(statistics).to have_received(:update_uploads_size)
+        expect(statistics).to have_received(:update_container_registry_size)
         expect(statistics.repository_size).to eq(0)
         expect(statistics.commit_count).to eq(0)
         expect(statistics.wiki_size).to eq(0)
         expect(statistics.snippets_size).to eq(0)
         expect(statistics.uploads_size).to eq(0)
+        expect(statistics.container_registry_size).to eq(0)
       end
     end
 
@@ -224,6 +232,7 @@ RSpec.describe ProjectStatistics do
         expect(statistics).not_to receive(:update_lfs_objects_size)
         expect(statistics).not_to receive(:update_snippets_size)
         expect(statistics).not_to receive(:update_uploads_size)
+        expect(statistics).not_to receive(:update_container_registry_size)
         expect(statistics).not_to receive(:save!)
         expect(Namespaces::ScheduleAggregationWorker)
           .not_to receive(:perform_async)
@@ -319,6 +328,40 @@ RSpec.describe ProjectStatistics do
     end
   end
 
+  describe '#update_container_registry_size' do
+    subject(:update_container_registry_size) { statistics.update_container_registry_size }
+
+    it 'stores the project container registry repositories size' do
+      allow(project).to receive(:container_repositories_size).and_return(10)
+
+      update_container_registry_size
+
+      expect(statistics.container_registry_size).to eq(10)
+    end
+
+    it 'handles nil values for the repositories size' do
+      allow(project).to receive(:container_repositories_size).and_return(nil)
+
+      update_container_registry_size
+
+      expect(statistics.container_registry_size).to eq(0)
+    end
+
+    context 'with container_registry_project_statistics FF disabled' do
+      before do
+        stub_feature_flags(container_registry_project_statistics: false)
+      end
+
+      it 'does not update the container_registry_size' do
+        expect(project).not_to receive(:container_repositories_size)
+
+        update_container_registry_size
+
+        expect(statistics.container_registry_size).to eq(0)
+      end
+    end
+  end
+
   describe '#update_storage_size' do
     it "sums all storage counters" do
       statistics.update!(
@@ -329,12 +372,13 @@ RSpec.describe ProjectStatistics do
         pipeline_artifacts_size: 3,
         build_artifacts_size: 3,
         packages_size: 6,
-        uploads_size: 5
+        uploads_size: 5,
+        container_registry_size: 10
       )
 
       statistics.reload
 
-      expect(statistics.storage_size).to eq 28
+      expect(statistics.storage_size).to eq 38
     end
 
     it 'works during wiki_size backfill' do

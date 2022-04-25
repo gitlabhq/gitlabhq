@@ -19,7 +19,7 @@ class ProjectStatistics < ApplicationRecord
 
   before_save :update_storage_size
 
-  COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size, :uploads_size].freeze
+  COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size, :uploads_size, :container_registry_size].freeze
   INCREMENTABLE_COLUMNS = {
     build_artifacts_size: %i[storage_size],
     packages_size: %i[storage_size],
@@ -76,6 +76,12 @@ class ProjectStatistics < ApplicationRecord
     self.uploads_size = project.uploads.sum(:size)
   end
 
+  def update_container_registry_size
+    return unless Feature.enabled?(:container_registry_project_statistics, project, default_enabled: :yaml)
+
+    self.container_registry_size = project.container_repositories_size || 0
+  end
+
   # `wiki_size` and `snippets_size` have no default value in the database
   # and the column can be nil.
   # This means that, when the columns were added, all rows had nil
@@ -100,7 +106,8 @@ class ProjectStatistics < ApplicationRecord
                    packages_size +
                    snippets_size +
                    pipeline_artifacts_size +
-                   uploads_size
+                   uploads_size +
+                   container_registry_size
 
     self.storage_size = storage_size
   end

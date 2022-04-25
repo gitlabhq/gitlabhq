@@ -39,6 +39,7 @@ module QA
       end
 
       after do
+        project.remove_via_api!
         runner.remove_via_api!
       end
 

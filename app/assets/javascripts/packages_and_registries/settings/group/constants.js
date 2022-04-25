@@ -25,7 +25,7 @@ export const DEPENDENCY_PROXY_SETTINGS_DESCRIPTION = s__(
 
 // Parameters
 
-export const PACKAGES_DOCS_PATH = helpPagePath('user/packages');
+export const PACKAGES_DOCS_PATH = helpPagePath('user/packages/index');
 export const MAVEN_DUPLICATES_ALLOWED = 'mavenDuplicatesAllowed';
 export const MAVEN_DUPLICATE_EXCEPTION_REGEX = 'mavenDuplicateExceptionRegex';
 

@@ -1,7 +1,5 @@
 import { GlIcon, GlAvatarLabeled } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
 
@@ -12,10 +10,17 @@ const issuableHeaderProps = {
   ...mockIssuableShowProps,
 };
 
-const createComponent = (propsData = issuableHeaderProps, { stubs } = {}) =>
-  extendedWrapper(
-    shallowMount(IssuableHeader, {
-      propsData,
+describe('IssuableHeader', () => {
+  let wrapper;
+
+  const findTaskStatusEl = () => wrapper.findByTestId('task-status');
+
+  const createComponent = (props = {}, { stubs } = {}) => {
+    wrapper = shallowMountExtended(IssuableHeader, {
+      propsData: {
+        ...issuableHeaderProps,
+        ...props,
+      },
       slots: {
         'status-badge': 'Open',
         'header-actions': `
@@ -24,15 +29,8 @@ const createComponent = (propsData = issuableHeaderProps, { stubs } = {}) =>
       `,
       },
       stubs,
-    }),
-  );
-
-describe('IssuableHeader', () => {
-  let wrapper;
-
-  beforeEach(() => {
-    wrapper = createComponent();
-  });
+    });
+  };
 
   afterEach(() => {
     wrapper.destroy();
@@ -41,6 +39,7 @@ describe('IssuableHeader', () => {
   describe('computed', () => {
     describe('authorId', () => {
       it('returns numeric ID from GraphQL ID of `author` prop', () => {
+        createComponent();
         expect(wrapper.vm.authorId).toBe(1);
       });
     });
@@ -52,6 +51,7 @@ describe('IssuableHeader', () => {
     });
 
     it('dispatches `click` event on sidebar toggle button', () => {
+      createComponent();
       wrapper.vm.toggleSidebarButtonEl = document.querySelector('.js-toggle-right-sidebar-button');
       jest.spyOn(wrapper.vm.toggleSidebarButtonEl, 'dispatchEvent').mockImplementation(jest.fn);
 
@@ -67,6 +67,7 @@ describe('IssuableHeader', () => {
 
   describe('template', () => {
     it('renders issuable status icon and text', () => {
+      createComponent();
       const statusBoxEl = wrapper.findByTestId('status');
 
       expect(statusBoxEl.exists()).toBe(true);
@@ -75,11 +76,9 @@ describe('IssuableHeader', () => {
     });
 
     it('renders blocked icon when issuable is blocked', async () => {
-      wrapper.setProps({
+      createComponent({
         blocked: true,
       });
-
-      await nextTick();
 
       const blockedEl = wrapper.findByTestId('blocked');
 
@@ -88,11 +87,9 @@ describe('IssuableHeader', () => {
     });
 
     it('renders confidential icon when issuable is confidential', async () => {
-      wrapper.setProps({
+      createComponent({
         confidential: true,
       });
-
-      await nextTick();
 
       const confidentialEl = wrapper.findByTestId('confidential');
 
@@ -101,6 +98,7 @@ describe('IssuableHeader', () => {
     });
 
     it('renders issuable author avatar', () => {
+      createComponent();
       const { username, name, webUrl, avatarUrl } = mockIssuable.author;
       const avatarElAttrs = {
         'data-user-id': '1',
@@ -120,28 +118,26 @@ describe('IssuableHeader', () => {
       expect(avatarEl.find(GlAvatarLabeled).find(GlIcon).exists()).toBe(false);
     });
 
-    it('renders tast status text when `taskCompletionStatus` prop is defined', () => {
-      let taskStatusEl = wrapper.findByTestId('task-status');
+    it('renders task status text when `taskCompletionStatus` prop is defined', () => {
+      createComponent();
 
-      expect(taskStatusEl.exists()).toBe(true);
-      expect(taskStatusEl.text()).toContain('0 of 5 tasks completed');
+      expect(findTaskStatusEl().exists()).toBe(true);
+      expect(findTaskStatusEl().text()).toContain('0 of 5 tasks completed');
+    });
 
-      const wrapperSingleTask = createComponent({
-        ...issuableHeaderProps,
+    it('does not render task status text when tasks count is 0', () => {
+      createComponent({
         taskCompletionStatus: {
+          count: 0,
           completedCount: 0,
-          count: 1,
         },
       });
 
-      taskStatusEl = wrapperSingleTask.findByTestId('task-status');
-
-      expect(taskStatusEl.text()).toContain('0 of 1 task completed');
-
-      wrapperSingleTask.destroy();
+      expect(findTaskStatusEl().exists()).toBe(false);
     });
 
     it('renders sidebar toggle button', () => {
+      createComponent();
       const toggleButtonEl = wrapper.findByTestId('sidebar-toggle');
 
       expect(toggleButtonEl.exists()).toBe(true);
@@ -149,6 +145,7 @@ describe('IssuableHeader', () => {
     });
 
     it('renders header actions', () => {
+      createComponent();
       const actionsEl = wrapper.findByTestId('header-actions');
 
       expect(actionsEl.find('button.js-close').exists()).toBe(true);
@@ -157,9 +154,8 @@ describe('IssuableHeader', () => {
 
     describe('when author exists outside of GitLab', () => {
       it("renders 'external-link' icon in avatar label", () => {
-        wrapper = createComponent(
+        createComponent(
           {
-            ...issuableHeaderProps,
             author: {
               ...issuableHeaderProps.author,
               webUrl: 'https://jira.com/test-user/author.jpg',

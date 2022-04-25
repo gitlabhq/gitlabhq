@@ -3,7 +3,7 @@ table_name: lists
 classes:
 - List
 feature_categories:
-- design_management
-description: TODO
+- team_planning
+description: Configuration of a single list on an issue board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/611dab2e522e5e59cf09cd459a31686e65616863
 milestone: '8.11'

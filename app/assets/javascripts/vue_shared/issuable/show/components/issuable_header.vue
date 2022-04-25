@@ -71,6 +71,9 @@ export default {
         { completedCount, count },
       );
     },
+    hasTasks() {
+      return this.taskCompletionStatus.count > 0;
+    },
   },
   mounted() {
     this.toggleSidebarButtonEl = document.querySelector('.js-toggle-right-sidebar-button');
@@ -128,7 +131,7 @@ export default {
           <strong class="author d-sm-none d-inline">@{{ author.username }}</strong>
         </gl-avatar-link>
         <span
-          v-if="taskCompletionStatus"
+          v-if="taskCompletionStatus && hasTasks"
           data-testid="task-status"
           class="gl-display-none gl-md-display-block gl-lg-display-inline-block"
           >{{ taskStatusString }}</span

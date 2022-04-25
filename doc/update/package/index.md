@@ -297,3 +297,12 @@ To fix this issue:
 ### Error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server
 
 Please see [GitLab Pages troubleshooting](../../administration/pages/index.md#failed-to-connect-to-the-internal-gitlab-api).
+
+### Error `An error occurred during the signature verification` when running `apt-get update`
+
+To update the GPG key of the GitLab packages server run:
+
+```shell
+curl --silent "https://packages.gitlab.com/gpg.key" | apt-key add -
+apt-get update
+```

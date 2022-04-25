@@ -3,7 +3,7 @@ table_name: description_versions
 classes:
 - DescriptionVersion
 feature_categories:
-- design_management
-description: TODO
+- team_planning
+description: The diff of the change when an edit is made to an Issue, MR or Epic description
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17147
 milestone: '12.4'
