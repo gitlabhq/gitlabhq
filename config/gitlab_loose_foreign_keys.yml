@@ -186,7 +186,7 @@ external_pull_requests:
 merge_request_metrics:
   - table: ci_pipelines
     column: pipeline_id
-    on_delete: async_delete
+    on_delete: async_nullify
 merge_requests:
   - table: ci_pipelines
     column: head_pipeline_id
