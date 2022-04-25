@@ -38,7 +38,11 @@ To link one epic to another:
    - **relates to**
    - **[blocks](#blocking-epics)**
    - **[is blocked by](#blocking-epics)**
-1. Enter the epic number or paste in the full URL of the epic.
+1. To enter the linked epic, either:
+
+   - Enter `&`, followed by the epic's number. For example, `&123`.
+   - Enter `&`, followed by a word from the epic's title. For example, `&Deliver`.
+   - Paste in the epic's full URL.
 
    ![Adding a related epic](img/related_epics_add_v14_9.png)
 

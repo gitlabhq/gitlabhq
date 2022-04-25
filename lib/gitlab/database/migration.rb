@@ -37,10 +37,6 @@ module Gitlab
       class V1_0 < ActiveRecord::Migration[6.1] # rubocop:disable Naming/ClassAndModuleCamelCase
         include LockRetriesConcern
         include Gitlab::Database::MigrationHelpers::V2
-      end
-
-      class V2_0 < V1_0 # rubocop:disable Naming/ClassAndModuleCamelCase
-        include Gitlab::Database::MigrationHelpers::RestrictGitlabSchema
 
         # When running migrations, the `db:migrate` switches connection of
         # ActiveRecord::Base depending where the migration runs.
@@ -48,6 +44,10 @@ module Gitlab
         class MigrationRecord < ActiveRecord::Base
           self.abstract_class = true # Prevent STI behavior
         end
+      end
+
+      class V2_0 < V1_0 # rubocop:disable Naming/ClassAndModuleCamelCase
+        include Gitlab::Database::MigrationHelpers::RestrictGitlabSchema
       end
 
       def self.[](version)

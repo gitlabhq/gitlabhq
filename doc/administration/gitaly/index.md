@@ -413,8 +413,8 @@ Gitaly can be configured to limit requests based on:
 Monitor Gitaly request limiting with the `gitaly_requests_dropped_total` Prometheus metric. This metric provides a total count
 of requests dropped due to request limiting. The `reason` label indicates why a request was dropped:
 
-- `rate`, due to rate limiting. 
-- `max_size`, because the concurrency queue size was reached. 
+- `rate`, due to rate limiting.
+- `max_size`, because the concurrency queue size was reached.
 - `max_time`, because the request exceeded the maximum queue wait time as configured in Gitaly.
 
 ### Monitor Gitaly concurrency limiting
@@ -427,7 +427,7 @@ the Gitaly logs and Prometheus:
 - In Prometheus, look for the following metrics:
   - `gitaly_concurrency_limiting_in_progress` indicates how many concurrent requests are
     being processed.
-  - `gitaly_concurrency_limiting_queued` indicates how many requests for an RPC for a given 
+  - `gitaly_concurrency_limiting_queued` indicates how many requests for an RPC for a given
     repository are waiting due to the concurrency limit being reached.
   - `gitaly_concurrency_limiting_acquiring_seconds` indiciates how long a request has to
     wait due to concurrency limits before being processed.

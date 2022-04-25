@@ -400,7 +400,7 @@ We are still learning the best practices for both **type policies** and **reacti
 Take a moment to improve this guide or [leave a comment](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/100)
 if you use it!
 
-In the example below we define a `@client` query and its `typedefs`: 
+In the example below we define a `@client` query and its `typedefs`:
 
 ```javascript
 // ./graphql/typedefs.graphql

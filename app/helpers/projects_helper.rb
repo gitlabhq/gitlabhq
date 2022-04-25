@@ -212,7 +212,7 @@ module ProjectsHelper
   end
 
   def no_password_message
-    push_pull_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'pull-and-push') }
+    push_pull_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('topics/git/terminology', anchor: 'pull-and-push') }
     clone_with_https_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'clone-with-https') }
     set_password_link_start = '<a href="%{url}">'.html_safe % { url: edit_profile_password_path }
     set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: profile_personal_access_tokens_path }

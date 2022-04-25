@@ -8,6 +8,7 @@ module API
       before { authenticate! }
 
       feature_category :runner
+      urgency :low
 
       resource :runners do
         desc 'Get runners available for user' do

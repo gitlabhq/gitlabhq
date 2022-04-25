@@ -9,6 +9,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   feature_category :runner
+  urgency :low
 
   def index
   end

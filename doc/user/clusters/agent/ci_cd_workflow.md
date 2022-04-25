@@ -94,7 +94,7 @@ To authorize the agent to access all of the GitLab projects in a group or subgro
 
    - The Kubernetes projects must be in the same group hierarchy as the project where the agent's configuration is.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
-   - All of the subgroups of an authorized group also have access to the same agent (without being specified individually). 
+   - All of the subgroups of an authorized group also have access to the same agent (without being specified individually).
    - You can authorize up to 100 groups.
 
 All the projects that belong to the group and its subgroups are now authorized to access the agent.

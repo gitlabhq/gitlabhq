@@ -533,7 +533,7 @@ To delete the account immediately, you can manually
 
 ## Update user email addresses
 
-Email addresses on the LDAP server are considered the source of truth for users when LDAP is used to sign in. 
+Email addresses on the LDAP server are considered the source of truth for users when LDAP is used to sign in.
 
 Updating user email addresses must be done on the LDAP server that manages the user. The email address for GitLab is updated either:
 

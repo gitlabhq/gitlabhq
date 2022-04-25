@@ -144,7 +144,7 @@ The **Lead Time for Changes** metrics display below the **Filter results** text 
 To view deployment metrics, you must have a
 [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
 
-Value stream analytics shows the following deployment metrics for your group:  
+Value stream analytics shows the following deployment metrics for your group:
 
 - Deploys: The number of successful deployments in the date range.
 - Deployment Frequency: The average number of successful deployments per day in the date range.
@@ -179,7 +179,7 @@ In GitLab 13.8 and earlier, metrics are calculated based on when the deployment 
 > - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
 > - Data refresh badge [added](https://gitlab.com/gitlab-org/gitlab/-/issues/341739) in GitLab 14.9
 
-Plans for value stream analytics to filter items by stop event instead of start event are tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/6046). With the completion of this work, value stream analytics will only display items with a stop event in the date range. 
+Plans for value stream analytics to filter items by stop event instead of start event are tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/6046). With the completion of this work, value stream analytics will only display items with a stop event in the date range.
 
 To preview this functionality, you can use the **Filter by stop date** toggle to enable or disable this filter until the [default filtering mode is introduced](../../../update/deprecations.md#value-stream-analytics-filtering-calculation-change) and the toggle is removed.
 

@@ -30,6 +30,25 @@ For removal reviewers (Technical Writers only):
 
 ## 15.0
 
+### Container Network and Host Security
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+All functionality related to the Container Network Security and Container Host Security categories was deprecated in GitLab 14.8 and is scheduled for removal in GitLab 15.0. Users who need a replacement for this functionality are encouraged to evaluate the following open source projects as potential solutions that can be installed and managed outside of GitLab: [AppArmor](https://gitlab.com/apparmor/apparmor), [Cilium](https://github.com/cilium/cilium), [Falco](https://github.com/falcosecurity/falco), [FluentD](https://github.com/fluent/fluentd), [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/). To integrate these technologies with GitLab, add the desired Helm charts in your copy of the [Cluster Management Project Template](https://docs.gitlab.com/ee/user/clusters/management_project_template.html). Deploy these Helm charts in production by calling commands through the GitLab [Secure CI/CD Tunnel](https://docs.gitlab.com/ee/user/clusters/agent/repository.html#run-kubectl-commands-using-the-cicd-tunnel).
+
+As part of this change, the following capabilities within GitLab are scheduled for removal in GitLab 15.0:
+
+- The **Security & Compliance > Threat Monitoring** page.
+- The Network Policy security policy type, as found on the **Security & Compliance > Policies** page.
+- The ability to manage integrations with the following technologies through GitLab: AppArmor, Cilium, Falco, FluentD, and Pod Security Policies.
+- All APIs related to the above functionality.
+
+For additional context, or to provide feedback regarding this change, please reference our [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/7476).
+
 ### Container registry authentication with htpasswd
 
 WARNING:
@@ -41,6 +60,23 @@ changes to your code, settings, or workflow.
 The Container Registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
 
 Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
+
+### Vulnerability Check
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The vulnerability check feature was deprecated in GitLab 14.8 and is scheduled for removal in GitLab 15.0. We encourage you to migrate to the new security approvals feature instead. You can do so by navigating to **Security & Compliance > Policies** and creating a new Scan Result Policy.
+
+The new security approvals feature is similar to vulnerability check. For example, both can require approvals for MRs that contain security vulnerabilities. However, security approvals improve the previous experience in several ways:
+
+- Users can choose who is allowed to edit security approval rules. An independent security or compliance team can therefore manage rules in a way that prevents development project maintainers from modifying the rules.
+- Multiple rules can be created and chained together to allow for filtering on different severity thresholds for each scanner type.
+- A two-step approval process can be enforced for any desired changes to security approval rules.
+- A single set of security policies can be applied to multiple development projects to allow for ease in maintaining a single, centralized ruleset.
 
 ## 14.9
 

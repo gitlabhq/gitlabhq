@@ -33,7 +33,7 @@ Depending on the used constructs, we can classify migrations to be either:
 Migrations cannot mix **DDL** and **DML** changes as the application requires the structure
 (as described by `db/structure.sql`) to be exactly the same across all decomposed databases.
 
-### Data Definition Language (DDL) 
+### Data Definition Language (DDL)
 
 The DDL migrations are all migrations that:
 

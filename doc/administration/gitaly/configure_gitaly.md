@@ -800,7 +800,7 @@ gitaly['concurrency'] = [
 
 - `rpc` is the name of the RPC to set a concurrency limit for per repository.
 - `max_per_repo` is the maximum number of in-flight RPC calls for the given RPC per repository.
-- `max_queue_time` is the maximum amount of time a request can wait in the concurrency queue to 
+- `max_queue_time` is the maximum amount of time a request can wait in the concurrency queue to
   be picked up by Gitaly.
 - `max_queue_size` is the maximum size the concurrency queue can grow to before requests are rejected by
   Gitaly.
@@ -808,7 +808,7 @@ gitaly['concurrency'] = [
 This limits the number of in-flight RPC calls for the given RPCs. The limit is applied per
 repository. In the example above:
 
-- Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPackWithSidechannel` and 
+- Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPackWithSidechannel` and
   `SSHUploadPackWithSidechannel` RPC calls in flight.
 - If another request comes in for a repository that has used up its 20 slots, that request gets
   queued.

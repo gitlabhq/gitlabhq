@@ -83,7 +83,7 @@ Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This is useful if you are already explicitly printing details and potentially have a lot of return output:
 
 ```ruby
-puts ActiveRecord::Base.descendants; :ok 
+puts ActiveRecord::Base.descendants; :ok
 Project.select(&:pages_deployed?).each {|p| puts p.pages_url }; true
 ```
 
@@ -800,9 +800,9 @@ Available permission levels are listed in
 
 ### Get all error messages associated with groups, subgroups, members, and requesters
 
-Collect error messages associated with groups, subgroups, members, and requesters. This 
-captures error messages that may not appear in the Web interface. This can be especially helpful 
-for troubleshooting issues with [LDAP group sync](../auth/ldap/ldap_synchronization.md#group-sync) 
+Collect error messages associated with groups, subgroups, members, and requesters. This
+captures error messages that may not appear in the Web interface. This can be especially helpful
+for troubleshooting issues with [LDAP group sync](../auth/ldap/ldap_synchronization.md#group-sync)
 and unexpected behavior with users and their membership in groups and subgroups.
 
 ```ruby

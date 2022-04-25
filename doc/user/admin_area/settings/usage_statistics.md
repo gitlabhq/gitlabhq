@@ -45,7 +45,7 @@ tier. Users can continue to access the features in a paid tier without sharing u
 
 - [Email from GitLab](../email_from_gitlab.md).
 
-#### Features available in 14.4 and later
+### Features available in 14.4 and later
 
 - [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit).
 - [Restrict group access by IP address](../../group/index.md#restrict-group-access-by-ip-address).
@@ -53,7 +53,7 @@ tier. Users can continue to access the features in a paid tier without sharing u
 NOTE:
 Registration is not yet required for participation, but may be added in a future milestone.
 
-#### Enable Registration Features
+### Enable registration features
 
 1. Sign in as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.

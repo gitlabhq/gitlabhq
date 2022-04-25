@@ -5781,6 +5781,9 @@ msgstr ""
 msgid "Billings|By reactivating your trial, you will receive an additional 30 days of %{planName}. Your trial can be only reactivated once."
 msgstr ""
 
+msgid "Billings|Error validating card details"
+msgstr ""
+
 msgid "Billings|Extend trial"
 msgstr ""
 

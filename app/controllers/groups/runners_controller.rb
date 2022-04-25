@@ -6,6 +6,7 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
   feature_category :runner
+  urgency :low
 
   def index
     finder = Ci::RunnersFinder.new(current_user: current_user, params: { group: @group })

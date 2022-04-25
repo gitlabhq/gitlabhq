@@ -128,6 +128,25 @@ relative URL in the `authBackend` setting:
 gitlab-workhorse -authBackend http://localhost:8080/gitlab
 ```
 
+## TLS support
+
+A listener with TLS can be configured to be used for incoming requests.
+Paths to the files containing a certificate and matching private key for the server must be provided:
+
+```toml
+[[listeners]]
+network = "tcp"
+addr = "localhost:3443"
+[listeners.tls]
+  certificate = "/path/to/certificate"
+  key = "/path/to/private/key"
+  min_version = "tls1.2"
+  max_version = "tls1.3"
+```
+
+The `certificate` file should contain the concatenation
+of the server's certificate, any intermediates, and the CA's certificate.
+
 ## Interaction of authBackend and authSocket
 
 The interaction between `authBackend` and `authSocket` can be confusing.

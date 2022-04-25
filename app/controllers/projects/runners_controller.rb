@@ -5,6 +5,7 @@ class Projects::RunnersController < Projects::ApplicationController
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
   feature_category :runner
+  urgency :low
 
   def index
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-runners-settings')

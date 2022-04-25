@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Uploads guide: Adding new uploads
 
-In this section, we describe how to add a new upload route [accelerated](implementation.md#uploading-technologies) by Workhorse for [body and multipart](implementation.md#upload-encodings) encoded uploads.
+Here, we describe how to add a new upload route [accelerated](index.md#workhorse-assisted-uploads) by Workhorse.
 
 Upload routes belong to one of these categories:
 
@@ -15,31 +15,31 @@ Upload routes belong to one of these categories:
 1. GraphQL API: uploads handled by a GraphQL resolve function.
 
 WARNING:
-GraphQL uploads do not support [direct upload](implementation.md#direct-upload) yet. Depending on the use case, the feature may not work on installations without NFS (like GitLab.com or Kubernetes installations). Uploading to object storage inside the GraphQL resolve function may result in timeout errors. For more details please follow [issue #280819](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
+GraphQL uploads do not support [direct upload](index.md#direct-upload). Depending on the use case, the feature may not work on installations without NFS (like GitLab.com or Kubernetes installations). Uploading to object storage inside the GraphQL resolve function may result in timeout errors. For more details, follow [issue #280819](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
 
 ## Update Workhorse for the new route
 
-For both the Rails controller and Grape API uploads, Workhorse has to be updated in order to get the
+For both the Rails controller and Grape API uploads, Workhorse must be updated to get the
 support for the new upload route.
 
 1. Open a new issue in the [Workhorse tracker](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/new) describing precisely the new upload route:
    - The route's URL.
-   - The [upload encoding](implementation.md#upload-encodings).
+   - The upload encoding.
    - If possible, provide a dump of the upload request.
 1. Implement and get the MR merged for this issue above.
-1. Ask the Maintainers of [Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) to create a new release. You can do that in the MR
-   directly during the maintainer review or ask for it in the `#workhorse` Slack channel.
+1. Ask the Maintainers of [Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) to create a new release. You can do that in the merge request
+   directly during the maintainer review, or ask for it in the `#workhorse` Slack channel.
 1. Bump the [Workhorse version file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_WORKHORSE_VERSION)
    to the version you have from the previous points, or bump it in the same merge request that contains
-   the Rails changes (see [Implementing the new route with a Rails controller](#implementing-the-new-route-with-a-rails-controller) or [Implementing the new route with a Grape API endpoint](#implementing-the-new-route-with-a-grape-api-endpoint) below).
+   the Rails changes. Refer to [Implementing the new route with a Rails controller](#implementing-the-new-route-with-a-rails-controller) or [Implementing the new route with a Grape API endpoint](#implementing-the-new-route-with-a-grape-api-endpoint) below.
 
 ## Implementing the new route with a Rails controller
 
-For a Rails controller upload, we usually have a [multipart](implementation.md#upload-encodings) upload and there are a
+For a Rails controller upload, we usually have a `multipart/form-data` upload and there are a
 few things to do:
 
 1. The upload is available under the parameter name you're using. For example, it could be an `artifact`
-   or a nested parameter such as `user[avatar]`. Let's say that we have the upload under the
+   or a nested parameter such as `user[avatar]`. If you have the upload under the
    `file` parameter, reading `params[:file]` should get you an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb) instance.
 1. Generally speaking, it's a good idea to check if the instance is from the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb) class. For example, see how we checked
 [that the parameter is indeed an `UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/commit/ea30fe8a71bf16ba07f1050ab4820607b5658719#51c0cc7a17b7f12c32bc41cfab3649ff2739b0eb_79_77).
@@ -53,7 +53,7 @@ builds automatically for you.
 
 ## Implementing the new route with a Grape API endpoint
 
-For a Grape API upload, we can have [body or a multipart](implementation.md#upload-encodings) upload. Things are slightly more complicated: two endpoints are needed. One for the
+For a Grape API upload, we can have a body or multipart upload. Things are slightly more complicated: two endpoints are needed. One for the
 Workhorse pre-upload authorization and one for accepting the upload metadata from Workhorse:
 
 1. Implement an endpoint with the URL + `/authorize` suffix that will:
@@ -70,8 +70,8 @@ use `requires :file, type: ::API::Validations::Types::WorkhorseFile`.
    - Check that the request is coming from Workhorse with the `require_gitlab_workhorse!` from the
 [API helpers](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/helpers.rb).
    - Check the user permissions.
-   - The remaining code of the processing. This is where the code must be reading the parameter (for
-our example, it would be `params[:file]`).
+   - The remaining code of the processing. In this step, the code must read the parameter. For
+our example, it would be `params[:file]`.
 
 WARNING:
 **Do not** call `UploadedFile#from_params` directly! Do not build an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
@@ -124,40 +124,40 @@ Therefore, document new uploads here by slotting them into the following tables:
 
 ### CarrierWave integration
 
-| File                                                    | Carrierwave usage                                                                | Categorized         |
+| File                                                    | CarrierWave usage                                                                | Categorized         |
 |---------------------------------------------------------|----------------------------------------------------------------------------------|---------------------|
-| `app/models/project.rb`                                 | `include Avatarable`                                                             | :white_check_mark:  |
-| `app/models/projects/topic.rb`                          | `include Avatarable`                                                             | :white_check_mark:  |
-| `app/models/group.rb`                                   | `include Avatarable`                                                             | :white_check_mark:  |
-| `app/models/user.rb`                                    | `include Avatarable`                                                             | :white_check_mark:  |
-| `app/models/terraform/state_version.rb`                 | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/ci/job_artifact.rb`                         | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/ci/pipeline_artifact.rb`                    | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/pages_deployment.rb`                        | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/lfs_object.rb`                              | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/dependency_proxy/blob.rb`                   | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/dependency_proxy/manifest.rb`               | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/packages/composer/cache_file.rb`            | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/packages/package_file.rb`                   | `include FileStoreMounter`                                                       | :white_check_mark:  |
-| `app/models/concerns/packages/debian/component_file.rb` | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/project.rb`                                 | `include Avatarable`                                                             | **{check-circle}** Yes  |
+| `app/models/projects/topic.rb`                          | `include Avatarable`                                                             | **{check-circle}** Yes  |
+| `app/models/group.rb`                                   | `include Avatarable`                                                             | **{check-circle}** Yes  |
+| `app/models/user.rb`                                    | `include Avatarable`                                                             | **{check-circle}** Yes  |
+| `app/models/terraform/state_version.rb`                 | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/ci/job_artifact.rb`                         | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/ci/pipeline_artifact.rb`                    | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/pages_deployment.rb`                        | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/lfs_object.rb`                              | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/dependency_proxy/blob.rb`                   | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/dependency_proxy/manifest.rb`               | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/packages/composer/cache_file.rb`            | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/packages/package_file.rb`                   | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/concerns/packages/debian/component_file.rb` | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
 | `ee/app/models/issuable_metric_image.rb`                | `include FileStoreMounter`                                                       |                     |
 | `ee/app/models/vulnerabilities/remediation.rb`          | `include FileStoreMounter`                                                       |                     |
 | `ee/app/models/vulnerabilities/export.rb`               | `include FileStoreMounter`                                                       |                     |
-| `app/models/packages/debian/project_distribution.rb`    | `include Packages::Debian::Distribution`                                         | :white_check_mark:  |
-| `app/models/packages/debian/group_distribution.rb`      | `include Packages::Debian::Distribution`                                         | :white_check_mark:  |
-| `app/models/packages/debian/project_component_file.rb`  | `include Packages::Debian::ComponentFile`                                        | :white_check_mark:  |
-| `app/models/packages/debian/group_component_file.rb`    | `include Packages::Debian::ComponentFile`                                        | :white_check_mark:  |
-| `app/models/merge_request_diff.rb`                      | `mount_uploader :external_diff, ExternalDiffUploader`                            | :white_check_mark:  |
-| `app/models/note.rb`                                    | `mount_uploader :attachment, AttachmentUploader`                                 | :white_check_mark:  |
-| `app/models/appearance.rb`                              | `mount_uploader :logo,         AttachmentUploader`                               | :white_check_mark:  |
-| `app/models/appearance.rb`                              | `mount_uploader :header_logo,  AttachmentUploader`                               | :white_check_mark:  |
-| `app/models/appearance.rb`                              | `mount_uploader :favicon,      FaviconUploader`                                  | :white_check_mark:  |
+| `app/models/packages/debian/project_distribution.rb`    | `include Packages::Debian::Distribution`                                         | **{check-circle}** Yes  |
+| `app/models/packages/debian/group_distribution.rb`      | `include Packages::Debian::Distribution`                                         | **{check-circle}** Yes  |
+| `app/models/packages/debian/project_component_file.rb`  | `include Packages::Debian::ComponentFile`                                        | **{check-circle}** Yes  |
+| `app/models/packages/debian/group_component_file.rb`    | `include Packages::Debian::ComponentFile`                                        | **{check-circle}** Yes  |
+| `app/models/merge_request_diff.rb`                      | `mount_uploader :external_diff, ExternalDiffUploader`                            | **{check-circle}** Yes  |
+| `app/models/note.rb`                                    | `mount_uploader :attachment, AttachmentUploader`                                 | **{check-circle}** Yes  |
+| `app/models/appearance.rb`                              | `mount_uploader :logo,         AttachmentUploader`                               | **{check-circle}** Yes  |
+| `app/models/appearance.rb`                              | `mount_uploader :header_logo,  AttachmentUploader`                               | **{check-circle}** Yes  |
+| `app/models/appearance.rb`                              | `mount_uploader :favicon,      FaviconUploader`                                  | **{check-circle}** Yes  |
 | `app/models/project.rb`                                 | `mount_uploader :bfg_object_map, AttachmentUploader`                             |                     |
-| `app/models/import_export_upload.rb`                    | `mount_uploader :import_file, ImportExportUploader`                              | :white_check_mark:  |
-| `app/models/import_export_upload.rb`                    | `mount_uploader :export_file, ImportExportUploader`                              | :white_check_mark:  |
+| `app/models/import_export_upload.rb`                    | `mount_uploader :import_file, ImportExportUploader`                              | **{check-circle}** Yes  |
+| `app/models/import_export_upload.rb`                    | `mount_uploader :export_file, ImportExportUploader`                              | **{check-circle}** Yes  |
 | `app/models/ci/deleted_object.rb`                       | `mount_uploader :file, DeletedObjectUploader`                                    |                     |
-| `app/models/design_management/action.rb`                | `mount_uploader :image_v432x230, DesignManagement::DesignV432x230Uploader`       | :white_check_mark:  |
-| `app/models/concerns/packages/debian/distribution.rb`   | `mount_uploader :signed_file, Packages::Debian::DistributionReleaseFileUploader` | :white_check_mark:  |
-| `app/models/bulk_imports/export_upload.rb`              | `mount_uploader :export_file, ExportUploader`                                    | :white_check_mark:  |
+| `app/models/design_management/action.rb`                | `mount_uploader :image_v432x230, DesignManagement::DesignV432x230Uploader`       | **{check-circle}** Yes  |
+| `app/models/concerns/packages/debian/distribution.rb`   | `mount_uploader :signed_file, Packages::Debian::DistributionReleaseFileUploader` | **{check-circle}** Yes  |
+| `app/models/bulk_imports/export_upload.rb`              | `mount_uploader :export_file, ExportUploader`                                    | **{check-circle}** Yes  |
 | `ee/app/models/user_permission_export_upload.rb`        | `mount_uploader :file, AttachmentUploader`                                       |                     |
 | `app/models/ci/secure_file.rb`                          | `include FileStoreMounter`                                                       |                     |

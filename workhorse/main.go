@@ -22,6 +22,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/server"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
 )
 
@@ -155,6 +156,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.ShutdownTimeout = cfgFromFile.ShutdownTimeout
 	cfg.TrustedCIDRsForXForwardedFor = cfgFromFile.TrustedCIDRsForXForwardedFor
 	cfg.TrustedCIDRsForPropagation = cfgFromFile.TrustedCIDRsForPropagation
+	cfg.Listeners = cfgFromFile.Listeners
 
 	return boot, cfg, nil
 }
@@ -175,14 +177,6 @@ func run(boot bootConfig, cfg config.Config) error {
 		if err := os.Remove(boot.listenAddr); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-	}
-
-	// Change the umask only around net.Listen()
-	oldUmask := syscall.Umask(boot.listenUmask)
-	listener, err := net.Listen(boot.listenNetwork, boot.listenAddr)
-	syscall.Umask(oldUmask)
-	if err != nil {
-		return fmt.Errorf("main listener: %v", err)
 	}
 
 	finalErrors := make(chan error)
@@ -241,8 +235,19 @@ func run(boot bootConfig, cfg config.Config) error {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
 
-	server := http.Server{Handler: up}
-	go func() { finalErrors <- server.Serve(listener) }()
+	listenerFromBootConfig := config.ListenerConfig{
+		Network: boot.listenNetwork,
+		Addr:    boot.listenAddr,
+	}
+	srv := &server.Server{
+		Handler:         up,
+		Umask:           boot.listenUmask,
+		ListenerConfigs: append(cfg.Listeners, listenerFromBootConfig),
+		Errors:          finalErrors,
+	}
+	if err := srv.Run(); err != nil {
+		return fmt.Errorf("running server: %v", err)
+	}
 
 	select {
 	case err := <-finalErrors:
@@ -254,6 +259,6 @@ func run(boot bootConfig, cfg config.Config) error {
 		defer cancel()
 
 		redis.Shutdown()
-		return server.Shutdown(ctx)
+		return srv.Shutdown(ctx)
 	}
 }

@@ -280,7 +280,7 @@ ApplicationSetting.update(container_registry_token_expire_delay: 30)
 The default expiration and the expiration on GitLab.com is 15 minutes.
 
 ## Using the dependency proxy behind a proxy
- 
+
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines:
 
    ```ruby

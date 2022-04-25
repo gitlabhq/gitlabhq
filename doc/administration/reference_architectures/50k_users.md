@@ -86,7 +86,7 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
-  
+
   redis_cache -[hidden]-> redis_persistent
 }
 
@@ -2304,7 +2304,7 @@ future with further specific cloud provider details.
 | Webservice                                    | 16    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | `m5.8xlarge` | 510 vCPU, 472 GB memory         |
 | Sidekiq                                       | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 15.5 vCPU, 50 GB memory         |
 | Supporting services such as NGINX, Prometheus | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 7.75 vCPU, 25 GB memory         |
- 
+
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vcpu / memory ratios and avoid scaling during **performance testing**.
@@ -2377,7 +2377,7 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
-  
+
   redis_cache -[hidden]-> redis_persistent
 }
 

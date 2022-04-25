@@ -149,7 +149,7 @@ As an administrator you can set either a global or namespace-specific limit on t
 
 ## Archive jobs
 
-Archiving jobs is useful for reducing the CI/CD footprint on the system by removing some 
+Archiving jobs is useful for reducing the CI/CD footprint on the system by removing some
 of the capabilities of the jobs (metadata stored in the database needed to run the job),
 but persisting the traces and artifacts for auditing purposes.
 

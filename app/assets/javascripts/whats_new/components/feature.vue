@@ -67,9 +67,11 @@ export default {
         v-for="packageName in feature.packages"
         :key="packageName"
         size="md"
-        class="whats-new-item-badge gl-mr-2"
+        variant="tier"
+        icon="license"
+        class="gl-mr-2"
       >
-        <gl-icon name="license" />{{ packageName }}
+        {{ packageName }}
       </gl-badge>
     </div>
     <div
