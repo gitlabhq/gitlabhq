@@ -90,10 +90,13 @@ MergeRequest.prototype.initMRBtnListeners = function () {
             MergeRequest.toggleDraftStatus(data.title, wipEvent === 'unwip');
           })
           .catch(() => {
-            draftToggle.removeAttribute('disabled');
             createFlash({
               message: __('Something went wrong. Please try again.'),
             });
+          })
+          .finally(() => {
+            draftToggle.removeAttribute('disabled');
+            loader.remove();
           });
       });
     });
@@ -162,7 +165,9 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
       );
 
       draftToggle.setAttribute('href', url);
-      draftToggle.textContent = isReady ? __('Mark as draft') : __('Mark as ready');
+      draftToggle.querySelector('.gl-new-dropdown-item-text-wrapper').textContent = isReady
+        ? __('Mark as draft')
+        : __('Mark as ready');
     });
   }
 };

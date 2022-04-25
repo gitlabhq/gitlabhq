@@ -16,10 +16,10 @@
     %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
       %thead{ role: 'rowgroup' }
         %tr{ role: 'row' }
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Migration')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Progress')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Status')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }
+          %th.border-bottom{ role: 'cell' }= _('Migration')
+          %th.border-bottom{ role: 'cell' }= _('Progress')
+          %th.border-bottom{ role: 'cell' }= _('Status')
+          %th.border-bottom{ role: 'cell' }
       %tbody{ role: 'rowgroup' }
         = render partial: 'migration', collection: @migrations
 

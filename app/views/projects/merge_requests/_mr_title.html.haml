@@ -24,29 +24,8 @@
         = sprite_icon('chevron-double-lg-left')
 
     .detail-page-header-actions.js-issuable-actions
-      .clearfix.dropdown
-        %button.gl-button.btn.btn-default.float-left.gl-md-display-none.gl-w-full{ type: "button", data: { toggle: "dropdown" } }
-          Options
-          = sprite_icon('chevron-down', css_class: 'gl-text-gray-500')
-        .dropdown-menu.dropdown-menu-right
-          %ul
-            - if can_update_merge_request
-              %li= link_to _('Edit'), edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-              - if @merge_request.opened?
-                %li
-                  = link_to @merge_request.work_in_progress? ? _('Mark as ready') : _('Mark as draft'), toggle_draft_merge_request_path(@merge_request), method: :put, class: "js-draft-toggle-button"
-              %li{ class: [merge_request_button_visibility(@merge_request, true), 'js-close-item'] }
-                = link_to _('Close'), merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: 'Close merge request'
-            - if can_reopen_merge_request
-              %li{ class: merge_request_button_visibility(@merge_request, false) }
-                = link_to _('Reopen'), merge_request_path(@merge_request, merge_request: { state_event: :reopen }), method: :put, title: 'Reopen merge request'
-            - unless @merge_request.merged? || current_user == @merge_request.author
-              %li= link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
+      - if can_update_merge_request
+        = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
 
-        - if can_update_merge_request
-          = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
-
-        - if can_update_merge_request && !are_close_and_open_buttons_hidden
-          = render 'projects/merge_requests/close_reopen_draft_report_toggle'
-        - elsif !@merge_request.merged?
-          = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-md-display-block gl-button btn btn-default gl-float-right gl-ml-3', title: _('Report abuse')
+      - if current_user
+        = render 'projects/merge_requests/close_reopen_draft_report_toggle'

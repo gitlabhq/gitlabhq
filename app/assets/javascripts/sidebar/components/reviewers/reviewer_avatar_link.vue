@@ -47,8 +47,6 @@ export default {
         return sprintf(__('%{userName} (cannot merge)'), { userName: this.user.name });
       } else if (this.cannotMerge) {
         return __('Cannot merge');
-      } else if (this.tooltipHasName) {
-        return this.user.name;
       }
 
       return '';
@@ -70,14 +68,15 @@ export default {
 <template>
   <!-- must be `d-inline-block` or parent flex-basis causes width issues -->
   <gl-link
-    v-gl-tooltip="tooltipOption"
     :href="reviewerUrl"
     :title="tooltipTitle"
-    class="gl-display-inline-block"
+    :data-user-id="user.id"
+    data-placement="left"
+    class="gl-display-inline-block js-user-link"
   >
     <!-- use d-flex so that slot can be appropriately styled -->
     <span class="gl-display-flex">
-      <reviewer-avatar :user="user" :img-size="32" :issuable-type="issuableType" />
+      <reviewer-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
       <slot :user="user"></slot>
     </span>
   </gl-link>

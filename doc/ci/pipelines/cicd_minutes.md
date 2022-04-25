@@ -103,7 +103,7 @@ These additional CI/CD minutes:
 
 - Are used only after the monthly quota included in your subscription runs out.
 - Are carried over to the next month, if any remain at the end of the month.
-- Don't expire.
+- Are valid for 12 months from date of purchase or until all minutes are consumed, whichever comes first. Expiry of minutes is not currently enforced.
 
 If you use more CI/CD minutes than your monthly quota, when you purchase more,
 those CI/CD minutes are deducted from your quota. For example, with a GitLab SaaS

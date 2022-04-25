@@ -101,14 +101,15 @@ export default {
 <template>
   <!-- must be `d-inline-block` or parent flex-basis causes width issues -->
   <gl-link
-    v-gl-tooltip="tooltipOption"
     :href="assigneeUrl"
     :title="tooltipTitle"
-    class="gl-display-inline-block"
+    :data-user-id="user.id"
+    data-placement="left"
+    class="gl-display-inline-block js-user-link"
   >
     <!-- use d-flex so that slot can be appropriately styled -->
     <span class="gl-display-flex">
-      <assignee-avatar :user="user" :img-size="32" :issuable-type="issuableType" />
+      <assignee-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
       <slot></slot>
     </span>
   </gl-link>

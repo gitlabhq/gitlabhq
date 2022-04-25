@@ -185,14 +185,16 @@ module Gitlab
               counters << compose_metric_key(metric, role)
             end
 
-            ::Gitlab::Database.db_config_names.each do |config_name|
-              counters << compose_metric_key(metric, nil, config_name) # main
-              counters << compose_metric_key(metric, nil, config_name + ::Gitlab::Database::LoadBalancing::LoadBalancer::REPLICA_SUFFIX) # main_replica
+            ::Gitlab::Database.database_base_models.keys.each do |config_name|
+              counters << compose_metric_key(metric, nil, config_name) # main / ci
+              counters << compose_metric_key(metric, nil, config_name + ::Gitlab::Database::LoadBalancing::LoadBalancer::REPLICA_SUFFIX) # main_replica / ci_replica
             end
           end
 
           counters
         end
+
+        private_class_method :load_balancing_metric_keys
 
         def compose_metric_key(metric, db_role = nil, db_config_name = nil)
           self.class.compose_metric_key(metric, db_role, db_config_name)

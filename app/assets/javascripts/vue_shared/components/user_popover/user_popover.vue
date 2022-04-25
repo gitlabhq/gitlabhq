@@ -38,6 +38,11 @@ export default {
       required: true,
       default: null,
     },
+    placement: {
+      type: String,
+      required: false,
+      default: 'top',
+    },
   },
   computed: {
     statusHtml() {
@@ -66,7 +71,7 @@ export default {
 
 <template>
   <!-- 200ms delay so not every mouseover triggers Popover -->
-  <gl-popover :target="target" :delay="200" boundary="viewport" placement="top">
+  <gl-popover :target="target" :delay="200" :placement="placement" boundary="viewport">
     <div class="gl-p-3 gl-line-height-normal gl-display-flex" data-testid="user-popover">
       <div class="gl-p-2 flex-shrink-1">
         <user-avatar-image :img-src="user.avatarUrl" :size="64" css-classes="gl-mr-3!" />

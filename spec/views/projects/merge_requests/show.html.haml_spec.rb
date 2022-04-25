@@ -16,7 +16,6 @@ RSpec.describe 'projects/merge_requests/show.html.haml', :aggregate_failures do
       render
 
       expect(rendered).to have_css('a', visible: true, text: 'Mark as draft')
-      expect(rendered).to have_css('a', visible: false, text: 'Reopen')
       expect(rendered).to have_css('a', visible: true, text: 'Close')
     end
   end
@@ -31,7 +30,6 @@ RSpec.describe 'projects/merge_requests/show.html.haml', :aggregate_failures do
 
       expect(rendered).not_to have_css('a', visible: true, text: 'Mark as draft')
       expect(rendered).to have_css('a', visible: true, text: 'Reopen')
-      expect(rendered).to have_css('a', visible: false, text: 'Close')
     end
 
     context 'when source project does not exist' do
@@ -40,8 +38,7 @@ RSpec.describe 'projects/merge_requests/show.html.haml', :aggregate_failures do
 
         render
 
-        expect(rendered).to have_css('a', visible: false, text: 'Reopen')
-        expect(rendered).to have_css('a', visible: false, text: 'Close')
+        expect(rendered).not_to have_css('a', visible: false, text: 'Reopen')
       end
     end
   end

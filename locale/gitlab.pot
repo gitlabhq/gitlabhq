@@ -2603,6 +2603,9 @@ msgstr ""
 msgid "AdminSettings|Configure Let's Encrypt"
 msgstr ""
 
+msgid "AdminSettings|Disable Elasticsearch until indexing completes."
+msgstr ""
+
 msgid "AdminSettings|Disable feed token"
 msgstr ""
 
@@ -2615,6 +2618,9 @@ msgstr ""
 msgid "AdminSettings|Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "AdminSettings|Elasticsearch indexing"
+msgstr ""
+
 msgid "AdminSettings|Email from GitLab - email users right from the Admin Area. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -2624,10 +2630,22 @@ msgstr ""
 msgid "AdminSettings|Enable Service Ping"
 msgstr ""
 
+msgid "AdminSettings|Enable kuromoji custom analyzer: Indexing"
+msgstr ""
+
+msgid "AdminSettings|Enable kuromoji custom analyzer: Search"
+msgstr ""
+
 msgid "AdminSettings|Enable pipeline suggestion banner"
 msgstr ""
 
 msgid "AdminSettings|Enable shared runners for new projects"
+msgstr ""
+
+msgid "AdminSettings|Enable smartcn custom analyzer: Indexing"
+msgstr ""
+
+msgid "AdminSettings|Enable smartcn custom analyzer: Search"
 msgstr ""
 
 msgid "AdminSettings|Feed token"
@@ -2639,6 +2657,9 @@ msgstr ""
 msgid "AdminSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
 msgstr ""
 
+msgid "AdminSettings|If there isn't any existing index, GitLab creates one."
+msgstr ""
+
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
 msgstr ""
 
@@ -2646,6 +2667,9 @@ msgid "AdminSettings|Let's Encrypt email"
 msgstr ""
 
 msgid "AdminSettings|Limit project size at a global, group, and project level. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AdminSettings|Limit the number of namespaces and projects that can be indexed."
 msgstr ""
 
 msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
@@ -2678,6 +2702,12 @@ msgstr ""
 msgid "AdminSettings|No required pipeline"
 msgstr ""
 
+msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
+msgstr ""
+
+msgid "AdminSettings|Pause Elasticsearch indexing"
+msgstr ""
+
 msgid "AdminSettings|Preview payload"
 msgstr ""
 
@@ -2700,6 +2730,9 @@ msgid "AdminSettings|Restrict group access by IP address. %{link_start}Learn mor
 msgstr ""
 
 msgid "AdminSettings|Save %{name} limits"
+msgstr ""
+
+msgid "AdminSettings|Search with Elasticsearch enabled"
 msgstr ""
 
 msgid "AdminSettings|Select a CI/CD template"
@@ -2744,6 +2777,9 @@ msgstr ""
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
 msgstr ""
 
+msgid "AdminSettings|There are Advanced Search migrations pending that require indexing to pause. Indexing must remain paused until GitLab completes the migrations."
+msgstr ""
+
 msgid "AdminSettings|To enable Registration Features, first enable Service Ping."
 msgstr ""
 
@@ -2751,6 +2787,12 @@ msgid "AdminSettings|To help improve GitLab and its user experience, GitLab peri
 msgstr ""
 
 msgid "AdminSettings|Total number of jobs in currently active pipelines"
+msgstr ""
+
+msgid "AdminSettings|Use AWS hosted Elasticsearch with IAM credentials"
+msgstr ""
+
+msgid "AdminSettings|When paused, GitLab still tracks the changes. This is useful for cluster/index migrations."
 msgstr ""
 
 msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."
@@ -13120,9 +13162,6 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
-msgid "Disable Elasticsearch until indexing completes."
-msgstr ""
-
 msgid "Disable Two-factor Authentication"
 msgstr ""
 
@@ -13659,9 +13698,6 @@ msgstr ""
 msgid "Elasticsearch HTTP client timeout value in seconds."
 msgstr ""
 
-msgid "Elasticsearch indexing"
-msgstr ""
-
 msgid "Elasticsearch indexing restrictions"
 msgstr ""
 
@@ -13944,12 +13980,6 @@ msgstr ""
 msgid "Enable integration"
 msgstr ""
 
-msgid "Enable kuromoji custom analyzer: Indexing"
-msgstr ""
-
-msgid "Enable kuromoji custom analyzer: Search"
-msgstr ""
-
 msgid "Enable logs collection"
 msgstr ""
 
@@ -13993,12 +14023,6 @@ msgid "Enable shared runners for this group"
 msgstr ""
 
 msgid "Enable shared runners for this project"
-msgstr ""
-
-msgid "Enable smartcn custom analyzer: Indexing"
-msgstr ""
-
-msgid "Enable smartcn custom analyzer: Search"
 msgstr ""
 
 msgid "Enable two-factor authentication"
@@ -19019,9 +19043,6 @@ msgstr ""
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
 msgstr ""
 
-msgid "If there isn't any existing index, GitLab creates one."
-msgstr ""
-
 msgid "If this email was added in error, you can remove it here:"
 msgstr ""
 
@@ -22751,9 +22772,6 @@ msgstr ""
 msgid "Limit the number of issues and epics per minute a user can create through web and API requests."
 msgstr ""
 
-msgid "Limit the number of namespaces and projects that can be indexed."
-msgstr ""
-
 msgid "Limit the size of Sidekiq jobs stored in Redis."
 msgstr ""
 
@@ -23776,6 +23794,9 @@ msgid "Merge request"
 msgstr ""
 
 msgid "Merge request %{mr_link} was reviewed by %{mr_author}"
+msgstr ""
+
+msgid "Merge request actions"
 msgstr ""
 
 msgid "Merge request analytics"
@@ -26480,9 +26501,6 @@ msgstr ""
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
 msgstr ""
 
-msgid "Only enable search after installing the plugin, enabling indexing, and recreating the index."
-msgstr ""
-
 msgid "Only include features new to your current subscription tier."
 msgstr ""
 
@@ -27317,9 +27335,6 @@ msgid "Paths to protect with rate limiting"
 msgstr ""
 
 msgid "Pause"
-msgstr ""
-
-msgid "Pause Elasticsearch indexing"
 msgstr ""
 
 msgid "Paused"
@@ -31659,9 +31674,6 @@ msgid "Reply…"
 msgstr ""
 
 msgid "Repo by URL"
-msgstr ""
-
-msgid "Report %{display_issuable_type} that are abusive, inappropriate or spam."
 msgstr ""
 
 msgid "Report abuse"
@@ -38034,9 +38046,6 @@ msgstr ""
 msgid "Theme"
 msgstr ""
 
-msgid "There are Advanced Search migrations pending that require indexing to pause. Indexing must remain paused until GitLab completes the migrations."
-msgstr ""
-
 msgid "There are currently no events."
 msgstr ""
 
@@ -42548,9 +42557,6 @@ msgid "When enabled, job logs are collected by Datadog and displayed along with 
 msgstr ""
 
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."
-msgstr ""
-
-msgid "When paused, GitLab still tracks the changes. This is useful for cluster/index migrations."
 msgstr ""
 
 msgid "When this merge request is accepted"

@@ -10,6 +10,124 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
   let(:connection) { ActiveRecord::Base.retrieve_connection }
   let(:db_config_name) { ::Gitlab::Database.db_config_name(connection) }
 
+  describe '.load_balancing_metric_counter_keys' do
+    context 'multiple databases' do
+      before do
+        skip_if_multiple_databases_not_setup
+      end
+
+      it 'has expected keys' do
+        expect(described_class.load_balancing_metric_counter_keys).to include(
+          :db_replica_count,
+          :db_primary_count,
+          :db_main_count,
+          :db_main_replica_count,
+          :db_ci_count,
+          :db_ci_replica_count,
+          :db_replica_cached_count,
+          :db_primary_cached_count,
+          :db_main_cached_count,
+          :db_main_replica_cached_count,
+          :db_ci_cached_count,
+          :db_ci_replica_cached_count,
+          :db_replica_wal_count,
+          :db_primary_wal_count,
+          :db_main_wal_count,
+          :db_main_replica_wal_count,
+          :db_ci_wal_count,
+          :db_ci_replica_wal_count,
+          :db_replica_wal_cached_count,
+          :db_primary_wal_cached_count,
+          :db_main_wal_cached_count,
+          :db_main_replica_wal_cached_count,
+          :db_ci_wal_cached_count,
+          :db_ci_replica_wal_cached_count
+        )
+      end
+    end
+
+    context 'single database' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
+
+      it 'has expected keys' do
+        expect(described_class.load_balancing_metric_counter_keys).to include(
+          :db_replica_count,
+          :db_primary_count,
+          :db_main_count,
+          :db_main_replica_count,
+          :db_replica_cached_count,
+          :db_primary_cached_count,
+          :db_main_cached_count,
+          :db_main_replica_cached_count,
+          :db_replica_wal_count,
+          :db_primary_wal_count,
+          :db_main_wal_count,
+          :db_main_replica_wal_count,
+          :db_replica_wal_cached_count,
+          :db_primary_wal_cached_count,
+          :db_main_wal_cached_count,
+          :db_main_replica_wal_cached_count
+        )
+      end
+
+      it 'does not have ci keys' do
+        expect(described_class.load_balancing_metric_counter_keys).not_to include(
+          :db_ci_count,
+          :db_ci_replica_count,
+          :db_ci_cached_count,
+          :db_ci_replica_cached_count,
+          :db_ci_wal_count,
+          :db_ci_replica_wal_count,
+          :db_ci_wal_cached_count,
+          :db_ci_replica_wal_cached_count
+        )
+      end
+    end
+  end
+
+  describe '.load_balancing_metric_duration_keys' do
+    context 'multiple databases' do
+      before do
+        skip_if_multiple_databases_not_setup
+      end
+
+      it 'has expected keys' do
+        expect(described_class.load_balancing_metric_duration_keys).to include(
+          :db_replica_duration_s,
+          :db_primary_duration_s,
+          :db_main_duration_s,
+          :db_main_replica_duration_s,
+          :db_ci_duration_s,
+          :db_ci_replica_duration_s
+        )
+      end
+    end
+
+    context 'single database' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
+
+      it 'has expected keys' do
+        expect(described_class.load_balancing_metric_duration_keys).to include(
+          :db_replica_duration_s,
+          :db_primary_duration_s,
+          :db_main_duration_s,
+          :db_main_replica_duration_s
+        )
+      end
+
+      it 'does not have ci keys' do
+        expect(described_class.load_balancing_metric_duration_keys).not_to include(
+          :db_ci_duration_s,
+          :db_ci_replica_duration_s
+        )
+      end
+    end
+  end
+
   describe '#transaction' do
     let(:web_transaction) { double('Gitlab::Metrics::WebTransaction') }
     let(:background_transaction) { double('Gitlab::Metrics::WebTransaction') }

@@ -12,7 +12,7 @@ You can configure various settings for GitLab Geo sites. For more information, s
 On either the primary or secondary site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
+1. On the left sidebar, select **Geo > Sites**.
 
 ## Common settings
 

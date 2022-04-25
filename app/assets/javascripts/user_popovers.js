@@ -103,6 +103,7 @@ export default function addPopovers(elements = document.querySelectorAll('.js-us
         propsData: {
           target: el,
           user,
+          placement: el.dataset.placement || 'top',
         },
       });
 

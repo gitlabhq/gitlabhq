@@ -144,7 +144,7 @@ ensure these processes are close to 100% as possible during active use.
 On the **secondary** node:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
+1. On the left sidebar, select **Geo > Sites**.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't yet replicated (shown in gray), consider giving the node more
@@ -174,7 +174,7 @@ On the **primary** node:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Messages**.
 1. Add a message notifying users on the maintenance window.
-   You can check under **Geo > Nodes** to estimate how long it
+   You can check under **Geo > Sites** to estimate how long it
    takes to finish syncing.
 1. Select **Add broadcast message**.
 
@@ -206,7 +206,7 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary
       those with `geo` in the name to drop to 0.
       These queues contain work that has been submitted by your users; failing over
       before it is completed, causes the work to be lost.
-   1. On the left sidebar, select **Geo > Nodes** and wait for the
+   1. On the left sidebar, select **Geo > Sites** and wait for the
       following conditions to be true of the **secondary** node you are failing over to:
 
       - All replication meters reach 100% replicated, 0% failures.

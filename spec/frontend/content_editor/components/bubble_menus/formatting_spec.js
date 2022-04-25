@@ -42,15 +42,15 @@ describe('content_editor/components/bubble_menus/formatting', () => {
     const bubbleMenu = wrapper.findComponent(BubbleMenu);
 
     expect(bubbleMenu.props().editor).toBe(tiptapEditor);
-    expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base']);
+    expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
   });
 
   describe.each`
     testId      | controlProps
-    ${'bold'}   | ${{ contentType: 'bold', iconName: 'bold', label: 'Bold text', editorCommand: 'toggleBold', size: 'medium', category: 'primary' }}
-    ${'italic'} | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic text', editorCommand: 'toggleItalic', size: 'medium', category: 'primary' }}
-    ${'strike'} | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough', editorCommand: 'toggleStrike', size: 'medium', category: 'primary' }}
-    ${'code'}   | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode', size: 'medium', category: 'primary' }}
+    ${'bold'}   | ${{ contentType: 'bold', iconName: 'bold', label: 'Bold text', editorCommand: 'toggleBold', size: 'medium', category: 'tertiary' }}
+    ${'italic'} | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic text', editorCommand: 'toggleItalic', size: 'medium', category: 'tertiary' }}
+    ${'strike'} | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough', editorCommand: 'toggleStrike', size: 'medium', category: 'tertiary' }}
+    ${'code'}   | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode', size: 'medium', category: 'tertiary' }}
   `('given a $testId toolbar control', ({ testId, controlProps }) => {
     beforeEach(() => {
       buildWrapper();

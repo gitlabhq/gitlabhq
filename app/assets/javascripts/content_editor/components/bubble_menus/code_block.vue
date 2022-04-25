@@ -101,7 +101,7 @@ export default {
 <template>
   <bubble-menu
     data-testid="code-block-bubble-menu"
-    class="gl-shadow gl-rounded-base"
+    class="gl-shadow gl-rounded-base gl-bg-white"
     :editor="tiptapEditor"
     plugin-key="bubbleMenuCodeBlock"
     :should-show="shouldShow"
@@ -109,7 +109,12 @@ export default {
   >
     <editor-state-observer @transaction="updateSelectedLanguage">
       <gl-button-group>
-        <gl-dropdown contenteditable="false" boundary="viewport" :text="selectedLanguage.label">
+        <gl-dropdown
+          category="tertiary"
+          contenteditable="false"
+          boundary="viewport"
+          :text="selectedLanguage.label"
+        >
           <template #header>
             <gl-search-box-by-type
               v-model="filterTerm"
@@ -136,7 +141,7 @@ export default {
         <gl-button
           v-gl-tooltip
           variant="default"
-          category="primary"
+          category="tertiary"
           size="medium"
           data-testid="copy-code-block"
           :aria-label="__('Copy code')"
@@ -147,7 +152,7 @@ export default {
         <gl-button
           v-gl-tooltip
           variant="default"
-          category="primary"
+          category="tertiary"
           size="medium"
           data-testid="delete-code-block"
           :aria-label="__('Delete code block')"

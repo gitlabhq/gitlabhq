@@ -124,11 +124,10 @@ export default {
         >
           <div
             v-if="showVerticalList"
-            class="gl-ml-3 gl-line-height-normal gl-display-grid"
+            class="gl-ml-3 gl-line-height-normal gl-display-grid gl-align-items-center"
             data-testid="username"
           >
             <user-name-with-status :name="user.name" :availability="userAvailability(user)" />
-            <span>@{{ user.username }}</span>
           </div>
         </assignee-avatar-link>
         <attention-requested-toggle

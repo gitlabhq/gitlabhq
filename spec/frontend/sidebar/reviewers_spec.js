@@ -146,7 +146,6 @@ describe('Reviewer component', () => {
       const userItems = wrapper.findAll('[data-testid="reviewer"]');
 
       expect(userItems.length).toBe(3);
-      expect(userItems.at(0).find('a').attributes('title')).toBe(users[2].name);
     });
 
     it('passes the sorted reviewers to the collapsed-reviewer-list', () => {
