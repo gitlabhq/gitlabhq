@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Configure', only: { subdomain: :staging } do
+  RSpec.describe 'Configure',
+                 only: { subdomain: :staging },
+                 quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1198' } do
     let(:project) do
       Resource::Project.fabricate_via_api! do |project|
         project.name = 'autodevops-project'

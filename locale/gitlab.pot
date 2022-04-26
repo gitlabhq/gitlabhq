@@ -39033,9 +39033,6 @@ msgstr ""
 msgid "Thread to reply to cannot be found"
 msgstr ""
 
-msgid "Threat monitoring"
-msgstr ""
-
 msgid "ThreatMonitoring|Alert Details"
 msgstr ""
 

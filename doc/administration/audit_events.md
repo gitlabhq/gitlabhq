@@ -167,6 +167,17 @@ From there, you can see the following actions:
 - Users and groups allowed to merge and push to protected branch added or removed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
 - Project deploy token was successfully created, revoked or deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9)
 - Failed attempt to create a project deploy token ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9)
+- When merge method is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Merged results pipelines enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Merge trains enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Automatically resolve merge request diff discussions enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Show link to create or view a merge request when pushing from the command line enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Delete source branch option by default enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Squash commits when merging is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Pipelines must succeed enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Skipped pipelines are considered successful enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- All discussions must be resolved enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Commit message suggestion is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 

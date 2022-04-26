@@ -455,7 +455,7 @@ that may remain stuck permanently in a **pending** state.
   can override the behavior of `tmpfiles.d` for the Gitaly files and avoid this issue:
 
   ```shell
-  sudo echo "x /tmp/gitaly-hooks-*" > /etc/tmpfiles.d/gitaly-workaround.conf
+  sudo printf "x /tmp/gitaly-%s-*\n" hooks git-exec-path >/etc/tmpfiles.d/gitaly-workaround.conf
   ```
 
 ### 14.6.0

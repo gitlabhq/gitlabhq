@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable do
     describe 'NuGet group level endpoint' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures

@@ -63,8 +63,7 @@ in
 This should make it easier to contribute for developers who are less
 comfortable writing Go code.
 
-There is documentation for this approach in [the Gitaly
-repository](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/ruby_endpoint.md).
+For more information, see the [Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/beginners_guide.md).
 
 ## Gitaly-Related Test Failures
 
