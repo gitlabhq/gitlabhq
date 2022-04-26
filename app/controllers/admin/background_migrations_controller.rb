@@ -15,6 +15,10 @@ class Admin::BackgroundMigrationsController < Admin::ApplicationController
     @successful_rows_counts = batched_migration_class.successful_rows_counts(@migrations.map(&:id))
   end
 
+  def show
+    @migration = batched_migration_class.find(params[:id])
+  end
+
   def pause
     migration = batched_migration_class.find(params[:id])
     migration.pause!

@@ -1,5 +1,7 @@
 %tr{ role: 'row' }
-  %td{ role: 'cell', data: { label: _('Migration') } }= migration.job_class_name + ': ' + migration.table_name
+  %td{ role: 'cell', data: { label: _('Migration') } }
+    = link_to admin_background_migration_path(migration) do
+      = migration.job_class_name + ': ' + migration.table_name
   %td{ role: 'cell', data: { label: _('Progress') } }
     - progress = batched_migration_progress(migration, @successful_rows_counts[migration.id])
     - if progress

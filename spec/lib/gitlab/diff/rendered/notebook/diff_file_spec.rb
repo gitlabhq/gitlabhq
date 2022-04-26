@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
       end
 
       it 'falls back to nil on timeout' do
-        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        expect(Gitlab::ErrorTracking).to receive(:log_exception)
         expect(Timeout).to receive(:timeout).and_raise(Timeout::Error)
 
         expect(nb_file.diff).to be_nil

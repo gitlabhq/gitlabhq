@@ -5652,6 +5652,9 @@ msgstr ""
 msgid "Basic information"
 msgstr ""
 
+msgid "Batch size"
+msgstr ""
+
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
 msgstr ""
 
@@ -19001,6 +19004,9 @@ msgstr ""
 msgid "IP subnet restriction only allowed for top-level groups"
 msgstr ""
 
+msgid "Id"
+msgstr ""
+
 msgid "Identifier"
 msgstr ""
 
@@ -20639,6 +20645,9 @@ msgid "Internal users"
 msgstr ""
 
 msgid "Internal users cannot be deactivated"
+msgstr ""
+
+msgid "Interval"
 msgstr ""
 
 msgid "Interval Pattern"
@@ -23333,6 +23342,9 @@ msgstr ""
 msgid "Max 100,000 events"
 msgstr ""
 
+msgid "Max Value"
+msgstr ""
+
 msgid "Max authenticated Git LFS requests per period per user"
 msgstr ""
 
@@ -24587,6 +24599,9 @@ msgid "Milestones|Unstarted Issues (open and unassigned)"
 msgstr ""
 
 msgid "Milestones|Use milestones to track issues and merge requests over a fixed period of time"
+msgstr ""
+
+msgid "Min Value"
 msgstr ""
 
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
@@ -27353,6 +27368,9 @@ msgid "Paths to protect with rate limiting"
 msgstr ""
 
 msgid "Pause"
+msgstr ""
+
+msgid "Pause time (ms)"
 msgstr ""
 
 msgid "Paused"
@@ -36313,6 +36331,9 @@ msgid "Strikethrough"
 msgstr ""
 
 msgid "Strikethrough text"
+msgstr ""
+
+msgid "Sub-batch size"
 msgstr ""
 
 msgid "Subgroup information"

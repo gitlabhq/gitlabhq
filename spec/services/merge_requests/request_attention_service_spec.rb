@@ -2,48 +2,72 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::ToggleAttentionRequestedService do
-  let(:current_user) { create(:user) }
-  let(:user) { create(:user) }
-  let(:assignee_user) { create(:user) }
-  let(:merge_request) { create(:merge_request, reviewers: [user], assignees: [assignee_user]) }
+RSpec.describe MergeRequests::RequestAttentionService do
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:assignee_user) { create(:user) }
+  let_it_be(:merge_request) { create(:merge_request, reviewers: [user], assignees: [assignee_user]) }
+
   let(:reviewer) { merge_request.find_reviewer(user) }
   let(:assignee) { merge_request.find_assignee(assignee_user) }
   let(:project) { merge_request.project }
-  let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, user: user) }
+
+  let(:service) do
+    described_class.new(
+      project: project,
+      current_user: current_user,
+      merge_request: merge_request,
+      user: user
+    )
+  end
+
   let(:result) { service.execute }
-  let(:todo_service) { spy('todo service') }
-  let(:notification_service) { spy('notification service') }
+  let(:todo_svc) { instance_double('TodoService') }
+  let(:notification_svc) { instance_double('NotificationService') }
 
   before do
-    allow(NotificationService).to receive(:new) { notification_service }
-    allow(service).to receive(:todo_service).and_return(todo_service)
-    allow(service).to receive(:notification_service).and_return(notification_service)
+    allow(service).to receive(:todo_service).and_return(todo_svc)
+    allow(service).to receive(:notification_service).and_return(notification_svc)
+    allow(todo_svc).to receive(:create_attention_requested_todo)
+    allow(notification_svc).to receive_message_chain(:async, :attention_requested_of_merge_request)
     allow(SystemNoteService).to receive(:request_attention)
-    allow(SystemNoteService).to receive(:remove_attention_request)
 
     project.add_developer(current_user)
     project.add_developer(user)
   end
 
   describe '#execute' do
-    context 'invalid permissions' do
-      let(:service) { described_class.new(project: project, current_user: create(:user), merge_request: merge_request, user: user) }
+    context 'when current user cannot update merge request' do
+      let(:service) do
+        described_class.new(
+          project: project,
+          current_user: create(:user),
+          merge_request: merge_request,
+          user: user
+        )
+      end
 
       it 'returns an error' do
         expect(result[:status]).to eq :error
       end
     end
 
-    context 'reviewer does not exist' do
-      let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, user: create(:user)) }
+    context 'when user is not a reviewer nor assignee' do
+      let(:service) do
+        described_class.new(
+          project: project,
+          current_user: current_user,
+          merge_request: merge_request,
+          user: create(:user)
+        )
+      end
 
       it 'returns an error' do
         expect(result[:status]).to eq :error
       end
     end
 
-    context 'reviewer exists' do
+    context 'when user is a reviewer' do
       before do
         reviewer.update!(state: :reviewed)
       end
@@ -67,13 +91,15 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
       end
 
       it 'creates a new todo for the reviewer' do
-        expect(todo_service).to receive(:create_attention_requested_todo).with(merge_request, current_user, user)
+        expect(todo_svc).to receive(:create_attention_requested_todo).with(merge_request, current_user, user)
 
         service.execute
       end
 
       it 'sends email to reviewer' do
-        expect(notification_service).to receive_message_chain(:async, :attention_requested_of_merge_request).with(merge_request, current_user, user)
+        expect(notification_svc)
+          .to receive_message_chain(:async, :attention_requested_of_merge_request)
+          .with(merge_request, current_user, user)
 
         service.execute
       end
@@ -86,19 +112,20 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
         service.execute
       end
 
-      it 'invalidates cache' do
-        cache_mock = double
-
-        expect(cache_mock).to receive(:delete).with(['users', user.id, 'attention_requested_open_merge_requests_count'])
-
-        allow(Rails).to receive(:cache).and_return(cache_mock)
-
-        service.execute
+      it_behaves_like 'invalidates attention request cache' do
+        let(:users) { [user] }
       end
     end
 
-    context 'assignee exists' do
-      let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, user: assignee_user) }
+    context 'when user is an assignee' do
+      let(:service) do
+        described_class.new(
+          project: project,
+          current_user: current_user,
+          merge_request: merge_request,
+          user: assignee_user
+        )
+      end
 
       before do
         assignee.update!(state: :reviewed)
@@ -116,13 +143,15 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
       end
 
       it 'creates a new todo for the reviewer' do
-        expect(todo_service).to receive(:create_attention_requested_todo).with(merge_request, current_user, assignee_user)
+        expect(todo_svc).to receive(:create_attention_requested_todo).with(merge_request, current_user, assignee_user)
 
         service.execute
       end
 
       it 'creates a request attention system note' do
-        expect(SystemNoteService).to receive(:request_attention).with(merge_request, merge_request.project, current_user, assignee_user)
+        expect(SystemNoteService)
+          .to receive(:request_attention)
+          .with(merge_request, merge_request.project, current_user, assignee_user)
 
         service.execute
       end
@@ -140,10 +169,19 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
       end
     end
 
-    context 'assignee is the same as reviewer' do
-      let(:merge_request) { create(:merge_request, reviewers: [user], assignees: [user]) }
-      let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, user: user) }
+    context 'when user is an assignee and reviewer at the same time' do
+      let_it_be(:merge_request) { create(:merge_request, reviewers: [user], assignees: [user]) }
+
       let(:assignee) { merge_request.find_assignee(user) }
+
+      let(:service) do
+        described_class.new(
+          project: project,
+          current_user: current_user,
+          merge_request: merge_request,
+          user: user
+        )
+      end
 
       before do
         reviewer.update!(state: :reviewed)
@@ -160,26 +198,20 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
       end
     end
 
-    context 'state is attention_requested' do
+    context 'when state is attention_requested' do
       before do
         reviewer.update!(state: :attention_requested)
       end
 
-      it 'toggles state to reviewed' do
+      it 'does not change state' do
         service.execute
         reviewer.reload
 
-        expect(reviewer.state).to eq "reviewed"
+        expect(reviewer.state).to eq 'attention_requested'
       end
 
       it 'does not create a new todo for the reviewer' do
-        expect(todo_service).not_to receive(:create_attention_requested_todo).with(merge_request, current_user, assignee_user)
-
-        service.execute
-      end
-
-      it 'creates a remove attention request system note' do
-        expect(SystemNoteService).to receive(:remove_attention_request).with(merge_request, merge_request.project, current_user, user)
+        expect(todo_svc).not_to receive(:create_attention_requested_todo).with(merge_request, current_user, user)
 
         service.execute
       end

@@ -88,7 +88,7 @@ namespace :admin do
 
   get :instance_review, to: 'instance_review#index'
 
-  resources :background_migrations, only: [:index] do
+  resources :background_migrations, only: [:index, :show] do
     member do
       post :pause
       post :resume

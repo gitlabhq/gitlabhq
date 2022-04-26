@@ -256,7 +256,7 @@ module MergeRequests
     def remove_attention_requested(merge_request)
       return unless merge_request.attention_requested_enabled?
 
-      ::MergeRequests::RemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request).execute
+      ::MergeRequests::RemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, user: current_user).execute
     end
   end
 end

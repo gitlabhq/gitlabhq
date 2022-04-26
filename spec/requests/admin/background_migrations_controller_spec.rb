@@ -9,6 +9,26 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode do
     sign_in(admin)
   end
 
+  describe 'GET #show' do
+    let(:migration) { create(:batched_background_migration) }
+
+    it 'fetches the migration' do
+      get admin_background_migration_path(migration)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when the migration does not exist' do
+      let(:invalid_migration) { non_existing_record_id }
+
+      it 'returns not found' do
+        get admin_background_migration_path(invalid_migration)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'POST #retry' do
     let(:migration) { create(:batched_background_migration, :failed) }
 

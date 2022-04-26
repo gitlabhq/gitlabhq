@@ -31,6 +31,17 @@ RSpec.describe "Admin > Admin sees background migrations" do
     end
   end
 
+  it 'can click on a specific migration' do
+    visit admin_background_migrations_path
+
+    within '#content-body' do
+      tab = find_link active_migration.job_class_name
+      tab.click
+
+      expect(page).to have_current_path admin_background_migration_path(active_migration)
+    end
+  end
+
   it 'can view queued migrations and pause and resume them' do
     visit admin_background_migrations_path
 

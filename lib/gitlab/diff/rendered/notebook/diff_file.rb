@@ -141,7 +141,7 @@ module Gitlab
 
           def log_event(message, error = nil)
             Gitlab::AppLogger.info({ message: message })
-            Gitlab::ErrorTracking.track_exception(error) if error
+            Gitlab::ErrorTracking.log_exception(error) if error
             nil
           end
         end
