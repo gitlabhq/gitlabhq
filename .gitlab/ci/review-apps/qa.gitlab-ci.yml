@@ -72,7 +72,7 @@ review-qa-reliable:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-reliable
-  parallel: 8
+  parallel: 10
   retry: 1
   variables:
     QA_RUN_TYPE: review-qa-reliable

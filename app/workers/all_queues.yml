@@ -3,15 +3,6 @@
 #
 # Do not edit it manually!
 ---
-- :name: authorized_project_update:authorized_project_update_project_create
-  :worker_name: AuthorizedProjectUpdate::ProjectCreateWorker
-  :feature_category: :authentication_and_authorization
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :authentication_and_authorization

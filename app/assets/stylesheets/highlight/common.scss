@@ -138,7 +138,8 @@
     @include gl-mr-2;
     @include gl-w-4;
     @include gl-h-4;
-    @include gl-float-left;
+    @include gl-absolute;
+    @include gl-left-3;
     background-color: $color;
     mask-image: asset_url('icons-stacked.svg#link');
     mask-repeat: no-repeat;

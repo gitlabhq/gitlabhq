@@ -161,4 +161,17 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
       end
     end
   end
+
+  context 'with unimplemented operation method used' do
+    subject do
+      described_class.tap do |metric_class|
+        metric_class.relation { Issue }
+        metric_class.operation :invalid_operation
+      end.new(time_frame: 'all')
+    end
+
+    it 'raises an error' do
+      expect { subject }.to raise_error(described_class::UnimplementedOperationError)
+    end
+  end
 end

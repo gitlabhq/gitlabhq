@@ -177,6 +177,24 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     end
   end
 
+  describe '#valid_service_ping_status?' do
+    context 'when metric has active status' do
+      it 'has to return true' do
+        attributes[:status] = 'active'
+
+        expect(described_class.new(path, attributes).valid_service_ping_status?).to be_truthy
+      end
+    end
+
+    context 'when metric has removed status' do
+      it 'has to return false' do
+        attributes[:status] = 'removed'
+
+        expect(described_class.new(path, attributes).valid_service_ping_status?).to be_falsey
+      end
+    end
+  end
+
   describe 'statuses' do
     using RSpec::Parameterized::TableSyntax
 

@@ -40,7 +40,7 @@ export const summary = [
   { value: '20', title: 'New Issues' },
   { value: null, title: 'Commits' },
   { value: null, title: 'Deploys' },
-  { value: null, title: 'Deployment Frequency', unit: 'per day' },
+  { value: null, title: 'Deployment Frequency', unit: '/day' },
 ];
 
 export const issueStage = {
@@ -130,7 +130,7 @@ export const convertedData = {
     { value: '20', title: 'New Issues' },
     { value: '-', title: 'Commits' },
     { value: '-', title: 'Deploys' },
-    { value: '-', title: 'Deployment Frequency', unit: 'per day' },
+    { value: '-', title: 'Deployment Frequency', unit: '/day' },
   ],
 };
 

@@ -31,7 +31,37 @@ RSpec.describe Ci::Bridge do
   end
 
   describe '#retryable?' do
+    let(:bridge) { create(:ci_bridge, :success) }
+
+    it 'returns true' do
+      expect(bridge.retryable?).to eq(true)
+    end
+
+    context 'without ci_recreate_downstream_pipeline ff' do
+      before do
+        stub_feature_flags(ci_recreate_downstream_pipeline: false)
+      end
+
+      it 'returns false' do
+        expect(bridge.retryable?).to eq(false)
+      end
+    end
+  end
+
+  context 'when there is a pipeline loop detected' do
+    let(:bridge) { create(:ci_bridge, :failed, failure_reason: :pipeline_loop_detected) }
+
     it 'returns false' do
+      expect(bridge.failure_reason).to eq('pipeline_loop_detected')
+      expect(bridge.retryable?).to eq(false)
+    end
+  end
+
+  context 'when the pipeline depth has reached the max descendents' do
+    let(:bridge) { create(:ci_bridge, :failed, failure_reason: :reached_max_descendant_pipelines_depth) }
+
+    it 'returns false' do
+      expect(bridge.failure_reason).to eq('reached_max_descendant_pipelines_depth')
       expect(bridge.retryable?).to eq(false)
     end
   end

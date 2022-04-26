@@ -43,12 +43,12 @@ RSpec.shared_context 'stubbed service ping metrics definitions' do
     Gitlab::Usage::MetricDefinition.instance_variable_set(:@all, nil)
   end
 
-  def metric_attributes(key_path, category, value_type = 'string', instrumentation_class = '')
+  def metric_attributes(key_path, category, value_type = 'string', instrumentation_class = '', status = 'active')
     {
       'key_path' => key_path,
       'data_category' => category,
       'value_type' => value_type,
-      'status' => 'active',
+      'status' => status,
       'instrumentation_class' => instrumentation_class,
       'time_frame' => 'all'
     }

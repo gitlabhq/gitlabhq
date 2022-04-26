@@ -1324,6 +1324,9 @@ msgstr ""
 msgid "/"
 msgstr ""
 
+msgid "/day"
+msgstr ""
+
 msgid "0 bytes"
 msgstr ""
 
@@ -4393,10 +4396,19 @@ msgstr ""
 msgid "ApplicationSettings|Add a link to Grafana"
 msgstr ""
 
-msgid "ApplicationSettings|After sign up text"
+msgid "ApplicationSettings|After sign-up text"
+msgstr ""
+
+msgid "ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for unlimited."
 msgstr ""
 
 msgid "ApplicationSettings|Allowed domains for sign-ups"
+msgstr ""
+
+msgid "ApplicationSettings|Any user that visits %{host} and creates an account must be explicitly approved by an administrator before they can sign in. Only effective if sign-ups are enabled."
+msgstr ""
+
+msgid "ApplicationSettings|Any user that visits %{host} can create an account."
 msgstr ""
 
 msgid "ApplicationSettings|Approve %d user"
@@ -4439,43 +4451,40 @@ msgstr ""
 msgid "ApplicationSettings|Enable Slack application"
 msgstr ""
 
-msgid "ApplicationSettings|Enable domain denylist for sign ups"
+msgid "ApplicationSettings|Enable domain denylist for sign-ups"
 msgstr ""
 
-msgid "ApplicationSettings|Enable email restrictions for sign ups"
+msgid "ApplicationSettings|Enable email restrictions for sign-ups"
 msgstr ""
 
 msgid "ApplicationSettings|Enter denylist manually"
 msgstr ""
 
-msgid "ApplicationSettings|Markdown enabled"
-msgstr ""
-
 msgid "ApplicationSettings|Minimum password length (number of characters)"
 msgstr ""
 
-msgid "ApplicationSettings|ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com"
-msgstr ""
-
-msgid "ApplicationSettings|Once the instance reaches the user cap, any user who is added or requests access will have to be approved by an admin. Leave the field empty for unlimited."
+msgid "ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Use separate lines for multiple entries. Example: domain.com, *.domain.com"
 msgstr ""
 
 msgid "ApplicationSettings|Require admin approval for new sign-ups"
 msgstr ""
 
-msgid "ApplicationSettings|Restricts sign-ups for email addresses that match the given regex. See the %{linkStart}supported syntax%{linkEnd} for more information."
+msgid "ApplicationSettings|Restricts sign-ups for email addresses that match the given regex. %{linkStart}What is the supported syntax?%{linkEnd}"
 msgstr ""
 
 msgid "ApplicationSettings|Save changes"
 msgstr ""
 
-msgid "ApplicationSettings|See GitLab's %{linkStart}Password Policy Guidelines%{linkEnd}"
+msgid "ApplicationSettings|See GitLab's %{linkStart}Password Policy Guidelines%{linkEnd}."
 msgstr ""
 
 msgid "ApplicationSettings|Send confirmation email on sign-up"
 msgstr ""
 
 msgid "ApplicationSettings|Sign-up enabled"
+msgstr ""
+
+msgid "ApplicationSettings|Text shown after a user signs up. Markdown enabled."
 msgstr ""
 
 msgid "ApplicationSettings|This option is only available on GitLab.com"
@@ -4487,16 +4496,10 @@ msgstr ""
 msgid "ApplicationSettings|User cap"
 msgstr ""
 
-msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com"
+msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Use separate lines for multiple entries. Example: domain.com, *.domain.com"
 msgstr ""
 
-msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries."
-msgstr ""
-
-msgid "ApplicationSettings|When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled."
-msgstr ""
-
-msgid "ApplicationSettings|When enabled, any user visiting %{host} will be able to create an account."
+msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Use separate lines or commas for multiple entries."
 msgstr ""
 
 msgid "ApplicationSettings|domain.com"
@@ -45475,9 +45478,6 @@ msgid "pending comment"
 msgstr ""
 
 msgid "pending deletion"
-msgstr ""
-
-msgid "per day"
 msgstr ""
 
 msgid "personal access token"

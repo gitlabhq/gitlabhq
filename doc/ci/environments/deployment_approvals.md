@@ -92,7 +92,8 @@ Maintainer role.
 
 #### Multiple approval rules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
 
 1. Using the [REST API](../../api/group_protected_environments.md#protect-an-environment).
    1. `deploy_access_levels` represents which entity can execute the deployment job.

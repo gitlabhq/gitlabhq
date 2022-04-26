@@ -9,7 +9,7 @@ RSpec.describe ServicePing::BuildPayloadService do
     include_context 'stubbed service ping metrics definitions' do
       let(:subscription_metrics) do
         [
-          metric_attributes('active_user_count', "Subscription")
+          metric_attributes('active_user_count', "subscription")
         ]
       end
     end

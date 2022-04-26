@@ -40,10 +40,10 @@ The following example uses `if` to define that the job runs in only two specific
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
       allow_failure: true
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 ```
 
 - If the pipeline is for a merge request, the first rule matches, and the job
@@ -67,9 +67,9 @@ run them in all other cases:
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
     - when: on_success
 ```
@@ -118,7 +118,7 @@ For example:
 docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
-    - if: '$VAR == "string value"'
+    - if: $VAR == "string value"
       changes:  # Include the job and set to when:manual if any of the follow paths match a modified file.
         - Dockerfile
         - docker/scripts/*
@@ -160,7 +160,7 @@ For example:
 job:
   script: echo "This job creates double pipelines!"
   rules:
-    - if: '$CUSTOM_VARIABLE == "false"'
+    - if: $CUSTOM_VARIABLE == "false"
       when: never
     - when: always
 ```
@@ -181,7 +181,7 @@ To avoid duplicate pipelines, you can:
   job:
     script: echo "This job does NOT create double pipelines!"
     rules:
-      - if: '$CUSTOM_VARIABLE == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"'
+      - if: $CUSTOM_VARIABLE == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"
   ```
 
 You can also avoid duplicate pipelines by changing the job rules to avoid either push (branch)
@@ -195,7 +195,7 @@ without `workflow: rules`:
 job:
   script: echo "This job does NOT create double pipelines!"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
       when: never
     - when: always
 ```
@@ -207,8 +207,8 @@ You should not include both push and merge request pipelines in the same job wit
 job:
   script: echo "This job creates double pipelines!"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 ```
 
 Also, do not mix `only/except` jobs with `rules` jobs in the same pipeline.
@@ -222,7 +222,7 @@ job-with-no-rules:
 job-with-rules:
   script: echo "This job runs in merge request pipelines."
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 ```
 
 For every change pushed to the branch, duplicate pipelines run. One
@@ -259,10 +259,10 @@ add the job to any other pipeline type.
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: $CI_PIPELINE_SOURCE == "schedule"
       when: manual
       allow_failure: true
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
 ```
 
 The following example runs the job as a `when: on_success` job in [merge request pipelines](../pipelines/merge_request_pipelines.md)
@@ -272,25 +272,25 @@ and scheduled pipelines. It does not run in any other pipeline type.
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 ```
 
 Other commonly used variables for `if` clauses:
 
 - `if: $CI_COMMIT_TAG`: If changes are pushed for a tag.
 - `if: $CI_COMMIT_BRANCH`: If changes are pushed to any branch.
-- `if: '$CI_COMMIT_BRANCH == "main"'`: If changes are pushed to `main`.
-- `if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'`: If changes are pushed to the default
+- `if: $CI_COMMIT_BRANCH == "main"`: If changes are pushed to `main`.
+- `if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`: If changes are pushed to the default
   branch. Use when you want to have the same configuration in multiple
   projects with different default branches.
-- `if: '$CI_COMMIT_BRANCH =~ /regex-expression/'`: If the commit branch matches a regular expression.
+- `if: $CI_COMMIT_BRANCH =~ /regex-expression/`: If the commit branch matches a regular expression.
 - `if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch.*/`:
    If the commit branch is the default branch and the commit message title matches a regular expression.
    For example, the default commit message for a merge commit starts with `Merge branch`.
-- `if: '$CUSTOM_VARIABLE !~ /regex-expression/'`: If the [custom variable](../variables/index.md#custom-cicd-variables)
+- `if: $CUSTOM_VARIABLE !~ /regex-expression/`: If the [custom variable](../variables/index.md#custom-cicd-variables)
   `CUSTOM_VARIABLE` does **not** match a regular expression.
-- `if: '$CUSTOM_VARIABLE == "value1"'`: If the custom variable `CUSTOM_VARIABLE` is
+- `if: $CUSTOM_VARIABLE == "value1"`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.
 
 ### Variables in `rules:changes`

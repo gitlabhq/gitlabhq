@@ -1404,8 +1404,8 @@ To configure the Praefect nodes, on each one:
    praefect['database_host'] = '10.6.0.141'
    praefect['database_port'] = 5432
    # `no_proxy` settings must always be a direct connection for caching
-   praefect['database_host_no_proxy'] = '10.6.0.141'
-   praefect['database_port_no_proxy'] = 5432
+   praefect['database_direct_host'] = '10.6.0.141'
+   praefect['database_direct_port'] = 5432
    praefect['database_dbname'] = 'praefect_production'
    praefect['database_user'] = 'praefect'
    praefect['database_password'] = '<praefect_postgresql_password>'

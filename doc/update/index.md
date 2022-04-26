@@ -321,7 +321,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [latest `14.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [latest `14.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -812,6 +812,20 @@ supplied with GitLab during upgrades. We recommend you use these GitLab-supplied
 
 If you persist your own Rack Attack initializers between upgrades, you might
 [get `500` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/334681) when [upgrading to GitLab 14.0 and later](#1400).
+
+### 12.10.0
+
+- The final patch release (12.10.14)
+  [has a regression affecting maven package uploads](https://about.gitlab.com/releases/2020/07/06/critical-security-release-gitlab-13-1-3-released/#maven-package-upload-broken-in-121014).
+  If you use this feature and need to stay on 12.10 while preparing to upgrade to 13.0:
+
+  - Upgrade to 12.10.13 instead.
+  - Upgrade to 13.0.14 as soon as possible.
+
+- [GitLab 13.0 requires PostgreSQL 11](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab).
+
+  - 12.10 is the final release that shipped with PostgreSQL 9.6, 10, and 11.
+  - You should make sure that your database is PostgreSQL 11 on GitLab 12.10 before upgrading to 13.0. This will require downtime.
 
 ### 12.2.0
 

@@ -3,23 +3,59 @@
 module ServicePing
   class BuildPayloadService
     def execute
-      return {} unless allowed_to_report?
+      return {} unless ServicePingSettings.product_intelligence_enabled?
 
-      raw_payload
+      filtered_usage_data
     end
 
     private
 
-    def allowed_to_report?
-      product_intelligence_enabled? && !User.single_user&.requires_usage_stats_consent?
-    end
-
-    def product_intelligence_enabled?
-      ::Gitlab::CurrentSettings.usage_ping_enabled?
-    end
-
     def raw_payload
       @raw_payload ||= ::Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
+    end
+
+    def filtered_usage_data(payload = raw_payload, parents = [])
+      return unless payload.is_a?(Hash)
+
+      payload.keep_if do |label, node|
+        key_path = parents.dup.append(label).join('.')
+
+        if has_metric_definition?(key_path)
+          include_metric?(key_path)
+        else
+          filtered_usage_data(node, parents.dup << label) if node.is_a?(Hash)
+        end
+      end
+    end
+
+    def include_metric?(key_path)
+      valid_metric_status?(key_path) && permitted_metric?(key_path)
+    end
+
+    def valid_metric_status?(key_path)
+      metric_definitions[key_path]&.valid_service_ping_status?
+    end
+
+    def permitted_categories
+      @permitted_categories ||= ::ServicePing::PermitDataCategoriesService.new.execute
+    end
+
+    def permitted_metric?(key_path)
+      permitted_categories.include?(metric_category(key_path))
+    end
+
+    def has_metric_definition?(key_path)
+      metric_definitions[key_path].present?
+    end
+
+    def metric_category(key_path)
+      metric_definitions[key_path]
+        &.attributes
+        &.fetch(:data_category, ::ServicePing::PermitDataCategoriesService::OPTIONAL_CATEGORY)
+    end
+
+    def metric_definitions
+      @metric_definitions ||= ::Gitlab::Usage::MetricDefinition.definitions
     end
   end
 end

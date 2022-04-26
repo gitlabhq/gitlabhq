@@ -14,7 +14,14 @@ module Gitlab
           #     ::Issue.where(database_time_constraints)
           #   end
           # end
+
+          UnimplementedOperationError = Class.new(StandardError) # rubocop:disable UsageData/InstrumentationSuperclass
+
           class << self
+            IMPLEMENTED_OPERATIONS = %i(count distinct_count estimate_batch_distinct_count).freeze
+
+            private_constant :IMPLEMENTED_OPERATIONS
+
             def start(&block)
               return @metric_start&.call unless block_given?
 
@@ -40,6 +47,8 @@ module Gitlab
             end
 
             def operation(symbol, column: nil, &block)
+              raise UnimplementedOperationError unless symbol.in?(IMPLEMENTED_OPERATIONS)
+
               @metric_operation = symbol
               @column = column
               @metric_operation_block = block if block_given?

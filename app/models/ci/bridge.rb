@@ -57,6 +57,14 @@ module Ci
       end
     end
 
+    def retryable?
+      return false unless Feature.enabled?(:ci_recreate_downstream_pipeline, project, default_enabled: :yaml)
+
+      return false if failed? && (pipeline_loop_detected? || reached_max_descendant_pipelines_depth?)
+
+      super
+    end
+
     def self.with_preloads
       preload(
         :metadata,
@@ -65,8 +73,11 @@ module Ci
       )
     end
 
-    def retryable?
-      false
+    def self.clone_accessors
+      %i[pipeline project ref tag options name
+         allow_failure stage stage_id stage_idx
+         yaml_variables when description needs_attributes
+         scheduling_type].freeze
     end
 
     def inherit_status_from_downstream!(pipeline)

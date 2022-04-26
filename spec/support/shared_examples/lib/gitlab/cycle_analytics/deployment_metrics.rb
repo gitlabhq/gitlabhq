@@ -62,8 +62,8 @@ shared_examples 'deployment metrics examples' do
   describe '#deployment_frequency' do
     subject { stage_summary.fourth[:value] }
 
-    it 'includes the unit: `per day`' do
-      expect(stage_summary.fourth[:unit]).to eq _('per day')
+    it 'includes the unit: `/day`' do
+      expect(stage_summary.fourth[:unit]).to eq _('/day')
     end
 
     before do

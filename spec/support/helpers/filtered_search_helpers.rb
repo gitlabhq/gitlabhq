@@ -187,4 +187,69 @@ module FilteredSearchHelpers
       toggle.click if toggle.visible?
     end
   end
+
+  ##
+  # For use with gl-filtered-search
+  def select_tokens(*args, submit: false)
+    within '[data-testid="filtered-search-input"]' do
+      find_field('Search').click
+
+      args.each do |token|
+        # Move mouse away to prevent invoking tooltips on usernames, which blocks the search input
+        find_button('Search').hover
+
+        if token == '='
+          click_on '= is'
+        else
+          click_on token
+        end
+
+        wait_for_requests
+      end
+    end
+
+    if submit
+      send_keys :enter
+    end
+  end
+
+  def get_suggestion_count
+    all('.gl-filtered-search-suggestion').size
+  end
+
+  def click_filtered_search_bar
+    find('.gl-filtered-search-last-item').click
+  end
+
+  def expect_visible_suggestions_list
+    expect(page).to have_css('.gl-filtered-search-suggestion-list')
+  end
+
+  def expect_hidden_suggestions_list
+    expect(page).not_to have_css('.gl-filtered-search-suggestion-list')
+  end
+
+  def expect_suggestion(value)
+    expect(page).to have_css('.gl-filtered-search-suggestion', text: value)
+  end
+
+  def expect_suggestion_count(count)
+    expect(page).to have_css('.gl-filtered-search-suggestion', count: count)
+  end
+
+  def expect_assignee_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: "Assignee = #{value}"
+  end
+
+  def expect_author_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: "Author = #{value}"
+  end
+
+  def expect_empty_search_term
+    expect(page).to have_css '.gl-filtered-search-term', text: ''
+  end
+
+  def expect_token_segment(value)
+    expect(page).to have_css '.gl-filtered-search-token-segment', text: value
+  end
 end
