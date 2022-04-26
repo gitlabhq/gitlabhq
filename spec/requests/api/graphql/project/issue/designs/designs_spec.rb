@@ -273,8 +273,10 @@ RSpec.describe 'Getting designs related to an issue' do
         end
 
         it 'returns the correct v432x230-sized design images' do
+          v0 = design.actions.most_recent.first.version
+
           expect(design_nodes).to contain_exactly(
-            a_hash_including('imageV432x230' => design_image_url(design, ref: version.sha, size: :v432x230)),
+            a_hash_including('imageV432x230' => design_image_url(design, ref: v0.sha, size: :v432x230)),
             a_hash_including('imageV432x230' => design_image_url(second_design, ref: version.sha, size: :v432x230))
           )
         end
@@ -323,8 +325,10 @@ RSpec.describe 'Getting designs related to an issue' do
         end
 
         it 'returns the correct v432x230-sized design images' do
+          v0 = design.actions.most_recent.first.version
+
           expect(design_nodes).to contain_exactly(
-            a_hash_including('imageV432x230' => design_image_url(design, ref: version.sha, size: :v432x230)),
+            a_hash_including('imageV432x230' => design_image_url(design, ref: v0.sha, size: :v432x230)),
             a_hash_including('imageV432x230' => design_image_url(second_design, ref: version.sha, size: :v432x230))
           )
         end

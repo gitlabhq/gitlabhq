@@ -110,7 +110,7 @@ module Gitlab
 
               log_warnings(problem_type: 'schema_validation_fails') unless schema_validation_errors.empty?
 
-              if Feature.enabled?(:enforce_security_report_validation, @project)
+              if Feature.enabled?(:enforce_security_report_validation, @project, default_enabled: :yaml)
                 @errors += schema_validation_errors
               else
                 @warnings += schema_validation_errors
@@ -147,7 +147,7 @@ module Gitlab
             def add_unsupported_report_version_message
               log_warnings(problem_type: 'using_unsupported_schema_version')
 
-              if Feature.enabled?(:enforce_security_report_validation, @project)
+              if Feature.enabled?(:enforce_security_report_validation, @project, default_enabled: :yaml)
                 handle_unsupported_report_version(treat_as: :error)
               else
                 handle_unsupported_report_version(treat_as: :warning)

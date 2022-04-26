@@ -53,9 +53,6 @@ function fixElementSource(el) {
   // Mermaid doesn't like `<br />` tags, so collapse all like tags into `<br>`, which is parsed correctly.
   const source = el.textContent?.replace(/<br\s*\/>/g, '<br>');
 
-  // Remove any extra spans added by the backend syntax highlighting.
-  Object.assign(el, { textContent: source });
-
   return { source };
 }
 
@@ -78,17 +75,13 @@ function renderMermaidEl(el, source) {
     width: '100%',
   });
 
-  // Add the original source into the DOM
-  // to allow Copy-as-GFM to access it.
-  const sourceEl = document.createElement('text');
-  sourceEl.textContent = source;
-  sourceEl.classList.add('gl-display-none');
-
   const wrapper = document.createElement('div');
   wrapper.appendChild(iframeEl);
-  wrapper.appendChild(sourceEl);
 
-  el.closest('pre').replaceWith(wrapper);
+  // Hide the markdown but keep it "visible enough" to allow Copy-as-GFM
+  // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83202
+  el.closest('pre').classList.add('gl-sr-only');
+  el.closest('pre').parentNode.appendChild(wrapper);
 
   // Event Listeners
   iframeEl.addEventListener('load', () => {

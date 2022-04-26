@@ -43,13 +43,12 @@ module Types
       end
 
       def image_v432x230(parent:)
-        version = cached_stateful_version(parent)
-        action = design.actions.up_to_version(version).most_recent.first
+        Gitlab::Graphql::Lazy.with_value(lazy_action(parent)) do |action|
+          # A `nil` return value indicates that the image has not been processed
+          next unless action&.image_v432x230&.file
 
-        # A `nil` return value indicates that the image has not been processed
-        return unless action.image_v432x230.file
-
-        Gitlab::UrlBuilder.build(design, ref: version.sha, size: :v432x230)
+          Gitlab::UrlBuilder.build(action.design, ref: action.version.sha, size: :v432x230)
+        end
       end
 
       def event(parent:)
@@ -72,6 +71,25 @@ module Types
 
       def issue
         ::Gitlab::Graphql::Loaders::BatchModelLoader.new(::Issue, design.issue_id).find
+      end
+
+      private
+
+      def lazy_action(parent)
+        version = cached_stateful_version(parent)
+
+        BatchLoader::GraphQL.for([version, design]).batch do |ids, loader|
+          by_version = ids.group_by(&:first).transform_values { _1.map(&:second) }
+          designs_by_id = ids.map(&:second).index_by(&:id)
+
+          by_version.each do |v, designs|
+            actions = ::DesignManagement::Action.most_recent.up_to_version(v).by_design(designs).with_version
+            actions.each do |action|
+              action.design = designs_by_id[action.design_id] # eliminate duplicate load
+              loader.call([v, action.design], action)
+            end
+          end
+        end
       end
     end
   end

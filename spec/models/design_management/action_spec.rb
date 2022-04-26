@@ -49,6 +49,15 @@ RSpec.describe DesignManagement::Action do
         end
       end
 
+      describe '.with_version' do
+        it 'preloads the version' do
+          actions = described_class.with_version
+
+          expect { actions.map(&:version) }.not_to exceed_query_limit(2)
+          expect(actions.count).to be > 2
+        end
+      end
+
       describe '.by_event' do
         it 'returns the actions by event type' do
           expect(described_class.by_event(:deletion)).to match_array([action_a_2, action_c])
