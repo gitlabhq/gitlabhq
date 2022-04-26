@@ -187,7 +187,7 @@ export default {
       ref="searchBox"
       v-model.trim="searchQuery"
       class="gl-m-3"
-      :placeholder="this.$options.translations.searchMilestones"
+      :placeholder="$options.translations.searchMilestones"
       @input="onSearchBoxInput"
       @keydown.enter.prevent="onSearchBoxEnter"
     />

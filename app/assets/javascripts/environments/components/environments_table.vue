@@ -146,7 +146,7 @@ export default {
         {{ tableData.autoStop.title }}
       </div>
     </div>
-    <template v-for="(model, i) in sortedEnvironments" :model="model">
+    <template v-for="(model, i) in sortedEnvironments">
       <environment-item
         :key="`environment-item-${i}`"
         :model="model"

@@ -76,7 +76,7 @@ export default {
         @click="handleClickCta"
       >
         <gl-emoji data-name="rocket" />
-        {{ this.$options.i18n.ctaText }}
+        {{ $options.i18n.ctaText }}
       </gl-button>
     </div>
   </gl-popover>

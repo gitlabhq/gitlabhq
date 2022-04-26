@@ -97,6 +97,8 @@ rules:
     - error
     - selector: ImportSpecifier[imported.name='GlSkeletonLoading']
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
+  vue/multi-word-component-names: off
 overrides:
   - files:
     - '{,ee/,jh/}spec/frontend*/**/*'

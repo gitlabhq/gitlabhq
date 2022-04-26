@@ -338,9 +338,9 @@ export default {
         <slot
           v-else
           name="value"
-          :attributeTitle="attributeTitle"
-          :attributeUrl="attributeUrl"
-          :currentAttribute="currentAttribute"
+          :attribute-title="attributeTitle"
+          :attribute-url="attributeUrl"
+          :current-attribute="currentAttribute"
         >
           <gl-link
             v-gl-tooltip="tooltipText"
@@ -388,9 +388,9 @@ export default {
           <slot
             v-else
             name="list"
-            :attributesList="attributesList"
-            :isAttributeChecked="isAttributeChecked"
-            :updateAttribute="updateAttribute"
+            :attributes-list="attributesList"
+            :is-attribute-checked="isAttributeChecked"
+            :update-attribute="updateAttribute"
           >
             <gl-dropdown-item
               v-for="attrItem in attributesList"

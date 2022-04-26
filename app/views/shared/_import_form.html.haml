@@ -2,31 +2,6 @@
 - import_url = Gitlab::UrlSanitizer.new(f.object.import_url)
 
 .import-url-data
-  .form-group
-    = f.label :import_url, class: 'label-bold' do
-      %span
-        = _('Git repository URL')
-    = f.text_field :import_url, value: import_url.sanitized_url,
-        autocomplete: 'off', class: 'form-control gl-form-input', placeholder: 'https://gitlab.company.com/group/project.git', required: true
-    = render Pajamas::AlertComponent.new(variant: :danger,
-      alert_class: 'gl-mt-3 js-import-url-error hide',
-      dismissible: false,
-      close_button_class: 'js-close-2fa-enabled-success-alert') do
-      .gl-alert-body
-        = s_('Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials.')
-  .row
-    .form-group.col-md-6
-      = f.label :import_url_user, class: 'label-bold' do
-        %span
-          = _('Username (optional)')
-      = f.text_field :import_url_user, value: import_url.user, class: 'form-control gl-form-input', required: false, autocomplete: 'new-password'
-
-    .form-group.col-md-6
-      = f.label :import_url_password, class: 'label-bold' do
-        %span
-          = _('Password (optional)')
-      = f.password_field :import_url_password, class: 'form-control gl-form-input', required: false, autocomplete: 'new-password'
-
   .info-well.prepend-top-20
     .well-segment
       %ul
@@ -40,5 +15,28 @@
         %li
           = import_svn_message(ci_cd_only)
         = render_if_exists 'shared/ci_cd_only_link', ci_cd_only: ci_cd_only
+  .form-group
+    = f.label :import_url, class: 'label-bold' do
+      %span
+        = _('Git repository URL')
+    = f.text_field :import_url, value: import_url.sanitized_url,
+        autocomplete: 'off', class: 'form-control gl-form-input', placeholder: 'https://gitlab.company.com/group/project.git', required: true
+    = render Pajamas::AlertComponent.new(variant: :danger,
+      alert_class: 'gl-mt-3 js-import-url-error hide',
+      dismissible: false,
+      close_button_class: 'js-close-2fa-enabled-success-alert') do
+      .gl-alert-body
+        = s_('Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials.')
+  = render_if_exists 'shared/ee/import_form', f: f, ci_cd_only: ci_cd_only
+  .row
+    .form-group.col-md-6
+      = f.label :import_url_user, class: 'label-bold' do
+        %span
+          = _('Username (optional)')
+      = f.text_field :import_url_user, value: import_url.user, class: 'form-control gl-form-input', required: false, autocomplete: 'new-password'
 
-= render_if_exists 'shared/ee/import_form', f: f, ci_cd_only: ci_cd_only
+    .form-group.col-md-6
+      = f.label :import_url_password, class: 'label-bold' do
+        %span
+          = _('Password (optional)')
+      = f.password_field :import_url_password, class: 'form-control gl-form-input', required: false, autocomplete: 'new-password'

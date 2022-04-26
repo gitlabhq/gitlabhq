@@ -122,7 +122,7 @@ export default {
   <div>
     <h3>{{ $options.i18n.yAxisTitle }}</h3>
     <gl-alert v-if="loadingError" variant="danger" :dismissible="false" class="gl-mt-3">
-      {{ this.$options.i18n.loadUserChartError }}
+      {{ $options.i18n.loadUserChartError }}
     </gl-alert>
     <chart-skeleton-loader v-else-if="isLoading" />
     <gl-alert v-else-if="!chartUserData.length" variant="info" :dismissible="false" class="gl-mt-3">

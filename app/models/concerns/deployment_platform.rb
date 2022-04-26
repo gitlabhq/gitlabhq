@@ -3,7 +3,7 @@
 module DeploymentPlatform
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def deployment_platform(environment: nil)
-    return if Feature.disabled?(:certificate_based_clusters, default_enabled: :yaml, type: :ops)
+    return if Feature.disabled?(:certificate_based_clusters, self.namespace, default_enabled: :yaml, type: :ops)
 
     @deployment_platform ||= {}
 

@@ -174,7 +174,7 @@ class Clusters::ClustersController < Clusters::BaseController
   private
 
   def certificate_based_clusters_enabled?
-    Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops)
+    Feature.enabled?(:certificate_based_clusters, clusterable.clusterable_namespace, default_enabled: :yaml, type: :ops)
   end
 
   def ensure_feature_enabled!

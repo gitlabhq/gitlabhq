@@ -468,7 +468,7 @@ module ApplicationSettingsHelper
   def instance_clusters_enabled?
     clusterable = Clusters::Instance.new
 
-    Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops) &&
+    Feature.enabled?(:certificate_based_clusters, default_enabled: :yaml, type: :ops) &&
       can?(current_user, :read_cluster, clusterable)
   end
 

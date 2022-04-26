@@ -15,7 +15,7 @@ module API
         @client ||= if Feature.enabled?(:remove_legacy_github_client)
                       Gitlab::GithubImport::Client.new(params[:personal_access_token], host: params[:github_hostname])
                     else
-                      Gitlab::LegacyGithubImport::Client.new(params[:personal_access_token], client_options)
+                      Gitlab::LegacyGithubImport::Client.new(params[:personal_access_token], **client_options)
                     end
       end
 

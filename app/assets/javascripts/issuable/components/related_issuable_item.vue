@@ -116,7 +116,7 @@ export default {
           <div
             class="item-path-area item-path-id d-flex align-items-center mr-2 mt-2 mt-xl-0 ml-xl-2"
           >
-            <gl-tooltip :target="() => this.$refs.iconElement">
+            <gl-tooltip :target="() => $refs.iconElement">
               <span v-safe-html="stateTitle"></span>
             </gl-tooltip>
             <span v-gl-tooltip :title="itemPath" class="path-id-text d-inline-block">{{

@@ -42,6 +42,6 @@ export default {
     :class="cssClass"
     :title="tooltipTitle(time)"
     :datetime="time"
-    ><slot :timeAgo="timeAgo">{{ timeAgo }}</slot></time
+    ><slot :time-ago="timeAgo">{{ timeAgo }}</slot></time
   >
 </template>

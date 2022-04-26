@@ -12,6 +12,11 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
       .fabricate!
   end
 
+  def clusterable_namespace
+    return clusterable.namespace if clusterable.is_a?(Project)
+    return clusterable if clusterable.is_a?(Group)
+  end
+
   def can_add_cluster?
     can?(current_user, :add_cluster, clusterable)
   end

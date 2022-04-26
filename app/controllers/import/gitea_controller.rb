@@ -61,7 +61,7 @@ class Import::GiteaController < Import::GithubController
 
   override :client
   def client
-    @client ||= Gitlab::LegacyGithubImport::Client.new(session[access_token_key], client_options)
+    @client ||= Gitlab::LegacyGithubImport::Client.new(session[access_token_key], **client_options)
   end
 
   override :client_options

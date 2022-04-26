@@ -137,7 +137,7 @@ export default {
         v-model="freezeStartCron"
         class="gl-font-monospace!"
         data-qa-selector="deploy_freeze_start_field"
-        :placeholder="this.$options.translations.cronPlaceholder"
+        :placeholder="$options.translations.cronPlaceholder"
         :state="freezeStartCronState"
         trim
       />
@@ -154,7 +154,7 @@ export default {
         v-model="freezeEndCron"
         class="gl-font-monospace!"
         data-qa-selector="deploy_freeze_end_field"
-        :placeholder="this.$options.translations.cronPlaceholder"
+        :placeholder="$options.translations.cronPlaceholder"
         :state="freezeEndCronState"
         trim
       />

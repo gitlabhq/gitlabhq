@@ -1227,6 +1227,16 @@ where `password` is a public access key with the `api` scope enabled.
 POST /projects
 ```
 
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
+     --header "Content-Type: application/json" --data '{
+        "name": "new_project", "description": "New Project", "path": "new_project",
+        "namespace_id": "42", "initialize_with_readme": "true"}' \
+     --url 'https://gitlab.example.com/api/v4/projects/'
+```
+
 | Attribute                                                   | Type    | Required               | Description |
 |-------------------------------------------------------------|---------|------------------------|-------------|
 | `name`                                                      | string  | **{check-circle}** Yes (if path isn't provided) | The name of the new project. Equals path if not provided. |
@@ -1253,8 +1263,8 @@ POST /projects
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `group_with_project_templates_id` **(PREMIUM)**             | integer | **{dotted-circle}** No | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
-| `import_url`                                                | string  | **{dotted-circle}** No | URL to import repository from. |
-| `initialize_with_readme`                                    | boolean | **{dotted-circle}** No | `false` by default. |
+| `import_url`                                                | string  | **{dotted-circle}** No | URL to import repository from. When this isn't empty, you must not set `initialize_with_readme` to `true`. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
+| `initialize_with_readme`                                    | boolean | **{dotted-circle}** No | Whether to create a Git repository with just a `README.md` file. Default is `false`. When this is true, you must not pass `import_url` or other attributes of this endpoint which specify alternative contents for the repository. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
 | `issues_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `issues_enabled`                                            | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                              | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |

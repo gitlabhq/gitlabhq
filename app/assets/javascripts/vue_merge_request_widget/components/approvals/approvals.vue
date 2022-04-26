@@ -217,7 +217,7 @@ export default {
         <slot
           :is-approving="isApproving"
           :approve-with-auth="approveWithAuth"
-          :hasApproval-auth-error="hasApprovalAuthError"
+          :has-approval-auth-error="hasApprovalAuthError"
         ></slot>
       </template>
     </div>

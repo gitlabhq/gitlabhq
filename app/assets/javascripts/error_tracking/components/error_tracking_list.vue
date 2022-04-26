@@ -254,7 +254,7 @@ export default {
         data-testid="integrated-disabled-alert"
         @dismiss="isAlertDismissed = true"
       >
-        <gl-sprintf :message="this.$options.i18n.integratedErrorTrackingDisabledText">
+        <gl-sprintf :message="$options.i18n.integratedErrorTrackingDisabledText">
           <template #epicLink="{ content }">
             <gl-link :href="$options.epicLink" target="_blank">{{ content }}</gl-link>
           </template>

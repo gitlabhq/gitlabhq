@@ -21,7 +21,10 @@ Marginalia::Comment.components = [:application, :correlation_id, :jid, :endpoint
 # we've seen it slow things down.
 if Rails.env.development?
   Marginalia::Comment.components << :line
-  Marginalia::Comment.lines_to_ignore = Regexp.union(Gitlab::BacktraceCleaner::IGNORE_BACKTRACES + %w(lib/ruby/gems/ lib/gem_extensions/ lib/ruby/))
+  Marginalia::Comment.lines_to_ignore = Regexp.union(
+    Gitlab::BacktraceCleaner::IGNORE_BACKTRACES + %w[
+      lib/ruby/gems/ lib/gem_extensions/ lib/ruby/ lib/gitlab/marginalia/ gems/
+    ])
 end
 
 Gitlab::Marginalia.set_application_name

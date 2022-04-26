@@ -190,6 +190,10 @@ module QA
         "#{api_get_path}/pipeline_schedules"
       end
 
+      def api_jobs_path
+        "#{api_get_path}/jobs"
+      end
+
       def api_issues_path
         "#{api_get_path}/issues"
       end
@@ -352,6 +356,15 @@ module QA
         return parse_body(api_get_from(api_pipelines_path)) unless auto_paginate
 
         auto_paginated_response(request_url(api_pipelines_path, per_page: '100'), attempts: attempts)
+      end
+
+      def jobs
+        response = get(request_url(api_jobs_path))
+        parse_body(response)
+      end
+
+      def job_by_name(job_name)
+        jobs.find { |job| job[:name] == job_name }
       end
 
       def issues(auto_paginate: false, attempts: 0)

@@ -7,7 +7,7 @@ module WebHooks
     data_consistency :always
     sidekiq_options retry: 3
     feature_category :integrations
-    urgency :low
+    urgency :high
 
     idempotent!
 

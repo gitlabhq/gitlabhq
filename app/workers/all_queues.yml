@@ -3114,7 +3114,7 @@
   :worker_name: WebHooks::DestroyWorker
   :feature_category: :integrations
   :has_external_dependencies:
-  :urgency: :low
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

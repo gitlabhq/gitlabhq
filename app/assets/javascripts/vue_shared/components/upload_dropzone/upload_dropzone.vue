@@ -160,7 +160,7 @@ export default {
         >
           <gl-icon name="upload" :size="iconStyles.size" :class="iconStyles.class" />
           <p class="gl-mb-0" data-testid="upload-text">
-            <slot name="upload-text" :openFileUpload="openFileUpload">
+            <slot name="upload-text" :open-file-upload="openFileUpload">
               <gl-sprintf
                 :message="
                   singleFileSelection

@@ -29,7 +29,7 @@ export default {
     </template>
 
     <template #default="{ listItem, query }">
-      <slot :listItem="listItem" :query="query"></slot>
+      <slot :list-item="listItem" :query="query"></slot>
     </template>
   </gl-paginated-list>
 </template>

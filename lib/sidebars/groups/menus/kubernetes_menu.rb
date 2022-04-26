@@ -22,7 +22,6 @@ module Sidebars
         override :render?
         def render?
           clusterable = context.group
-
           Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops) &&
             can?(context.current_user, :read_cluster, clusterable)
         end

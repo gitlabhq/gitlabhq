@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Background migrations
 
 WARNING:
-Background migrations are strongly discouraged in favor of the new [batched background migrations framework](../batched_background_migrations.md).
+Background migrations are strongly discouraged in favor of the new [batched background migrations framework](batched_background_migrations.md).
 Please check that documentation and determine if that framework suits your needs and fall back
 to these only if required.
 
