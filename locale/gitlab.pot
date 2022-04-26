@@ -2651,6 +2651,9 @@ msgstr ""
 msgid "AdminSettings|Enable smartcn custom analyzer: Search"
 msgstr ""
 
+msgid "AdminSettings|Enabled"
+msgstr ""
+
 msgid "AdminSettings|Feed token"
 msgstr ""
 
@@ -2661,6 +2664,9 @@ msgid "AdminSettings|If not specified at the group or instance level, the defaul
 msgstr ""
 
 msgid "AdminSettings|If there isn't any existing index, GitLab creates one."
+msgstr ""
+
+msgid "AdminSettings|Import sources"
 msgstr ""
 
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
@@ -2714,7 +2720,7 @@ msgstr ""
 msgid "AdminSettings|Preview payload"
 msgstr ""
 
-msgid "AdminSettings|Project export enabled"
+msgid "AdminSettings|Project export"
 msgstr ""
 
 msgid "AdminSettings|Protect CI/CD variables by default"
@@ -27556,9 +27562,6 @@ msgstr ""
 msgid "Pipeline %{label} for \"%{dataTitle}\""
 msgstr ""
 
-msgid "Pipeline Editor"
-msgstr ""
-
 msgid "Pipeline Editor|Are you sure you want to reset the file to its last committed version?"
 msgstr ""
 
@@ -32556,9 +32559,6 @@ msgstr ""
 msgid "Runners|Capacity of 1 enables warm HA through Auto Scaling group re-spawn. Capacity of 2 enables hot HA because the service is available even when a node is lost. Capacity of 3 or more enables hot HA and manual scaling of runner fleet."
 msgstr ""
 
-msgid "Runners|Change to project runner"
-msgstr ""
-
 msgid "Runners|Checkbox"
 msgstr ""
 
@@ -32613,6 +32613,9 @@ msgid "Runners|Download latest binary"
 msgstr ""
 
 msgid "Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project."
+msgstr ""
+
+msgid "Runners|Executor"
 msgstr ""
 
 msgid "Runners|Group"
@@ -32891,9 +32894,6 @@ msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot."
-msgstr ""
-
-msgid "Runners|You are about to change this instance runner to a project runner. This operation is not reversible. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared runner."

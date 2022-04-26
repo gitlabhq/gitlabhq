@@ -77,6 +77,7 @@ describe('RunnerDetails', () => {
       ${'Last contact'}        | ${{ contactedAt: null }}                                           | ${'Never contacted'}
       ${'Version'}             | ${{ version: '12.3' }}                                             | ${'12.3'}
       ${'Version'}             | ${{ version: null }}                                               | ${'None'}
+      ${'Executor'}            | ${{ executorName: 'shell' }}                                       | ${'shell'}
       ${'IP Address'}          | ${{ ipAddress: '127.0.0.1' }}                                      | ${'127.0.0.1'}
       ${'IP Address'}          | ${{ ipAddress: null }}                                             | ${'None'}
       ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED, runUntagged: true }}  | ${'Protected, Runs untagged jobs'}

@@ -127,7 +127,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'ArchiveTraceWorker' => 3,
         'AuthorizedKeysWorker' => 3,
         'AuthorizedProjectUpdate::ProjectCreateWorker' => 3,
-        'AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshFromReplicaWorker' => 3,

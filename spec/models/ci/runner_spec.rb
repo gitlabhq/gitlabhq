@@ -412,12 +412,9 @@ RSpec.describe Ci::Runner do
     context 'with shared_runner' do
       let(:runner) { create(:ci_runner, :instance) }
 
-      it 'transitions shared runner to project runner and assigns project' do
-        expect(subject).to be_truthy
-
-        expect(runner).to be_project_type
-        expect(runner.runner_projects.pluck(:project_id)).to match_array([project.id])
-        expect(runner.only_for?(project)).to be_truthy
+      it 'raises an error' do
+        expect { subject }
+          .to raise_error(ArgumentError, 'Transitioning an instance runner to a project runner is not supported')
       end
     end
 
@@ -428,6 +425,18 @@ RSpec.describe Ci::Runner do
       it 'raises an error' do
         expect { subject }
           .to raise_error(ArgumentError, 'Transitioning a group runner to a project runner is not supported')
+      end
+    end
+
+    context 'with project runner' do
+      let(:other_project) { create(:project) }
+      let(:runner) { create(:ci_runner, :project, projects: [other_project]) }
+
+      it 'assigns runner to project' do
+        expect(subject).to be_truthy
+
+        expect(runner).to be_project_type
+        expect(runner.runner_projects.pluck(:project_id)).to contain_exactly(project.id, other_project.id)
       end
     end
   end

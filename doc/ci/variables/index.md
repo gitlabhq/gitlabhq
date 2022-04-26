@@ -168,7 +168,7 @@ To add or update variables in the project settings:
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
    - **Environment scope**: Optional. `All`, or specific [environments](../environments/index.md).
    - **Protect variable** Optional. If selected, the variable is only available
-     in pipelines that run on protected branches or tags.
+     in pipelines that run on [protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md).
    - **Mask variable** Optional. If selected, the variable's **Value** is masked
      in job logs. The variable fails to save if the value does not meet the
      [masking requirements](#mask-a-cicd-variable).

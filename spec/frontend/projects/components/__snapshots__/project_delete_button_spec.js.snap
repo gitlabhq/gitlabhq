@@ -49,6 +49,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
         primarybuttontext=""
         secondarybuttonlink=""
         secondarybuttontext=""
+        showicon="true"
         title=""
         variant="danger"
       >

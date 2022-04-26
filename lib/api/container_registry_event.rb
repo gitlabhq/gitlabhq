@@ -4,7 +4,7 @@ module API
   class ContainerRegistryEvent < ::API::Base
     DOCKER_DISTRIBUTION_EVENTS_V1_JSON = 'application/vnd.docker.distribution.events.v1+json'
 
-    feature_category :package_registry
+    feature_category :container_registry
 
     before { authenticate_registry_notification! }
 

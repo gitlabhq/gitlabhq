@@ -82,6 +82,7 @@ describe('AdminRunnerShowApp', () => {
                         Last contact Never contacted
                         Version 1.0.0
                         IP Address 127.0.0.1
+                        Executor None
                         Configuration Runs untagged jobs
                         Maximum job timeout None
                         Tags None`.replace(/\s+/g, ' ');

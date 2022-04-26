@@ -123,6 +123,7 @@ describe('RunnerUpdateForm', () => {
     const {
       __typename,
       ipAddress,
+      executorName,
       runnerType,
       createdAt,
       status,

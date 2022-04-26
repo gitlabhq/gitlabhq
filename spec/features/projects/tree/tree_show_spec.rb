@@ -81,7 +81,7 @@ RSpec.describe 'Projects tree', :js do
       wait_for_requests
 
       page.within('.project-last-commit') do
-        expect(page).to have_selector('.user-avatar-link')
+        expect(page).to have_selector('.gl-avatar')
         expect(page).to have_content('Merge branch')
       end
     end

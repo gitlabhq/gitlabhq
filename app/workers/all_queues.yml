@@ -12,15 +12,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: authorized_project_update:authorized_project_update_project_group_link_create
-  :worker_name: AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker
-  :feature_category: :authentication_and_authorization
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :authentication_and_authorization

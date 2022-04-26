@@ -486,7 +486,7 @@ RSpec.describe "Admin Runners" do
   end
 
   describe "Runner edit page" do
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project) }
 
     before do
       @project1 = create(:project)
@@ -507,7 +507,7 @@ RSpec.describe "Admin Runners" do
 
     describe 'runner header', :js do
       it 'contains the runner status, type and id' do
-        expect(page).to have_content("never contacted shared Runner ##{runner.id} created")
+        expect(page).to have_content("never contacted specific Runner ##{runner.id} created")
       end
     end
 
@@ -559,17 +559,6 @@ RSpec.describe "Admin Runners" do
         let(:runner) { create(:ci_runner, :project, projects: [@project1], locked: true) }
 
         before do
-          visit edit_admin_runner_path(runner)
-        end
-
-        it_behaves_like 'assignable runner'
-      end
-
-      context 'with shared runner' do
-        let(:runner) { create(:ci_runner, :instance) }
-
-        before do
-          @project1.destroy!
           visit edit_admin_runner_path(runner)
         end
 

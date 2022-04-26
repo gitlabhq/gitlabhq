@@ -1216,15 +1216,6 @@ RSpec.describe API::Ci::Runners do
             end
           end
         end
-
-        it 'enables a instance type runner' do
-          expect do
-            post api("/projects/#{project.id}/runners", admin), params: { runner_id: shared_runner.id }
-          end.to change { project.runners.count }.by(1)
-
-          expect(shared_runner.reload).not_to be_instance_type
-          expect(response).to have_gitlab_http_status(:created)
-        end
       end
 
       it 'raises an error when no runner_id param is provided' do

@@ -7,7 +7,7 @@ module Groups
     before_action :authorize_admin_dependency_proxy!, only: :update
     before_action :verify_dependency_proxy_enabled!
 
-    feature_category :package_registry
+    feature_category :dependency_proxy
 
     private
 

@@ -20,6 +20,14 @@ table {
     @include gl-text-gray-500;
   }
 
+  &.table {
+    .thead-white {
+      th {
+        background-color: $white;
+      }
+    }
+  }
+
   .md &:not(.code),
   &.table:not(.gl-table) {
     margin-bottom: $gl-padding;
@@ -61,7 +69,6 @@ table {
 
     .thead-white {
       th {
-        background-color: $white;
         color: $gl-text-color-secondary;
         border-top: 0;
       }

@@ -1,11 +1,15 @@
-- name: "Converting an instance (shared) runner to a project (specific) runner"
+- name: "Changing an instance (shared) runner to a project (specific) runner"
   announcement_milestone: "14.5"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-11-22"
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
   removal_date: "2022-05-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
-    In GitLab 15.0, we will remove the feature that enables you to convert an instance (shared) runner to a project (specific) runner. Users who need to add a runner to only a particular project can register a runner to the project directly.
+    In GitLab 15.0, you can no longer change an instance (shared) runner to a project (specific) runner.
+
+    Users often accidentally change instance runners to project runners, and they're unable to change them back. GitLab does not allow you to change a project runner to a shared runner because of the security implications. A runner meant for one project could be set to run jobs for an entire instance.
+
+    Administrators who need to add runners for multiple projects can register a runner for one project, then go to the Admin view and choose additional projects.
 
   stage: Verify
   tiers: [Core, Premium, Ultimate]

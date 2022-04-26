@@ -82,6 +82,7 @@ The following items are **not** exported:
 - Merge Request Approvers and [the number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Repository size limits
 - Deploy keys allowed to push to protected branches
+- Secure Files
 
 These content rules also apply to creating projects from templates on the
 [group](../../group/custom_project_templates.md)

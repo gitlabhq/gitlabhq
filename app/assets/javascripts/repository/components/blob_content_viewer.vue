@@ -23,9 +23,6 @@ import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
 
 export default {
-  i18n: {
-    pipelineEditor: __('Pipeline Editor'),
-  },
   components: {
     BlobHeader,
     BlobButtonGroup,

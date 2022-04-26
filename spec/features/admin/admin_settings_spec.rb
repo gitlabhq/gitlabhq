@@ -71,7 +71,7 @@ RSpec.describe 'Admin updates settings' do
 
       it 'change Visibility and Access Controls' do
         page.within('.as-visibility-access') do
-          uncheck 'Project export enabled'
+          uncheck 'Enabled'
           click_button 'Save changes'
         end
 

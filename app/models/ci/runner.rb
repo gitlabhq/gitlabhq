@@ -289,7 +289,7 @@ module Ci
 
     def assign_to(project, current_user = nil)
       if instance_type?
-        self.runner_type = :project_type
+        raise ArgumentError, 'Transitioning an instance runner to a project runner is not supported'
       elsif group_type?
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
