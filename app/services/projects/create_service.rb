@@ -124,11 +124,7 @@ module Projects
     end
 
     def create_project_settings
-      if Feature.enabled?(:create_project_settings, default_enabled: :yaml)
-        @project.project_setting.save if @project.project_setting.changed?
-      else
-        @project.create_project_setting unless @project.project_setting
-      end
+      @project.project_setting.save if @project.project_setting.changed?
     end
 
     # Add an authorization for the current user authorizations inline

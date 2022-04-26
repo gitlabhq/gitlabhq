@@ -38,8 +38,6 @@ exports[`packages_list_row renders 1`] = `
             </router-link-stub>
              
             <!---->
-             
-            <!---->
           </div>
            
           <!---->
@@ -98,16 +96,35 @@ exports[`packages_list_row renders 1`] = `
     <div
       class="gl-w-9 gl-display-flex gl-justify-content-end gl-pr-1"
     >
-      <gl-button-stub
-        aria-label="Remove package"
-        buttontextclasses=""
-        category="secondary"
-        data-testid="action-delete"
-        icon="remove"
+      <gl-dropdown-stub
+        category="tertiary"
+        clearalltext="Clear all"
+        clearalltextclass="gl-px-5"
+        data-testid="delete-dropdown"
+        headertext=""
+        hideheaderborder="true"
+        highlighteditemstitle="Selected"
+        highlighteditemstitleclass="gl-px-5"
+        icon="ellipsis_v"
+        no-caret=""
         size="medium"
-        title="Remove package"
-        variant="danger"
-      />
+        text="More actions"
+        textsronly="true"
+        variant="default"
+      >
+        <gl-dropdown-item-stub
+          avatarurl=""
+          data-testid="action-delete"
+          iconcolor=""
+          iconname=""
+          iconrightarialabel=""
+          iconrightname=""
+          secondarytext=""
+          variant="danger"
+        >
+          Delete package
+        </gl-dropdown-item-stub>
+      </gl-dropdown-stub>
     </div>
   </div>
    

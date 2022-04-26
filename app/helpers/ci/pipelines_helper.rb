@@ -51,6 +51,7 @@ module Ci
         { name: 'Julia', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/julia.svg') },
         { name: 'Laravel', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/laravel.svg') },
         { name: 'LaTeX', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/latex.svg') },
+        { name: 'MATLAB', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/matlab.svg') },
         { name: 'Maven', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/maven.svg') },
         { name: 'Mono', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/mono.svg') },
         { name: 'Nodejs', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/node_js.svg') },

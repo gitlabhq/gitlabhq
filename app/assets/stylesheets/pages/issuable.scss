@@ -108,18 +108,10 @@
   .merge-icon {
     color: $orange-400;
     position: absolute;
+    bottom: -3px;
+    right: -3px;
     filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
   }
-}
-
-.assignee .merge-icon {
-  top: calc(50% + 0.25rem);
-  left: 1.275rem;
-}
-
-.reviewer .merge-icon {
-  bottom: -3px;
-  right: -3px;
 }
 
 .right-sidebar {

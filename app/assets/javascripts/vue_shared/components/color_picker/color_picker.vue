@@ -4,6 +4,7 @@
  *
  * @example
  * <color-picker
+     :id="example-id"
      :invalid-feedback="__('Please enter a valid hex (#RRGGBB or #RGB) color value')"
      :label="__('Background color')"
      :value="#FF0000"
@@ -12,6 +13,7 @@
    />
  */
 import { GlFormGroup, GlFormInput, GlFormInputGroup, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
 
 const PREVIEW_COLOR_DEFAULT_CLASSES =
@@ -29,6 +31,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    id: {
+      type: String,
+      required: false,
+      default: () => uniqueId('color-picker-'),
+    },
     invalidFeedback: {
       type: String,
       required: false,
@@ -94,14 +101,13 @@ export default {
   <div>
     <gl-form-group
       :label="label"
-      label-for="color-picker"
+      :label-for="id"
       :description="description"
       :invalid-feedback="invalidFeedback"
       :state="state"
       :class="{ 'gl-mb-3!': hasSuggestedColors }"
     >
       <gl-form-input-group
-        id="color-picker"
         max-length="7"
         type="text"
         class="gl-align-center gl-rounded-0 gl-rounded-top-right-base gl-rounded-bottom-right-base"
@@ -112,6 +118,7 @@ export default {
         <template #prepend>
           <div :class="previewColorClasses" :style="previewColor" data-testid="color-preview">
             <gl-form-input
+              :id="id"
               type="color"
               class="gl-absolute gl-top-0 gl-left-0 gl-h-full! gl-p-0! gl-m-0! gl-opacity-0"
               tabindex="-1"

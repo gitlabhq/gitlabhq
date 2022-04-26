@@ -116,6 +116,7 @@ export default {
       @clear="clearSearch"
     />
     <gl-sorting
+      data-testid="registry-sort-dropdown"
       :text="sortText"
       :is-ascending="isSortAscending"
       @sortDirectionChange="onDirectionChange"

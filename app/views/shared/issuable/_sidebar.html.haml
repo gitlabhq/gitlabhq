@@ -33,6 +33,8 @@
       - if @project.group.present?
         = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
+      .js-sidebar-labels{ data: sidebar_labels_data(issuable_sidebar, @project) }
+
       - if issuable_sidebar[:supports_milestone]
         .block.milestone{ :class => ("gl-border-b-0!" if in_group_context_with_iterations), data: { qa_selector: 'milestone_block', testid: 'sidebar-milestones' } }
           .js-milestone-select{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
@@ -45,18 +47,17 @@
         .block.contact
           #js-issue-crm-contacts{ data: { issue_id: issuable_sidebar[:id] } }
 
+      = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar, can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid]
+
+      - if issuable_sidebar.has_key?(:due_date)
+        #js-due-date-entry-point
+
       - if issuable_sidebar[:supports_time_tracking]
         #issuable-time-tracker.block
           // Fallback while content is loading
           .title.hide-collapsed
             = _('Time tracking')
             = gl_loading_icon(inline: true)
-      - if issuable_sidebar.has_key?(:due_date)
-        #js-due-date-entry-point
-
-      .js-sidebar-labels{ data: sidebar_labels_data(issuable_sidebar, @project) }
-
-      = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar, can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid]
 
       - if issuable_sidebar[:supports_severity]
         #js-severity
@@ -75,10 +76,10 @@
       %script#js-lock-issue-data{ type: "application/json" }= { is_locked: !!issuable_sidebar[:discussion_locked], is_editable: can_edit_issuable }.to_json.html_safe
       #js-lock-entry-point
 
-      .js-sidebar-participants-entry-point
-
       - if signed_in
         .js-sidebar-subscriptions-entry-point
+
+      .js-sidebar-participants-entry-point
 
       .block.with-sub-blocks
         #js-reference-entry-point

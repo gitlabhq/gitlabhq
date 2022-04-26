@@ -7094,6 +7094,9 @@ msgstr ""
 msgid "Changed reviewer(s)."
 msgstr ""
 
+msgid "Changed squash option to %{squash_option}"
+msgstr ""
+
 msgid "Changed the title to \"%{title_param}\"."
 msgstr ""
 
@@ -26984,6 +26987,12 @@ msgstr ""
 msgid "PackageRegistry|Delete package"
 msgstr ""
 
+msgid "PackageRegistry|Delete this package"
+msgstr ""
+
+msgid "PackageRegistry|Error publishing"
+msgstr ""
+
 msgid "PackageRegistry|Failed to load the package data"
 msgstr ""
 
@@ -27155,6 +27164,12 @@ msgid "PackageRegistry|There are no packages yet"
 msgstr ""
 
 msgid "PackageRegistry|There was a problem fetching the details for this package."
+msgstr ""
+
+msgid "PackageRegistry|There was a timeout and the package was not published. Delete this package and try again."
+msgstr ""
+
+msgid "PackageRegistry|There was an error publishing a %{packageName} package"
 msgstr ""
 
 msgid "PackageRegistry|This NuGet package has no dependencies."

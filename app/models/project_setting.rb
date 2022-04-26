@@ -36,6 +36,15 @@ class ProjectSetting < ApplicationRecord
     super(val&.map(&:to_s)&.sort)
   end
 
+  def human_squash_option
+    case squash_option
+    when 'never' then 'Do not allow'
+    when 'always' then 'Require'
+    when 'default_on' then 'Encourage'
+    when 'default_off' then 'Allow'
+    end
+  end
+
   private
 
   def validates_mr_default_target_self

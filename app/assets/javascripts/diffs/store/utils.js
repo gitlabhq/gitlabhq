@@ -62,7 +62,7 @@ export const parallelizeDiffLines = (diffLines, inline) => {
     const line = diffLines[i];
     line.chunk = chunk;
 
-    if (isMeta(line)) chunk += 1;
+    if (isMeta(line) && line.type !== EXPANDED_LINE_TYPE) chunk += 1;
 
     if (isRemoved(line) || isConflictOur(line) || inline) {
       lines.push({

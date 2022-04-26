@@ -51,8 +51,8 @@ RSpec.describe 'Mermaid rendering', :js do
     wait_for_requests
     wait_for_mermaid
 
-    # From https://github.com/mermaid-js/mermaid/blob/d3f8f03a7d03a052e1fe0251d5a6d8d1f48d67ee/src/dagre-wrapper/createLabel.js#L79-L82
-    expected = %(<div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Line 1<br>Line 2</div>)
+    # From # From https://github.com/mermaid-js/mermaid/blob/170ed89e9ef3e33dc84f8656eed1725379d505df/src/dagre-wrapper/createLabel.js#L39-L42
+    expected = %(<div style="display: inline-block; white-space: nowrap;" xmlns="http://www.w3.org/1999/xhtml">Line 1<br>Line 2</div>)
     expect(page.html.scan(expected).count).to be(4)
   end
 
@@ -73,8 +73,8 @@ RSpec.describe 'Mermaid rendering', :js do
     wait_for_requests
     wait_for_mermaid
 
-    # From https://github.com/mermaid-js/mermaid/blob/d3f8f03a7d03a052e1fe0251d5a6d8d1f48d67ee/src/dagre-wrapper/createLabel.js#L79-L82
-    expected = %(<div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">CLICK_HERE_AND_GET_BONUS</div>)
+    # From https://github.com/mermaid-js/mermaid/blob/170ed89e9ef3e33dc84f8656eed1725379d505df/src/dagre-wrapper/createLabel.js#L39-L42
+    expected = %(<div style="display: inline-block; white-space: nowrap;" xmlns="http://www.w3.org/1999/xhtml">CLICK_HERE_AND_GET_BONUS</div>)
     expect(page.html).to include(expected)
   end
 

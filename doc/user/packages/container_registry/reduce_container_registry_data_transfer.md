@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Reduce Container Registry data transfers **(FREE)**
 
 Depending on the frequency with which images or tags are downloaded from the Container Registry,
-data transfers can exceed the GitLab limit. This page offers several recommendations and tips for
+data transfers can exceed the GitLab.com limit. This page offers several recommendations and tips for
 reducing the amount of data you transfer with the Container Registry.
 are downloaded from the Container Registry, data transfers can exceed the GitLab limit. This page
 offers several recommendations and tips for reducing the amount of data you transfer with the
@@ -115,9 +115,15 @@ images can be specified as a cache source by using multiple `--cache-from` argum
 up your builds and reduce the amount of data transferred. For more information, see the
 [documentation on Docker layer caching](../../../ci/docker/using_docker_build.md#make-docker-in-docker-builds-faster-with-docker-layer-caching).
 
+## Check automation frequency
+
+We often create automation scripts bundled into container images to perform regular tasks on specific intervals. 
+You can reduce the frequency of those intervals in cases where the automation is pulling container images from 
+the GitLab Registry to a service outside of GitLab.com.
+
 ## Move to GitLab Premium or Ultimate
 
-GitLab data transfer limits are set at the tier level. If you need a higher limit, consider
+GitLab.com data transfer limits are set at the tier level. If you need a higher limit, consider
 upgrading to [GitLab Premium or Ultimate](https://about.gitlab.com/upgrade/).
 
 ## Purchase additional data transfer

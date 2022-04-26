@@ -331,6 +331,14 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_jobs_sast_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_jobs_secret_detection_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_jobs_dependency_scanning
   category: ci_templates
   redis_slot: ci_templates
@@ -520,6 +528,14 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_jobs_test
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_implicit_jobs_sast_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_implicit_jobs_secret_detection_latest
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
