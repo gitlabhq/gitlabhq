@@ -7,7 +7,7 @@ RSpec.describe Types::Ci::RunnerUpgradeStatusTypeEnum do
 
   it 'exposes all upgrade status values' do
     expect(described_class.values.keys).to eq(
-      ::Gitlab::Ci::RunnerUpgradeCheck::STATUSES.map { |sym, _| sym.to_s.upcase }
+      ['UNKNOWN'] + ::Gitlab::Ci::RunnerUpgradeCheck::STATUSES.map { |sym, _| sym.to_s.upcase }
     )
   end
 end

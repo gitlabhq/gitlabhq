@@ -1,10 +1,20 @@
-- @body_class = 'card-content'
+- add_to_breadcrumbs _('Integrations'), scoped_integrations_path(project: @project, group: @group)
+- add_to_breadcrumbs @integration.title, scoped_edit_integration_path(@integration, project: @project, group: @group)
+- breadcrumb_title _('New')
+- page_title @integration.title, _('Integrations')
+- @content_class = 'limit-container-width' unless fluid_layout
 
-.service-installation
-  .inline.float-right
+- if @teams_error_message
+  = render Pajamas::AlertComponent.new(variant: :danger) do
+    .gl-alert-body
+      = @teams_error_message
+
+%h3
+  Install Mattermost Command
+  .gl-float-right
     = custom_icon('mattermost_logo', size: 48)
-  %h3 Install Mattermost Command
-  - if @teams.empty?
-    = render 'no_teams'
-  - else
-    = render 'team_selection'
+
+- if @teams.empty?
+  = render 'no_teams'
+- else
+  = render 'team_selection'

@@ -47,12 +47,12 @@ module BulkImports
       end
 
       if ndjson_pipeline?(pipeline_tracker)
-        status = ExportStatus.new(pipeline_tracker, pipeline_tracker.pipeline_class.relation)
+        export_status = ExportStatus.new(pipeline_tracker, pipeline_tracker.pipeline_class.relation)
 
         raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?(pipeline_tracker)
-        raise(Pipeline::FailedError, status.error) if status.failed?
+        raise(Pipeline::FailedError, export_status.error) if export_status.failed?
 
-        return reenqueue(pipeline_tracker) if status.started?
+        return reenqueue(pipeline_tracker) if export_status.started?
       end
 
       pipeline_tracker.update!(status_event: 'start', jid: jid)

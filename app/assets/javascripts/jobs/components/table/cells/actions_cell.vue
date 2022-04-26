@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlButtonGroup, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
+import { redirectTo } from '~/lib/utils/url_utility';
 import {
   ACTIONS_DOWNLOAD_ARTIFACTS,
   ACTIONS_START_NOW,
@@ -108,11 +109,11 @@ export default {
     },
   },
   methods: {
-    async postJobAction(name, mutation) {
+    async postJobAction(name, mutation, redirect = false) {
       try {
         const {
           data: {
-            [name]: { errors },
+            [name]: { errors, job },
           },
         } = await this.$apollo.mutate({
           mutation,
@@ -121,6 +122,10 @@ export default {
         if (errors.length > 0) {
           reportMessageToSentry(this.$options.name, errors.join(', '), {});
           this.showToastMessage();
+        } else if (redirect) {
+          // Retry and Play actions redirect to job detail view
+          // we don't need to refetch with jobActionPerformed event
+          redirectTo(job.detailedStatus.detailsPath);
         } else {
           eventHub.$emit('jobActionPerformed');
         }
@@ -147,12 +152,12 @@ export default {
     retryJob() {
       this.retryBtnDisabled = true;
 
-      this.postJobAction(this.$options.jobRetry, retryJobMutation);
+      this.postJobAction(this.$options.jobRetry, retryJobMutation, true);
     },
     playJob() {
       this.playManualBtnDisabled = true;
 
-      this.postJobAction(this.$options.jobPlay, playJobMutation);
+      this.postJobAction(this.$options.jobPlay, playJobMutation, true);
     },
     unscheduleJob() {
       this.unscheduleBtnDisabled = true;

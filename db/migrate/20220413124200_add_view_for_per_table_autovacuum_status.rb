@@ -3,7 +3,10 @@
 class AddViewForPerTableAutovacuumStatus < Gitlab::Database::Migration[1.0]
   def up
     execute <<~SQL
-      CREATE OR REPLACE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS SETOF pg_catalog.pg_stat_activity AS
+      DROP VIEW IF EXISTS postgres_autovacuum_activity;
+      DROP FUNCTION IF EXISTS postgres_pg_stat_activity_autovacuum;
+
+      CREATE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS SETOF pg_catalog.pg_stat_activity AS
       $$
         SELECT *
         FROM pg_stat_activity

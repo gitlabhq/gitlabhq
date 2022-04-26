@@ -5,8 +5,11 @@ require 'spec_helper'
 RSpec.describe DiscussionEntity do
   include RepoHelpers
 
-  let(:user) { create(:user) }
-  let(:note) { create(:discussion_note_on_merge_request) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, namespace: group) }
+
+  let(:note) { create(:discussion_note_on_merge_request, project: project) }
   let(:discussion) { note.discussion }
   let(:request) { double('request', note_entity: ProjectNoteEntity) }
   let(:controller) { double('controller') }
@@ -50,10 +53,15 @@ RSpec.describe DiscussionEntity do
       .to match_schema('entities/note_user_entity')
   end
 
+  it 'exposes the url for custom award emoji' do
+    custom_emoji = create(:custom_emoji, group: group)
+    create(:award_emoji, awardable: note, name: custom_emoji.name)
+
+    expect(subject[:notes].last[:award_emoji].first.keys).to include(:url)
+  end
+
   context 'when is LegacyDiffDiscussion' do
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project) }
-    let(:discussion) { create(:legacy_diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
+    let(:discussion) { create(:legacy_diff_note_on_merge_request, noteable: note.noteable, project: project).to_discussion }
 
     it 'exposes correct attributes' do
       expect(subject.keys.sort).to include(

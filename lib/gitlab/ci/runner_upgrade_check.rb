@@ -6,10 +6,10 @@ module Gitlab
       include Singleton
 
       STATUSES = {
-        invalid: 'The runner version is invalid.',
-        not_available: 'An update is not available for the runner.',
-        available: 'An update is available for the runner.',
-        recommended: 'An update is available and recommended for the runner.'
+        invalid: 'Runner version is not valid.',
+        not_available: 'Upgrade is not available for the runner.',
+        available: 'Upgrade is available for the runner.',
+        recommended: 'Upgrade is available and recommended for the runner.'
       }.freeze
 
       def initialize

@@ -302,6 +302,9 @@ globally or for individual jobs:
 You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](#job-stages-attempts).
 
+When using the Kubernetes executor, you can use variables to
+[override Kubernetes CPU and memory allocations for requests and limits](https://docs.gitlab.com/runner/executors/kubernetes.html#overwriting-container-resources).
+
 ### Git strategy
 
 > - Introduced in GitLab 8.9 as an experimental feature.

@@ -336,7 +336,7 @@ module Ci
     scope :with_only_interruptible_builds, -> do
       where('NOT EXISTS (?)',
         Ci::Build.where('ci_builds.commit_id = ci_pipelines.id')
-                 .with_status(:running, :success, :failed)
+                 .with_status(STARTED_STATUSES)
                  .not_interruptible
       )
     end

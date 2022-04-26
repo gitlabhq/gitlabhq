@@ -1,9 +1,3 @@
-- if @teams_error_message
-  = content_for :flash_message do
-    = render Pajamas::AlertComponent.new(variant: :danger) do
-      .gl-alert-body
-        = @teams_error_message
-
 %p
   You aren’t a member of any team on the Mattermost instance at
   %strong= Gitlab.config.mattermost.host

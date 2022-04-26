@@ -6,7 +6,7 @@ class FixViewForPerTableAutovacuumStatus < Gitlab::Database::Migration[2.0]
       DROP VIEW IF EXISTS postgres_autovacuum_activity;
       DROP FUNCTION IF EXISTS postgres_pg_stat_activity_autovacuum;
 
-      CREATE OR REPLACE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS TABLE(query text, query_start timestamptz) AS
+      CREATE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS TABLE(query text, query_start timestamptz) AS
       $$
         SELECT query, query_start
         FROM pg_stat_activity
@@ -41,7 +41,7 @@ class FixViewForPerTableAutovacuumStatus < Gitlab::Database::Migration[2.0]
       DROP VIEW IF EXISTS postgres_autovacuum_activity;
       DROP FUNCTION IF EXISTS postgres_pg_stat_activity_autovacuum;
 
-      CREATE OR REPLACE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS SETOF pg_catalog.pg_stat_activity AS
+      CREATE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS SETOF pg_catalog.pg_stat_activity AS
       $$
         SELECT *
         FROM pg_stat_activity

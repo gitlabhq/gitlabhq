@@ -17907,10 +17907,11 @@ Values for sorting runners.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerupgradestatustypeavailable"></a>`AVAILABLE` | An update is available for the runner. |
-| <a id="cirunnerupgradestatustypeinvalid"></a>`INVALID` | The runner version is invalid. |
-| <a id="cirunnerupgradestatustypenot_available"></a>`NOT_AVAILABLE` | An update is not available for the runner. |
-| <a id="cirunnerupgradestatustyperecommended"></a>`RECOMMENDED` | An update is available and recommended for the runner. |
+| <a id="cirunnerupgradestatustypeavailable"></a>`AVAILABLE` | Upgrade is available for the runner. |
+| <a id="cirunnerupgradestatustypeinvalid"></a>`INVALID` | Runner version is not valid. |
+| <a id="cirunnerupgradestatustypenot_available"></a>`NOT_AVAILABLE` | Upgrade is not available for the runner. |
+| <a id="cirunnerupgradestatustyperecommended"></a>`RECOMMENDED` | Upgrade is available and recommended for the runner. |
+| <a id="cirunnerupgradestatustypeunknown"></a>`UNKNOWN` | Upgrade status is unknown. |
 
 ### `CodeQualityDegradationSeverity`
 

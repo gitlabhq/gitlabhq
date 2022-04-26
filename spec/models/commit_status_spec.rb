@@ -142,6 +142,26 @@ RSpec.describe CommitStatus do
     end
   end
 
+  describe '.cancelable' do
+    subject { described_class.cancelable }
+
+    %i[running pending waiting_for_resource preparing created scheduled].each do |status|
+      context "when #{status} commit status" do
+        let!(:commit_status) { create(:commit_status, status, pipeline: pipeline) }
+
+        it { is_expected.to contain_exactly(commit_status) }
+      end
+    end
+
+    %i[failed success skipped canceled manual].each do |status|
+      context "when #{status} commit status" do
+        let!(:commit_status) { create(:commit_status, status, pipeline: pipeline) }
+
+        it { is_expected.to be_empty }
+      end
+    end
+  end
+
   describe '#started?' do
     subject { commit_status.started? }
 
@@ -150,26 +170,28 @@ RSpec.describe CommitStatus do
         commit_status.started_at = nil
       end
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be(false) }
     end
 
-    %w[running success failed].each do |status|
-      context "if commit status is #{status}" do
-        before do
-          commit_status.status = status
-        end
+    context 'with started_at' do
+      described_class::STARTED_STATUSES.each do |status|
+        context "if commit status is #{status}" do
+          before do
+            commit_status.status = status
+          end
 
-        it { is_expected.to be_truthy }
+          it { is_expected.to eq(true) }
+        end
       end
-    end
 
-    %w[pending canceled].each do |status|
-      context "if commit status is #{status}" do
-        before do
-          commit_status.status = status
+      (described_class::AVAILABLE_STATUSES - described_class::STARTED_STATUSES).each do |status|
+        context "if commit status is #{status}" do
+          before do
+            commit_status.status = status
+          end
+
+          it { is_expected.to be(false) }
         end
-
-        it { is_expected.to be_falsey }
       end
     end
   end
