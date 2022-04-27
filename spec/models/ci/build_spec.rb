@@ -3733,6 +3733,7 @@ RSpec.describe Ci::Build do
 
     context 'for pipeline ref existence' do
       it 'ensures pipeline ref creation' do
+        expect(job.pipeline).to receive(:ensure_persistent_ref).once.and_call_original
         expect(job.pipeline.persistent_ref).to receive(:create).once
 
         run_job_without_exception
@@ -3744,6 +3745,19 @@ RSpec.describe Ci::Build do
         end
 
         run_job_without_exception
+      end
+
+      context 'when ci_reduce_persistent_ref_writes feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_reduce_persistent_ref_writes: false)
+        end
+
+        it 'falls back to the previous behavior' do
+          expect(job.pipeline).not_to receive(:ensure_persistent_ref)
+          expect(job.pipeline.persistent_ref).to receive(:create).once
+
+          run_job_without_exception
+        end
       end
     end
 

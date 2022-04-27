@@ -253,7 +253,9 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
-          pipeline.persistent_ref.delete
+          if ::Feature.disabled?(:ci_reduce_persistent_ref_writes, pipeline.project, default_enabled: :yaml)
+            pipeline.persistent_ref.delete
+          end
 
           pipeline.all_merge_requests.each do |merge_request|
             next unless merge_request.auto_merge_enabled?
@@ -285,6 +287,14 @@ module Ci
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
           ::Ci::TestFailureHistoryService.new(pipeline).async.perform_if_needed # rubocop: disable CodeReuse/ServiceClass
+        end
+      end
+
+      after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
+        pipeline.run_after_commit do
+          if ::Feature.enabled?(:ci_reduce_persistent_ref_writes, pipeline.project, default_enabled: :yaml)
+            pipeline.persistent_ref.delete
+          end
         end
       end
 
@@ -1262,6 +1272,12 @@ module Ci
 
     def ensure_ci_ref!
       self.ci_ref = Ci::Ref.ensure_for(self)
+    end
+
+    def ensure_persistent_ref
+      return if persistent_ref.exist?
+
+      persistent_ref.create
     end
 
     def reset_source_bridge!(current_user)

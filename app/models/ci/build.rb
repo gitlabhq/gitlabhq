@@ -74,6 +74,7 @@ module Ci
     delegate :gitlab_deploy_token, to: :project
     delegate :harbor_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
+    delegate :ensure_persistent_ref, to: :pipeline
 
     ##
     # Since Gitlab 11.5, deployments records started being created right after
@@ -325,7 +326,11 @@ module Ci
 
       after_transition pending: :running do |build|
         build.run_after_commit do
-          build.pipeline.persistent_ref.create
+          if ::Feature.enabled?(:ci_reduce_persistent_ref_writes, build.project, default_enabled: :yaml)
+            build.ensure_persistent_ref
+          else
+            build.pipeline.persistent_ref.create
+          end
 
           BuildHooksWorker.perform_async(id)
         end

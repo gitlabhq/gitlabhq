@@ -16,5 +16,23 @@ RSpec.describe Ci::PipelineCreation::StartPipelineService do
 
       service.execute
     end
+
+    it 'creates pipeline ref' do
+      expect(pipeline.persistent_ref).to receive(:create).once
+
+      service.execute
+    end
+
+    context 'when ci_reduce_persistent_ref_writes feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_reduce_persistent_ref_writes: false)
+      end
+
+      it 'does not populate pipeline ref' do
+        expect(pipeline.persistent_ref).not_to receive(:create)
+
+        service.execute
+      end
+    end
   end
 end
