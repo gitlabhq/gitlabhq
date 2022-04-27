@@ -991,10 +991,10 @@
     url-search-params-polyfill "^5.0.0"
     vue-runtime-helpers "^1.1.2"
 
-"@gitlab/visual-review-tools@1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.6.1.tgz#0d8f3ff9f51b05f7c80b9a107727703d48997e4e"
-  integrity sha512-vY8K1igwZFoEOmU0h4E7XTLlilsQ4ylPr27O01UsSe6ZTKi6oEMREsRAEpNIUgRlxUARCsf+Opp4pgSFzFkFcw==
+"@gitlab/visual-review-tools@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.7.0.tgz#18a59911484ddbbee433d3701316b5ab8e4077a5"
+  integrity sha512-o9gM3W6guSl00aS0hJcXePuR/mkmq38F5FhUgTlMBkB5+R68aO87md3cSvSMfJin0MjPlWktBNAfaz+y5CQ39g==
 
 "@graphql-eslint/eslint-plugin@3.10.2":
   version "3.10.2"
@@ -6612,6 +6612,13 @@ hast-util-to-parse5@^7.0.0:
     property-information "^6.0.0"
     web-namespaces "^2.0.0"
     zwitch "^2.0.0"
+
+hast-util-to-string@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/hast-util-to-string/-/hast-util-to-string-2.0.0.tgz#b008b0a4ea472bf34dd390b7eea1018726ae152a"
+  integrity sha512-02AQ3vLhuH3FisaMM+i/9sm4OXGSq1UhOOCpTLLQtHdL3tZt7qil69r8M8iDkZYyC0HCFylcYoP+8IO7ddta1A==
+  dependencies:
+    "@types/hast" "^2.0.0"
 
 hastscript@^7.0.0:
   version "7.0.2"
@@ -12366,7 +12373,7 @@ unist-util-visit-parents@^4.0.0:
     "@types/unist" "^2.0.0"
     unist-util-is "^5.0.0"
 
-unist-util-visit-parents@^5.0.0:
+unist-util-visit-parents@^5.0.0, unist-util-visit-parents@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/unist-util-visit-parents/-/unist-util-visit-parents-5.1.0.tgz#44bbc5d25f2411e7dfc5cecff12de43296aa8521"
   integrity sha512-y+QVLcY5eR/YVpqDsLf/xh9R3Q2Y4HxkZTp7ViLDU6WtJCEcPmRzW1gpdWDCDIqIlhuPDXOgttqPlykrHYDekg==

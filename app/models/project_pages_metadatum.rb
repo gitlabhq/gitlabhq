@@ -8,8 +8,6 @@ class ProjectPagesMetadatum < ApplicationRecord
 
   self.primary_key = :project_id
 
-  ignore_columns :artifacts_archive_id, remove_with: '15.0', remove_after: '2022-04-22'
-
   belongs_to :project, inverse_of: :pages_metadatum
   belongs_to :pages_deployment
 

@@ -276,7 +276,6 @@ You can use these fake tokens as examples:
 | Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
 | Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
 | Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
-| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
 
 ### Contractions
 

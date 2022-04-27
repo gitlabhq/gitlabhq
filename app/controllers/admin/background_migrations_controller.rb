@@ -2,6 +2,7 @@
 
 class Admin::BackgroundMigrationsController < Admin::ApplicationController
   feature_category :database
+  urgency :low
 
   def index
     @relations_by_tab = {

@@ -203,7 +203,6 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Enable Performance Monitoring](monitoring/performance/gitlab_configuration.md): Enable GitLab Performance Monitoring.
   - [GitLab performance monitoring with Prometheus](monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
   - [GitLab performance monitoring with Grafana](monitoring/performance/grafana_configuration.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
-  - [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
   - [Performance Bar](monitoring/performance/performance_bar.md): Get performance information for the current page.
 
 ## Analytics

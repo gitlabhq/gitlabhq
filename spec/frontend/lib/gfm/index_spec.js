@@ -33,14 +33,16 @@ describe('gfm', () => {
     });
 
     it('returns the result of executing the renderer function', async () => {
+      const rendered = { value: 'rendered tree' };
+
       const result = await render({
         markdown: '<strong>This is bold text</strong>',
         renderer: () => {
-          return 'rendered tree';
+          return rendered;
         },
       });
 
-      expect(result).toBe('rendered tree');
+      expect(result).toEqual(rendered);
     });
   });
 });

@@ -25,7 +25,7 @@ The Admin Area is made up of the following sections:
 | Section                                        | Description |
 |:-----------------------------------------------|:------------|
 | **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-area-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [topics](#administering-topics), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
-| **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events). |
+| **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), and [audit events](#audit-events). |
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users. |
 | **{hook}** System Hooks                        | Configure [system hooks](../../administration/system_hooks.md) for many events. |
 | **{applications}** Applications                | Create system [OAuth applications](../../integration/oauth_provider.md) for integrations with other services. |
@@ -429,10 +429,6 @@ The contents of these log files can be useful when troubleshooting a problem.
 For details of these log files and their contents, see [Log system](../../administration/logs.md).
 
 The content of each log file is listed in chronological order. To minimize performance issues, a maximum 2000 lines of each log file are shown.
-
-### Requests Profiles
-
-The **Requests Profiles** page contains the token required for profiling. For more details, see [Request Profiling](../../administration/monitoring/performance/request_profiling.md).
 
 ### Audit Events **(PREMIUM SELF)**
 
