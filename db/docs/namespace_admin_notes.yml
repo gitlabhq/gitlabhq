@@ -3,7 +3,8 @@ table_name: namespace_admin_notes
 classes:
 - Namespace::AdminNote
 feature_categories:
+- authentication_and_authorization
 - subgroups
-description: TODO
+description: Contains notes about groups that are visible to server administrators.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47825
 milestone: '13.11'

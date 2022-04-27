@@ -7,6 +7,7 @@ module API
     end
 
     feature_category :importers
+    urgency :low
 
     params do
       requires :id, type: String, desc: 'The ID of a group'

@@ -21,10 +21,17 @@ describe('The Pipeline Tabs', () => {
   const findPipelineApp = () => wrapper.findComponent(PipelineGraphWrapper);
   const findTestsApp = () => wrapper.findComponent(TestReports);
 
+  const defaultProvide = {
+    defaultTabValue: '',
+  };
+
   const createComponent = (propsData = {}) => {
     wrapper = extendedWrapper(
       shallowMount(PipelineTabs, {
         propsData,
+        provide: {
+          ...defaultProvide,
+        },
         stubs: {
           Dag: { template: '<div id="dag"/>' },
           JobsApp: { template: '<div class="jobs" />' },

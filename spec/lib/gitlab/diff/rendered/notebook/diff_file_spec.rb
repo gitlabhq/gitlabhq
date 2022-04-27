@@ -101,6 +101,22 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
         expect(nb_file.has_renderable?).to be_truthy
       end
     end
+
+    context 'when old blob file is truncated' do
+      it 'is false' do
+        allow(source.old_blob).to receive(:truncated?).and_return(true)
+
+        expect(nb_file.has_renderable?).to be_falsey
+      end
+    end
+
+    context 'when new blob file is truncated' do
+      it 'is false' do
+        allow(source.new_blob).to receive(:truncated?).and_return(true)
+
+        expect(nb_file.has_renderable?).to be_falsey
+      end
+    end
   end
 
   describe '#highlighted_diff_lines?' do

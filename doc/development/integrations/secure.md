@@ -679,7 +679,7 @@ The confidence ranges from `Low` to `Confirmed`, but it can also be `Unknown`,
 Valid values are: `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, or `Confirmed`
 
 `Unknown` values means that data is unavailable to determine it's actual value. Therefore, it may be `high`, `medium`, or `low`,
-and needs to be investigated. We have [provided a chart](../../user/application_security/sast/analyzers.md#analyzers-data)
+and needs to be investigated. We have [provided a chart](../../user/application_security/sast/analyzers.md#data-provided-by-analyzers)
 of the available SAST Analyzers and what data is currently available.
 
 #### Remediations

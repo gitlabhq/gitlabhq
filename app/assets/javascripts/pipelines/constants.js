@@ -45,6 +45,28 @@ export const UNSUPPORTED_DATA = 'unsupported_data';
 
 export const CHILD_VIEW = 'child';
 
+// Pipeline tabs
+
+export const TAB_QUERY_PARAM = 'tab';
+
+export const needsTabName = 'dag';
+export const jobsTabName = 'builds';
+export const failedJobsTabName = 'failures';
+export const testReportTabName = 'test_report';
+export const securityTabName = 'security';
+export const licensesTabName = 'licenses';
+export const codeQualityTabName = 'codequality_report';
+
+export const validPipelineTabNames = [
+  needsTabName,
+  jobsTabName,
+  failedJobsTabName,
+  testReportTabName,
+  securityTabName,
+  licensesTabName,
+  codeQualityTabName,
+];
+
 // Constants for the ID and IID selection dropdown
 export const PipelineKeyOptions = [
   {

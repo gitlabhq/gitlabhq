@@ -3,7 +3,7 @@ table_name: sent_notifications
 classes:
 - SentNotification
 feature_categories:
-- users
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/f76eac56b9d7d4ae61010cddcca68682824b2239
+- team_planning
+description: Information related to sent email notifications that supports reply-by-email functionality
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1173
 milestone: '8.0'

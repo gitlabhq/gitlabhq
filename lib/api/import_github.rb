@@ -3,6 +3,7 @@
 module API
   class ImportGithub < ::API::Base
     feature_category :importers
+    urgency :low
 
     rescue_from Octokit::Unauthorized, with: :provider_unauthorized
 

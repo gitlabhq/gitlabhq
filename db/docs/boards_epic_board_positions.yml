@@ -3,7 +3,7 @@ table_name: boards_epic_board_positions
 classes:
 - Boards::EpicBoardPosition
 feature_categories:
-- team_planning
-description: TODO
+- portfolio_management
+description: Relates epics to epic boards by position, unique to each combination of epic and board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48120
 milestone: '13.7'

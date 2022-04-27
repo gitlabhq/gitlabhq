@@ -3,6 +3,7 @@
 module API
   class ProjectExport < ::API::Base
     feature_category :importers
+    urgency :low
 
     before do
       not_found! unless Gitlab::CurrentSettings.project_export_enabled?

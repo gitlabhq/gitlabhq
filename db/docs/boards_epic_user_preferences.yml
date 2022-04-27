@@ -3,7 +3,7 @@ table_name: boards_epic_user_preferences
 classes:
 - Boards::EpicUserPreference
 feature_categories:
-- team_planning
-description: TODO
+- portfolio_management
+description: The epic_ids used to create swimlanes on issue boards; stored per user, per board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40360
 milestone: '13.4'

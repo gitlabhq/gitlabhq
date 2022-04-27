@@ -6,6 +6,7 @@ class Import::GitlabGroupsController < ApplicationController
   before_action :check_import_rate_limit!, only: %i[create]
 
   feature_category :importers
+  urgency :low
 
   def create
     unless file_is_valid?(group_params[:file])

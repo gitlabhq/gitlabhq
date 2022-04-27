@@ -149,12 +149,22 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    render_show
+    if Feature.enabled?(:pipeline_tabs_vue, project, default_enabled: :yaml)
+      redirect_to pipeline_path(@pipeline, tab: 'builds')
+    else
+      render_show
+    end
   end
 
   def dag
     respond_to do |format|
-      format.html { render_show }
+      format.html do
+        if Feature.enabled?(:pipeline_tabs_vue, project, default_enabled: :yaml)
+          redirect_to pipeline_path(@pipeline, tab: 'dag')
+        else
+          render_show
+        end
+      end
       format.json do
         render json: Ci::DagPipelineSerializer
           .new(project: @project, current_user: @current_user)
@@ -164,7 +174,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def failures
-    if @pipeline.failed_builds.present?
+    if Feature.enabled?(:pipeline_tabs_vue, project, default_enabled: :yaml)
+      redirect_to pipeline_path(@pipeline, tab: 'failures')
+    elsif @pipeline.failed_builds.present?
       render_show
     else
       redirect_to pipeline_path(@pipeline)
@@ -218,7 +230,13 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def test_report
     respond_to do |format|
-      format.html { render_show }
+      format.html do
+        if Feature.enabled?(:pipeline_tabs_vue, project, default_enabled: :yaml)
+          redirect_to pipeline_path(@pipeline, tab: 'test_report')
+        else
+          render_show
+        end
+      end
       format.json do
         render json: TestReportSerializer
           .new(current_user: @current_user)

@@ -4,6 +4,6 @@ classes:
 - IssuableSeverity
 feature_categories:
 - team_planning
-description: TODO
+description: Integer representing severity applied to issues, currently used for incidents
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40272
 milestone: '13.4'

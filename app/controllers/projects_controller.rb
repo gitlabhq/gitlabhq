@@ -56,6 +56,7 @@ class ProjectsController < Projects::ApplicationController
   feature_category :code_review, [:unfoldered_environment_names]
   feature_category :portfolio_management, [:planning_hierarchy]
 
+  urgency :low, [:export, :remove_export, :generate_new_export, :download_export]
   # TODO: Set high urgency for #show https://gitlab.com/gitlab-org/gitlab/-/issues/334444
   urgency :low, [:refs, :show, :toggle_star, :transfer, :archive, :destroy, :update]
   urgency :high, [:unfoldered_environment_names]

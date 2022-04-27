@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 6.1.4.7'
 
-gem 'bootsnap', '~> 1.9.1', require: false
+gem 'bootsnap', '~> 1.9.4', require: false
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 3.0'
@@ -543,4 +543,4 @@ gem 'ipaddress', '~> 0.8.3'
 
 gem 'parslet', '~> 1.8'
 
-gem 'ipynbdiff', '0.4.5'
+gem 'ipynbdiff', '0.4.6'

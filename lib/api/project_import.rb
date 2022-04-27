@@ -8,6 +8,7 @@ module API
     helpers Helpers::FileUploadHelpers
 
     feature_category :importers
+    urgency :low
 
     before { authenticate! unless route.settings[:skip_authentication] }
 

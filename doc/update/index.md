@@ -321,7 +321,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [latest `14.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.9.0`](#1490) -> [latest `14.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -397,6 +397,23 @@ installation-specific upgrade instructions, based on how you installed GitLab:
 NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
+
+### 14.9.0
+
+- Database changes made by the upgrade to GitLab 14.9 can take hours or days to complete on larger GitLab instances. 
+  These [batched background migrations](#batched-background-migrations) update whole database tables to ensure corresponding
+  records in `namespaces` table for each record in `projects` table.
+
+  After you update to 14.9.0 or a later 14.9 patch version,
+  [batched background migrations need to finish](#batched-background-migrations)
+  before you update to a later version.
+
+  If the migrations are not finished and you try to update to a later version,
+  you'll see an error like:
+
+  ```plaintext
+  Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+  ```
 
 ### 14.8.0
 

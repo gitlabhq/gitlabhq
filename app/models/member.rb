@@ -77,6 +77,10 @@ class Member < ApplicationRecord
     ]).merge(self)
   end
 
+  scope :excluding_users, ->(user_ids) do
+    where.not(user_id: user_ids)
+  end
+
   # This scope encapsulates (most of) the conditions a row in the member table
   # must satisfy if it is a valid permission. Of particular note:
   #

@@ -16,6 +16,7 @@ include:
   variables:
     QA_DEBUG: "true"
     QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
+    QA_CAN_TEST_PRAEFECT: "false"
     QA_GENERATE_ALLURE_REPORT: "true"
     GITLAB_USERNAME: "root"
     GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"

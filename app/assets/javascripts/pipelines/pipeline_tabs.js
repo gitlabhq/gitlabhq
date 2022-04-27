@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import PipelineTabs from 'ee_else_ce/pipelines/components/pipeline_tabs.vue';
-import { reportToSentry } from './utils';
+import { removeParams, updateHistory } from '~/lib/utils/url_utility';
+import { TAB_QUERY_PARAM } from '~/pipelines/constants';
+import { getPipelineDefaultTab, reportToSentry } from './utils';
 
 Vue.use(VueApollo);
 
@@ -18,6 +20,15 @@ const createPipelineTabs = (selector, apolloProvider) => {
     exposeSecurityDashboard,
     exposeLicenseScanningData,
   } = dataset;
+
+  const defaultTabValue = getPipelineDefaultTab(window.location.href);
+
+  updateHistory({
+    url: removeParams([TAB_QUERY_PARAM]),
+    title: document.title,
+    replace: true,
+  });
+
   // eslint-disable-next-line no-new
   new Vue({
     el: selector,
@@ -28,6 +39,7 @@ const createPipelineTabs = (selector, apolloProvider) => {
     provide: {
       canGenerateCodequalityReports: JSON.parse(canGenerateCodequalityReports),
       codequalityReportDownloadPath,
+      defaultTabValue,
       downloadablePathForReportType,
       exposeSecurityDashboard: JSON.parse(exposeSecurityDashboard),
       exposeLicenseScanningData: JSON.parse(exposeLicenseScanningData),

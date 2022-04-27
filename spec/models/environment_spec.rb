@@ -886,22 +886,10 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
           is_expected.to eq(deployment)
         end
 
-        context 'env_last_deployment_by_finished_at feature flag' do
-          it 'when enabled it returns the deployment with the latest finished_at' do
-            stub_feature_flags(env_last_deployment_by_finished_at: true)
+        it 'returns the deployment with the latest finished_at' do
+          expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
 
-            expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
-
-            is_expected.to eq(deployment)
-          end
-
-          it 'when disabled it returns the deployment with the highest id' do
-            stub_feature_flags(env_last_deployment_by_finished_at: false)
-
-            expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
-
-            is_expected.to eq(old_deployment)
-          end
+          is_expected.to eq(deployment)
         end
       end
     end

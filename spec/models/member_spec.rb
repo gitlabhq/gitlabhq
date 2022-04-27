@@ -651,6 +651,15 @@ RSpec.describe Member do
         expect(project.members.active_state).not_to include awaiting_project_member
       end
     end
+
+    describe '.excluding_users' do
+      let_it_be(:active_group_member) { create(:group_member, group: group) }
+
+      it 'excludes members with given user ids' do
+        expect(group.members.excluding_users([])).to include active_group_member
+        expect(group.members.excluding_users(active_group_member.user_id)).not_to include active_group_member
+      end
+    end
   end
 
   describe 'Delegate methods' do

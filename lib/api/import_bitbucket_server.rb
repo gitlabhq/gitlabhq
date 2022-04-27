@@ -3,6 +3,7 @@
 module API
   class ImportBitbucketServer < ::API::Base
     feature_category :importers
+    urgency :low
 
     helpers do
       def client

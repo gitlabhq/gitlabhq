@@ -3,6 +3,7 @@
 module API
   class GroupImport < ::API::Base
     feature_category :importers
+    urgency :low
 
     helpers Helpers::FileUploadHelpers
 

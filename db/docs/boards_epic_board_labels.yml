@@ -3,7 +3,7 @@ table_name: boards_epic_board_labels
 classes:
 - Boards::EpicBoardLabel
 feature_categories:
-- team_planning
-description: TODO
+- portfolio_management
+description: Information relating epic boards to labels used to scope the boards
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48658
 milestone: '13.7'
