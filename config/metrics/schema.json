@@ -43,6 +43,9 @@
     "introduced_by_url": {
       "type": ["string", "null"]
     },
+    "removed_by_url": {
+      "type": ["string", "null"]
+    },
     "repair_issue_url": {
       "type": ["string"]
     },

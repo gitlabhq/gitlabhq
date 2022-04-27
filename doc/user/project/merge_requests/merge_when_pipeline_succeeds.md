@@ -81,13 +81,13 @@ it could allow code that fails tests to be merged:
 ```yaml
 branch-pipeline-job:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
   script:
     - echo "Code testing scripts here, for example."
 
 merge-request-pipeline-job:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - echo "No tests run, but this pipeline always succeeds and enables merge."
     - echo true

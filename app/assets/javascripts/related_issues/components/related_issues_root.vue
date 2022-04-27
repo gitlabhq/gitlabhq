@@ -220,7 +220,8 @@ export default {
       const startsWithNumber = String(touchedReference).match(/^[0-9]/) !== null;
 
       if (startsWithNumber) {
-        this.inputValue = `#${touchedReference}`;
+        const { pathIdSeparator } = this;
+        this.inputValue = `${pathIdSeparator}${touchedReference}`;
       } else {
         this.inputValue = `${touchedReference}`;
       }

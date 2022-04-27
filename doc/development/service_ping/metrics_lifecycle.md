@@ -113,6 +113,7 @@ To remove a metric:
    update the attributes of the metric's YAML definition:
 
    - Set the `status:` to `removed`.
+   - Set `removed_by_url:` to the URL of the MR removing the metric
    - Set `milestone_removed:` to the number of the
      milestone in which the metric was removed.
 

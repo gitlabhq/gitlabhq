@@ -73,7 +73,7 @@ stages:
 hello-world:
   stage: chatops
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "chat"'
+    - if: $CI_PIPELINE_SOURCE == "chat"
   script:
     - echo "Hello World"
 ```
@@ -93,7 +93,7 @@ stages:
 ls:
   stage: chatops
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "chat"'
+    - if: $CI_PIPELINE_SOURCE == "chat"
   script:
     - echo "This command will not be shown."
     - echo -e "section_start:$( date +%s ):chat_reply\r\033[0K\n$( ls -la )\nsection_end:$( date +%s ):chat_reply\r\033[0K"

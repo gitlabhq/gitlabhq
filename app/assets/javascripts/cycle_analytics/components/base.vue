@@ -155,17 +155,6 @@ export default {
 <template>
   <div>
     <h3>{{ $options.i18n.pageTitle }}</h3>
-    <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
-      <path-navigation
-        v-if="displayPathNavigation"
-        data-testid="vsa-path-navigation"
-        class="gl-w-full gl-pb-2"
-        :loading="isLoading || isLoadingStage"
-        :stages="pathNavigationData"
-        :selected-stage="selectedStage"
-        @selected="onSelectStage"
-      />
-    </div>
     <value-stream-filters
       :group-id="endpoints.groupId"
       :group-path="endpoints.groupPath"
@@ -174,6 +163,17 @@ export default {
       :end-date="createdBefore"
       @setDateRange="onSetDateRange"
     />
+    <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
+      <path-navigation
+        v-if="displayPathNavigation"
+        data-testid="vsa-path-navigation"
+        class="gl-w-full gl-mt-4"
+        :loading="isLoading || isLoadingStage"
+        :stages="pathNavigationData"
+        :selected-stage="selectedStage"
+        @selected="onSelectStage"
+      />
+    </div>
     <value-stream-metrics
       :request-path="endpoints.fullPath"
       :request-params="filterParams"

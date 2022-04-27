@@ -38,7 +38,7 @@ workflow:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /-draft$/
       when: never
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
 ```
 
 This example has strict rules, and pipelines do **not** run in any other case.
@@ -50,9 +50,9 @@ All other pipeline types run. For example:
 ```yaml
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
       when: never
     - when: always
 ```
@@ -81,10 +81,10 @@ but does not run pipelines for any other case. It runs:
 ```yaml
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
       when: never
-    - if: '$CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_BRANCH
 ```
 
 If the pipeline is triggered by:

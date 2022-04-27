@@ -300,16 +300,27 @@ describe('RelatedIssuesRoot', () => {
         expect(wrapper.vm.state.pendingReferences[1]).toEqual('random');
       });
 
-      it('prepends # when user enters a numeric value [0-9]', async () => {
-        const input = '23';
+      it.each`
+        pathIdSeparator
+        ${'#'}
+        ${'&'}
+      `(
+        'prepends $pathIdSeparator when user enters a numeric value [0-9]',
+        async ({ pathIdSeparator }) => {
+          const input = '23';
 
-        wrapper.vm.onInput({
-          untouchedRawReferences: input.trim().split(/\s/),
-          touchedReference: input,
-        });
+          await wrapper.setProps({
+            pathIdSeparator,
+          });
 
-        expect(wrapper.vm.inputValue).toBe(`#${input}`);
-      });
+          wrapper.vm.onInput({
+            untouchedRawReferences: input.trim().split(/\s/),
+            touchedReference: input,
+          });
+
+          expect(wrapper.vm.inputValue).toBe(`${pathIdSeparator}${input}`);
+        },
+      );
 
       it('prepends # when user enters a number', async () => {
         const input = 23;

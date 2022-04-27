@@ -166,7 +166,7 @@ job1:
   script:
     - make build
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_REF_NAME == "try-schedule-workflow"'
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_REF_NAME == "try-schedule-workflow"
 ```
 
 After the pipeline configuration is saved, you configure the cron schedule in the [GitLab UI](../pipelines/schedules.md#add-a-pipeline-schedule), and can enable or disable schedules in the UI as well.
@@ -221,7 +221,7 @@ deploy:
   script:
     - echo "Deploy job"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^rc-/'
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^rc-/
 ```
 
 ### Caching

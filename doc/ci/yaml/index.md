@@ -3071,12 +3071,12 @@ to configure the job behavior, or with [`workflow`](#workflow) to configure the 
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH'
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH
       when: never
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/'
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
       when: manual
       allow_failure: true
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
 ```
 
 **Additional details**:
@@ -3122,7 +3122,7 @@ branch or merge request pipelines.
 docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
         - Dockerfile
       when: manual
@@ -3203,7 +3203,7 @@ job to run before continuing.
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
       when: manual
       allow_failure: true
 ```

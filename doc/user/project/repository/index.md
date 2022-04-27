@@ -244,6 +244,11 @@ When you [rename a user](../../profile/index.md#change-your-username),
 - The redirects are available as long as the original path is not claimed by
   another group, user, or project.
 
+WARNING:
+The [CI/CD `includes` keyword](../../../ci/yaml/includes.md) can't follow project
+redirects. Pipelines fail with a syntax error when configured to use `includes`
+to fetch configuration from a project that is renamed or moved.
+
 ## Related topics
 
 - [GitLab Workflow VS Code extension](vscode.md).

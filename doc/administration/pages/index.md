@@ -97,10 +97,9 @@ IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 
 #### DNS configuration for custom domains
 
-If support for custom domains is needed, the Pages root domain and its subdomains should point to
-the secondary IP (which is dedicated for the Pages daemon). `<namespace>.<pages root domain>` should
-point at Pages directly. Without this, users aren't able to use `CNAME` records to point their
-custom domains to their GitLab Pages.
+If support for custom domains is needed, all subdomains of the Pages root domain should point to the
+secondary IP (which is dedicated for the Pages daemon). Without this configuration, users can't use
+`CNAME` records to point their custom domains to their GitLab Pages.
 
 For example, an entry could look like this:
 
@@ -386,6 +385,12 @@ To prevent malicious users from hijacking domains that don't belong to them,
 GitLab supports [custom domain verification](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#steps).
 When adding a custom domain, users are required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
+
+WARNING:
+Disabling domain verification is unsafe and can lead to various vulnerabilities.
+If you *do* disable it, either ensure that the Pages root domain itself does not point to the
+secondary IP or add the root domain as custom domain to a project; otherwise, any user can add this
+domain as a custom domain to their project.
 
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:

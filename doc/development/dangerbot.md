@@ -155,7 +155,7 @@ To enable the Dangerfile on another existing GitLab project, complete the follow
         file:
           - '/ci/danger-review.yml'
         rules:
-          - if: '$CI_SERVER_HOST == "gitlab.com"'
+          - if: $CI_SERVER_HOST == "gitlab.com"
     ```
 
 1. If your project is in the `gitlab-org` group, you don't need to set up any token as the `DANGER_GITLAB_API_TOKEN`

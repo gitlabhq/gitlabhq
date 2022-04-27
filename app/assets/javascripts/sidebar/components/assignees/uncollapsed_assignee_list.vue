@@ -91,7 +91,7 @@ export default {
         :class="{
           'gl-mb-3': index !== users.length - 1,
         }"
-        class="assignee-grid gl-display-grid gl-align-items-center"
+        class="assignee-grid gl-display-grid gl-align-items-center gl-w-full"
       >
         <assignee-avatar-link
           :user="user"

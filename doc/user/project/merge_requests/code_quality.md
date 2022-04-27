@@ -257,9 +257,9 @@ The template has these [`rules`](../../../ci/yaml/index.md#rules) for the `code 
 ```yaml
 code_quality:
   rules:
-    - if: '$CODE_QUALITY_DISABLED'
+    - if: $CODE_QUALITY_DISABLED
       when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_TAG || $CI_COMMIT_BRANCH
 ```
 
 If you are using merge request pipelines, your `rules` (or [`workflow: rules`](../../../ci/yaml/index.md#workflow))
@@ -268,9 +268,9 @@ might look like this example:
 ```yaml
 job1:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run job1 in merge request pipelines
-    - if: '$CI_COMMIT_BRANCH == "main"'                  # Run job1 in pipelines on the main branch (but not in other branch pipelines)
-    - if: '$CI_COMMIT_TAG'                               # Run job1 in pipelines for tags
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Run job1 in merge request pipelines
+    - if: $CI_COMMIT_BRANCH == "main"                  # Run job1 in pipelines on the main branch (but not in other branch pipelines)
+    - if: $CI_COMMIT_TAG                               # Run job1 in pipelines for tags
 ```
 
 To make these work together, you need to overwrite the code quality `rules`
@@ -282,11 +282,11 @@ include:
 
 code_quality:
   rules:
-    - if: '$CODE_QUALITY_DISABLED'
+    - if: $CODE_QUALITY_DISABLED
       when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code quality job in merge request pipelines
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'      # Run code quality job in pipelines on the default branch (but not in other branch pipelines)
-    - if: '$CI_COMMIT_TAG'                               # Run code quality job in pipelines for tags
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Run code quality job in merge request pipelines
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH      # Run code quality job in pipelines on the default branch (but not in other branch pipelines)
+    - if: $CI_COMMIT_TAG                               # Run code quality job in pipelines for tags
 ```
 
 ### Configure Code Quality to use a private container image registry

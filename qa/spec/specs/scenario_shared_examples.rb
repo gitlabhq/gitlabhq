@@ -2,7 +2,7 @@
 
 module QA
   RSpec.shared_examples 'a QA scenario class' do
-    let(:attributes) { class_spy('Runtime::Scenario') }
+    let(:scenario) { class_spy('Runtime::Scenario') }
     let(:runner) { class_spy('Specs::Runner') }
     let(:release) { class_spy('Runtime::Release') }
     let(:feature) { class_spy('Runtime::Feature') }
@@ -15,22 +15,15 @@ module QA
     before do
       stub_const('QA::Specs::Runner', runner)
       stub_const('QA::Runtime::Release', release)
-      stub_const('QA::Runtime::Scenario', attributes)
+      stub_const('QA::Runtime::Scenario', scenario)
       stub_const('QA::Runtime::Feature', feature)
 
-      allow(attributes).to receive(:gitlab_address).and_return(args[:gitlab_address])
+      allow(scenario).to receive(:attributes).and_return(args)
       allow(runner).to receive(:perform).and_yield(runner)
-      allow(QA::Runtime::Address).to receive(:valid?).and_return(true)
     end
 
     it 'responds to perform' do
       expect(subject).to respond_to(:perform)
-    end
-
-    it 'sets an address of the subject' do
-      subject.perform(args)
-
-      expect(attributes).to have_received(:define).with(:gitlab_address, 'http://gitlab_address').at_least(:once)
     end
 
     it 'performs before hooks only once' do
@@ -58,7 +51,7 @@ module QA
         described_class.launch!(named_options)
 
         args do |k, v|
-          expect(attributes).to have_received(:define).with(k, v)
+          expect(scenario).to have_received(:define).with(k, v)
         end
       end
 
@@ -67,7 +60,7 @@ module QA
       end
 
       it 'passes on options after --' do
-        expect(described_class).to receive(:perform).with(attributes, *%w[--tag quarantine])
+        expect(described_class).to receive(:perform).with(args, *%w[--tag quarantine])
 
         described_class.launch!(named_options.push(*%w[-- --tag quarantine]))
       end

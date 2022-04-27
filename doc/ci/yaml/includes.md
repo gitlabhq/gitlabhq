@@ -344,7 +344,7 @@ You can only use the following rules with `include` (and only with [certain vari
   include:
     - local: builds.yml
       rules:
-        - if: '$INCLUDE_BUILDS == "true"'
+        - if: $INCLUDE_BUILDS == "true"
     - local: deploys.yml
       rules:
         - if: $CI_COMMIT_BRANCH == "main"

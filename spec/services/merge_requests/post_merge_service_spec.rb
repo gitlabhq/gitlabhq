@@ -76,7 +76,7 @@ RSpec.describe MergeRequests::PostMergeService do
 
     it 'clean up environments for the merge request' do
       expect_next_instance_of(::Environments::StopService) do |stop_environment_service|
-        expect(stop_environment_service).to receive(:execute_for_merge_request).with(merge_request)
+        expect(stop_environment_service).to receive(:execute_for_merge_request_pipeline).with(merge_request)
       end
 
       subject

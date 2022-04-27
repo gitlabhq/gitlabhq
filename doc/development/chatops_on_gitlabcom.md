@@ -20,12 +20,10 @@ tasks such as:
 To request access to ChatOps on GitLab.com:
 
 1. Sign in to [Internal GitLab for Operations](https://ops.gitlab.net/users/sign_in)
-   with one of the following methods:
+   with one of the following methods (Okta is not supported):
 
-   - The same username you use on GitLab.com. You may have to choose a different
-     username later.
+   - The same username you use on GitLab.com. You may have to choose a different username later.
    - Clicking the **Sign in with Google** button to sign in with your GitLab.com email address.
-   - Clicking the **Sign in with Okta** button to sign in with Okta.
 
 1. Confirm that your username in [Internal GitLab for Operations](https://ops.gitlab.net/)
    is the same as your username in [GitLab.com](https://gitlab.com/). If the usernames

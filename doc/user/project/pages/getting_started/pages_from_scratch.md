@@ -202,7 +202,7 @@ image: ruby:2.7
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_BRANCH
 
 pages:
   script:
@@ -222,7 +222,7 @@ image: ruby:2.7
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_BRANCH
 
 pages:
   script:
@@ -233,7 +233,7 @@ pages:
     paths:
       - public
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
 ```
 
 ### Specify a stage to deploy
@@ -253,7 +253,7 @@ image: ruby:2.7
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_BRANCH
 
 pages:
   stage: deploy
@@ -265,7 +265,7 @@ pages:
     paths:
       - public
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
 ```
 
 Now add another job to the CI file, telling it to
@@ -276,7 +276,7 @@ image: ruby:2.7
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_BRANCH
 
 pages:
   stage: deploy
@@ -288,7 +288,7 @@ pages:
     paths:
       - public
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
 
 test:
   stage: test
@@ -300,7 +300,7 @@ test:
     paths:
       - test
   rules:
-    - if: '$CI_COMMIT_BRANCH != "main"'
+    - if: $CI_COMMIT_BRANCH != "main"
 ```
 
 When the `test` job runs in the `test` stage, Jekyll
@@ -327,7 +327,7 @@ image: ruby:2.7
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_BRANCH
 
 before_script:
   - gem install bundler
@@ -341,7 +341,7 @@ pages:
     paths:
       - public
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
 
 test:
   stage: test
@@ -351,7 +351,7 @@ test:
     paths:
       - test
   rules:
-    - if: '$CI_COMMIT_BRANCH != "main"'
+    - if: $CI_COMMIT_BRANCH != "main"
 ```
 
 ### Build faster with cached dependencies
@@ -367,7 +367,7 @@ image: ruby:2.7
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_BRANCH
 
 cache:
   paths:
@@ -385,7 +385,7 @@ pages:
     paths:
       - public
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
 
 test:
   stage: test
@@ -395,7 +395,7 @@ test:
     paths:
       - test
   rules:
-    - if: '$CI_COMMIT_BRANCH != "main"'
+    - if: $CI_COMMIT_BRANCH != "main"
 ```
 
 In this case, you need to exclude the `/vendor`

@@ -26,10 +26,10 @@ module ServicePing
 
         error_payload = {
           time: Time.current,
-          uuid: Gitlab::UsageData.add_metric('UuidMetric'),
-          hostname: Gitlab::UsageData.add_metric('HostnameMetric'),
-          version: Gitlab::UsageData.alt_usage_data { Gitlab::VERSION },
-          message: e.message,
+          uuid: Gitlab::CurrentSettings.uuid,
+          hostname: Gitlab.config.gitlab.host,
+          version: Gitlab.version_info.to_s,
+          message: "#{e.message.presence || e.class} at #{e.backtrace[0]}",
           elapsed: (Time.current - start).round(1)
         }
         submit_payload({ error: error_payload }, path: ERROR_PATH)

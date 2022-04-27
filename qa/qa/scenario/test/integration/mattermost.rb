@@ -14,8 +14,7 @@ module QA
           attribute :mattermost_address, '--mattermost-address URL', 'Address of the Mattermost server'
 
           def perform(options, *args)
-            extract_address(:gitlab_address, options, args)
-            extract_address(:mattermost_address, options, args)
+            extract_address(:mattermost_address, options)
 
             super(options, *args)
           end

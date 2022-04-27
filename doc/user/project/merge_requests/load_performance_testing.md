@@ -189,7 +189,7 @@ review:
     paths:
       - review.env
   rules:
-    - if: '$CI_COMMIT_BRANCH'  # Modify to match your pipeline rules, or use `only/except` if needed.
+    - if: $CI_COMMIT_BRANCH  # Modify to match your pipeline rules, or use `only/except` if needed.
 
 load_performance:
   dependencies:
@@ -197,5 +197,5 @@ load_performance:
   variables:
     K6_DOCKER_OPTIONS: '--env-file review.env'
   rules:
-    - if: '$CI_COMMIT_BRANCH'  # Modify to match your pipeline rules, or use `only/except` if needed.
+    - if: $CI_COMMIT_BRANCH  # Modify to match your pipeline rules, or use `only/except` if needed.
 ```

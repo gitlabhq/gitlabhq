@@ -38,7 +38,7 @@ RSpec.describe PagesDomain do
         '0123123'          => true,
         'a-reserved.com'   => true,
         'a.b-reserved.com' => true,
-        'reserved.com'     => false,
+        'reserved.com'     => true,
         '_foo.com'         => false,
         'a.reserved.com'   => false,
         'a.b.reserved.com' => false,
