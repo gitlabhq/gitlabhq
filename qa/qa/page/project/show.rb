@@ -120,6 +120,10 @@ module QA
           click_element(:new_issue_link)
         end
 
+        def has_create_merge_request_button?
+          has_css?(element_selector_css(:create_merge_request))
+        end
+
         def has_file?(name)
           return false unless has_element?(:file_tree_table)
 
@@ -144,7 +148,7 @@ module QA
 
         def new_merge_request
           wait_until(reload: true) do
-            has_css?(element_selector_css(:create_merge_request))
+            has_create_merge_request_button?
           end
 
           click_element :create_merge_request

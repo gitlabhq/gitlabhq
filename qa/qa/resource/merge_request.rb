@@ -83,7 +83,7 @@ module QA
         populate_target_and_source_if_required
 
         project.visit!
-        Page::Project::Show.perform(&:new_merge_request)
+        Flow::MergeRequest.create_new(source_branch: source_branch)
         Page::MergeRequest::New.perform do |new_page|
           new_page.fill_title(@title)
           new_page.choose_template(@template) if @template

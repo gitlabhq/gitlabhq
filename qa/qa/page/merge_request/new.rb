@@ -12,6 +12,11 @@ module QA
           element :issuable_form_description
         end
 
+        view 'app/views/projects/merge_requests/creations/_new_compare.html.haml' do
+          element :compare_branches_button
+          element :source_branch_dropdown
+        end
+
         view 'app/views/projects/merge_requests/show.html.haml' do
           element :diffs_tab
         end
@@ -25,6 +30,10 @@ module QA
           "Configure #{scanner_name} in `.gitlab-ci.yml` using the GitLab managed template. You can " \
             "[add variable overrides](https://docs.gitlab.com/ee/user/application_security/#{scanner_url_name}/#customizing-the-#{scanner_url_name}-settings) " \
             "to customize #{scanner_name} settings."
+        end
+
+        def click_compare_branches_and_continue
+          click_element(:compare_branches_button)
         end
 
         def create_merge_request
@@ -42,6 +51,12 @@ module QA
 
         def has_file?(file_name)
           has_element?(:file_name_content, text: file_name)
+        end
+
+        def select_source_branch(branch)
+          click_element(:source_branch_dropdown)
+          fill_element(:dropdown_input_field, branch)
+          click_via_capybara(:click_on, branch)
         end
       end
     end

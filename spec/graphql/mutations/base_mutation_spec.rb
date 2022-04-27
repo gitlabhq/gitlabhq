@@ -15,6 +15,7 @@ RSpec.describe ::Mutations::BaseMutation do
       context 'when argument is nullable and required' do
         let(:mutation_class) do
           Class.new(described_class) do
+            graphql_name 'BaseMutation'
             argument :foo, GraphQL::Types::String, required: :nullable
           end
         end
@@ -35,6 +36,7 @@ RSpec.describe ::Mutations::BaseMutation do
       context 'when argument is required and NOT nullable' do
         let(:mutation_class) do
           Class.new(described_class) do
+            graphql_name 'BaseMutation'
             argument :foo, GraphQL::Types::String, required: true
           end
         end

@@ -82,6 +82,12 @@ module QA
           super
         end
 
+        def click_via_capybara(method, locator)
+          log("clicking via capybara using '#{method}(#{locator})'")
+
+          super
+        end
+
         def fill_element(name, content)
           masked_content = name.to_s.match?(/token|key|password/) ? '*****' : content
 

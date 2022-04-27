@@ -13,7 +13,7 @@ RSpec.describe Mutations::FindsByGid do
     end
   end
 
-  let(:query) { double('Query', schema: GitlabSchema) }
+  let(:query) { query_double(schema: GitlabSchema) }
   let(:context) { GraphQL::Query::Context.new(query: query, object: nil, values: { current_user: user }) }
   let(:user) { create(:user) }
   let(:gid) { user.to_global_id }

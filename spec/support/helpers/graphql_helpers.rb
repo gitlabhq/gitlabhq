@@ -346,6 +346,10 @@ module GraphqlHelpers
     end
   end
 
+  def query_double(schema:)
+    double('query', schema: schema)
+  end
+
   def wrap_fields(fields)
     fields = Array.wrap(fields).map do |field|
       case field
