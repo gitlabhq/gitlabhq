@@ -52,6 +52,7 @@ class Project < ApplicationRecord
 
   ignore_columns :mirror_last_update_at, :mirror_last_successful_update_at, remove_after: '2021-09-22', remove_with: '14.4'
   ignore_columns :pull_mirror_branch_prefix, remove_after: '2021-09-22', remove_with: '14.4'
+  ignore_columns :build_coverage_regex, remove_after: '2022-07-22', remove_with: '15.0'
 
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'

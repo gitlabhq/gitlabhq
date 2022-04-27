@@ -16,6 +16,8 @@ RSpec.describe "User sorts issues" do
   let_it_be(:later_due_milestone) { create(:milestone, project: project, due_date: '2013-12-12') }
 
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     create_list(:award_emoji, 2, :upvote, awardable: issue1)
     create_list(:award_emoji, 2, :downvote, awardable: issue2)
     create(:award_emoji, :downvote, awardable: issue1)
@@ -24,26 +26,23 @@ RSpec.describe "User sorts issues" do
     sign_in(user)
   end
 
-  it 'keeps the sort option' do
+  it 'keeps the sort option', :js do
     visit(project_issues_path(project))
 
-    find('.filter-dropdown-container .dropdown').click
-
-    page.within('ul.dropdown-menu.dropdown-menu-right li') do
-      click_link('Milestone')
-    end
+    click_button 'Created date'
+    click_button 'Milestone'
 
     visit(issues_dashboard_path(assignee_username: user.username))
 
-    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+    expect(page).to have_button 'Milestone'
 
     visit(project_issues_path(project))
 
-    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+    expect(page).to have_button 'Milestone'
 
     visit(issues_group_path(group))
 
-    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+    expect(page).to have_button 'Milestone'
   end
 
   it 'sorts by popularity', :js do

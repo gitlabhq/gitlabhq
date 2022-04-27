@@ -8,6 +8,8 @@ RSpec.describe 'New issue breadcrumb' do
   let(:user) { project.creator }
 
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     sign_in(user)
     visit(new_project_issue_path(project))
   end
@@ -27,7 +29,7 @@ RSpec.describe 'New issue breadcrumb' do
     expect(find('.breadcrumbs-sub-title a')[:href]).to end_with(issue_path(issue))
   end
 
-  it 'excludes award_emoji from comment count' do
+  it 'excludes award_emoji from comment count', :js do
     issue = create(:issue, author: user, assignees: [user], project: project, title: 'foobar')
     create(:award_emoji, awardable: issue)
 

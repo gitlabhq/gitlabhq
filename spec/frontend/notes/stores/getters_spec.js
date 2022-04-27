@@ -12,6 +12,7 @@ import {
   discussion2,
   discussion3,
   resolvedDiscussion1,
+  authoritativeDiscussionFile,
   unresolvableDiscussion,
   draftComments,
   draftReply,
@@ -26,6 +27,23 @@ const createDiscussionNeighborParams = (discussionId, diffOrder, step) => ({
 });
 
 const asDraftDiscussion = (x) => ({ ...x, individual_note: true });
+const createRootState = () => {
+  return {
+    diffs: {
+      diffFiles: [
+        { ...authoritativeDiscussionFile },
+        {
+          ...authoritativeDiscussionFile,
+          ...{ id: 'abc2', file_identifier_hash: 'discfile2', order: 1 },
+        },
+        {
+          ...authoritativeDiscussionFile,
+          ...{ id: 'abc3', file_identifier_hash: 'discfile3', order: 2 },
+        },
+      ],
+    },
+  };
+};
 
 describe('Getters Notes Store', () => {
   let state;
@@ -226,11 +244,74 @@ describe('Getters Notes Store', () => {
       const localGetters = {
         allResolvableDiscussions: [discussion3, discussion1, discussion2],
       };
+      const rootState = createRootState();
 
-      expect(getters.unresolvedDiscussionsIdsByDiff(state, localGetters)).toEqual([
+      expect(getters.unresolvedDiscussionsIdsByDiff(state, localGetters, rootState)).toEqual([
         'abc1',
         'abc2',
         'abc3',
+      ]);
+    });
+
+    // This is the same test as above, but it exercises the sorting algorithm
+    // for a "strange" Diff File ordering. The intent is to ensure that even if lots
+    // of shuffling has to occur, everything still works
+
+    it('should return all discussions IDs in unusual diff order', () => {
+      const localGetters = {
+        allResolvableDiscussions: [discussion3, discussion1, discussion2],
+      };
+      const rootState = {
+        diffs: {
+          diffFiles: [
+            // 2 is first, but should sort 2nd
+            {
+              ...authoritativeDiscussionFile,
+              ...{ id: 'abc2', file_identifier_hash: 'discfile2', order: 1 },
+            },
+            // 1 is second, but should sort 3rd
+            { ...authoritativeDiscussionFile, ...{ order: 2 } },
+            // 3 is third, but should sort 1st
+            {
+              ...authoritativeDiscussionFile,
+              ...{ id: 'abc3', file_identifier_hash: 'discfile3', order: 0 },
+            },
+          ],
+        },
+      };
+
+      expect(getters.unresolvedDiscussionsIdsByDiff(state, localGetters, rootState)).toEqual([
+        'abc3',
+        'abc2',
+        'abc1',
+      ]);
+    });
+
+    it("should use the discussions array order if the files don't have explicit order values", () => {
+      const localGetters = {
+        allResolvableDiscussions: [discussion3, discussion1, discussion2], // This order is used!
+      };
+      const auth1 = { ...authoritativeDiscussionFile };
+      const auth2 = {
+        ...authoritativeDiscussionFile,
+        ...{ id: 'abc2', file_identifier_hash: 'discfile2' },
+      };
+      const auth3 = {
+        ...authoritativeDiscussionFile,
+        ...{ id: 'abc3', file_identifier_hash: 'discfile3' },
+      };
+      const rootState = {
+        diffs: { diffFiles: [auth2, auth1, auth3] }, // This order is not used!
+      };
+
+      delete auth1.order;
+      delete auth2.order;
+      delete auth3.order;
+
+      expect(getters.unresolvedDiscussionsIdsByDiff(state, localGetters, rootState)).toEqual([
+        'abc3',
+        'abc1',
+        'abc2',
       ]);
     });
 
@@ -238,8 +319,9 @@ describe('Getters Notes Store', () => {
       const localGetters = {
         allResolvableDiscussions: [resolvedDiscussion1],
       };
+      const rootState = createRootState();
 
-      expect(getters.unresolvedDiscussionsIdsByDiff(state, localGetters)).toEqual([]);
+      expect(getters.unresolvedDiscussionsIdsByDiff(state, localGetters, rootState)).toEqual([]);
     });
   });
 

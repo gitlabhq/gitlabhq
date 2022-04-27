@@ -6,20 +6,30 @@ module Pajamas
     # @param [String] title
     # @param [Symbol] variant
     # @param [Boolean] dismissible
+    # @param [Boolean] show_icon
     # @param [String] alert_class
     # @param [Hash] alert_data
     # @param [String] close_button_class
     # @param [Hash] close_button_data
     def initialize(
-      title: nil, variant: :info, dismissible: true,
+      title: nil, variant: :info, dismissible: true, show_icon: true,
       alert_class: nil, alert_data: {}, close_button_class: nil, close_button_data: {})
       @title = title
       @variant = variant
       @dismissible = dismissible
+      @show_icon = show_icon
       @alert_class = alert_class
       @alert_data = alert_data
       @close_button_class = close_button_class
       @close_button_data = close_button_data
+    end
+
+    def base_class
+      classes = ["gl-alert-#{@variant}"]
+      classes.push('gl-alert-not-dismissible') unless @dismissible
+      classes.push('gl-alert-no-icon') unless @show_icon
+
+      classes.join(' ')
     end
 
     private

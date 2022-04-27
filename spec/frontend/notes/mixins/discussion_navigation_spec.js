@@ -59,6 +59,7 @@ describe('Discussion navigation mixin', () => {
         diffs: {
           namespaced: true,
           actions: { scrollToFile },
+          state: { diffFiles: [] },
         },
       },
     });

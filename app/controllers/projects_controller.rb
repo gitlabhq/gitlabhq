@@ -420,7 +420,6 @@ class ProjectsController < Projects::ApplicationController
       :allow_merge_on_skipped_pipeline,
       :avatar,
       :build_allow_git_fetch,
-      :build_coverage_regex,
       :build_timeout_human_readable,
       :resolve_outdated_diff_discussions,
       :container_registry_enabled,

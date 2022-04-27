@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Issues RSS' do
+RSpec.describe 'Project Issues RSS', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
@@ -11,6 +11,10 @@ RSpec.describe 'Project Issues RSS' do
 
   before_all do
     group.add_developer(user)
+  end
+
+  before do
+    stub_feature_flags(vue_issues_list: true)
   end
 
   context 'when signed in' do
@@ -25,7 +29,10 @@ RSpec.describe 'Project Issues RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button with current_user's feed token"
+    it "shows the RSS button with current_user's feed token" do
+      expect(page).to have_link 'Subscribe to RSS feed', href: /feed_token=#{user.feed_token}/
+    end
+
     it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
 
@@ -34,7 +41,10 @@ RSpec.describe 'Project Issues RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button without a feed token"
+    it "shows the RSS button without a feed token" do
+      expect(page).not_to have_link 'Subscribe to RSS feed', href: /feed_token/
+    end
+
     it_behaves_like "an autodiscoverable RSS feed without a feed token"
   end
 

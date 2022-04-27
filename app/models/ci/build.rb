@@ -889,10 +889,6 @@ module Ci
       job_artifacts.find_by(file_type: file_types_ids)&.file
     end
 
-    def coverage_regex
-      super || project.try(:build_coverage_regex)
-    end
-
     def steps
       [Gitlab::Ci::Build::Step.from_commands(self),
        Gitlab::Ci::Build::Step.from_release(self),

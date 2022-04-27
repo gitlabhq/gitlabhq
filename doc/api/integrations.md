@@ -206,8 +206,6 @@ Parameters:
 | `new_issue_url` | string | true |  New Issue URL |
 | `issues_url` | string | true | Issue URL |
 | `project_url` | string | true | Project URL |
-| `description` | string | false | Description |
-| `title` | string | false | Title |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Bugzilla integration
@@ -452,8 +450,6 @@ Parameters:
 | `new_issue_url` | string | true |  New Issue URL |
 | `issues_url` | string | true | Issue URL |
 | `project_url` | string | true | Project URL |
-| `description` | string | false | Description |
-| `title` | string | false | Title |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Custom Issue Tracker integration
@@ -1197,7 +1193,6 @@ Parameters:
 | `new_issue_url` | string | true | New Issue URL |
 | `project_url` | string | true | Project URL |
 | `issues_url` | string | true | Issue URL |
-| `description` | string | false | Description |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Redmine integration
@@ -1554,7 +1549,6 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `issues_url` | string | true | Issue URL |
 | `project_url` | string | true | Project URL |
-| `description` | string | false | Description |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable YouTrack integration

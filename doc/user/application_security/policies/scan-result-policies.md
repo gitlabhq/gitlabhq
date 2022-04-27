@@ -61,7 +61,7 @@ This rule enforces the defined actions based on the information provided.
 | Field      | Type | Possible values | Description |
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `scan_finding` | The rule's type. |
-| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branches` | `array` of `string` | `[]` or the branch's name | Protected branches for this rule to consider. |
 | `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. |
 | `vulnerabilities_allowed`  | `integer` | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels`  | `array` of `string` | `info`, `unknown`, `low`, `medium`, `high`, `critical`| The severity levels for this rule to consider. |

@@ -521,7 +521,6 @@ Project:
 - star_count
 - ci_id
 - shared_runners_enabled
-- build_coverage_regex
 - build_allow_git_fetchs
 - build_timeout
 - pending_delete

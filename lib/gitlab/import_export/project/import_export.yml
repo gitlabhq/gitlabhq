@@ -639,7 +639,6 @@ included_attributes:
     - :auto_cancel_pending_pipelines
     - :autoclose_referenced_issues
     - :build_allow_git_fetch
-    - :build_coverage_regex
     - :build_timeout
     - :ci_config_path
     - :delete_error

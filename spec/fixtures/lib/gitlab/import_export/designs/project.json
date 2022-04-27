@@ -9,7 +9,6 @@
    "merge_requests_ff_only_enabled":false,
    "issues_template":null,
    "shared_runners_enabled":true,
-   "build_coverage_regex":null,
    "build_allow_git_fetch":true,
    "build_timeout":3600,
    "pending_delete":false,

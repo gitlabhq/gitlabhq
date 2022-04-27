@@ -3683,6 +3683,9 @@ msgstr ""
 msgid "All projects selected"
 msgstr ""
 
+msgid "All protected branches"
+msgstr ""
+
 msgid "All threads resolved"
 msgstr ""
 
@@ -34323,6 +34326,9 @@ msgstr ""
 msgid "Select branch"
 msgstr ""
 
+msgid "Select branches"
+msgstr ""
+
 msgid "Select due date"
 msgstr ""
 
@@ -36763,7 +36769,7 @@ msgstr ""
 msgid "SuperSonics|Activation code"
 msgstr ""
 
-msgid "SuperSonics|An error occurred while activating your subscription."
+msgid "SuperSonics|An error occurred while adding your subscription."
 msgstr ""
 
 msgid "SuperSonics|Billable users"
@@ -36794,6 +36800,9 @@ msgid "SuperSonics|I agree that my use of the GitLab Software is subject to the 
 msgstr ""
 
 msgid "SuperSonics|Learn how to %{linkStart}activate your subscription%{linkEnd}."
+msgstr ""
+
+msgid "SuperSonics|Learn more about %{activationLinkStart}activating your subscription%{activationLinkEnd}. If you need further assistance, %{supportLinkStart}contact GitLab Support%{supportLinkEnd}."
 msgstr ""
 
 msgid "SuperSonics|Licensed to"
@@ -36865,9 +36874,6 @@ msgid "SuperSonics|Users over subscription"
 msgstr ""
 
 msgid "SuperSonics|Users with a Guest role or those who don't belong to a Project or Group will not use a seat from your license."
-msgstr ""
-
-msgid "SuperSonics|You can learn more about %{activationLinkStart}activating your subscription%{activationLinkEnd}. If you need further assistance, please %{supportLinkStart}contact GitLab Support%{supportLinkEnd}."
 msgstr ""
 
 msgid "SuperSonics|You can no longer sync your subscription details with GitLab. Get help for the most common connectivity issues by %{connectivityHelpLinkStart}troubleshooting the activation code%{connectivityHelpLinkEnd}."
@@ -37410,9 +37416,6 @@ msgid "Test Cases"
 msgstr ""
 
 msgid "Test case"
-msgstr ""
-
-msgid "Test coverage parsing"
 msgstr ""
 
 msgid "Test coverage value for this pipeline was calculated by the coverage value of %d job."
@@ -37970,9 +37973,6 @@ msgid "The project was successfully forked."
 msgstr ""
 
 msgid "The project was successfully imported."
-msgstr ""
-
-msgid "The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable."
 msgstr ""
 
 msgid "The related CI build failed."

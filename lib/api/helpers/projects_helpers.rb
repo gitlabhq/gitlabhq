@@ -13,7 +13,6 @@ module API
         optional :build_git_strategy, type: String, values: %w(fetch clone), desc: 'The Git strategy. Defaults to `fetch`'
         optional :build_timeout, type: Integer, desc: 'Build timeout'
         optional :auto_cancel_pending_pipelines, type: String, values: %w(disabled enabled), desc: 'Auto-cancel pending pipelines'
-        optional :build_coverage_regex, type: String, desc: 'Test coverage parsing'
         optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
         optional :service_desk_enabled, type: Boolean, desc: 'Disable or enable the service desk'
         optional :keep_latest_artifact, type: Boolean, desc: 'Indicates if the latest artifact should be kept for this project.'
@@ -124,7 +123,6 @@ module API
           :auto_devops_enabled,
           :auto_devops_deploy_strategy,
           :auto_cancel_pending_pipelines,
-          :build_coverage_regex,
           :build_git_strategy,
           :build_timeout,
           :builds_access_level,
@@ -191,8 +189,6 @@ module API
 
       def validate_git_import_url!(import_url)
         return if import_url.blank?
-
-        yield if block_given?
 
         result = Import::ValidateRemoteGitEndpointService.new(url: import_url).execute # network call
 

@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"gitlab.com/gitlab-org/labkit/fips"
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/monitoring"
 	"gitlab.com/gitlab-org/labkit/tracing"
@@ -171,6 +172,7 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	tracing.Initialize(tracing.WithServiceName("gitlab-workhorse"))
 	log.WithField("version", Version).WithField("build_time", BuildTime).Print("Starting")
+	fips.Check()
 
 	// Good housekeeping for Unix sockets: unlink before binding
 	if boot.listenNetwork == "unix" {

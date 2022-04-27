@@ -130,7 +130,7 @@ The pipeline starts when the commit is committed.
 
   ```yaml
   default:
-    image: ruby:2.7.4
+    image: ruby:2.7.5
   ```
 
   This command tells the runner to use a Ruby image from Docker Hub

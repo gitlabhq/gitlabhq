@@ -90,10 +90,6 @@ module API
           Gitlab::AppLogger.info({ message: "File exceeds maximum size", file_bytes: file.size, project_id: user_project.id, project_path: user_project.full_path, upload_allowed: allowed })
         end
       end
-
-      def check_import_by_url_is_enabled
-        Gitlab::CurrentSettings.import_sources&.include?('git') || forbidden!
-      end
     end
 
     helpers do
@@ -202,6 +198,11 @@ module API
         params[:builds_enabled] = params.delete(:jobs_enabled) if params.key?(:jobs_enabled)
         params
       end
+
+      def add_import_params(params)
+        params[:import_type] = 'git' if params[:import_url]&.present?
+        params
+      end
     end
 
     resource :users, requirements: API::USER_REQUIREMENTS do
@@ -271,9 +272,10 @@ module API
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+        attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
 
-        validate_git_import_url!(params[:import_url]) { check_import_by_url_is_enabled }
+        validate_git_import_url!(params[:import_url])
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
@@ -285,6 +287,8 @@ module API
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
           end
+
+          forbidden! if project.errors[:import_source_disabled].present?
 
           render_validation_error!(project)
         end
@@ -311,6 +315,7 @@ module API
 
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+        attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
         validate_git_import_url!(params[:import_url])
 
@@ -321,6 +326,8 @@ module API
                                    user_can_admin_project: can?(current_user, :admin_project, project),
                                    current_user: current_user
         else
+          forbidden! if project.errors[:import_source_disabled].present?
+
           render_validation_error!(project)
         end
       end
@@ -441,6 +448,7 @@ module API
         authorize! :change_visibility_level, user_project if user_project.visibility_attribute_present?(attrs)
 
         attrs = translate_params_for_compatibility(attrs)
+        attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
         verify_update_project_attrs!(user_project, attrs)
 

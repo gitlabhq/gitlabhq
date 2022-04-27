@@ -7,6 +7,8 @@ RSpec.describe 'User filters issues', :js do
   let_it_be(:project) { create(:project_empty_repo, :public) }
 
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     %w[foobar barbaz].each do |title|
       create(:issue,
              author: user,
@@ -24,7 +26,7 @@ RSpec.describe 'User filters issues', :js do
   let(:issue) { @issue }
 
   it 'allows filtering by issues with no specified assignee' do
-    visit project_issues_path(project, assignee_id: IssuableFinder::Params::FILTER_NONE)
+    visit project_issues_path(project, assignee_id: IssuableFinder::Params::FILTER_NONE.capitalize)
 
     expect(page).to have_content 'foobar'
     expect(page).not_to have_content 'barbaz'

@@ -3,6 +3,7 @@ import {
   getShortShaFromFile,
   stats,
   isNotDiffable,
+  match,
 } from '~/diffs/utils/diff_file';
 import { diffViewerModes } from '~/ide/constants';
 import mockDiffFile from '../mock_data/diff_file';
@@ -260,6 +261,44 @@ describe('diff_file utilities', () => {
       ${{ viewer: null }}
     `('reports `false` when the file is `$file`', ({ file }) => {
       expect(isNotDiffable(file)).toBe(false);
+    });
+  });
+
+  describe('match', () => {
+    const authorityFileId = '68296a4f-f1c7-445a-bd0e-6e3b02c4eec0';
+    const fih = 'file_identifier_hash';
+    const fihs = 'file identifier hashes';
+    let authorityFile;
+
+    beforeAll(() => {
+      const files = getDiffFiles();
+
+      authorityFile = prepareRawDiffFile({
+        file: files[0],
+        allFiles: files,
+      });
+
+      Object.freeze(authorityFile);
+    });
+
+    describe.each`
+      mode           | comparisonFiles                                                    | keyName
+      ${'universal'} | ${[{ [fih]: 'ABC1' }, { id: 'foo' }, { id: authorityFileId }]}     | ${'ids'}
+      ${'mr'}        | ${[{ id: authorityFileId }, { [fih]: 'ABC2' }, { [fih]: 'ABC1' }]} | ${fihs}
+    `('$mode mode', ({ mode, comparisonFiles, keyName }) => {
+      it(`fails to match if files or ${keyName} aren't present`, () => {
+        expect(match({ fileA: authorityFile, fileB: undefined, mode })).toBe(false);
+        expect(match({ fileA: authorityFile, fileB: null, mode })).toBe(false);
+        expect(match({ fileA: authorityFile, fileB: comparisonFiles[0], mode })).toBe(false);
+      });
+
+      it(`fails to match if the ${keyName} aren't the same`, () => {
+        expect(match({ fileA: authorityFile, fileB: comparisonFiles[1], mode })).toBe(false);
+      });
+
+      it(`matches if the ${keyName} are the same`, () => {
+        expect(match({ fileA: authorityFile, fileB: comparisonFiles[2], mode })).toBe(true);
+      });
     });
   });
 });

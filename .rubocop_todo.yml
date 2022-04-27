@@ -348,11 +348,6 @@ Style/RedundantInterpolation:
 Style/RedundantRegexpEscape:
   Enabled: false
 
-# Offense count: 968
-# Cop supports --auto-correct.
-Style/RedundantSelf:
-  Enabled: false
-
 # Offense count: 53
 # Cop supports --auto-correct.
 Style/RescueModifier:
@@ -361,11 +356,6 @@ Style/RescueModifier:
 # Offense count: 123
 # Cop supports --auto-correct.
 Style/SingleArgumentDig:
-  Enabled: false
-
-# Offense count: 63
-# Configuration parameters: AllowModifier.
-Style/SoleNestedConditional:
   Enabled: false
 
 # Offense count: 562

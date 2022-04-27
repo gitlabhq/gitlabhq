@@ -9,6 +9,8 @@ RSpec.describe 'issuable list', :js do
   issuable_types = [:issue, :merge_request]
 
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     project.add_user(user, :developer)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
@@ -34,16 +36,16 @@ RSpec.describe 'issuable list', :js do
     it 'sorts labels alphabetically' do
       label1 = create(:label, project: project, title: 'a')
       label2 = create(:label, project: project, title: 'z')
-      label3 = create(:label, project: project, title: 'X')
-      label4 = create(:label, project: project, title: 'B')
+      label3 = create(:label, project: project, title: 'x')
+      label4 = create(:label, project: project, title: 'b')
       issuable = create_issuable(issuable_type)
       issuable.labels << [label1, label2, label3, label4]
 
       visit_issuable_list(issuable_type)
 
-      expect(all('.gl-label-text')[0].text).to have_content('B')
-      expect(all('.gl-label-text')[1].text).to have_content('X')
-      expect(all('.gl-label-text')[2].text).to have_content('a')
+      expect(all('.gl-label-text')[0].text).to have_content('a')
+      expect(all('.gl-label-text')[1].text).to have_content('b')
+      expect(all('.gl-label-text')[2].text).to have_content('x')
       expect(all('.gl-label-text')[3].text).to have_content('z')
     end
   end

@@ -1249,7 +1249,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                                    | mixed   | **{dotted-circle}** No | Image file for avatar of the project.                |
-| `build_coverage_regex`                                      | string  | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string  | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1328,7 +1327,6 @@ POST /projects/user/:user_id
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                                    | mixed   | **{dotted-circle}** No | Image file for avatar of the project. |
-| `build_coverage_regex`                                      | string  | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string  | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1417,7 +1415,6 @@ Supported attributes:
 | `auto_devops_enabled`                                       | boolean        | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean        | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                                    | mixed          | **{dotted-circle}** No | Image file for avatar of the project.                |
-| `build_coverage_regex`                                      | string         | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string         | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                             | integer        | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -2760,7 +2757,6 @@ Example response:
   "public_jobs": true,
   "build_timeout": 3600,
   "auto_cancel_pending_pipelines": "enabled",
-  "build_coverage_regex": null,
   "ci_config_path": null,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,

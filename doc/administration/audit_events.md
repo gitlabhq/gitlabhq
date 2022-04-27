@@ -178,6 +178,10 @@ From there, you can see the following actions:
 - Skipped pipelines are considered successful enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
 - All discussions must be resolved enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
 - Commit message suggestion is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Status check is added, edited, or deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
+- Merge commit message template is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
+- Squash commit message template is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
+- Default description template for merge requests is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 

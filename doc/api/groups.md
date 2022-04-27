@@ -455,7 +455,6 @@ Example response:
       "public_jobs":true,
       "build_timeout":3600,
       "auto_cancel_pending_pipelines":"enabled",
-      "build_coverage_regex":null,
       "ci_config_path":null,
       "shared_with_groups":[
          {

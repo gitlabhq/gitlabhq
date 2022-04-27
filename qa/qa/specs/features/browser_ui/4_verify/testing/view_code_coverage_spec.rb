@@ -3,7 +3,6 @@
 module QA
   RSpec.describe 'Verify', :runner do
     describe 'Code coverage statistics' do
-      let(:simplecov) { '\(\d+.\d+\%\) covered' }
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:runner) do
         Resource::Runner.fabricate_via_api! do |runner|
@@ -19,8 +18,9 @@ module QA
           mr.file_content = <<~EOF
             test:
               tags: [e2e-test]
+              coverage: '/\\d+\\.\\d+% covered/'
               script:
-                - echo '(66.67%) covered'
+                - echo '66.67% covered'
           EOF
         end
       end
@@ -34,24 +34,11 @@ module QA
       end
 
       it 'creates an MR with code coverage statistics', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348068' do
-        runner.project.visit!
-        configure_code_coverage(simplecov)
         merge_request.visit!
 
         Page::MergeRequest::Show.perform do |mr_widget|
           mr_widget.has_pipeline_status?('passed')
           expect(mr_widget).to have_content('Test coverage 66.67%')
-        end
-      end
-    end
-
-    private
-
-    def configure_code_coverage(coverage_tool_pattern)
-      Page::Project::Menu.perform(&:go_to_ci_cd_settings)
-      Page::Project::Settings::CiCd.perform do |settings|
-        settings.expand_general_pipelines do |coverage|
-          coverage.configure_coverage_regex(coverage_tool_pattern)
         end
       end
     end

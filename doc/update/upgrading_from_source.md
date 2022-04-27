@@ -73,9 +73,9 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.4.tar.gz"
-echo '3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b ruby-2.7.4.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.4.tar.gz
-cd ruby-2.7.4
+curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.tar.gz"
+echo '2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1 ruby-2.7.5.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.5.tar.gz
+cd ruby-2.7.5
 
 ./configure --disable-install-rdoc --enable-shared
 make

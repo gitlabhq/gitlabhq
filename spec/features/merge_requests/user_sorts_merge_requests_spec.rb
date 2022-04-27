@@ -16,6 +16,8 @@ RSpec.describe 'User sorts merge requests' do
   let_it_be(:project) { create(:project, :public, group: group) }
 
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     sign_in(user)
 
     visit(project_merge_requests_path(project))
@@ -49,7 +51,7 @@ RSpec.describe 'User sorts merge requests' do
     expect(find('.issues-filters a.is-active')).to have_content('Milestone')
   end
 
-  it 'separates remember sorting with issues' do
+  it 'separates remember sorting with issues', :js do
     create(:issue, project: project)
 
     find('.filter-dropdown-container .dropdown').click

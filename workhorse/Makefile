@@ -1,4 +1,6 @@
 PREFIX=/usr/local
+
+FIPS_MODE ?= 0
 PKG := gitlab.com/gitlab-org/gitlab/workhorse
 BUILD_DIR ?= $(CURDIR)
 TARGET_DIR ?= $(BUILD_DIR)/_build
@@ -18,6 +20,14 @@ GITALY_PID_FILE := gitaly.pid
 EXE_ALL := gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata gitlab-workhorse
 INSTALL := install
 BUILD_TAGS := tracer_static tracer_static_jaeger continuous_profiler_stackdriver
+
+ifeq (${FIPS_MODE}, 1)
+    # boringcrypto tag is added automatically by golang-fips compiler
+    BUILD_TAGS += fips
+    # If the golang-fips compiler is built with CGO_ENABLED=0, this needs to be
+    # explicitly switched on.
+    export CGO_ENABLED=1
+endif
 
 MINIMUM_SUPPORTED_GO_VERSION := 1.11
 

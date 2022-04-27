@@ -768,6 +768,21 @@ RSpec.describe Projects::CreateService, '#execute' do
     create_project(user, opts)
   end
 
+  context 'when import source is disabled' do
+    before do
+      stub_application_setting(import_sources: [])
+      opts[:import_type] = 'git'
+    end
+
+    it 'raises an error' do
+      project = create_project(user, opts)
+
+      expect(project).to respond_to(:errors)
+      expect(project.errors).to have_key(:import_source_disabled)
+      expect(project.saved?).to be_falsey
+    end
+  end
+
   context 'with external authorization enabled' do
     before do
       enable_external_authorization_service_check

@@ -5,7 +5,6 @@
     "autoclose_referenced_issues": true,
     "boards": [],
     "build_allow_git_fetch": true,
-    "build_coverage_regex": null,
     "build_timeout": 3600,
     "ci_cd_settings": {
         "group_runners_enabled": true

@@ -25,24 +25,6 @@ RSpec.describe "Projects > Settings > Pipelines settings" do
   context 'for maintainer' do
     let(:role) { :maintainer }
 
-    it 'be allowed to change' do
-      visit project_settings_ci_cd_path(project)
-
-      fill_in('Test coverage parsing', with: 'coverage_regex')
-
-      page.within '#js-general-pipeline-settings' do
-        click_on 'Save changes'
-      end
-
-      expect(page.status_code).to eq(200)
-
-      page.within '#js-general-pipeline-settings' do
-        expect(page).to have_button('Save changes', disabled: false)
-      end
-
-      expect(page).to have_field('Test coverage parsing', with: 'coverage_regex')
-    end
-
     it 'updates auto_cancel_pending_pipelines' do
       visit project_settings_ci_cd_path(project)
 

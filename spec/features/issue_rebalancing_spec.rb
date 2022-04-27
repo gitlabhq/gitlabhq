@@ -15,6 +15,10 @@ RSpec.describe 'Issue rebalancing' do
     group.add_developer(user)
   end
 
+  before do
+    stub_feature_flags(vue_issues_list: true)
+  end
+
   context 'when issue rebalancing is in progress' do
     before do
       sign_in(user)
@@ -38,16 +42,16 @@ RSpec.describe 'Issue rebalancing' do
       expect(page).to have_selector('.gl-alert-info', text: alert_message_regex, count: 1)
     end
 
-    it 'shows an alert in project issues list with manual sort' do
+    it 'shows an alert in project issues list with manual sort', :js do
       visit project_issues_path(project, sort: 'relative_position')
 
-      expect(page).to have_selector('.gl-alert-info', text: alert_message_regex, count: 1)
+      expect(page).to have_selector('.flash-notice', text: alert_message_regex, count: 1)
     end
 
-    it 'shows an alert in group issues list with manual sort' do
+    it 'shows an alert in group issues list with manual sort', :js do
       visit issues_group_path(group, sort: 'relative_position')
 
-      expect(page).to have_selector('.gl-alert-info', text: alert_message_regex, count: 1)
+      expect(page).to have_selector('.flash-notice', text: alert_message_regex, count: 1)
     end
 
     it 'does not show an alert in project issues list with other sorts' do

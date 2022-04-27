@@ -84,8 +84,6 @@ module API
 
           authorize!(:update_alert_management_metric_image, alert)
 
-          render_api_error!('Feature not available', 403) unless alert.metric_images_available?
-
           metric_image = alert.metric_images.find_by_id(params[:metric_image_id])
 
           render_api_error!('Metric image not found', 404) unless metric_image
@@ -107,8 +105,6 @@ module API
           alert = find_project_alert(params[:alert_iid])
 
           authorize!(:destroy_alert_management_metric_image, alert)
-
-          render_api_error!('Feature not available', 403) unless alert.metric_images_available?
 
           metric_image = alert.metric_images.find_by_id(params[:metric_image_id])
 

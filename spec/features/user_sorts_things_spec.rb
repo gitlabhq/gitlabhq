@@ -16,21 +16,24 @@ RSpec.describe "User sorts things" do
   let_it_be(:merge_request) { create(:merge_request, target_project: project, source_project: project, author: current_user) }
 
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     project.add_developer(current_user)
     sign_in(current_user)
   end
 
-  it "issues -> project home page -> issues" do
+  it "issues -> project home page -> issues", :js do
     sort_option = 'Updated date'
 
     visit(project_issues_path(project))
 
-    sort_by(sort_option)
+    click_button 'Created date'
+    click_button sort_option
 
     visit(project_path(project))
     visit(project_issues_path(project))
 
-    expect(find(".issues-filters")).to have_content(sort_option)
+    expect(page).to have_button(sort_option)
   end
 
   it "merge requests -> dashboard merge requests" do

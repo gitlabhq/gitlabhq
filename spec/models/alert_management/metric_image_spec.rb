@@ -15,12 +15,4 @@ RSpec.describe AlertManagement::MetricImage do
     it { is_expected.to validate_length_of(:url).is_at_most(255) }
     it { is_expected.to validate_length_of(:url_text).is_at_most(128) }
   end
-
-  describe '.available_for?' do
-    subject { described_class.available_for?(issue.project) }
-
-    let_it_be_with_refind(:issue) { create(:issue) }
-
-    it { is_expected.to eq(true) }
-  end
 end

@@ -1,5 +1,6 @@
-.gl-alert{ role: 'alert', class: ["gl-alert-#{@variant}", @alert_class], data: @alert_data }
-  = sprite_icon(icon, css_class: icon_classes)
+.gl-alert{ role: 'alert', class: [base_class, @alert_class], data: @alert_data }
+  - if @show_icon
+    = sprite_icon(icon, css_class: icon_classes)
   - if @dismissible
     %button.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon.js-close{ type: 'button',
       aria: { label: _('Dismiss') },

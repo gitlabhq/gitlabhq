@@ -1180,9 +1180,15 @@ RSpec.describe API::Projects do
     end
 
     it 'disallows creating a project with an import_url when git import source is disabled' do
+      url = 'http://example.com'
       stub_application_setting(import_sources: nil)
 
-      project_params = { import_url: 'http://example.com', path: 'path-project-Foo', name: 'Foo Project' }
+      endpoint_url = "#{url}/info/refs?service=git-upload-pack"
+      stub_full_request(endpoint_url, method: :get).to_return({ status: 200,
+        body: '001e# service=git-upload-pack',
+        headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+
+      project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
       expect { post api('/projects', user), params: project_params }
         .not_to change {  Project.count }
 
