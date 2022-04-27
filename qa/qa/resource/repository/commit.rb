@@ -33,7 +33,11 @@ module QA
 
           super
         rescue ResourceNotFoundError
-          super
+          result = super
+
+          project.wait_for_push(commit_message)
+
+          result
         end
 
         def api_get_path

@@ -5661,9 +5661,6 @@ msgstr ""
 msgid "Based on"
 msgstr ""
 
-msgid "Basic information"
-msgstr ""
-
 msgid "Batch size"
 msgstr ""
 
@@ -25072,46 +25069,7 @@ msgstr ""
 msgid "Network:"
 msgstr ""
 
-msgid "NetworkPolicies|%{ifLabelStart}if%{ifLabelEnd} %{ruleType} %{isLabelStart}is%{isLabelEnd} %{ruleDirection} %{ruleSelector} %{directionLabelStart}and is inbound from a%{directionLabelEnd} %{rule} %{portsLabelStart}on%{portsLabelEnd} %{ports}"
-msgstr ""
-
-msgid "NetworkPolicies|%{ifLabelStart}if%{ifLabelEnd} %{ruleType} %{isLabelStart}is%{isLabelEnd} %{ruleDirection} %{ruleSelector} %{directionLabelStart}and is outbound to a%{directionLabelEnd} %{rule} %{portsLabelStart}on%{portsLabelEnd} %{ports}"
-msgstr ""
-
-msgid "NetworkPolicies|%{labelStart}And%{labelEnd} %{spanStart}send an Alert to GitLab.%{spanEnd}"
-msgstr ""
-
-msgid "NetworkPolicies|%{labelStart}Then%{labelEnd} %{action} %{spanStart}the network traffic.%{spanEnd}"
-msgstr ""
-
-msgid "NetworkPolicies|%{number} selected"
-msgstr ""
-
-msgid "NetworkPolicies|%{strongOpen}all%{strongClose} pods"
-msgstr ""
-
-msgid "NetworkPolicies|%{strongOpen}any%{strongClose} port"
-msgstr ""
-
 msgid "NetworkPolicies|.yaml mode"
-msgstr ""
-
-msgid "NetworkPolicies|Add alert"
-msgstr ""
-
-msgid "NetworkPolicies|Alerts are intended to be selectively used for a limited number of events that are potentially concerning and warrant a manual review. Alerts should not be used as a substitute for a SIEM or a logging tool. High volume alerts are likely to be dropped so as to preserve the stability of GitLab's integration with Kubernetes."
-msgstr ""
-
-msgid "NetworkPolicies|All selected"
-msgstr ""
-
-msgid "NetworkPolicies|Allow"
-msgstr ""
-
-msgid "NetworkPolicies|Allow all inbound traffic to %{selector} from %{ruleSelector} on %{ports}"
-msgstr ""
-
-msgid "NetworkPolicies|Allow all outbound traffic from %{selector} to %{ruleSelector} on %{ports}"
 msgstr ""
 
 msgid "NetworkPolicies|Are you sure you want to delete this policy? This action cannot be undone."
@@ -25126,13 +25084,7 @@ msgstr ""
 msgid "NetworkPolicies|Delete policy: %{policy}"
 msgstr ""
 
-msgid "NetworkPolicies|Deny all traffic"
-msgstr ""
-
 msgid "NetworkPolicies|Environment does not have deployment platform"
-msgstr ""
-
-msgid "NetworkPolicies|IP/subnet"
 msgstr ""
 
 msgid "NetworkPolicies|Invalid or empty policy"
@@ -25142,18 +25094,6 @@ msgid "NetworkPolicies|Invalid or unsupported policy kind"
 msgstr ""
 
 msgid "NetworkPolicies|Kubernetes error: %{error}"
-msgstr ""
-
-msgid "NetworkPolicies|Network Policies can be used to limit which network traffic is allowed between containers inside the cluster."
-msgstr ""
-
-msgid "NetworkPolicies|Network policy can be created after the environment is loaded successfully."
-msgstr ""
-
-msgid "NetworkPolicies|Network traffic"
-msgstr ""
-
-msgid "NetworkPolicies|None selected"
 msgstr ""
 
 msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
@@ -25172,51 +25112,6 @@ msgid "NetworkPolicies|Something went wrong, failed to update policy"
 msgstr ""
 
 msgid "NetworkPolicies|Something went wrong, unable to fetch policies"
-msgstr ""
-
-msgid "NetworkPolicies|To enable alerts, %{installLinkStart}install an agent%{installLinkEnd} first."
-msgstr ""
-
-msgid "NetworkPolicies|all DNS names"
-msgstr ""
-
-msgid "NetworkPolicies|all IP addresses"
-msgstr ""
-
-msgid "NetworkPolicies|any pod"
-msgstr ""
-
-msgid "NetworkPolicies|any port"
-msgstr ""
-
-msgid "NetworkPolicies|domain name"
-msgstr ""
-
-msgid "NetworkPolicies|entity"
-msgstr ""
-
-msgid "NetworkPolicies|inbound to"
-msgstr ""
-
-msgid "NetworkPolicies|nowhere"
-msgstr ""
-
-msgid "NetworkPolicies|outbound from"
-msgstr ""
-
-msgid "NetworkPolicies|pod with labels"
-msgstr ""
-
-msgid "NetworkPolicies|pods %{pods}"
-msgstr ""
-
-msgid "NetworkPolicies|pods with labels"
-msgstr ""
-
-msgid "NetworkPolicies|ports %{ports}"
-msgstr ""
-
-msgid "NetworkPolicies|ports/protocols"
 msgstr ""
 
 msgid "NetworkPolicy|Policy"
@@ -33760,9 +33655,6 @@ msgid "SecurityOrchestration|Policy editor"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy status"
-msgstr ""
-
-msgid "SecurityOrchestration|Policy summary"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy type"
