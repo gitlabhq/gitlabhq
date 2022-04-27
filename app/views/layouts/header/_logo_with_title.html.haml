@@ -1,4 +1,5 @@
 %header.navbar.fixed-top.navbar-gitlab.justify-content-center
-  = render partial: 'shared/logo', formats: :svg
-  %span.logo-text.d-none.d-lg-block.gl-ml-3.pt-1
-    = render partial: 'shared/logo_type', formats: :svg
+  .gl-display-none.gl-lg-display-block
+    = render partial: 'shared/logo_with_white_text', formats: :svg
+  .gl-lg-display-none
+    = render partial: 'shared/logo', formats: :svg

@@ -401,8 +401,6 @@
   - 1
 - - repository_import
   - 1
-- - repository_push_audit_event
-  - 1
 - - repository_remove_remote
   - 1
 - - repository_update_mirror

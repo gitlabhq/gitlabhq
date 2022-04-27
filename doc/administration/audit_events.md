@@ -262,36 +262,15 @@ Don't see the event you want in any of the epics linked above? You can either:
   request it.
 - [Add it yourself](../development/audit_event_guide/).
 
-### Disabled events
+### Removed events
 
-#### Repository push (DEPRECATED)
+> - Repositories push events was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
+> - Repositories push events was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 15.0.
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
+The repositories push events feature was:
 
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
-
-The current architecture of audit events is not prepared to receive a very high amount of records.
-It may make the user interface for your project or audit events very busy, and the disk space consumed by the
-`audit_events` PostgreSQL table may increase considerably. It's disabled by default
-to prevent performance degradations on GitLab instances with very high Git write traffic.
-
-If you still wish to enable **Repository push** events in your instance, follow
-the steps below.
-
-**In Omnibus installations:**
-
-1. Enter the Rails console:
-
-   ```shell
-   sudo gitlab-rails console
-   ```
-
-1. Flip the switch and enable the feature flag:
-
-   ```ruby
-   Feature.enable(:repository_push_audit_event)
-   ```
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
+- [Removed]((https://gitlab.com/gitlab-org/gitlab/-/issues/337993)) in GitLab 15.0.
 
 ## Search
 

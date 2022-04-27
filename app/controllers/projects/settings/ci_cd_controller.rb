@@ -18,6 +18,7 @@ module Projects
       helper_method :highlight_badge
 
       feature_category :continuous_integration
+      urgency :low
 
       def show
         if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)

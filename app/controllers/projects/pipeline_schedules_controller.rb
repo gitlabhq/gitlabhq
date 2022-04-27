@@ -11,6 +11,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
   feature_category :continuous_integration
+  urgency :low
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index

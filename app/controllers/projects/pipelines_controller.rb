@@ -5,7 +5,11 @@ class Projects::PipelinesController < Projects::ApplicationController
   include RedisTracking
 
   urgency :default, [:status]
-  urgency :low, [:index, :new, :builds, :show, :failures, :create, :stage, :retry, :dag, :cancel, :test_report]
+  urgency :low, [
+    :index, :new, :builds, :show, :failures, :create,
+    :stage, :retry, :dag, :cancel, :test_report,
+    :charts, :config_variables, :destroy
+  ]
 
   before_action :disable_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts, :config_variables]

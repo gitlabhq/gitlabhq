@@ -80,6 +80,18 @@ The permissions model for GraphQL is being updated. After 15.0, users with the G
 
 The issue for this removal is [GitLab-#350682](https://gitlab.com/gitlab-org/gitlab/-/issues/350682)
 
+### Update to the Container Registry group-level API
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GitLab 15.0, support for the `tags` and `tags_count` parameters will be removed from the Container Registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).
+
+The `GET /groups/:id/registry/repositories` endpoint will remain, but won't return any info about tags. To get the info about tags, you can use the existing `GET /registry/repositories/:id` endpoint, which will continue to support the `tags` and `tag_count` options as it does today. The latter must be called once per image repository.
+
 ### Vulnerability Check
 
 WARNING:

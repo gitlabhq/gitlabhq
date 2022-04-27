@@ -28,6 +28,7 @@ class Projects::JobsController < Projects::ApplicationController
   layout 'project'
 
   feature_category :continuous_integration
+  urgency :low
 
   def index
     # We need all builds for tabs counters

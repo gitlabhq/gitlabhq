@@ -3,6 +3,7 @@ import { GlEmptyState, GlTable, GlTooltip, GlTruncate } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CreateTokenButton from './create_token_button.vue';
+import RevokeTokenButton from './revoke_token_button.vue';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
     GlTruncate,
     TimeAgoTooltip,
     CreateTokenButton,
+    RevokeTokenButton,
   },
   i18n: {
     createdBy: s__('ClusterAgents|Created by'),
@@ -66,6 +68,11 @@ export default {
           label: this.$options.i18n.description,
           tdAttr: { 'data-testid': 'agent-token-description' },
         },
+        {
+          key: 'actions',
+          label: '',
+          tdAttr: { 'data-testid': 'agent-token-revoke' },
+        },
       ];
     },
   },
@@ -118,6 +125,10 @@ export default {
             {{ item.description }}
           </gl-tooltip>
         </div>
+      </template>
+
+      <template #cell(actions)="{ item }">
+        <revoke-token-button :token="item" :cluster-agent-id="clusterAgentId" :cursor="cursor" />
       </template>
     </gl-table>
   </div>

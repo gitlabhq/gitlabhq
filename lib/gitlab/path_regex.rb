@@ -23,7 +23,6 @@ module Gitlab
       503.html
       admin
       api
-      apple-touch-icon-precomposed.png
       apple-touch-icon.png
       assets
       dashboard

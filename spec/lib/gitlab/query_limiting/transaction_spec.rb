@@ -78,6 +78,15 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
 
       expect { transaction.increment }.not_to change { transaction.count }
     end
+
+    it 'does not increment the number of executed queries when the query is known to be ignorable' do
+      transaction = described_class.new
+
+      expect do
+        transaction.increment(described_class::GEO_NODES_LOAD)
+        transaction.increment(described_class::LICENSES_LOAD)
+      end.not_to change(transaction, :count)
+    end
   end
 
   describe '#raise_error?' do

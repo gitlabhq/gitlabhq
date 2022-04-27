@@ -32,8 +32,9 @@ module StorageHelper
 
     {
       text: html_escape_once(s_("UsageQuota|From %{storage_enforcement_date} storage limits will apply to this namespace. " \
-            "View and manage your usage in %{strong_start}%{namespace_type} settings &gt; Usage quotas%{strong_end}.")).html_safe %
-            { storage_enforcement_date: namespace.storage_enforcement_date, strong_start: "<strong>".html_safe, strong_end: "</strong>".html_safe, namespace_type: namespace.type },
+            "You are currently using %{used_storage} of namespace storage. " \
+            "View and manage your usage from %{strong_start}%{namespace_type} settings &gt; Usage quotas%{strong_end}.")).html_safe %
+            { storage_enforcement_date: namespace.storage_enforcement_date, used_storage: storage_counter(namespace.root_storage_statistics&.storage_size || 0), strong_start: "<strong>".html_safe, strong_end: "</strong>".html_safe, namespace_type: namespace.type },
       variant: 'warning',
       callouts_path: namespace.user_namespace? ? callouts_path : group_callouts_path,
       callouts_feature_name: storage_enforcement_banner_user_callouts_feature_name(namespace),

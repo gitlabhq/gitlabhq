@@ -388,7 +388,7 @@ Example response:
 
 ## Delete project cluster
 
-Deletes an existing project cluster.
+Deletes an existing project cluster. Does not remove existing resources within the connected Kubernetes cluster.
 
 ```plaintext
 DELETE /projects/:id/clusters/:cluster_id

@@ -80,6 +80,50 @@ RSpec.describe AppearancesHelper do
     end
   end
 
+  describe '#brand_header_logo' do
+    let(:options) { {} }
+
+    subject do
+      helper.brand_header_logo(options)
+    end
+
+    context 'with header logo' do
+      let!(:appearance) { create(:appearance, :with_header_logo) }
+
+      it 'renders image tag' do
+        expect(helper).to receive(:image_tag).with(appearance.header_logo_path, class: 'brand-header-logo')
+
+        subject
+      end
+    end
+
+    context 'with add_gitlab_white_text option' do
+      let(:options) { { add_gitlab_white_text: true } }
+
+      it 'renders shared/logo_with_white_text partial' do
+        expect(helper).to receive(:render).with(partial: 'shared/logo_with_white_text', formats: :svg)
+
+        subject
+      end
+    end
+
+    context 'with add_gitlab_black_text option' do
+      let(:options) { { add_gitlab_black_text: true } }
+
+      it 'renders shared/logo_with_black_text partial' do
+        expect(helper).to receive(:render).with(partial: 'shared/logo_with_black_text', formats: :svg)
+
+        subject
+      end
+    end
+
+    it 'renders shared/logo by default' do
+      expect(helper).to receive(:render).with(partial: 'shared/logo', formats: :svg)
+
+      subject
+    end
+  end
+
   describe '#brand_title' do
     it 'returns the default title when no appearance is present' do
       allow(helper).to receive(:current_appearance).and_return(nil)

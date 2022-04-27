@@ -35,20 +35,18 @@ module AppearancesHelper
     end
   end
 
-  def brand_header_logo
+  def brand_header_logo(options = {})
+    add_gitlab_white_text = options[:add_gitlab_white_text] || false
+    add_gitlab_black_text = options[:add_gitlab_black_text] || false
+
     if current_appearance&.header_logo?
       image_tag current_appearance.header_logo_path, class: 'brand-header-logo'
-    elsif Feature.enabled?(:ukraine_support_tanuki)
-      render partial: 'shared/logo_ukraine', formats: :svg
+    elsif add_gitlab_white_text
+      render partial: 'shared/logo_with_white_text', formats: :svg
+    elsif add_gitlab_black_text
+      render partial: 'shared/logo_with_black_text', formats: :svg
     else
       render partial: 'shared/logo', formats: :svg
-    end
-  end
-
-  # Skip the 'GitLab' type logo when custom brand logo is set
-  def brand_header_logo_type
-    unless current_appearance&.header_logo?
-      render partial: 'shared/logo_type', formats: :svg
     end
   end
 

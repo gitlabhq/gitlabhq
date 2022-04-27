@@ -239,7 +239,7 @@ RSpec.describe EmailsHelper do
         create :appearance, header_logo: nil
 
         expect(header_logo).to match(
-          %r{<img alt="GitLab" src="/images/mailers/gitlab_header_logo\.(?:gif|png)" width="\d+" height="\d+" />}
+          %r{<img alt="GitLab" src="/images/mailers/gitlab_logo\.(?:gif|png)" width="\d+" height="\d+" />}
         )
       end
     end
@@ -247,7 +247,7 @@ RSpec.describe EmailsHelper do
     context 'there is no brand item' do
       it 'returns the default header logo' do
         expect(header_logo).to match(
-          %r{<img alt="GitLab" src="/images/mailers/gitlab_header_logo\.(?:gif|png)" width="\d+" height="\d+" />}
+          %r{<img alt="GitLab" src="/images/mailers/gitlab_logo\.(?:gif|png)" width="\d+" height="\d+" />}
         )
       end
     end

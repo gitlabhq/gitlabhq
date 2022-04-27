@@ -11,6 +11,7 @@ module Groups
       before_action :push_licensed_features, only: [:show]
 
       feature_category :continuous_integration
+      urgency :low
 
       def show
       end

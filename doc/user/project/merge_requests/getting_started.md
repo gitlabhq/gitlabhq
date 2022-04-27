@@ -53,7 +53,7 @@ options. You can also add them later by either selecting **Edit** on the merge
 request's page at the top-right side, or by using
 [keyboard shortcuts for merge requests](../../shortcuts.md#issues-and-merge-requests):
 
-- [Assign](#assignee) the merge request to a colleague for review. With [multiple assignees](#multiple-assignees), you can assign it to more than one person at a time.
+- [Assign](index.md#assign-a-user-to-a-merge-request) the merge request to a colleague for review. With [multiple assignees](index.md#assign-multiple-users), you can assign it to more than one person at a time.
 - Set a [milestone](../milestones/index.md) to track time-sensitive changes.
 - Add [labels](../labels.md) to help contextualize and filter your merge requests over time.
 - [Require approval](approvals/index.md#required-approvals) from your team.
@@ -80,38 +80,6 @@ Many of these options can be set:
 - When pushing changes from the command line, with [Git push options](../push_options.md).
 
 See also other [features associated to merge requests](reviews/index.md#associated-features).
-
-### Assignee
-
-Choose an assignee to designate someone as the person responsible
-for the first [review of the merge request](reviews/index.md).
-Open the drop down box to search for the user you wish to assign,
-and the merge request is added to their
-[assigned merge request list](../../search/index.md#search-issues-and-merge-requests).
-
-#### Multiple assignees **(PREMIUM)**
-
-> Moved to GitLab Premium in 13.9
-
-Multiple people often review merge requests at the same time.
-GitLab allows you to have multiple assignees for merge requests
-to indicate everyone that is reviewing or accountable for it.
-
-![multiple assignees for merge requests sidebar](img/multiple_assignees_for_merge_requests_sidebar.png)
-
-To assign multiple assignees to a merge request:
-
-1. From a merge request, expand the right sidebar and locate the **Assignees** section.
-1. Click on **Edit** and from the dropdown menu, select as many users as you want
-   to assign the merge request to.
-
-Similarly, assignees are removed by deselecting them from the same
-dropdown menu.
-
-It is also possible to manage multiple assignees:
-
-- When creating a merge request.
-- Using [quick actions](../quick_actions.md#issues-merge-requests-and-epics).
 
 ### Reviewer
 

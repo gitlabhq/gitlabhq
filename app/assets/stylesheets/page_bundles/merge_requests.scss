@@ -41,7 +41,7 @@ $tabs-holder-z-index: 250;
   // If they don't match, the file tree and the diff files stick
   // to the top at different heights, which is a bad-looking defect
   $diff-file-header-top: 11px;
-  $top-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$mr-version-controls-height} + #{$diff-file-header-top});
+  $top-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
 
   position: -webkit-sticky;
   position: sticky;
@@ -677,11 +677,8 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-version-controls {
-  position: relative;
-  z-index: $tabs-holder-z-index + 10;
   background: var(--white, $white);
   color: var(--gl-text-color, $gl-text-color);
-  margin-top: -1px;
 
   .mr-version-menus-container {
     display: flex;
@@ -703,7 +700,7 @@ $tabs-holder-z-index: 250;
   }
 
   .content-block {
-    padding: $gl-padding;
+    padding: $gl-padding-8 $gl-padding;
     border-bottom: 0;
   }
 
@@ -720,28 +717,6 @@ $tabs-holder-z-index: 250;
   // header 56px and fit into our 8px design grid
   .btn {
     height: 34px;
-  }
-
-  @include media-breakpoint-up(md) {
-    position: -webkit-sticky;
-    position: sticky;
-    top: calc(#{$header-height} + #{$mr-tabs-height});
-
-    .with-system-header & {
-      top: calc(#{$header-height} + #{$mr-tabs-height} + #{$system-header-height});
-    }
-
-    .with-system-header.with-performance-bar & {
-      top: calc(#{$header-height} + #{$mr-tabs-height} + #{$system-header-height} + #{$performance-bar-height});
-    }
-
-    .mr-version-menus-container {
-      flex-wrap: nowrap;
-    }
-
-    .with-performance-bar & {
-      top: calc(#{$header-height} + #{$performance-bar-height} + #{$mr-tabs-height});
-    }
   }
 }
 

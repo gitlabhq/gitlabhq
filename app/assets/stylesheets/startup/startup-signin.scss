@@ -519,6 +519,16 @@ label.label-bold {
 .navbar-empty .brand-header-logo {
   max-height: 100%;
 }
+.tanuki-logo .tanuki {
+  fill: #e24329;
+}
+.tanuki-logo .left-cheek,
+.tanuki-logo .right-cheek {
+  fill: #fc6d26;
+}
+.tanuki-logo .chin {
+  fill: #fca326;
+}
 input::-moz-placeholder {
   color: #868686;
   opacity: 1;

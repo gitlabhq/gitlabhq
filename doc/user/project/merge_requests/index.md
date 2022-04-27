@@ -70,6 +70,72 @@ change and whether you need access to a development environment:
 - [Push changes from the command line](../../../gitlab-basics/start-using-git.md), if you are
   familiar with Git and the command line.
 
+## Assign a user to a merge request
+
+When a merge request is created, it's assigned by default to the person who created it.
+This person owns the merge request, but isn't responsible for [reviewing it](reviews/index.md).
+To assign the merge request to someone else, use the `/assign @user`
+[quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area in
+a merge request, or:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests** and find your merge request.
+1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
+1. Select **Edit**.
+1. Search for the user you want to assign, and select the user.
+
+The merge request is added to the user's
+[assigned merge request list](../../search/index.md#search-issues-and-merge-requests).
+
+### Assign multiple users **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
+
+GitLab enables multiple assignees for merge requests, if multiple people are
+accountable for it:
+
+![multiple assignees for merge requests sidebar](img/multiple_assignees_for_merge_requests_sidebar.png)
+
+To assign multiple assignees to a merge request, use the `/assign @user`
+[quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area, or:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests** and find your merge request.
+1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
+1. Select **Edit** and, from the dropdown list, select all users you want
+   to assign the merge request to.
+
+To remove an assignee, clear the user from the same dropdown list.
+
+## Close a merge request
+
+If you decide to permanently stop work on a merge request,
+GitLab recommends you close the merge request rather than
+[delete it](#delete-a-merge-request). The author and assignees of a merge request, and users with
+Developer, Maintainer, or Owner [roles](../../permissions.md) in a project
+can close merge requests in the project:
+
+1. Go to the merge request you want to close.
+1. Scroll to the comment box at the bottom of the page.
+1. Following the comment box, select **Close merge request**.
+
+GitLab closes the merge request, but preserves records of the merge request,
+its comments, and any associated pipelines.
+
+### Delete a merge request
+
+GitLab recommends you close, rather than delete, merge requests.
+
+WARNING:
+You cannot undo the deletion of a merge request.
+
+To delete a merge request:
+
+1. Sign in to GitLab as a user with the project Owner role.
+   Only users with this role can delete merge requests in a project.
+1. Go to the merge request you want to delete, and select **Edit**.
+1. Scroll to the bottom of the page, and select **Delete merge request**.
+
 ## Request attention to a merge request
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343528) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `mr_attention_requests`. Disabled by default.
@@ -116,35 +182,6 @@ If you are both the assignee and a reviewer on a merge request, you receive
 only one attention request, which is synced across both duties. If the
 attention request is removed from you, either as an assignee or a reviewer,
 it is removed from both your duties.
-
-## Close a merge request
-
-If you decide to permanently stop work on a merge request,
-GitLab recommends you close the merge request rather than
-[delete it](#delete-a-merge-request). The author and assignees of a merge request, and users with
-Developer, Maintainer, or Owner [roles](../../permissions.md) in a project
-can close merge requests in the project:
-
-1. Go to the merge request you want to close.
-1. Scroll to the comment box at the bottom of the page.
-1. Following the comment box, select **Close merge request**.
-
-GitLab closes the merge request, but preserves records of the merge request,
-its comments, and any associated pipelines.
-
-### Delete a merge request
-
-GitLab recommends you close, rather than delete, merge requests.
-
-WARNING:
-You cannot undo the deletion of a merge request.
-
-To delete a merge request:
-
-1. Sign in to GitLab as a user with the project Owner role.
-   Only users with this role can delete merge requests in a project.
-1. Go to the merge request you want to delete, and select **Edit**.
-1. Scroll to the bottom of the page, and select **Delete merge request**.
 
 ## Merge request workflows
 

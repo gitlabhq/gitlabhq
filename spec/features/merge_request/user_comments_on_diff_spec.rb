@@ -103,14 +103,21 @@ RSpec.describe 'User comments on a diff', :js do
           end
 
           # Check the same comments in the side-by-side view.
+          execute_script "window.scrollTo(0,0)"
           find('.js-show-diff-settings').click
           click_button 'Side-by-side'
+
+          second_line_element = find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
+          second_root_element = second_line_element.ancestor('[data-path]')
 
           wait_for_requests
 
           page.within(second_root_element) do
             expect(page).to have_content('Line is wrong')
           end
+
+          first_line_element = find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
+          first_root_element = first_line_element.ancestor('[data-path]')
 
           page.within(first_root_element) do
             expect(page).to have_content('Line is correct')

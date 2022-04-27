@@ -127,6 +127,8 @@ Example response:
 
 ### Within a group
 
+> [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336912) the `tags` and `tag_count` attributes in GitLab 15.0.
+
 Get a list of registry repositories in a group.
 
 ```plaintext
@@ -136,12 +138,10 @@ GET /groups/:id/registry/repositories
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) accessible by the authenticated user. |
-| `tags`      | boolean | no | If the parameter is included as true, each repository includes an array of `"tags"` in the response. |
-| `tags_count` | boolean | no | If the parameter is included as true, each repository includes `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/2/registry/repositories?tags=1&tags_count=true"
+     "https://gitlab.example.com/api/v4/groups/2/registry/repositories"
 ```
 
 Example response:

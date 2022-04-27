@@ -412,7 +412,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'RepositoryCleanupWorker' => 3,
         'RepositoryForkWorker' => 5,
         'RepositoryImportWorker' => false,
-        'RepositoryPushAuditEventWorker' => 3,
         'RepositoryRemoveRemoteWorker' => 3,
         'RepositoryUpdateMirrorWorker' => false,
         'RepositoryUpdateRemoteMirrorWorker' => 3,

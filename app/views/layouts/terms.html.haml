@@ -1,10 +1,11 @@
 !!! 5
 - add_page_specific_style 'page_bundles/terms'
 - @hide_breadcrumbs = true
+- body_classes = [user_application_theme]
 %html{ lang: I18n.locale, class: page_class }
   = render "layouts/head"
 
-  %body{ data: { page: body_data_page } }
+  %body{ class: body_classes, data: { page: body_data_page } }
     .layout-page.terms{ class: page_class }
       .content-wrapper.gl-pb-5
         .mobile-overlay
@@ -17,11 +18,7 @@
           .content{ id: "content-body" }
             .gl-card
               .gl-card-header
-                = brand_header_logo
-                - logo_text = brand_header_logo_type
-                - if logo_text.present?
-                  %span.logo-text.gl-ml-3
-                    = logo_text
+                = brand_header_logo({add_gitlab_black_text: true})
               - if header_link?(:user_dropdown)
                 .navbar-collapse
                   %ul.nav.navbar-nav

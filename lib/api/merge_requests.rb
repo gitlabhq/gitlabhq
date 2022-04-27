@@ -373,7 +373,7 @@ module API
       desc 'Get the merge request pipelines' do
         success Entities::Ci::PipelineBasic
       end
-      get ':id/merge_requests/:merge_request_iid/pipelines', feature_category: :continuous_integration do
+      get ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :continuous_integration do
         pipelines = merge_request_pipelines_with_access
 
         present paginate(pipelines), with: Entities::Ci::PipelineBasic
@@ -382,7 +382,7 @@ module API
       desc 'Create a pipeline for merge request' do
         success ::API::Entities::Ci::Pipeline
       end
-      post ':id/merge_requests/:merge_request_iid/pipelines', feature_category: :continuous_integration do
+      post ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :continuous_integration do
         pipeline = ::MergeRequests::CreatePipelineService
           .new(project: user_project, current_user: current_user, params: { allow_duplicate: true })
           .execute(find_merge_request_with_access(params[:merge_request_iid]))

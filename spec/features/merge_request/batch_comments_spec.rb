@@ -146,6 +146,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
       before do
         find('.js-show-diff-settings').click
         click_button 'Side-by-side'
+        find('.js-show-diff-settings').click
       end
 
       it 'adds draft comments to both sides' do

@@ -10,17 +10,6 @@
   right: 0;
   border-radius: 0;
 
-  .logo-text {
-    line-height: initial;
-
-    svg {
-      width: 55px;
-      height: 14px;
-      margin: 0;
-      fill: $white;
-    }
-  }
-
   .close-icon {
     display: none;
   }
@@ -71,7 +60,7 @@
         display: flex;
         align-items: center;
         padding: 2px 8px;
-        margin: 5px 2px 5px -12px;
+        margin: 4px 2px 4px -12px;
         border-radius: $border-radius-default;
       }
 

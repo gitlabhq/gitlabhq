@@ -756,15 +756,6 @@ input {
   right: 0;
   border-radius: 0;
 }
-.navbar-gitlab .logo-text {
-  line-height: initial;
-}
-.navbar-gitlab .logo-text svg {
-  width: 55px;
-  height: 14px;
-  margin: 0;
-  fill: #fff;
-}
 .navbar-gitlab .close-icon {
   display: none;
 }
@@ -803,7 +794,7 @@ input {
   display: flex;
   align-items: center;
   padding: 2px 8px;
-  margin: 5px 2px 5px -12px;
+  margin: 4px 2px 4px -12px;
   border-radius: 4px;
 }
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
@@ -982,6 +973,16 @@ input {
 }
 .top-nav-toggle .dropdown-icon {
   margin-right: 0.5rem;
+}
+.tanuki-logo .tanuki {
+  fill: #e24329;
+}
+.tanuki-logo .left-cheek,
+.tanuki-logo .right-cheek {
+  fill: #fc6d26;
+}
+.tanuki-logo .chin {
+  fill: #fca326;
 }
 .context-header {
   position: relative;
@@ -1705,6 +1706,19 @@ svg.s16 {
 }
 .gl-display-none {
   display: none;
+}
+@media (min-width: 992px) {
+  .gl-lg-display-none\! {
+    display: none !important;
+  }
+}
+.gl-display-flex {
+  display: flex;
+}
+@media (min-width: 992px) {
+  .gl-lg-display-flex {
+    display: flex;
+  }
 }
 @media (min-width: 576px) {
   .gl-sm-display-block {
