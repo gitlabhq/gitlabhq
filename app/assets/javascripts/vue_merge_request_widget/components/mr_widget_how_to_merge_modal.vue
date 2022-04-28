@@ -112,11 +112,17 @@ export default {
       return escapeShellString(this.sourceBranch);
     },
   },
+  mounted() {
+    document.querySelector('.js-check-out-modal-trigger')?.addEventListener('click', () => {
+      this.$refs.modal.show();
+    });
+  },
 };
 </script>
 
 <template>
   <gl-modal
+    ref="modal"
     modal-id="modal-merge-info"
     :no-enforce-focus="true"
     :title="$options.i18n.title"

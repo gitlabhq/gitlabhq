@@ -367,6 +367,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-27",
     "membership_type": "group_member",
+    "membership_state": "active",
     "removable": true,
     "created_at": "2021-01-03T12:16:02.000Z"
   },
@@ -380,6 +381,7 @@ Example response:
     "email": "john@example.com",
     "last_activity_on": "2021-01-25",
     "membership_type": "group_member",
+    "membership_state": "active",
     "removable": true,
     "created_at": "2021-01-04T18:46:42.000Z"
   },
@@ -392,6 +394,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-20",
     "membership_type": "group_invite",
+    "membership_state": "awaiting",
     "removable": false,
     "created_at": "2021-01-09T07:12:31.000Z"
   }

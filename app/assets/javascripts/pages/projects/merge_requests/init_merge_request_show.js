@@ -8,6 +8,7 @@ import createDefaultClient from '~/lib/graphql';
 import initSourcegraph from '~/sourcegraph';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
+import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_widget_how_to_merge_modal.vue';
 import getStateQuery from './queries/get_state.query.graphql';
 
 export default function initMergeRequestShow() {
@@ -35,6 +36,26 @@ export default function initMergeRequestShow() {
       return h(StatusBox, {
         props: {
           initialState: el.dataset.state,
+        },
+      });
+    },
+  });
+
+  const modalEl = document.getElementById('js-check-out-modal');
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: modalEl,
+    render(h) {
+      return h(MrWidgetHowToMergeModal, {
+        props: {
+          canMerge: modalEl.dataset.canMerge === 'true',
+          isFork: modalEl.dataset.isFork === 'true',
+          sourceBranch: modalEl.dataset.sourceBranch,
+          sourceProjectPath: modalEl.dataset.sourceProjectPath,
+          targetBranch: modalEl.dataset.targetBranch,
+          sourceProjectDefaultUrl: modalEl.dataset.sourceProjectDefaultUrl,
+          reviewingDocsPath: modalEl.dataset.reviewingDocsPath,
         },
       });
     },

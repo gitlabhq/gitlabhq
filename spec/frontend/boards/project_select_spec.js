@@ -1,4 +1,10 @@
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlDropdownItem,
+  GlSearchBoxByType,
+  GlLoadingIcon,
+  GlFormInput,
+} from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -22,6 +28,8 @@ describe('ProjectSelect component', () => {
   const findFirstGlDropdownItem = () => findGlDropdownItems().at(0);
   const findInMenuLoadingIcon = () => wrapper.find("[data-testid='dropdown-text-loading-icon']");
   const findEmptySearchMessage = () => wrapper.find("[data-testid='empty-result-message']");
+
+  const waitRAF = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
   const createStore = ({ state, activeGroupProjects }) => {
     Vue.use(Vuex);
@@ -61,6 +69,7 @@ describe('ProjectSelect component', () => {
       provide: {
         groupId: 1,
       },
+      attachTo: document.body,
     });
   };
 
@@ -119,6 +128,17 @@ describe('ProjectSelect component', () => {
 
       it('does not render empty search result message', () => {
         expect(findEmptySearchMessage().exists()).toBe(false);
+      });
+
+      it('focuses on the search input', async () => {
+        const dropdownToggle = findGlDropdown().find('.dropdown-toggle');
+
+        await dropdownToggle.trigger('click');
+        await waitRAF();
+        await nextTick();
+
+        const searchInput = findGlDropdown().findComponent(GlFormInput).element;
+        expect(document.activeElement).toEqual(searchInput);
       });
     });
 

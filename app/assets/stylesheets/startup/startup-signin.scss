@@ -138,9 +138,8 @@ hr {
   margin-right: -15px;
   margin-left: -15px;
 }
+.col-md-6,
 .col-sm-12,
-.col-sm-7,
-.col-sm-5,
 .col {
   position: relative;
   width: 100%;
@@ -159,14 +158,6 @@ hr {
   order: 12;
 }
 @media (min-width: 576px) {
-  .col-sm-5 {
-    flex: 0 0 41.6666666667%;
-    max-width: 41.6666666667%;
-  }
-  .col-sm-7 {
-    flex: 0 0 58.3333333333%;
-    max-width: 58.3333333333%;
-  }
   .col-sm-12 {
     flex: 0 0 100%;
     max-width: 100%;
@@ -176,6 +167,12 @@ hr {
   }
   .order-sm-12 {
     order: 12;
+  }
+}
+@media (min-width: 768px) {
+  .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
   }
 }
 .form-control {
@@ -578,7 +575,6 @@ svg {
 .login-page .omniauth-container {
   box-shadow: 0 0 0 1px #dbdbdb;
   border-radius: 0.25rem;
-  padding: 15px;
 }
 .login-page .login-box .login-heading h3,
 .login-page .omniauth-container .login-heading h3 {

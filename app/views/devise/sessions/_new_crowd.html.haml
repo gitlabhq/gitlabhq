@@ -1,13 +1,13 @@
 = form_tag(omniauth_authorize_path(:user, :crowd), id: 'new_crowd_user', class: 'gl-show-field-errors') do
-  .form-group
+  .form-group.gl-px-5.gl-pt-5
     = label_tag :username, _('Username or email')
     = text_field_tag :username, nil, { class: "form-control top", title: _("This field is required."), autofocus: "autofocus", required: true }
-  .form-group
+  .form-group.gl-px-5
     = label_tag :password
     = password_field_tag :password, nil, { autocomplete: 'current-password', class: "form-control bottom", title: _("This field is required."), required: true }
   - if devise_mapping.rememberable?
-    .remember-me
+    .remember-me.gl-px-5
       %label{ for: "remember_me" }
         = check_box_tag :remember_me, '1', false, id: 'remember_me'
         %span= _('Remember me')
-  = submit_tag _("Sign in"), class: "gl-button btn-confirm btn"
+  = submit_tag _("Sign in"), class: "gl-button btn-confirm btn gl-px-5"

@@ -31,16 +31,4 @@ RSpec.shared_examples 'logs downstream pipeline creation' do
       root_pipeline_namespace_path: expected_root_pipeline.project.namespace.full_path,
       root_pipeline_project_path: expected_root_pipeline.project.full_path)
   end
-
-  context 'when feature flag ci_log_downstream_pipeline_creation is disabled' do
-    before do
-      stub_feature_flags(ci_log_downstream_pipeline_creation: false)
-    end
-
-    it 'does not log the creation' do
-      log_entry = record_downstream_pipeline_logs { subject }
-
-      expect(log_entry).to be_nil
-    end
-  end
 end

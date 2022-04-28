@@ -43,6 +43,8 @@ module API
         delete '/client_keys/:key_id' do
           key = user_project.error_tracking_client_keys.find(params[:key_id])
           key.destroy!
+
+          present key, with: Entities::ErrorTracking::ClientKey
         end
       end
     end

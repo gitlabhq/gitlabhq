@@ -65,7 +65,7 @@ module API
         requires :namespace, type: String, desc: "Namespace's path"
         optional :parent_id, type: Integer, desc: "The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered."
       end
-      get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups do
+      get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
         namespace_path = params[:namespace]
 
         exists = Namespace.without_project_namespaces.by_parent(params[:parent_id]).filter_by_path(namespace_path).exists?

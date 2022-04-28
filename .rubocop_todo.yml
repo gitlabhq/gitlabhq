@@ -18,23 +18,6 @@ Lint/EmptyFile:
     - 'db/seeds.rb'
     - 'ee/db/geo/seeds.rb'
 
-# Offense count: 13
-Lint/MixedRegexpCaptureTypes:
-  Exclude:
-    - 'app/models/alert_management/alert.rb'
-    - 'app/models/integrations/ewm.rb'
-    - 'app/uploaders/file_uploader.rb'
-    - 'ee/lib/gitlab/code_owners/reference_extractor.rb'
-    - 'lib/gitlab/ci/pipeline/expression/lexeme/string.rb'
-    - 'lib/gitlab/dependency_linker/gemfile_linker.rb'
-    - 'lib/gitlab/diff/suggestions_parser.rb'
-    - 'lib/gitlab/github_import/representation/note.rb'
-    - 'lib/gitlab/metrics/system.rb'
-    - 'lib/gitlab/request_profiler/profile.rb'
-    - 'lib/gitlab/slash_commands/issue_move.rb'
-    - 'lib/gitlab/slash_commands/issue_new.rb'
-    - 'lib/gitlab/slash_commands/run.rb'
-
 # Offense count: 200
 # Cop supports --auto-correct.
 Lint/RedundantCopDisableDirective:

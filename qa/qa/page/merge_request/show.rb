@@ -49,10 +49,9 @@ module QA
           element :comment_now_button
         end
 
-        view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_header.vue' do
-          element :download_dropdown
+        view 'app/views/projects/merge_requests/_code_dropdown.html.haml' do
+          element :mr_code_drodpown
           element :download_email_patches_menu_item
-          element :download_plain_diff_menu_item
           element :open_in_web_ide_button
         end
 
@@ -343,12 +342,12 @@ module QA
         end
 
         def view_email_patches
-          click_element(:download_dropdown)
+          click_element(:mr_code_drodpown)
           visit_link_in_element(:download_email_patches_menu_item)
         end
 
         def view_plain_diff
-          click_element(:download_dropdown)
+          click_element(:mr_code_drodpown)
           visit_link_in_element(:download_plain_diff_menu_item)
         end
 
@@ -359,6 +358,7 @@ module QA
         end
 
         def click_open_in_web_ide
+          click_element(:mr_code_dropdown)
           click_element(:open_in_web_ide_button)
           wait_for_requests
         end

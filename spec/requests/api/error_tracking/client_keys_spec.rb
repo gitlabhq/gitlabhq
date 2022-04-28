@@ -81,6 +81,10 @@ RSpec.describe API::ErrorTracking::ClientKeys do
       it 'returns a correct status' do
         expect(response).to have_gitlab_http_status(:ok)
       end
+
+      it 'returns specific fields using the entity' do
+        expect(json_response.keys).to match_array(%w[id active public_key sentry_dsn])
+      end
     end
   end
 end

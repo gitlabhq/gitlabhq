@@ -6609,6 +6609,9 @@ msgstr ""
 msgid "CI/CD configuration file"
 msgstr ""
 
+msgid "CI/CD minutes"
+msgstr ""
+
 msgid "CI/CD|No projects have been added to the scope"
 msgstr ""
 
@@ -6622,6 +6625,9 @@ msgid "CICDAnalytics|Deployment frequency"
 msgstr ""
 
 msgid "CICDAnalytics|Lead time"
+msgstr ""
+
+msgid "CICDAnalytics|No shared runner minute usage data available"
 msgstr ""
 
 msgid "CICDAnalytics|Projects with releases"
@@ -7200,6 +7206,9 @@ msgid "Check again"
 msgstr ""
 
 msgid "Check feature availability on namespace plan"
+msgstr ""
+
+msgid "Check out branch"
 msgstr ""
 
 msgid "Check out, review, and merge locally"
@@ -13464,9 +13473,6 @@ msgstr ""
 msgid "Download artifacts"
 msgstr ""
 
-msgid "Download as"
-msgstr ""
-
 msgid "Download codes"
 msgstr ""
 
@@ -13558,6 +13564,9 @@ msgid "Duplicate page: %{error_message}"
 msgstr ""
 
 msgid "Duration"
+msgstr ""
+
+msgid "Duration (min)"
 msgstr ""
 
 msgid "Duration|%s days"
@@ -13837,6 +13846,9 @@ msgid "Email notification for unknown sign-ins"
 msgstr ""
 
 msgid "Email patch"
+msgstr ""
+
+msgid "Email patches"
 msgstr ""
 
 msgid "Email sent"
@@ -26266,7 +26278,16 @@ msgstr ""
 msgid "OnDemandScans|%{learnMoreLinkStart}Learn more about on-demand scans%{learnMoreLinkEnd}."
 msgstr ""
 
+msgid "OnDemandScans|Add a schedule to run this scan at a specified date and time or on a recurring basis. Scheduled scans are automatically saved to scan library."
+msgstr ""
+
+msgid "OnDemandScans|Analyze a deployed version of your web application for known vulnerabilities by examining it from the outside in. DAST works by simulating external attacks on your application while it is running."
+msgstr ""
+
 msgid "OnDemandScans|Are you sure you want to delete this scan?"
+msgstr ""
+
+msgid "OnDemandScans|Cancel"
 msgstr ""
 
 msgid "OnDemandScans|Could not delete saved scan. Please refresh the page, or try again later."
@@ -26290,22 +26311,37 @@ msgstr ""
 msgid "OnDemandScans|Create new site profile"
 msgstr ""
 
+msgid "OnDemandScans|DAST configuration"
+msgstr ""
+
+msgid "OnDemandScans|DAST scans for vulnerabilities in your project's running application, website, or API.  For details of all configuration options, see the %{linkStart}GitLab DAST documentation%{linkEnd}."
+msgstr ""
+
+msgid "OnDemandScans|Define the fundamental configuration options for your on-demand scan."
+msgstr ""
+
 msgid "OnDemandScans|Delete profile"
 msgstr ""
 
 msgid "OnDemandScans|Description (optional)"
 msgstr ""
 
+msgid "OnDemandScans|Dynamic Application Security Testing (DAST)"
+msgstr ""
+
 msgid "OnDemandScans|Edit on-demand DAST scan"
+msgstr ""
+
+msgid "OnDemandScans|Edit on-demand scan"
 msgstr ""
 
 msgid "OnDemandScans|Edit profile"
 msgstr ""
 
-msgid "OnDemandScans|For example: Tests the login page for SQL injections"
+msgid "OnDemandScans|Enable scan schedule"
 msgstr ""
 
-msgid "OnDemandScans|Manage DAST scans"
+msgid "OnDemandScans|For example: Tests the login page for SQL injections"
 msgstr ""
 
 msgid "OnDemandScans|Manage scanner profiles"
@@ -26318,6 +26354,9 @@ msgid "OnDemandScans|My daily scan"
 msgstr ""
 
 msgid "OnDemandScans|New on-demand DAST scan"
+msgstr ""
+
+msgid "OnDemandScans|New on-demand scan"
 msgstr ""
 
 msgid "OnDemandScans|New scan"
@@ -26353,19 +26392,25 @@ msgstr ""
 msgid "OnDemandScans|Save scan"
 msgstr ""
 
+msgid "OnDemandScans|Scan configuration"
+msgstr ""
+
 msgid "OnDemandScans|Scan library"
 msgstr ""
 
 msgid "OnDemandScans|Scan name"
 msgstr ""
 
+msgid "OnDemandScans|Scan results will be associated with the selected branch."
+msgstr ""
+
+msgid "OnDemandScans|Scan schedule"
+msgstr ""
+
 msgid "OnDemandScans|Scan type"
 msgstr ""
 
 msgid "OnDemandScans|Scanner profile"
-msgstr ""
-
-msgid "OnDemandScans|Schedule scan"
 msgstr ""
 
 msgid "OnDemandScans|Select one of the existing profiles"
@@ -26398,6 +26443,9 @@ msgstr ""
 msgid "OnDemandScans|There are no scheduled scans."
 msgstr ""
 
+msgid "OnDemandScans|Timezone"
+msgstr ""
+
 msgid "OnDemandScans|Use existing scanner profile"
 msgstr ""
 
@@ -26408,6 +26456,9 @@ msgid "OnDemandScans|View results"
 msgstr ""
 
 msgid "OnDemandScans|You must create a repository within your project to run an on-demand scan."
+msgstr ""
+
+msgid "OnDemandScans|at"
 msgstr ""
 
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_start}here%{link_end}."
@@ -31612,9 +31663,6 @@ msgid "Reopened this %{quick_action_target}."
 msgstr ""
 
 msgid "Reopens this %{quick_action_target}."
-msgstr ""
-
-msgid "Repeats"
 msgstr ""
 
 msgid "Replace"
@@ -40631,6 +40679,12 @@ msgstr ""
 msgid "UsageQuota|CI minutes usage by project"
 msgstr ""
 
+msgid "UsageQuota|CI/CD minutes usage"
+msgstr ""
+
+msgid "UsageQuota|CI/CD minutes usage since %{timeElapsed}"
+msgstr ""
+
 msgid "UsageQuota|Code packages and container images."
 msgstr ""
 
@@ -40691,6 +40745,9 @@ msgstr ""
 msgid "UsageQuota|Shared bits of code and text."
 msgstr ""
 
+msgid "UsageQuota|Shared runner usage"
+msgstr ""
+
 msgid "UsageQuota|Snippets"
 msgstr ""
 
@@ -40739,6 +40796,12 @@ msgstr ""
 msgid "UsageQuota|Usage breakdown"
 msgstr ""
 
+msgid "UsageQuota|Usage by month"
+msgstr ""
+
+msgid "UsageQuota|Usage by project"
+msgstr ""
+
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
 msgstr ""
 
@@ -40749,9 +40812,6 @@ msgid "UsageQuota|Usage of resources across your projects"
 msgstr ""
 
 msgid "UsageQuota|Usage quotas help link"
-msgstr ""
-
-msgid "UsageQuota|Usage since"
 msgstr ""
 
 msgid "UsageQuota|When you purchase additional storage, we automatically unlock projects that were locked when you reached the %{actualRepositorySizeLimit} limit."
@@ -45026,9 +45086,6 @@ msgstr ""
 msgid "mrWidget|Cancel auto-merge"
 msgstr ""
 
-msgid "mrWidget|Check out branch"
-msgstr ""
-
 msgid "mrWidget|Checking if merge request can be merged…"
 msgstr ""
 
@@ -45068,9 +45125,6 @@ msgid "mrWidget|Dismiss"
 msgstr ""
 
 msgid "mrWidget|Does not delete the source branch"
-msgstr ""
-
-msgid "mrWidget|Email patches"
 msgstr ""
 
 msgid "mrWidget|Failed to load deployment statistics"
@@ -45181,9 +45235,6 @@ msgid "mrWidget|Open in Gitpod"
 msgstr ""
 
 msgid "mrWidget|Open in Web IDE"
-msgstr ""
-
-msgid "mrWidget|Plain diff"
 msgstr ""
 
 msgid "mrWidget|Please restore it or use a different %{type} branch."

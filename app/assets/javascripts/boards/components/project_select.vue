@@ -91,6 +91,9 @@ export default {
     loadMoreProjects() {
       this.fetchGroupProjects({ search: this.searchTerm, fetchNext: true });
     },
+    setFocus() {
+      this.$refs.search.focusInput();
+    },
   },
 };
 </script>
@@ -107,8 +110,10 @@ export default {
       block
       menu-class="gl-w-full!"
       :loading="initialLoading"
+      @shown="setFocus"
     >
       <gl-search-box-by-type
+        ref="search"
         v-model.trim="searchTerm"
         debounce="250"
         :placeholder="$options.i18n.searchPlaceholder"

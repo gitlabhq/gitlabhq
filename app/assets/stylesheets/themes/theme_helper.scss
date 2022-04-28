@@ -150,6 +150,7 @@
 
   .header-search {
     background-color: rgba($search-and-nav-links, 0.2) !important;
+    border-radius: $border-radius-default;
 
     &:hover {
       background-color: rgba($search-and-nav-links, 0.3) !important;

@@ -136,9 +136,49 @@ These shortcuts are available when browsing the files in a project (go to
 
 These shortcuts are available when editing a file with the [Web IDE](project/web_ide/index.md):
 
-| macOS shortcut                        | Windows shortcut    | Description |
-|---------------------------------------|---------------------|-------------|
-| <kbd>Command</kbd> + <kbd>p</kbd>     | <kbd>Control</kbd> + <kbd>p</kbd> | Search for, and then open another file for editing. |
+| macOS shortcut                  | Windows shortcut    | Description |
+|---------------------------------|---------------------|-------------|
+| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>↑</kbd> |  | Add cursor above |
+| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>↓</kbd>   |  | Add cursor below |
+| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>I</kbd>   |  | Add cursors to line ends |
+| <kbd>Command</kbd> + <kbd>K</kbd>, <kbd>Command</kbd> + <kbd>C</kbd>   | <kbd>Control</kbd> + <kbd>K</kbd>, <kbd>Control</kbd> + <kbd>C</kbd> _or_ <kbd>Control</kbd> + <kbd>/</kbd> | Add line comment |
+| <kbd>Command</kbd> + <kbd>D</kbd>   |  | Add selection to next find match |
+| <kbd>Command</kbd> + <kbd>F2</kbd>   |  | Change all occurrences |
+| <kbd>F1</kbd>   |  | Command palette |
+| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>↓</kbd> |  | Copy line down |
+| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>↑</kbd> |  | Copy line up |
+| <kbd>Command</kbd> + <kbd>U</kbd> |  | Cursor undo |
+| <kbd>Command</kbd> + <kbd>Backspace<kbd> |  | Delete all left |
+| <kbd>Control</kbd> + <kbd>K</kbd> |  | Delete all right |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> <kbd>K</kbd> |  | Delete line |
+| <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>→</kbd> |  | Expand selection |
+| <kbd>Command</kbd> + <kbd>P</kbd> |  | File finder |
+| <kbd>Command</kbd> + <kbd>F</kbd> |  | Find |
+| <kbd>Enter</kbd> |  | Find next |
+| <kbd>Command</kbd> + <kbd>F3</kbd> |  | Find next selection |
+| <kbd>Shift</kbd> + <kbd>Enter</kbd> + <kbd>F3</kbd> |  | Find previous |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>F3</kbd> |  | Find previous selection |
+| <kbd>Command</kbd> + <kbd>E</kbd> |  | Find with selection |
+| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>&#91;</kbd> |  | Fold |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>O</kbd> |  | Fold all |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>/</kbd> |  | Fold all block comments |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>8</kbd> |  | Fold all regions |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>-</kbd> |  | Fold all regions except selected |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>1</kbd> |  | Fold level 1 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>2</kbd> |  | Fold level 2 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>3</kbd> |  | Fold level 3 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>4</kbd> |  | Fold level 4 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>5</kbd> |  | Fold level 5 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>6</kbd> |  | Fold level 6 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>7</kbd> |  | Fold level 7 |
+| <kbd>Command</kbd> + <kbd>K</kbd> + <kbd>Command</kbd> + <kbd>&#91;</kbd> |  | Fold recursively |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>\ </kbd> |  | Go to bracket |
+| <kbd>Control</kbd> + <kbd>G</kbd> |  | Go to line or column |
+| <kbd>Option</kbd> + <kbd>F8</kbd> |  | Go to next problem (error, warning, info) |
+| <kbd>F8</kbd> |  | Go to next problem in files (error, warning, info) |
+| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>F8</kbd> |  | Go to previous problem (error, warning, info) |
+| <kbd>Shift</kbd> + <kbd>F8</kbd> |  | Go to previous problem in files (error, warning, info) |
+| <kbd>Command</kbd> + <kbd>p</kbd> | <kbd>Control</kbd> + <kbd>p</kbd> | Search for, and then open another file for editing. |
 | <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Commit (when editing the commit message). |
 
 ### Repository graph

@@ -206,6 +206,18 @@ module MergeRequestsHelper
     api_v4_projects_merge_requests_award_emoji_path(id: merge_request.project.id, merge_request_iid: merge_request.iid)
   end
 
+  def how_merge_modal_data(merge_request)
+    {
+      is_fork: merge_request.for_fork?,
+      can_merge: merge_request.can_be_merged_by?(current_user),
+      source_branch: merge_request.source_branch,
+      source_project: merge_request.source_project,
+      source_project_full_path: merge_request.source_project&.full_path,
+      target_branch: merge_request.target_branch,
+      reviewing_docs_path: help_page_path('user/project/merge_requests/reviews/index.md', anchor: "checkout-merge-requests-locally-through-the-head-ref")
+    }
+  end
+
   private
 
   def review_requested_merge_requests_count

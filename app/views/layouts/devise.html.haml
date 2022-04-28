@@ -16,7 +16,7 @@
               %h1.mb-3.font-weight-normal
                 = current_appearance&.title.presence || _('GitLab')
           .row.mb-3
-            .col-sm-7.order-12.order-sm-1.brand-holder
+            .col-md-6.order-12.order-sm-1.brand-holder
               - unless recently_confirmed_com?
                 = brand_image
                 - if current_appearance&.description?
@@ -36,7 +36,7 @@
 
               = render_if_exists 'layouts/devise_help_text'
 
-            .col-sm-5.order-1.new-session-forms-container{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
+            .col-md-6.order-1.new-session-forms-container{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
               = yield
 
       = render 'devise/shared/footer', footer_message: footer_message

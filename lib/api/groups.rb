@@ -361,7 +361,7 @@ module API
         use :group_list_params
         use :with_custom_attributes
       end
-      get ":id/descendant_groups", feature_category: :subgroups do
+      get ":id/descendant_groups", feature_category: :subgroups, urgency: :low do
         finder_params = declared_params(include_missing: false).merge(include_parent_descendants: true)
         groups = find_groups(finder_params, params[:id])
         present_groups params, groups

@@ -24,6 +24,9 @@
         = sprite_icon('chevron-double-lg-left')
 
     .detail-page-header-actions.js-issuable-actions
+      - if @merge_request.source_project
+        = render 'projects/merge_requests/code_dropdown'
+
       - if can_update_merge_request
         = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
 

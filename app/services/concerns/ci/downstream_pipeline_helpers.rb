@@ -3,7 +3,6 @@
 module Ci
   module DownstreamPipelineHelpers
     def log_downstream_pipeline_creation(downstream_pipeline)
-      return unless Feature.enabled?(:ci_log_downstream_pipeline_creation, project, default_enabled: :yaml)
       return unless downstream_pipeline&.persisted?
 
       hierarchy_size = downstream_pipeline.all_pipelines_in_hierarchy.count
