@@ -10224,6 +10224,9 @@ msgstr ""
 msgid "Copy link"
 msgstr ""
 
+msgid "Copy link URL"
+msgstr ""
+
 msgid "Copy link to chart"
 msgstr ""
 
@@ -13690,6 +13693,9 @@ msgid "Edit inline"
 msgstr ""
 
 msgid "Edit issues"
+msgstr ""
+
+msgid "Edit link"
 msgstr ""
 
 msgid "Edit merge requests"

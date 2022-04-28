@@ -17,77 +17,19 @@ can and can't be pushed to your repository. While GitLab offers
 - Evaluating the details of files.
 - Preventing Git tag removal.
 
-You can define push rules:
-
-- [Globally](#enable-global-push-rules), if you are an administrator.
-- [Per project](#override-global-push-rules-per-project), to create push rules that
-  meet each project's needs.
-
-These push rules are available by default:
-
-- **Reject unverified users** - GitLab rejects any commit that was not committed
-  by the same user as the user who pushed it, or if the committer's email address
-  is [not confirmed](../../../security/user_email_confirmation.md).
-- **Reject unsigned commits** - Reject commit when it is not signed through GPG.
-  Read [signing commits with GPG](gpg_signed_commits/index.md). This push rule
-  can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
-  and allow [unsigned commits created in the GitLab UI](#unsigned-commits-created-in-the-gitlab-ui).
-- **Do not allow users to remove Git tags with** `git push` - Forbid users to remove Git tags with `git push`.
-  Tags can be deleted through the web UI.
-- **Check whether the commit author is a GitLab user** - Restrict commits to existing
-  GitLab users (checked against their email addresses). Checks both the commit author and committer.
-- **Prevent pushing secret files** - GitLab rejects any files that are
-  [likely to contain secrets](#prevent-pushing-secrets-to-the-repository).
-
-These push rules are also available by default, but require you to create a
-regular expression for the rule to evaluate:
-
-- **Require expression in commit messages** - Only commit messages that match this
-  regular expression can be pushed. To allow any commit message, leave empty.
-  Uses multiline mode, which can be disabled using `(?-m)`.
-
-  For example, if every commit should reference a Jira issue
-  (like `Refactored css. Fixes JIRA-123.`) your regular expression would be
-  `JIRA\-\d+`. Pushes with commit messages not matching this string are declined.
-- **Reject expression in commit messages** - Only commit messages that do not match
-  this regular expression can be pushed. To allow any commit message, leave empty.
-  Uses multiline mode, which can be disabled using `(?-m)`.
-- **Restrict by branch name** - Only branch names that match this regular expression
-  can be pushed. To allow any branch name, leave empty. The name of your
-  [default branch](branches/default.md) is always allowed, because many merges
-  target this branch. Include any other target branches in your regex.
-
-  Some examples:
-
-  - You may want all branches to start with a certain name (such as
-    `feature`, `hotfix`, `docker`, `android`) in support of GitLab CI/CD jobs that
-    rely on the branch name.
-  - `^JIRA-` Branches must start with `JIRA-`.
-  - `-JIRA$` Branches must end with `-JIRA`.
-  - `^[a-z0-9\\-]{4,15}$` Branches must be between `4` and `15` characters long,
-    accepting only lowercase letters, numbers and dashes.
-
-  NOTE:
-  In GitLab 12.10 and later, certain formats of branch names are restricted by
-  default for security purposes. 40-character hexadecimal names, similar to Git
-  commit hashes, are prohibited.
-- **Restrict by commit author's email** - Only the commit author's email address that matches this
-  regular expression can be pushed. Checks both the commit author and committer.
-  To allow any email address, leave empty.
-- **Prohibited file names** - Any committed file names that match this regular expression
-  and do not already exist in the repository can't be pushed. To allow all file names,
-  leave empty. See [common examples](#prohibit-files-by-name).
-- **Maximum file size** - Pushes that contain added or updated files that exceed this
-  file size (in MB) are rejected. To allow files of any size, set to `0`.
-  Files tracked by Git LFS are exempted.
-
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions
-in push rules, and you can test them at the [regex101 regex tester](https://regex101.com/).
+in push rules. You can test them at the [regex101 regex tester](https://regex101.com/).
+
+For custom push rules use [server hooks](../../../administration/server_hooks.md).
 
 ## Enable global push rules
 
 You can create push rules for all new projects to inherit, but they can be overridden
 at the project level or the [group level](../../group/index.md#group-push-rules).
+
+Prerequisite:
+
+- You must be an administrator.
 
 To create global push rules:
 
@@ -108,18 +50,90 @@ To override global push rules for a specific project:
 1. Set the rule you want.
 1. Select **Save push rules**.
 
-## Create custom push rules **(PREMIUM SELF)**
+## Use push rules to verify users
 
-You can create custom, more complex push rules with [server hooks](../../../administration/server_hooks.md).
+Use these rules to validate users who make commits.
 
-## Prevent pushing secrets to the repository
+- **Reject unverified users**: Users must have a [confirmed email address](../../../security/user_email_confirmation.md).
+- **Check whether the commit author is a GitLab user**: The commit author and committer must have an email address that's been verified by GitLab.
+- **Commit author's email**: Both the author's and committer's email addresses must match the regular expression.
+  To allow any email address, leave empty.
+
+## Use push rules to validate commit messages
+
+Use these rules for your commit messages.
+
+- **Require expression in commit messages**: Messages must match the
+  expression. To allow any commit message, leave empty.
+  Uses multiline mode, which can be disabled by using `(?-m)`.
+
+  For example, if every commit should reference a Jira issue
+  (like `Refactored css. Fixes JIRA-123.`), the regular expression would be
+  `JIRA\-\d+`.
+- **Reject expression in commit messages**: Commit messages must not match
+  the expression. To allow any commit message, leave empty.
+  Uses multiline mode, which can be disabled by using `(?-m)`.
+
+## Use push rules to validate branches
+
+To validate your branch names, enter a regular expression for **Branch name**.
+To allow any branch name, leave empty. Your
+[default branch](branches/default.md) is always allowed.
+
+Examples:
+
+- Branches must start with `JIRA-`.
+
+  ```plaintext
+  `^JIRA-`
+  ```
+
+- Branches must end with `-JIRA`.
+
+  ```plaintext
+  `-JIRA$`
+  ```
+
+- Branches must be between `4` and `15` characters long,
+  accepting only lowercase letters, numbers and dashes.
+
+  ```plaintext
+  `^[a-z0-9\\-]{4,15}$`
+  ```
+
+NOTE:
+In GitLab 12.10 and later, certain formats of branch names are restricted by
+default for security purposes. 40-character hexadecimal names, similar to Git
+commit hashes, are prohibited.
+
+## Use push rules to prevent unintended consequences
+
+Use these rules to prevent unintended consequences.
+
+- **Reject unsigned commits**: Commit must be signed through [GPG](gpg_signed_commits/index.md). This rule
+  can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
+  and allow [unsigned commits created in the GitLab UI](#unsigned-commits-created-in-the-gitlab-ui).
+- **Do not allow users to remove Git tags with `git push`**: Users cannot use `git push` to remove Git tags.
+  Users can still delete tags in the UI.
+
+## Use push rules to validate files
+
+Use these rules to validate files contained in the commit.
+
+- **Prevent pushing secret files**: Files must not contain [secrets](#prevent-pushing-secrets-to-the-repository).
+- **Prohibited file names**: Files that do not exist in the repository
+  must not match the regular expression. To allow all file names, leave empty. See [common examples](#prohibit-files-by-name).
+- **Maximum file size**: Added or updated files must not exceed this
+  file size (in MB). To allow files of any size, set to `0`. Files tracked by Git LFS are exempted.
+
+### Prevent pushing secrets to the repository
 
 > Moved to GitLab Premium in 13.9.
 
 Never commit secrets, such as credential files and SSH private keys, to a version control
 system. In GitLab, you can use a predefined list of files to block those files from a
-repository. Merge requests containing a file matching the list are blocked, and can't merge.
-Files already committed to the repository are not restricted by this push rule.
+repository. Merge requests that contain a file that matches the list are blocked.
+This push rule does not restrict files already committed to the repository.
 
 Files blocked by this rule are listed below. For a complete list of criteria, refer to
 [`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml).
@@ -185,7 +199,7 @@ Files blocked by this rule are listed below. For a complete list of criteria, re
   - `*.history`
   - `*_history`
 
-## Prohibit files by name
+### Prohibit files by name
 
 > Moved to GitLab Premium in 13.9.
 

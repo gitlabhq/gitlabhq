@@ -270,7 +270,7 @@ Don't see the event you want in any of the epics linked above? You can either:
 The repositories push events feature was:
 
 - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
-- [Removed]((https://gitlab.com/gitlab-org/gitlab/-/issues/337993)) in GitLab 15.0.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 15.0.
 
 ## Search
 

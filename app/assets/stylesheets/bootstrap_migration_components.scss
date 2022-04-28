@@ -26,7 +26,7 @@ input[type='file'] {
   line-height: 1;
 }
 
-.form-group.row .col-form-label {
+.form-group.row > .col-form-label {
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
   @include media-breakpoint-up(md) {

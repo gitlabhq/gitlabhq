@@ -54,10 +54,21 @@ RSpec.describe PgFullTextSearchable do
     end
 
     context 'when specified columns are not changed' do
-      it 'does not enqueue worker' do
+      it 'does not call update_search_data!' do
         expect(model).not_to receive(:update_search_data!)
 
         model.update!(description: 'A new description')
+      end
+    end
+
+    context 'when model is updated twice within a transaction' do
+      it 'calls update_search_data!' do
+        expect(model).to receive(:update_search_data!)
+
+        model.transaction do
+          model.update!(title: 'A new title')
+          model.update!(updated_at: Time.current)
+        end
       end
     end
   end

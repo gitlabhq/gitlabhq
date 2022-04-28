@@ -4,6 +4,6 @@ classes:
 - MergeRequestReviewer
 feature_categories:
 - code_review
-description: TODO
+description: Store allocated reviewers for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40358
 milestone: '13.4'

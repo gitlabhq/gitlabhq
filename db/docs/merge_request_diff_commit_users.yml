@@ -4,6 +4,6 @@ classes:
 - MergeRequest::DiffCommitUser
 feature_categories:
 - code_review
-description: TODO
+description: Store commit user information for merge request diffs
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63669
 milestone: '14.1'

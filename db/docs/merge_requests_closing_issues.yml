@@ -4,6 +4,6 @@ classes:
 - MergeRequestsClosingIssues
 feature_categories:
 - code_review
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/ba25e2f1ac61b47940f939a2d9f1d0ad417e1de2
+description: Store the events of merge request closing any issues
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5986
 milestone: '8.12'

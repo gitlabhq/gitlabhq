@@ -51,6 +51,7 @@ describe('content_editor/components/bubble_menus/formatting', () => {
     ${'italic'} | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic text', editorCommand: 'toggleItalic', size: 'medium', category: 'tertiary' }}
     ${'strike'} | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough', editorCommand: 'toggleStrike', size: 'medium', category: 'tertiary' }}
     ${'code'}   | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode', size: 'medium', category: 'tertiary' }}
+    ${'link'}   | ${{ contentType: 'link', iconName: 'link', label: 'Insert link', editorCommand: 'toggleLink', editorCommandParams: { href: '' }, size: 'medium', category: 'tertiary' }}
   `('given a $testId toolbar control', ({ testId, controlProps }) => {
     beforeEach(() => {
       buildWrapper();
@@ -60,7 +61,7 @@ describe('content_editor/components/bubble_menus/formatting', () => {
       expect(wrapper.findByTestId(testId).exists()).toBe(true);
 
       Object.keys(controlProps).forEach((propName) => {
-        expect(wrapper.findByTestId(testId).props(propName)).toBe(controlProps[propName]);
+        expect(wrapper.findByTestId(testId).props(propName)).toEqual(controlProps[propName]);
       });
     });
 

@@ -80,6 +80,15 @@ module PgFullTextSearchable
         pg_full_text_searchable_columns[column[:name]] = column[:weight]
       end
 
+      # When multiple updates are done in a transaction, `saved_changes` will only report the latest save
+      # and we may miss an update to the searchable columns.
+      # As a workaround, we set a dirty flag here and update the search data in `after_save_commit`.
+      after_save do
+        next unless pg_full_text_searchable_columns.keys.any? { |f| saved_changes.has_key?(f) }
+
+        @update_pg_full_text_search_data = true
+      end
+
       # We update this outside the transaction because this could raise an error if the resulting tsvector
       # is too long. When that happens, we still persist the create / update but the model will not have a
       # search data record. This is fine in most cases because this is a very rare occurrence and only happens
@@ -87,9 +96,8 @@ module PgFullTextSearchable
       #
       # We also do not want to use a subtransaction here due to: https://gitlab.com/groups/gitlab-org/-/epics/6540
       after_save_commit do
-        next unless pg_full_text_searchable_columns.keys.any? { |f| saved_changes.has_key?(f) }
-
-        update_search_data!
+        update_search_data! if @update_pg_full_text_search_data
+        @update_pg_full_text_search_data = nil
       end
     end
 

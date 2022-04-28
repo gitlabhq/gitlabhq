@@ -79,6 +79,17 @@ export default {
         :label="__('Code')"
         @execute="trackToolbarControlExecution"
       />
+      <toolbar-button
+        data-testid="link"
+        content-type="link"
+        icon-name="link"
+        editor-command="toggleLink"
+        :editor-command-params="{ href: '' }"
+        category="tertiary"
+        size="medium"
+        :label="__('Insert link')"
+        @execute="trackToolbarControlExecution"
+      />
     </gl-button-group>
   </bubble-menu>
 </template>
