@@ -51,7 +51,7 @@ Learn the various ways to [create a merge request](creating_merge_requests.md).
 When you start a new merge request, you can immediately include the following
 options. You can also add them later by either selecting **Edit** on the merge
 request's page at the top-right side, or by using
-[keyboard shortcuts for merge requests](../../shortcuts.md#issues-and-merge-requests):
+[keyboard shortcuts for merge requests](../../shortcuts.md#merge-requests):
 
 - [Assign](index.md#assign-a-user-to-a-merge-request) the merge request to a colleague for review. With [multiple assignees](index.md#assign-multiple-users), you can assign it to more than one person at a time.
 - Set a [milestone](../milestones/index.md) to track time-sensitive changes.
@@ -76,7 +76,7 @@ After you have created the merge request, you can also:
 
 Many of these options can be set:
 
-- From the merge request page, with [keyboard shortcuts](../../shortcuts.md#issues-and-merge-requests).
+- From the merge request page, with [keyboard shortcuts](../../shortcuts.md#merge-requests).
 - When pushing changes from the command line, with [Git push options](../push_options.md).
 
 See also other [features associated to merge requests](reviews/index.md#associated-features).

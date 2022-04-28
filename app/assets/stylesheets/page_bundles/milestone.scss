@@ -167,7 +167,7 @@ $status-box-line-height: 26px;
   border-bottom: 1px solid var(--border-color, $border-color);
 }
 
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(md) {
   .milestone-actions {
     @include clearfix();
     padding-top: $gl-vert-padding;
