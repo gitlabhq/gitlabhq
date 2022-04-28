@@ -75,7 +75,7 @@ Example response:
 ```
 ````
 
-Adjust the [version history note accordingly](styleguide/index.md#version-text-in-the-version-history)
+Adjust the [version history note accordingly](versions.md#version-text-in-the-version-history)
 to describe the GitLab release that introduced the API call.
 
 ## Method description

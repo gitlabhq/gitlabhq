@@ -326,7 +326,7 @@ pgbouncer['databases'] = {
     user: 'pgbouncer',
     password: PGBOUNCER_SQL_PASSWORD_HASH,
     pool_mode: 'transaction'
-  }
+  },
   praefect_production_direct: {
     host: POSTGRESQL_HOST,
     # Use `pgbouncer` user to connect to database backend.

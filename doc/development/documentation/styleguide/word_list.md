@@ -1056,7 +1056,7 @@ Sometimes you might need to use **yet** when writing a task. If you use
 **yet**, ensure the surrounding phrases are written
 in present tense, active voice.
 
-[View guidance about how to write about future features](index.md#promising-features-in-future-versions).
+[View guidance about how to write about future features](../versions.md#promising-features-in-future-versions).
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
 ## you, your, yours
