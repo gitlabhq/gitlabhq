@@ -5805,6 +5805,9 @@ msgstr ""
 msgid "Billings|Reactivate trial"
 msgstr ""
 
+msgid "Billings|Seats in use / Seats available"
+msgstr ""
+
 msgid "Billings|Seats in use / Seats in subscription"
 msgstr ""
 
@@ -5871,10 +5874,19 @@ msgstr ""
 msgid "Billing|Enter at least three characters to search."
 msgstr ""
 
+msgid "Billing|Explore all plans"
+msgstr ""
+
 msgid "Billing|Export list"
 msgstr ""
 
+msgid "Billing|Free groups on GitLab are limited to %{maxNamespaceSeats} seats"
+msgstr ""
+
 msgid "Billing|Group invite"
+msgstr ""
+
+msgid "Billing|If the group has over %{maxNamespaceSeats} members, only those occupying a seat can access the namespace. To ensure all members (active and %{linkStart}over limit%{linkEnd}) can access the namespace, you can start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "Billing|Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member."
@@ -28334,9 +28346,6 @@ msgstr ""
 msgid "Please reach out if you have any questions and we'll be happy to assist."
 msgstr ""
 
-msgid "Please refer to %{docs_url}"
-msgstr ""
-
 msgid "Please review the updated escalation policies for %{project_link}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
 
@@ -38668,7 +38677,7 @@ msgstr ""
 msgid "This issue is in a child epic of the filtered epic"
 msgstr ""
 
-msgid "This job depends on other jobs with expired/erased artifacts: %{invalid_dependencies}"
+msgid "This job could not start because it could not retrieve the needed artifacts%{punctuation}%{invalid_dependencies}"
 msgstr ""
 
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
@@ -42824,9 +42833,6 @@ msgid "WorkItem|Something went wrong while updating the work item. Please try ag
 msgstr ""
 
 msgid "WorkItem|Type"
-msgstr ""
-
-msgid "WorkItem|Work Item"
 msgstr ""
 
 msgid "WorkItem|Work Items"

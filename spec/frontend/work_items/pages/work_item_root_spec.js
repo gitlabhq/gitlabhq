@@ -26,6 +26,8 @@ describe('Work items root component', () => {
   it('renders WorkItemDetail', () => {
     createComponent();
 
-    expect(findWorkItemDetail().props()).toEqual({ workItemId: 'gid://gitlab/WorkItem/1' });
+    expect(findWorkItemDetail().props()).toEqual({
+      workItemId: 'gid://gitlab/WorkItem/1',
+    });
   });
 });

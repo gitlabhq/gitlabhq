@@ -148,12 +148,14 @@ class BuildDetailsEntity < Ci::JobEntity
   end
 
   def failure_message
-    _("This job depends on other jobs with expired/erased artifacts: %{invalid_dependencies}") %
-      { invalid_dependencies: invalid_dependencies }
+    # We do not return the invalid_dependencies for all scenarios see https://gitlab.com/gitlab-org/gitlab/-/issues/287772#note_914406387
+    punctuation = invalid_dependencies.empty? ? '.' : ': '
+    _("This job could not start because it could not retrieve the needed artifacts%{punctuation}%{invalid_dependencies}") %
+      { invalid_dependencies: invalid_dependencies, punctuation: punctuation }
   end
 
   def help_message(docs_url)
-    html_escape(_("Please refer to %{docs_url}")) % { docs_url: "<a href=\"#{docs_url}\">#{html_escape(docs_url)}</a>".html_safe }
+    html_escape(_("<a href=\"#{docs_url}\">Learn more.</a>".html_safe))
   end
 end
 

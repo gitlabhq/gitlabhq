@@ -21,7 +21,7 @@ export default {
       required: false,
       default: null,
     },
-    canUpdate: {
+    canDelete: {
       type: Boolean,
       required: false,
       default: false,
@@ -63,7 +63,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="canUpdate">
+  <div v-if="canDelete">
     <gl-dropdown
       icon="ellipsis_v"
       text-sr-only

@@ -6,4 +6,8 @@ fragment WorkItem on WorkItem {
     id
     name
   }
+  userPermissions {
+    deleteWorkItem
+    updateWorkItem
+  }
 }

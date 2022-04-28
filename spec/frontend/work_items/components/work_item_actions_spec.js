@@ -18,13 +18,13 @@ describe('WorkItemActions component', () => {
   const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
 
   const createComponent = ({
-    canUpdate = true,
+    canDelete = true,
     deleteWorkItemHandler = jest.fn().mockResolvedValue(deleteWorkItemResponse),
   } = {}) => {
     glModalDirective = jest.fn();
     wrapper = shallowMount(WorkItemActions, {
       apolloProvider: createMockApollo([[deleteWorkItem, deleteWorkItemHandler]]),
-      propsData: { workItemId: '123', canUpdate },
+      propsData: { workItemId: '123', canDelete },
       directives: {
         glModal: {
           bind(_, { value }) {
@@ -93,9 +93,9 @@ describe('WorkItemActions component', () => {
     expect(wrapper.emitted('workItemDeleted')).toBeUndefined();
   });
 
-  it('does not render when canUpdate is false', () => {
+  it('does not render when canDelete is false', () => {
     createComponent({
-      canUpdate: false,
+      canDelete: false,
     });
 
     expect(wrapper.html()).toBe('');

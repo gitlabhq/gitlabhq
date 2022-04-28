@@ -10,6 +10,10 @@ export const workItemQueryResponse = {
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
       },
+      userPermissions: {
+        deleteWorkItem: false,
+        updateWorkItem: false,
+      },
     },
   },
 };
@@ -27,6 +31,10 @@ export const updateWorkItemMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
+        },
+        userPermissions: {
+          deleteWorkItem: false,
+          updateWorkItem: false,
         },
       },
     },
@@ -61,6 +69,10 @@ export const createWorkItemMutationResponse = {
           id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
         },
+        userPermissions: {
+          deleteWorkItem: false,
+          updateWorkItem: false,
+        },
       },
     },
   },
@@ -75,6 +87,10 @@ export const createWorkItemFromTaskMutationResponse = {
         descriptionHtml: '<p>New description</p>',
         id: 'gid://gitlab/WorkItem/13',
         __typename: 'WorkItem',
+        userPermissions: {
+          deleteWorkItem: false,
+          updateWorkItem: false,
+        },
       },
     },
   },

@@ -115,21 +115,15 @@ export default {
             },
           },
           update(store, { data: { workItemCreate } }) {
-            const { id, title, workItemType, state } = workItemCreate.workItem;
+            const { workItem } = workItemCreate;
 
             store.writeQuery({
               query: workItemQuery,
               variables: {
-                id,
+                id: workItem.id,
               },
               data: {
-                workItem: {
-                  __typename: 'WorkItem',
-                  id,
-                  title,
-                  state,
-                  workItemType,
-                },
+                workItem,
               },
             });
           },

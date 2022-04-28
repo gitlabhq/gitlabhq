@@ -127,21 +127,48 @@ RSpec.describe BuildDetailsEntity do
     end
 
     context 'when the build has failed due to a missing dependency' do
-      let!(:test1) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test1', stage_idx: 0) }
-      let!(:test2) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
-      let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
       let(:message) { subject[:callout_message] }
 
-      before do
-        build.pipeline.unlocked!
-        build.drop!(:missing_dependency_failure)
+      context 'when the dependency is in the same pipeline' do
+        let!(:test1) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test1', stage_idx: 0) }
+        let!(:test2) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
+        let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
+
+        before do
+          build.pipeline.unlocked!
+          build.drop!(:missing_dependency_failure)
+        end
+
+        it { is_expected.to include(failure_reason: 'missing_dependency_failure') }
+
+        it 'includes the failing dependencies in the callout message' do
+          expect(message).to include('test1')
+          expect(message).to include('test2')
+        end
+
+        it 'includes message for list of invalid dependencies' do
+          expect(message).to include('could not retrieve the needed artifacts:')
+        end
       end
 
-      it { is_expected.to include(failure_reason: 'missing_dependency_failure') }
+      context 'when dependency is not found' do
+        let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
 
-      it 'includes the failing dependencies in the callout message' do
-        expect(message).to include('test1')
-        expect(message).to include('test2')
+        before do
+          build.pipeline.unlocked!
+          build.drop!(:missing_dependency_failure)
+        end
+
+        it { is_expected.to include(failure_reason: 'missing_dependency_failure') }
+
+        it 'excludes the failing dependencies in the callout message' do
+          expect(message).not_to include('test1')
+          expect(message).not_to include('test2')
+        end
+
+        it 'includes the correct punctuation in the message' do
+          expect(message).to include('could not retrieve the needed artifacts.')
+        end
       end
     end
 

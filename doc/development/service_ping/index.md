@@ -413,6 +413,10 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
    exit
    ```
 
+1. Get the metrics duration from logs:
+
+Search in Google Console logs for `time_elapsed`. Query example [here](https://cloudlogging.app.goo.gl/nWheZvD8D3nWazNe6). 
+
 ### Verification (After approx 30 hours)
 
 #### Verify with Teleport
