@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe ErrorTracking::BaseService do
   describe '#compose_response' do
-    let(:project) { double('project') }
-    let(:user) { double('user', id: non_existing_record_id) }
+    let(:project) { build_stubbed(:project) }
+    let(:user) { build_stubbed(:user, id: non_existing_record_id) }
     let(:service) { described_class.new(project, user) }
 
     it 'returns bad_request error when response has an error key' do
@@ -19,7 +19,10 @@ RSpec.describe ErrorTracking::BaseService do
     end
 
     it 'returns server error when response has missing key error_type' do
-      data = { error: 'Unexpected Error', error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_MISSING_KEYS }
+      data = {
+        error: 'Unexpected Error',
+        error_type: ErrorTracking::ProjectErrorTrackingSetting::SENTRY_API_ERROR_TYPE_MISSING_KEYS
+      }
 
       result = service.send(:compose_response, data)
 
@@ -48,7 +51,7 @@ RSpec.describe ErrorTracking::BaseService do
 
       context 'when parse_response is implemented' do
         before do
-          expect(service).to receive(:parse_response) do |response|
+          allow(service).to receive(:parse_response) do |response|
             { animal: response[:thing] }
           end
         end

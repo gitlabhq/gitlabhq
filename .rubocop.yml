@@ -72,6 +72,11 @@ Lint/LastKeywordArgument:
   Enabled: true
   Safe: false
 
+Lint/EmptyFile:
+  Exclude:
+    - 'db/seeds.rb'
+    - 'ee/db/geo/seeds.rb'
+
 # This cop checks whether some constant value isn't a
 # mutable literal (e.g. array or hash).
 Style/MutableConstant:

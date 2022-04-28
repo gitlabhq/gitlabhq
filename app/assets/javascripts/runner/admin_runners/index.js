@@ -5,12 +5,15 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { updateOutdatedUrl } from '~/runner/runner_search_utils';
 import createDefaultClient from '~/lib/graphql';
 import { createLocalState } from '../graphql/list/local_state';
+import { showAlertFromLocalStorage } from '../local_storage_alert/show_alert_from_local_storage';
 import AdminRunnersApp from './admin_runners_app.vue';
 
 Vue.use(GlToast);
 Vue.use(VueApollo);
 
 export const initAdminRunners = (selector = '#js-admin-runners') => {
+  showAlertFromLocalStorage();
+
   const el = document.querySelector(selector);
 
   if (!el) {

@@ -12,7 +12,7 @@ export const initAdminRunnerShow = (selector = '#js-admin-runner-show') => {
     return null;
   }
 
-  const { runnerId } = el.dataset;
+  const { runnerId, runnersPath } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -25,6 +25,7 @@ export const initAdminRunnerShow = (selector = '#js-admin-runner-show') => {
       return h(AdminRunnerShowApp, {
         props: {
           runnerId,
+          runnersPath,
         },
       });
     },

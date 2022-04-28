@@ -4,6 +4,6 @@ classes:
 - Packages::Conan::Metadatum
 feature_categories:
 - package_registry
-description: TODO
+description: Conan package metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16418
 milestone: '12.5'

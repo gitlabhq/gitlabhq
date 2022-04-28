@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
@@ -14,7 +14,6 @@ export default {
   name: 'PackageTitle',
   components: {
     TitleArea,
-    GlIcon,
     GlSprintf,
     PackageTags,
     MetadataItem,
@@ -84,7 +83,6 @@ export default {
     data-qa-selector="package_title"
   >
     <template #sub-header>
-      <gl-icon name="eye" class="gl-mr-3" />
       <span data-testid="sub-header">
         <gl-sprintf :message="$options.i18n.packageInfo">
           <template #version>

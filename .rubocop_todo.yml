@@ -11,13 +11,6 @@ Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
 
-# Offense count: 2
-# Configuration parameters: AllowComments.
-Lint/EmptyFile:
-  Exclude:
-    - 'db/seeds.rb'
-    - 'ee/db/geo/seeds.rb'
-
 # Offense count: 200
 # Cop supports --auto-correct.
 Lint/RedundantCopDisableDirective:

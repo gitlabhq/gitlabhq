@@ -4,6 +4,6 @@ classes:
 - DependencyProxy::Manifest
 feature_categories:
 - dependency_proxy
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48727
+description: Dependency proxy manifest files
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48535
 milestone: '13.7'

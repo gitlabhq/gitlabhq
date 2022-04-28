@@ -5,6 +5,6 @@ classes:
 feature_categories:
 - git_lfs
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/14032d8eb1a60ae5920286249c1044be2fa27278
+description: Join table relating lfs_objects and projects 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1727
 milestone: '8.2'

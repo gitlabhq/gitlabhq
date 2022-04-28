@@ -9,7 +9,7 @@ RSpec.describe ErrorTracking::Collector::SentryRequestParser do
 
     let(:body) { raw_event }
     let(:headers) { { 'Content-Encoding' => '' } }
-    let(:request) { double('request', headers: headers, body: StringIO.new(body)) }
+    let(:request) { instance_double('ActionDispatch::Request', headers: headers, body: StringIO.new(body)) }
 
     subject { described_class.parse(request) }
 
@@ -22,7 +22,7 @@ RSpec.describe ErrorTracking::Collector::SentryRequestParser do
       end
     end
 
-    context 'empty body content' do
+    context 'with empty body content' do
       let(:body) { '' }
 
       it 'fails with exception' do
@@ -30,7 +30,7 @@ RSpec.describe ErrorTracking::Collector::SentryRequestParser do
       end
     end
 
-    context 'plain text sentry request' do
+    context 'with plain text sentry request' do
       it_behaves_like 'valid parser'
     end
   end

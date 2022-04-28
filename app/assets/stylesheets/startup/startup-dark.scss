@@ -394,8 +394,7 @@ a.gl-badge.badge-info:active {
   background-color: #0b5cad;
 }
 a.gl-badge.badge-info:active {
-  box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.8),
-    0 0 0 1px rgba(51, 51, 51, 0.4), 0 0 0 4px rgba(66, 143, 220, 0.48);
+  box-shadow: 0 0 0 1px #333, 0 0 0 3px #1f75cb;
   outline: none;
 }
 .gl-badge.badge-success {
@@ -408,8 +407,7 @@ a.gl-badge.badge-success:active {
   background-color: #24663b;
 }
 a.gl-badge.badge-success:active {
-  box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.8),
-    0 0 0 1px rgba(51, 51, 51, 0.4), 0 0 0 4px rgba(66, 143, 220, 0.48);
+  box-shadow: 0 0 0 1px #333, 0 0 0 3px #1f75cb;
   outline: none;
 }
 .gl-badge.badge-warning {
@@ -422,8 +420,7 @@ a.gl-badge.badge-warning:active {
   background-color: #8f4700;
 }
 a.gl-badge.badge-warning:active {
-  box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.8),
-    0 0 0 1px rgba(51, 51, 51, 0.4), 0 0 0 4px rgba(66, 143, 220, 0.48);
+  box-shadow: 0 0 0 1px #333, 0 0 0 3px #1f75cb;
   outline: none;
 }
 .gl-button .gl-badge {
@@ -488,9 +485,8 @@ a.gl-badge.badge-warning:active {
 }
 .gl-link:active {
   text-decoration: underline;
-  box-shadow: 0 0 0 1px rgba(51, 51, 51, 0.4),
-    0 0 0 4px rgba(66, 143, 220, 0.48);
-  outline: none;
+  outline: 2px solid #1f75cb;
+  outline-offset: 2px;
 }
 .gl-button {
   display: inline-flex;
@@ -519,8 +515,7 @@ a.gl-badge.badge-warning:active {
 }
 .gl-button.gl-button.btn-default:active,
 .gl-button.gl-button.btn-default.active {
-  box-shadow: inset 0 0 0 2px #bfbfbf, 0 0 0 1px rgba(51, 51, 51, 0.4),
-    0 0 0 4px rgba(66, 143, 220, 0.48);
+  box-shadow: inset 0 0 0 1px #bfbfbf, 0 0 0 1px #333, 0 0 0 3px #1f75cb;
   outline: none;
   background-color: #404040;
 }

@@ -62,7 +62,8 @@ Prerequisite:
 1. Enter the **Git repository URL**. Include the username
    in the URL, if required: `https://MYUSERNAME@github.com/GROUPNAME/PROJECTNAME.git`
 1. In **Mirror direction**, select **Pull**.
-1. In **Authentication method**, select your authentication method.
+1. In **Authentication method**, select your authentication method. To learn more, read
+   [Authentication methods for mirrors](index.md#authentication-methods-for-mirrors).
 1. Select any of the options you need:
    - [**Overwrite diverged branches**](#overwrite-diverged-branches)
    - [**Trigger pipelines for mirror updates**](#trigger-pipelines-for-mirror-updates)

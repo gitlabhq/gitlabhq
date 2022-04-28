@@ -221,6 +221,10 @@ module FilteredSearchHelpers
     find('.gl-filtered-search-last-item').click
   end
 
+  def click_token_segment(value)
+    find('.gl-filtered-search-token-segment', text: value).click
+  end
+
   def expect_visible_suggestions_list
     expect(page).to have_css('.gl-filtered-search-suggestion-list')
   end
@@ -231,6 +235,10 @@ module FilteredSearchHelpers
 
   def expect_suggestion(value)
     expect(page).to have_css('.gl-filtered-search-suggestion', text: value)
+  end
+
+  def expect_no_suggestion(value)
+    expect(page).not_to have_css('.gl-filtered-search-suggestion', text: value)
   end
 
   def expect_suggestion_count(count)
@@ -245,11 +253,25 @@ module FilteredSearchHelpers
     expect(page).to have_css '.gl-filtered-search-token', text: "Author = #{value}"
   end
 
+  def expect_search_term(value)
+    value.split(' ').each do |term|
+      expect(page).to have_css '.gl-filtered-search-term', text: term
+    end
+  end
+
   def expect_empty_search_term
     expect(page).to have_css '.gl-filtered-search-term', text: ''
   end
 
   def expect_token_segment(value)
     expect(page).to have_css '.gl-filtered-search-token-segment', text: value
+  end
+
+  def expect_recent_searches_history_item(value)
+    expect(page).to have_css '.gl-search-box-by-click-history-item', text: value
+  end
+
+  def expect_recent_searches_history_item_count(count)
+    expect(page).to have_css '.gl-search-box-by-click-history-item', count: count
   end
 end

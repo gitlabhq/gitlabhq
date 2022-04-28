@@ -9,7 +9,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:error_collection) { Gitlab::ErrorTracking::ErrorCollection.new(project: project) }
 
-  let(:list_issues_service) { spy('ErrorTracking::ListIssuesService') }
+  let(:list_issues_service) { instance_double('ErrorTracking::ListIssuesService') }
 
   let(:issues) { nil }
   let(:pagination) { nil }
@@ -19,23 +19,25 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
   end
 
   describe '#resolve' do
+    before do
+      allow(ErrorTracking::ListIssuesService)
+        .to receive(:new)
+        .and_return list_issues_service
+
+      allow(list_issues_service).to receive(:execute).and_return({})
+    end
+
     context 'with insufficient user permission' do
-      let(:user) { create(:user) }
+      let(:current_user) { create(:user) }
 
       it 'returns nil' do
-        context = { current_user: user }
-
-        expect(resolve_errors({}, context)).to eq nil
+        expect(resolve_errors).to eq nil
       end
     end
 
     context 'with sufficient permission' do
-      before do
+      before_all do
         project.add_developer(current_user)
-
-        allow(ErrorTracking::ListIssuesService)
-          .to receive(:new)
-          .and_return list_issues_service
       end
 
       context 'when after arg given' do
@@ -52,14 +54,9 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
       end
 
       context 'when no issues fetched' do
-        before do
-          allow(list_issues_service)
-            .to receive(:execute)
-            .and_return(
-              issues: nil
-            )
-        end
         it 'returns nil' do
+          expect(list_issues_service).to receive(:execute).and_return(issues: nil)
+
           expect(resolve_errors).to eq nil
         end
       end

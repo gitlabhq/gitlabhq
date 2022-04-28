@@ -5991,7 +5991,6 @@ Layout/LineLength:
     - 'spec/services/environments/reset_auto_stop_service_spec.rb'
     - 'spec/services/environments/schedule_to_delete_review_apps_service_spec.rb'
     - 'spec/services/environments/stop_service_spec.rb'
-    - 'spec/services/error_tracking/base_service_spec.rb'
     - 'spec/services/events/destroy_service_spec.rb'
     - 'spec/services/feature_flags/create_service_spec.rb'
     - 'spec/services/feature_flags/update_service_spec.rb'

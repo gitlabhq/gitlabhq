@@ -15,7 +15,7 @@ RSpec.describe ErrorTracking::IssueLatestEventService do
         let(:error_event) { build(:error_tracking_sentry_error_event) }
 
         before do
-          expect(error_tracking_setting)
+          allow(error_tracking_setting)
             .to receive(:issue_latest_event).and_return(latest_event: error_event)
         end
 
@@ -28,7 +28,7 @@ RSpec.describe ErrorTracking::IssueLatestEventService do
       include_examples 'error tracking service sentry error handling', :issue_latest_event
       include_examples 'error tracking service http status handling', :issue_latest_event
 
-      context 'integrated error tracking' do
+      context 'with integrated error tracking' do
         let_it_be(:error) { create(:error_tracking_error, project: project) }
         let_it_be(:event) { create(:error_tracking_error_event, error: error) }
 

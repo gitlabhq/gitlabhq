@@ -4,6 +4,6 @@ classes:
 - Packages::Pypi::Metadatum
 feature_categories:
 - package_registry
-description: TODO
+description: PyPI package metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27632
 milestone: '13.0'

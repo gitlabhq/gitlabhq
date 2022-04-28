@@ -300,7 +300,6 @@ Layout/SpaceInsideBlockBraces:
     - 'spec/controllers/import/manifest_controller_spec.rb'
     - 'spec/controllers/projects/blame_controller_spec.rb'
     - 'spec/controllers/projects/deploy_keys_controller_spec.rb'
-    - 'spec/controllers/projects/error_tracking/stack_traces_controller_spec.rb'
     - 'spec/controllers/projects/feature_flags_controller_spec.rb'
     - 'spec/controllers/projects/jobs_controller_spec.rb'
     - 'spec/controllers/projects/labels_controller_spec.rb'

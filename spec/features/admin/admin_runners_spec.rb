@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe "Admin Runners" do
   include Spec::Support::Helpers::Features::RunnersHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:admin) { create(:admin) }
 
@@ -481,6 +482,24 @@ RSpec.describe "Admin Runners" do
         expect(page).to have_content 'Configuration Runs untagged jobs'
         expect(page).to have_content 'Maximum job timeout None'
         expect(page).to have_content 'Tags tag1'
+      end
+    end
+
+    describe 'when a runner is deleted' do
+      before do
+        click_on 'Delete runner'
+
+        within_modal do
+          click_on 'Delete runner'
+        end
+      end
+
+      it 'deletes runner' do
+        expect(page.find('[data-testid="alert-success"]')).to have_content('deleted')
+      end
+
+      it 'redirects to runner list' do
+        expect(current_url).to match(admin_runners_path)
       end
     end
   end

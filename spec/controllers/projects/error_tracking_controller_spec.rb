@@ -6,9 +6,12 @@ RSpec.describe Projects::ErrorTrackingController do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
+  before_all do
+    project.add_maintainer(user)
+  end
+
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   describe 'GET #index' do
@@ -46,18 +49,18 @@ RSpec.describe Projects::ErrorTrackingController do
     end
 
     describe 'format json' do
-      let(:list_issues_service) { spy(:list_issues_service) }
+      let(:list_issues_service) { instance_double('ErrorTracking::ListIssuesService') }
       let(:external_url) { 'http://example.com' }
 
-      context 'no data' do
+      context 'with no data' do
         let(:permitted_params) { permit_index_parameters!({}) }
 
         before do
-          expect(ErrorTracking::ListIssuesService)
+          allow(ErrorTracking::ListIssuesService)
             .to receive(:new).with(project, user, permitted_params)
             .and_return(list_issues_service)
 
-          expect(list_issues_service).to receive(:execute)
+          allow(list_issues_service).to receive(:execute)
             .and_return(status: :error, http_status: :no_content)
         end
 
@@ -76,22 +79,22 @@ RSpec.describe Projects::ErrorTrackingController do
         let(:permitted_params) { permit_index_parameters!(search_term: search_term, sort: sort, cursor: cursor) }
 
         before do
-          expect(ErrorTracking::ListIssuesService)
+          allow(ErrorTracking::ListIssuesService)
             .to receive(:new).with(project, user, permitted_params)
             .and_return(list_issues_service)
         end
 
-        context 'service result is successful' do
+        context 'when service result is successful' do
           before do
-            expect(list_issues_service).to receive(:execute)
+            allow(list_issues_service).to receive(:execute)
               .and_return(status: :success, issues: [error], pagination: {})
-            expect(list_issues_service).to receive(:external_url)
+            allow(list_issues_service).to receive(:external_url)
               .and_return(external_url)
 
             get :index, params: params
           end
 
-          let(:error) { build(:error_tracking_sentry_error) }
+          let(:error) { build_stubbed(:error_tracking_sentry_error) }
 
           it 'returns a list of errors' do
             expect(response).to have_gitlab_http_status(:ok)
@@ -109,16 +112,16 @@ RSpec.describe Projects::ErrorTrackingController do
 
       context 'without extra params' do
         before do
-          expect(ErrorTracking::ListIssuesService)
+          allow(ErrorTracking::ListIssuesService)
             .to receive(:new).with(project, user, permit_index_parameters!({}))
             .and_return(list_issues_service)
         end
 
-        context 'service result is successful' do
+        context 'when service result is successful' do
           before do
-            expect(list_issues_service).to receive(:execute)
+            allow(list_issues_service).to receive(:execute)
               .and_return(status: :success, issues: [error], pagination: {})
-            expect(list_issues_service).to receive(:external_url)
+            allow(list_issues_service).to receive(:external_url)
               .and_return(external_url)
           end
 
@@ -137,12 +140,12 @@ RSpec.describe Projects::ErrorTrackingController do
           end
         end
 
-        context 'service result is erroneous' do
+        context 'when service result is erroneous' do
           let(:error_message) { 'error message' }
 
           context 'without http_status' do
             before do
-              expect(list_issues_service).to receive(:execute)
+              allow(list_issues_service).to receive(:execute)
                 .and_return(status: :error, message: error_message)
             end
 
@@ -158,7 +161,7 @@ RSpec.describe Projects::ErrorTrackingController do
             let(:http_status) { :no_content }
 
             before do
-              expect(list_issues_service).to receive(:execute).and_return(
+              allow(list_issues_service).to receive(:execute).and_return(
                 status: :error,
                 message: error_message,
                 http_status: http_status
@@ -189,7 +192,7 @@ RSpec.describe Projects::ErrorTrackingController do
   describe 'GET #issue_details' do
     let_it_be(:issue_id) { non_existing_record_id }
 
-    let(:issue_details_service) { spy(:issue_details_service) }
+    let(:issue_details_service) { instance_double('ErrorTracking::IssueDetailsService') }
 
     let(:permitted_params) do
       ActionController::Parameters.new(
@@ -199,15 +202,15 @@ RSpec.describe Projects::ErrorTrackingController do
     end
 
     before do
-      expect(ErrorTracking::IssueDetailsService)
+      allow(ErrorTracking::IssueDetailsService)
         .to receive(:new).with(project, user, permitted_params)
         .and_return(issue_details_service)
     end
 
     describe 'format json' do
-      context 'no data' do
+      context 'with no data' do
         before do
-          expect(issue_details_service).to receive(:execute)
+          allow(issue_details_service).to receive(:execute)
             .and_return(status: :error, http_status: :no_content)
           get :details, params: issue_params(issue_id: issue_id, format: :json)
         end
@@ -219,15 +222,15 @@ RSpec.describe Projects::ErrorTrackingController do
         it_behaves_like 'sets the polling header'
       end
 
-      context 'service result is successful' do
+      context 'when service result is successful' do
         before do
-          expect(issue_details_service).to receive(:execute)
+          allow(issue_details_service).to receive(:execute)
             .and_return(status: :success, issue: error)
 
           get :details, params: issue_params(issue_id: issue_id, format: :json)
         end
 
-        let(:error) { build(:error_tracking_sentry_detailed_error) }
+        let(:error) { build_stubbed(:error_tracking_sentry_detailed_error) }
 
         it 'returns an error' do
           expected_error = error.as_json.except('first_release_version').merge(
@@ -245,12 +248,12 @@ RSpec.describe Projects::ErrorTrackingController do
         it_behaves_like 'sets the polling header'
       end
 
-      context 'service result is erroneous' do
+      context 'when service result is erroneous' do
         let(:error_message) { 'error message' }
 
         context 'without http_status' do
           before do
-            expect(issue_details_service).to receive(:execute)
+            allow(issue_details_service).to receive(:execute)
               .and_return(status: :error, message: error_message)
           end
 
@@ -266,7 +269,7 @@ RSpec.describe Projects::ErrorTrackingController do
           let(:http_status) { :no_content }
 
           before do
-            expect(issue_details_service).to receive(:execute).and_return(
+            allow(issue_details_service).to receive(:execute).and_return(
               status: :error,
               message: error_message,
               http_status: http_status
@@ -286,7 +289,7 @@ RSpec.describe Projects::ErrorTrackingController do
 
   describe 'PUT #update' do
     let(:issue_id) { non_existing_record_id }
-    let(:issue_update_service) { spy(:issue_update_service) }
+    let(:issue_update_service) { instance_double('ErrorTracking::IssueUpdateService') }
     let(:permitted_params) do
       ActionController::Parameters.new(
         { issue_id: issue_id.to_s, status: 'resolved' }
@@ -298,15 +301,15 @@ RSpec.describe Projects::ErrorTrackingController do
     end
 
     before do
-      expect(ErrorTracking::IssueUpdateService)
+      allow(ErrorTracking::IssueUpdateService)
         .to receive(:new).with(project, user, permitted_params)
         .and_return(issue_update_service)
     end
 
     describe 'format json' do
-      context 'update result is successful' do
+      context 'when update result is successful' do
         before do
-          expect(issue_update_service).to receive(:execute)
+          allow(issue_update_service).to receive(:execute)
             .and_return(status: :success, updated: true, closed_issue_iid: non_existing_record_iid)
 
           update_issue
@@ -318,11 +321,11 @@ RSpec.describe Projects::ErrorTrackingController do
         end
       end
 
-      context 'update result is erroneous' do
+      context 'when update result is erroneous' do
         let(:error_message) { 'error message' }
 
         before do
-          expect(issue_update_service).to receive(:execute)
+          allow(issue_update_service).to receive(:execute)
             .and_return(status: :error, message: error_message)
 
           update_issue

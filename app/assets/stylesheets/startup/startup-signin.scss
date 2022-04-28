@@ -351,8 +351,7 @@ fieldset:disabled a.btn {
   background-color: #fff;
 }
 .gl-button.gl-button.btn-default:active {
-  box-shadow: inset 0 0 0 2px #5e5e5e, 0 0 0 1px rgba(255, 255, 255, 0.4),
-    0 0 0 4px rgba(31, 117, 203, 0.48);
+  box-shadow: inset 0 0 0 1px #5e5e5e, 0 0 0 1px #fff, 0 0 0 3px #428fdc;
   outline: none;
   background-color: #dbdbdb;
 }
@@ -364,8 +363,7 @@ fieldset:disabled a.btn {
   box-shadow: inset 0 0 0 1px #1068bf;
 }
 .gl-button.gl-button.btn-confirm:active {
-  box-shadow: inset 0 0 0 2px #033464, 0 0 0 1px rgba(255, 255, 255, 0.4),
-    0 0 0 4px rgba(31, 117, 203, 0.48);
+  box-shadow: inset 0 0 0 1px #033464, 0 0 0 1px #fff, 0 0 0 3px #428fdc;
   outline: none;
   background-color: #0b5cad;
 }

@@ -4,6 +4,6 @@ classes:
 - Packages::Composer::Metadatum
 feature_categories:
 - package_registry
-description: TODO
+description: Composer package metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30448
 milestone: '13.1'

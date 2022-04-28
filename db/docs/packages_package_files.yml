@@ -4,6 +4,6 @@ classes:
 - Packages::PackageFile
 feature_categories:
 - package_registry
-description: TODO
+description: Package registry file links and file metadata for all package types
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6607
 milestone: '11.3'

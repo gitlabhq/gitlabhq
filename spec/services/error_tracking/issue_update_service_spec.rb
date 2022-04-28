@@ -13,8 +13,7 @@ RSpec.describe ErrorTracking::IssueUpdateService do
     it 'does not call the close issue service' do
       update_service.execute
 
-      expect(issue_close_service)
-        .not_to have_received(:execute)
+      expect(issue_close_service).not_to have_received(:execute)
     end
 
     it 'does not create system note' do
@@ -29,8 +28,7 @@ RSpec.describe ErrorTracking::IssueUpdateService do
         let(:update_issue_response) { { updated: true } }
 
         before do
-          expect(error_tracking_setting)
-            .to receive(:update_issue).and_return(update_issue_response)
+          allow(error_tracking_setting).to receive(:update_issue).and_return(update_issue_response)
         end
 
         it 'returns the response' do
@@ -49,12 +47,11 @@ RSpec.describe ErrorTracking::IssueUpdateService do
           result
         end
 
-        context 'related issue and resolving' do
+        context 'with related issue and resolving' do
           let(:issue) { create(:issue, project: project) }
           let(:sentry_issue) { create(:sentry_issue, issue: issue) }
           let(:arguments) { { issue_id: sentry_issue.sentry_issue_identifier, status: 'resolved' } }
-
-          let(:issue_close_service) { spy(:issue_close_service) }
+          let(:issue_close_service) { instance_double('Issues::CloseService') }
 
           before do
             allow_next_instance_of(SentryIssueFinder) do |finder|
@@ -78,11 +75,11 @@ RSpec.describe ErrorTracking::IssueUpdateService do
               .with(issue, system_note: false)
           end
 
-          context 'issues gets closed' do
+          context 'when issue gets closed' do
             let(:closed_issue) { create(:issue, :closed, project: project) }
 
             before do
-              expect(issue_close_service)
+              allow(issue_close_service)
                 .to receive(:execute)
                 .with(issue, system_note: false)
                 .and_return(closed_issue)
@@ -99,13 +96,13 @@ RSpec.describe ErrorTracking::IssueUpdateService do
             end
           end
 
-          context 'issue is already closed' do
+          context 'when issue is already closed' do
             let(:issue) { create(:issue, :closed, project: project) }
 
             include_examples 'does not perform close issue flow'
           end
 
-          context 'status is not resolving' do
+          context 'when status is not resolving' do
             let(:arguments) { { issue_id: sentry_issue.sentry_issue_identifier, status: 'ignored' } }
 
             include_examples 'does not perform close issue flow'
@@ -115,7 +112,7 @@ RSpec.describe ErrorTracking::IssueUpdateService do
 
       include_examples 'error tracking service sentry error handling', :update_issue
 
-      context 'integrated error tracking' do
+      context 'with integrated error tracking' do
         let(:error) { create(:error_tracking_error, project: project) }
         let(:arguments) { { issue_id: error.id, status: 'resolved' } }
         let(:update_issue_response) { { updated: true, status: :success, closed_issue_iid: nil } }

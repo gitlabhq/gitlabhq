@@ -4,6 +4,6 @@ classes:
 - LfsFileLock
 feature_categories:
 - git_lfs
-description: TODO
+description: File locks for LFS objects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4091
 milestone: '10.5'

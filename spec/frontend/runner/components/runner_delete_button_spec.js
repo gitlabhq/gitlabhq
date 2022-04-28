@@ -118,6 +118,12 @@ describe('RunnerDeleteButton', () => {
     expect(findBtn().attributes('aria-label')).toBe(undefined);
   });
 
+  it('Passes other attributes to the button', () => {
+    createComponent({ props: { category: 'secondary' } });
+
+    expect(findBtn().props('category')).toBe('secondary');
+  });
+
   describe(`Before the delete button is clicked`, () => {
     it('The mutation has not been called', () => {
       expect(runnerDeleteHandler).toHaveBeenCalledTimes(0);

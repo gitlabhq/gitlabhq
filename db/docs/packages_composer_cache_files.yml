@@ -4,6 +4,6 @@ classes:
 - Packages::Composer::CacheFile
 feature_categories:
 - package_registry
-description: TODO
+description: Composer packages cached SHA files (deprecated)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51509
 milestone: '13.9'

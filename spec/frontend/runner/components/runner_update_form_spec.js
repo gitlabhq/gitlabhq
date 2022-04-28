@@ -122,6 +122,7 @@ describe('RunnerUpdateForm', () => {
     // Some read-only fields are not submitted
     const {
       __typename,
+      shortSha,
       ipAddress,
       executorName,
       runnerType,

@@ -2,6 +2,8 @@
 
 module Registrations
   class WelcomeController < ApplicationController
+    include OneTrustCSP
+
     layout 'minimal'
     skip_before_action :authenticate_user!, :required_signup_info, :check_two_factor_requirement, only: [:show, :update]
     before_action :require_current_user
