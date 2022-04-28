@@ -6423,6 +6423,9 @@ msgstr ""
 msgid "BulkImport|Destination"
 msgstr ""
 
+msgid "BulkImport|Destination group"
+msgstr ""
+
 msgid "BulkImport|Existing groups"
 msgstr ""
 
@@ -6463,9 +6466,6 @@ msgid "BulkImport|Name already exists."
 msgstr ""
 
 msgid "BulkImport|Name already used as a target for another group."
-msgstr ""
-
-msgid "BulkImport|New group"
 msgstr ""
 
 msgid "BulkImport|No additional information provided."
@@ -12156,6 +12156,9 @@ msgstr ""
 msgid "Deleted projects cannot be restored!"
 msgstr ""
 
+msgid "Deleted the source branch."
+msgstr ""
+
 msgid "Deletes the source branch"
 msgstr ""
 
@@ -13133,6 +13136,9 @@ msgid "DevopsReport|Your score"
 msgstr ""
 
 msgid "DevopsReport|Your usage"
+msgstr ""
+
+msgid "Did not delete the source branch."
 msgstr ""
 
 msgid "Didn't receive a confirmation email?"
@@ -35758,6 +35764,12 @@ msgstr ""
 msgid "Source branch"
 msgstr ""
 
+msgid "Source branch will be deleted."
+msgstr ""
+
+msgid "Source branch will not be deleted."
+msgstr ""
+
 msgid "Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}"
 msgstr ""
 
@@ -44903,6 +44915,9 @@ msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "mergedCommitsAdded|(commits were squashed)"
+msgstr ""
+
 msgid "metric_id must be unique across a project"
 msgstr ""
 
@@ -44912,6 +44927,12 @@ msgstr ""
 msgid "most recent deployment"
 msgstr ""
 
+msgid "mrWidgetCommitsAdded|%{commitCount} and %{mergeCommitCount} will be added to %{targetBranch}%{squashedCommits}."
+msgstr ""
+
+msgid "mrWidgetCommitsAdded|%{commitCount} will be added to %{targetBranch}."
+msgstr ""
+
 msgid "mrWidgetCommitsAdded|1 merge commit"
 msgstr ""
 
@@ -44919,6 +44940,12 @@ msgid "mrWidgetCommitsAdded|Adds %{commitCount} and %{mergeCommitCount} to %{tar
 msgstr ""
 
 msgid "mrWidgetCommitsAdded|Adds %{commitCount} to %{targetBranch}."
+msgstr ""
+
+msgid "mrWidgetCommitsAdded|Changes merged into %{targetBranch} with %{mergeCommitSha}%{squashedCommits}."
+msgstr ""
+
+msgid "mrWidgetCommitsAdded|The changes were not merged into %{targetBranch}."
 msgstr ""
 
 msgid "mrWidgetNothingToMerge|This merge request contains no changes."

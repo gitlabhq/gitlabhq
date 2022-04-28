@@ -142,9 +142,9 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.7'
 
 # Search
-gem 'elasticsearch-model', '~> 6.1'
-gem 'elasticsearch-rails', '~> 6.1', require: 'elasticsearch/rails/instrumentation'
-gem 'elasticsearch-api',   '~> 6.8.2'
+gem 'elasticsearch-model', '~> 7.2'
+gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
+gem 'elasticsearch-api',   '7.13.3'
 gem 'aws-sdk-core', '~> 3'
 gem 'aws-sdk-cloudformation', '~> 1'
 gem 'aws-sdk-s3', '~> 1'

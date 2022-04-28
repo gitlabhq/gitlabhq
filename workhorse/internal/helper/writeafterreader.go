@@ -37,7 +37,7 @@ func (r *busyReader) Read(p []byte) (int, error) {
 	n, err := r.Reader.Read(p)
 	if err != nil {
 		if err != io.EOF {
-			err = fmt.Errorf("busyReader: %v", err)
+			err = fmt.Errorf("busyReader: %w", err)
 		}
 		r.setError(err)
 	}
@@ -81,13 +81,13 @@ func (w *coupledWriter) Write(data []byte) (int, error) {
 	if w.busyReader.IsBusy() {
 		n, err := w.tempfileWrite(data)
 		if err != nil {
-			w.writeError = fmt.Errorf("coupledWriter: %v", err)
+			w.writeError = fmt.Errorf("coupledWriter: %w", err)
 		}
 		return n, w.writeError
 	}
 
 	if err := w.Flush(); err != nil {
-		w.writeError = fmt.Errorf("coupledWriter: %v", err)
+		w.writeError = fmt.Errorf("coupledWriter: %w", err)
 		return 0, w.writeError
 	}
 

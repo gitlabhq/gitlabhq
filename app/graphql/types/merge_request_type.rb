@@ -67,9 +67,6 @@ module Types
           description: 'Indicates if members of the target project can push to the fork.'
     field :default_merge_commit_message, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'Default merge commit message of the merge request.'
-    field :default_merge_commit_message_with_description, GraphQL::Types::String, null: true,
-          description: 'Default merge commit message of the merge request with description. Will have the same value as `defaultMergeCommitMessage` when project has `mergeCommitTemplate` set.',
-          deprecated: { reason: 'Define merge commit template in project and use `defaultMergeCommitMessage`', milestone: '14.5' }
     field :default_squash_commit_message, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'Default squash commit message of the merge request.'
     field :diff_stats_summary, Types::DiffStatsSummaryType, null: true, calls_gitaly: true,
@@ -252,10 +249,6 @@ module Types
 
     def default_merge_commit_message
       object.default_merge_commit_message(include_description: false, user: current_user)
-    end
-
-    def default_merge_commit_message_with_description
-      object.default_merge_commit_message(include_description: true)
     end
 
     def default_squash_commit_message

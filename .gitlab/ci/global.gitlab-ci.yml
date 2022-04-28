@@ -246,7 +246,7 @@
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:5.0-alpine
     - name: elasticsearch:7.17.0
-      command: ["elasticsearch", "-E", "discovery.type=single-node"]
+      command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "11"
@@ -257,7 +257,7 @@
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
     - name: elasticsearch:7.17.0
-      command: ["elasticsearch", "-E", "discovery.type=single-node"]
+      command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "12"
@@ -268,10 +268,34 @@
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:5.0-alpine
     - name: elasticsearch:7.17.0
-      command: ["elasticsearch", "-E", "discovery.type=single-node"]
+      command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "13"
+
+.use-pg12-es8-ee:
+  services:
+    - name: postgres:12
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:6.0-alpine
+    - name: elasticsearch:8.1.1
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "12"
+    ES_SETTING_DISCOVERY_TYPE: "single-node"
+    ES_SETTING_XPACK_SECURITY_ENABLED: "false"
+
+.use-pg12-opensearch1-ee:
+  services:
+    - name: postgres:12
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:6.0-alpine
+    - name: opensearchproject/opensearch:1.2.4
+      alias: elasticsearch
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "12"
 
 .use-kaniko:
   image:

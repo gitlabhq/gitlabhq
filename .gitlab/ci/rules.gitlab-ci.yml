@@ -76,6 +76,9 @@
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
+.if-merge-request-labels-run-search-tests: &if-merge-request-labels-run-search-tests
+  if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -516,6 +519,9 @@
     - <<: *if-security-merge-request
       when: never
 
+.rails:rules:run-search-tests:
+  rules:
+    - <<: *if-merge-request-labels-run-search-tests
 
 .rails:rules:ee-and-foss-default-rules:
   rules:

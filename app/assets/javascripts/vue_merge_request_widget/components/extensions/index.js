@@ -14,6 +14,7 @@ export const registerExtension = (extension) => {
     i18n: extension.i18n,
     expandEvent: extension.expandEvent,
     enablePolling: extension.enablePolling,
+    modalComponent: extension.modalComponent,
     computed: {
       ...Object.keys(extension.computed).reduce(
         (acc, computedKey) => ({

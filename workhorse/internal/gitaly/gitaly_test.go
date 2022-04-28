@@ -2,6 +2,7 @@ package gitaly
 
 import (
 	"context"
+	"os"
 	"testing"
 
 	"github.com/sirupsen/logrus"
@@ -9,26 +10,15 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+func TestMain(m *testing.M) {
+	InitializeSidechannelRegistry(logrus.StandardLogger())
+	os.Exit(m.Run())
+}
+
 func TestNewSmartHTTPClient(t *testing.T) {
 	ctx, client, err := NewSmartHTTPClient(context.Background(), serverFixture())
 	require.NoError(t, err)
 	testOutgoingMetadata(t, ctx)
-
-	require.False(t, client.useSidechannel)
-	require.Nil(t, client.sidechannelRegistry)
-}
-
-func TestNewSmartHTTPClientWithSidechannel(t *testing.T) {
-	InitializeSidechannelRegistry(logrus.StandardLogger())
-
-	fixture := serverFixture()
-	fixture.Sidechannel = true
-
-	ctx, client, err := NewSmartHTTPClient(context.Background(), fixture)
-	require.NoError(t, err)
-	testOutgoingMetadata(t, ctx)
-
-	require.True(t, client.useSidechannel)
 	require.NotNil(t, client.sidechannelRegistry)
 }
 

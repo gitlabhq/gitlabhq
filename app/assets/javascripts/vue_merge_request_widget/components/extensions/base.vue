@@ -47,6 +47,8 @@ export default {
       fullData: [],
       isCollapsed: true,
       showFade: false,
+      modalData: undefined,
+      modalName: undefined,
     };
   },
   computed: {
@@ -115,6 +117,9 @@ export default {
       }
 
       return summary;
+    },
+    modalId() {
+      return this.modalName || `modal${this.$options.name}`;
     },
   },
   watch: {
@@ -311,7 +316,12 @@ export default {
                 @appear="appear(index)"
                 @disappear="disappear(index)"
               >
-                <child-content :data="item" :widget-label="widgetLabel" :level="2" />
+                <child-content
+                  :data="item"
+                  :widget-label="widgetLabel"
+                  :modal-id="modalId"
+                  :level="2"
+                />
               </gl-intersection-observer>
             </div>
           </dynamic-scroller-item>
@@ -321,6 +331,9 @@ export default {
         :class="{ show: showFade }"
         class="fade mr-extenson-scrim gl-absolute gl-left-0 gl-bottom-0 gl-w-full gl-h-7 gl-pointer-events-none"
       ></div>
+    </div>
+    <div v-if="$options.modalComponent && modalData">
+      <component :is="$options.modalComponent" :modal-id="modalId" v-bind="modalData" />
     </div>
   </section>
 </template>

@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlBadge, GlLink, GlSafeHtmlDirective, GlModalDirective } from '@gitlab/ui';
 import StatusIcon from './status_icon.vue';
 import Actions from './actions.vue';
 import { generateText } from './utils';
@@ -14,6 +14,7 @@ export default {
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
+    GlModal: GlModalDirective,
   },
   props: {
     data: {
@@ -23,6 +24,11 @@ export default {
     widgetLabel: {
       type: String,
       required: true,
+    },
+    modalId: {
+      type: String,
+      required: false,
+      default: null,
     },
     level: {
       type: Number,
@@ -63,6 +69,11 @@ export default {
             <div v-if="data.link">
               <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
             </div>
+            <div v-if="data.modal">
+              <gl-link v-gl-modal="modalId" @click="data.modal.onClick">
+                {{ data.modal.text }}
+              </gl-link>
+            </div>
             <div v-if="data.supportingText">
               <p v-safe-html="generateText(data.supportingText)" class="gl-m-0"></p>
             </div>
@@ -87,6 +98,7 @@ export default {
             :key="childData.id"
             :data="childData"
             :widget-label="widgetLabel"
+            :modal-id="modalId"
             :level="3"
             data-testid="child-content"
           />

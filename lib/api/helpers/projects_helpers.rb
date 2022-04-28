@@ -190,6 +190,8 @@ module API
       def validate_git_import_url!(import_url)
         return if import_url.blank?
 
+        yield if block_given?
+
         result = Import::ValidateRemoteGitEndpointService.new(url: import_url).execute # network call
 
         if result.error?

@@ -332,12 +332,6 @@ Style/Next:
 Style/NumericLiteralPrefix:
   Enabled: false
 
-# Offense count: 2698
-# Cop supports --auto-correct.
-# Configuration parameters: PreferredDelimiters.
-Style/PercentLiteralDelimiters:
-  Enabled: false
-
 # Offense count: 206
 # Cop supports --auto-correct.
 Style/RedundantInterpolation:

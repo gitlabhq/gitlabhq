@@ -1,5 +1,6 @@
 <script>
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import simplePoll from '~/lib/utils/simple_poll';
 import MergeRequest from '~/merge_request';
 import eventHub from '../../event_hub';
@@ -14,6 +15,7 @@ export default {
   components: {
     statusIcon,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     mr: {
       type: Object,
@@ -88,7 +90,7 @@ export default {
         {{ mergeStatus.message }}
         <gl-emoji :data-name="mergeStatus.emoji" />
       </h4>
-      <section class="mr-info-list">
+      <section v-if="!glFeatures.restructuredMrWidget" class="mr-info-list">
         <p>
           {{ s__('mrWidget|Merges changes into') }}
           <span class="label-branch">

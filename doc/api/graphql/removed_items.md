@@ -20,6 +20,12 @@ Fields [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85382) in
 | -------------------- | --------------------     | ------------- | -------------------------- |
 | -                    | `clusterAgentTokenDelete`| 14.7          | `clusterAgentTokenRevoke`                    |
 
+### GraphQL Types
+
+| Field name                                 | GraphQL type             | Deprecated in | Use instead                                                                        |
+| ------------------------------------------ | ------------------------ | ------------- | ---------------------------------------------------------------------------------- |
+| `defaultMergeCommitMessageWithDescription` | `GraphQL::Types::String` | 14.5          | None. Define a [merge commit template](../../user/project/merge_requests/commit_templates.md) in your project and use `defaultMergeCommitMessage`. |
+
 ## GitLab 14.0
 
 Fields [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63293) in GitLab 14.0:

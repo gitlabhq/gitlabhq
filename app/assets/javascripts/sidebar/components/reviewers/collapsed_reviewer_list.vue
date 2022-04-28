@@ -96,7 +96,11 @@ export default {
     <gl-icon v-if="hasNoUsers" name="user" :aria-label="__('None')" />
     <collapsed-reviewer v-for="user in collapsedUsers" :key="user.id" :user="user" />
     <button v-if="hasMoreThanTwoReviewers" class="btn-link" type="button">
-      <span class="avatar-counter sidebar-avatar-counter"> {{ sidebarAvatarCounter }} </span>
+      <span
+        class="avatar-counter sidebar-avatar-counter gl-display-flex gl-align-items-center gl-pl-3"
+      >
+        {{ sidebarAvatarCounter }}
+      </span>
       <gl-icon
         v-if="!allReviewersCanMerge"
         name="warning-solid"

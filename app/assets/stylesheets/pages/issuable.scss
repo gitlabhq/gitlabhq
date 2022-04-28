@@ -362,10 +362,6 @@
         }
       }
 
-      .sidebar-avatar-counter {
-        padding-top: 2px;
-      }
-
       .todo-undone {
         color: $blue-600;
         fill: $blue-600;
@@ -410,6 +406,10 @@
       width: 24px;
       height: 24px;
       border-radius: 12px;
+
+      ~.merge-icon {
+        bottom: 0;
+      }
     }
 
     .sidebar-collapsed-user {

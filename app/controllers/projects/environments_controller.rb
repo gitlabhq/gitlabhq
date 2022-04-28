@@ -73,7 +73,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def show
-    @deployments = environment.deployments.ordered.page(params[:page])
+    @deployments = deployments
   end
 
   def new
@@ -201,6 +201,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   private
+
+  def deployments
+    environment.deployments.ordered.page(params[:page])
+  end
 
   def verify_api_request!
     Gitlab::Workhorse.verify_api_request!(request.headers)

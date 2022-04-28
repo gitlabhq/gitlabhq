@@ -322,10 +322,32 @@ export default {
     },
     restructuredWidgetShowMergeButtons() {
       if (this.glFeatures.restructuredMrWidget) {
-        return this.isMergeAllowed && this.state.userPermissions.canMerge;
+        return (
+          this.isMergeAllowed &&
+          this.state.userPermissions.canMerge &&
+          !this.mr.mergeOngoing &&
+          !this.mr.autoMergeEnabled
+        );
       }
 
       return true;
+    },
+    sourceBranchDeletedText() {
+      if (this.glFeatures.restructuredMrWidget) {
+        if (this.removeSourceBranch) {
+          return this.mr.state === 'merged'
+            ? __('Deleted the source branch.')
+            : __('Source branch will be deleted.');
+        }
+
+        return this.mr.state === 'merged'
+          ? __('Did not delete the source branch.')
+          : __('Source branch will not be deleted.');
+      }
+
+      return this.removeSourceBranch
+        ? __('Deletes the source branch.')
+        : __('Does not delete the source branch.');
     },
   },
   mounted() {
@@ -686,25 +708,22 @@ export default {
                 v-if="!restructuredWidgetShowMergeButtons"
                 class="gl-w-full gl-order-n1 gl-text-gray-500"
               >
-                <strong>
+                <strong v-if="mr.state !== 'closed'">
                   {{ __('Merge details') }}
                 </strong>
                 <ul class="gl-pl-4 gl-m-0">
                   <li class="gl-line-height-normal">
                     <added-commit-message
+                      :state="mr.state"
+                      :merge-commit-sha="mr.shortMergeCommitSha"
                       :is-squash-enabled="squashBeforeMerge"
                       :is-fast-forward-enabled="!shouldShowMergeEdit"
                       :commits-count="commitsCount"
                       :target-branch="stateData.targetBranch"
                     />
                   </li>
-                  <li class="gl-line-height-normal">
-                    <template v-if="removeSourceBranch">
-                      {{ __('Deletes the source branch.') }}
-                    </template>
-                    <template v-else>
-                      {{ __('Does not delete the source branch.') }}
-                    </template>
+                  <li v-if="mr.state !== 'closed'" class="gl-line-height-normal">
+                    {{ sourceBranchDeletedText }}
                   </li>
                   <li v-if="mr.relatedLinks" class="gl-line-height-normal">
                     <related-links

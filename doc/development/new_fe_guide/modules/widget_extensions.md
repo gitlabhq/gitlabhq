@@ -36,6 +36,7 @@ export default {
   },
   expandEvent: '',      // Optional: RedisHLL event name to track expanding content
   enablePolling: false, // Optional: Tells extension to poll for data
+  modalComponent: null, // Optional: The component to use for the modal
   computed: {
     summary(data) {},     // Required: Level 1 summary text
     statusIcon(data) {},  // Required: Level 1 status icon
@@ -128,6 +129,14 @@ mentioned below:
     text: '',     // Required: Text to be displayed inside badge
     variant: '',  // Optional: GitLab UI badge variant, defaults to info
   },
+  link: {         // Optional: Link to a URL displayed after text
+    text: '',     // Required: Text of the link
+    href: '',     // Optional: URL for the link
+  },
+  modal: {        // Optional: Link to open a modal displayed after text
+    text: '',     // Required: Text of the link
+    onClick: () => {} // Optional: Function to run when link is clicked, i.e. to set this.modalData
+  }
   actions: [],    // Optional: Action button for row
   children: [],   // Optional: Child content to render, structure matches the same structure
 }

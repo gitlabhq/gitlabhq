@@ -59,7 +59,7 @@ export default {
     }),
     tableCell({
       key: 'destination_name',
-      label: s__('BulkImport|New group'),
+      label: s__('BulkImport|Destination group'),
       thClass: `${DEFAULT_TH_CLASSES} gl-w-40p`,
     }),
     tableCell({

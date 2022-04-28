@@ -58,6 +58,7 @@ func TestMain(m *testing.M) {
 	}
 
 	defer gitaly.CloseConnections()
+	gitaly.InitializeSidechannelRegistry(logrus.StandardLogger())
 
 	os.Exit(m.Run())
 }
@@ -800,9 +801,6 @@ func startWorkhorseServer(authBackend string) *httptest.Server {
 func startWorkhorseServerWithConfig(cfg *config.Config) *httptest.Server {
 	testhelper.ConfigureSecret()
 	u := upstream.NewUpstream(*cfg, logrus.StandardLogger())
-
-	gitaly.InitializeSidechannelRegistry(logrus.StandardLogger())
-
 	return httptest.NewServer(u)
 }
 
@@ -819,20 +817,6 @@ func gitOkBody(t *testing.T) *api.Response {
 		Repository: gitalypb.Repository{
 			StorageName:  "default",
 			RelativePath: "foo/bar.git",
-		},
-	}
-}
-
-func gitOkBodyWithSidechannel(t *testing.T) *api.Response {
-	return &api.Response{
-		GL_ID:       "user-123",
-		GL_USERNAME: "username",
-		Repository: gitalypb.Repository{
-			StorageName:  "default",
-			RelativePath: "foo/bar.git",
-		},
-		GitalyServer: gitaly.Server{
-			Sidechannel: true,
 		},
 	}
 }

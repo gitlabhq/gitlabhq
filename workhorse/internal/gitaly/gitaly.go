@@ -24,19 +24,17 @@ import (
 )
 
 type Server struct {
-	Address     string            `json:"address"`
-	Token       string            `json:"token"`
-	Features    map[string]string `json:"features"`
-	Sidechannel bool              `json:"sidechannel"`
+	Address  string            `json:"address"`
+	Token    string            `json:"token"`
+	Features map[string]string `json:"features"`
 }
 
 type cacheKey struct {
 	address, token string
-	sidechannel    bool
 }
 
 func (server Server) cacheKey() cacheKey {
-	return cacheKey{address: server.Address, token: server.Token, sidechannel: server.Sidechannel}
+	return cacheKey{address: server.Address, token: server.Token}
 }
 
 type connectionsCache struct {
@@ -94,7 +92,6 @@ func NewSmartHTTPClient(ctx context.Context, server Server) (context.Context, *S
 	smartHTTPClient := &SmartHTTPClient{
 		SmartHTTPServiceClient: grpcClient,
 		sidechannelRegistry:    sidechannelRegistry,
-		useSidechannel:         server.Sidechannel,
 	}
 	return withOutgoingMetadata(ctx, server.Features), smartHTTPClient, nil
 }
@@ -197,13 +194,7 @@ func newConnection(server Server) (*grpc.ClientConn, error) {
 		),
 	)
 
-	var conn *grpc.ClientConn
-	var connErr error
-	if server.Sidechannel {
-		conn, connErr = gitalyclient.DialSidechannel(context.Background(), server.Address, sidechannelRegistry, connOpts) // lint:allow context.Background
-	} else {
-		conn, connErr = gitalyclient.Dial(server.Address, connOpts)
-	}
+	conn, connErr := gitalyclient.DialSidechannel(context.Background(), server.Address, sidechannelRegistry, connOpts) // lint:allow context.Background
 
 	label := "ok"
 	if connErr != nil {

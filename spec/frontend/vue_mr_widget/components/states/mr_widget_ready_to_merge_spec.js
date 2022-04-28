@@ -59,6 +59,7 @@ const createTestMr = (customConfig) => {
     mergeImmediatelyDocsPath: 'path/to/merge/immediately/docs',
     transitionStateMachine: (transition) => eventHub.$emit('StateMachineValueChanged', transition),
     translateStateToMachine: () => this.transitionStateMachine(),
+    state: 'open',
   };
 
   Object.assign(mr, customConfig.mr);

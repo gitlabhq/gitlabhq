@@ -50,7 +50,7 @@ the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 Each buildpack requires your project's repository to contain certain files for
 Auto Build to build your application successfully. The structure is
 specific to the builder and buildpacks you have selected.
-For example, when using the Heroku's builder (the default), your application's
+For example, when using the Heroku builder (the default), your application's
 root directory must contain the appropriate file for your application's
 language:
 

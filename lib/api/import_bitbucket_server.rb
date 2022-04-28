@@ -5,6 +5,10 @@ module API
     feature_category :importers
     urgency :low
 
+    before do
+      forbidden! unless Gitlab::CurrentSettings.import_sources&.include?('bitbucket_server')
+    end
+
     helpers do
       def client
         @client ||= BitbucketServer::Client.new(credentials)

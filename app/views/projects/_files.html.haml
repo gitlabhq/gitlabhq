@@ -8,7 +8,7 @@
 
 #tree-holder.tree-holder.clearfix
   .nav-block.gl-display-flex.gl-xs-flex-direction-column.gl-align-items-stretch
-    = render 'projects/tree/tree_header', tree: @tree
+    = render 'projects/tree/tree_header', tree: @tree, is_project_overview: is_project_overview
 
   .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column
     #js-last-commit.gl-m-auto

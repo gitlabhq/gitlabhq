@@ -16,11 +16,7 @@ RSpec.describe API::ImportGithub do
       double('provider',
         name: 'vim',
         full_name: "#{provider_username}/vim",
-        owner: double('provider', login: provider_username),
-        description: 'provider',
-        private: false,
-        clone_url: 'https://fake.url/vim.git',
-        has_wiki?: true
+        owner: double('provider', login: provider_username)
       )
     end
 

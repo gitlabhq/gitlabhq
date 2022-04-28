@@ -36,7 +36,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def statistics_buttons(show_auto_devops_callout:)
     [
-      upload_anchor_data,
       readme_anchor_data,
       license_anchor_data,
       changelog_anchor_data,

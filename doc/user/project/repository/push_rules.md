@@ -50,7 +50,7 @@ To override global push rules for a specific project:
 1. Set the rule you want.
 1. Select **Save push rules**.
 
-## Use push rules to verify users
+## Verify users
 
 Use these rules to validate users who make commits.
 
@@ -59,7 +59,7 @@ Use these rules to validate users who make commits.
 - **Commit author's email**: Both the author's and committer's email addresses must match the regular expression.
   To allow any email address, leave empty.
 
-## Use push rules to validate commit messages
+## Validate commit messages
 
 Use these rules for your commit messages.
 
@@ -74,7 +74,7 @@ Use these rules for your commit messages.
   the expression. To allow any commit message, leave empty.
   Uses multiline mode, which can be disabled by using `(?-m)`.
 
-## Use push rules to validate branches
+## Validate branch names
 
 To validate your branch names, enter a regular expression for **Branch name**.
 To allow any branch name, leave empty. Your
@@ -106,7 +106,7 @@ In GitLab 12.10 and later, certain formats of branch names are restricted by
 default for security purposes. 40-character hexadecimal names, similar to Git
 commit hashes, are prohibited.
 
-## Use push rules to prevent unintended consequences
+## Prevent unintended consequences
 
 Use these rules to prevent unintended consequences.
 
@@ -116,7 +116,7 @@ Use these rules to prevent unintended consequences.
 - **Do not allow users to remove Git tags with `git push`**: Users cannot use `git push` to remove Git tags.
   Users can still delete tags in the UI.
 
-## Use push rules to validate files
+## Validate files
 
 Use these rules to validate files contained in the commit.
 
