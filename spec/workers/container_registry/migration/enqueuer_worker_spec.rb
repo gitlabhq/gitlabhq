@@ -65,18 +65,22 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         end
       end
 
-      it 'starts the pre-import for the next qualified repository' do
-        expect_log_extra_metadata(
-          import_type: 'next',
-          container_repository_id: container_repository.id,
-          container_repository_path: container_repository.path,
-          container_repository_migration_state: 'pre_importing'
-        )
+      shared_examples 'starting the next import' do
+        it 'starts the pre-import for the next qualified repository' do
+          expect_log_extra_metadata(
+            import_type: 'next',
+            container_repository_id: container_repository.id,
+            container_repository_path: container_repository.path,
+            container_repository_migration_state: 'pre_importing'
+          )
 
-        subject
+          subject
 
-        expect(container_repository.reload).to be_pre_importing
+          expect(container_repository.reload).to be_pre_importing
+        end
       end
+
+      it_behaves_like 'starting the next import'
 
       context 'when the new pre-import maxes out the capacity' do
         before do
@@ -97,6 +101,18 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
       end
 
       it_behaves_like 're-enqueuing based on capacity'
+
+      context 'max tag count is 0' do
+        before do
+          stub_application_setting(container_registry_import_max_tags_count: 0)
+          # Add 8 tags to the next repository
+          stub_container_registry_tags(
+            repository: container_repository.path, tags: %w(a b c d e f g h), with_manifest: true
+          )
+        end
+
+        it_behaves_like 'starting the next import'
+      end
     end
 
     context 'migrations are disabled' do
@@ -309,6 +325,13 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
       metadata.each do |key, value|
         expect(worker).to receive(:log_extra_metadata_on_done).with(key, value)
       end
+    end
+  end
+
+  describe 'worker attributes' do
+    it 'has deduplication set' do
+      expect(described_class.get_deduplicate_strategy).to eq(:until_executing)
+      expect(described_class.get_deduplication_options).to include(ttl: 30.minutes)
     end
   end
 end

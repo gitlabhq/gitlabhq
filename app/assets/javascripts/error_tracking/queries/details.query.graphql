@@ -1,4 +1,4 @@
-query errorDetails($fullPath: ID!, $errorId: ID!) {
+query errorDetails($fullPath: ID!, $errorId: GitlabErrorTrackingDetailedErrorID!) {
   project(fullPath: $fullPath) {
     id
     sentryErrors {

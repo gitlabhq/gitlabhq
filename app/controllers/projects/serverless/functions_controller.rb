@@ -7,6 +7,7 @@ module Projects
       before_action :authorize_read_cluster!
 
       feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
+      urgency :low
 
       def index
         respond_to do |format|

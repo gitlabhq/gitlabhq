@@ -160,7 +160,7 @@ Our current RSpec tests parallelization setup is as follows:
    `knapsack/report-master.json` file:
    - The `knapsack/report-master.json` file is fetched from the latest `main` pipeline which runs `update-tests-metadata`
      (for now it's the 2-hourly scheduled master pipeline), if it's not here we initialize the file with `{}`.
-1. Each `[rspec|rspec-ee] [unit|integration|system|geo] n m` job are run with
+1. Each `[rspec|rspec-ee] [migration|unit|integration|system|geo] n m` job are run with
    `knapsack rspec` and should have an evenly distributed share of tests:
    - It works because the jobs have access to the `knapsack/report-master.json`
      since the "artifacts from all previous stages are passed by default".
@@ -170,7 +170,7 @@ Our current RSpec tests parallelization setup is as follows:
      `Report specs`, not under `Leftover specs`.
 1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
    [the canonical project](https://gitlab.com/gitlab-org/gitlab) takes all the
-   `knapsack/rspec*_pg_*.json` files and merge them all together into a single
+   `knapsack/rspec*.json` files and merge them all together into a single
    `knapsack/report-master.json` file that is saved as artifact.
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
@@ -508,12 +508,9 @@ The current stages are:
 - `test`: This stage includes most of the tests, and DB/migration jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
-- `review-prepare`: This stage includes a job that build the CNG images that are
-  later used by the (Helm) Review App deployment (see
-  [Review Apps](testing_guide/review_apps.md) for details).
-- `review`: This stage includes jobs that deploy the GitLab and Docs Review Apps.
-- `dast`: This stage includes jobs that run a DAST full scan against the Review App
-that is deployed in stage `review`.
+- `review`: This stage includes jobs that build the CNG images, deploy them, and
+  run end-to-end tests against Review Apps (see [Review Apps](testing_guide/review_apps.md) for details).
+  It also includes Docs Review App jobs.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in stage `review`.
 - `post-qa`: This stage includes jobs that build reports or gather data from

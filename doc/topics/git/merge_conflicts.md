@@ -14,12 +14,12 @@ comments: false
 
 ## Merge conflicts sample workflow
 
-1. Checkout a new branch and edit `conflicts.rb`. Add 'Line4' and 'Line5'.
+1. Check out a new branch and edit `conflicts.rb`. Add 'Line4' and 'Line5'.
 1. Commit and push.
-1. Checkout master and edit `conflicts.rb`. Add 'Line6' and 'Line7' below 'Line3'.
-1. Commit and push to master.
+1. Check out `main` and edit `conflicts.rb`. Add 'Line6' and 'Line7' below 'Line3'.
+1. Commit and push to `main``.
 1. Create a merge request and watch it fail.
-1. Rebase our new branch with master.
+1. Rebase our new branch with `main`.
 1. Fix conflicts on the `conflicts.rb` file.
 1. Stage the file and continue rebasing.
 1. Force push the changes.
@@ -34,12 +34,12 @@ git checkout -b conflicts_branch
 git commit -am "add line4 and line5"
 git push origin conflicts_branch
 
-git checkout master
+git checkout main
 
 # vi conflicts.rb
 # Add 'Line6' and 'Line7'
 git commit -am "add line6 and line7"
-git push origin master
+git push origin main
 ```
 
 Create a merge request on the GitLab web UI, and a conflict warning displays.
@@ -47,7 +47,7 @@ Create a merge request on the GitLab web UI, and a conflict warning displays.
 ```shell
 git checkout conflicts_branch
 git fetch
-git rebase master
+git rebase main
 
 # Fix conflicts by editing the files.
 
@@ -64,6 +64,6 @@ git push origin conflicts_branch -f
 ## Note
 
 - When to use `git merge` and when to use `git rebase`
-- Rebase when updating your branch with master
-- Merge when bringing changes from feature to master
+- Rebase when updating your branch with `main`
+- Merge when bringing changes from feature to `main`
 - Reference: <https://www.atlassian.com/git/tutorials/merging-vs-rebasing>

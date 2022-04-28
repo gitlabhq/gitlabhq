@@ -10,6 +10,7 @@ module API
     end
 
     feature_category :kubernetes_management
+    urgency :low
 
     params do
       requires :id, type: String, desc: 'The ID of the group'

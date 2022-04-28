@@ -9,6 +9,10 @@ class Clusters::BaseController < ApplicationController
   helper_method :clusterable
 
   feature_category :kubernetes_management
+  urgency :low, [
+    :index, :show, :environments, :cluster_status, :prometheus_proxy,
+    :destroy, :new_cluster_docs, :connect, :new, :create_user
+  ]
 
   private
 

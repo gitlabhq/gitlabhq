@@ -9525,7 +9525,7 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in 14.6. Will be removed in 15.0. From that release onward, the field will behave as if legacyMode is null. |
+| <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.0. Will be removed in 17.0. In GitLab 16.0 and later, the field will act as if `legacyMode` is null. |
 
 ### `CiStage`
 

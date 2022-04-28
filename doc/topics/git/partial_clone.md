@@ -26,7 +26,7 @@ Git 2.22.0 or later is required.
 
 Storing large binary files in Git is normally discouraged, because every large
 file added is downloaded by everyone who clones or fetches changes
-thereafter. This is slow, if not a complete obstruction when working from a slow
+thereafter. These downloads are slow and problematic, especially when working from a slow
 or unreliable internet connection.
 
 Using partial clone with a file size filter solves this problem, by excluding
@@ -65,7 +65,7 @@ The output is longer because Git:
 1. Clones the repository excluding files larger than 1 megabyte.
 1. Downloads any missing large files needed to check out the default branch.
 
-When changing branches, Git may need to download more missing files.
+When changing branches, Git may download more missing files.
 
 ## Filter by object type
 
@@ -147,7 +147,7 @@ For more details, see the Git documentation for
    ```
 
 1. Clone and filter by path. Support for `--filter=sparse:oid` using the
-   clone command is not yet fully integrated with sparse checkout.
+   clone command is not fully integrated with sparse checkout.
 
    ```shell
 
@@ -162,8 +162,7 @@ For more details, see the Git documentation for
    WARNING:
    Git integrations with `bash`, `zsh`, etc and editors that automatically
    show Git status information often run `git fetch` which fetches the
-   entire repository. You many need to disable or reconfigure these
-   integrations.
+   entire repository. Disabling or reconfiguring these integrations might be required.
 
 ## Remove partial clone filtering
 

@@ -322,6 +322,9 @@ module Ci
     end
 
     def status(legacy_mode = nil)
+      # TODO Deprecate legacy_mode in %16.0 and make it a no-op
+      #   (see https://gitlab.com/gitlab-org/gitlab/-/issues/360545)
+      # TODO Remove legacy_mode in %17.0
       return deprecated_rest_status if legacy_mode == '14.5'
 
       return :stale if stale?
@@ -331,9 +334,9 @@ module Ci
     end
 
     # DEPRECATED
-    # TODO Remove in %16.0 in favor of `status` for REST calls
+    # TODO Remove in %16.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
     def deprecated_rest_status
-      if contacted_at.nil? # TODO Remove in %15.0, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+      if contacted_at.nil?
         :not_connected
       elsif active?
         online? ? :online : :offline

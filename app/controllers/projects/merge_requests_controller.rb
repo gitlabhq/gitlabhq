@@ -82,11 +82,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :rebase,
     :discussions,
     :pipelines,
-    :test_reports
-  ]
-  urgency :low, [
+    :test_reports,
     :codequality_mr_diff_reports,
-    :codequality_reports
+    :codequality_reports,
+    :terraform_reports
   ]
   urgency :low, [:pipeline_status, :pipelines, :exposed_artifacts]
 

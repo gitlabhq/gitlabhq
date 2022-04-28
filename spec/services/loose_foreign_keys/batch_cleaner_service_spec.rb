@@ -181,16 +181,6 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
           end
         end
       end
-
-      context 'when the lfk_fair_queueing FF is off' do
-        before do
-          stub_feature_flags(lfk_fair_queueing: false)
-        end
-
-        it 'does nothing' do
-          expect { cleaner.execute }.not_to change { deleted_record.reload.cleanup_attempts }
-        end
-      end
     end
   end
 end

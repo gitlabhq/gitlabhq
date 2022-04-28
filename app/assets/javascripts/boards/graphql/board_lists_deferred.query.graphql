@@ -1,4 +1,4 @@
-query BoardList($id: ID!, $filters: BoardIssueInput) {
+query BoardList($id: ListID!, $filters: BoardIssueInput) {
   boardList(id: $id, issueFilters: $filters) {
     id
     issuesCount

@@ -6,6 +6,7 @@ module API
       default_format :json
 
       feature_category :infrastructure_as_code
+      urgency :low
 
       before do
         authenticate!

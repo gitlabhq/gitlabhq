@@ -5862,7 +5862,6 @@ Layout/LineLength:
     - 'spec/requests/projects_controller_spec.rb'
     - 'spec/requests/rack_attack_global_spec.rb'
     - 'spec/requests/recursive_webhook_detection_spec.rb'
-    - 'spec/requests/request_profiler_spec.rb'
     - 'spec/requests/users_controller_spec.rb'
     - 'spec/routing/admin_routing_spec.rb'
     - 'spec/routing/group_routing_spec.rb'

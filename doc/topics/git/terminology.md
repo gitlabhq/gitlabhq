@@ -30,7 +30,7 @@ When you want to contribute to someone else's repository, you make a copy of it.
 This copy is called a [**fork**](../../user/project/repository/forking_workflow.md#creating-a-fork).
 The process is called "creating a fork."
 
-When you fork a repo, you create a copy of the project in your own
+When you fork a repository, you create a copy of the project in your own
 [namespace](../../user/group/#namespaces). You then have write permissions to modify the project files
 and settings.
 
@@ -53,10 +53,10 @@ upload the changes to the remote repository on GitLab.
 ## Pull and push
 
 After you save a local copy of a repository and modify the files on your computer, you can upload the
-changes to GitLab. This is referred to as **pushing** to the remote, because you use the command
+changes to GitLab. This action is known as **pushing** to the remote, because you use the command
 [`git push`](../../gitlab-basics/start-using-git.md#send-changes-to-gitlabcom).
 
 When the remote repository changes, your local copy is behind. You can update your local copy with the new
 changes in the remote repository.
-This is referred to as **pulling** from the remote, because you use the command
+This action is known as **pulling** from the remote, because you use the command
 [`git pull`](../../gitlab-basics/start-using-git.md#download-the-latest-changes-in-the-project).

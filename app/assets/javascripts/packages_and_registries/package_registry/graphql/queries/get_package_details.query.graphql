@@ -1,4 +1,4 @@
-query getPackageDetails($id: ID!) {
+query getPackageDetails($id: PackagesPackageID!) {
   package(id: $id) {
     id
     name

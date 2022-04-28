@@ -1,4 +1,4 @@
-query getContainerRepositoryMetadata($id: ID!) {
+query getContainerRepositoryMetadata($id: ContainerRepositoryID!) {
   containerRepository(id: $id) {
     id
     tagsCount

@@ -7,8 +7,8 @@ comments: false
 
 # Git Stash **(FREE)**
 
-We use `git stash` to store our changes when they are not ready to be committed
-and we need to change to a different branch.
+We use `git stash` to store our changes when they are not ready to be committed,
+but we must change to a different branch.
 
 - Stash:
 
@@ -37,7 +37,7 @@ and we need to change to a different branch.
   git stash list --stat
   ```
 
-- To clean our stack we need to manually remove them:
+- To clean our stack, manually remove them:
 
   ```shell
   # drop top stash
@@ -54,7 +54,7 @@ and we need to change to a different branch.
   git stash pop
   ```
 
-- If we meet conflicts we need to either reset or commit our changes.
+- If we meet conflicts, either reset or commit our changes.
 - Conflicts through `pop` doesn't drop a stash afterwards.
 
 ## Git Stash sample workflow

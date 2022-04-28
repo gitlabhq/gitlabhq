@@ -326,17 +326,13 @@ class ContainerRepository < ApplicationRecord
       return if importing?
 
       start_import(forced: true)
-    when 'import_canceled', 'pre_import_canceled'
-      return if import_skipped?
-
-      skip_import(reason: :migration_canceled_by_registry)
     when 'import_complete'
       finish_import
-    when 'import_failed'
+    when 'import_failed', 'import_canceled'
       retry_import
     when 'pre_import_complete'
       finish_pre_import_and_start_import
-    when 'pre_import_failed'
+    when 'pre_import_failed', 'pre_import_canceled'
       retry_pre_import
     else
       yield

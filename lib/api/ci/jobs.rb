@@ -190,7 +190,7 @@ module API
           detail 'Retrieves a list of agents for the given job token'
         end
         route_setting :authentication, job_token_allowed: true
-        get '/allowed_agents', feature_category: :kubernetes_management do
+        get '/allowed_agents', urgency: :low, feature_category: :kubernetes_management do
           validate_current_authenticated_job
 
           status 200

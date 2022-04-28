@@ -42,6 +42,25 @@ Each deprecation has a **planned removal milestone** and indicates whether it is
 
 Most of the deprecations are **planned for removal in 15.0**, and many of them are **breaking changes**.
 
+## 15.0
+
+### GraphQL API legacyMode argument for Runner status
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `legacyMode` argument to the `status` field in `RunnerType` will be rendered non-functional in the 16.0 release
+as part of the deprecations details in the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+
+In GitLab 16.0 and later, the `status` field will act as if `legacyMode` is null. The `legacyMode` argument will
+be present during the 16.x cycle to avoid breaking the API signature, and will be removed altogether in the
+17.0 release.
+
+**Planned removal milestone: 16.0 (2023-05-22)**
+
 ## 14.10
 
 ### Dependency Scanning default Java version changed to 17
@@ -1202,21 +1221,6 @@ changes to your code, settings, or workflow.
 We deprecated legacy names for approval status of license policy (blacklisted, approved) in the `managed_licenses` API but they are still used in our API queries and responses. They will be removed in 15.0.
 
 If you are using our License Compliance API you should stop using the `approved` and `blacklisted` query parameters, they are now `allowed` and `denied`. In 15.0 the responses will also stop using `approved` and `blacklisted` so you need to adjust any of your custom tools to use the old and new values so they do not break with the 15.0 release.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Runner status `not_connected` API value
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-The GitLab Runner REST and GraphQL [API](https://docs.gitlab.com/ee/api/runners.html#runners-api) endpoints
-will return `never_contacted` instead of `not_connected` as the status values in 15.0.
-
-Runners that have never contacted the GitLab instance will also return `stale` if created more than 3 months ago.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 

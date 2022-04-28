@@ -8,6 +8,7 @@ module API
       include ::Gitlab::Utils::StrongMemoize
 
       feature_category :infrastructure_as_code
+      urgency :low
 
       default_format :json
 

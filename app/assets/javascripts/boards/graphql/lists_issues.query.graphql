@@ -2,8 +2,8 @@
 
 query BoardListsEE(
   $fullPath: ID!
-  $boardId: ID!
-  $id: ID
+  $boardId: BoardID!
+  $id: ListID
   $filters: BoardIssueInput
   $isGroup: Boolean = false
   $isProject: Boolean = false

@@ -2,7 +2,7 @@
 
 query BoardLists(
   $fullPath: ID!
-  $boardId: ID!
+  $boardId: BoardID!
   $filters: BoardIssueInput
   $isGroup: Boolean = false
   $isProject: Boolean = false

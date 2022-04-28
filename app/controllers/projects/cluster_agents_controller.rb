@@ -4,6 +4,7 @@ class Projects::ClusterAgentsController < Projects::ApplicationController
   before_action :authorize_can_read_cluster_agent!
 
   feature_category :kubernetes_management
+  urgency :low
 
   def show
     @agent_name = params[:name]

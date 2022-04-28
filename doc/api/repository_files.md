@@ -100,11 +100,14 @@ Allows you to receive blame information. Each blame range contains lines and cor
 GET /projects/:id/repository/files/:file_path/blame
 ```
 
-| Attribute   | Type           | Required | Description                                                                                                     |
-|-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
-| `file_path` | string         | yes      | URL encoded full path to new file. Ex. `lib%2Fclass%2Erb`.                                                      |
-| `ref`       | string         | yes      | The name of branch, tag or commit                                                                               |
+| Attribute       | Type              | Required | Description                                                                                                  |
+|-----------------|-------------------|----------|--------------------------------------------------------------------------------------------------------------|
+| `id`            | integer or string | yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
+| `file_path`     | string            | yes   | URL encoded full path to new file. Ex. `lib%2Fclass%2Erb`.                                                      |
+| `ref`           | string            | yes   | The name of branch, tag or commit                                                                               |
+| `range`         | hash              | no    | Blame range                                                                                                     |
+| `range[start]`  | integer           | yes   | The first line of the range to blame                                                                            |
+| `range[end]`    | integer           | yes   | The last line of the range to blame                                                                             |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=master"
@@ -161,6 +164,41 @@ X-Gitlab-Ref: master
 X-Gitlab-Size: 1476
 X-Gitlab-Execute-Filemode: false
 ...
+```
+
+### Examples
+
+To request a blame range, specify `range[start]` and `range[end]` parameters with the start and end line numbers of the file.
+
+```shell
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=master&range[start]=1&range[end]=2"
+```
+
+Example response:
+
+```json
+[
+  {
+    "commit": {
+      "id": "d42409d56517157c48bf3bd97d3f75974dde19fb",
+      "message": "Add feature\n\nalso fix bug\n",
+      "parent_ids": [
+        "cc6e14f9328fa6d7b5a0d3c30dc2002a3f2a3822"
+      ],
+      "authored_date": "2015-12-18T08:12:22.000Z",
+      "author_name": "John Doe",
+      "author_email": "john.doe@example.com",
+      "committed_date": "2015-12-18T08:12:22.000Z",
+      "committer_name": "John Doe",
+      "committer_email": "john.doe@example.com"
+    },
+    "lines": [
+      "require 'fileutils'",
+      "require 'open3'"
+    ]
+  },
+  ...
+]
 ```
 
 ## Get raw file from repository

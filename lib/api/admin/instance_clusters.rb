@@ -6,6 +6,7 @@ module API
       include PaginationParams
 
       feature_category :kubernetes_management
+      urgency :low
 
       before do
         authenticated_as_admin!

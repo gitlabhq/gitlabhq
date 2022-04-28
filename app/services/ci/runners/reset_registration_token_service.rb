@@ -29,3 +29,5 @@ module Ci
     end
   end
 end
+
+Ci::Runners::ResetRegistrationTokenService.prepend_mod

@@ -5,6 +5,11 @@ module API
   module Internal
     class Kubernetes < ::API::Base
       feature_category :kubernetes_management
+      urgency :low, [
+        '/api/:version/internal/kubernetes/agent_configuration',
+        '/api/:version/internal/kubernetes/agent_info',
+        '/api/:version/internal/kubernetes/project_info'
+      ]
 
       before do
         check_feature_enabled

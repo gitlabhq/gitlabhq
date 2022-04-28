@@ -3,7 +3,8 @@
 module Resolvers
   module Ci
     # NOTE: This class was introduced to allow modifying the meaning of certain values in RunnerStatusEnum
-    # while preserving backward compatibility. It can be removed in 15.0 once the API has stabilized.
+    # while preserving backward compatibility. It can be removed in 17.0 after being deprecated
+    # and made a no-op in %16.0 (legacy_mode will be hard-coded to nil).
     class RunnerStatusResolver < BaseResolver
       type Types::Ci::RunnerStatusEnum, null: false
 
@@ -14,7 +15,11 @@ module Resolvers
                default_value: '14.5',
                required: false,
                description: 'Compatibility mode. A null value turns off compatibility mode.',
-               deprecated: { reason: 'Will be removed in 15.0. From that release onward, the field will behave as if legacyMode is null', milestone: '14.6' }
+               deprecated: {
+                 reason: 'Will be removed in 17.0. In GitLab 16.0 and later, ' \
+                         'the field will act as if `legacyMode` is null',
+                 milestone: '15.0'
+               }
 
       def resolve(legacy_mode:, **args)
         runner.status(legacy_mode)
