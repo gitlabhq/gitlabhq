@@ -76,10 +76,12 @@ module Integrations
 
     def fields
       [
-        { type: 'text',
+        { type: 'password',
           name: 'token',
           title: _('Token'),
           help: s_('ProjectService|The token you get after you create a Buildkite pipeline with a GitLab repository.'),
+          non_empty_password_title: s_('ProjectService|Enter new token'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
           required: true },
 
         { type: 'text',
