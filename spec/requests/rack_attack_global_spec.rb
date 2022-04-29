@@ -93,28 +93,28 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:request_args) { [api(api_partial_url, personal_access_token: token), {}] }
       let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token), {}] }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
 
     context 'with the token in the headers' do
       let(:request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
       let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
 
     context 'with the token in the OAuth headers' do
       let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
       let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
 
     context 'with the token in basic auth' do
       let(:request_args) { api_get_args_with_token_headers(api_partial_url, basic_auth_headers(user, token)) }
       let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, basic_auth_headers(other_user, other_user_token)) }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
 
     context 'with a read_api scope' do
@@ -127,14 +127,14 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         let(:request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
         let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
 
       context 'with the token in the OAuth headers' do
         let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
         let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
     end
   end
@@ -155,14 +155,14 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:request_args) { [api(api_partial_url, oauth_access_token: token), {}] }
       let(:other_user_request_args) { [api(api_partial_url, oauth_access_token: other_user_token), {}] }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
 
     context 'with the token in the headers' do
       let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
       let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
 
     context 'with a read_api scope' do
@@ -171,7 +171,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(read_token)) }
       let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_read_token)) }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
   end
 
@@ -184,7 +184,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:request_args) { [rss_url(user), params: nil] }
       let(:other_user_request_args) { [rss_url(other_user), params: nil] }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
   end
 
@@ -288,14 +288,14 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         let(:request_args) { [api(api_partial_url, personal_access_token: token), {}] }
         let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token), {}] }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
 
       context 'with the token in the headers' do
         let(:request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
         let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
     end
 
@@ -444,14 +444,14 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         let(:request_args) { [api(api_partial_url, personal_access_token: token), {}] }
         let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token), {}] }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
 
       context 'with the token in the headers' do
         let(:request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
         let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
 
       context 'precedence over authenticated api throttle' do
@@ -512,6 +512,16 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
           end
         end
       end
+
+      context 'authenticated via deploy token headers' do
+        let(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
+        let(:other_deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
+
+        let(:request_args) { [api(api_partial_url), { headers: deploy_token_headers(deploy_token) }] }
+        let(:other_user_request_args) { [api(api_partial_url), { headers: deploy_token_headers(other_deploy_token) }] }
+
+        it_behaves_like 'rate-limited deploy-token-authenticated requests'
+      end
     end
   end
 
@@ -558,7 +568,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         end
       end
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
 
     context 'getting a blob' do
@@ -568,7 +578,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:path) { "/v2/#{blob.group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
       let(:other_path) { "/v2/#{other_blob.group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
   end
 
@@ -598,7 +608,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:request_args) { [git_lfs_url, { headers: basic_auth_headers(user, token) }] }
       let(:other_user_request_args) { [git_lfs_url, { headers: basic_auth_headers(other_user, other_user_token) }] }
 
-      it_behaves_like 'rate-limited token-authenticated requests'
+      it_behaves_like 'rate-limited user based token-authenticated requests'
     end
 
     context 'precedence over authenticated web throttle' do
@@ -786,14 +796,14 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         let(:request_args) { [api(api_partial_url, personal_access_token: token), {}] }
         let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token), {}] }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
 
       context 'with the token in the headers' do
         let(:request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
         let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
 
       context 'precedence over authenticated api throttle' do
@@ -993,14 +1003,14 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         let(:request_args) { [api(path, personal_access_token: token), {}] }
         let(:other_user_request_args) { [api(path, personal_access_token: other_user_token), {}] }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
 
       context 'with the token in the headers' do
         let(:request_args) { api_get_args_with_token_headers(path, personal_access_token_headers(token)) }
         let(:other_user_request_args) { api_get_args_with_token_headers(path, personal_access_token_headers(other_user_token)) }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
+        it_behaves_like 'rate-limited user based token-authenticated requests'
       end
 
       context 'precedence over authenticated api throttle' do
