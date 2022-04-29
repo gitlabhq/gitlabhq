@@ -895,7 +895,10 @@ module Ci
         end
       end
 
-      cache
+      type_suffix = pipeline.protected_ref? ? 'protected' : 'non_protected'
+      cache.map do |entry|
+        entry.merge(key: "#{entry[:key]}-#{type_suffix}")
+      end
     end
 
     def credentials

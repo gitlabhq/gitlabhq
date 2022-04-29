@@ -191,7 +191,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           let(:expected_cache) do
-            [{ 'key' => 'cache_key',
+            [{ 'key' => a_string_matching(/^cache_key-(?>protected|non_protected)$/),
                'untracked' => false,
                'paths' => ['vendor/*'],
                'policy' => 'pull-push',
@@ -225,7 +225,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                                                        'alias' => nil, 'command' => nil, 'ports' => [], 'variables' => [{ 'key' => 'MYSQL_ROOT_PASSWORD', 'value' => 'root123.' }] }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
-            expect(json_response['cache']).to eq(expected_cache)
+            expect(json_response['cache']).to match(expected_cache)
             expect(json_response['variables']).to include(*expected_variables)
             expect(json_response['features']).to match(expected_features)
           end
