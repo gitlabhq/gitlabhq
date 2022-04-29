@@ -16,10 +16,7 @@ import Api from '~/api';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ManifestsList from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
-import {
-  DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
-  DEPENDENCY_PROXY_DOCS_PATH,
-} from '~/packages_and_registries/settings/group/constants';
+import { DEPENDENCY_PROXY_DOCS_PATH } from '~/packages_and_registries/settings/group/constants';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
@@ -89,15 +86,6 @@ export default {
     },
   },
   computed: {
-    infoMessages() {
-      return [
-        {
-          text: DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
-          link: DEPENDENCY_PROXY_DOCS_PATH,
-        },
-      ];
-    },
-
     queryVariables() {
       return { fullPath: this.groupPath, first: GRAPHQL_PAGE_SIZE };
     },
@@ -181,7 +169,7 @@ export default {
     >
       {{ deleteCacheAlertMessage }}
     </gl-alert>
-    <title-area :title="$options.i18n.pageTitle" :info-messages="infoMessages">
+    <title-area :title="$options.i18n.pageTitle">
       <template v-if="showDeleteDropdown" #right-actions>
         <gl-dropdown
           icon="ellipsis_v"

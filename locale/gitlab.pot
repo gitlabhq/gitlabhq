@@ -10035,9 +10035,6 @@ msgstr ""
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. Push at least one Docker image in one of this group's projects in order to show up here. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|With the GitLab Container Registry, every project can have its own space to store images. %{docLinkStart}More information%{docLinkEnd}"
-msgstr ""
-
 msgid "ContainerRegistry|You are about to remove %{item} tags. Are you sure?"
 msgstr ""
 
@@ -12310,9 +12307,6 @@ msgid "DependencyProxy|Contains %{count} blobs of images (%{size})"
 msgstr ""
 
 msgid "DependencyProxy|Copy prefix"
-msgstr ""
-
-msgid "DependencyProxy|Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies."
 msgstr ""
 
 msgid "DependencyProxy|Dependency Proxy"
@@ -27036,9 +27030,6 @@ msgid "PackageRegistry|Pip Command"
 msgstr ""
 
 msgid "PackageRegistry|Project-level"
-msgstr ""
-
-msgid "PackageRegistry|Publish and share packages for a variety of common package managers. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
 msgid "PackageRegistry|Publish packages if their name or version matches this regex."

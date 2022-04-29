@@ -81,7 +81,7 @@ jq 'select(.status >= 500)' <FILE>
 #### Top 10 slowest requests
 
 ```shell
-jq -s 'sort_by(-.duration) | limit(10; .[])' <FILE>
+jq -s 'sort_by(-.duration_s) | limit(10; .[])' <FILE>
 ```
 
 #### Find and pretty print all requests related to a project
@@ -93,7 +93,7 @@ grep <PROJECT_NAME> <FILE> | jq .
 #### Find all requests with a total duration > 5 seconds
 
 ```shell
-jq 'select(.duration > 5000)' <FILE>
+jq 'select(.duration_s > 5000)' <FILE>
 ```
 
 #### Find all project requests with more than 5 rugged calls
@@ -105,13 +105,13 @@ grep <PROJECT_NAME> <FILE> | jq 'select(.rugged_calls > 5)'
 #### Find all requests with a Gitaly duration > 10 seconds
 
 ```shell
-jq 'select(.gitaly_duration > 10000)' <FILE>
+jq 'select(.gitaly_duration_s > 10000)' <FILE>
 ```
 
 #### Find all requests with a queue duration > 10 seconds
 
 ```shell
-jq 'select(.queue_duration > 10000)' <FILE>
+jq 'select(.queue_duration_s > 10000)' <FILE>
 ```
 
 #### Top 10 requests by # of Gitaly calls
@@ -125,7 +125,7 @@ jq -s 'map(select(.gitaly_calls != null)) | sort_by(-.gitaly_calls) | limit(10; 
 #### Print the top three controller methods by request volume and their three longest durations
 
 ```shell
-jq -s -r 'group_by(.controller+.action) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration) | "CT: \(length)\tMETHOD: \(.[0].controller)#\(.[0].action)\tDURS: \(.[0].duration),  \(.[1].duration),  \(.[2].duration)"' production_json.log
+jq -s -r 'group_by(.controller+.action) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration_s) | "CT: \(length)\tMETHOD: \(.[0].controller)#\(.[0].action)\tDURS: \(.[0].duration_s),  \(.[1].duration_s),  \(.[2].duration_s)"' production_json.log
 ```
 
 **Example output**
@@ -141,7 +141,7 @@ CT: 1328   METHOD: Projects::NotesController#index DURS: 403.99,  386.29,  384.3
 #### Print top three routes with request count and their three longest durations
 
 ```shell
-jq -s -r 'group_by(.route) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration) | "CT: \(length)\tROUTE: \(.[0].route)\tDURS: \(.[0].duration),  \(.[1].duration),  \(.[2].duration)"' api_json.log
+jq -s -r 'group_by(.route) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration_s) | "CT: \(length)\tROUTE: \(.[0].route)\tDURS: \(.[0].duration_s),  \(.[1].duration_s),  \(.[2].duration_s)"' api_json.log
 ```
 
 **Example output**

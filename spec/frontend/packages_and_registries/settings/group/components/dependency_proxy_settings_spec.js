@@ -6,11 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import component from '~/packages_and_registries/settings/group/components/dependency_proxy_settings.vue';
-import {
-  DEPENDENCY_PROXY_HEADER,
-  DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
-  DEPENDENCY_PROXY_DOCS_PATH,
-} from '~/packages_and_registries/settings/group/constants';
+import { DEPENDENCY_PROXY_HEADER } from '~/packages_and_registries/settings/group/constants';
 
 import updateDependencyProxySettings from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_settings.mutation.graphql';
 import updateDependencyProxyImageTtlGroupPolicy from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_image_ttl_group_policy.mutation.graphql';
@@ -91,8 +87,6 @@ describe('DependencyProxySettings', () => {
 
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findSettingsTitles = () => wrapper.findComponent(SettingsTitles);
-  const findDescription = () => wrapper.findByTestId('description');
-  const findDescriptionLink = () => wrapper.findByTestId('description-link');
   const findEnableProxyToggle = () => wrapper.findByTestId('dependency-proxy-setting-toggle');
   const findEnableTtlPoliciesToggle = () =>
     wrapper.findByTestId('dependency-proxy-ttl-policies-toggle');
@@ -124,21 +118,6 @@ describe('DependencyProxySettings', () => {
     mountComponent();
 
     expect(wrapper.text()).toContain(DEPENDENCY_PROXY_HEADER);
-  });
-
-  it('has the correct description text', () => {
-    mountComponent();
-
-    expect(findDescription().text()).toMatchInterpolatedText(DEPENDENCY_PROXY_SETTINGS_DESCRIPTION);
-  });
-
-  it('has the correct link', () => {
-    mountComponent();
-
-    expect(findDescriptionLink().attributes()).toMatchObject({
-      href: DEPENDENCY_PROXY_DOCS_PATH,
-    });
-    expect(findDescriptionLink().text()).toBe('Learn more');
   });
 
   describe('enable toggle', () => {

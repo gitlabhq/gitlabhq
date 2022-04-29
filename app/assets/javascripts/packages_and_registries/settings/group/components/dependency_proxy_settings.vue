@@ -13,7 +13,6 @@ import {
 
 import {
   DEPENDENCY_PROXY_HEADER,
-  DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
   DEPENDENCY_PROXY_DOCS_PATH,
 } from '~/packages_and_registries/settings/group/constants';
 
@@ -28,7 +27,6 @@ export default {
   },
   i18n: {
     DEPENDENCY_PROXY_HEADER,
-    DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
     enabledProxyLabel: s__('DependencyProxy|Enable Dependency Proxy'),
     enabledProxyHelpText: s__(
       'DependencyProxy|To see the image prefix and what is in the cache, visit the %{linkStart}Dependency Proxy%{linkEnd}',
@@ -140,19 +138,6 @@ export default {
     data-qa-selector="dependency_proxy_settings_content"
   >
     <template #title> {{ $options.i18n.DEPENDENCY_PROXY_HEADER }} </template>
-    <template #description>
-      <span data-testid="description">
-        <gl-sprintf :message="$options.i18n.DEPENDENCY_PROXY_SETTINGS_DESCRIPTION">
-          <template #docLink="{ content }">
-            <gl-link
-              data-testid="description-link"
-              :href="$options.links.DEPENDENCY_PROXY_DOCS_PATH"
-              >{{ content }}</gl-link
-            >
-          </template>
-        </gl-sprintf>
-      </span>
-    </template>
     <template #default>
       <div>
         <gl-toggle

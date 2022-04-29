@@ -8,9 +8,6 @@ export const CONNECTION_ERROR_TITLE = s__('ContainerRegistry|Docker connection e
 export const CONNECTION_ERROR_MESSAGE = s__(
   `ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}.`,
 );
-export const LIST_INTRO_TEXT = s__(
-  `ContainerRegistry|With the GitLab Container Registry, every project can have its own space to store images. %{docLinkStart}More information%{docLinkEnd}`,
-);
 export const LIST_DELETE_BUTTON_DISABLED = s__(
   'ContainerRegistry|Missing or insufficient permission, delete button disabled',
 );

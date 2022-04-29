@@ -19,9 +19,6 @@ export const DUPLICATES_SETTINGS_EXCEPTION_LEGEND = s__(
 );
 
 export const DEPENDENCY_PROXY_HEADER = s__('DependencyProxy|Dependency Proxy');
-export const DEPENDENCY_PROXY_SETTINGS_DESCRIPTION = s__(
-  'DependencyProxy|Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies.',
-);
 
 // Parameters
 

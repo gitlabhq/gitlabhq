@@ -171,6 +171,9 @@ Download a single artifact file for a specific job of the latest successful
 pipeline for the given reference name from inside the job's artifacts archive.
 The file is extracted from the archive and streamed to the client.
 
+The artifact file provides more detail than what is available in the
+[CSV export](../user/application_security/vulnerability_report/index.md#export-vulnerability-details).
+
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201784) and later, artifacts
 for [parent and child pipelines](../ci/pipelines/parent_child_pipelines.md) are searched in hierarchical
 order from parent to child. For example, if both parent and child pipelines have a
