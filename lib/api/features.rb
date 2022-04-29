@@ -5,6 +5,7 @@ module API
     before { authenticated_as_admin! }
 
     feature_category :feature_flags
+    urgency :low
 
     helpers do
       def gate_value(params)

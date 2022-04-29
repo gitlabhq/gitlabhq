@@ -11,6 +11,7 @@ module API
       before { authorize! :read_release, user_project }
 
       feature_category :release_orchestration
+      urgency :low
 
       params do
         requires :id, type: String, desc: 'The ID of a project'

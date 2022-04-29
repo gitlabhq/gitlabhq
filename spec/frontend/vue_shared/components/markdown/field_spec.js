@@ -5,12 +5,14 @@ import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownFieldHeader from '~/vue_shared/components/markdown/header.vue';
+import MarkdownToolbar from '~/vue_shared/components/markdown/toolbar.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
 const markdownDocsPath = `${TEST_HOST}/docs`;
 const textareaValue = 'testing\n123';
 const uploadsPath = 'test/uploads';
+const restrictedToolBarItems = ['quote'];
 
 function assertMarkdownTabs(isWrite, writeLink, previewLink, wrapper) {
   expect(writeLink.element.children[0].classList.contains('active')).toBe(isWrite);
@@ -63,6 +65,7 @@ describe('Markdown field component', () => {
           textareaValue,
           lines,
           enablePreview,
+          restrictedToolBarItems,
         },
         provide: {
           glFeatures: {
@@ -81,6 +84,8 @@ describe('Markdown field component', () => {
   const getAttachButton = () => subject.find('.button-attach-file');
   const clickAttachButton = () => getAttachButton().trigger('click');
   const findDropzone = () => subject.find('.div-dropzone');
+  const findMarkdownHeader = () => subject.findComponent(MarkdownFieldHeader);
+  const findMarkdownToolbar = () => subject.findComponent(MarkdownToolbar);
 
   describe('mounted', () => {
     const previewHTML = `
@@ -183,6 +188,15 @@ describe('Markdown field component', () => {
         await nextTick();
 
         assertMarkdownTabs(false, writeLink, previewLink, subject);
+      });
+
+      it('passes correct props to MarkdownToolbar', () => {
+        expect(findMarkdownToolbar().props()).toEqual({
+          canAttachFile: true,
+          markdownDocsPath,
+          quickActionsDocsPath: '',
+          showCommentToolBar: true,
+        });
       });
     });
 
@@ -314,9 +328,7 @@ describe('Markdown field component', () => {
     it('escapes new line characters', () => {
       createSubject({ lines: [{ rich_text: 'hello world\\n' }] });
 
-      expect(subject.find('[data-testid="markdownHeader"]').props('lineContent')).toBe(
-        'hello world%br',
-      );
+      expect(findMarkdownHeader().props('lineContent')).toBe('hello world%br');
     });
   });
 
@@ -329,5 +341,13 @@ describe('Markdown field component', () => {
     createSubject({ enablePreview: true });
 
     expect(subject.findComponent(MarkdownFieldHeader).props('enablePreview')).toBe(true);
+  });
+
+  it('passess restricted tool bar items', () => {
+    createSubject();
+
+    expect(subject.findComponent(MarkdownFieldHeader).props('restrictedToolBarItems')).toBe(
+      restrictedToolBarItems,
+    );
   });
 });

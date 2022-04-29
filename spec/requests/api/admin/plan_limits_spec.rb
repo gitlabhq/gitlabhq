@@ -23,6 +23,14 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Hash
+          expect(json_response['ci_pipeline_size']).to eq(Plan.default.actual_limits.ci_pipeline_size)
+          expect(json_response['ci_active_jobs']).to eq(Plan.default.actual_limits.ci_active_jobs)
+          expect(json_response['ci_active_pipelines']).to eq(Plan.default.actual_limits.ci_active_pipelines)
+          expect(json_response['ci_project_subscriptions']).to eq(Plan.default.actual_limits.ci_project_subscriptions)
+          expect(json_response['ci_pipeline_schedules']).to eq(Plan.default.actual_limits.ci_pipeline_schedules)
+          expect(json_response['ci_needs_size_limit']).to eq(Plan.default.actual_limits.ci_needs_size_limit)
+          expect(json_response['ci_registered_group_runners']).to eq(Plan.default.actual_limits.ci_registered_group_runners)
+          expect(json_response['ci_registered_project_runners']).to eq(Plan.default.actual_limits.ci_registered_project_runners)
           expect(json_response['conan_max_file_size']).to eq(Plan.default.actual_limits.conan_max_file_size)
           expect(json_response['generic_packages_max_file_size']).to eq(Plan.default.actual_limits.generic_packages_max_file_size)
           expect(json_response['helm_max_file_size']).to eq(Plan.default.actual_limits.helm_max_file_size)
@@ -44,6 +52,14 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Hash
+          expect(json_response['ci_pipeline_size']).to eq(Plan.default.actual_limits.ci_pipeline_size)
+          expect(json_response['ci_active_jobs']).to eq(Plan.default.actual_limits.ci_active_jobs)
+          expect(json_response['ci_active_pipelines']).to eq(Plan.default.actual_limits.ci_active_pipelines)
+          expect(json_response['ci_project_subscriptions']).to eq(Plan.default.actual_limits.ci_project_subscriptions)
+          expect(json_response['ci_pipeline_schedules']).to eq(Plan.default.actual_limits.ci_pipeline_schedules)
+          expect(json_response['ci_needs_size_limit']).to eq(Plan.default.actual_limits.ci_needs_size_limit)
+          expect(json_response['ci_registered_group_runners']).to eq(Plan.default.actual_limits.ci_registered_group_runners)
+          expect(json_response['ci_registered_project_runners']).to eq(Plan.default.actual_limits.ci_registered_project_runners)
           expect(json_response['conan_max_file_size']).to eq(Plan.default.actual_limits.conan_max_file_size)
           expect(json_response['generic_packages_max_file_size']).to eq(Plan.default.actual_limits.generic_packages_max_file_size)
           expect(json_response['helm_max_file_size']).to eq(Plan.default.actual_limits.helm_max_file_size)
@@ -84,6 +100,14 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
         it 'updates multiple plan limits' do
           put api('/application/plan_limits', admin), params: {
             'plan_name': 'default',
+            'ci_pipeline_size': 101,
+            'ci_active_jobs': 102,
+            'ci_active_pipelines': 103,
+            'ci_project_subscriptions': 104,
+            'ci_pipeline_schedules': 105,
+            'ci_needs_size_limit': 106,
+            'ci_registered_group_runners': 107,
+            'ci_registered_project_runners': 108,
             'conan_max_file_size': 10,
             'generic_packages_max_file_size': 20,
             'helm_max_file_size': 25,
@@ -96,6 +120,14 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Hash
+          expect(json_response['ci_pipeline_size']).to eq(101)
+          expect(json_response['ci_active_jobs']).to eq(102)
+          expect(json_response['ci_active_pipelines']).to eq(103)
+          expect(json_response['ci_project_subscriptions']).to eq(104)
+          expect(json_response['ci_pipeline_schedules']).to eq(105)
+          expect(json_response['ci_needs_size_limit']).to eq(106)
+          expect(json_response['ci_registered_group_runners']).to eq(107)
+          expect(json_response['ci_registered_project_runners']).to eq(108)
           expect(json_response['conan_max_file_size']).to eq(10)
           expect(json_response['generic_packages_max_file_size']).to eq(20)
           expect(json_response['helm_max_file_size']).to eq(25)
@@ -131,6 +163,14 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
         it 'fails to update plan limits' do
           put api('/application/plan_limits', admin), params: {
             'plan_name': 'default',
+            'ci_pipeline_size': 'z',
+            'ci_active_jobs': 'y',
+            'ci_active_pipelines': 'x',
+            'ci_project_subscriptions': 'w',
+            'ci_pipeline_schedules': 'v',
+            'ci_needs_size_limit': 'u',
+            'ci_registered_group_runners': 't',
+            'ci_registered_project_runners': 's',
             'conan_max_file_size': 'a',
             'generic_packages_max_file_size': 'b',
             'helm_max_file_size': 'h',
@@ -143,6 +183,14 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']).to include(
+            'ci_pipeline_size is invalid',
+            'ci_active_jobs is invalid',
+            'ci_active_pipelines is invalid',
+            'ci_project_subscriptions is invalid',
+            'ci_pipeline_schedules is invalid',
+            'ci_needs_size_limit is invalid',
+            'ci_registered_group_runners is invalid',
+            'ci_registered_project_runners is invalid',
             'conan_max_file_size is invalid',
             'generic_packages_max_file_size is invalid',
             'helm_max_file_size is invalid',

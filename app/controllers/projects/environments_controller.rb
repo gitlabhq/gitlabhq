@@ -27,6 +27,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   feature_category :continuous_delivery
+  urgency :low
 
   def index
     @project = ProjectPresenter.new(project, current_user: current_user)

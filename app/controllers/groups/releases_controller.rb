@@ -3,6 +3,7 @@
 module Groups
   class ReleasesController < Groups::ApplicationController
     feature_category :release_evidence
+    urgency :low
 
     def index
       respond_to do |format|

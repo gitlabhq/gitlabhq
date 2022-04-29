@@ -1,6 +1,7 @@
 import { lowlight } from 'lowlight/lib/core';
 import { __, sprintf } from '~/locale';
 import CODE_BLOCK_LANGUAGES from '../constants/code_block_languages';
+import languageLoader from './highlight_js_language_loader';
 
 const codeBlockLanguageLoader = {
   lowlight,
@@ -46,11 +47,11 @@ const codeBlockLanguageLoader = {
 
   loadLanguages(languageList = []) {
     const loaders = languageList
-      .filter((languageName) => !this.isLanguageLoaded(languageName))
+      .filter(
+        (languageName) => !this.isLanguageLoaded(languageName) && languageName in languageLoader,
+      )
       .map((languageName) => {
-        return import(
-          /* webpackChunkName: 'highlight.language.js' */ `highlight.js/lib/languages/${languageName}`
-        )
+        return languageLoader[languageName]()
           .then(({ default: language }) => {
             this.lowlight.registerLanguage(languageName, language);
           })

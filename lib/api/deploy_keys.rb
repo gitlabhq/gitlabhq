@@ -7,6 +7,7 @@ module API
     before { authenticate! }
 
     feature_category :continuous_delivery
+    urgency :low
 
     helpers do
       def add_deploy_keys_project(project, attrs = {})

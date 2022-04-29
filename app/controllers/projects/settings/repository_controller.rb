@@ -12,7 +12,7 @@ module Projects
 
       feature_category :source_code_management, [:show, :cleanup]
       feature_category :continuous_delivery, [:create_deploy_token]
-      urgency :low, [:show]
+      urgency :low, [:show, :create_deploy_token]
 
       def show
         render_show

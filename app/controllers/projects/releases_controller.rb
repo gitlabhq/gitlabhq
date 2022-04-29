@@ -10,6 +10,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :validate_suffix_path, :fetch_latest_tag, only: :latest_permalink
 
   feature_category :release_orchestration
+  urgency :low
 
   def index
     respond_to do |format|

@@ -77,19 +77,11 @@ export default {
       this.tiptapEditor.commands.setCodeBlock({ language: this.selectedLanguage.syntax });
     },
 
-    tippyOnBeforeUpdate(tippy, props) {
-      if (props.getReferenceClientRect) {
-        // eslint-disable-next-line no-param-reassign
-        props.getReferenceClientRect = () => {
-          const { view } = this.tiptapEditor;
-          const { from } = this.tiptapEditor.state.selection;
-
-          const node = getParentByTagName(view.domAtPos(from).node, 'pre');
-          if (node) return node.getBoundingClientRect();
-
-          return new DOMRect(-1000, -1000, 0, 0);
-        };
-      }
+    getReferenceClientRect() {
+      const { view } = this.tiptapEditor;
+      const { from } = this.tiptapEditor.state.selection;
+      const node = getParentByTagName(view.domAtPos(from).node, 'pre');
+      return node?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0);
     },
 
     deleteCodeBlock() {
@@ -105,7 +97,7 @@ export default {
     :editor="tiptapEditor"
     plugin-key="bubbleMenuCodeBlock"
     :should-show="shouldShow"
-    :tippy-options="{ onBeforeUpdate: tippyOnBeforeUpdate }"
+    :tippy-options="{ getReferenceClientRect }"
   >
     <editor-state-observer @transaction="updateSelectedLanguage">
       <gl-button-group>

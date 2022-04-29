@@ -54,6 +54,11 @@ export default {
       required: false,
       default: true,
     },
+    restrictedToolBarItems: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -207,6 +212,7 @@ export default {
             icon="italic"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('strikethrough')"
             tag="~~"
             :button-title="
               sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
@@ -217,6 +223,7 @@ export default {
             icon="strikethrough"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('quote')"
             :prepend="true"
             :tag="tag"
             :button-title="__('Insert a quote')"
@@ -272,24 +279,28 @@ export default {
             icon="link"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('bullet-list')"
             :prepend="true"
             tag="- "
             :button-title="__('Add a bullet list')"
             icon="list-bulleted"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('numbered-list')"
             :prepend="true"
             tag="1. "
             :button-title="__('Add a numbered list')"
             icon="list-numbered"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('task-list')"
             :prepend="true"
             tag="- [ ] "
             :button-title="__('Add a task list')"
             icon="list-task"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('collapsible-section')"
             :tag="mdCollapsibleSection"
             :prepend="true"
             tag-select="Click to expand"
@@ -297,12 +308,14 @@ export default {
             icon="details-block"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('table')"
             :tag="mdTable"
             :prepend="true"
             :button-title="__('Add a table')"
             icon="table"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('full-screen')"
             class="js-zen-enter"
             :prepend="true"
             :button-title="__('Go full screen')"

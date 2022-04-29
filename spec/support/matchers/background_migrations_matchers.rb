@@ -83,3 +83,11 @@ RSpec::Matchers.define :have_scheduled_batched_migration do |table_name: nil, co
     expect(batched_migrations.count).to be(0)
   end
 end
+
+RSpec::Matchers.define :be_finalize_background_migration_of do |migration|
+  define_method :matches? do |klass|
+    expect_next_instance_of(klass) do |instance|
+      expect(instance).to receive(:finalize_background_migration).with(migration)
+    end
+  end
+end

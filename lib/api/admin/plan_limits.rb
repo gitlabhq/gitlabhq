@@ -35,6 +35,14 @@ module API
       params do
         requires :plan_name, type: String, values: Plan.all_plans, desc: 'Name of the plan'
 
+        optional :ci_pipeline_size, type: Integer, desc: 'Maximum number of jobs in a single pipeline'
+        optional :ci_active_jobs, type: Integer, desc: 'Total number of jobs in currently active pipelines'
+        optional :ci_active_pipelines, type: Integer, desc: 'Maximum number of active pipelines per project'
+        optional :ci_project_subscriptions, type: Integer, desc: 'Maximum number of pipeline subscriptions to and from a project'
+        optional :ci_pipeline_schedules, type: Integer, desc: 'Maximum number of pipeline schedules'
+        optional :ci_needs_size_limit, type: Integer, desc: 'Maximum number of DAG dependencies that a job can have'
+        optional :ci_registered_group_runners, type: Integer, desc: 'Maximum number of runners registered per group'
+        optional :ci_registered_project_runners, type: Integer, desc: 'Maximum number of runners registered per project'
         optional :conan_max_file_size, type: Integer, desc: 'Maximum Conan package file size in bytes'
         optional :generic_packages_max_file_size, type: Integer, desc: 'Maximum generic package file size in bytes'
         optional :helm_max_file_size, type: Integer, desc: 'Maximum Helm chart file size in bytes'

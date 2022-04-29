@@ -11,6 +11,7 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   before_action :feature_flag, only: [:edit, :update, :destroy]
 
   feature_category :feature_flags
+  urgency :low
 
   def index
     @feature_flags = FeatureFlagsFinder

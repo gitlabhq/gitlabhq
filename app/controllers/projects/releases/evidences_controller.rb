@@ -8,6 +8,7 @@ module Projects
       before_action :authorize_read_release_evidence!
 
       feature_category :release_evidence
+      urgency :low
 
       def show
         respond_to do |format|

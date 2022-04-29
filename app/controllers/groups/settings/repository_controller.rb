@@ -12,6 +12,7 @@ module Groups
       end
 
       feature_category :continuous_delivery
+      urgency :low
 
       def create_deploy_token
         result = Groups::DeployTokens::CreateService.new(@group, current_user, deploy_token_params).execute

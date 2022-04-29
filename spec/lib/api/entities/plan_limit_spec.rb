@@ -9,6 +9,14 @@ RSpec.describe API::Entities::PlanLimit do
 
   it 'exposes correct attributes' do
     expect(subject).to include(
+      :ci_pipeline_size,
+      :ci_active_jobs,
+      :ci_active_pipelines,
+      :ci_project_subscriptions,
+      :ci_pipeline_schedules,
+      :ci_needs_size_limit,
+      :ci_registered_group_runners,
+      :ci_registered_project_runners,
       :conan_max_file_size,
       :generic_packages_max_file_size,
       :helm_max_file_size,

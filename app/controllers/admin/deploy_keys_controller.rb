@@ -5,6 +5,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
   before_action :deploy_key, only: [:destroy, :edit, :update]
 
   feature_category :continuous_delivery
+  urgency :low
 
   def index
   end

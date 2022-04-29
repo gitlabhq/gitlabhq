@@ -8,6 +8,7 @@ module API
     before { authenticate! }
 
     feature_category :continuous_delivery
+    urgency :low
 
     params do
       requires :id, type: String, desc: 'The project ID'

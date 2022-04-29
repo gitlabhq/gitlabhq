@@ -24,6 +24,11 @@ export default {
       required: false,
       default: true,
     },
+    showCommentToolBar: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     hasQuickActionsDocsPath() {
@@ -34,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <div class="comment-toolbar clearfix">
+  <div v-if="showCommentToolBar" class="comment-toolbar clearfix">
     <div class="toolbar-text">
       <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
         <gl-link :href="markdownDocsPath" target="_blank">

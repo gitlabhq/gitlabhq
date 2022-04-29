@@ -5,6 +5,7 @@ module API
     include PaginationParams
 
     feature_category :continuous_delivery
+    urgency :low
 
     helpers do
       def scope_params

@@ -4,6 +4,7 @@ class Groups::DeployTokensController < Groups::ApplicationController
   before_action :authorize_destroy_deploy_token!
 
   feature_category :continuous_delivery
+  urgency :low
 
   def revoke
     Groups::DeployTokens::RevokeService.new(@group, current_user, params).execute
