@@ -9,6 +9,7 @@ module Gitlab
             attr_reader :location
 
             SUFFIX = '.gitlab-ci.yml'
+            HOST = 'https://gitlab.com/gitlab-org/gitlab/-/raw/master'
 
             def initialize(params, context)
               @location = params[:template]
@@ -24,6 +25,8 @@ module Gitlab
               super.merge(
                 type: :template,
                 location: masked_location,
+                blob: nil,
+                raw: masked_raw,
                 extra: {}
               )
             end
@@ -50,6 +53,14 @@ module Gitlab
 
             def fetch_template_content
               Gitlab::Template::GitlabCiYmlTemplate.find(template_name, context.project)&.content
+            end
+
+            def masked_raw
+              strong_memoize(:masked_raw) do
+                context.mask_variables_from(
+                  "#{HOST}/#{Gitlab::Template::GitlabCiYmlTemplate::BASE_DIR}/#{location}"
+                )
+              end
             end
           end
         end

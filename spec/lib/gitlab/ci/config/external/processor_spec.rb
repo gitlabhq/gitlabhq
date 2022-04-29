@@ -267,11 +267,41 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
           perform
 
           expect(context.includes).to contain_exactly(
-            { type: :local, location: '/local/file.yml', extra: {}, context_project: project.full_path, context_sha: '12345' },
-            { type: :template, location: 'Ruby.gitlab-ci.yml', extra: {}, context_project: project.full_path, context_sha: '12345' },
-            { type: :remote, location: 'http://my.domain.com/config.yml', extra: {}, context_project: project.full_path, context_sha: '12345' },
-            { type: :file, location: '/templates/my-workflow.yml', extra: { project: another_project.full_path, ref: 'HEAD' }, context_project: project.full_path, context_sha: '12345' },
-            { type: :local, location: '/templates/my-build.yml', extra: {}, context_project: another_project.full_path, context_sha: another_project.commit.sha }
+            { type: :local,
+              location: '/local/file.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/12345/local/file.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/12345/local/file.yml",
+              extra: {},
+              context_project: project.full_path,
+              context_sha: '12345' },
+            { type: :template,
+              location: 'Ruby.gitlab-ci.yml',
+              blob: nil,
+              raw: 'https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Ruby.gitlab-ci.yml',
+              extra: {},
+              context_project: project.full_path,
+              context_sha: '12345' },
+            { type: :remote,
+              location: 'http://my.domain.com/config.yml',
+              blob: nil,
+              raw: "http://my.domain.com/config.yml",
+              extra: {},
+              context_project: project.full_path,
+              context_sha: '12345' },
+            { type: :file,
+              location: '/templates/my-workflow.yml',
+              blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-workflow.yml",
+              raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-workflow.yml",
+              extra: { project: another_project.full_path, ref: 'HEAD' },
+              context_project: project.full_path,
+              context_sha: '12345' },
+            { type: :local,
+              location: '/templates/my-build.yml',
+              blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-build.yml",
+              raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-build.yml",
+              extra: {},
+              context_project: another_project.full_path,
+              context_sha: another_project.commit.sha }
           )
         end
       end
@@ -394,8 +424,20 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         perform
 
         expect(context.includes).to contain_exactly(
-          { type: :file, location: '/templates/my-build.yml', extra: { project: another_project.full_path, ref: 'HEAD' }, context_project: project.full_path, context_sha: '12345' },
-          { type: :file, location: '/templates/my-test.yml', extra: { project: another_project.full_path, ref: 'HEAD' }, context_project: project.full_path, context_sha: '12345' }
+          { type: :file,
+            location: '/templates/my-build.yml',
+            blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-build.yml",
+            raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-build.yml",
+            extra: { project: another_project.full_path, ref: 'HEAD' },
+            context_project: project.full_path,
+            context_sha: '12345' },
+          { type: :file,
+            blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-test.yml",
+            raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-test.yml",
+            location: '/templates/my-test.yml',
+            extra: { project: another_project.full_path, ref: 'HEAD' },
+            context_project: project.full_path,
+            context_sha: '12345' }
         )
       end
     end
@@ -438,8 +480,20 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         perform
 
         expect(context.includes).to contain_exactly(
-          { type: :local, location: 'myfolder/file1.yml', extra: {}, context_project: project.full_path, context_sha: '12345' },
-          { type: :local, location: 'myfolder/file2.yml', extra: {}, context_project: project.full_path, context_sha: '12345' }
+          { type: :local,
+            location: 'myfolder/file1.yml',
+            blob: "http://localhost/#{project.full_path}/-/blob/12345/myfolder/file1.yml",
+            raw: "http://localhost/#{project.full_path}/-/raw/12345/myfolder/file1.yml",
+            extra: {},
+            context_project: project.full_path,
+            context_sha: '12345' },
+          { type: :local,
+            blob: "http://localhost/#{project.full_path}/-/blob/12345/myfolder/file2.yml",
+            raw: "http://localhost/#{project.full_path}/-/raw/12345/myfolder/file2.yml",
+            location: 'myfolder/file2.yml',
+            extra: {},
+            context_project: project.full_path,
+            context_sha: '12345' }
         )
       end
     end

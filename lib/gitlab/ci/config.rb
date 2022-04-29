@@ -94,7 +94,8 @@ module Gitlab
 
       def metadata
         {
-          includes: @context.includes
+          includes: @context.includes,
+          merged_yaml: @config&.deep_stringify_keys&.to_yaml
         }
       end
 

@@ -123,6 +123,7 @@ RSpec.describe API::Lint do
           expect(json_response['status']).to eq('valid')
           expect(json_response['warnings']).to match_array([])
           expect(json_response['errors']).to match_array([])
+          expect(json_response['includes']).to eq([])
         end
 
         it 'outputs expanded yaml content' do
@@ -177,6 +178,7 @@ RSpec.describe API::Lint do
             expect(json_response['status']).to eq('invalid')
             expect(json_response['warnings']).to eq([])
             expect(json_response['errors']).to eq(['Invalid configuration format'])
+            expect(json_response['includes']).to eq(nil)
           end
 
           it 'outputs expanded yaml content' do
@@ -204,6 +206,7 @@ RSpec.describe API::Lint do
             expect(json_response['status']).to eq('invalid')
             expect(json_response['warnings']).to eq([])
             expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
+            expect(json_response['includes']).to eq([])
           end
 
           it 'outputs expanded yaml content' do
@@ -262,6 +265,17 @@ RSpec.describe API::Lint do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Hash
         expect(json_response['merged_yaml']).to eq(expected_yaml)
+        expect(json_response['includes']).to contain_exactly(
+          {
+            'type' => 'local',
+            'location' => 'another-gitlab-ci.yml',
+            'blob' => "http://localhost/#{project.full_path}/-/blob/#{project.commit.sha}/another-gitlab-ci.yml",
+            'raw' => "http://localhost/#{project.full_path}/-/raw/#{project.commit.sha}/another-gitlab-ci.yml",
+            'extra' => {},
+            'context_project' => project.full_path,
+            'context_sha' => project.commit.sha
+          }
+        )
         expect(json_response['valid']).to eq(true)
         expect(json_response['warnings']).to eq([])
         expect(json_response['errors']).to eq([])
@@ -274,6 +288,7 @@ RSpec.describe API::Lint do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['merged_yaml']).to eq(yaml_content)
+        expect(json_response['includes']).to eq([])
         expect(json_response['valid']).to eq(false)
         expect(json_response['warnings']).to eq([])
         expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
@@ -327,6 +342,7 @@ RSpec.describe API::Lint do
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['merged_yaml']).to eq(nil)
+            expect(json_response['includes']).to eq(nil)
             expect(json_response['valid']).to eq(false)
             expect(json_response['warnings']).to eq([])
             expect(json_response['errors']).to eq(['Insufficient permissions to create a new pipeline'])
@@ -539,6 +555,17 @@ RSpec.describe API::Lint do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Hash
         expect(json_response['merged_yaml']).to eq(expected_yaml)
+        expect(json_response['includes']).to contain_exactly(
+          {
+            'type' => 'local',
+            'location' => 'another-gitlab-ci.yml',
+            'blob' => "http://localhost/#{project.full_path}/-/blob/#{project.commit.sha}/another-gitlab-ci.yml",
+            'raw' => "http://localhost/#{project.full_path}/-/raw/#{project.commit.sha}/another-gitlab-ci.yml",
+            'extra' => {},
+            'context_project' => project.full_path,
+            'context_sha' => project.commit.sha
+          }
+        )
         expect(json_response['valid']).to eq(true)
         expect(json_response['errors']).to eq([])
       end
@@ -550,6 +577,7 @@ RSpec.describe API::Lint do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['merged_yaml']).to eq(yaml_content)
+        expect(json_response['includes']).to eq([])
         expect(json_response['valid']).to eq(false)
         expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
       end

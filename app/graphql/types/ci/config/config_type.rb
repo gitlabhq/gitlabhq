@@ -9,6 +9,8 @@ module Types
 
         field :errors, [GraphQL::Types::String], null: true,
               description: 'Linting errors.'
+        field :includes, [Types::Ci::Config::IncludeType], null: true,
+              description: 'List of included files.'
         field :merged_yaml, GraphQL::Types::String, null: true,
               description: 'Merged CI configuration YAML.'
         field :stages, Types::Ci::Config::StageType.connection_type, null: true,

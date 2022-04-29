@@ -9309,6 +9309,7 @@ Represents the total number of issues and their weights for a particular day.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="ciconfigerrors"></a>`errors` | [`[String!]`](#string) | Linting errors. |
+| <a id="ciconfigincludes"></a>`includes` | [`[CiConfigInclude!]`](#ciconfiginclude) | List of included files. |
 | <a id="ciconfigmergedyaml"></a>`mergedYaml` | [`String`](#string) | Merged CI configuration YAML. |
 | <a id="ciconfigstages"></a>`stages` | [`CiConfigStageConnection`](#ciconfigstageconnection) | Stages of the pipeline. (see [Connections](#connections)) |
 | <a id="ciconfigstatus"></a>`status` | [`CiConfigStatus`](#ciconfigstatus) | Status of linting, can be either valid or invalid. |
@@ -9323,6 +9324,20 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="ciconfiggroupjobs"></a>`jobs` | [`CiConfigJobConnection`](#ciconfigjobconnection) | Jobs in group. (see [Connections](#connections)) |
 | <a id="ciconfiggroupname"></a>`name` | [`String`](#string) | Name of the job group. |
 | <a id="ciconfiggroupsize"></a>`size` | [`Int`](#int) | Size of the job group. |
+
+### `CiConfigInclude`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciconfigincludeblob"></a>`blob` | [`String`](#string) | File blob location. It can be masked if it contains masked variables, e.g., "https://gitlab.com/gitlab-org/gitlab/-/blob/e52d6d0246d7375291850e61f0abc101fbda9dc2/.gitlab/ci/build-images.gitlab-ci.yml". |
+| <a id="ciconfigincludecontextproject"></a>`contextProject` | [`String`](#string) | Current project scope, e.g., "gitlab-org/gitlab". |
+| <a id="ciconfigincludecontextsha"></a>`contextSha` | [`String`](#string) | Current sha scope. |
+| <a id="ciconfigincludeextra"></a>`extra` | [`JSON`](#json) | Extra information for the `include`, which can contain `job_name`, `project`, and `ref`. Values can be masked if they contain masked variables. |
+| <a id="ciconfigincludelocation"></a>`location` | [`String`](#string) | File location. It can be masked if it contains masked variables, e.g., ".gitlab/ci/build-images.gitlab-ci.yml". |
+| <a id="ciconfigincluderaw"></a>`raw` | [`String`](#string) | File raw location. It can be masked if it contains masked variables, e.g., "https://gitlab.com/gitlab-org/gitlab/-/raw/e52d6d0246d7375291850e61f0abc101fbda9dc2/.gitlab/ci/build-images.gitlab-ci.yml". |
+| <a id="ciconfigincludetype"></a>`type` | [`CiConfigIncludeType`](#ciconfigincludetype) | Include type. |
 
 ### `CiConfigJob`
 
@@ -17829,6 +17844,17 @@ Types of blob viewers.
 | <a id="blobviewerstypeauxiliary"></a>`auxiliary` | Auxiliary blob viewers type. |
 | <a id="blobviewerstyperich"></a>`rich` | Rich blob viewers type. |
 | <a id="blobviewerstypesimple"></a>`simple` | Simple blob viewers type. |
+
+### `CiConfigIncludeType`
+
+Include type.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="ciconfigincludetypelocal"></a>`local` | Local include. |
+| <a id="ciconfigincludetypeproject"></a>`project` | Project include. |
+| <a id="ciconfigincludetyperemote"></a>`remote` | Remote include. |
+| <a id="ciconfigincludetypetemplate"></a>`template` | Template include. |
 
 ### `CiConfigStatus`
 

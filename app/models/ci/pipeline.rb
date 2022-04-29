@@ -36,10 +36,10 @@ module Ci
 
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor
-    # is used for storing the processed CI YAML contents for linting purposes.
+    # is used for storing the processed metadata for linting purposes.
     # There is an open issue to address this:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/259010
-    attr_accessor :merged_yaml
+    attr_accessor :config_metadata
 
     # This is used to retain access to the method defined by `Ci::HasRef`
     # before being overridden in this class.

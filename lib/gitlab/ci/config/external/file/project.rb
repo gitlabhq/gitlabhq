@@ -31,6 +31,8 @@ module Gitlab
               super.merge(
                 type: :file,
                 location: masked_location,
+                blob: masked_blob,
+                raw: masked_raw,
                 extra: { project: masked_project_name, ref: masked_ref_name }
               )
             end
@@ -69,6 +71,8 @@ module Gitlab
             end
 
             def sha
+              return unless project
+
               strong_memoize(:sha) do
                 project.commit(ref_name).try(:sha)
               end
@@ -94,6 +98,26 @@ module Gitlab
             def masked_ref_name
               strong_memoize(:masked_ref_name) do
                 context.mask_variables_from(ref_name)
+              end
+            end
+
+            def masked_blob
+              return unless project
+
+              strong_memoize(:masked_blob) do
+                context.mask_variables_from(
+                  Gitlab::Routing.url_helpers.project_blob_url(project, ::File.join(sha, location))
+                )
+              end
+            end
+
+            def masked_raw
+              return unless project
+
+              strong_memoize(:masked_raw) do
+                context.mask_variables_from(
+                  Gitlab::Routing.url_helpers.project_raw_url(project, ::File.join(sha, location))
+                )
               end
             end
           end

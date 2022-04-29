@@ -4,6 +4,7 @@ module Gitlab
   module Template
     class GitlabCiYmlTemplate < BaseTemplate
       BASE_EXCLUDED_PATTERNS = [%r{\.latest\.}].freeze
+      BASE_DIR = 'lib/gitlab/ci/templates'
 
       TEMPLATES_WITH_LATEST_VERSION = {}.freeze
 
@@ -45,7 +46,7 @@ module Gitlab
         end
 
         def base_dir
-          Rails.root.join('lib/gitlab/ci/templates')
+          Rails.root.join(BASE_DIR)
         end
 
         def finder(project = nil)

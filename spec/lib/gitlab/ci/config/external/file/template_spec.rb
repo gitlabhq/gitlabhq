@@ -124,6 +124,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template do
         context_sha: '12345',
         type: :template,
         location: template,
+        raw: "https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/#{template}",
+        blob: nil,
         extra: {}
       )
     }

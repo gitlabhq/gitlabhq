@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::Lint do
       end
     end
 
-    shared_examples 'sets merged yaml' do
+    shared_examples 'sets config metadata' do
       let(:content) do
         <<~YAML
         :include:
@@ -105,6 +105,20 @@ RSpec.describe Gitlab::Ci::Lint do
         expected_config = included_config.merge(root_config).except(:include).deep_stringify_keys
 
         expect(subject.merged_yaml).to eq(expected_config.to_yaml)
+      end
+
+      it 'sets includes' do
+        expect(subject.includes).to contain_exactly(
+          {
+            type: :local,
+            location: 'another-gitlab-ci.yml',
+            blob: "http://localhost/#{project.full_path}/-/blob/#{project.commit.sha}/another-gitlab-ci.yml",
+            raw: "http://localhost/#{project.full_path}/-/raw/#{project.commit.sha}/another-gitlab-ci.yml",
+            extra: {},
+            context_project: project.full_path,
+            context_sha: project.commit.sha
+          }
+        )
       end
     end
 
@@ -220,7 +234,7 @@ RSpec.describe Gitlab::Ci::Lint do
           end
         end
 
-        it_behaves_like 'sets merged yaml'
+        it_behaves_like 'sets config metadata'
 
         include_context 'advanced validations' do
           it 'does not catch advanced logical errors' do
@@ -275,7 +289,7 @@ RSpec.describe Gitlab::Ci::Lint do
           end
         end
 
-        it_behaves_like 'sets merged yaml'
+        it_behaves_like 'sets config metadata'
 
         include_context 'advanced validations' do
           it 'runs advanced logical validations' do

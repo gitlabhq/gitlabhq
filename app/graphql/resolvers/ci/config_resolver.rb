@@ -37,7 +37,7 @@ module Resolvers
           .new(project: project, current_user: context[:current_user], sha: sha)
           .validate(content, dry_run: dry_run)
 
-        response(result).merge(merged_yaml: result.merged_yaml)
+        response(result)
       rescue GRPC::InvalidArgument => error
         Gitlab::ErrorTracking.track_and_raise_exception(error, sha: sha)
       end
@@ -45,20 +45,14 @@ module Resolvers
       private
 
       def response(result)
-        if result.errors.empty?
-          {
-            status: :valid,
-            errors: [],
-            warnings: result.warnings,
-            stages: make_stages(result.jobs)
-          }
-        else
-          {
-            status: :invalid,
-            warnings: result.warnings,
-            errors: result.errors
-          }
-        end
+        {
+          status: result.status,
+          errors: result.errors,
+          warnings: result.warnings,
+          stages: make_stages(result),
+          merged_yaml: result.merged_yaml,
+          includes: result.includes
+        }
       end
 
       def make_jobs(config_jobs)
@@ -90,8 +84,10 @@ module Resolvers
         end
       end
 
-      def make_stages(jobs)
-        make_groups(jobs)
+      def make_stages(result)
+        return [] unless result.valid?
+
+        make_groups(result.jobs)
           .group_by { |group| group[:stage] }
           .map { |name, groups| { name: name, groups: groups } }
       end

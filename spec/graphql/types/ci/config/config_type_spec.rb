@@ -8,6 +8,7 @@ RSpec.describe Types::Ci::Config::ConfigType do
   it 'exposes the expected fields' do
     expected_fields = %i[
       errors
+      includes
       mergedYaml
       stages
       status

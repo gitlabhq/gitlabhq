@@ -12,8 +12,8 @@ module Gitlab
         let(:ci_config) { Gitlab::Ci::Config.new(config_content, user: user) }
         let(:result) { described_class.new(ci_config: ci_config, warnings: ci_config&.warnings) }
 
-        describe '#merged_yaml' do
-          subject(:merged_yaml) { result.merged_yaml }
+        describe '#config_metadata' do
+          subject(:config_metadata) { result.config_metadata }
 
           let(:config_content) do
             YAML.dump(
@@ -33,10 +33,22 @@ module Gitlab
           end
 
           it 'returns expanded yaml config' do
-            expanded_config = YAML.safe_load(merged_yaml, [Symbol])
+            expanded_config = YAML.safe_load(config_metadata[:merged_yaml], [Symbol])
             included_config = YAML.safe_load(included_yml, [Symbol])
 
             expect(expanded_config).to include(*included_config.keys)
+          end
+
+          it 'returns includes' do
+            expect(config_metadata[:includes]).to contain_exactly(
+              { type: :remote,
+                location: 'https://example.com/sample.yml',
+                blob: nil,
+                raw: 'https://example.com/sample.yml',
+                extra: {},
+                context_project: nil,
+                context_sha: nil }
+            )
           end
         end
 

@@ -33636,7 +33636,7 @@ msgstr ""
 msgid "SecurityOrchestration|Edit policy project"
 msgstr ""
 
-msgid "SecurityOrchestration|Edit scan exection policy"
+msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit scan result policy"
@@ -33669,7 +33669,7 @@ msgstr ""
 msgid "SecurityOrchestration|New policy"
 msgstr ""
 
-msgid "SecurityOrchestration|New scan exection policy"
+msgid "SecurityOrchestration|New scan execution policy"
 msgstr ""
 
 msgid "SecurityOrchestration|New scan result policy"

@@ -213,6 +213,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
         context_sha: '12345',
         type: :remote,
         location: 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml',
+        raw: 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.xxxxxxxxxxx.yml',
+        blob: nil,
         extra: {}
       )
     }

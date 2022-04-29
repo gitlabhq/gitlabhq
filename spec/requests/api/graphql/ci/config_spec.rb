@@ -57,6 +57,16 @@ RSpec.describe 'Query.ciConfig' do
               }
             }
           }
+          mergedYaml
+          includes {
+            type
+            location
+            blob
+            raw
+            extra
+            contextProject
+            contextSha
+          }
         }
       }
     )
@@ -71,10 +81,12 @@ RSpec.describe 'Query.ciConfig' do
   it 'returns the correct structure' do
     post_graphql_query
 
-    expect(graphql_data['ciConfig']).to eq(
+    expect(graphql_data['ciConfig']).to include(
       "status" => "VALID",
       "errors" => [],
       "warnings" => [],
+      "includes" => [],
+      "mergedYaml" => a_kind_of(String),
       "stages" =>
       {
         "nodes" =>
@@ -271,6 +283,18 @@ RSpec.describe 'Query.ciConfig' do
         "status" => "VALID",
         "errors" => [],
         "warnings" => [],
+        "includes" => [
+          {
+            "type" => "local",
+            "location" => "other_file.yml",
+            "blob" => "http://localhost/#{project.full_path}/-/blob/#{project.commit.sha}/other_file.yml",
+            "raw" => "http://localhost/#{project.full_path}/-/raw/#{project.commit.sha}/other_file.yml",
+            "extra" => {},
+            "contextProject" => project.full_path,
+            "contextSha" => project.commit.sha
+          }
+        ],
+        "mergedYaml" => "---\nbuild:\n  script: build\nrspec:\n  script: rspec\n",
         "stages" =>
         {
           "nodes" =>
