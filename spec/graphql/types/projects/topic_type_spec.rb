@@ -9,6 +9,7 @@ RSpec.describe Types::Projects::TopicType do
     expect(described_class).to have_graphql_fields(
       :id,
       :name,
+      :title,
       :description,
       :description_html,
       :avatar_url

@@ -206,7 +206,7 @@ class ScheduleCapTitleLengthOnIssues < Gitlab::Database::Migration[1.0]
 
   disable_ddl_transaction!
 
-  class Issue < ActiveRecord::Base
+  class Issue < ::ApplicationRecord
     include EachBatch
 
     self.table_name = 'issues'

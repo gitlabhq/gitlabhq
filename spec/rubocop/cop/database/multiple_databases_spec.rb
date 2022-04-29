@@ -13,6 +13,13 @@ RSpec.describe RuboCop::Cop::Database::MultipleDatabases do
     SOURCE
   end
 
+  it 'flags the use of ::ActiveRecord::Base.connection' do
+    expect_offense(<<~SOURCE)
+    ::ActiveRecord::Base.connection.inspect
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use methods from ActiveRecord::Base, [...]
+    SOURCE
+  end
+
   described_class::ALLOWED_METHODS.each do |method_name|
     it "does not flag use of ActiveRecord::Base.#{method_name}" do
       expect_no_offenses(<<~SOURCE)

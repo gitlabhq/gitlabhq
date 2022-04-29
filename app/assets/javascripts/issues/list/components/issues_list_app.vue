@@ -45,6 +45,7 @@ import {
   PAGE_SIZE,
   PARAM_PAGE_AFTER,
   PARAM_PAGE_BEFORE,
+  PARAM_SORT,
   PARAM_STATE,
   RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
@@ -138,43 +139,17 @@ export default {
     },
   },
   data() {
-    const pageAfter = getParameterByName(PARAM_PAGE_AFTER);
-    const pageBefore = getParameterByName(PARAM_PAGE_BEFORE);
-    const state = getParameterByName(PARAM_STATE);
-    const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
-    const dashboardSortKey = getSortKey(this.initialSort);
-    const graphQLSortKey =
-      isSortKey(this.initialSort?.toUpperCase()) && this.initialSort.toUpperCase();
-
-    // The initial sort is an old enum value when it is saved on the dashboard issues page.
-    // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.
-    let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
-
-    if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
-      this.showIssueRepositioningMessage();
-      sortKey = defaultSortKey;
-    }
-
-    const isSearchDisabled =
-      this.isAnonymousSearchDisabled &&
-      !this.isSignedIn &&
-      window.location.search.includes('search=');
-
-    if (isSearchDisabled) {
-      this.showAnonymousSearchingMessage();
-    }
-
     return {
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
-      filterTokens: isSearchDisabled ? [] : getFilterTokens(window.location.search),
+      filterTokens: [],
       issues: [],
       issuesCounts: {},
       issuesError: null,
       pageInfo: {},
-      pageParams: getInitialPageParams(sortKey, pageAfter, pageBefore),
+      pageParams: {},
       showBulkEditSidebar: false,
-      sortKey,
-      state: state || IssuableStates.Opened,
+      sortKey: CREATED_DESC,
+      state: IssuableStates.Opened,
     };
   },
   apollo: {
@@ -416,7 +391,15 @@ export default {
       };
     },
   },
+  watch: {
+    $route(newValue, oldValue) {
+      if (newValue.fullPath !== oldValue.fullPath) {
+        this.updateData(getParameterByName(PARAM_SORT));
+      }
+    },
+  },
   created() {
+    this.updateData(this.initialSort);
     this.cache = {};
   },
   mounted() {
@@ -516,6 +499,8 @@ export default {
         this.pageParams = getInitialPageParams(this.sortKey);
       }
       this.state = state;
+
+      this.$router.push({ query: this.urlParams });
     },
     handleDismissAlert() {
       this.issuesError = null;
@@ -525,8 +510,11 @@ export default {
         this.showAnonymousSearchingMessage();
         return;
       }
+
       this.pageParams = getInitialPageParams(this.sortKey);
       this.filterTokens = filter;
+
+      this.$router.push({ query: this.urlParams });
     },
     handleNextPage() {
       this.pageParams = {
@@ -534,6 +522,8 @@ export default {
         firstPageSize: PAGE_SIZE,
       };
       scrollUp();
+
+      this.$router.push({ query: this.urlParams });
     },
     handlePreviousPage() {
       this.pageParams = {
@@ -541,6 +531,8 @@ export default {
         lastPageSize: PAGE_SIZE,
       };
       scrollUp();
+
+      this.$router.push({ query: this.urlParams });
     },
     handleReorder({ newIndex, oldIndex }) {
       const issueToMove = this.issues[oldIndex];
@@ -592,6 +584,8 @@ export default {
       if (this.isSignedIn) {
         this.saveSortPreference(sortKey);
       }
+
+      this.$router.push({ query: this.urlParams });
     },
     saveSortPreference(sortKey) {
       this.$apollo
@@ -623,6 +617,39 @@ export default {
     toggleBulkEditSidebar(showBulkEditSidebar) {
       this.showBulkEditSidebar = showBulkEditSidebar;
     },
+    updateData(sortValue) {
+      const pageAfter = getParameterByName(PARAM_PAGE_AFTER);
+      const pageBefore = getParameterByName(PARAM_PAGE_BEFORE);
+      const state = getParameterByName(PARAM_STATE);
+
+      const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
+      const dashboardSortKey = getSortKey(sortValue);
+      const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
+
+      // The initial sort is an old enum value when it is saved on the dashboard issues page.
+      // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.
+      let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
+
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
+        sortKey = defaultSortKey;
+      }
+
+      const isSearchDisabled =
+        this.isAnonymousSearchDisabled &&
+        !this.isSignedIn &&
+        window.location.search.includes('search=');
+
+      if (isSearchDisabled) {
+        this.showAnonymousSearchingMessage();
+      }
+
+      this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
+      this.filterTokens = isSearchDisabled ? [] : getFilterTokens(window.location.search);
+      this.pageParams = getInitialPageParams(sortKey, pageAfter, pageBefore);
+      this.sortKey = sortKey;
+      this.state = state || IssuableStates.Opened;
+    },
   },
 };
 </script>
@@ -649,10 +676,10 @@ export default {
       :is-manual-ordering="isManualOrdering"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :show-pagination-controls="showPaginationControls"
-      :use-keyset-pagination="true"
+      sync-filter-and-sort
+      use-keyset-pagination
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
-      :url-params="urlParams"
       @click-tab="handleClickTab"
       @dismiss-alert="handleDismissAlert"
       @filter="handleFilter"

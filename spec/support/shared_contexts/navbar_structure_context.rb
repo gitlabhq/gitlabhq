@@ -73,6 +73,14 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
       {
+        nav_item: _('Infrastructure'),
+        nav_sub_items: [
+          _('Kubernetes clusters'),
+          _('Serverless platform'),
+          _('Terraform')
+        ]
+      },
+      {
         nav_item: _('Monitor'),
         nav_sub_items: [
           _('Metrics'),
@@ -82,14 +90,6 @@ RSpec.shared_context 'project navbar structure' do
           _('Alerts'),
           _('Incidents'),
           _('Product Analytics')
-        ]
-      },
-      {
-        nav_item: _('Infrastructure'),
-        nav_sub_items: [
-          _('Kubernetes clusters'),
-          _('Serverless platform'),
-          _('Terraform')
         ]
       },
       {

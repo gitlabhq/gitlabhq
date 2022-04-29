@@ -16669,9 +16669,6 @@ msgstr ""
 msgid "Geo|Geo sites are paused using a command run on the site"
 msgstr ""
 
-msgid "Geo|Geo supports replication of many data types."
-msgstr ""
-
 msgid "Geo|Go to the primary site"
 msgstr ""
 
@@ -17041,7 +17038,7 @@ msgstr ""
 msgid "Geo|Waiting for scheduler"
 msgstr ""
 
-msgid "Geo|With GitLab Geo, you can install a special read-only and replicated instance anywhere. %{linkStart}Learn more%{linkEnd}"
+msgid "Geo|With GitLab Geo, you can install a special read-only and replicated instance anywhere."
 msgstr ""
 
 msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo site."

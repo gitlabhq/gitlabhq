@@ -58,6 +58,7 @@ export const PAGE_SIZE = 20;
 export const PAGE_SIZE_MANUAL = 100;
 export const PARAM_PAGE_AFTER = 'page_after';
 export const PARAM_PAGE_BEFORE = 'page_before';
+export const PARAM_SORT = 'sort';
 export const PARAM_STATE = 'state';
 export const RELATIVE_POSITION = 'relative_position';
 
@@ -174,6 +175,7 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[milestone_title]',
+        [SPECIAL_FILTER]: 'not[milestone_title]',
       },
     },
   },
@@ -258,6 +260,7 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[iteration_id]',
+        [SPECIAL_FILTER]: 'not[iteration_id]',
       },
     },
   },

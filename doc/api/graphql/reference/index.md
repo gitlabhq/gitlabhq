@@ -16709,6 +16709,7 @@ Representing a to-do entry.
 | <a id="topicdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="topicid"></a>`id` | [`ID!`](#id) | ID of the topic. |
 | <a id="topicname"></a>`name` | [`String!`](#string) | Name of the topic. |
+| <a id="topictitle"></a>`title` | [`String!`](#string) | Title of the topic. |
 
 ### `Tree`
 

@@ -457,7 +457,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def project_topic_list
     strong_memoize(:project_topic_list) do
-      project.topics.map(&:name)
+      project.topics.map { |topic| { name: topic.name, title: topic.title_or_name } }
     end
   end
 

@@ -338,7 +338,6 @@ Database/MultipleDatabases:
     - 'ee/db/**/*.rb'
     - 'spec/migrations/**/*.rb'
     - 'lib/tasks/gitlab/db.rake'
-    - 'lib/gitlab/background_migration/**/*.rb'
     - 'ee/lib/ee/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/database/**/*.rb'

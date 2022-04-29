@@ -1,3 +1,4 @@
+import { createTerm } from '@gitlab/ui/src/components/base/filtered_search/filtered_search_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import {
@@ -195,11 +196,12 @@ const convertToFilteredSearchTerms = (locationSearch) =>
 
 export const getFilterTokens = (locationSearch) => {
   if (!locationSearch) {
-    return [];
+    return [createTerm()];
   }
   const filterTokens = convertToFilteredTokens(locationSearch);
   const searchTokens = convertToFilteredSearchTerms(locationSearch);
-  return filterTokens.concat(searchTokens);
+  const tokens = filterTokens.concat(searchTokens);
+  return tokens.length ? tokens : [createTerm()];
 };
 
 const getFilterType = (data, tokenType = '') =>

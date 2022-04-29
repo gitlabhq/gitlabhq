@@ -32,6 +32,11 @@ module RuboCop
       in_deployment_migration?(node) || in_post_deployment_migration?(node)
     end
 
+    def in_background_migration?(node)
+      filepath(node).include?('/lib/gitlab/background_migration/') ||
+        filepath(node).include?('/ee/lib/ee/gitlab/background_migration/')
+    end
+
     def in_deployment_migration?(node)
       dirname(node).end_with?('db/migrate', 'db/geo/migrate')
     end
@@ -56,8 +61,12 @@ module RuboCop
 
     private
 
+    def filepath(node)
+      node.location.expression.source_buffer.name
+    end
+
     def dirname(node)
-      File.dirname(node.location.expression.source_buffer.name)
+      File.dirname(filepath(node))
     end
 
     def rubocop_migrations_config

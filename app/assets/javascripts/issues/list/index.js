@@ -1,6 +1,7 @@
 import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
@@ -53,6 +54,7 @@ export function mountIssuesListApp() {
   }
 
   Vue.use(VueApollo);
+  Vue.use(VueRouter);
 
   const resolvers = {
     Mutation: {
@@ -73,11 +75,6 @@ export function mountIssuesListApp() {
       },
     },
   };
-
-  const defaultClient = createDefaultClient(resolvers);
-  const apolloProvider = new VueApollo({
-    defaultClient,
-  });
 
   const {
     autocompleteAwardEmojisPath,
@@ -121,7 +118,14 @@ export function mountIssuesListApp() {
   return new Vue({
     el,
     name: 'IssuesListRoot',
-    apolloProvider,
+    apolloProvider: new VueApollo({
+      defaultClient: createDefaultClient(resolvers),
+    }),
+    router: new VueRouter({
+      base: window.location.pathname,
+      mode: 'history',
+      routes: [{ path: '/' }],
+    }),
     provide: {
       autocompleteAwardEmojisPath,
       calendarPath,

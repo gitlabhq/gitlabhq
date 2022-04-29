@@ -41,9 +41,57 @@ into this category.
 
 ## Isolation
 
-Batched background migrations must be isolated and can not use application code. (For example,
-models defined in `app/models`.). Because these migrations can take a long time to
-run, it's possible for new versions to deploy while the migrations are still running.
+Batched background migrations must be isolated and can not use application code (for example,
+models defined in `app/models` except the `ApplicationRecord` classes).
+Because these migrations can take a long time to run, it's possible
+for new versions to deploy while the migrations are still running.
+
+## Accessing data for multiple databases
+
+Background Migration contrary to regular migrations does have access to multiple databases
+and can be used to efficiently access and update data across them. To properly indicate
+a database to be used it is desired to create ActiveRecord model inline the migration code.
+Such model should use a correct [`ApplicationRecord`](multiple_databases.md#gitlab-schema)
+depending on which database the table is located. As such usage of `ActiveRecord::Base`
+is disallowed as it does not describe a explicitly database to be used to access given table.
+
+```ruby
+# good
+class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
+  class Project < ::ApplicationRecord
+    self.table_name = 'projects'
+  end
+
+  class Build < ::Ci::ApplicationRecord
+    self.table_name = 'ci_builds'
+  end
+end
+
+# bad
+class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
+  class Project < ActiveRecord::Base
+    self.table_name = 'projects'
+  end
+
+  class Build < ActiveRecord::Base
+    self.table_name = 'ci_builds'
+  end
+end
+```
+
+Similarly the usage of `ActiveRecord::Base.connection` is disallowed and needs to be
+replaced preferrably with the usage of model connection.
+
+```ruby
+# good
+Project.connection.execute("SELECT * FROM projects")
+
+# acceptable
+ApplicationRecord.connection.execute("SELECT * FROM projects")
+
+# bad
+ActiveRecord::Base.connection.execute("SELECT * FROM projects")
+```
 
 ## Idempotence
 
@@ -151,7 +199,7 @@ do this work in a regular migration.
 
    ```ruby
    class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
-     class Integration < ActiveRecord::Base
+     class Integration < ::ApplicationRecord
        self.table_name = 'integrations'
      end
 

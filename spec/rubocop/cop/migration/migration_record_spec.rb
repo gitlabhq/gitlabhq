@@ -6,21 +6,14 @@ require_relative '../../../../rubocop/cop/migration/migration_record'
 RSpec.describe RuboCop::Cop::Migration::MigrationRecord do
   subject(:cop) { described_class.new }
 
-  let(:migration) do
-    <<~SOURCE
-      class MyMigration < Gitlab::Database::Migration[2.0]
-        class Project < ActiveRecord::Base
-        end
-
-        def change
-        end
-      end
-    SOURCE
-  end
-
   shared_examples 'a disabled cop' do
     it 'does not register any offenses' do
-      expect_no_offenses(migration)
+      expect_no_offenses(<<~SOURCE)
+        class MyMigration < Gitlab::Database::Migration[2.0]
+          class Project < ActiveRecord::Base
+          end
+        end
+      SOURCE
     end
   end
 
@@ -54,26 +47,12 @@ RSpec.describe RuboCop::Cop::Migration::MigrationRecord do
         RUBY
       end
 
-      context 'when migration inhertis from ::ActiveRecord::Base' do
-        let(:migration) do
-          <<~SOURCE
-            class MyMigration < Gitlab::Database::Migration[2.0]
-              class Project < ::ActiveRecord::Base
-              end
-      
-              def change
-              end
-            end
-          SOURCE
-        end
-
-        it 'adds an offense' do
-          expect_offense(<<~RUBY)
-            class Project < ::ActiveRecord::Base
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't inherit from ActiveRecord::Base but use MigrationRecord instead.[...]
-            end
-          RUBY
-        end
+      it 'adds an offense if inheriting from ::ActiveRecord::Base' do
+        expect_offense(<<~RUBY)
+          class Project < ::ActiveRecord::Base
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't inherit from ActiveRecord::Base but use MigrationRecord instead.[...]
+          end
+        RUBY
       end
     end
   end

@@ -85,7 +85,7 @@ export default {
       <gl-avatar-labeled
         :src="dropdownItem.avatarUrl"
         :entity-name="dropdownItem.name"
-        :label="dropdownItem.name"
+        :label="dropdownItem.title"
         :size="32"
         :shape="$options.AVATAR_SHAPE_OPTION_RECT"
       />

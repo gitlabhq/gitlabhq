@@ -28,9 +28,9 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::CiCdMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SecurityComplianceMenu.new(context))
         add_menu(Sidebars::Projects::Menus::DeploymentsMenu.new(context))
-        add_menu(Sidebars::Projects::Menus::MonitorMenu.new(context))
-        add_menu(Sidebars::Projects::Menus::InfrastructureMenu.new(context))
         add_menu(Sidebars::Projects::Menus::PackagesRegistriesMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::InfrastructureMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::MonitorMenu.new(context))
         add_menu(Sidebars::Projects::Menus::AnalyticsMenu.new(context))
         add_wiki_menus
         add_menu(Sidebars::Projects::Menus::SnippetsMenu.new(context))

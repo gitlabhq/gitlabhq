@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Topic show page' do
-  let_it_be(:topic) { create(:topic, name: 'my-topic', description: 'This is **my** topic https://google.com/ :poop: ```\ncode\n```', avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
+  let_it_be(:topic) { create(:topic, name: 'my-topic', title: 'My Topic', description: 'This is **my** topic https://google.com/ :poop: ```\ncode\n```', avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
   context 'when topic does not exist' do
     let(:path) { topic_explore_projects_path(topic_name: 'non-existing') }
@@ -20,8 +20,9 @@ RSpec.describe 'Topic show page' do
       visit topic_explore_projects_path(topic_name: topic.name)
     end
 
-    it 'shows name, avatar and description as markdown' do
-      expect(page).to have_content(topic.name)
+    it 'shows title, avatar and description as markdown' do
+      expect(page).to have_content(topic.title)
+      expect(page).not_to have_content(topic.name)
       expect(page).to have_selector('.avatar-container > img.topic-avatar')
       expect(find('.topic-description')).to have_selector('p > strong')
       expect(find('.topic-description')).to have_selector('p > a[rel]')

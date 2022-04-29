@@ -17,7 +17,7 @@ module AttrEncrypted
         # ensuring the connection is released
         def attribute_instance_methods_as_symbols
           # Use with_connection so the connection doesn't stay pinned to the thread.
-          connected = ::ActiveRecord::Base.connection_pool.with_connection(&:active?) rescue false
+          connected = ::ActiveRecord::Base.connection_pool.with_connection(&:active?) rescue false # rubocop:disable Database/MultipleDatabases
 
           if connected
             # Call version from AttrEncrypted::Adapters::ActiveRecord

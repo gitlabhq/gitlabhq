@@ -89,32 +89,20 @@ export default {
       required: false,
       default: () => ({}),
     },
+    syncFilterAndSort: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
-    let selectedSortOption = this.sortOptions[0]?.sortDirection?.descending;
-    let selectedSortDirection = SortDirection.descending;
-
-    // Extract correct sortBy value based on initialSortBy
-    if (this.initialSortBy) {
-      selectedSortOption = this.sortOptions
-        .filter(
-          (sortBy) =>
-            sortBy.sortDirection.ascending === this.initialSortBy ||
-            sortBy.sortDirection.descending === this.initialSortBy,
-        )
-        .pop();
-      selectedSortDirection = Object.keys(selectedSortOption.sortDirection).find(
-        (key) => selectedSortOption.sortDirection[key] === this.initialSortBy,
-      );
-    }
-
     return {
       initialRender: true,
       recentSearchesPromise: null,
       recentSearches: [],
       filterValue: this.initialFilterValue,
-      selectedSortOption,
-      selectedSortDirection,
+      selectedSortOption: this.sortOptions[0],
+      selectedSortDirection: SortDirection.descending,
     };
   },
   computed: {
@@ -173,7 +161,20 @@ export default {
       return undefined;
     },
   },
+  watch: {
+    initialFilterValue(newValue) {
+      if (this.syncFilterAndSort) {
+        this.filterValue = newValue;
+      }
+    },
+    initialSortBy(newValue) {
+      if (this.syncFilterAndSort) {
+        this.updateSelectedSortValues(newValue);
+      }
+    },
+  },
   created() {
+    this.updateSelectedSortValues(this.initialSortBy);
     if (this.recentSearchesStorageKey) this.setupRecentSearch();
   },
   methods: {
@@ -308,6 +309,19 @@ export default {
     onClear() {
       const cleared = true;
       this.$emit('onFilter', [], cleared);
+    },
+    updateSelectedSortValues(sort) {
+      if (!sort) {
+        return;
+      }
+
+      this.selectedSortOption = this.sortOptions.find(
+        (sortBy) =>
+          sortBy.sortDirection.ascending === sort || sortBy.sortDirection.descending === sort,
+      );
+      this.selectedSortDirection = Object.keys(this.selectedSortOption.sortDirection).find(
+        (key) => this.selectedSortOption.sortDirection[key] === sort,
+      );
     },
   },
 };

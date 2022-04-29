@@ -106,4 +106,16 @@ RSpec.describe Projects::Topic do
       end
     end
   end
+
+  describe '#title_or_name' do
+    it 'returns title if set' do
+      topic.title = 'My title'
+      expect(topic.title_or_name).to eq('My title')
+    end
+
+    it 'returns name if title not set' do
+      topic.title = nil
+      expect(topic.title_or_name).to eq('topic')
+    end
+  end
 end

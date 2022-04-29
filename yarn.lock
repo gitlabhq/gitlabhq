@@ -963,16 +963,17 @@
     stylelint-declaration-strict-value "1.8.0"
     stylelint-scss "4.1.0"
 
-"@gitlab/svgs@2.10.0":
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-2.10.0.tgz#223d3ab592b06aff330a05aa2e7b590624ab8a08"
-  integrity sha512-XohQ/abgalEHNaNR/HCTS761GUSzlLAMSyO/37eaSykjMqeX8v2iEwUm+0JtmI70N/7mp/tFZv5gzGIDt5oWgQ==
+"@gitlab/svgs@2.11.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-2.11.0.tgz#06edc30c58a539b2cb60ef30d61ce470c0f57f2b"
+  integrity sha512-IkiMrt3NY4IHonEgSHfv6JoJ+3McppZpt7XYgG6QtVtiCHFuwbkTH+gLMeZHG127AjtuHr54wS/cYp4MSNZZ4Q==
 
-"@gitlab/ui@39.3.1":
-  version "39.3.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-39.3.1.tgz#333d10724748da9356af2b1150cee58d86264b90"
-  integrity sha512-6Tqa2sPxPBkC6svKwgyqRo/ONo8tuO7rITHecKuPYcnoRfZjxxzzEK2aPI+0Cdi/Jl478WWh6lT/T1jB065vNw==
+"@gitlab/ui@39.4.0":
+  version "39.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-39.4.0.tgz#7afacad3556c8bcfc136d38922c15a3fe7cd5cd5"
+  integrity sha512-OZRGLS/308paAHRSoiDCR+ZDuXZkE4tzFRdHlTBO0P6/7ZKLtIL6koNWa0Lpedlr2BfmGxkjvAsotvHk2F9U1w==
   dependencies:
+    "@popperjs/core" "^2.11.2"
     bootstrap-vue "2.20.1"
     dompurify "^2.3.6"
     echarts "^5.2.1"
@@ -1433,10 +1434,10 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.12.tgz#431ec342a7195622f86688bbda82e3166ce8cb28"
   integrity sha512-6RglhutqrGFMO1MNUXp95RBuYIuc8wTnMAV5MUhLmjTOy78ncwOw7RgeQ/HeymkKXRhZd0s2DNrM1rL7unk3MQ==
 
-"@popperjs/core@^2.9.0":
-  version "2.10.2"
-  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.10.2.tgz#0798c03351f0dea1a5a4cabddf26a55a7cbee590"
-  integrity sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ==
+"@popperjs/core@^2.11.2", "@popperjs/core@^2.9.0":
+  version "2.11.5"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.5.tgz#db5a11bf66bdab39569719555b0f76e138d7bd64"
+  integrity sha512-9X2obfABZuDVLCgPK9aX0a/x4jaOEweTTWE2+9sr0Qqqevj2Uv5XorvusThmc9XGYpS9yI+fhh8RTafBtGposw==
 
 "@rails/actioncable@6.1.4-7":
   version "6.1.4-7"

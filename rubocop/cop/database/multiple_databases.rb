@@ -22,7 +22,7 @@ module RuboCop
         ].freeze
 
         def_node_matcher :active_record_base_method_is_used?, <<~PATTERN
-        (send (const (const nil? :ActiveRecord) :Base) $_)
+        (send (const (const _ :ActiveRecord) :Base) $_)
         PATTERN
 
         def on_send(node)

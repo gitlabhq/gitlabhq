@@ -45,12 +45,16 @@ into this category.
 ## Isolation
 
 Background migrations must be isolated and can not use application code (for example,
-models defined in `app/models`). Since these migrations can take a long time to
-run it's possible for new versions to be deployed while they are still running.
+models defined in `app/models` except the `ApplicationRecord` classes). Since these migrations
+can take a long time to run it's possible for new versions to be deployed while they are still running.
 
 It's also possible for different migrations to be executed at the same time.
 This means that different background migrations should not migrate data in a
 way that would cause conflicts.
+
+## Accessing data for multiple databases
+
+See [Accessing data for multiple databases of Batched Background Migrations](batched_background_migrations.md#accessing-data-for-multiple-databases) for more details.
 
 ## Idempotence
 
@@ -190,7 +194,7 @@ class:
 
 ```ruby
 class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
-  class Integration < ActiveRecord::Base
+  class Integration < ::ApplicationRecord
     self.table_name = 'integrations'
   end
 
@@ -214,7 +218,7 @@ created and updated integrations. We can do this using something along the lines
 the following:
 
 ```ruby
-class Integration < ActiveRecord::Base
+class Integration < ::ApplicationRecord
   after_commit :schedule_integration_migration, on: :update
   after_commit :schedule_integration_migration, on: :create
 
