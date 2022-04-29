@@ -5,7 +5,7 @@
 class Integration < ApplicationRecord
   include Sortable
   include Importable
-  include ProjectServicesLoggable
+  include Integrations::Loggable
   include Integrations::HasDataFields
   include Integrations::ResetSecretFields
   include FromUnion

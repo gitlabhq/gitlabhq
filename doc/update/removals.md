@@ -104,6 +104,21 @@ A feature flag was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11
 
 In GitLab 15.0, we will remove the feature flag, and you must always authenticate when you use the Dependency Proxy.
 
+### Test coverage project CI/CD setting
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+To specify a test coverage pattern, beginning in GitLab 15.0 the
+[project setting for test coverage parsing](https://docs.gitlab.com/ee/ci/pipelines/settings.html#add-test-coverage-results-to-a-merge-request-deprecated)
+has been removed.
+
+To set test coverage parsing, use the project’s `.gitlab-ci.yml` file by providing a regular expression with the
+[`coverage` keyword](https://docs.gitlab.com/ee/ci/yaml/index.html#coverage).
+
 ### Update to the Container Registry group-level API
 
 WARNING:

@@ -1,6 +1,8 @@
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlTab, GlTabs, GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
@@ -18,15 +20,22 @@ import {
   LICENSE_COMPLIANCE_DESCRIPTION,
   LICENSE_COMPLIANCE_HELP_PATH,
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
+  LICENSE_ULTIMATE,
+  LICENSE_PREMIUM,
+  LICENSE_FREE,
 } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import currentLicenseQuery from '~/security_configuration/graphql/current_license.query.graphql';
+import waitForPromises from 'helpers/wait_for_promises';
 
 import UpgradeBanner from '~/security_configuration/components/upgrade_banner.vue';
 import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
   REPORT_TYPE_SAST,
 } from '~/vue_shared/security_reports/constants';
+import { getCurrentLicensePlanResponse } from '../mock_data';
 
 const upgradePath = '/upgrade';
 const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
@@ -36,13 +45,23 @@ const projectFullPath = 'namespace/project';
 const vulnerabilityTrainingDocsPath = 'user/application_security/vulnerabilities/index';
 
 useLocalStorageSpy();
+Vue.use(VueApollo);
 
 describe('App component', () => {
   let wrapper;
   let userCalloutDismissSpy;
+  let mockApollo;
 
-  const createComponent = ({ shouldShowCallout = true, ...propsData }) => {
+  const createComponent = ({
+    shouldShowCallout = true,
+    license = LICENSE_ULTIMATE,
+    ...propsData
+  }) => {
     userCalloutDismissSpy = jest.fn();
+
+    mockApollo = createMockApollo([
+      [currentLicenseQuery, jest.fn().mockResolvedValue(getCurrentLicensePlanResponse(license))],
+    ]);
 
     wrapper = extendedWrapper(
       mount(SecurityConfigurationApp, {
@@ -54,6 +73,7 @@ describe('App component', () => {
           projectFullPath,
           vulnerabilityTrainingDocsPath,
         },
+        apolloProvider: mockApollo,
         stubs: {
           ...stubChildren(SecurityConfigurationApp),
           GlLink: false,
@@ -128,14 +148,16 @@ describe('App component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    mockApollo = null;
   });
 
   describe('basic structure', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent({
         augmentedSecurityFeatures: securityFeaturesMock,
         augmentedComplianceFeatures: complianceFeaturesMock,
       });
+      await waitForPromises();
     });
 
     it('renders main-heading with correct text', () => {
@@ -438,11 +460,12 @@ describe('App component', () => {
   });
 
   describe('Vulnerability management', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent({
         augmentedSecurityFeatures: securityFeaturesMock,
         augmentedComplianceFeatures: complianceFeaturesMock,
       });
+      await waitForPromises();
     });
 
     it('renders TrainingProviderList component', () => {
@@ -458,6 +481,22 @@ describe('App component', () => {
 
       expect(trainingLink.text()).toBe('Learn more about vulnerability training');
       expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
+    });
+
+    it.each`
+      license             | display
+      ${LICENSE_ULTIMATE} | ${true}
+      ${LICENSE_PREMIUM}  | ${false}
+      ${LICENSE_FREE}     | ${false}
+      ${null}             | ${false}
+    `('displays $display for license $license', async ({ license, display }) => {
+      createComponent({
+        license,
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+      });
+      await waitForPromises();
+      expect(findVulnerabilityManagementTab().exists()).toBe(display);
     });
   });
 });

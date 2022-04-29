@@ -12,7 +12,7 @@ class IssueSidebarBasicEntity < IssuableSidebarBasicEntity
   end
 
   expose :show_crm_contacts do |issuable|
-    current_user&.can?(:read_crm_contact, issuable.project.root_ancestor) &&
+    current_user&.can?(:read_crm_contacts, issuable) &&
       CustomerRelations::Contact.exists_for_group?(issuable.project.root_ancestor)
   end
 end

@@ -111,3 +111,12 @@ export const tempProviderLogos = {
     svg: `<svg>${[testProviderName[1]]}</svg>`,
   },
 };
+
+export const getCurrentLicensePlanResponse = (plan) => ({
+  data: {
+    currentLicense: {
+      id: 'gid://gitlab/License/1',
+      plan,
+    },
+  },
+});

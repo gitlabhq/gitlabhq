@@ -848,7 +848,7 @@ RSpec.describe Integration do
     let(:test_message) { "test message" }
     let(:arguments) do
       {
-        service_class: integration.class.name,
+        integration_class: integration.class.name,
         project_path: project.full_path,
         project_id: project.id,
         message: test_message,
@@ -857,13 +857,13 @@ RSpec.describe Integration do
     end
 
     it 'logs info messages using json logger' do
-      expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
+      expect(Gitlab::IntegrationsLogger).to receive(:info).with(arguments)
 
       integration.log_info(test_message, additional_argument: 'some argument')
     end
 
     it 'logs error messages using json logger' do
-      expect(Gitlab::JsonLogger).to receive(:error).with(arguments)
+      expect(Gitlab::IntegrationsLogger).to receive(:error).with(arguments)
 
       integration.log_error(test_message, additional_argument: 'some argument')
     end
@@ -872,7 +872,7 @@ RSpec.describe Integration do
       let(:project) { nil }
       let(:arguments) do
         {
-          service_class: integration.class.name,
+          integration_class: integration.class.name,
           project_path: nil,
           project_id: nil,
           message: test_message,
@@ -881,7 +881,7 @@ RSpec.describe Integration do
       end
 
       it 'logs info messages using json logger' do
-        expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
+        expect(Gitlab::IntegrationsLogger).to receive(:info).with(arguments)
 
         integration.log_info(test_message, additional_argument: 'some argument')
       end

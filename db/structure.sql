@@ -19786,6 +19786,7 @@ CREATE TABLE protected_environment_approval_rules (
     updated_at timestamp with time zone NOT NULL,
     access_level smallint,
     required_approvals smallint NOT NULL,
+    group_inheritance_type smallint DEFAULT 0 NOT NULL,
     CONSTRAINT chk_rails_bed75249bc CHECK ((((access_level IS NOT NULL) AND (group_id IS NULL) AND (user_id IS NULL)) OR ((user_id IS NOT NULL) AND (access_level IS NULL) AND (group_id IS NULL)) OR ((group_id IS NOT NULL) AND (user_id IS NULL) AND (access_level IS NULL)))),
     CONSTRAINT chk_rails_cfa90ae3b5 CHECK ((required_approvals > 0))
 );
@@ -19806,7 +19807,8 @@ CREATE TABLE protected_environment_deploy_access_levels (
     access_level integer DEFAULT 40,
     protected_environment_id integer NOT NULL,
     user_id integer,
-    group_id integer
+    group_id integer,
+    group_inheritance_type smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE protected_environment_deploy_access_levels_id_seq

@@ -3,7 +3,7 @@
 module Jira
   module Requests
     class Base
-      include ProjectServicesLoggable
+      include Integrations::Loggable
 
       JIRA_API_VERSION = 2
       # Limit the size of the JSON error message we will attempt to parse, as the JSON is external input.

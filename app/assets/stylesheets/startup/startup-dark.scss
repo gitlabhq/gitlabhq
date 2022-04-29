@@ -807,6 +807,9 @@ input {
   margin: 4px 2px 4px -12px;
   border-radius: 4px;
 }
+.navbar-gitlab .header-content .title .canary-badge {
+  margin-left: -8px;
+}
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;
 }

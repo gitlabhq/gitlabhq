@@ -11725,25 +11725,25 @@ msgstr ""
 msgid "DastSiteValidation|Revoke validation"
 msgstr ""
 
-msgid "DastSiteValidation|Step 1 - Choose site validation method"
+msgid "DastSiteValidation|Step 1 - Choose site validation method."
 msgstr ""
 
-msgid "DastSiteValidation|Step 2 - Add following HTTP header to your site"
+msgid "DastSiteValidation|Step 2 - Add the following HTTP header to your site."
 msgstr ""
 
-msgid "DastSiteValidation|Step 2 - Add following meta tag to your site"
+msgid "DastSiteValidation|Step 2 - Add the following meta tag to your site."
 msgstr ""
 
-msgid "DastSiteValidation|Step 2 - Add following text to the target site"
+msgid "DastSiteValidation|Step 2 - Download the following text file, then upload it to the target site."
 msgstr ""
 
-msgid "DastSiteValidation|Step 3 - Confirm header location and validate"
+msgid "DastSiteValidation|Step 3 - Confirm header location."
 msgstr ""
 
-msgid "DastSiteValidation|Step 3 - Confirm meta tag location and validate"
+msgid "DastSiteValidation|Step 3 - Confirm meta tag location."
 msgstr ""
 
-msgid "DastSiteValidation|Step 3 - Confirm text file location and validate"
+msgid "DastSiteValidation|Step 3 - Confirm text file location."
 msgstr ""
 
 msgid "DastSiteValidation|Text file validation"
@@ -11760,13 +11760,13 @@ msgid_plural "DastSiteValidation|This will affect %d other profiles targeting th
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "DastSiteValidation|To run an active scan, validate your target site. All site profiles that share the same base URL share the same validation status."
+msgid "DastSiteValidation|To run an active scan, validate your site. Site profile validation reduces the risk of running an active scan against the wrong website. All site profiles that share the same base URL share the same validation status."
 msgstr ""
 
 msgid "DastSiteValidation|Validate"
 msgstr ""
 
-msgid "DastSiteValidation|Validate target site"
+msgid "DastSiteValidation|Validate site"
 msgstr ""
 
 msgid "DastSiteValidation|Validated"

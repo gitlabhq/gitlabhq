@@ -64,6 +64,10 @@
         border-radius: $border-radius-default;
       }
 
+      .canary-badge {
+        margin-left: -8px;
+      }
+
       .project-item-select {
         right: auto;
         left: 0;

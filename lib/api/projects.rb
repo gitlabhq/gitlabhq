@@ -575,14 +575,14 @@ module API
       end
       post ":id/share", feature_category: :authentication_and_authorization do
         authorize! :admin_project, user_project
-        group = Group.find_by_id(params[:group_id])
+        shared_with_group = Group.find_by_id(params[:group_id])
 
         unless user_project.allowed_to_share_with_group?
           break render_api_error!("The project sharing with group is disabled", 400)
         end
 
-        result = ::Projects::GroupLinks::CreateService.new(user_project, current_user, declared_params(include_missing: false))
-          .execute(group)
+        result = ::Projects::GroupLinks::CreateService
+                   .new(user_project, shared_with_group, current_user, declared_params(include_missing: false)).execute
 
         if result[:status] == :success
           present result[:link], with: Entities::ProjectGroupLink

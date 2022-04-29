@@ -94,5 +94,37 @@ RSpec.describe IssueSidebarBasicEntity do
         expect(entity[:show_crm_contacts]).to be(expected)
       end
     end
+
+    context 'in subgroup' do
+      let(:subgroup_project) { create(:project, :repository, group: subgroup) }
+      let(:subgroup_issue) { create(:issue, project: subgroup_project) }
+      let(:serializer) { IssueSerializer.new(current_user: user, project: subgroup_project) }
+
+      subject(:entity) { serializer.represent(subgroup_issue, serializer: 'sidebar') }
+
+      before do
+        subgroup_project.root_ancestor.add_reporter(user)
+      end
+
+      context 'with crm enabled' do
+        let(:subgroup) { create(:group, :crm_enabled, parent: group) }
+
+        it 'is true' do
+          allow(CustomerRelations::Contact).to receive(:exists_for_group?).with(group).and_return(true)
+
+          expect(entity[:show_crm_contacts]).to be_truthy
+        end
+      end
+
+      context 'with crm disabled' do
+        let(:subgroup) { create(:group, parent: group) }
+
+        it 'is false' do
+          allow(CustomerRelations::Contact).to receive(:exists_for_group?).with(group).and_return(true)
+
+          expect(entity[:show_crm_contacts]).to be_falsy
+        end
+      end
+    end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  class ProjectServiceLogger < Gitlab::JsonLogger
+  class IntegrationsLogger < Gitlab::JsonLogger
     def self.file_name_noext
       'integrations_json'
     end

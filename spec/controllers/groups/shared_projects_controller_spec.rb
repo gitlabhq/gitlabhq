@@ -12,9 +12,10 @@ RSpec.describe Groups::SharedProjectsController do
 
     Projects::GroupLinks::CreateService.new(
       project,
+      group,
       user,
       link_group_access: Gitlab::Access::DEVELOPER
-    ).execute(group)
+    ).execute
   end
 
   let!(:group) { create(:group) }

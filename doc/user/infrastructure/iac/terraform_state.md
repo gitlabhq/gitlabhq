@@ -199,8 +199,8 @@ and the CI YAML file:
      dependencies:
        - plan
      when: manual
-     only:
-       - master
+     rules:
+       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
    ```
 
 1. Push your project to GitLab, which triggers a CI job pipeline. This pipeline

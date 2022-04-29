@@ -66,11 +66,11 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
   it 'logs the error' do
     stub_client_and_raise(Timeout::Error, 'foo')
 
-    expect(Gitlab::ProjectServiceLogger).to receive(:error).with(
+    expect(Gitlab::IntegrationsLogger).to receive(:error).with(
       hash_including(
         client_url: be_present,
         message: 'Error sending message',
-        service_class: described_class.name,
+        integration_class: described_class.name,
         error: hash_including(
           exception_class: Timeout::Error.name,
           exception_message: 'foo',

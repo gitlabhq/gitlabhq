@@ -4,9 +4,10 @@ import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
+import currentLicenseQuery from '~/security_configuration/graphql/current_license.query.graphql';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
-import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
+import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY, LICENSE_ULTIMATE } from './constants';
 import FeatureCard from './feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
 import UpgradeBanner from './upgrade_banner.vue';
@@ -50,6 +51,14 @@ export default {
     TrainingProviderList,
   },
   inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
+  apollo: {
+    currentLicensePlan: {
+      query: currentLicenseQuery,
+      update({ currentLicense }) {
+        return currentLicense?.plan;
+      },
+    },
+  },
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -89,6 +98,7 @@ export default {
     return {
       autoDevopsEnabledAlertDismissedProjects: [],
       errorMessage: '',
+      currentLicensePlan: '',
     };
   },
   computed: {
@@ -108,6 +118,9 @@ export default {
         this.autoDevopsEnabled &&
         !this.autoDevopsEnabledAlertDismissedProjects.includes(this.projectFullPath)
       );
+    },
+    shouldShowVulnerabilityManagementTab() {
+      return this.currentLicensePlan === LICENSE_ULTIMATE;
     },
   },
   methods: {
@@ -250,6 +263,7 @@ export default {
         </section-layout>
       </gl-tab>
       <gl-tab
+        v-if="shouldShowVulnerabilityManagementTab"
         data-testid="vulnerability-management-tab"
         :title="$options.i18n.vulnerabilityManagement"
         query-param-value="vulnerability-management"
