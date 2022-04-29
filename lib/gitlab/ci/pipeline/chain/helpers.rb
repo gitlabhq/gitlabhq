@@ -6,25 +6,28 @@ module Gitlab
       module Chain
         module Helpers
           def error(message, config_error: false, drop_reason: nil)
+            sanitized_message = ActionController::Base.helpers.sanitize(message, tags: [])
+
             if config_error
               drop_reason = :config_error
-              pipeline.yaml_errors = message
+              pipeline.yaml_errors = sanitized_message
             end
 
-            pipeline.add_error_message(message)
+            pipeline.add_error_message(sanitized_message)
 
             drop_pipeline!(drop_reason)
 
             # TODO: consider not to rely on AR errors directly as they can be
             # polluted with other unrelated errors (e.g. state machine)
             # https://gitlab.com/gitlab-org/gitlab/-/issues/220823
-            pipeline.errors.add(:base, message)
+            pipeline.errors.add(:base, sanitized_message)
 
             pipeline.errors.full_messages
           end
 
           def warning(message)
-            pipeline.add_warning_message(message)
+            sanitized_message = ActionController::Base.helpers.sanitize(message, tags: [])
+            pipeline.add_warning_message(sanitized_message)
           end
 
           private

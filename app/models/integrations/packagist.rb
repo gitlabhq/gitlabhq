@@ -36,10 +36,12 @@ module Integrations
           required: true
         },
         {
-          type: 'text',
+          type: 'password',
           name: 'token',
           title: _('Token'),
           help: s_('Enter your Packagist token.'),
+          non_empty_password_title: s_('ProjectService|Enter new token'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
           placeholder: '',
           required: true
         },

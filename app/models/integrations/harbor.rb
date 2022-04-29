@@ -64,11 +64,12 @@ module Integrations
           required: true
         },
         {
-          type: 'text',
+          type: 'password',
           name: 'password',
           title: s_('HarborIntegration|Harbor password'),
-          non_empty_password_title: s_('HarborIntegration|Enter Harbor password'),
-          non_empty_password_help: s_('HarborIntegration|Password for your Harbor username.'),
+          help: s_('HarborIntegration|Password for your Harbor username.'),
+          non_empty_password_title: s_('HarborIntegration|Enter new Harbor password'),
+          non_empty_password_help: s_('HarborIntegration|Leave blank to use your current password.'),
           required: true
         }
       ]

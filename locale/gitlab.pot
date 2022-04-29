@@ -5526,6 +5526,12 @@ msgstr ""
 msgid "BambooService|Bamboo service root URL."
 msgstr ""
 
+msgid "BambooService|Enter new build key"
+msgstr ""
+
+msgid "BambooService|Leave blank to use your current build key."
+msgstr ""
+
 msgid "BambooService|Run CI/CD pipelines with Atlassian Bamboo."
 msgstr ""
 
@@ -15897,7 +15903,7 @@ msgstr ""
 msgid "FloC|Federated Learning of Cohorts"
 msgstr ""
 
-msgid "FlowdockService|1b609b52537..."
+msgid "FlowdockService|Enter your Flowdock token."
 msgstr ""
 
 msgid "FlowdockService|Send event notifications from GitLab to Flowdock flows."
@@ -18138,7 +18144,7 @@ msgstr ""
 msgid "HarborIntegration|Base URL of the Harbor instance."
 msgstr ""
 
-msgid "HarborIntegration|Enter Harbor password"
+msgid "HarborIntegration|Enter new Harbor password"
 msgstr ""
 
 msgid "HarborIntegration|Harbor URL"
@@ -18151,6 +18157,9 @@ msgid "HarborIntegration|Harbor project name"
 msgstr ""
 
 msgid "HarborIntegration|Harbor username"
+msgstr ""
+
+msgid "HarborIntegration|Leave blank to use your current password."
 msgstr ""
 
 msgid "HarborIntegration|Password for your Harbor username."
@@ -28936,6 +28945,9 @@ msgstr ""
 msgid "ProjectService|Leave blank to use your current API key"
 msgstr ""
 
+msgid "ProjectService|Leave blank to use your current API key."
+msgstr ""
+
 msgid "ProjectService|Leave blank to use your current password"
 msgstr ""
 
@@ -30283,6 +30295,9 @@ msgstr ""
 msgid "PushoverService|%{user_name} pushed new branch \"%{ref}\"."
 msgstr ""
 
+msgid "PushoverService|Enter new user key"
+msgstr ""
+
 msgid "PushoverService|Enter your application key."
 msgstr ""
 
@@ -30296,6 +30311,9 @@ msgid "PushoverService|High priority"
 msgstr ""
 
 msgid "PushoverService|Leave blank for all active devices."
+msgstr ""
+
+msgid "PushoverService|Leave blank to use your current user key."
 msgstr ""
 
 msgid "PushoverService|Low priority"

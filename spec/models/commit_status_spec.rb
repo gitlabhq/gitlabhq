@@ -618,6 +618,7 @@ RSpec.describe CommitStatus do
       'rspec:windows 10000 20000'                           | 'rspec:windows'
       'rspec:windows 0 : / 1'                               | 'rspec:windows'
       'rspec:windows 0 : / 1 name'                          | 'rspec:windows 0 : / 1 name'
+      'rspec [inception: [something, other thing], value]'  | 'rspec'
       '0 1 name ruby'                                       | '0 1 name ruby'
       '0 :/ 1 name ruby'                                    | '0 :/ 1 name ruby'
       'rspec: [aws]'                                        | 'rspec'
