@@ -113,7 +113,9 @@ Parameters:
 
 ## Delete project milestone
 
-Only for users with the Developer role in the project.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
+Only for users with at least the Reporter role in the project.
 
 ```plaintext
 DELETE /projects/:id/milestones/:milestone_id
@@ -158,9 +160,9 @@ Parameters:
 
 ## Promote project milestone to a group milestone
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53861) in GitLab 11.9
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
-Only for users with the Developer role in the group.
+Only for users with at least the Reporter role in the group.
 
 ```plaintext
 POST /projects/:id/milestones/:milestone_id/promote

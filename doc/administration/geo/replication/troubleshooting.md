@@ -637,9 +637,9 @@ to start again from scratch, there are a few steps that can help you:
 1. Reset the Tracking Database.
 
    ```shell
-   gitlab-rake db:drop:geo  # on a secondary app node
-   gitlab-ctl reconfigure   # on the tracking database node
-   gitlab-rake db:setup:geo # on a secondary app node
+   gitlab-rake db:drop:geo    # on a secondary app node
+   gitlab-ctl reconfigure     # on the tracking database node
+   gitlab-rake db:migrate:geo # on a secondary app node
    ```
 
 1. Restart previously stopped services.

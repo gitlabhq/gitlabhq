@@ -5,12 +5,21 @@ module CustomerRelations
     class UpdateService < BaseService
       def execute(contact)
         return error_no_permissions unless allowed?
+
+        handle_active_param
         return error_updating(contact) unless contact.update(params)
 
         ServiceResponse.success(payload: contact)
       end
 
       private
+
+      def handle_active_param
+        return if params[:active].nil?
+
+        active = params.delete(:active)
+        params[:state] = active ? 'active' : 'inactive'
+      end
 
       def error_no_permissions
         error('You have insufficient permissions to update a contact for this group')

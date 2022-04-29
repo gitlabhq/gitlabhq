@@ -9,8 +9,8 @@ RSpec.describe API::ProjectMilestones do
   let_it_be(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
   let_it_be(:route) { "/projects/#{project.id}/milestones" }
 
-  before do
-    project.add_developer(user)
+  before_all do
+    project.add_reporter(user)
   end
 
   it_behaves_like 'group and project milestones', "/projects/:id/milestones"

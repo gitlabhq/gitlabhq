@@ -16588,6 +16588,9 @@ msgstr ""
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr ""
 
+msgid "Geo|Configure various settings for your %{siteType} site. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
 msgid "Geo|Connection timeout"
 msgstr ""
 
@@ -16657,6 +16660,12 @@ msgstr ""
 msgid "Geo|Geo Status"
 msgstr ""
 
+msgid "Geo|Geo allows you to choose specific groups or storage shards to replicate."
+msgstr ""
+
+msgid "Geo|Geo can replicate objects stored in Object Storage (AWS S3, or other compatible object storage)."
+msgstr ""
+
 msgid "Geo|Geo sites"
 msgstr ""
 
@@ -16672,7 +16681,7 @@ msgstr ""
 msgid "Geo|Healthy"
 msgstr ""
 
-msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo. %{linkStart}Learn more%{linkEnd}"
+msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr ""
 
 msgid "Geo|If you want to make changes, you must visit the primary site."
@@ -16726,7 +16735,7 @@ msgstr ""
 msgid "Geo|Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr ""
 
-msgid "Geo|Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}. %{linkStart}Learn more%{linkEnd}"
+msgid "Geo|Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr ""
 
 msgid "Geo|Never"
@@ -16936,10 +16945,10 @@ msgstr ""
 msgid "Geo|Synchronization status"
 msgstr ""
 
-msgid "Geo|The URL of the primary site that is used internally by the secondary sites. %{linkStart}Learn more.%{linkEnd}"
+msgid "Geo|The URL of the primary site that is used internally by the secondary sites."
 msgstr ""
 
-msgid "Geo|The URL of the secondary site that is used internally by the primary site. %{linkStart}Learn more.%{linkEnd}"
+msgid "Geo|The URL of the secondary site that is used internally by the primary site."
 msgstr ""
 
 msgid "Geo|The database is currently %{db_lag} behind the primary site."

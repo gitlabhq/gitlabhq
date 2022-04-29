@@ -10,9 +10,6 @@ module Integrations
     validates :username, presence: true, if: :activated?
     validates :token, presence: true, if: :activated?
 
-    default_value_for :push_events, true
-    default_value_for :tag_push_events, true
-
     def title
       'Packagist'
     end

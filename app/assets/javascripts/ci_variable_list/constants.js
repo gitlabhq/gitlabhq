@@ -31,3 +31,5 @@ export const AWS_TOKEN_CONSTANTS = [AWS_ACCESS_KEY_ID, AWS_DEFAULT_REGION, AWS_S
 export const CONTAINS_VARIABLE_REFERENCE_MESSAGE = __(
   'Values that contain the %{codeStart}$%{codeEnd} character can be considered a variable reference and expanded. %{docsLinkStart}Learn more.%{docsLinkEnd}',
 );
+
+export const ENVIRONMENT_SCOPE_LINK_TITLE = __('Learn more');

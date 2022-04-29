@@ -36,6 +36,11 @@ module Types
             Types::TimeType,
             null: false,
             description: 'Timestamp the organization was last updated.'
+
+      field :active,
+            GraphQL::Types::Boolean,
+            null: false,
+            description: 'State of the organization.', method: :active?
     end
   end
 end

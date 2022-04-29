@@ -50,6 +50,11 @@ module Types
             Types::TimeType,
             null: false,
             description: 'Timestamp the contact was last updated.'
+
+      field :active,
+            GraphQL::Types::Boolean,
+            null: false,
+            description: 'State of the contact.', method: :active?
     end
   end
 end

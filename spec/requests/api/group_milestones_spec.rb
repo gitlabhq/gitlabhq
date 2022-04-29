@@ -85,7 +85,7 @@ RSpec.describe API::GroupMilestones do
 
   def setup_for_group
     context_group.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-    context_group.add_developer(user)
+    context_group.add_reporter(user)
     public_project.update!(namespace: context_group)
     context_group.reload
   end

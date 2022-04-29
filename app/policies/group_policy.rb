@@ -134,7 +134,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { has_access }.enable :read_namespace
 
   rule { developer }.policy do
-    enable :admin_milestone
     enable :create_metrics_dashboard_annotation
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
@@ -152,6 +151,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_container_image
     enable :admin_issue_board
     enable :admin_label
+    enable :admin_milestone
     enable :admin_issue_board_list
     enable :admin_issue
     enable :read_metrics_dashboard_annotation

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe CustomerRelations::Organizations::UpdateService do
   let_it_be(:user) { create(:user) }
 
-  let(:organization) { create(:organization, name: 'Test', group: group) }
+  let(:organization) { create(:organization, name: 'Test', group: group, state: 'active') }
 
   subject(:update) { described_class.new(group: group, current_user: user, params: params).execute(organization) }
 
@@ -38,6 +38,29 @@ RSpec.describe CustomerRelations::Organizations::UpdateService do
 
           expect(response).to be_success
           expect(response.payload.name).to eq('GitLab')
+        end
+      end
+
+      context 'when activating' do
+        let(:organization) { create(:organization, state: 'inactive') }
+        let(:params) { { active: true } }
+
+        it 'updates the contact' do
+          response = update
+
+          expect(response).to be_success
+          expect(response.payload.active?).to be_truthy
+        end
+      end
+
+      context 'when deactivating' do
+        let(:params) { { active: false } }
+
+        it 'updates the organization' do
+          response = update
+
+          expect(response).to be_success
+          expect(response.payload.active?).to be_falsy
         end
       end
 

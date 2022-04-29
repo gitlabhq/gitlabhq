@@ -28,6 +28,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:reporter_permissions) do
     %i[
         admin_label
+        admin_milestone
         admin_issue_board
         read_container_image
         read_metrics_dashboard_annotation
@@ -40,7 +41,6 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:developer_permissions) do
     %i[
-        admin_milestone
         create_metrics_dashboard_annotation
         delete_metrics_dashboard_annotation
         update_metrics_dashboard_annotation

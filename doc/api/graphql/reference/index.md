@@ -1589,6 +1589,7 @@ Input type: `CustomerRelationsContactUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationscontactupdateactive"></a>`active` | [`Boolean`](#boolean) | State of the contact. |
 | <a id="mutationcustomerrelationscontactupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcustomerrelationscontactupdatedescription"></a>`description` | [`String`](#string) | Description of or notes for the contact. |
 | <a id="mutationcustomerrelationscontactupdateemail"></a>`email` | [`String`](#string) | Email address of the contact. |
@@ -1636,6 +1637,7 @@ Input type: `CustomerRelationsOrganizationUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationsorganizationupdateactive"></a>`active` | [`Boolean`](#boolean) | State of the organization. |
 | <a id="mutationcustomerrelationsorganizationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcustomerrelationsorganizationupdatedefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
 | <a id="mutationcustomerrelationsorganizationupdatedescription"></a>`description` | [`String`](#string) | Description of or notes for the organization. |
@@ -9954,6 +9956,7 @@ A custom emoji uploaded by user.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="customerrelationscontactactive"></a>`active` | [`Boolean!`](#boolean) | State of the contact. |
 | <a id="customerrelationscontactcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the contact was created. |
 | <a id="customerrelationscontactdescription"></a>`description` | [`String`](#string) | Description of or notes for the contact. |
 | <a id="customerrelationscontactemail"></a>`email` | [`String`](#string) | Email address of the contact. |
@@ -9970,6 +9973,7 @@ A custom emoji uploaded by user.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="customerrelationsorganizationactive"></a>`active` | [`Boolean!`](#boolean) | State of the organization. |
 | <a id="customerrelationsorganizationcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the organization was created. |
 | <a id="customerrelationsorganizationdefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
 | <a id="customerrelationsorganizationdescription"></a>`description` | [`String`](#string) | Description of or notes for the organization. |

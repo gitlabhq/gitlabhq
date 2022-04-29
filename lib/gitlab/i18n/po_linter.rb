@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module Gitlab
   module I18n
     class PoLinter
@@ -245,14 +247,22 @@ module Gitlab
           []
         elsif variables.any? { |variable| unnamed_variable?(variable) }
           variables.map do |variable|
-            variable == '%d' ? Random.rand(1000) : Gitlab::Utils.random_string
+            variable == '%d' ? random_number : random_string
           end
         else
           variables.each_with_object({}) do |variable, hash|
             variable_name = variable[/\w+/]
-            hash[variable_name] = Gitlab::Utils.random_string
+            hash[variable_name] = random_string
           end
         end
+      end
+
+      def random_number
+        Random.rand(1000)
+      end
+
+      def random_string
+        SecureRandom.alphanumeric(64)
       end
 
       def validate_unnamed_variables(errors, variables)

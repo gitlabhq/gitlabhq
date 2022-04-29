@@ -41,7 +41,8 @@ From there you can create a new iteration or select an iteration to get a more d
 
 ## Create an iteration
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 WARNING:
 Manual iteration management is in its end-of-life process. Creating an iteration is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
@@ -49,7 +50,7 @@ in GitLab 14.10, and is planned for removal in GitLab 16.0.
 
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 To create an iteration:
 
@@ -63,6 +64,7 @@ To create an iteration:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in GitLab 13.2.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 WARNING:
 Editing all attributes, with the exception of `description` is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
@@ -71,7 +73,7 @@ In the future only editing an iteration's `description` will be allowed.
 
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
 
@@ -79,6 +81,7 @@ To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292268) in GitLab 14.3.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 WARNING:
 Manual iteration management is in its end-of-life process. Deleting an iteration is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
@@ -86,7 +89,7 @@ in GitLab 14.10, and is planned for removal in GitLab 16.0.
 
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 To delete an iteration, select the three-dot menu (**{ellipsis_v}**) > **Delete**.
 
@@ -184,9 +187,11 @@ configure iteration cadences to automatically roll over incomplete issues to the
 
 ### Create an iteration cadence
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 To create an iteration cadence:
 
@@ -197,9 +202,11 @@ To create an iteration cadence:
 
 ### Delete an iteration cadence
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 Deleting an iteration cadence also deletes all iterations within that cadence.
 

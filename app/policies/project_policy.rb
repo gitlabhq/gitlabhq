@@ -285,6 +285,7 @@ class ProjectPolicy < BasePolicy
     enable :reopen_issue
     enable :admin_issue
     enable :admin_label
+    enable :admin_milestone
     enable :admin_issue_board_list
     enable :admin_issue_link
     enable :read_commit_status
@@ -370,7 +371,6 @@ class ProjectPolicy < BasePolicy
     enable :create_package
     enable :admin_issue_board
     enable :admin_merge_request
-    enable :admin_milestone
     enable :update_merge_request
     enable :reopen_merge_request
     enable :create_commit_status

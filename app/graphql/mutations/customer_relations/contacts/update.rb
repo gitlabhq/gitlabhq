@@ -43,6 +43,10 @@ module Mutations
                   required: false,
                   description: 'Description of or notes for the contact.'
 
+        argument :active, GraphQL::Types::Boolean,
+                  required: false,
+                  description: 'State of the contact.'
+
         def resolve(args)
           contact = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(args.delete(:id), expected_type: ::CustomerRelations::Contact))
           raise_resource_not_available_error! unless contact

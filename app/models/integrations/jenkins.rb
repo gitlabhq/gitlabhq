@@ -15,7 +15,6 @@ module Integrations
     validates :project_name, presence: true, if: :activated?
     validates :username, presence: true, if: ->(service) { service.activated? && service.password_touched? && service.password.present? }
 
-    default_value_for :push_events, true
     default_value_for :merge_requests_events, false
     default_value_for :tag_push_events, false
 

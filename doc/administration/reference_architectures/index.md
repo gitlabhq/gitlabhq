@@ -157,7 +157,7 @@ table.test-coverage th {
   </tr>
     <tr>
     <th scope="row">1k</th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k">Daily</a> (to be moved to Weekly)</td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k">Weekly</a></td>
     <td></td>
     <td></td>
     <td></td>
@@ -165,7 +165,7 @@ table.test-coverage th {
   </tr>
   <tr>
     <th scope="row">2k</th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k">Daily</a> (to be moved to Weekly)</td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k">Weekly</a></td>
     <td></td>
     <td></td>
     <td></td>
@@ -176,7 +176,7 @@ table.test-coverage th {
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k">Weekly</a></td>
     <td></td>
     <td></td>
-    <td></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k_hybrid_aws_services">Weekly</a></td>
     <td></td>
   </tr>
   <tr>
@@ -190,9 +190,9 @@ table.test-coverage th {
   <tr>
     <th scope="row">10k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k">Daily</a></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid">Ad-Hoc</a></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k">Ad-Hoc (inc Cloud Services)</a></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid">Ad-Hoc</a></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_hybrid">Weekly</a></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_aws">Weekly</a></td>
+    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_hybrid_aws_services">Weekly</a></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k">Ad-Hoc</a></td>
   </tr>
   <tr>
@@ -214,6 +214,8 @@ table.test-coverage th {
 </table>
 
 ## Cost to run
+
+The following table details the cost to run the different reference architectures across GCP, AWS, and Azure. Bare-metal costs are not included here as it varies widely depending on each customer configuration. 
 
 <table class="test-coverage">
   <col>

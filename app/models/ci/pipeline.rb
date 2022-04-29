@@ -1294,10 +1294,11 @@ module Ci
 
     def security_reports(report_types: [])
       reports_scope = report_types.empty? ? ::Ci::JobArtifact.security_reports : ::Ci::JobArtifact.security_reports(file_types: report_types)
+      types_to_collect = report_types.empty? ? ::Ci::JobArtifact::SECURITY_REPORT_FILE_TYPES : report_types
 
       ::Gitlab::Ci::Reports::Security::Reports.new(self).tap do |security_reports|
         latest_report_builds(reports_scope).each do |build|
-          build.collect_security_reports!(security_reports)
+          build.collect_security_reports!(security_reports, report_types: types_to_collect)
         end
       end
     end

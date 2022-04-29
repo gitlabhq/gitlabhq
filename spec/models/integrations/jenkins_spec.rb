@@ -4,11 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Integrations::Jenkins do
   let(:project) { create(:project) }
+  let(:jenkins_integration) { described_class.new(jenkins_params) }
   let(:jenkins_url) { 'http://jenkins.example.com/' }
   let(:jenkins_hook_url) { jenkins_url + 'project/my_project' }
   let(:jenkins_username) { 'u$er name%2520' }
   let(:jenkins_password) { 'pas$ word' }
-
+  let(:jenkins_authorization) { 'Basic ' + ::Base64.strict_encode64(jenkins_username + ':' + jenkins_password) }
   let(:jenkins_params) do
     {
       active: true,
@@ -22,15 +23,19 @@ RSpec.describe Integrations::Jenkins do
     }
   end
 
-  let(:jenkins_authorization) { "Basic " + ::Base64.strict_encode64(jenkins_username + ':' + jenkins_password) }
-
   include_context Integrations::EnableSslVerification do
-    let(:integration) { described_class.new(jenkins_params) }
+    let(:integration) { jenkins_integration }
   end
 
   it_behaves_like Integrations::HasWebHook do
-    let(:integration) { described_class.new(jenkins_params) }
+    let(:integration) { jenkins_integration }
     let(:hook_url) { "http://#{ERB::Util.url_encode jenkins_username}:#{ERB::Util.url_encode jenkins_password}@jenkins.example.com/project/my_project" }
+  end
+
+  it 'sets the default values', :aggregate_failures do
+    expect(jenkins_integration.push_events).to eq(true)
+    expect(jenkins_integration.merge_requests_events).to eq(false)
+    expect(jenkins_integration.tag_push_events).to eq(false)
   end
 
   describe 'username validation' do
