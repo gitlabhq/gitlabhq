@@ -844,7 +844,7 @@ class GfmAutoComplete {
   }
 }
 
-GfmAutoComplete.regexSubtext = new RegExp(/\s+/g);
+GfmAutoComplete.regexSubtext = /\s+/g;
 
 GfmAutoComplete.defaultLoadingData = ['loading'];
 

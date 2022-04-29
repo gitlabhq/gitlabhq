@@ -5,7 +5,7 @@ import {
   EXTENSION_BASE_LINE_NUMBERS_CLASS,
 } from '../constants';
 
-const hashRegexp = new RegExp('#?L', 'g');
+const hashRegexp = /#?L/g;
 
 const createAnchor = (href) => {
   const fragment = new DocumentFragment();

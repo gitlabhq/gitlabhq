@@ -109,7 +109,7 @@ export default {
       return regex.test(this.variable.secret_value);
     },
     containsVariableReference() {
-      const regex = RegExp(/\$/);
+      const regex = /\$/;
       return regex.test(this.variable.secret_value);
     },
     displayMaskedError() {

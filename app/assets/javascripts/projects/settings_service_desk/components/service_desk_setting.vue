@@ -128,7 +128,7 @@ export default {
       this.selectedTemplate = selectedTemplate;
     },
     validateProjectKey() {
-      if (this.projectKey && !new RegExp(/^[a-z0-9_]+$/).test(this.projectKey)) {
+      if (this.projectKey && !/^[a-z0-9_]+$/.test(this.projectKey)) {
         this.projectKeyError = __('Only use lowercase letters, numbers, and underscores.');
         return;
       }

@@ -371,10 +371,8 @@ describe('Badges store actions', () => {
       const url = axios.get.mock.calls[0][0];
 
       expect(url).toMatch(new RegExp(`^${dummyEndpointUrl}/render?`));
-      expect(url).toMatch(
-        new RegExp('\\?link_url=%3Cscript%3EI%20am%20dangerous!%3C%2Fscript%3E&'),
-      );
-      expect(url).toMatch(new RegExp('&image_url=%26make-sandwich%3Dtrue$'));
+      expect(url).toMatch(/\\?link_url=%3Cscript%3EI%20am%20dangerous!%3C%2Fscript%3E&/);
+      expect(url).toMatch(/&image_url=%26make-sandwich%3Dtrue$/);
     });
 
     it('dispatches requestRenderedBadge and receiveRenderedBadge for successful response', async () => {

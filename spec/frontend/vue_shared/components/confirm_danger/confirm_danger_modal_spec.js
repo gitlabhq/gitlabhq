@@ -3,6 +3,7 @@ import {
   CONFIRM_DANGER_WARNING,
   CONFIRM_DANGER_MODAL_BUTTON,
   CONFIRM_DANGER_MODAL_ID,
+  CONFIRM_DANGER_MODAL_CANCEL,
 } from '~/vue_shared/components/confirm_danger/constants';
 import ConfirmDangerModal from '~/vue_shared/components/confirm_danger/confirm_danger_modal.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -10,6 +11,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 describe('Confirm Danger Modal', () => {
   const confirmDangerMessage = 'This is a dangerous activity';
   const confirmButtonText = 'Confirm button text';
+  const cancelButtonText = 'Cancel button text';
   const phrase = 'You must construct additional pylons';
   const modalId = CONFIRM_DANGER_MODAL_ID;
 
@@ -21,6 +23,7 @@ describe('Confirm Danger Modal', () => {
   const findDefaultWarning = () => wrapper.findByTestId('confirm-danger-warning');
   const findAdditionalMessage = () => wrapper.findByTestId('confirm-danger-message');
   const findPrimaryAction = () => findModal().props('actionPrimary');
+  const findCancelAction = () => findModal().props('actionCancel');
   const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[0][attr];
 
   const createComponent = ({ provide = {} } = {}) =>
@@ -34,7 +37,9 @@ describe('Confirm Danger Modal', () => {
     });
 
   beforeEach(() => {
-    wrapper = createComponent({ provide: { confirmDangerMessage, confirmButtonText } });
+    wrapper = createComponent({
+      provide: { confirmDangerMessage, confirmButtonText, cancelButtonText },
+    });
   });
 
   afterEach(() => {
@@ -54,6 +59,10 @@ describe('Confirm Danger Modal', () => {
     expect(findPrimaryActionAttributes('variant')).toBe('danger');
   });
 
+  it('renders the cancel button', () => {
+    expect(findCancelAction().text).toBe(cancelButtonText);
+  });
+
   it('renders the correct confirmation phrase', () => {
     expect(findConfirmationPhrase().text()).toBe(
       `Please type ${phrase} to proceed or close this modal to cancel.`,
@@ -71,6 +80,10 @@ describe('Confirm Danger Modal', () => {
 
     it('renders the default confirm button', () => {
       expect(findPrimaryAction().text).toBe(CONFIRM_DANGER_MODAL_BUTTON);
+    });
+
+    it('renders the default cancel button', () => {
+      expect(findCancelAction().text).toBe(CONFIRM_DANGER_MODAL_CANCEL);
     });
   });
 

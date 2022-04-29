@@ -130,4 +130,36 @@ RSpec.describe Gitlab::Zentao::Client do
       end
     end
   end
+
+  describe '#url' do
+    context 'api url' do
+      shared_examples 'joins api_url correctly' do
+        it 'verify url' do
+          expect(integration.send(:url, "products/1").to_s)
+            .to eq("https://jihudemo.zentao.net/zentao/api.php/v1/products/1")
+        end
+      end
+
+      context 'no ends slash' do
+        let(:zentao_integration) { create(:zentao_integration, api_url: 'https://jihudemo.zentao.net/zentao') }
+
+        include_examples 'joins api_url correctly'
+      end
+
+      context 'ends slash' do
+        let(:zentao_integration) { create(:zentao_integration, api_url: 'https://jihudemo.zentao.net/zentao/') }
+
+        include_examples 'joins api_url correctly'
+      end
+    end
+
+    context 'no api url' do
+      let(:zentao_integration) { create(:zentao_integration, url: 'https://jihudemo.zentao.net') }
+
+      it 'joins url correctly' do
+        expect(integration.send(:url, "products/1").to_s)
+          .to eq("https://jihudemo.zentao.net/api.php/v1/products/1")
+      end
+    end
+  end
 end
