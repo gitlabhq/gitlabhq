@@ -39,6 +39,20 @@ To add a pipeline schedule:
      These variables are available only when the scheduled pipeline runs,
      and not in any other pipeline run.
 
+## Edit a pipeline schedule
+
+> Introduced in GitLab 14.8, only a pipeline schedule owner can edit the schedule.
+
+The owner of a pipeline schedule can edit it:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. In the left sidebar, select **CI/CD > Schedules**.
+1. Next to the schedule, select **Edit** (**{pencil}**) and fill in the form.
+
+The user must have the Developer role or above for the project. If the user is
+not the owner of the schedule, they must first [take ownership](#take-ownership)
+of the schedule.
+
 ## Run manually
 
 To trigger a pipeline schedule manually, so that it runs immediately instead of

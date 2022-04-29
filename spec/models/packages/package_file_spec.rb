@@ -29,19 +29,48 @@ RSpec.describe Packages::PackageFile, type: :model do
 
       let(:package_file) { package.package_files.first }
       let(:status) { :default }
+      let(:file_name) { 'foo' }
       let(:file) { fixture_file_upload('spec/fixtures/dk.png') }
+      let(:params) { { file: file, file_name: file_name, status: status } }
 
-      subject { package.package_files.create!(file: file, file_name: package_file.file_name, status: status) }
+      subject { package.package_files.create!(params) }
 
-      it 'can not save a duplicated file' do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File name has already been taken")
+      context 'file_name' do
+        let(:file_name) { package_file.file_name }
+
+        it 'can not save a duplicated file' do
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File name has already been taken")
+        end
+
+        context 'with a pending destruction package duplicated file' do
+          let(:status) { :pending_destruction }
+
+          it 'can save it' do
+            expect { subject }.to change { package.package_files.count }.from(1).to(2)
+          end
+        end
       end
 
-      context 'with a pending destruction package duplicated file' do
-        let(:status) { :pending_destruction }
+      context 'file_sha256' do
+        where(:sha256_value, :expected_success) do
+          'a' * 64       | true
+          nil            | true
+          'a' * 63       | false
+          'a' * 65       | false
+          'a' * 63 + '%' | false
+          ''             | false
+        end
 
-        it 'can save it' do
-          expect { subject }.to change { package.package_files.count }.from(1).to(2)
+        with_them do
+          let(:params) { super().merge({ file_sha256: sha256_value }) }
+
+          it 'does not allow invalid sha256 characters' do
+            if expected_success
+              expect { subject }.not_to raise_error
+            else
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File sha256 is invalid")
+            end
+          end
         end
       end
     end

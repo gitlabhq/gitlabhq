@@ -1005,4 +1005,19 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('.xt.est_') }
     it { is_expected.not_to match('0test1') }
   end
+
+  describe '.sha256_regex' do
+    subject { described_class.sha256_regex }
+
+    it { is_expected.to match('a' * 64) }
+    it { is_expected.to match('abcdefABCDEF1234567890abcdefABCDEF1234567890abcdefABCDEF12345678') }
+    it { is_expected.not_to match('a' * 63) }
+    it { is_expected.not_to match('a' * 65) }
+    it { is_expected.not_to match('a' * 63 + 'g') }
+    it { is_expected.not_to match('a' * 63 + '{') }
+    it { is_expected.not_to match('a' * 63 + '%') }
+    it { is_expected.not_to match('a' * 63 + '*') }
+    it { is_expected.not_to match('a' * 63 + '#') }
+    it { is_expected.not_to match('') }
+  end
 end
