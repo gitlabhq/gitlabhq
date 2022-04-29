@@ -22,6 +22,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers do
   let(:command) { double(save_incompleted: true) }
   let(:message) { 'message' }
 
+  describe '.warning' do
+    context 'when the warning includes malicious HTML' do
+      let(:message) { '<div>gimme your password</div>' }
+      let(:sanitized_message) { 'gimme your password' }
+
+      it 'sanitizes' do
+        subject.warning(message)
+
+        expect(pipeline.warning_messages[0].content).to include(sanitized_message)
+      end
+    end
+  end
+
   describe '.error' do
     shared_examples 'error function' do
       specify do
@@ -33,6 +46,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers do
 
         expect(pipeline.yaml_errors).to eq(yaml_error)
         expect(pipeline.errors[:base]).to include(message)
+      end
+    end
+
+    context 'when the error includes malicious HTML' do
+      let(:message) { '<div>gimme your password</div>' }
+      let(:sanitized_message) { 'gimme your password' }
+
+      it 'sanitizes the error and removes the HTML tags' do
+        subject.error(message, config_error: true, drop_reason: :config_error)
+
+        expect(pipeline.yaml_errors).to eq(sanitized_message)
+        expect(pipeline.errors[:base]).to include(sanitized_message)
       end
     end
 
