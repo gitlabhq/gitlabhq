@@ -204,6 +204,44 @@ RSpec.describe Projects::ArtifactsController do
         end
       end
     end
+
+    context 'when downloading a debug trace' do
+      let(:file_type) { 'trace' }
+      let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
+
+      before do
+        create(:ci_job_variable, key: 'CI_DEBUG_TRACE', value: 'true', job: job)
+      end
+
+      context 'when the user does not have update_build permissions' do
+        let(:user) { create(:user) }
+
+        before do
+          project.add_guest(user)
+        end
+
+        render_views
+
+        it 'denies the user access' do
+          download_artifact(file_type: file_type)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response.body).to include(
+            'You must have developer or higher permissions in the associated project to view job logs when debug trace is enabled. ' \
+            'To disable debug trace, set the &#39;CI_DEBUG_TRACE&#39; variable to &#39;false&#39; in your pipeline configuration or CI/CD settings. ' \
+            'If you need to view this job log, a project maintainer must add you to the project with developer permissions or higher.'
+          )
+        end
+      end
+
+      context 'when the user has update_build permissions' do
+        it 'sends the trace' do
+          download_artifact(file_type: file_type)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
   end
 
   describe 'GET browse' do

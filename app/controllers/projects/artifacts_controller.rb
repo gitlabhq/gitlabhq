@@ -7,6 +7,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   layout 'project'
   before_action :authorize_read_build!
+  before_action :authorize_read_build_trace!, only: [:download]
   before_action :authorize_update_build!, only: [:keep]
   before_action :authorize_destroy_artifacts!, only: [:destroy]
   before_action :extract_ref_name_and_path
@@ -161,5 +162,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
     @entry = build.artifacts_metadata_entry(params[:path])
 
     render_404 unless @entry.exists?
+  end
+
+  def authorize_read_build_trace!
+    return unless params[:file_type] == 'trace'
+
+    super
   end
 end

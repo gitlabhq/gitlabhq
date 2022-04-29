@@ -96,8 +96,21 @@ module Integrations
 
     def fields
       [
-        { type: 'text', name: 'token', help: s_('ProjectService|Token for the Drone project.'), required: true },
-        { type: 'text', name: 'drone_url', title: s_('ProjectService|Drone server URL'), placeholder: 'http://drone.example.com', required: true }
+        {
+          type: 'password',
+          name: 'token',
+          help: s_('ProjectService|Token for the Drone project.'),
+          non_empty_password_title: s_('ProjectService|Enter new token'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'drone_url',
+          title: s_('ProjectService|Drone server URL'),
+          placeholder: 'http://drone.example.com',
+          required: true
+        }
       ]
     end
 

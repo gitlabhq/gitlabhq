@@ -19,8 +19,19 @@ module Integrations
 
     def fields
       [
-        { type: 'text', name: 'token', placeholder: '', required: true },
-        { type: 'text', name: 'subdomain', placeholder: '' }
+        {
+          type: 'password',
+          name: 'token',
+          non_empty_password_title: s_('ProjectService|Enter new token'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
+          placeholder: '',
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'subdomain',
+          placeholder: ''
+        }
       ]
     end
 
