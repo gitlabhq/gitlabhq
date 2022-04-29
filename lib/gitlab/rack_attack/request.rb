@@ -9,18 +9,22 @@ module Gitlab
       GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}.freeze
 
       def unauthenticated?
-        !(authenticated_user_id([:api, :rss, :ics]) || authenticated_runner_id)
+        !(authenticated_identifier([:api, :rss, :ics]) || authenticated_runner_id)
       end
 
-      def throttled_user_id(request_formats)
-        user_id = authenticated_user_id(request_formats)
+      def throttled_identifer(request_formats)
+        identifier = authenticated_identifier(request_formats)
+        return unless identifier
 
-        if Gitlab::RackAttack.user_allowlist.include?(user_id)
+        identifier_type = identifier[:identifier_type]
+        identifier_id = identifier[:identifier_id]
+
+        if identifier_type == :user && Gitlab::RackAttack.user_allowlist.include?(identifier_id)
           Gitlab::Instrumentation::Throttle.safelist = 'throttle_user_allowlist'
           return
         end
 
-        user_id
+        "#{identifier_type}:#{identifier_id}"
       end
 
       def authenticated_runner_id
@@ -169,8 +173,18 @@ module Gitlab
 
       private
 
-      def authenticated_user_id(request_formats)
-        request_authenticator.user(request_formats)&.id
+      def authenticated_identifier(request_formats)
+        requester = request_authenticator.find_authenticated_requester(request_formats)
+
+        return unless requester
+
+        identifier_type = if requester.is_a?(DeployToken)
+                            :deploy_token
+                          else
+                            :user
+                          end
+
+        { identifier_type: identifier_type, identifier_id: requester.id }
       end
 
       def request_authenticator

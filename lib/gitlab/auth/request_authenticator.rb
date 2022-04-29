@@ -13,6 +13,10 @@ module Gitlab
         @request = request
       end
 
+      def find_authenticated_requester(request_formats)
+        user(request_formats) || deploy_token_from_request
+      end
+
       def user(request_formats)
         request_formats.each do |format|
           user = find_sessionless_user(format)
@@ -80,7 +84,8 @@ module Gitlab
       def route_authentication_setting
         @route_authentication_setting ||= {
           job_token_allowed: api_request?,
-          basic_auth_personal_access_token: api_request? || git_request?
+          basic_auth_personal_access_token: api_request? || git_request?,
+          deploy_token_allowed: api_request? || git_request?
         }
       end
 
