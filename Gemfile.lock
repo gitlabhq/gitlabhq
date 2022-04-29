@@ -1644,6 +1644,7 @@ DEPENDENCIES
   rspec-retry (~> 0.6.1)
   rspec_junit_formatter
   rspec_profiling (~> 0.0.6)
+  rubocop
   ruby-fogbugz (~> 0.2.1)
   ruby-magic (~> 0.5)
   ruby-prof (~> 1.3.0)

@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlButton, GlIntersectionObserver, GlFormInput } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlIntersectionObserver, GlSearchBoxByClick } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -15,7 +15,7 @@ describe('ImportProjectsTable', () => {
 
   const findFilterField = () =>
     wrapper
-      .findAllComponents(GlFormInput)
+      .findAllComponents(GlSearchBoxByClick)
       .wrappers.find((w) => w.attributes('placeholder') === 'Filter by name');
 
   const providerTitle = 'THE PROVIDER';

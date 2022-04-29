@@ -210,6 +210,10 @@ module QA
         "#{api_get_path}/wikis"
       end
 
+      def api_releases_path
+        "#{api_get_path}/releases"
+      end
+
       def api_post_body
         post_body = {
           name: name,
@@ -394,9 +398,22 @@ module QA
         api_post_to(api_wikis_path, title: title, content: content)
       end
 
+      def releases
+        response = api_get_from(api_releases_path)
+        parse_body(response)
+      end
+
+      def create_release(tag, ref = default_branch, **params)
+        api_post_to(api_releases_path, tag_name: tag, ref: ref, **params)
+      end
+
       # Uses the API to wait until a pull mirroring update is successful (pull mirroring is treated as an import)
       def wait_for_pull_mirroring
-        mirror_succeeded = Support::Retrier.retry_until(max_duration: 180, raise_on_failure: false, sleep_interval: 1) do
+        mirror_succeeded = Support::Retrier.retry_until(
+          max_duration: 180,
+          raise_on_failure: false,
+          sleep_interval: 1
+        ) do
           reload!
           api_resource[:import_status] == "finished"
         end
@@ -407,7 +424,11 @@ module QA
       def remove_via_api!
         super
 
-        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 1, message: "Waiting for #{self.class.name} to be removed") do
+        Support::Retrier.retry_until(
+          max_duration: 60,
+          sleep_interval: 1,
+          message: "Waiting for #{self.class.name} to be removed"
+        ) do
           !exists?
         rescue InternalServerError
           # Retry on transient errors that are likely to be due to race conditions between concurrent delete operations

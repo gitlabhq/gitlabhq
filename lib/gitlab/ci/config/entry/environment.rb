@@ -44,7 +44,7 @@ module Gitlab
 
               validates :action,
                         type: String,
-                        inclusion: { in: %w[start stop prepare], message: 'should be start, stop or prepare' },
+                        inclusion: { in: %w[start stop prepare verify], message: 'should be start, stop, prepare, or verify' },
                         allow_nil: true
 
               validates :deployment_tier,

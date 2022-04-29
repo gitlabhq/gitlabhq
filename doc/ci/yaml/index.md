@@ -1559,7 +1559,7 @@ environment.
 
 #### `environment:action`
 
-Use the `action` keyword to specify jobs that prepare, start, or stop environments.
+Use the `action` keyword to specify jobs that prepare, start, stop, or verify environments.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -1568,8 +1568,9 @@ Use the `action` keyword to specify jobs that prepare, start, or stop environmen
 | **Value** | **Description** |
 |:----------|:----------------|
 | `start`   | Default value. Indicates that the job starts the environment. The deployment is created after the job starts. |
-| `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#prepare-an-environment-without-creating-a-deployment). |
+| `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 | `stop`    | Indicates that the job stops a deployment. For more detail, read [Stop an environment](../environments/index.md#stop-an-environment). |
+| `verify`  | Indicates that the job is only verifying the environment. It does not trigger deployments. [Read more about verifying environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 
 **Example of `environment:action`**:
 

@@ -25105,21 +25105,6 @@ msgstr ""
 msgid "Network:"
 msgstr ""
 
-msgid "NetworkPolicies|.yaml mode"
-msgstr ""
-
-msgid "NetworkPolicies|Are you sure you want to delete this policy? This action cannot be undone."
-msgstr ""
-
-msgid "NetworkPolicies|Create policy"
-msgstr ""
-
-msgid "NetworkPolicies|Delete policy"
-msgstr ""
-
-msgid "NetworkPolicies|Delete policy: %{policy}"
-msgstr ""
-
 msgid "NetworkPolicies|Environment does not have deployment platform"
 msgstr ""
 
@@ -25135,19 +25120,7 @@ msgstr ""
 msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
 msgstr ""
 
-msgid "NetworkPolicies|Rule mode"
-msgstr ""
-
-msgid "NetworkPolicies|Rule mode is unavailable for this policy. In some cases, we cannot parse the YAML file back into the rules editor."
-msgstr ""
-
-msgid "NetworkPolicies|Save changes"
-msgstr ""
-
 msgid "NetworkPolicies|Something went wrong, failed to update policy"
-msgstr ""
-
-msgid "NetworkPolicies|Something went wrong, unable to fetch policies"
 msgstr ""
 
 msgid "NetworkPolicy|Policy"
@@ -33579,6 +33552,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{scanners} %{severities} in an open merge request targeting %{branches}."
 msgstr ""
 
+msgid "SecurityOrchestration|.yaml mode"
+msgstr ""
+
 msgid "SecurityOrchestration|.yaml preview"
 msgstr ""
 
@@ -33609,10 +33585,16 @@ msgstr ""
 msgid "SecurityOrchestration|Any scanner finds"
 msgstr ""
 
+msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
+msgstr ""
+
 msgid "SecurityOrchestration|Choose a project"
 msgstr ""
 
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
+msgstr ""
+
+msgid "SecurityOrchestration|Create policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Create security policy"
@@ -33621,13 +33603,16 @@ msgstr ""
 msgid "SecurityOrchestration|Define this policy's location, conditions and actions."
 msgstr ""
 
+msgid "SecurityOrchestration|Delete policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Delete policy: %{policy}"
+msgstr ""
+
 msgid "SecurityOrchestration|Description"
 msgstr ""
 
 msgid "SecurityOrchestration|Don't show the alert anymore"
-msgstr ""
-
-msgid "SecurityOrchestration|Edit network policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit policy"
@@ -33658,12 +33643,6 @@ msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
-msgstr ""
-
-msgid "SecurityOrchestration|Network"
-msgstr ""
-
-msgid "SecurityOrchestration|New network policy"
 msgstr ""
 
 msgid "SecurityOrchestration|New policy"
@@ -33723,6 +33702,12 @@ msgstr ""
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers} if any of the following occur:"
 msgstr ""
 
+msgid "SecurityOrchestration|Rule mode"
+msgstr ""
+
+msgid "SecurityOrchestration|Rule mode is unavailable for this policy. In some cases, we cannot parse the YAML file back into the rules editor."
+msgstr ""
+
 msgid "SecurityOrchestration|Rules"
 msgstr ""
 
@@ -33733,6 +33718,9 @@ msgid "SecurityOrchestration|Runs %{actions} and %{lastAction} scans"
 msgstr ""
 
 msgid "SecurityOrchestration|Runs a %{action} scan"
+msgstr ""
+
+msgid "SecurityOrchestration|Save changes"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan Execution"
@@ -33787,6 +33775,9 @@ msgid "SecurityOrchestration|Select policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Select security project"
+msgstr ""
+
+msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
 msgstr ""
 
 msgid "SecurityOrchestration|Sorry, your filter produced no results."

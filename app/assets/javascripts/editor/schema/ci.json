@@ -1093,8 +1093,8 @@
                   "description": "The name of a job to execute when the environment is about to be stopped."
                 },
                 "action": {
-                  "enum": ["start", "prepare", "stop"],
-                  "description": "Specifies what this job will do. 'start' (default) indicates the job will start the deployment. 'prepare' indicates this will not affect the deployment. 'stop' indicates this will stop the deployment.",
+                  "enum": ["start", "prepare", "stop", "verify"],
+                  "description": "Specifies what this job will do. 'start' (default) indicates the job will start the deployment. 'prepare'/'verify' indicates this will not affect the deployment. 'stop' indicates this will stop the deployment.",
                   "default": "start"
                 },
                 "auto_stop_in": {

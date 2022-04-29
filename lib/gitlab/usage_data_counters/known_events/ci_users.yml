@@ -2,4 +2,4 @@
   category: ci_users
   redis_slot: ci_users
   aggregation: weekly
-  feature_flag: job_deployment_count
+  feature_flag:
