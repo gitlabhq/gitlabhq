@@ -93,7 +93,7 @@ module API
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
         end
         post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
-          authorize! :update_pipeline_schedule, pipeline_schedule
+          authorize! :take_ownership_pipeline_schedule, pipeline_schedule
 
           if pipeline_schedule.own!(current_user)
             present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails

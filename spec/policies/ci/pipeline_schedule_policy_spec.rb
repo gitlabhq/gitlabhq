@@ -84,10 +84,13 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models do
         project.add_maintainer(user)
       end
 
-      it 'includes abilities to do all operations on pipeline schedule' do
+      it 'allows for playing and destroying a pipeline schedule' do
         expect(policy).to be_allowed :play_pipeline_schedule
-        expect(policy).to be_allowed :update_pipeline_schedule
         expect(policy).to be_allowed :admin_pipeline_schedule
+      end
+
+      it 'does not allow for updating of an existing schedule' do
+        expect(policy).not_to be_allowed :update_pipeline_schedule
       end
     end
 

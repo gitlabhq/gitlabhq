@@ -13,10 +13,43 @@ RSpec.describe Projects::PipelineSchedulesController do
     project.add_developer(user)
   end
 
+  shared_examples 'access update schedule' do
+    describe 'security' do
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+
+      it 'is denied for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
+
+      it { expect { go }.to be_denied_for(:owner).of(project) }
+      it { expect { go }.to be_denied_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
+
+      context 'when user is schedule owner' do
+        it { expect { go }.to be_allowed_for(:owner).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_allowed_for(:maintainer).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:reporter).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:guest).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:user).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:external).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:visitor).own(pipeline_schedule) }
+      end
+    end
+  end
+
   describe 'GET #index' do
     render_views
 
     let(:scope) { nil }
+
     let!(:inactive_pipeline_schedule) do
       create(:ci_pipeline_schedule, :inactive, project: project)
     end
@@ -130,12 +163,15 @@ RSpec.describe Projects::PipelineSchedulesController do
       it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
         expect { go }.to be_allowed_for(:admin)
       end
+
       it 'is denied for admin when admin mode disabled' do
         expect { go }.to be_denied_for(:admin)
       end
+
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project) }
+
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
@@ -284,20 +320,7 @@ RSpec.describe Projects::PipelineSchedulesController do
     describe 'security' do
       let(:schedule) { { description: 'updated_desc' } }
 
-      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
-        expect { go }.to be_allowed_for(:admin)
-      end
-      it 'is denied for admin when admin mode disabled' do
-        expect { go }.to be_denied_for(:admin)
-      end
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
-      it { expect { go }.to be_denied_for(:visitor) }
+      it_behaves_like 'access update schedule'
 
       context 'when a developer created a pipeline schedule' do
         let(:developer_1) { create(:user) }
@@ -308,8 +331,10 @@ RSpec.describe Projects::PipelineSchedulesController do
         end
 
         it { expect { go }.to be_allowed_for(developer_1) }
+
+        it { expect { go }.to be_denied_for(:owner).of(project) }
+        it { expect { go }.to be_denied_for(:maintainer).of(project) }
         it { expect { go }.to be_denied_for(:developer).of(project) }
-        it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       end
 
       context 'when a maintainer created a pipeline schedule' do
@@ -321,17 +346,21 @@ RSpec.describe Projects::PipelineSchedulesController do
         end
 
         it { expect { go }.to be_allowed_for(maintainer_1) }
-        it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+
+        it { expect { go }.to be_denied_for(:owner).of(project) }
+        it { expect { go }.to be_denied_for(:maintainer).of(project) }
         it { expect { go }.to be_denied_for(:developer).of(project) }
       end
     end
 
     def go
-      put :update, params: { namespace_id: project.namespace.to_param,
-                             project_id: project,
-                             id: pipeline_schedule,
-                             schedule: schedule },
-                   as: :html
+      put :update, params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: pipeline_schedule,
+          schedule: schedule
+        },
+        as: :html
     end
   end
 
@@ -341,6 +370,7 @@ RSpec.describe Projects::PipelineSchedulesController do
 
       before do
         project.add_maintainer(user)
+        pipeline_schedule.update!(owner: user)
         sign_in(user)
       end
 
@@ -352,22 +382,7 @@ RSpec.describe Projects::PipelineSchedulesController do
       end
     end
 
-    describe 'security' do
-      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
-        expect { go }.to be_allowed_for(:admin)
-      end
-      it 'is denied for admin when admin mode disabled' do
-        expect { go }.to be_denied_for(:admin)
-      end
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
-      it { expect { go }.to be_denied_for(:visitor) }
-    end
+    it_behaves_like 'access update schedule'
 
     def go
       get :edit, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
@@ -379,17 +394,30 @@ RSpec.describe Projects::PipelineSchedulesController do
       it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
         expect { go }.to be_allowed_for(:admin)
       end
+
       it 'is denied for admin when admin mode disabled' do
         expect { go }.to be_denied_for(:admin)
       end
+
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
       it { expect { go }.to be_denied_for(:visitor) }
+
+      context 'when user is schedule owner' do
+        it { expect { go }.to be_denied_for(:owner).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:maintainer).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:developer).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:reporter).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:guest).of(project).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:user).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:external).own(pipeline_schedule) }
+        it { expect { go }.to be_denied_for(:visitor).own(pipeline_schedule) }
+      end
     end
 
     def go

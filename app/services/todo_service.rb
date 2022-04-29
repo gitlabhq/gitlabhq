@@ -352,8 +352,6 @@ class TodoService
   end
 
   def reject_users_without_access(users, parent, target)
-    target = target.noteable if target.is_a?(Note)
-
     if target.respond_to?(:to_ability_name)
       select_users(users, :"read_#{target.to_ability_name}", target)
     else

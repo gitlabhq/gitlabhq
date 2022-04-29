@@ -391,6 +391,7 @@ RSpec.describe TodoService do
       let!(:second_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
       let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee]) }
       let(:note) { create(:note, project: project, noteable: issue, author: john_doe, note: mentions) }
+      let(:confidential_note) { create(:note, :confidential, project: project, noteable: issue, author: john_doe, note: mentions) }
       let(:addressed_note) { create(:note, project: project, noteable: issue, author: john_doe, note: directly_addressed) }
       let(:note_on_commit) { create(:note_on_commit, project: project, author: john_doe, note: mentions) }
       let(:addressed_note_on_commit) { create(:note_on_commit, project: project, author: john_doe, note: directly_addressed) }
@@ -466,6 +467,17 @@ RSpec.describe TodoService do
         should_not_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
         should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
         should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
+      end
+
+      it 'does not create todo if user can not read confidential note' do
+        service.new_note(confidential_note, john_doe)
+
+        should_not_create_todo(user: non_member, target: issue, author: john_doe, action: Todo::MENTIONED, note: confidential_note)
+        should_not_create_todo(user: guest, target: issue, author: john_doe, action: Todo::MENTIONED, note: confidential_note)
+        should_create_todo(user: member, target: issue, author: john_doe, action: Todo::MENTIONED, note: confidential_note)
+        should_create_todo(user: author, target: issue, author: john_doe, action: Todo::MENTIONED, note: confidential_note)
+        should_create_todo(user: assignee, target: issue, author: john_doe, action: Todo::MENTIONED, note: confidential_note)
+        should_create_todo(user: john_doe, target: issue, author: john_doe, action: Todo::MENTIONED, note: confidential_note)
       end
 
       context 'commits' do

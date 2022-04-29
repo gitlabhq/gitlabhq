@@ -3,7 +3,7 @@
 module PackagesManagerApiSpecHelpers
   def build_jwt(personal_access_token, secret: jwt_secret, user_id: nil)
     JSONWebToken::HMACToken.new(secret).tap do |jwt|
-      jwt['access_token'] = personal_access_token.id
+      jwt['access_token'] = personal_access_token.token
       jwt['user_id'] = user_id || personal_access_token.user_id
     end
   end

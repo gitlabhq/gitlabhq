@@ -23,6 +23,41 @@ RSpec.describe Packages::PackageFile, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:package) }
+
+    context 'with pypi package' do
+      let_it_be(:package) { create(:pypi_package) }
+
+      let(:package_file) { package.package_files.first }
+      let(:status) { :default }
+      let(:file_name) { 'foo' }
+      let(:file) { fixture_file_upload('spec/fixtures/dk.png') }
+      let(:params) { { file: file, file_name: file_name, status: status } }
+
+      subject { package.package_files.create!(params) }
+
+      context 'file_sha256' do
+        where(:sha256_value, :expected_success) do
+          'a' * 64       | true
+          nil            | true
+          'a' * 63       | false
+          'a' * 65       | false
+          'a' * 63 + '%' | false
+          ''             | false
+        end
+
+        with_them do
+          let(:params) { super().merge({ file_sha256: sha256_value }) }
+
+          it 'does not allow invalid sha256 characters' do
+            if expected_success
+              expect { subject }.not_to raise_error
+            else
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File sha256 is invalid")
+            end
+          end
+        end
+      end
+    end
   end
 
   context 'with package filenames' do

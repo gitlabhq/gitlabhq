@@ -6,5 +6,6 @@
   "archived": false,
   "deploy_keys": [],
   "hooks": [],
-  "shared_runners_enabled": true
+  "shared_runners_enabled": true,
+  "ci_config_path": "config/path"
 }

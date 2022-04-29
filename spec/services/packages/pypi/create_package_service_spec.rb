@@ -7,6 +7,9 @@ RSpec.describe Packages::Pypi::CreatePackageService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
+  let(:sha256) { '1' * 64 }
+  let(:md5) { '567' }
+
   let(:requires_python) { '>=2.7' }
   let(:params) do
     {
@@ -14,8 +17,8 @@ RSpec.describe Packages::Pypi::CreatePackageService do
       version: '1.0',
       content: temp_file('foo.tgz'),
       requires_python: requires_python,
-      sha256_digest: '123',
-      md5_digest: '567'
+      sha256_digest: sha256,
+      md5_digest: md5
     }
   end
 
@@ -34,8 +37,8 @@ RSpec.describe Packages::Pypi::CreatePackageService do
         expect(created_package.pypi_metadatum.required_python).to eq '>=2.7'
         expect(created_package.package_files.size).to eq 1
         expect(created_package.package_files.first.file_name).to eq 'foo.tgz'
-        expect(created_package.package_files.first.file_sha256).to eq '123'
-        expect(created_package.package_files.first.file_md5).to eq '567'
+        expect(created_package.package_files.first.file_sha256).to eq sha256
+        expect(created_package.package_files.first.file_md5).to eq md5
       end
     end
 
@@ -62,8 +65,8 @@ RSpec.describe Packages::Pypi::CreatePackageService do
       context 'with an existing file' do
         before do
           params[:content] = temp_file('foo.tgz')
-          params[:sha256_digest] = 'abc'
-          params[:md5_digest] = 'def'
+          params[:sha256_digest] = sha256
+          params[:md5_digest] = md5
         end
 
         it 'throws an error' do
@@ -89,8 +92,8 @@ RSpec.describe Packages::Pypi::CreatePackageService do
             expect(created_package.pypi_metadatum.required_python).to eq '>=2.7'
             expect(created_package.package_files.size).to eq 1
             expect(created_package.package_files.first.file_name).to eq 'foo.tgz'
-            expect(created_package.package_files.first.file_sha256).to eq 'abc'
-            expect(created_package.package_files.first.file_md5).to eq 'def'
+            expect(created_package.package_files.first.file_sha256).to eq sha256
+            expect(created_package.package_files.first.file_md5).to eq md5
           end
         end
       end

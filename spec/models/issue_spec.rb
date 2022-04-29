@@ -724,14 +724,15 @@ RSpec.describe Issue do
 
   describe '#participants' do
     context 'using a public project' do
-      let_it_be(:issue) { create(:issue, project: reusable_project) }
+      let_it_be(:public_project) { create(:project, :public) }
+      let_it_be(:issue) { create(:issue, project: public_project) }
 
       let!(:note1) do
-        create(:note_on_issue, noteable: issue, project: reusable_project, note: 'a')
+        create(:note_on_issue, noteable: issue, project: public_project, note: 'a')
       end
 
       let!(:note2) do
-        create(:note_on_issue, noteable: issue, project: reusable_project, note: 'b')
+        create(:note_on_issue, noteable: issue, project: public_project, note: 'b')
       end
 
       it 'includes the issue author' do
@@ -801,20 +802,35 @@ RSpec.describe Issue do
     context 'without a user' do
       let(:user) { nil }
 
-      before do
-        project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PUBLIC)
+      context 'with issue available as public' do
+        before do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PUBLIC)
+        end
+
+        it 'returns true when the issue is publicly visible' do
+          expect(issue).to receive(:publicly_visible?).and_return(true)
+
+          is_expected.to eq(true)
+        end
+
+        it 'returns false when the issue is not publicly visible' do
+          expect(issue).to receive(:publicly_visible?).and_return(false)
+
+          is_expected.to eq(false)
+        end
       end
 
-      it 'returns true when the issue is publicly visible' do
-        expect(issue).to receive(:publicly_visible?).and_return(true)
+      context 'with issues available only to team members in a public project' do
+        let(:public_project) { create(:project, :public) }
+        let(:issue) { build(:issue, project: public_project) }
 
-        is_expected.to eq(true)
-      end
+        before do
+          public_project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+        end
 
-      it 'returns false when the issue is not publicly visible' do
-        expect(issue).to receive(:publicly_visible?).and_return(false)
-
-        is_expected.to eq(false)
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
       end
     end
 

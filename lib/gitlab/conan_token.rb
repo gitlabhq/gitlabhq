@@ -13,8 +13,8 @@ module Gitlab
     attr_reader :access_token_id, :user_id
 
     class << self
-      def from_personal_access_token(access_token)
-        new(access_token_id: access_token.id, user_id: access_token.user_id)
+      def from_personal_access_token(user_id, token)
+        new(access_token_id: token, user_id: user_id)
       end
 
       def from_job(job)

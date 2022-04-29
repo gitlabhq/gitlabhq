@@ -630,7 +630,8 @@ class Issue < ApplicationRecord
 
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
-    project.public? && !confidential? && !hidden? && !::Gitlab::ExternalAuthorization.enabled?
+    project.public? && project.feature_available?(:issues, nil) &&
+      !confidential? && !hidden? && !::Gitlab::ExternalAuthorization.enabled?
   end
 
   def expire_etag_cache

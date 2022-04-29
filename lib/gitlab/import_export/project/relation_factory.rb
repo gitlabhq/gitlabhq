@@ -87,6 +87,8 @@ module Gitlab
           when *BUILD_MODELS then setup_build
           when :issues then setup_issue
           when :'Ci::PipelineSchedule' then setup_pipeline_schedule
+          when :'ProtectedBranch::MergeAccessLevel' then setup_protected_branch_access_level
+          when :'ProtectedBranch::PushAccessLevel' then setup_protected_branch_access_level
           end
 
           update_project_references
@@ -150,6 +152,10 @@ module Gitlab
 
         def setup_pipeline_schedule
           @relation_hash['active'] = false
+        end
+
+        def setup_protected_branch_access_level
+          @relation_hash['access_level'] = Gitlab::Access::MAINTAINER
         end
 
         def compute_relative_position
