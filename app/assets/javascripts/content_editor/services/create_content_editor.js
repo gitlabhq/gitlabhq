@@ -59,6 +59,7 @@ import WordBreak from '../extensions/word_break';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
 import createGlApiMarkdownDeserializer from './gl_api_markdown_deserializer';
+import createRemarkMarkdownDeserializer from './remark_markdown_deserializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
 import languageLoader from './code_block_language_loader';
 
@@ -146,7 +147,11 @@ export const createContentEditor = ({
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
   const serializer = createMarkdownSerializer({ serializerConfig });
-  const deserializer = createGlApiMarkdownDeserializer({ render: renderMarkdown });
+  const deserializer = window.gon?.features?.preserveUnchangedMarkdown
+    ? createRemarkMarkdownDeserializer()
+    : createGlApiMarkdownDeserializer({
+        render: renderMarkdown,
+      });
 
   return new ContentEditor({ tiptapEditor, serializer, eventHub, deserializer, languageLoader });
 };

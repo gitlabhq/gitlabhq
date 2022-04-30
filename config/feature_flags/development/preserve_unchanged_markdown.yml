@@ -1,0 +1,8 @@
+---
+name: preserve_unchanged_markdown
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86060
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/360713
+milestone: '15.0'
+type: development
+group: group::editor
+default_enabled: false

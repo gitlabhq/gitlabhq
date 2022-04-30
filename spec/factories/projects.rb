@@ -183,6 +183,10 @@ FactoryBot.define do
       request_access_enabled { false }
     end
 
+    trait :with_namespace_settings do
+      namespace factory: [:namespace, :with_namespace_settings]
+    end
+
     trait :with_avatar do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end

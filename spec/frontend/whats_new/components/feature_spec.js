@@ -21,6 +21,7 @@ describe("What's new single feature", () => {
 
   const findReleaseDate = () => wrapper.find('[data-testid="release-date"]');
   const findBodyAnchor = () => wrapper.find('[data-testid="body-content"] a');
+  const findImageLink = () => wrapper.find('[data-testid="whats-new-image-link"]');
 
   const createWrapper = ({ feature } = {}) => {
     wrapper = shallowMount(Feature, {
@@ -35,18 +36,38 @@ describe("What's new single feature", () => {
 
   it('renders the date', () => {
     createWrapper({ feature: exampleFeature });
+
     expect(findReleaseDate().text()).toBe('April 22, 2021');
   });
 
-  describe('when the published_at is null', () => {
-    it("doesn't render the date", () => {
+  it('renders image link', () => {
+    createWrapper({ feature: exampleFeature });
+
+    expect(findImageLink().exists()).toBe(true);
+    expect(findImageLink().find('div').attributes('style')).toBe(
+      `background-image: url(${exampleFeature.image_url});`,
+    );
+  });
+
+  describe('when published_at is null', () => {
+    it('does not render the date', () => {
       createWrapper({ feature: { ...exampleFeature, published_at: null } });
+
       expect(findReleaseDate().exists()).toBe(false);
+    });
+  });
+
+  describe('when image_url is null', () => {
+    it('does not render image link', () => {
+      createWrapper({ feature: { ...exampleFeature, image_url: null } });
+
+      expect(findImageLink().exists()).toBe(false);
     });
   });
 
   it('safe-html config allows target attribute on elements', () => {
     createWrapper({ feature: exampleFeature });
+
     expect(findBodyAnchor().attributes()).toEqual({
       href: expect.any(String),
       rel: 'noopener noreferrer',

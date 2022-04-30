@@ -37,9 +37,11 @@ export default {
 <template>
   <div class="gl-py-6 gl-px-6 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
     <gl-link
+      v-if="feature.image_url"
       :href="feature.url"
       target="_blank"
       class="gl-display-block"
+      data-testid="whats-new-image-link"
       data-track-action="click_whats_new_item"
       :data-track-label="feature.title"
       :data-track-property="feature.url"

@@ -6,7 +6,7 @@ RSpec.describe 'Projects > Members > Member leaves project' do
   include Spec::Support::Helpers::Features::MembersHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository, :with_namespace_settings) }
 
   before do
     project.add_developer(user)

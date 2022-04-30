@@ -21,14 +21,7 @@ module QA
       end
 
       def perform(options, *args)
-        gitlab_address = extract_gitlab_address(options, args)
-
-        # Define the "About" page as an `about` subdomain.
-        # @example
-        #   Given *gitlab_address* = 'https://gitlab.com/' #=> https://about.gitlab.com/
-        #   Given *gitlab_address* = 'https://staging.gitlab.com/' #=> https://about.staging.gitlab.com/
-        #   Given *gitlab_address* = 'http://gitlab-abc123.test/' #=> http://about.gitlab-abc123.test/
-        Runtime::Scenario.define(:about_address, gitlab_address.tap { |add| add.host = "about.#{add.host}" }.to_s)
+        define_gitlab_address(options, args)
 
         # Save the scenario class name
         Runtime::Scenario.define(:klass, self.class.name)
@@ -36,7 +29,7 @@ module QA
         ##
         # Setup knapsack and download latest report
         #
-        Tools::KnapsackReport.configure! if Runtime::Env.knapsack?
+        Support::KnapsackReport.configure!
 
         ##
         # Perform before hooks, which are different for CE and EE
@@ -70,32 +63,22 @@ module QA
 
       private
 
-      # For backwards-compatibility, if the gitlab instance address is not
-      # specified as an option parsed by OptionParser, it can be specified as
-      # the first argument
-      def extract_gitlab_address(options, args)
-        opt_name = :gitlab_address
-        address_from_opt = Runtime::Scenario.attributes[opt_name]
-        # return gitlab address if it was set via named option already
-        return validate_address(opt_name, address_from_opt) && URI(address_from_opt) if address_from_opt
+      delegate :define_gitlab_address_attribute!, to: 'QA::Support::GitlabAddress'
 
-        address = if args.first.nil? || File.exist?(args.first)
-                    # if first arg is a valid path and not address, it's a spec file, default to environment variable
-                    Runtime::Env.gitlab_url
-                  else
-                    args.shift
-                  end
+      # Define gitlab address attribute
+      #
+      # Use first argument if a valid address, else use named argument or default to environment variable
+      #
+      # @param [Hash] options
+      # @param [Array] args
+      # @return [void]
+      def define_gitlab_address(options, args)
+        address_from_opt = Runtime::Scenario.attributes[:gitlab_address]
 
-        validate_address(opt_name, address)
-        Runtime::Scenario.define(opt_name, address)
+        return define_gitlab_address_attribute!(args.shift) if args.first && Runtime::Address.valid?(args.first)
+        return define_gitlab_address_attribute!(address_from_opt) if address_from_opt
 
-        URI(address)
-      end
-
-      def validate_address(name, address)
-        Runtime::Address.valid?(address) || raise(
-          ::ArgumentError, "Configured address parameter '#{name}' is not a valid url: #{address}"
-        )
+        define_gitlab_address_attribute!
       end
     end
   end

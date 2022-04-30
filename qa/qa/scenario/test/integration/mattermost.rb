@@ -12,12 +12,6 @@ module QA
           tags :mattermost
 
           attribute :mattermost_address, '--mattermost-address URL', 'Address of the Mattermost server'
-
-          def perform(options, *args)
-            extract_address(:mattermost_address, options)
-
-            super(options, *args)
-          end
         end
       end
     end

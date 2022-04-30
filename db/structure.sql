@@ -28101,6 +28101,8 @@ CREATE INDEX index_job_artifact_states_on_verification_state ON ci_job_artifact_
 
 CREATE INDEX index_job_artifact_states_pending_verification ON ci_job_artifact_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_key_updated_at_on_user_custom_attribute ON user_custom_attributes USING btree (key, updated_at);
+
 CREATE INDEX index_keys_on_expires_at_and_id ON keys USING btree (date(timezone('UTC'::text, expires_at)), id) WHERE (expiry_notification_delivered_at IS NULL);
 
 CREATE INDEX index_keys_on_fingerprint ON keys USING btree (fingerprint);

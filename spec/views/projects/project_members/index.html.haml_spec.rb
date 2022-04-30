@@ -4,8 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'projects/project_members/index', :aggregate_failures do
   let_it_be(:user) { create(:user) }
-  let_it_be(:source) { create(:project, :empty_repo) }
-  let_it_be(:project) { ProjectPresenter.new(source, current_user: user) }
+  let_it_be(:project) { create(:project, :empty_repo, :with_namespace_settings).present(current_user: user) }
 
   before do
     allow(view).to receive(:project_members_app_data_json).and_return({})

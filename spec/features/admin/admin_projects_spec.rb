@@ -8,7 +8,7 @@ RSpec.describe "Admin::Projects" do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create :user }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :with_namespace_settings) }
   let(:current_user) { create(:admin) }
 
   before do
@@ -82,7 +82,7 @@ RSpec.describe "Admin::Projects" do
 
   describe 'transfer project' do
     # The gitlab-shell transfer will fail for a project without a repository
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, :with_namespace_settings) }
 
     before do
       create(:group, name: 'Web')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Members > Invite group', :js do
+RSpec.describe 'Project > Members > Manage groups', :js do
   include ActionView::Helpers::DateHelper
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
@@ -126,7 +126,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
   end
 
   describe 'setting an expiration date for a group link' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :with_namespace_settings) }
     let!(:group) { create(:group) }
 
     let_it_be(:expiration_date) { 5.days.from_now.to_date }
@@ -153,81 +153,18 @@ RSpec.describe 'Project > Members > Invite group', :js do
     end
   end
 
-  describe 'the groups dropdown' do
+  describe 'group search results' do
     let_it_be(:parent_group) { create(:group, :public) }
     let_it_be(:project_group) { create(:group, :public, parent: parent_group) }
     let_it_be(:project) { create(:project, group: project_group) }
 
-    context 'with instance admin considerations' do
-      let_it_be(:group_to_share) { create(:group) }
-
-      context 'when user is an admin' do
-        let_it_be(:admin) { create(:admin) }
-
-        before do
-          sign_in(admin)
-          gitlab_enable_admin_mode_sign_in(admin)
-        end
-
-        it 'shows groups where the admin has no direct membership' do
-          visit project_project_members_path(project)
-
-          click_on 'Invite a group'
-          click_on 'Select a group'
-          wait_for_requests
-
-          page.within(group_dropdown_selector) do
-            expect_to_have_group(group_to_share)
-          end
-        end
-
-        it 'shows groups where the admin has at least guest level membership' do
-          group_to_share.add_guest(admin)
-
-          visit project_project_members_path(project)
-
-          click_on 'Invite a group'
-          click_on 'Select a group'
-          wait_for_requests
-
-          page.within(group_dropdown_selector) do
-            expect_to_have_group(group_to_share)
-          end
-        end
-      end
-
-      context 'when user is not an admin' do
-        before do
-          project.add_maintainer(maintainer)
-          sign_in(maintainer)
-        end
-
-        it 'does not show groups where the user has no direct membership' do
-          visit project_project_members_path(project)
-
-          click_on 'Invite a group'
-          click_on 'Select a group'
-          wait_for_requests
-
-          page.within(group_dropdown_selector) do
-            expect_not_to_have_group(group_to_share)
-          end
-        end
-
-        it 'shows groups where the user has at least guest level membership' do
-          group_to_share.add_guest(maintainer)
-
-          visit project_project_members_path(project)
-
-          click_on 'Invite a group'
-          click_on 'Select a group'
-          wait_for_requests
-
-          page.within(group_dropdown_selector) do
-            expect_to_have_group(group_to_share)
-          end
-        end
-      end
+    it_behaves_like 'inviting groups search results' do
+      let_it_be(:user) { maintainer }
+      let_it_be(:group) { parent_group }
+      let_it_be(:group_within_hierarchy) { create(:group, parent: group) }
+      let_it_be(:project_within_hierarchy) { create(:project, group: group_within_hierarchy)}
+      let_it_be(:members_page_path) { project_project_members_path(project) }
+      let_it_be(:members_page_path_within_hierarchy) { project_project_members_path(project_within_hierarchy) }
     end
 
     context 'for a project in a nested group' do

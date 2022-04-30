@@ -456,20 +456,23 @@ To restore a group that is marked for deletion:
 
 ## Prevent group sharing outside the group hierarchy
 
-This setting is only available on top-level groups. It affects all subgroups.
+This setting is only available on top-level groups. It affects all subgroups and projects.
 
-When checked, any group in the top-level group hierarchy can be shared only with other groups in the hierarchy.
+When checked, any group in the top-level group hierarchy can only invite other groups from within the top-level
+group's hierarchy.
 
-For example, with these groups:
+For example, with this setup:
 
-- **Animals > Dogs**
+- **Animals > Dogs > Dog Project**
 - **Animals > Cats**
 - **Plants > Trees**
 
 If you select this setting in the **Animals** group:
 
-- **Dogs** can be shared with **Cats**.
-- **Dogs** cannot be shared with **Trees**.
+- **Dogs** can invite the group **Cats**.
+- **Dogs** cannot invite the group **Trees**.
+- **Dog Project** can invite the group **Cats**.
+- **Dog Project** cannot invite the group **Trees**.
 
 To prevent sharing outside of the group's hierarchy:
 

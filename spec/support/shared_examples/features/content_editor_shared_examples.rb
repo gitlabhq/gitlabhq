@@ -23,6 +23,8 @@ RSpec.shared_examples 'edits content using the content editor' do
 
   describe 'code block bubble menu' do
     it 'shows a code block bubble menu for a code block' do
+      find(content_editor_testid).send_keys [:enter, :enter]
+
       find(content_editor_testid).send_keys '```js ' # trigger input rule
       find(content_editor_testid).send_keys 'var a = 0'
       find(content_editor_testid).send_keys [:shift, :left]
@@ -32,6 +34,8 @@ RSpec.shared_examples 'edits content using the content editor' do
     end
 
     it 'sets code block type to "javascript" for `js`' do
+      find(content_editor_testid).send_keys [:enter, :enter]
+
       find(content_editor_testid).send_keys '```js '
       find(content_editor_testid).send_keys 'var a = 0'
 
@@ -39,6 +43,8 @@ RSpec.shared_examples 'edits content using the content editor' do
     end
 
     it 'sets code block type to "Custom (nomnoml)" for `nomnoml`' do
+      find(content_editor_testid).send_keys [:enter, :enter]
+
       find(content_editor_testid).send_keys '```nomnoml '
       find(content_editor_testid).send_keys 'test'
 

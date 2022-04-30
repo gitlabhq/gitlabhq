@@ -20,6 +20,8 @@ RSpec.describe QA::Scenario::Template do
 
     allow(scenario).to receive(:attributes).and_return({ gitlab_address: gitlab_address })
     allow(scenario).to receive(:define)
+
+    QA::Support::GitlabAddress.instance_variable_set(:@initialized, false)
   end
 
   it 'allows a feature to be enabled' do
@@ -93,13 +95,6 @@ RSpec.describe QA::Scenario::Template do
     subject.perform({})
 
     expect(scenario).to have_received(:define).with(:gitlab_address, gitlab_address_from_env)
-  end
-
-  it 'defines only about address' do
-    subject.perform({ gitlab_address: gitlab_address })
-
-    expect(scenario).not_to have_received(:define).with(:gitlab_address, gitlab_address)
-    expect(scenario).to have_received(:define).with(:about_address, 'https://about.gitlab.com/')
   end
 
   it 'defines klass attribute' do

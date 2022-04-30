@@ -24,6 +24,7 @@ module QA
   loader.push_dir(root, namespace: QA)
 
   loader.ignore("#{root}/specs/features")
+  loader.ignore("#{root}/specs/spec_helper.rb")
 
   loader.inflector.inflect(
     "ce" => "CE",

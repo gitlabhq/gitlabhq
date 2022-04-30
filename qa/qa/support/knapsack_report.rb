@@ -3,7 +3,7 @@
 require "fog/google"
 
 module QA
-  module Tools
+  module Support
     class KnapsackReport
       extend SingleForwardable
 
@@ -20,11 +20,10 @@ module QA
       #
       # @return [void]
       def configure!
-        ENV["KNAPSACK_TEST_FILE_PATTERN"] ||= "qa/specs/features/**/*_spec.rb"
-        ENV["KNAPSACK_REPORT_PATH"] = report_path
+        return unless QA::Runtime::Env.knapsack?
 
-        Knapsack.logger = QA::Runtime::Logger.logger
-
+        setup_logger!
+        setup_environment!
         download_report
       end
 
@@ -88,6 +87,21 @@ module QA
       end
 
       private
+
+      # Setup knapsack logger
+      #
+      # @return [void]
+      def setup_logger!
+        Knapsack.logger = QA::Runtime::Logger.logger
+      end
+
+      # Set knapsack environment variables
+      #
+      # @return [void]
+      def setup_environment!
+        ENV["KNAPSACK_TEST_FILE_PATTERN"] ||= "qa/specs/features/**/*_spec.rb"
+        ENV["KNAPSACK_REPORT_PATH"] = report_path
+      end
 
       # Logger instance
       #

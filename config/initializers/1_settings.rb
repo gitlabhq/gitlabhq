@@ -772,6 +772,9 @@ Gitlab.ee do
   Settings.cron_jobs['ci_project_mirrors_consistency_check_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ci_project_mirrors_consistency_check_worker']['cron'] ||= '2-58/4 * * * *'
   Settings.cron_jobs['ci_project_mirrors_consistency_check_worker']['job_class'] = 'Database::CiProjectMirrorsConsistencyCheckWorker'
+  Settings.cron_jobs['arkose_blocked_users_report_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['arkose_blocked_users_report_worker']['cron'] ||= '0 6 * * *'
+  Settings.cron_jobs['arkose_blocked_users_report_worker']['job_class'] = 'Arkose::BlockedUsersReportWorker'
 end
 
 #

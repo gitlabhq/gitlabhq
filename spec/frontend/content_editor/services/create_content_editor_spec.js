@@ -1,8 +1,12 @@
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '~/content_editor/constants';
 import { createContentEditor } from '~/content_editor/services/create_content_editor';
+import createGlApiMarkdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
+import createRemarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import { createTestContentEditorExtension } from '../test_utils';
 
 jest.mock('~/emoji');
+jest.mock('~/content_editor/services/remark_markdown_deserializer');
+jest.mock('~/content_editor/services/gl_api_markdown_deserializer');
 
 describe('content_editor/services/create_content_editor', () => {
   let renderMarkdown;
@@ -11,7 +15,34 @@ describe('content_editor/services/create_content_editor', () => {
 
   beforeEach(() => {
     renderMarkdown = jest.fn();
+    window.gon = {
+      features: {
+        preserveUnchangedMarkdown: false,
+      },
+    };
     editor = createContentEditor({ renderMarkdown, uploadsPath });
+  });
+
+  describe('when preserveUnchangedMarkdown feature is on', () => {
+    beforeEach(() => {
+      window.gon.features.preserveUnchangedMarkdown = true;
+    });
+
+    it('provides a remark markdown deserializer to the content editor class', () => {
+      createContentEditor({ renderMarkdown, uploadsPath });
+      expect(createRemarkMarkdownDeserializer).toHaveBeenCalled();
+    });
+  });
+
+  describe('when preserveUnchangedMarkdown feature is off', () => {
+    beforeEach(() => {
+      window.gon.features.preserveUnchangedMarkdown = false;
+    });
+
+    it('provides a gl api markdown deserializer to the content editor class', () => {
+      createContentEditor({ renderMarkdown, uploadsPath });
+      expect(createGlApiMarkdownDeserializer).toHaveBeenCalledWith({ render: renderMarkdown });
+    });
   });
 
   it('sets gl-outline-0! class selector to the tiptapEditor instance', () => {
@@ -22,30 +53,19 @@ describe('content_editor/services/create_content_editor', () => {
     });
   });
 
-  it('provides the renderMarkdown function to the markdown serializer', async () => {
-    const serializedContent = '**bold text**';
-
-    renderMarkdown.mockReturnValueOnce('<p><b>bold text</b></p>');
-
-    await editor.setSerializedContent(serializedContent);
-
-    expect(renderMarkdown).toHaveBeenCalledWith(serializedContent);
-  });
-
   it('allows providing external content editor extensions', async () => {
     const labelReference = 'this is a ~group::editor';
     const { tiptapExtension, serializer } = createTestContentEditorExtension();
 
-    renderMarkdown.mockReturnValueOnce(
-      '<p>this is a <span data-reference="label" data-label-name="group::editor">group::editor</span></p>',
-    );
     editor = createContentEditor({
       renderMarkdown,
       extensions: [tiptapExtension],
       serializerConfig: { nodes: { [tiptapExtension.name]: serializer } },
     });
 
-    await editor.setSerializedContent(labelReference);
+    editor.tiptapEditor.commands.setContent(
+      '<p>this is a <span data-reference="label" data-label-name="group::editor">group::editor</span></p>',
+    );
 
     expect(editor.getSerializedContent()).toBe(labelReference);
   });
