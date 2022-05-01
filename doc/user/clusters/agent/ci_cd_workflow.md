@@ -13,6 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 > - Support for Omnibus installations was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5686) in GitLab 14.5.
 > - The ability to switch between certificate-based clusters and agents was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335089) in GitLab 14.9. The certificate-based cluster context is always called `gitlab-deploy`.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80508) from _CI/CD tunnel_ to _CI/CD workflow_ in GitLab 14.9.
 
 You can use a GitLab CI/CD workflow to safely deploy to and update your Kubernetes clusters.
 
@@ -66,7 +67,7 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
    ```yaml
    ci_access:
      projects:
-     - id: path/to/project
+       - id: path/to/project
    ```
 
    - The Kubernetes projects must be in the same group hierarchy as the project where the agent's configuration is.
@@ -89,7 +90,7 @@ To authorize the agent to access all of the GitLab projects in a group or subgro
    ```yaml
    ci_access:
      groups:
-     - id: path/to/group/subgroup
+       - id: path/to/group/subgroup
    ```
 
    - The Kubernetes projects must be in the same group hierarchy as the project where the agent's configuration is.
@@ -109,14 +110,14 @@ In the first command under the `script` keyword, set your agent's context.
 Use the format `path/to/agent/repository:agent-name`. For example:
 
 ```yaml
- deploy:
-   image:
-     name: bitnami/kubectl:latest
-     entrypoint: [""]
-   script:
-   - kubectl config get-contexts
-   - kubectl config use-context path/to/agent/repository:agent-name
-   - kubectl get pods
+deploy:
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  script:
+    - kubectl config get-contexts
+    - kubectl config use-context path/to/agent/repository:agent-name
+    - kubectl get pods
 ```
 
 If you are not sure what your agent's context is, open a terminal and connect to your cluster.
@@ -130,28 +131,27 @@ cluster](../../infrastructure/clusters/index.md) (deprecated) and an agent conne
 - The certificate-based cluster's context is called `gitlab-deploy`. This context
   is always selected by default.
 - In GitLab 14.9 and later, agent contexts are included in the
-  `KUBECONFIG`. You can select them by using `kubectl config use-context
-  path/to/agent/repository:agent-name`.
+  `KUBECONFIG`. You can select them by using `kubectl config use-context path/to/agent/repository:agent-name`.
 - In GitLab 14.8 and earlier, you can still use agent connections, but for environments that
   already have a certificate-based cluster, the agent connections are not included in the `KUBECONFIG`.
 
 To use an agent connection when certificate-based connections are present, you can manually configure a new `kubectl`
 configuration context. For example:
 
-  ```yaml
-  deploy:
-    variables:
-      KUBE_CONTEXT: my-context # The name to use for the new context
-      AGENT_ID: 1234 # replace with your agent's numeric ID
-      K8S_PROXY_URL: wss://kas.gitlab.com/k8s-proxy/ # replace with your agent server (KAS) Kubernetes proxy URL
-      # ... any other variables you have configured
-    before_script:
+```yaml
+deploy:
+  variables:
+    KUBE_CONTEXT: my-context # The name to use for the new context
+    AGENT_ID: 1234 # replace with your agent's numeric ID
+    K8S_PROXY_URL: wss://kas.gitlab.com/k8s-proxy/ # replace with your agent server (KAS) Kubernetes proxy URL
+    # ... any other variables you have configured
+  before_script:
     - kubectl config set-credentials agent:$AGENT_ID --token="ci:${AGENT_ID}:${CI_JOB_TOKEN}"
     - kubectl config set-cluster gitlab --server="${K8S_PROXY_URL}"
     - kubectl config set-context "$KUBE_CONTEXT" --cluster=gitlab --user="agent:${AGENT_ID}"
     - kubectl config use-context "$KUBE_CONTEXT"
-    # ... rest of your job configuration
-  ```
+  # ... rest of your job configuration
+```
 
 ## Use impersonation to restrict project and group access **(PREMIUM)**
 
@@ -182,6 +182,7 @@ impersonation credentials in the following way:
 
 - `UserName` is set to `gitlab:ci_job:<job id>`. Example: `gitlab:ci_job:1074499489`.
 - `Groups` is set to:
+
   - `gitlab:ci_job` to identify all requests coming from CI jobs.
   - The list of IDs of groups the project is in.
   - The project ID.
@@ -194,28 +195,28 @@ impersonation credentials in the following way:
     - Project `group1/group1-1/project1` has ID 150.
     - Job running in a prod environment.
 
-   Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group:25, gitlab:project:150, gitlab:project_env:150:prod]`.
+  Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group:25, gitlab:project:150, gitlab:project_env:150:prod]`.
 
 - `Extra` carries extra information about the request. The following properties are set on the impersonated identity:
 
-| Property | Description |
-| -------- | ----------- |
-| `agent.gitlab.com/id` | Contains the agent ID. |
-| `agent.gitlab.com/config_project_id` | Contains the agent's configuration project ID. |
-| `agent.gitlab.com/project_id` | Contains the CI project ID. |
-| `agent.gitlab.com/ci_pipeline_id` | Contains the CI pipeline ID. |
-| `agent.gitlab.com/ci_job_id` | Contains the CI job ID. |
-| `agent.gitlab.com/username` | Contains the username of the user the CI job is running as. |
-| `agent.gitlab.com/environment_slug` | Contains the slug of the environment. Only set if running in an environment. |
+| Property                             | Description                                                                  |
+| ------------------------------------ | ---------------------------------------------------------------------------- |
+| `agent.gitlab.com/id`                | Contains the agent ID.                                                       |
+| `agent.gitlab.com/config_project_id` | Contains the agent's configuration project ID.                               |
+| `agent.gitlab.com/project_id`        | Contains the CI project ID.                                                  |
+| `agent.gitlab.com/ci_pipeline_id`    | Contains the CI pipeline ID.                                                 |
+| `agent.gitlab.com/ci_job_id`         | Contains the CI job ID.                                                      |
+| `agent.gitlab.com/username`          | Contains the username of the user the CI job is running as.                  |
+| `agent.gitlab.com/environment_slug`  | Contains the slug of the environment. Only set if running in an environment. |
 
 Example to restrict access by the CI/CD job's identity:
 
 ```yaml
 ci_access:
   projects:
-  - id: path/to/project
-    access_as:
-      ci_job: {}
+    - id: path/to/project
+      access_as:
+        ci_job: {}
 ```
 
 ### Impersonate a static identity
