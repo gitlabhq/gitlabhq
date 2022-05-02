@@ -11,8 +11,8 @@ module Gitlab
     # this if the change to the renderer output is a new feature or a
     # minor bug fix.
     # See: https://gitlab.com/gitlab-org/gitlab/-/issues/330313
-    CACHE_COMMONMARK_VERSION        = 29
-    CACHE_COMMONMARK_VERSION_START  = 10
+    CACHE_COMMONMARK_VERSION       = 30
+    CACHE_COMMONMARK_VERSION_START = 10
 
     BaseError = Class.new(StandardError)
     UnsupportedClassError = Class.new(BaseError)

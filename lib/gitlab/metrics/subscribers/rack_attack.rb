@@ -73,12 +73,16 @@ module Gitlab
             matched: req.env['rack.attack.matched']
           }
 
-          if THROTTLES_WITH_USER_INFORMATION.include? req.env['rack.attack.matched'].to_sym
-            user_id = req.env['rack.attack.match_discriminator']
-            user = User.find_by(id: user_id) # rubocop:disable CodeReuse/ActiveRecord
+          discriminator = req.env['rack.attack.match_discriminator'].to_s
+          discriminator_id = discriminator.split(':').last
 
-            rack_attack_info[:user_id] = user_id
+          if discriminator.starts_with?('user:')
+            user = User.find_by(id: discriminator_id) # rubocop:disable CodeReuse/ActiveRecord
+
+            rack_attack_info[:user_id] = discriminator_id.to_i
             rack_attack_info['meta.user'] = user.username unless user.nil?
+          elsif discriminator.starts_with?('deploy_token:')
+            rack_attack_info[:deploy_token_id] = discriminator_id.to_i
           end
 
           Gitlab::InstrumentationHelper.add_instrumentation_data(rack_attack_info)

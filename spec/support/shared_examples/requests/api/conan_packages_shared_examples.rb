@@ -62,15 +62,8 @@ RSpec.shared_examples 'conan authenticate endpoint' do
     end
   end
 
-  it 'responds with 401 Unauthorized when an invalid access token ID is provided' do
-    jwt = build_jwt(double(id: 12345), user_id: personal_access_token.user_id)
-    get api(url), headers: build_token_auth_header(jwt.encoded)
-
-    expect(response).to have_gitlab_http_status(:unauthorized)
-  end
-
-  it 'responds with 401 Unauthorized when invalid user is provided' do
-    jwt = build_jwt(personal_access_token, user_id: 12345)
+  it 'responds with 401 Unauthorized when an invalid access token is provided' do
+    jwt = build_jwt(double(token: 12345), user_id: user.id)
     get api(url), headers: build_token_auth_header(jwt.encoded)
 
     expect(response).to have_gitlab_http_status(:unauthorized)
@@ -102,7 +95,7 @@ RSpec.shared_examples 'conan authenticate endpoint' do
 
         payload = JSONWebToken::HMACToken.decode(
           response.body, jwt_secret).first
-        expect(payload['access_token']).to eq(personal_access_token.id)
+        expect(payload['access_token']).to eq(personal_access_token.token)
         expect(payload['user_id']).to eq(personal_access_token.user_id)
 
         duration = payload['exp'] - payload['iat']

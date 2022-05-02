@@ -22,18 +22,22 @@ module Integrations
     def fields
       [
         {
-          type: 'text',
+          type: 'password',
           name: 'api_key',
           title: _('API key'),
           help: s_('PushoverService|Enter your application key.'),
+          non_empty_password_title: s_('ProjectService|Enter new API key'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current API key.'),
           placeholder: '',
           required: true
         },
         {
-          type: 'text',
+          type: 'password',
           name: 'user_key',
           title: _('User key'),
           help: s_('PushoverService|Enter your user key.'),
+          non_empty_password_title: s_('PushoverService|Enter new user key'),
+          non_empty_password_help: s_('PushoverService|Leave blank to use your current user key.'),
           placeholder: '',
           required: true
         },
