@@ -2,7 +2,8 @@
 import { pickBy, isEmpty, mapValues } from 'lodash';
 import { mapActions } from 'vuex';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
-import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
   FILTERED_SEARCH_TERM,
@@ -10,6 +11,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { AssigneeFilterType } from '~/boards/constants';
+import eventHub from '../eventhub';
 
 export default {
   i18n: {
@@ -33,6 +35,7 @@ export default {
   data() {
     return {
       filterParams: this.initialFilterParams,
+      filteredSearchKey: 0,
     };
   },
   computed: {
@@ -306,12 +309,21 @@ export default {
     },
   },
   created() {
+    eventHub.$on('updateTokens', this.updateTokens);
     if (!isEmpty(this.eeFilters)) {
       this.filterParams = this.eeFilters;
     }
   },
+  beforeDestroy() {
+    eventHub.$off('updateTokens', this.updateTokens);
+  },
   methods: {
     ...mapActions(['performSearch']),
+    updateTokens() {
+      const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
+      this.filterParams = convertObjectPropsToCamelCase(rawFilterParams, {});
+      this.filteredSearchKey += 1;
+    },
     handleFilter(filters) {
       this.filterParams = this.getFilterParams(filters);
 
@@ -399,6 +411,7 @@ export default {
 
 <template>
   <filtered-search
+    :key="filteredSearchKey"
     class="gl-w-full"
     namespace=""
     :tokens="tokens"

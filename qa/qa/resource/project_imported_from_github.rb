@@ -17,7 +17,7 @@ module QA
         Page::Project::Import::Github.perform do |import_page|
           import_page.add_personal_access_token(github_personal_access_token)
           import_page.import!(github_repository_path, group.full_path, name)
-          import_page.wait_for_success(github_repository_path)
+          import_page.wait_for_success(github_repository_path, wait: 240)
         end
 
         reload!

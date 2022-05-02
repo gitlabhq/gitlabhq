@@ -2,12 +2,15 @@ import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vuex from 'vuex';
 import { nextTick } from 'vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { issuableTypes } from '~/boards/constants';
+import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
+import { updateHistory } from '~/lib/utils/url_utility';
 import { mockLabelList, mockIssue, mockIssueFullPath } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -34,7 +37,7 @@ describe('Board card component', () => {
   let list;
   let store;
 
-  const findBoardBlockedIcon = () => wrapper.find(BoardBlockedIcon);
+  const findBoardBlockedIcon = () => wrapper.findComponent(BoardBlockedIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEpicCountablesTotalTooltip = () => wrapper.findComponent(GlTooltip);
   const findEpicCountables = () => wrapper.findByTestId('epic-countables');
@@ -45,9 +48,14 @@ describe('Board card component', () => {
   const findEpicProgressTooltip = () => wrapper.findByTestId('epic-progress-tooltip-content');
   const findHiddenIssueIcon = () => wrapper.findByTestId('hidden-icon');
 
+  const performSearchMock = jest.fn();
+
   const createStore = ({ isEpicBoard = false, isProjectBoard = false } = {}) => {
     store = new Vuex.Store({
       ...defaultStore,
+      actions: {
+        performSearch: performSearchMock,
+      },
       state: {
         ...defaultStore.state,
         issuableType: issuableTypes.issue,
@@ -70,7 +78,6 @@ describe('Board card component', () => {
         ...props,
       },
       stubs: {
-        GlLabel: true,
         GlLoadingIcon: true,
       },
       directives: {
@@ -179,7 +186,7 @@ describe('Board card component', () => {
 
   describe('confidential issue', () => {
     beforeEach(() => {
-      wrapper.setProps({
+      createWrapper({
         item: {
           ...wrapper.props('item'),
           confidential: true,
@@ -194,7 +201,7 @@ describe('Board card component', () => {
 
   describe('hidden issue', () => {
     beforeEach(() => {
-      wrapper.setProps({
+      createWrapper({
         item: {
           ...wrapper.props('item'),
           hidden: true,
@@ -219,7 +226,7 @@ describe('Board card component', () => {
   describe('with assignee', () => {
     describe('with avatar', () => {
       beforeEach(() => {
-        wrapper.setProps({
+        createWrapper({
           item: {
             ...wrapper.props('item'),
             assignees: [user],
@@ -272,7 +279,7 @@ describe('Board card component', () => {
       beforeEach(() => {
         global.gon.default_avatar_url = 'default_avatar';
 
-        wrapper.setProps({
+        createWrapper({
           item: {
             ...wrapper.props('item'),
             assignees: [
@@ -301,7 +308,7 @@ describe('Board card component', () => {
 
   describe('multiple assignees', () => {
     beforeEach(() => {
-      wrapper.setProps({
+      createWrapper({
         item: {
           ...wrapper.props('item'),
           assignees: [
@@ -342,7 +349,7 @@ describe('Board card component', () => {
           avatarUrl: 'test_image',
         });
 
-        wrapper.setProps({
+        createWrapper({
           item: {
             ...wrapper.props('item'),
             assignees,
@@ -368,7 +375,7 @@ describe('Board card component', () => {
             avatarUrl: 'test_image',
           })),
         ];
-        wrapper.setProps({
+        createWrapper({
           item: {
             ...wrapper.props('item'),
             assignees,
@@ -384,31 +391,74 @@ describe('Board card component', () => {
 
   describe('labels', () => {
     beforeEach(() => {
-      wrapper.setProps({ item: { ...issue, labels: [list.label, label1] } });
+      createWrapper({ item: { ...issue, labels: [list.label, label1] } });
     });
 
     it('does not render list label but renders all other labels', () => {
-      expect(wrapper.findAll(GlLabel).length).toBe(1);
-      const label = wrapper.find(GlLabel);
+      expect(wrapper.findAllComponents(GlLabel).length).toBe(1);
+      const label = wrapper.findComponent(GlLabel);
       expect(label.props('title')).toEqual(label1.title);
       expect(label.props('description')).toEqual(label1.description);
       expect(label.props('backgroundColor')).toEqual(label1.color);
     });
 
     it('does not render label if label does not have an ID', async () => {
-      wrapper.setProps({ item: { ...issue, labels: [label1, { title: 'closed' }] } });
+      createWrapper({ item: { ...issue, labels: [label1, { title: 'closed' }] } });
 
       await nextTick();
 
-      expect(wrapper.findAll(GlLabel).length).toBe(1);
+      expect(wrapper.findAllComponents(GlLabel).length).toBe(1);
       expect(wrapper.text()).not.toContain('closed');
     });
+  });
 
-    describe('when label params arent set', () => {
-      it('passes the right target to GlLabel', () => {
-        expect(wrapper.findAll(GlLabel).at(0).props('target')).toEqual(
-          '?label_name[]=testing%20123',
-        );
+  describe('filterByLabel method', () => {
+    beforeEach(() => {
+      createWrapper({
+        item: {
+          ...issue,
+          labels: [label1],
+        },
+        updateFilters: true,
+      });
+    });
+
+    describe('when selected label is not in the filter', () => {
+      beforeEach(() => {
+        setWindowLocation('?');
+        wrapper.findComponent(GlLabel).vm.$emit('click', label1);
+      });
+
+      it('calls updateHistory', () => {
+        expect(updateHistory).toHaveBeenCalledTimes(1);
+      });
+
+      it('dispatches performSearch vuex action', () => {
+        expect(performSearchMock).toHaveBeenCalledTimes(1);
+      });
+
+      it('emits updateTokens event', () => {
+        expect(eventHub.$emit).toHaveBeenCalledTimes(1);
+        expect(eventHub.$emit).toHaveBeenCalledWith('updateTokens');
+      });
+    });
+
+    describe('when selected label is already in the filter', () => {
+      beforeEach(() => {
+        setWindowLocation('?label_name[]=testing%20123');
+        wrapper.findComponent(GlLabel).vm.$emit('click', label1);
+      });
+
+      it('does not call updateHistory', () => {
+        expect(updateHistory).not.toHaveBeenCalled();
+      });
+
+      it('does not dispatch performSearch vuex action', () => {
+        expect(performSearchMock).not.toHaveBeenCalled();
+      });
+
+      it('does not emit updateTokens event', () => {
+        expect(eventHub.$emit).not.toHaveBeenCalled();
       });
     });
   });
