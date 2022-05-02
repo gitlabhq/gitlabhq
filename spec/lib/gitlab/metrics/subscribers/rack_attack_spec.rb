@@ -91,72 +91,110 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
       end
     end
 
-    context 'when matched throttle requires user information' do
-      context 'when user not found' do
-        let(:event) do
-          ActiveSupport::Notifications::Event.new(
-            event_name, Time.current, Time.current + 2.seconds, '1', request: double(
-              :request,
-              ip: '1.2.3.4',
-              request_method: 'GET',
-              fullpath: '/api/v4/internal/authorized_keys',
-              env: {
-                'rack.attack.match_type' => match_type,
-                'rack.attack.matched' => 'throttle_authenticated_api',
-                'rack.attack.match_discriminator' => 'not_exist_user_id'
-              }
+    context 'matching user or deploy token authenticated information' do
+      context 'when matching for user' do
+        context 'when user not found' do
+          let(:event) do
+            ActiveSupport::Notifications::Event.new(
+              event_name, Time.current, Time.current + 2.seconds, '1', request: double(
+                :request,
+                ip: '1.2.3.4',
+                request_method: 'GET',
+                fullpath: '/api/v4/internal/authorized_keys',
+                env: {
+                  'rack.attack.match_type' => match_type,
+                  'rack.attack.matched' => 'throttle_authenticated_api',
+                  'rack.attack.match_discriminator' => "user:#{non_existing_record_id}"
+                }
+              )
             )
-          )
+          end
+
+          it 'logs request information and user id' do
+            expect(Gitlab::AuthLogger).to receive(:error).with(
+              include(
+                message: 'Rack_Attack',
+                env: match_type,
+                remote_ip: '1.2.3.4',
+                request_method: 'GET',
+                path: '/api/v4/internal/authorized_keys',
+                matched: 'throttle_authenticated_api',
+                user_id: non_existing_record_id
+              )
+            )
+            subscriber.send(match_type, event)
+          end
         end
 
-        it 'logs request information and user id' do
-          expect(Gitlab::AuthLogger).to receive(:error).with(
-            include(
-              message: 'Rack_Attack',
-              env: match_type,
-              remote_ip: '1.2.3.4',
-              request_method: 'GET',
-              path: '/api/v4/internal/authorized_keys',
-              matched: 'throttle_authenticated_api',
-              user_id: 'not_exist_user_id'
+        context 'when user found' do
+          let(:user) { create(:user) }
+          let(:event) do
+            ActiveSupport::Notifications::Event.new(
+              event_name, Time.current, Time.current + 2.seconds, '1', request: double(
+                :request,
+                ip: '1.2.3.4',
+                request_method: 'GET',
+                fullpath: '/api/v4/internal/authorized_keys',
+                env: {
+                  'rack.attack.match_type' => match_type,
+                  'rack.attack.matched' => 'throttle_authenticated_api',
+                  'rack.attack.match_discriminator' => "user:#{user.id}"
+                }
+              )
             )
-          )
-          subscriber.send(match_type, event)
+          end
+
+          it 'logs request information and user meta' do
+            expect(Gitlab::AuthLogger).to receive(:error).with(
+              include(
+                message: 'Rack_Attack',
+                env: match_type,
+                remote_ip: '1.2.3.4',
+                request_method: 'GET',
+                path: '/api/v4/internal/authorized_keys',
+                matched: 'throttle_authenticated_api',
+                user_id: user.id,
+                'meta.user' => user.username
+              )
+            )
+            subscriber.send(match_type, event)
+          end
         end
       end
 
-      context 'when user found' do
-        let(:user) { create(:user) }
-        let(:event) do
-          ActiveSupport::Notifications::Event.new(
-            event_name, Time.current, Time.current + 2.seconds, '1', request: double(
-              :request,
-              ip: '1.2.3.4',
-              request_method: 'GET',
-              fullpath: '/api/v4/internal/authorized_keys',
-              env: {
-                'rack.attack.match_type' => match_type,
-                'rack.attack.matched' => 'throttle_authenticated_api',
-                'rack.attack.match_discriminator' => user.id
-              }
+      context 'when matching for deploy token' do
+        context 'when deploy token found' do
+          let(:deploy_token) { create(:deploy_token) }
+          let(:event) do
+            ActiveSupport::Notifications::Event.new(
+              event_name, Time.current, Time.current + 2.seconds, '1', request: double(
+                :request,
+                ip: '1.2.3.4',
+                request_method: 'GET',
+                fullpath: '/api/v4/internal/authorized_keys',
+                env: {
+                  'rack.attack.match_type' => match_type,
+                  'rack.attack.matched' => 'throttle_authenticated_api',
+                  'rack.attack.match_discriminator' => "deploy_token:#{deploy_token.id}"
+                }
+              )
             )
-          )
-        end
+          end
 
-        it 'logs request information and user meta' do
-          expect(Gitlab::AuthLogger).to receive(:error).with(
-            include(
-              message: 'Rack_Attack',
-              env: match_type,
-              remote_ip: '1.2.3.4',
-              request_method: 'GET',
-              path: '/api/v4/internal/authorized_keys',
-              matched: 'throttle_authenticated_api',
-              user_id: user.id,
-              'meta.user' => user.username
+          it 'logs request information and user meta' do
+            expect(Gitlab::AuthLogger).to receive(:error).with(
+              include(
+                message: 'Rack_Attack',
+                env: match_type,
+                remote_ip: '1.2.3.4',
+                request_method: 'GET',
+                path: '/api/v4/internal/authorized_keys',
+                matched: 'throttle_authenticated_api',
+                deploy_token_id: deploy_token.id
+              )
             )
-          )
-          subscriber.send(match_type, event)
+            subscriber.send(match_type, event)
+          end
         end
       end
     end

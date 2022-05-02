@@ -990,4 +990,19 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('../../../../../1.2.3') }
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
+
+  describe '.sha256_regex' do
+    subject { described_class.sha256_regex }
+
+    it { is_expected.to match('a' * 64) }
+    it { is_expected.to match('abcdefABCDEF1234567890abcdefABCDEF1234567890abcdefABCDEF12345678') }
+    it { is_expected.not_to match('a' * 63) }
+    it { is_expected.not_to match('a' * 65) }
+    it { is_expected.not_to match('a' * 63 + 'g') }
+    it { is_expected.not_to match('a' * 63 + '{') }
+    it { is_expected.not_to match('a' * 63 + '%') }
+    it { is_expected.not_to match('a' * 63 + '*') }
+    it { is_expected.not_to match('a' * 63 + '#') }
+    it { is_expected.not_to match('') }
+  end
 end

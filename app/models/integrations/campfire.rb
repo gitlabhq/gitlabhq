@@ -27,11 +27,13 @@ module Integrations
     def fields
       [
         {
-          type: 'text',
+          type: 'password',
           name: 'token',
           title: _('Campfire token'),
-          placeholder: '',
           help: s_('CampfireService|API authentication token from Campfire.'),
+          non_empty_password_title: s_('ProjectService|Enter new token'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
+          placeholder: '',
           required: true
         },
         {

@@ -237,6 +237,10 @@ module Gitlab
         generic_package_name_regex
       end
 
+      def sha256_regex
+        @sha256_regex ||= /\A[0-9a-f]{64}\z/i.freeze
+      end
+
       private
 
       def conan_name_regex

@@ -174,7 +174,7 @@ module API
           requires :name, type: String
           requires :version, type: String
           optional :md5_digest, type: String
-          optional :sha256_digest, type: String
+          optional :sha256_digest, type: String, regexp: Gitlab::Regex.sha256_regex
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth

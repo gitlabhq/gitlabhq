@@ -401,4 +401,22 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       expect(created_object.value).to be_nil
     end
   end
+
+  context 'merge request access level object' do
+    let(:relation_sym) { :'ProtectedBranch::MergeAccessLevel' }
+    let(:relation_hash) { { 'access_level' => 30, 'created_at' => '2022-03-29T09:53:13.457Z', 'updated_at' => '2022-03-29T09:54:13.457Z' } }
+
+    it 'sets access level to maintainer' do
+      expect(created_object.access_level).to equal(Gitlab::Access::MAINTAINER)
+    end
+  end
+
+  context 'push access level object' do
+    let(:relation_sym) { :'ProtectedBranch::PushAccessLevel' }
+    let(:relation_hash) { { 'access_level' => 30, 'created_at' => '2022-03-29T09:53:13.457Z', 'updated_at' => '2022-03-29T09:54:13.457Z' } }
+
+    it 'sets access level to maintainer' do
+      expect(created_object.access_level).to equal(Gitlab::Access::MAINTAINER)
+    end
+  end
 end

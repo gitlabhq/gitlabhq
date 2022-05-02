@@ -26,7 +26,15 @@ module Integrations
 
     def fields
       [
-        { type: 'text', name: 'token', placeholder: s_('FlowdockService|1b609b52537...'), required: true, help: 'Enter your Flowdock token.' }
+        {
+          type: 'password',
+          name: 'token',
+          help: s_('FlowdockService|Enter your Flowdock token.'),
+          non_empty_password_title: s_('ProjectService|Enter new token'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
+          placeholder: '1b609b52537...',
+          required: true
+        }
       ]
     end
 

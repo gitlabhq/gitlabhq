@@ -638,7 +638,6 @@ included_attributes:
     - :build_allow_git_fetch
     - :build_coverage_regex
     - :build_timeout
-    - :ci_config_path
     - :delete_error
     - :description
     - :disable_overriding_approvers_per_merge_request

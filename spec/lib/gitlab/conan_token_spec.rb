@@ -25,13 +25,17 @@ RSpec.describe Gitlab::ConanToken do
   end
 
   describe '.from_personal_access_token' do
-    it 'sets access token id and user id' do
-      access_token = double(id: 123, user_id: 456)
+    it 'sets access token and user id and does not use the token id' do
+      personal_access_token = double(id: 999, token: 123, user_id: 456)
 
-      token = described_class.from_personal_access_token(access_token)
+      token = described_class.from_personal_access_token(
+        personal_access_token.user_id,
+        personal_access_token.token
+      )
 
-      expect(token.access_token_id).to eq(123)
-      expect(token.user_id).to eq(456)
+      expect(token.access_token_id).not_to eq(personal_access_token.id)
+      expect(token.access_token_id).to eq(personal_access_token.token)
+      expect(token.user_id).to eq(personal_access_token.user_id)
     end
   end
 

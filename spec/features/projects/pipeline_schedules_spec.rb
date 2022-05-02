@@ -9,7 +9,77 @@ RSpec.describe 'Pipeline Schedules', :js do
   let(:scope) { nil }
   let!(:user) { create(:user) }
 
-  context 'logged in as maintainer' do
+  context 'logged in as the pipeline scheduler owner' do
+    before do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
+      project.add_developer(user)
+      pipeline_schedule.update!(owner: user)
+      gitlab_sign_in(user)
+    end
+
+    describe 'GET /projects/pipeline_schedules' do
+      before do
+        visit_pipelines_schedules
+      end
+
+      it 'edits the pipeline' do
+        page.within('.pipeline-schedule-table-row') do
+          click_link 'Edit'
+        end
+
+        expect(page).to have_content('Edit Pipeline Schedule')
+      end
+    end
+
+    describe 'PATCH /projects/pipelines_schedules/:id/edit' do
+      before do
+        edit_pipeline_schedule
+      end
+
+      it 'displays existing properties' do
+        description = find_field('schedule_description').value
+        expect(description).to eq('pipeline schedule')
+        expect(page).to have_button('master')
+        expect(page).to have_button('UTC')
+      end
+
+      it 'edits the scheduled pipeline' do
+        fill_in 'schedule_description', with: 'my brand new description'
+
+        save_pipeline_schedule
+
+        expect(page).to have_content('my brand new description')
+      end
+
+      context 'when ref is nil' do
+        before do
+          pipeline_schedule.update_attribute(:ref, nil)
+          edit_pipeline_schedule
+        end
+
+        it 'shows the pipeline schedule with default ref' do
+          page.within('.js-target-branch-dropdown') do
+            expect(first('.dropdown-toggle-text').text).to eq('master')
+          end
+        end
+      end
+
+      context 'when ref is empty' do
+        before do
+          pipeline_schedule.update_attribute(:ref, '')
+          edit_pipeline_schedule
+        end
+
+        it 'shows the pipeline schedule with default ref' do
+          page.within('.js-target-branch-dropdown') do
+            expect(first('.dropdown-toggle-text').text).to eq('master')
+          end
+        end
+      end
+    end
+  end
+
+  context 'logged in as a project maintainer' do
     before do
       stub_feature_flags(bootstrap_confirmation_modals: false)
       project.add_maintainer(user)
@@ -44,14 +114,6 @@ RSpec.describe 'Pipeline Schedules', :js do
             expect(page).not_to have_content('No owner')
             expect(page).to have_link('Sidney Jones')
           end
-        end
-
-        it 'edits the pipeline' do
-          page.within('.pipeline-schedule-table-row') do
-            click_link 'Edit'
-          end
-
-          expect(page).to have_content('Edit Pipeline Schedule')
         end
 
         it 'deletes the pipeline' do
@@ -105,53 +167,6 @@ RSpec.describe 'Pipeline Schedules', :js do
         save_pipeline_schedule
 
         expect(page).to have_content('This field is required')
-      end
-    end
-
-    describe 'PATCH /projects/pipelines_schedules/:id/edit' do
-      before do
-        edit_pipeline_schedule
-      end
-
-      it 'displays existing properties' do
-        description = find_field('schedule_description').value
-        expect(description).to eq('pipeline schedule')
-        expect(page).to have_button('master')
-        expect(page).to have_button('UTC')
-      end
-
-      it 'edits the scheduled pipeline' do
-        fill_in 'schedule_description', with: 'my brand new description'
-
-        save_pipeline_schedule
-
-        expect(page).to have_content('my brand new description')
-      end
-
-      context 'when ref is nil' do
-        before do
-          pipeline_schedule.update_attribute(:ref, nil)
-          edit_pipeline_schedule
-        end
-
-        it 'shows the pipeline schedule with default ref' do
-          page.within('.js-target-branch-dropdown') do
-            expect(first('.dropdown-toggle-text').text).to eq('master')
-          end
-        end
-      end
-
-      context 'when ref is empty' do
-        before do
-          pipeline_schedule.update_attribute(:ref, '')
-          edit_pipeline_schedule
-        end
-
-        it 'shows the pipeline schedule with default ref' do
-          page.within('.js-target-branch-dropdown') do
-            expect(first('.dropdown-toggle-text').text).to eq('master')
-          end
-        end
       end
     end
 

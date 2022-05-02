@@ -291,10 +291,32 @@ RSpec.describe API::Ci::PipelineSchedules do
     end
 
     context 'authenticated user with invalid permissions' do
-      it 'does not update pipeline_schedule' do
-        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+      context 'as a project maintainer' do
+        before do
+          project.add_maintainer(user)
+        end
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        it 'does not update pipeline_schedule' do
+          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'as a project owner' do
+        it 'does not update pipeline_schedule' do
+          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", project.owner)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with no special role' do
+        it 'does not update pipeline_schedule' do
+          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
@@ -312,16 +334,21 @@ RSpec.describe API::Ci::PipelineSchedules do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
-    context 'authenticated user with valid permissions' do
+    let(:project_maintainer) do
+      create(:user).tap { |u| project.add_maintainer(u) }
+    end
+
+    context 'as an authenticated user with valid permissions' do
       it 'updates owner' do
-        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", developer)
+        expect { post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", project_maintainer) }
+          .to change { pipeline_schedule.reload.owner }.from(developer).to(project_maintainer)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('pipeline_schedule')
       end
     end
 
-    context 'authenticated user with invalid permissions' do
+    context 'as an authenticated user with invalid permissions' do
       it 'does not update owner' do
         post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", user)
 
@@ -329,11 +356,21 @@ RSpec.describe API::Ci::PipelineSchedules do
       end
     end
 
-    context 'unauthenticated user' do
+    context 'as an unauthenticated user' do
       it 'does not update owner' do
         post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership")
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'as the existing owner of the schedule' do
+      it 'rejects the request and leaves the schedule unchanged' do
+        expect do
+          post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", developer)
+        end.not_to change { pipeline_schedule.reload.owner }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

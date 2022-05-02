@@ -104,7 +104,7 @@ class ProjectFeature < ApplicationRecord
   # that the user has access to the feature. It's important to use this scope with others
   # that checks project authorizations first (e.g. `filter_by_feature_visibility`).
   #
-  # This method uses an optimised version of `with_feature_access_level` for
+  # This method uses an optimized version of `with_feature_access_level` for
   # logged in users to more efficiently get private projects with the given
   # feature.
   def self.with_feature_available_for_user(feature, user)

@@ -29,10 +29,12 @@ module Integrations
     def fields
       [
         {
-          type: 'text',
+          type: 'password',
           name: 'api_key',
           title: 'API key',
           help: s_('AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user.'),
+          non_empty_password_title: s_('ProjectService|Enter new API key'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current API key.'),
           # Example Personal Access Token from Asana docs
           placeholder: '0/68a9e79b868c6789e79a124c30b0',
           required: true

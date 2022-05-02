@@ -44,6 +44,38 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
     end
   end
 
+  describe '#find_authenticated_requester' do
+    let_it_be(:api_user) { create(:user) }
+    let_it_be(:deploy_token_user) { create(:user) }
+
+    it 'returns the deploy token if it exists' do
+      allow_next_instance_of(described_class) do |authenticator|
+        expect(authenticator).to receive(:deploy_token_from_request).and_return(deploy_token_user)
+        allow(authenticator).to receive(:user).and_return(nil)
+      end
+
+      expect(subject.find_authenticated_requester([:api])).to eq deploy_token_user
+    end
+
+    it 'returns the user id if it exists' do
+      allow_next_instance_of(described_class) do |authenticator|
+        allow(authenticator).to receive(:deploy_token_from_request).and_return(deploy_token_user)
+        expect(authenticator).to receive(:user).and_return(api_user)
+      end
+
+      expect(subject.find_authenticated_requester([:api])).to eq api_user
+    end
+
+    it 'rerturns nil if no match is found' do
+      allow_next_instance_of(described_class) do |authenticator|
+        expect(authenticator).to receive(:deploy_token_from_request).and_return(nil)
+        expect(authenticator).to receive(:user).and_return(nil)
+      end
+
+      expect(subject.find_authenticated_requester([:api])).to eq nil
+    end
+  end
+
   describe '#find_sessionless_user' do
     let_it_be(:dependency_proxy_user) { build(:user) }
     let_it_be(:access_token_user) { build(:user) }
@@ -348,10 +380,10 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
   describe '#route_authentication_setting' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:script_name, :expected_job_token_allowed, :expected_basic_auth_personal_access_token) do
-      '/api/endpoint'          | true  | true
-      '/namespace/project.git' | false | true
-      '/web/endpoint'          | false | false
+    where(:script_name, :expected_job_token_allowed, :expected_basic_auth_personal_access_token, :expected_deploy_token_allowed) do
+      '/api/endpoint'          | true  | true  | true
+      '/namespace/project.git' | false | true  | true
+      '/web/endpoint'          | false | false | false
     end
 
     with_them do
@@ -362,7 +394,8 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
       it 'returns correct settings' do
         expect(subject.send(:route_authentication_setting)).to eql({
           job_token_allowed: expected_job_token_allowed,
-          basic_auth_personal_access_token: expected_basic_auth_personal_access_token
+          basic_auth_personal_access_token: expected_basic_auth_personal_access_token,
+          deploy_token_allowed: expected_deploy_token_allowed
         })
       end
     end
