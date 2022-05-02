@@ -44,8 +44,10 @@ RSpec.shared_examples 'a controller that can serve LFS files' do |options = {}|
         expect(controller).to receive(:send_file)
                           .with(
                             File.join(lfs_uploader.root, lfs_uploader.store_dir, lfs_uploader.filename),
-                            filename: filename,
-                            disposition: 'attachment')
+                            {
+                              filename: filename,
+                              disposition: 'attachment'
+                            })
 
         subject
 

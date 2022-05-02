@@ -1399,14 +1399,6 @@ RSpec.describe API::Releases do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
-
-      it 'returns not found unless :group_releases_finder_inoperator feature flag enabled' do
-        stub_feature_flags(group_releases_finder_inoperator: false)
-
-        get api("/groups/#{group1.id}/releases", admin)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
     end
 
     context 'when authenticated as guest' do

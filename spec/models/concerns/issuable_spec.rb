@@ -474,11 +474,11 @@ RSpec.describe Issuable do
         issue.update!(labels: [label])
         issue.assignees << user
         issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.current)
-        expect(Gitlab::HookData::IssuableBuilder)
+        expect(Gitlab::DataBuilder::Issuable)
           .to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::HookData::IssuableBuilder#build and does not set labels, assignees, nor total_time_spent' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build and does not set labels, assignees, nor total_time_spent' do
         expect(builder).to receive(:build).with(
           user: user,
           changes: {})
@@ -493,11 +493,11 @@ RSpec.describe Issuable do
 
       before do
         issue.update!(labels: [labels[1]])
-        expect(Gitlab::HookData::IssuableBuilder)
+        expect(Gitlab::DataBuilder::Issuable)
           .to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
@@ -512,11 +512,11 @@ RSpec.describe Issuable do
       before do
         issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.current)
         issue.save!
-        expect(Gitlab::HookData::IssuableBuilder)
+        expect(Gitlab::DataBuilder::Issuable)
           .to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
@@ -532,11 +532,11 @@ RSpec.describe Issuable do
 
       before do
         issue.assignees << user << user2
-        expect(Gitlab::HookData::IssuableBuilder)
+        expect(Gitlab::DataBuilder::Issuable)
           .to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
@@ -554,11 +554,11 @@ RSpec.describe Issuable do
       before do
         merge_request.update!(assignees: [user])
         merge_request.update!(assignees: [user, user2])
-        expect(Gitlab::HookData::IssuableBuilder)
+        expect(Gitlab::DataBuilder::Issuable)
           .to receive(:new).with(merge_request).and_return(builder)
       end
 
-      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
@@ -574,11 +574,11 @@ RSpec.describe Issuable do
 
       before do
         issue.update!(issuable_severity_attributes: { severity: 'low' })
-        expect(Gitlab::HookData::IssuableBuilder)
+        expect(Gitlab::DataBuilder::Issuable)
           .to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
@@ -596,10 +596,10 @@ RSpec.describe Issuable do
       before do
         issue.escalation_status.update!(status: acknowledged)
 
-        expect(Gitlab::HookData::IssuableBuilder).to receive(:new).with(issue).and_return(builder)
+        expect(Gitlab::DataBuilder::Issuable).to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(

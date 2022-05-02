@@ -181,29 +181,6 @@ Fields related to Instance Security Dashboard.
 
 Returns [`InstanceSecurityDashboard`](#instancesecuritydashboard).
 
-### `Query.instanceStatisticsMeasurements`
-
-Get statistics on the instance.
-
-WARNING:
-**Deprecated** in 13.10.
-This was renamed.
-Use: [`Query.usageTrendsMeasurements`](#queryusagetrendsmeasurements).
-
-Returns [`UsageTrendsMeasurementConnection`](#usagetrendsmeasurementconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="queryinstancestatisticsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | Type of measurement or statistics to retrieve. |
-| <a id="queryinstancestatisticsmeasurementsrecordedafter"></a>`recordedAfter` | [`Time`](#time) | Measurement recorded after this date. |
-| <a id="queryinstancestatisticsmeasurementsrecordedbefore"></a>`recordedBefore` | [`Time`](#time) | Measurement recorded before this date. |
-
 ### `Query.issue`
 
 Find an issue.
@@ -11578,6 +11555,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupissuesconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
 | <a id="groupissuescreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
 | <a id="groupissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="groupissuescrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
+| <a id="groupissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="groupissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="groupissuesiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
 | <a id="groupissuesiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |
@@ -13933,7 +13912,6 @@ Represents a package in the Package Registry. Note that this type is in beta and
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packageupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 | <a id="packageversion"></a>`version` | [`String`](#string) | Version string. |
-| <a id="packageversions"></a>`versions` **{warning-solid}** | [`PackageConnection`](#packageconnection) | **Deprecated** in 13.11. This field is now only returned in the PackageDetailsType. |
 
 ### `PackageComposerJsonType`
 
@@ -14814,6 +14792,8 @@ Returns [`Issue`](#issue).
 | <a id="projectissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
 | <a id="projectissuecreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
 | <a id="projectissuecreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="projectissuecrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
+| <a id="projectissuecrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="projectissueepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="projectissueiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
 | <a id="projectissueiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |
@@ -14854,6 +14834,8 @@ Returns [`IssueStatusCountsType`](#issuestatuscountstype).
 | <a id="projectissuestatuscountsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
 | <a id="projectissuestatuscountscreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
 | <a id="projectissuestatuscountscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="projectissuestatuscountscrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
+| <a id="projectissuestatuscountscrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="projectissuestatuscountsiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
 | <a id="projectissuestatuscountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |
 | <a id="projectissuestatuscountslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
@@ -14891,6 +14873,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectissuesconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
 | <a id="projectissuescreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
 | <a id="projectissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="projectissuescrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
+| <a id="projectissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="projectissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="projectissuesiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
 | <a id="projectissuesiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |

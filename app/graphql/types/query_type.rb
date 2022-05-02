@@ -99,17 +99,6 @@ module Types
             argument :id, ::Types::GlobalIDType[::MergeRequest], required: true, description: 'Global ID of the merge request.'
           end
 
-    field :instance_statistics_measurements,
-          type: Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,
-          null: true,
-          description: 'Get statistics on the instance.',
-          resolver: Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver,
-          deprecated: {
-            reason: :renamed,
-            replacement: 'Query.usageTrendsMeasurements',
-            milestone: '13.10'
-          }
-
     field :usage_trends_measurements, Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,
           null: true,
           description: 'Get statistics on the instance.',

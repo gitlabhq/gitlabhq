@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Metrics::Methods do
 
         context 'metric is not cached' do
           it 'calls fetch_metric' do
-            expect(subject).to receive(:init_metric).with(metric_type, metric_name, docstring: docstring)
+            expect(subject).to receive(:init_metric).with(metric_type, metric_name, { docstring: docstring })
 
             subject.public_send(metric_name)
           end

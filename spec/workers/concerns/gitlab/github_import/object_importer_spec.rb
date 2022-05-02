@@ -83,19 +83,23 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          github_identifiers: github_identifiers,
-          message: 'starting importer',
-          project_id: project.id,
-          importer: 'klass_name'
+          {
+            github_identifiers: github_identifiers,
+            message: 'starting importer',
+            project_id: project.id,
+            importer: 'klass_name'
+          }
         )
 
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          github_identifiers: github_identifiers,
-          message: 'importer finished',
-          project_id: project.id,
-          importer: 'klass_name'
+          {
+            github_identifiers: github_identifiers,
+            message: 'importer finished',
+            project_id: project.id,
+            importer: 'klass_name'
+          }
         )
 
       worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
@@ -120,10 +124,12 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          github_identifiers: github_identifiers,
-          message: 'starting importer',
-          project_id: project.id,
-          importer: 'klass_name'
+          {
+            github_identifiers: github_identifiers,
+            message: 'starting importer',
+            project_id: project.id,
+            importer: 'klass_name'
+          }
         )
 
       expect(Gitlab::Import::ImportFailureService)

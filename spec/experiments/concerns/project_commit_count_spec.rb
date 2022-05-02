@@ -33,7 +33,7 @@ RSpec.describe ProjectCommitCount do
       allow(Gitlab::GitalyClient).to receive(:call).and_call_original
       allow(Gitlab::GitalyClient).to receive(:call).with(anything, :commit_service, :count_commits, anything, anything).and_raise(e = StandardError.new('_message_'))
 
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(e, caller_info: :identifiable)
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(e, { caller_info: :identifiable })
 
       expect(subject).to eq(42)
     end

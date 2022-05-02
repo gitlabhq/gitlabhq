@@ -5335,7 +5335,7 @@ RSpec.describe User do
     let(:deleted_by) { create(:user) }
 
     it 'blocks the user then schedules them for deletion if a hard delete is specified' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, hard_delete: true)
+      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, { hard_delete: true })
 
       user.delete_async(deleted_by: deleted_by, params: { hard_delete: true })
 

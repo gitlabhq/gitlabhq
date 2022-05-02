@@ -8,7 +8,7 @@ RSpec.describe GitlabSchema.types['Package'] do
       id name version package_type
       created_at updated_at
       project
-      tags pipelines metadata versions
+      tags pipelines metadata
       status can_destroy
     ]
 

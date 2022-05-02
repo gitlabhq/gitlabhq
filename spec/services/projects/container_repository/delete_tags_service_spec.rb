@@ -18,11 +18,13 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
   shared_examples 'logging a success response' do
     it 'logs an info message' do
       expect(service).to receive(:log_info).with(
-        service_class: 'Projects::ContainerRepository::DeleteTagsService',
-        message: 'deleted tags',
-        container_repository_id: repository.id,
-        project_id: repository.project_id,
-        deleted_tags_count: tags.size
+        {
+          service_class: 'Projects::ContainerRepository::DeleteTagsService',
+          message: 'deleted tags',
+          container_repository_id: repository.id,
+          project_id: repository.project_id,
+          deleted_tags_count: tags.size
+        }
       )
 
       subject

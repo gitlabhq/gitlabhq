@@ -21,40 +21,40 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
                   .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
 
           expect(completion_seconds_metric)
-            .to receive(:get).with(queue: 'merge',
+            .to receive(:get).with({ queue: 'merge',
                                    worker: 'MergeWorker',
                                    urgency: 'high',
                                    external_dependencies: 'no',
                                    feature_category: 'source_code_management',
                                    boundary: '',
-                                   job_status: 'done')
+                                   job_status: 'done' })
 
           expect(completion_seconds_metric)
-            .to receive(:get).with(queue: 'merge',
+            .to receive(:get).with({ queue: 'merge',
                                    worker: 'MergeWorker',
                                    urgency: 'high',
                                    external_dependencies: 'no',
                                    feature_category: 'source_code_management',
                                    boundary: '',
-                                   job_status: 'fail')
+                                   job_status: 'fail' })
 
           expect(completion_seconds_metric)
-            .to receive(:get).with(queue: 'default',
+            .to receive(:get).with({ queue: 'default',
                                    worker: 'Ci::BuildFinishedWorker',
                                    urgency: 'high',
                                    external_dependencies: 'no',
                                    feature_category: 'continuous_integration',
                                    boundary: 'cpu',
-                                   job_status: 'done')
+                                   job_status: 'done' })
 
           expect(completion_seconds_metric)
-            .to receive(:get).with(queue: 'default',
+            .to receive(:get).with({ queue: 'default',
                                    worker: 'Ci::BuildFinishedWorker',
                                    urgency: 'high',
                                    external_dependencies: 'no',
                                    feature_category: 'continuous_integration',
                                    boundary: 'cpu',
-                                   job_status: 'fail')
+                                   job_status: 'fail' })
 
           described_class.initialize_process_metrics
         end

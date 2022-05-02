@@ -11,7 +11,7 @@ RSpec.describe Ci::BuildFinishedWorker do
 
       before do
         stub_feature_flags(ci_build_finished_worker_namespace_changed: build.project)
-        expect(Ci::Build).to receive(:find_by).with(id: build.id).and_return(build)
+        expect(Ci::Build).to receive(:find_by).with({ id: build.id }).and_return(build)
       end
 
       it 'calculates coverage and calls hooks', :aggregate_failures do

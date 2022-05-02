@@ -1049,13 +1049,6 @@ follow the normal directions and generate a self-signed SSL certificate:
    sudo chmod o-r gitlab.key
    ```
 
-WARNING:
-The `self_signed_cert` variable is
-[deprecated and redundant](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/120).
-It is set to `false` by default, but still accepts self-signed certificates. Setting
-this value to `true` allows any certificate to be accepted, and can make
-machine-in-the-middle attacks possible.
-
 ### Enable Reply by email
 
 See the ["Reply by email" documentation](../administration/reply_by_email.md) for more information on how to set this up.

@@ -1833,7 +1833,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       it 'fetches the rollout status from the deployment platform' do
         expect(environment.deployment_platform).to receive(:rollout_status)
-          .with(environment, pods: pods, deployments: deployments)
+          .with(environment, { pods: pods, deployments: deployments })
           .and_return(:mock_rollout_status)
 
         is_expected.to eq(:mock_rollout_status)

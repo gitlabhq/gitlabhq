@@ -27,16 +27,9 @@ module Types
       field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'
       field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
       field :version, GraphQL::Types::String, null: true, description: 'Version string.'
-      field :versions, ::Types::Packages::PackageType.connection_type, null: true,
-        description: 'Other versions of the package.',
-        deprecated: { reason: 'This field is now only returned in the PackageDetailsType', milestone: '13.11' }
 
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
-      end
-
-      def versions
-        []
       end
 
       def can_destroy

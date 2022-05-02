@@ -48,7 +48,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsReviewsImporter do
       expect(client)
         .to receive(:each_page)
         .exactly(:once) # ensure to be cached on the second call
-        .with(:pull_request_reviews, 'github/repo', merge_request.iid, page: 1)
+        .with(:pull_request_reviews, 'github/repo', merge_request.iid, { page: 1 })
         .and_yield(page)
 
       expect { |b| subject.each_object_to_import(&b) }
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsReviewsImporter do
       expect(client)
         .to receive(:each_page)
         .exactly(:once) # ensure to be cached on the second call
-        .with(:pull_request_reviews, 'github/repo', merge_request.iid, page: 2)
+        .with(:pull_request_reviews, 'github/repo', merge_request.iid, { page: 2 })
 
       subject.each_object_to_import {}
     end

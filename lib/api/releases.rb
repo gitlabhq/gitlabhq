@@ -30,8 +30,6 @@ module API
         use :pagination
       end
       get ":id/releases" do
-        not_found! unless Feature.enabled?(:group_releases_finder_inoperator)
-
         finder_options = {
           sort: params[:sort]
         }

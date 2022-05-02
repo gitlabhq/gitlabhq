@@ -26,10 +26,12 @@ RSpec.describe Gitlab::Auth::Ldap::Adapter do
 
     it 'searches with the proper options when searching by dn' do
       expect(adapter).to receive(:ldap_search).with(
-        base: 'uid=johndoe,ou=users,dc=example,dc=com',
-        scope: Net::LDAP::SearchScope_BaseObject,
-        attributes: ldap_attributes,
-        filter: nil
+        {
+          base: 'uid=johndoe,ou=users,dc=example,dc=com',
+          scope: Net::LDAP::SearchScope_BaseObject,
+          attributes: ldap_attributes,
+          filter: nil
+        }
       ).and_return({})
 
       adapter.users('dn', 'uid=johndoe,ou=users,dc=example,dc=com')

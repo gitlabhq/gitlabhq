@@ -8,9 +8,9 @@ RSpec.describe Constraints::FeatureConstrainer do
       gate = stub_feature_flag_gate("an object")
 
       expect(Feature).to receive(:enabled?)
-        .with(:feature_name, gate, default_enabled: true)
+        .with(:feature_name, gate, { default_enabled: true })
 
-      described_class.new(:feature_name, gate, default_enabled: true).matches?(double('request'))
+      described_class.new(:feature_name, gate, { default_enabled: true }).matches?(double('request'))
     end
   end
 end

@@ -16,9 +16,9 @@ RSpec.describe DeleteUserWorker do
 
   it "uses symbolized keys" do
     expect_next_instance_of(Users::DestroyService) do |service|
-      expect(service).to receive(:execute).with(user, test: "test")
+      expect(service).to receive(:execute).with(user, { test: "test" })
     end
 
-    described_class.new.perform(current_user.id, user.id, "test" => "test")
+    described_class.new.perform(current_user.id, user.id, { "test" => "test" })
   end
 end

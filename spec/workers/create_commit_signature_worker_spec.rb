@@ -10,8 +10,8 @@ RSpec.describe CreateCommitSignatureWorker do
   let(:x509_commit) { instance_double(Gitlab::X509::Commit) }
 
   before do
-    allow(Project).to receive(:find_by).with(id: project.id).and_return(project)
-    allow(project).to receive(:commits_by).with(oids: commit_shas).and_return(commits)
+    allow(Project).to receive(:find_by).with({ id: project.id }).and_return(project)
+    allow(project).to receive(:commits_by).with({ oids: commit_shas }).and_return(commits)
   end
 
   subject { described_class.new.perform(commit_shas, project.id) }

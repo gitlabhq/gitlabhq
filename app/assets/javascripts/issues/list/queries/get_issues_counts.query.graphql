@@ -14,6 +14,8 @@ query getIssuesCount(
   $releaseTag: [String!]
   $releaseTagWildcardId: ReleaseTagWildcardId
   $types: [IssueType!]
+  $crmContactId: String
+  $crmOrganizationId: String
   $not: NegatedIssueFilterInput
 ) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
@@ -32,6 +34,8 @@ query getIssuesCount(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       types: $types
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
       not: $not
     ) {
       count
@@ -50,6 +54,8 @@ query getIssuesCount(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       types: $types
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
       not: $not
     ) {
       count
@@ -68,6 +74,8 @@ query getIssuesCount(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       types: $types
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
       not: $not
     ) {
       count
@@ -90,6 +98,8 @@ query getIssuesCount(
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
       types: $types
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
       not: $not
     ) {
       count
@@ -109,6 +119,8 @@ query getIssuesCount(
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
       types: $types
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
       not: $not
     ) {
       count
@@ -128,6 +140,8 @@ query getIssuesCount(
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
       types: $types
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
       not: $not
     ) {
       count

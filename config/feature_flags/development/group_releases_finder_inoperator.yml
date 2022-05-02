@@ -1,8 +1,0 @@
----
-name: group_releases_finder_inoperator
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80093
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355463
-milestone: '14.9'
-type: development
-group: group::release
-default_enabled: false

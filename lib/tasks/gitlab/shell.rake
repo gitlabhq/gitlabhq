@@ -21,7 +21,6 @@ namespace :gitlab do
         config = {
           user: Gitlab.config.gitlab.user,
           gitlab_url: gitlab_url,
-          http_settings: { self_signed_cert: false }.stringify_keys,
           auth_file: File.join(user_home, ".ssh", "authorized_keys"),
           log_level: "INFO",
           audit_usernames: false

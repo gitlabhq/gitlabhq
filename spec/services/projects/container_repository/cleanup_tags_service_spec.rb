@@ -429,10 +429,10 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
           end
 
           # We will ping the container registry for all tags *except* for C because it's cached
-          expect(ContainerRegistry::Blob).to receive(:new).with(repository, "digest" => "sha256:configA").and_call_original
-          expect(ContainerRegistry::Blob).to receive(:new).with(repository, "digest" => "sha256:configB").twice.and_call_original
-          expect(ContainerRegistry::Blob).not_to receive(:new).with(repository, "digest" => "sha256:configC")
-          expect(ContainerRegistry::Blob).to receive(:new).with(repository, "digest" => "sha256:configD").and_call_original
+          expect(ContainerRegistry::Blob).to receive(:new).with(repository, { "digest" => "sha256:configA" }).and_call_original
+          expect(ContainerRegistry::Blob).to receive(:new).with(repository, { "digest" => "sha256:configB" }).twice.and_call_original
+          expect(ContainerRegistry::Blob).not_to receive(:new).with(repository, { "digest" => "sha256:configC" })
+          expect(ContainerRegistry::Blob).to receive(:new).with(repository, { "digest" => "sha256:configD" }).and_call_original
 
           expect(subject).to include(cached_tags_count: 1)
         end

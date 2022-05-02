@@ -76,11 +76,13 @@ RSpec.describe AuditEventService do
 
       it 'creates an authentication event' do
         expect(AuthenticationEvent).to receive(:new).with(
-          user: user,
-          user_name: user.name,
-          ip_address: user.current_sign_in_ip,
-          result: AuthenticationEvent.results[:success],
-          provider: 'standard'
+          {
+            user: user,
+            user_name: user.name,
+            ip_address: user.current_sign_in_ip,
+            result: AuthenticationEvent.results[:success],
+            provider: 'standard'
+          }
         ).and_call_original
 
         audit_service.for_authentication.security_event

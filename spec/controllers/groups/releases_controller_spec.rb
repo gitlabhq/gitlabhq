@@ -60,32 +60,6 @@ RSpec.describe Groups::ReleasesController do
         end
       end
 
-      context 'group_releases_finder_inoperator feature flag' do
-        before do
-          sign_in(guest)
-        end
-
-        it 'calls old code when disabled' do
-          stub_feature_flags(group_releases_finder_inoperator: false)
-
-          allow(ReleasesFinder).to receive(:new).and_call_original
-
-          index
-
-          expect(ReleasesFinder).to have_received(:new)
-        end
-
-        it 'calls new code when enabled' do
-          stub_feature_flags(group_releases_finder_inoperator: true)
-
-          allow(Releases::GroupReleasesFinder).to receive(:new).and_call_original
-
-          index
-
-          expect(Releases::GroupReleasesFinder).to have_received(:new)
-        end
-      end
-
       context 'N+1 queries' do
         it 'avoids N+1 database queries' do
           control_count = ActiveRecord::QueryRecorder.new { subject }.count

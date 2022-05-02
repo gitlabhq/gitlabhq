@@ -44,7 +44,7 @@ RSpec.describe Gitlab::GithubImport::MilestoneFinder, :clean_gitlab_redis_cache 
     it 'builds the cache of all project milestones' do
       expect(Gitlab::Cache::Import::Caching)
         .to receive(:write_multiple)
-        .with("github-import/milestone-finder/#{project.id}/1" => milestone.id)
+        .with({ "github-import/milestone-finder/#{project.id}/1" => milestone.id })
         .and_call_original
 
       finder.build_cache

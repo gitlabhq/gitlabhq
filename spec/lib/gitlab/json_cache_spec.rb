@@ -313,9 +313,9 @@ RSpec.describe Gitlab::JsonCache do
 
     it 'passes options the underlying cache implementation' do
       expect(backend).to receive(:write)
-        .with(expanded_key, "true", expires_in: 15.seconds)
+        .with(expanded_key, "true", { expires_in: 15.seconds })
 
-      cache.fetch(key, expires_in: 15.seconds) { true }
+      cache.fetch(key, { expires_in: 15.seconds }) { true }
     end
 
     context 'when the given key does not exist in the cache' do

@@ -129,7 +129,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
             expect(Gitlab::ErrorTracking)
               .to receive(:log_exception)
-              .with(instance_of(http_error), project_id: project.id)
+              .with(instance_of(http_error), { project_id: project.id })
 
             is_expected.to eq(:error)
           end

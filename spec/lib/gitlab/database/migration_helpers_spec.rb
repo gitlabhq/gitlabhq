@@ -1537,10 +1537,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id',
                length: [],
-               order: [])
+               order: []
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1564,10 +1566,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id foobar),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
                length: [],
-               order: [])
+               order: []
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1591,11 +1595,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id',
                length: [],
                order: [],
-               where: 'foo')
+               where: 'foo'
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1619,11 +1625,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id',
                length: [],
                order: [],
-               using: 'foo')
+               using: 'foo'
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1647,11 +1655,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id',
                length: [],
                order: [],
-               opclass: { 'gl_project_id' => 'bar' })
+               opclass: { 'gl_project_id' => 'bar' }
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1660,14 +1670,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     context 'using an index with multiple columns and custom operator classes' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id foobar),
-                       name: 'index_on_issues_project_id_foobar',
-                       using: :gin,
-                       where: nil,
-                       opclasses: { 'project_id' => 'bar', 'foobar' => :gin_trgm_ops },
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+                       {
+                         columns: %w(project_id foobar),
+                         name: 'index_on_issues_project_id_foobar',
+                         using: :gin,
+                         where: nil,
+                         opclasses: { 'project_id' => 'bar', 'foobar' => :gin_trgm_ops },
+                         unique: false,
+                         lengths: [],
+                         orders: []
+                       })
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
@@ -1675,12 +1687,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id foobar),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
                length: [],
                order: [],
                opclass: { 'gl_project_id' => 'bar', 'foobar' => :gin_trgm_ops },
-               using: :gin)
+               using: :gin
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1689,14 +1703,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     context 'using an index with multiple columns and a custom operator class on the non affected column' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id foobar),
-                       name: 'index_on_issues_project_id_foobar',
-                       using: :gin,
-                       where: nil,
-                       opclasses: { 'foobar' => :gin_trgm_ops },
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+                       {
+                         columns: %w(project_id foobar),
+                         name: 'index_on_issues_project_id_foobar',
+                         using: :gin,
+                         where: nil,
+                         opclasses: { 'foobar' => :gin_trgm_ops },
+                         unique: false,
+                         lengths: [],
+                         orders: []
+                       })
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
@@ -1704,12 +1720,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id foobar),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
                length: [],
                order: [],
                opclass: { 'foobar' => :gin_trgm_ops },
-               using: :gin)
+               using: :gin
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end

@@ -65,9 +65,11 @@ RSpec.describe ProjectImportState, type: :model do
 
       expect_next_instance_of(Gitlab::Import::Logger) do |logger|
         expect(logger).to receive(:error).with(
-          error: 'ActiveRecord::ActiveRecordError',
-          message: 'Error setting import status to failed',
-          original_error: error_message
+          {
+            error: 'ActiveRecord::ActiveRecordError',
+            message: 'Error setting import status to failed',
+            original_error: error_message
+          }
         )
       end
 

@@ -119,6 +119,16 @@ In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDeta
 
 To mitigate possible performance problems, we will remove the `versions` field's `pipelines` field in GitLab 15.0. Although you will no longer be able to get all pipelines for all versions of a package, you can still get the pipelines of a single version through the remaining `pipelines` field for that version.
 
+### Removed feature flag PUSH_RULES_SUPERSEDE_CODE_OWNERS
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` has been removed in GitLab 15.0. From now on, push rules will supersede CODEOWNERS. The CODEOWNERS feature is no longer available for access control.
+
 ### Test coverage project CI/CD setting
 
 WARNING:

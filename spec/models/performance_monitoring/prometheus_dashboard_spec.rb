@@ -185,7 +185,7 @@ RSpec.describe PerformanceMonitoring::PrometheusDashboard do
 
     context 'dashboard has been found' do
       it 'uses dashboard finder to find and load dashboard data and returns dashboard instance', :aggregate_failures do
-        expect(Gitlab::Metrics::Dashboard::Finder).to receive(:find).with(project, user, environment: environment, dashboard_path: path).and_return(status: :success, dashboard: json_content)
+        expect(Gitlab::Metrics::Dashboard::Finder).to receive(:find).with(project, user, { environment: environment, dashboard_path: path }).and_return(status: :success, dashboard: json_content)
 
         dashboard_instance = described_class.find_for(project: project, user: user, path: path, options: { environment: environment })
 

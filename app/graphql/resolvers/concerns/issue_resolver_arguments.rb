@@ -68,6 +68,12 @@ module IssueResolverArguments
              description: 'Negated arguments.',
              prepare: ->(negated_args, ctx) { negated_args.to_h },
              required: false
+    argument :crm_contact_id, GraphQL::Types::String,
+             required: false,
+             description: 'ID of a contact assigned to the issues.'
+    argument :crm_organization_id, GraphQL::Types::String,
+             required: false,
+             description: 'ID of an organization assigned to the issues.'
   end
 
   def resolve_with_lookahead(**args)

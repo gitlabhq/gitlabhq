@@ -70,11 +70,13 @@ RSpec.describe MergeRequests::RebaseService do
       it 'logs the error' do
         expect(service).to receive(:log_error).with(exception: exception, message: described_class::REBASE_ERROR, save_message_on_model: true).and_call_original
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception,
-          class: described_class.to_s,
-          merge_request: merge_request_ref,
-          merge_request_id: merge_request.id,
-          message: described_class::REBASE_ERROR,
-          save_message_on_model: true).and_call_original
+          {
+            class: described_class.to_s,
+            merge_request: merge_request_ref,
+            merge_request_id: merge_request.id,
+            message: described_class::REBASE_ERROR,
+            save_message_on_model: true
+          }).and_call_original
 
         service.execute(merge_request)
       end

@@ -38,12 +38,12 @@ RSpec.describe Shard do
 
       expect(described_class)
         .to receive(:find_by)
-        .with(name: 'new_shard')
+        .with({ name: 'new_shard' })
         .and_return(nil, shard_created_by_others)
 
       expect(described_class)
         .to receive(:create)
-        .with(name: 'new_shard')
+        .with({ name: 'new_shard' })
         .and_raise(ActiveRecord::RecordNotUnique, 'fail')
         .once
 

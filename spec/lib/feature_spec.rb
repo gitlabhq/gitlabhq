@@ -67,7 +67,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       expect(Gitlab::ProcessMemoryCache.cache_backend)
         .to receive(:fetch)
         .once
-        .with('flipper/v1/features', expires_in: 1.minute)
+        .with('flipper/v1/features', { expires_in: 1.minute })
         .and_call_original
 
       2.times do
@@ -190,13 +190,13 @@ RSpec.describe Feature, stub_feature_flags: false do
       expect(described_class.send(:l2_cache_backend))
         .to receive(:fetch)
         .once
-        .with(flipper_key, expires_in: 1.hour)
+        .with(flipper_key, { expires_in: 1.hour })
         .and_call_original
 
       expect(described_class.send(:l1_cache_backend))
         .to receive(:fetch)
         .once
-        .with(flipper_key, expires_in: 1.minute)
+        .with(flipper_key, { expires_in: 1.minute })
         .and_call_original
 
       2.times do

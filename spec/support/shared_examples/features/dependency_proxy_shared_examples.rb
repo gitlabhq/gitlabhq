@@ -17,7 +17,7 @@ end
 
 RSpec.shared_examples 'a successful manifest pull' do
   it 'sends a file' do
-    expect(controller).to receive(:send_file).with(manifest.file.path, type: manifest.content_type)
+    expect(controller).to receive(:send_file).with(manifest.file.path, { type: manifest.content_type })
 
     subject
   end

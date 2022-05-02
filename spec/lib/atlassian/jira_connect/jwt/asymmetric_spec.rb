@@ -65,7 +65,8 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric do
       before do
         allow(JWT).to receive(:decode).and_call_original
         allow(JWT).to receive(:decode).with(
-          jwt, anything, true, aud: anything, verify_aud: true, iss: client_key, verify_iss: true, algorithm: 'RS256'
+          jwt, anything, true,
+          { aud: anything, verify_aud: true, iss: client_key, verify_iss: true, algorithm: 'RS256' }
         ).and_raise(JWT::DecodeError)
       end
 

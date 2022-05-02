@@ -73,10 +73,10 @@ RSpec.describe Users::DestroyService do
         allow(user).to receive(:personal_projects).and_return([])
 
         expect_next_instance_of(Snippets::BulkDestroyService) do |bulk_destroy_service|
-          expect(bulk_destroy_service).to receive(:execute).with(hard_delete: true).and_call_original
+          expect(bulk_destroy_service).to receive(:execute).with({ hard_delete: true }).and_call_original
         end
 
-        service.execute(user, hard_delete: true)
+        service.execute(user, { hard_delete: true })
       end
 
       it 'does not delete project snippets that the user is the author of' do

@@ -181,8 +181,10 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             expect(Gitlab::GithubImport::Logger)
               .to receive(:warn)
                     .with(
-                      message: "Validation failed: Line code can't be blank, Line code must be a valid line code, Position is incomplete",
-                      'error.class': 'Gitlab::GithubImport::Importer::DiffNoteImporter::DiffNoteCreationError'
+                      {
+                        message: "Validation failed: Line code can't be blank, Line code must be a valid line code, Position is incomplete",
+                        'error.class': 'Gitlab::GithubImport::Importer::DiffNoteImporter::DiffNoteCreationError'
+                      }
                     )
 
             expect { subject.execute }
@@ -204,8 +206,10 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             expect(Gitlab::GithubImport::Logger)
               .to receive(:warn)
               .with(
-                message: 'Failed to create diff note file',
-                'error.class': 'DiffNote::NoteDiffFileCreationError'
+                {
+                  message: 'Failed to create diff note file',
+                  'error.class': 'DiffNote::NoteDiffFileCreationError'
+                }
               )
 
             expect { subject.execute }

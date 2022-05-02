@@ -20,6 +20,8 @@ query getIssues(
   $releaseTag: [String!]
   $releaseTagWildcardId: ReleaseTagWildcardId
   $types: [IssueType!]
+  $crmContactId: String
+  $crmOrganizationId: String
   $not: NegatedIssueFilterInput
   $beforeCursor: String
   $afterCursor: String
@@ -43,6 +45,8 @@ query getIssues(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       types: $types
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
       not: $not
       before: $beforeCursor
       after: $afterCursor
@@ -76,6 +80,8 @@ query getIssues(
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
       types: $types
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
       not: $not
       before: $beforeCursor
       after: $afterCursor
