@@ -5993,6 +5993,9 @@ msgstr ""
 msgid "BoardNewIssue|Select a project"
 msgstr ""
 
+msgid "BoardScope|%{iterationTitle} iteration in %{iterationCadence}"
+msgstr ""
+
 msgid "BoardScope|An error occurred while getting iterations. Please try again."
 msgstr ""
 

@@ -53,6 +53,8 @@ module QA
           return unless issue_link
           return example.issue('Quarantine issue', issue_link) if issue_link.is_a?(String)
           return issue_link.each { |link| example.issue('Quarantine issue', link) } if issue_link.is_a?(Array)
+        rescue StandardError => e
+          log(:error, "Failed to add quarantine issue linkt for example '#{example.description}', error: #{e}")
         end
 
         # Add failure issues link
@@ -65,6 +67,8 @@ module QA
             'Failure issues',
             "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&search=#{spec_file}"
           )
+        rescue StandardError => e
+          log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")
         end
 
         # Add ci job link
@@ -75,6 +79,8 @@ module QA
           return unless Runtime::Env.running_in_ci?
 
           example.add_link(name: "Job(#{Runtime::Env.ci_job_name})", url: Runtime::Env.ci_job_url)
+        rescue StandardError => e
+          log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")
         end
 
         # Mark test as flaky
@@ -87,6 +93,8 @@ module QA
           example.set_flaky
           example.parameter("pass_rate", "#{flaky_specs[example.metadata[:testcase]].round(1)}%")
           log(:debug, "Setting spec as flaky because it's pass rate is below 98%")
+        rescue StandardError => e
+          log(:error, "Failed to add spec pass rate data for example '#{example.description}', error: #{e}")
         end
 
         # Flaky specs with pass rate below 98%
