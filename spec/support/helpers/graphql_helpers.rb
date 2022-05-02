@@ -687,21 +687,28 @@ module GraphqlHelpers
     end
   end
 
-  # assumes query_string to be let-bound in the current context
-  def execute_query(query_type, schema: empty_schema, graphql: query_string)
+  # assumes query_string and user to be let-bound in the current context
+  def execute_query(query_type, schema: empty_schema, graphql: query_string, raise_on_error: false)
     schema.query(query_type)
 
-    schema.execute(
+    r = schema.execute(
       graphql,
       context: { current_user: user },
       variables: {}
     )
+
+    if raise_on_error && r.to_h['errors'].present?
+      raise NoData, r.to_h['errors']
+    end
+
+    r
   end
 
   def empty_schema
     Class.new(GraphQL::Schema) do
       use GraphQL::Pagination::Connections
       use Gitlab::Graphql::Pagination::Connections
+      use BatchLoader::GraphQL
 
       lazy_resolve ::Gitlab::Graphql::Lazy, :force
     end

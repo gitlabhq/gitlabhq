@@ -9,7 +9,7 @@ import {
   GlSprintf,
   GlEmptyState,
 } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -140,21 +140,23 @@ describe('DependencyProxyApp', () => {
 
   describe('when the dependency proxy is available', () => {
     describe('when is loading', () => {
-      it('renders the skeleton loader', () => {
+      beforeEach(() => {
         createComponent();
+      });
 
+      it('renders the skeleton loader', () => {
         expect(findSkeletonLoader().exists()).toBe(true);
       });
 
-      it('does not show the main section', () => {
-        createComponent();
+      it('does not render a form group with label', () => {
+        expect(findFormGroup().exists()).toBe(false);
+      });
 
+      it('does not show the main section', () => {
         expect(findMainArea().exists()).toBe(false);
       });
 
       it('does not render the info alert', () => {
-        createComponent();
-
         expect(findProxyNotAvailableAlert().exists()).toBe(false);
       });
     });
@@ -193,7 +195,7 @@ describe('DependencyProxyApp', () => {
           });
         });
 
-        it('from group has a description with proxy count', () => {
+        it('form group has a description with proxy count', () => {
           expect(findProxyCountText().text()).toBe('Contains 2 blobs of images (1024 Bytes)');
         });
 
@@ -254,6 +256,28 @@ describe('DependencyProxyApp', () => {
                 after: pagination().endCursor,
                 first: GRAPHQL_PAGE_SIZE,
                 fullPath: provideDefaults.groupPath,
+              });
+            });
+
+            describe('triggering page event on list', () => {
+              beforeEach(async () => {
+                findManifestList().vm.$emit('next-page');
+
+                await nextTick();
+              });
+
+              it('re-renders the skeleton loader', () => {
+                expect(findSkeletonLoader().exists()).toBe(true);
+              });
+
+              it('renders form group with label', () => {
+                expect(findFormGroup().attributes('label')).toEqual(
+                  expect.stringMatching(DependencyProxyApp.i18n.proxyImagePrefix),
+                );
+              });
+
+              it('does not show the main section', () => {
+                expect(findMainArea().exists()).toBe(false);
               });
             });
 

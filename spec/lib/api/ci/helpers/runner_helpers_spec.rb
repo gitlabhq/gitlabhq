@@ -70,5 +70,17 @@ RSpec.describe API::Ci::Helpers::Runner do
         expect(details['ip_address']).to eq(ip_address)
       end
     end
+
+    describe '#log_artifact_size' do
+      subject { runner_helper.log_artifact_size(artifact) }
+
+      let(:runner_params) { {} }
+      let(:artifact) { create(:ci_job_artifact, size: 42) }
+      let(:expected_params) { { artifact_size: artifact.size } }
+      let(:subject_proc) { proc { subject } }
+
+      it_behaves_like 'storing arguments in the application context'
+      it_behaves_like 'not executing any extra queries for the application context'
+    end
   end
 end

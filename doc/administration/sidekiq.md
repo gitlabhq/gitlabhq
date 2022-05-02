@@ -192,12 +192,8 @@ To configure the metrics server:
 
 ## Configure health checks
 
-If you use health check probes to observe Sidekiq,
-you can set a separate port for health checks.
-Configuring health checks is only necessary if there is something that actually probes them.
-For more information about health checks, see the [Sidekiq health check page](sidekiq_health_check.md).
-
-To enable health checks for Sidekiq:
+If you use health check probes to observe Sidekiq, enable the Sidekiq health check server.
+To make health checks available from `localhost:8092`:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -207,15 +203,13 @@ To enable health checks for Sidekiq:
    sidekiq['health_checks_listen_port'] = "8092"
    ```
 
-   NOTE:
-   If health check settings are not set, they default to the metrics exporter settings.
-   This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
-
 1. Reconfigure GitLab:
 
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+For more information about health checks, see the [Sidekiq health check page](sidekiq_health_check.md).
 
 ## Configure LDAP and user or group synchronization
 

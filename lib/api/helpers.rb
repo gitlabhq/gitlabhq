@@ -565,6 +565,8 @@ module API
     def present_carrierwave_file!(file, supports_direct_download: true)
       return not_found! unless file&.exists?
 
+      log_artifact_size(file) if file.is_a?(JobArtifactUploader)
+
       if file.file_storage?
         present_disk_file!(file.path, file.filename)
       elsif supports_direct_download && file.class.direct_download_enabled?
@@ -718,6 +720,7 @@ module API
     # Deprecated. Use `send_artifacts_entry` instead.
     def legacy_send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
+      log_artifact_size(file)
 
       body ''
     end
@@ -725,8 +728,13 @@ module API
     def send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
       header(*Gitlab::Workhorse.detect_content_type)
+      log_artifact_size(file)
 
       body ''
+    end
+
+    def log_artifact_size(file)
+      Gitlab::ApplicationContext.push(artifact: file.model)
     end
 
     # The Grape Error Middleware only has access to `env` but not `params` nor

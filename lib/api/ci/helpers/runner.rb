@@ -111,6 +111,10 @@ module API
           # noop: overridden in EE
         end
 
+        def log_artifact_size(artifact)
+          Gitlab::ApplicationContext.push(artifact: artifact)
+        end
+
         private
 
         def get_runner_config_from_request

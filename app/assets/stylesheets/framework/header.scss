@@ -346,6 +346,14 @@
       }
     }
 
+    &:last-child {
+      > a {
+        font-weight: 600;
+        line-height: 16px;
+        color: $gl-text-color;
+      }
+    }
+
     > a {
       font-size: 12px;
       color: currentColor;
@@ -381,17 +389,6 @@
   display: flex;
   flex: 0 0 auto;
   margin-left: auto;
-}
-
-.breadcrumbs-sub-title {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
-
-  a {
-    color: $gl-text-color;
-  }
 }
 
 .btn-sign-in {

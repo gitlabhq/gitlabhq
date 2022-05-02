@@ -135,7 +135,7 @@ happened. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342123)
 
 GitLab doesn't skip jobs scheduled in the future, as we assume that
 the state has changed by the time the job is scheduled to
-execute. Deduplication of jobs scheduled in the feature is possible
+execute. Deduplication of jobs scheduled in the future is possible
 for both `until_executed` and `until_executing` strategies.
 
 If you do want to deduplicate jobs scheduled in the future,

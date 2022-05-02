@@ -122,6 +122,9 @@ export default {
     showDeleteDropdown() {
       return this.group.dependencyProxyManifests?.nodes.length > 0;
     },
+    showDependencyProxyImagePrefix() {
+      return this.group.dependencyProxyImagePrefix?.length > 0;
+    },
   },
   methods: {
     fetchNextPage() {
@@ -186,6 +189,31 @@ export default {
         </gl-dropdown>
       </template>
     </title-area>
+
+    <gl-form-group v-if="showDependencyProxyImagePrefix" :label="$options.i18n.proxyImagePrefix">
+      <gl-form-input-group
+        readonly
+        :value="group.dependencyProxyImagePrefix"
+        class="gl-layout-w-limited"
+        data-testid="proxy-url"
+      >
+        <template #append>
+          <clipboard-button
+            :text="group.dependencyProxyImagePrefix"
+            :title="$options.i18n.copyImagePrefixText"
+          />
+        </template>
+      </gl-form-input-group>
+      <template #description>
+        <span data-qa-selector="dependency_proxy_count" data-testid="proxy-count">
+          <gl-sprintf :message="$options.i18n.blobCountAndSize">
+            <template #count>{{ group.dependencyProxyBlobCount }}</template>
+            <template #size>{{ group.dependencyProxyTotalSize }}</template>
+          </gl-sprintf>
+        </span>
+      </template>
+    </gl-form-group>
+
     <gl-alert
       v-if="!dependencyProxyAvailable"
       :dismissible="false"
@@ -197,30 +225,6 @@ export default {
     <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
 
     <div v-else data-testid="main-area">
-      <gl-form-group :label="$options.i18n.proxyImagePrefix">
-        <gl-form-input-group
-          readonly
-          :value="group.dependencyProxyImagePrefix"
-          class="gl-layout-w-limited"
-          data-testid="proxy-url"
-        >
-          <template #append>
-            <clipboard-button
-              :text="group.dependencyProxyImagePrefix"
-              :title="$options.i18n.copyImagePrefixText"
-            />
-          </template>
-        </gl-form-input-group>
-        <template #description>
-          <span data-qa-selector="dependency_proxy_count" data-testid="proxy-count">
-            <gl-sprintf :message="$options.i18n.blobCountAndSize">
-              <template #count>{{ group.dependencyProxyBlobCount }}</template>
-              <template #size>{{ group.dependencyProxyTotalSize }}</template>
-            </gl-sprintf>
-          </span>
-        </template>
-      </gl-form-group>
-
       <manifests-list
         v-if="manifests && manifests.length"
         :manifests="manifests"
