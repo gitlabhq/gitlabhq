@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.10.1 (2022-04-29)
+
+### Security (14 changes)
+
+- [Add suffix to cache name to add isolation](gitlab-org/security/gitlab@9ff0233c191339f4dd042b7f55d1ffd66b3f9a2b) ([merge request](gitlab-org/security/gitlab!2426))
+- [Update Import/Export merge/push access levels & exclude ci config path](gitlab-org/security/gitlab@40f32316dad5bb0779907261215b3526ed8871fc) ([merge request](gitlab-org/security/gitlab!2404))
+- [Prevent maintainers from editing PipelineSchedule](gitlab-org/security/gitlab@2ce3805447b4b3b7336d46d1d21dcd9e173c40be) ([merge request](gitlab-org/security/gitlab!2421))
+- [Add validation to pypi file sha256 values](gitlab-org/security/gitlab@afc796f43df09a2e43f40beaffec942a80ad973d) ([merge request](gitlab-org/security/gitlab!2415))
+- [Conan Token uses PAT rather than ID in payload](gitlab-org/security/gitlab@2679b802ac4cd9bd36190bcca691177c5568a981) ([merge request](gitlab-org/security/gitlab!2412))
+- [[security] Fix markdown API disclosing issue titles of limited projects](gitlab-org/security/gitlab@66088697787bcd55a727602da4f7fdd51b997eb0) ([merge request](gitlab-org/security/gitlab!2407))
+- [Verify that mentioned user can read TODO's note](gitlab-org/security/gitlab@fd166c1b4cc01e2bbbecabbab706deb423fa17f6) ([merge request](gitlab-org/security/gitlab!2397))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@0a0aee802c8b7760ffb0213e67129863d1769313) ([merge request](gitlab-org/security/gitlab!2418))
+- [Allow rate limiting of deploy tokens](gitlab-org/security/gitlab@8de550917a4b86a3ca3e132465d7d2c8394c4493) ([merge request](gitlab-org/security/gitlab!2395))
+- [Disable wiki access with CI_JOB_TOKEN when improper access level](gitlab-org/security/gitlab@516dbcd83cb2bbda6b15e22f4fafdaed661f4eb1) ([merge request](gitlab-org/security/gitlab!2408))
+- [Sanitize error input to prevent HTML/CSS injection in messages](gitlab-org/security/gitlab@c3f62e0f2965fe871463ed7a8b6e438cd2e1f515) ([merge request](gitlab-org/security/gitlab!2379))
+- [Secure debug trace artifact download](gitlab-org/security/gitlab@d889fb31417a8b8c38f73341da7576e856a96c5b) ([merge request](gitlab-org/security/gitlab!2376))
+- [Use password type for all secret integration properties](gitlab-org/security/gitlab@c4e2f9c3e86d832c143086f05fad382f6a218c50) ([merge request](gitlab-org/security/gitlab!2409))
+- [Limit CI job group_name regexp](gitlab-org/security/gitlab@9e3fbfce686aac48402a097c16616ffffe27c32f) ([merge request](gitlab-org/security/gitlab!2382))
+
 ## 14.10.0 (2022-04-21)
 
 ### Added (141 changes)

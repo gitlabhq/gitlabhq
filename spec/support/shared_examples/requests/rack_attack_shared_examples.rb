@@ -8,7 +8,50 @@
 # * requests_per_period
 # * period_in_seconds
 # * period
-RSpec.shared_examples 'rate-limited token-authenticated requests' do
+RSpec.shared_examples 'rate-limited user based token-authenticated requests' do
+  context 'when the throttle is enabled' do
+    before do
+      settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
+      stub_application_setting(settings_to_set)
+    end
+
+    it 'does not reject requests if the user is in the allowlist' do
+      stub_env('GITLAB_THROTTLE_USER_ALLOWLIST', user.id.to_s)
+      Gitlab::RackAttack.configure_user_allowlist
+
+      expect(Gitlab::Instrumentation::Throttle).to receive(:safelist=).with('throttle_user_allowlist').at_least(:once)
+
+      (requests_per_period + 1).times do
+        make_request(request_args)
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
+
+      stub_env('GITLAB_THROTTLE_USER_ALLOWLIST', nil)
+      Gitlab::RackAttack.configure_user_allowlist
+    end
+  end
+
+  include_examples 'rate-limited token requests' do
+    let(:log_data) do
+      {
+        user_id: user.id,
+        'meta.user' => user.username
+      }
+    end
+  end
+end
+
+RSpec.shared_examples 'rate-limited deploy-token-authenticated requests' do
+  include_examples 'rate-limited token requests' do
+    let(:log_data) do
+      {
+        deploy_token_id: deploy_token.id
+      }
+    end
+  end
+end
+
+RSpec.shared_examples 'rate-limited token requests' do
   let(:throttle_types) do
     {
       "throttle_protected_paths" => "throttle_authenticated_protected_paths_api",
@@ -51,18 +94,6 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
       expect_rejection { make_request(request_args) }
     end
 
-    it 'does not reject requests if the user is in the allowlist' do
-      stub_env('GITLAB_THROTTLE_USER_ALLOWLIST', user.id.to_s)
-      Gitlab::RackAttack.configure_user_allowlist
-
-      expect(Gitlab::Instrumentation::Throttle).to receive(:safelist=).with('throttle_user_allowlist').at_least(:once)
-
-      (requests_per_period + 1).times do
-        make_request(request_args)
-        expect(response).not_to have_gitlab_http_status(:too_many_requests)
-      end
-    end
-
     it 'allows requests after throttling and then waiting for the next period' do
       requests_per_period.times do
         make_request(request_args)
@@ -81,7 +112,7 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
       end
     end
 
-    it 'counts requests from different users separately, even from the same IP' do
+    it 'counts requests from different requesters separately, even from the same IP' do
       requests_per_period.times do
         make_request(request_args)
         expect(response).not_to have_gitlab_http_status(:too_many_requests)
@@ -92,7 +123,7 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
       expect(response).not_to have_gitlab_http_status(:too_many_requests)
     end
 
-    it 'counts all requests from the same user, even via different IPs' do
+    it 'counts all requests from the same requesters, even via different IPs' do
       requests_per_period.times do
         make_request(request_args)
         expect(response).not_to have_gitlab_http_status(:too_many_requests)
@@ -122,10 +153,8 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
         remote_ip: '127.0.0.1',
         request_method: request_method,
         path: request_args.first,
-        user_id: user.id,
-        'meta.user' => user.username,
         matched: throttle_types[throttle_setting_prefix]
-      })
+      }.merge(log_data))
 
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
 

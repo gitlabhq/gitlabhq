@@ -156,6 +156,46 @@ RSpec.describe API::Markdown do
             end
           end
         end
+
+        context 'with a public project and issues only for team members' do
+          let(:public_project) do
+            create(:project, :public).tap do |project|
+              project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+            end
+          end
+
+          let(:issue)  { create(:issue, project: public_project, title: 'Team only title') }
+          let(:text)   { "#{issue.to_reference}" }
+          let(:params) { { text: text, gfm: true, project: public_project.full_path } }
+
+          shared_examples 'user without proper access' do
+            it 'does not render the title' do
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response["html"]).not_to include('Team only title')
+            end
+          end
+
+          context 'when not logged in' do
+            let(:user) { }
+
+            it_behaves_like 'user without proper access'
+          end
+
+          context 'when logged in as user without access' do
+            let(:user) { create(:user) }
+
+            it_behaves_like 'user without proper access'
+          end
+
+          context 'when logged in as author' do
+            let(:user) { issue.author }
+
+            it 'renders the title or link' do
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response["html"]).to include('Team only title')
+            end
+          end
+        end
       end
     end
   end

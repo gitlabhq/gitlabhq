@@ -95,7 +95,7 @@ module Gitlab
         authenticated_options = Gitlab::Throttle.options(throttle, authenticated: true)
         throttle_or_track(rack_attack, "throttle_authenticated_#{throttle}", authenticated_options) do |req|
           if req.throttle?(throttle, authenticated: true)
-            req.throttled_user_id([:api])
+            req.throttled_identifer([:api])
           end
         end
       end
@@ -117,7 +117,7 @@ module Gitlab
 
       throttle_or_track(rack_attack, 'throttle_authenticated_web', Gitlab::Throttle.authenticated_web_options) do |req|
         if req.throttle_authenticated_web?
-          req.throttled_user_id([:api, :rss, :ics])
+          req.throttled_identifer([:api, :rss, :ics])
         end
       end
 
@@ -129,19 +129,19 @@ module Gitlab
 
       throttle_or_track(rack_attack, 'throttle_authenticated_protected_paths_api', Gitlab::Throttle.protected_paths_options) do |req|
         if req.throttle_authenticated_protected_paths_api?
-          req.throttled_user_id([:api])
+          req.throttled_identifer([:api])
         end
       end
 
       throttle_or_track(rack_attack, 'throttle_authenticated_protected_paths_web', Gitlab::Throttle.protected_paths_options) do |req|
         if req.throttle_authenticated_protected_paths_web?
-          req.throttled_user_id([:api, :rss, :ics])
+          req.throttled_identifer([:api, :rss, :ics])
         end
       end
 
       throttle_or_track(rack_attack, 'throttle_authenticated_git_lfs', Gitlab::Throttle.throttle_authenticated_git_lfs_options) do |req|
         if req.throttle_authenticated_git_lfs?
-          req.throttled_user_id([:api])
+          req.throttled_identifer([:api])
         end
       end
 

@@ -15,9 +15,12 @@ module Ci
     rule { can?(:create_pipeline) }.enable :play_pipeline_schedule
 
     rule { can?(:admin_pipeline) | (can?(:update_build) & owner_of_schedule) }.policy do
-      enable :update_pipeline_schedule
       enable :admin_pipeline_schedule
       enable :read_pipeline_schedule_variables
+    end
+
+    rule { admin | (owner_of_schedule & can?(:update_build)) }.policy do
+      enable :update_pipeline_schedule
     end
 
     rule { can?(:admin_pipeline_schedule) & ~owner_of_schedule }.policy do

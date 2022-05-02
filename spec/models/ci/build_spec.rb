@@ -1048,7 +1048,27 @@ RSpec.describe Ci::Build do
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
         end
 
-        it { is_expected.to match([a_hash_including(key: "key-1"), a_hash_including(key: "key2-1")]) }
+        it { is_expected.to match([a_hash_including(key: 'key-1-non_protected'), a_hash_including(key: 'key2-1-non_protected')]) }
+
+        context 'when pipeline is on a protected ref' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
+          end
+
+          it do
+            is_expected.to all(a_hash_including(key: a_string_matching(/-protected$/)))
+          end
+        end
+
+        context 'when pipeline is not on a protected ref' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(false)
+          end
+
+          it do
+            is_expected.to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
+          end
+        end
       end
 
       context 'when project has jobs_cache_index' do
@@ -1056,7 +1076,7 @@ RSpec.describe Ci::Build do
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
         end
 
-        it { is_expected.to be_an(Array).and all(include(key: "key-1")) }
+        it { is_expected.to be_an(Array).and all(include(key: a_string_matching(/^key-1-(?>protected|non_protected)/))) }
       end
 
       context 'when project does not have jobs_cache_index' do
@@ -1064,7 +1084,9 @@ RSpec.describe Ci::Build do
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(nil)
         end
 
-        it { is_expected.to eq(options[:cache]) }
+        it do
+          is_expected.to eq(options[:cache].map { |entry| entry.merge(key: "#{entry[:key]}-non_protected") })
+        end
       end
     end
 

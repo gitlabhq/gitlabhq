@@ -31,7 +31,8 @@ module Gitlab
     def check_download_access!
       super
 
-      raise ForbiddenError, download_forbidden_message if deploy_token && !deploy_token.can?(:download_wiki_code, container)
+      raise ForbiddenError, download_forbidden_message if build_cannot_download?
+      raise ForbiddenError, download_forbidden_message if deploy_token_cannot_download?
     end
 
     override :check_change_access!
@@ -51,6 +52,17 @@ module Gitlab
 
     def not_found_message
       error_message(:not_found)
+    end
+
+    private
+
+    # when accessing via the CI_JOB_TOKEN
+    def build_cannot_download?
+      build_can_download_code? && !user_access.can_do_action?(download_ability)
+    end
+
+    def deploy_token_cannot_download?
+      deploy_token && !deploy_token.can?(download_ability, container)
     end
   end
 end

@@ -33,7 +33,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       it 'uses the provided key' do
         expected = {
-          key: 'a-key',
+          key: a_string_matching(/^a-key-(?>protected|non_protected)$/),
           paths: ['logs/', 'binaries/'],
           policy: 'pull-push',
           untracked: true,
