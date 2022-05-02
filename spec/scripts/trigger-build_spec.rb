@@ -21,29 +21,36 @@ RSpec.describe Trigger do
       'GITLAB_USER_NAME' => 'gitlab_user_name',
       'GITLAB_USER_LOGIN' => 'gitlab_user_login',
       'QA_IMAGE' => 'qa_image',
-      'OMNIBUS_GITLAB_CACHE_UPDATE' => 'omnibus_gitlab_cache_update'
+      'OMNIBUS_GITLAB_CACHE_UPDATE' => 'omnibus_gitlab_cache_update',
+      'OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN' => nil,
+      'DOCS_PROJECT_API_TOKEN' => nil
     }
   end
 
-  let(:stubbed_downstream_gitlab_client) { double('downstream_gitlab_api_client') }
-  let(:gitlab_client_private_token) { env['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN'] }
+  let(:com_api_endpoint) { 'https://gitlab.com/api/v4' }
+  let(:com_api_token) { env['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN'] }
+  let(:com_gitlab_client) { double('com_gitlab_client') }
+
+  let(:downstream_gitlab_client_endpoint) { com_api_endpoint }
+  let(:downstream_gitlab_client_token) { com_api_token }
+  let(:downstream_gitlab_client) { com_gitlab_client }
+
   let(:stubbed_pipeline) { Struct.new(:id, :web_url).new(42, 'pipeline_url') }
   let(:trigger_token) { env['CI_JOB_TOKEN'] }
-  let(:api_endpoint) { 'https://gitlab.com/api/v4' }
 
   before do
     stub_env(env)
     allow(subject).to receive(:puts)
     allow(Gitlab).to receive(:client)
       .with(
-        endpoint: api_endpoint,
-        private_token: gitlab_client_private_token
+        endpoint: downstream_gitlab_client_endpoint,
+        private_token: downstream_gitlab_client_token
       )
-      .and_return(stubbed_downstream_gitlab_client)
+      .and_return(downstream_gitlab_client)
   end
 
   def expect_run_trigger_with_params(variables = {})
-    expect(stubbed_downstream_gitlab_client).to receive(:run_trigger)
+    expect(downstream_gitlab_client).to receive(:run_trigger)
       .with(
         downstream_project_path,
         trigger_token,
@@ -105,22 +112,9 @@ RSpec.describe Trigger do
         it 'waits for downstream pipeline' do
           expect_run_trigger_with_params
           expect(Trigger::Pipeline).to receive(:new)
-            .with(downstream_project_path, stubbed_pipeline.id, stubbed_downstream_gitlab_client)
+            .with(downstream_project_path, stubbed_pipeline.id, downstream_gitlab_client)
 
           subject.invoke!
-        end
-
-        context 'with post_comment: true' do
-          before do
-            stub_env('CI_COMMIT_REF_NAME', "#{ref}-ee")
-          end
-
-          it 'posts a comment' do
-            expect_run_trigger_with_params
-            expect(Trigger::CommitComment).to receive(:post!).with(stubbed_pipeline, stubbed_downstream_gitlab_client)
-
-            subject.invoke!(post_comment: true)
-          end
         end
 
         context 'with downstream_job_name: "foo"' do
@@ -133,10 +127,10 @@ RSpec.describe Trigger do
 
           it 'fetches the downstream job' do
             expect_run_trigger_with_params
-            expect(stubbed_downstream_gitlab_client).to receive(:pipeline_jobs)
+            expect(downstream_gitlab_client).to receive(:pipeline_jobs)
               .with(downstream_project_path, stubbed_pipeline.id).and_return(paginated_resources)
             expect(Trigger::Job).to receive(:new)
-              .with(downstream_project_path, downstream_job.id, stubbed_downstream_gitlab_client)
+              .with(downstream_project_path, downstream_job.id, downstream_gitlab_client)
 
             subject.invoke!(downstream_job_name: 'foo')
           end
@@ -405,7 +399,6 @@ RSpec.describe Trigger do
       let(:env) do
         super().merge(
           'QA_IMAGE' => 'qa_image',
-          'OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN' => nil,
           'GITLAB_QA_OPTIONS' => 'gitlab_qa_options',
           'QA_TESTS' => 'qa_tests',
           'ALLURE_JOB_NAME' => 'allure_job_name'
@@ -651,6 +644,8 @@ RSpec.describe Trigger do
   end
 
   describe Trigger::Docs do
+    let(:downstream_project_path) { 'gitlab-org/gitlab-docs' }
+
     describe '#variables' do
       describe "BRANCH_CE" do
         before do
@@ -760,14 +755,12 @@ RSpec.describe Trigger do
     end
 
     describe '#invoke!' do
-      let(:downstream_project_path) { 'gitlab-org/gitlab-docs' }
       let(:trigger_token) { 'docs_trigger_token' }
       let(:ref) { 'main' }
 
       let(:env) do
         super().merge(
           'CI_PROJECT_PATH' => 'gitlab-org/gitlab-foss',
-          'DOCS_PROJECT_API_TOKEN' => nil,
           'DOCS_TRIGGER_TOKEN' => trigger_token
         )
       end
@@ -801,6 +794,42 @@ RSpec.describe Trigger do
 
             subject.invoke!
           end
+        end
+      end
+    end
+
+    describe '#cleanup!' do
+      let(:downstream_environment_response) { double('downstream_environment', id: 42) }
+      let(:downstream_environments_response) { [downstream_environment_response] }
+
+      before do
+        expect(com_gitlab_client).to receive(:environments)
+          .with(downstream_project_path, name: subject.__send__(:downstream_environment))
+          .and_return(downstream_environments_response)
+        expect(com_gitlab_client).to receive(:stop_environment)
+          .with(downstream_project_path, downstream_environment_response.id)
+          .and_return(downstream_environment_stopping_response)
+      end
+
+      context "when stopping the environment succeeds" do
+        let(:downstream_environment_stopping_response) { double('downstream_environment', state: 'stopped') }
+
+        it 'displays a success message' do
+          expect(subject).to receive(:puts)
+            .with("=> Downstream environment '#{subject.__send__(:downstream_environment)}' stopped.")
+
+          subject.cleanup!
+        end
+      end
+
+      context "when stopping the environment fails" do
+        let(:downstream_environment_stopping_response) { double('downstream_environment', state: 'running') }
+
+        it 'displays a failure message' do
+          expect(subject).to receive(:puts)
+            .with("=> Downstream environment '#{subject.__send__(:downstream_environment)}' failed to stop.")
+
+          subject.cleanup!
         end
       end
     end
@@ -848,15 +877,20 @@ RSpec.describe Trigger do
     describe '#invoke!' do
       let(:downstream_project_path) { 'gitlab-com/database-team/gitlab-com-database-testing' }
       let(:trigger_token) { 'gitlabcom_database_testing_access_token' }
-      let(:api_endpoint) { 'https://ops.gitlab.net/api/v4' }
-      let(:gitlab_client_private_token) { 'gitlabcom_database_testing_access_token' }
+      let(:ops_api_endpoint) { 'https://ops.gitlab.net/api/v4' }
+      let(:ops_api_token) { 'gitlabcom_database_testing_access_token' }
+      let(:ops_gitlab_client) { double('ops_gitlab_client') }
+
+      let(:downstream_gitlab_client_endpoint) { ops_api_endpoint }
+      let(:downstream_gitlab_client_token) { ops_api_token }
+      let(:downstream_gitlab_client) { ops_gitlab_client }
+
       let(:ref) { 'master' }
-      let(:stubbed_upstream_gitlab_client) { double('upstream_gitlab_api_client') }
       let(:mr_notes) { [double(body: described_class::IDENTIFIABLE_NOTE_TAG)] }
 
       let(:env) do
         super().merge(
-          'GITLABCOM_DATABASE_TESTING_ACCESS_TOKEN' => gitlab_client_private_token,
+          'GITLABCOM_DATABASE_TESTING_ACCESS_TOKEN' => ops_api_token,
           'GITLABCOM_DATABASE_TESTING_TRIGGER_TOKEN' => trigger_token
         )
       end
@@ -864,11 +898,11 @@ RSpec.describe Trigger do
       before do
         allow(Gitlab).to receive(:client)
           .with(
-            endpoint: 'https://gitlab.com/api/v4',
-            private_token: env['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+            endpoint: com_api_endpoint,
+            private_token: com_api_token
           )
-          .and_return(stubbed_upstream_gitlab_client)
-        allow(stubbed_upstream_gitlab_client).to receive(:merge_request_notes)
+          .and_return(com_gitlab_client)
+        allow(com_gitlab_client).to receive(:merge_request_notes)
           .with(
             env['CI_PROJECT_PATH'],
             env['CI_MERGE_REQUEST_IID']
@@ -919,7 +953,7 @@ RSpec.describe Trigger do
 
         it 'posts a new note' do
           expect_run_trigger_with_params
-          expect(stubbed_upstream_gitlab_client).to receive(:create_merge_request_note)
+          expect(com_gitlab_client).to receive(:create_merge_request_note)
             .with(
               env['CI_PROJECT_PATH'],
               env['CI_MERGE_REQUEST_IID'],

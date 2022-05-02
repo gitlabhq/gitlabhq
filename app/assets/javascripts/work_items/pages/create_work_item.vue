@@ -6,6 +6,7 @@ import workItemQuery from '../graphql/work_item.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import createWorkItemFromTaskMutation from '../graphql/create_work_item_from_task.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
+import { DEFAULT_MODAL_TYPE } from '../constants';
 
 import ItemTitle from '../components/item_title.vue';
 
@@ -76,6 +77,13 @@ export default {
           value: node.id,
           text: node.name,
         }));
+      },
+      result() {
+        if (!this.selectedWorkItemType && this.isModal) {
+          this.selectedWorkItemType = this.formOptions.find(
+            (options) => options.text === DEFAULT_MODAL_TYPE,
+          )?.value;
+        }
       },
       error() {
         this.error = this.$options.fetchTypesErrorText;

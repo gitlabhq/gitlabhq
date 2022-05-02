@@ -33,13 +33,13 @@ module Trigger
       ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
     end
 
-    def invoke!(post_comment: false, downstream_job_name: nil)
+    def invoke!(downstream_job_name: nil)
       pipeline_variables = variables
 
       puts "Triggering downstream pipeline on #{downstream_project_path}"
       puts "with variables #{pipeline_variables}"
 
-      pipeline = gitlab_client(:downstream).run_trigger(
+      pipeline = downstream_client.run_trigger(
         downstream_project_path,
         trigger_token,
         ref,
@@ -48,18 +48,17 @@ module Trigger
       puts "Triggered downstream pipeline: #{pipeline.web_url}\n"
       puts "Waiting for downstream pipeline status"
 
-      Trigger::CommitComment.post!(pipeline, gitlab_client(:upstream)) if post_comment
       downstream_job =
         if downstream_job_name
-          gitlab_client(:downstream).pipeline_jobs(downstream_project_path, pipeline.id).auto_paginate.find do |potential_job|
+          downstream_client.pipeline_jobs(downstream_project_path, pipeline.id).auto_paginate.find do |potential_job|
             potential_job.name == downstream_job_name
           end
         end
 
       if downstream_job
-        Trigger::Job.new(downstream_project_path, downstream_job.id, gitlab_client(:downstream))
+        Trigger::Job.new(downstream_project_path, downstream_job.id, downstream_client)
       else
-        Trigger::Pipeline.new(downstream_project_path, pipeline.id, gitlab_client(:downstream))
+        Trigger::Pipeline.new(downstream_project_path, pipeline.id, downstream_client)
       end
     end
 
@@ -80,15 +79,17 @@ module Trigger
 
     private
 
-    # Override to trigger and work with pipeline on different GitLab instance
-    # type: :downstream -> downstream build and pipeline status
-    # type: :upstream -> this project, e.g. for posting comments
-    def gitlab_client(_type)
-      # By default, always use the same client
-      @gitlab_client ||= Gitlab.client(
+    def com_gitlab_client
+      @com_gitlab_client ||= Gitlab.client(
         endpoint: 'https://gitlab.com/api/v4',
         private_token: self.class.access_token
       )
+    end
+
+    # This client is used for downstream build and pipeline status
+    # Can be overridden
+    def downstream_client
+      com_gitlab_client
     end
 
     # Must be overridden
@@ -283,12 +284,12 @@ module Trigger
     # Remove a remote branch in gitlab-docs.
     #
     def cleanup!
-      environment = gitlab_client(:downstream).environments(downstream_project_path, name: downstream_environment).first
+      environment = com_gitlab_client.environments(downstream_project_path, name: downstream_environment).first
       return unless environment
 
-      environment = gitlab_client(:downstream).stop_environment(downstream_project_path, environment.id)
+      environment = com_gitlab_client.stop_environment(downstream_project_path, environment.id)
       if environment.state == 'stopped'
-        puts "=> Downstream environment '#{downstream_environment}' stopped"
+        puts "=> Downstream environment '#{downstream_environment}' stopped."
       else
         puts "=> Downstream environment '#{downstream_environment}' failed to stop."
       end
@@ -357,26 +358,21 @@ module Trigger
   class DatabaseTesting < Base
     IDENTIFIABLE_NOTE_TAG = 'gitlab-org/database-team/gitlab-com-database-testing:identifiable-note'
 
-    def self.access_token
-      ENV['GITLABCOM_DATABASE_TESTING_ACCESS_TOKEN']
-    end
-
-    def invoke!(post_comment: false, downstream_job_name: nil)
+    def invoke!(downstream_job_name: nil)
       pipeline = super
-      gitlab = gitlab_client(:upstream)
       project_path = variables['TOP_UPSTREAM_SOURCE_PROJECT']
       merge_request_id = variables['TOP_UPSTREAM_MERGE_REQUEST_IID']
       comment = "<!-- #{IDENTIFIABLE_NOTE_TAG} --> \nStarted database testing [pipeline](https://ops.gitlab.net/#{downstream_project_path}/-/pipelines/#{pipeline.id}) " \
                 "(limited access). This comment will be updated once the pipeline has finished running."
 
       # Look for an existing note
-      db_testing_notes = gitlab.merge_request_notes(project_path, merge_request_id).auto_paginate.select do |note|
+      db_testing_notes = com_gitlab_client.merge_request_notes(project_path, merge_request_id).auto_paginate.select do |note|
         note.body.include?(IDENTIFIABLE_NOTE_TAG)
       end
 
       if db_testing_notes.empty?
         # This is the first note
-        note = gitlab.create_merge_request_note(project_path, merge_request_id, comment)
+        note = com_gitlab_client.create_merge_request_note(project_path, merge_request_id, comment)
 
         puts "Posted comment to:\n"
         puts "https://gitlab.com/#{project_path}/-/merge_requests/#{merge_request_id}#note_#{note.id}"
@@ -385,19 +381,15 @@ module Trigger
 
     private
 
-    def gitlab_client(type)
-      @gitlab_clients ||= {
-        downstream: Gitlab.client(
-          endpoint: 'https://ops.gitlab.net/api/v4',
-          private_token: self.class.access_token
-        ),
-        upstream: Gitlab.client(
-          endpoint: 'https://gitlab.com/api/v4',
-          private_token: Base.access_token
-        )
-      }
+    def ops_gitlab_client
+      @ops_gitlab_client ||= Gitlab.client(
+        endpoint: 'https://ops.gitlab.net/api/v4',
+        private_token: ENV['GITLABCOM_DATABASE_TESTING_ACCESS_TOKEN']
+      )
+    end
 
-      @gitlab_clients[type]
+    def downstream_client
+      ops_gitlab_client
     end
 
     def trigger_token
@@ -423,18 +415,6 @@ module Trigger
 
     def primary_ref
       'master'
-    end
-  end
-
-  class CommitComment
-    def self.post!(downstream_pipeline, gitlab_client)
-      gitlab_client.create_commit_comment(
-        ENV['CI_PROJECT_PATH'],
-        Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
-        "The [`#{ENV['CI_JOB_NAME']}`](#{ENV['CI_JOB_URL']}) job from pipeline #{ENV['CI_PIPELINE_URL']} triggered #{downstream_pipeline.web_url} downstream.")
-
-    rescue Gitlab::Error::Error => error
-      puts "Ignoring the following error: #{error}"
     end
   end
 

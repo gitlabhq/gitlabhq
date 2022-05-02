@@ -1,11 +1,5 @@
 ---
 RSpec/TimecopTravel:
   Exclude:
-  - ee/spec/lib/gitlab/geo/event_gap_tracking_spec.rb
-  - ee/spec/lib/gitlab/geo/git_push_http_spec.rb
-  - ee/spec/lib/gitlab/geo/jwt_request_decoder_spec.rb
-  - ee/spec/lib/gitlab/geo/log_cursor/daemon_spec.rb
-  - ee/spec/models/broadcast_message_spec.rb
-  - ee/spec/models/burndown_spec.rb
   - spec/workers/concerns/reenqueuer_spec.rb
   - qa/spec/support/repeater_spec.rb

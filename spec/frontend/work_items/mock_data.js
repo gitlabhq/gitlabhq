@@ -49,6 +49,7 @@ export const projectWorkItemTypesQueryResponse = {
         nodes: [
           { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
           { id: 'gid://gitlab/WorkItems::Type/2', name: 'Incident' },
+          { id: 'gid://gitlab/WorkItems::Type/3', name: 'Task' },
         ],
       },
     },

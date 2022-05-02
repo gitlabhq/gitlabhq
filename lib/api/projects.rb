@@ -663,7 +663,7 @@ module API
         optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter out users with the specified IDs'
         use :pagination
       end
-      get ':id/users', feature_category: :authentication_and_authorization do
+      get ':id/users', urgency: :low, feature_category: :authentication_and_authorization do
         users = DeclarativePolicy.subject_scope { user_project.team.users }
         users = users.search(params[:search]) if params[:search].present?
         users = users.where_not_in(params[:skip_users]) if params[:skip_users].present?
