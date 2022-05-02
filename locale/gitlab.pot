@@ -13992,9 +13992,6 @@ msgstr ""
 msgid "Enable What's new: Current tier only"
 msgstr ""
 
-msgid "Enable a Prometheus endpoint that exposes health and performance statistics. The Health Check menu item appears in the Monitoring section of the Admin Area. Restart required."
-msgstr ""
-
 msgid "Enable access to the performance bar for non-administrators in a given group."
 msgstr ""
 
@@ -14020,6 +14017,9 @@ msgid "Enable authentication"
 msgstr ""
 
 msgid "Enable automatic repository housekeeping"
+msgstr ""
+
+msgid "Enable collection of application metrics. Restart required."
 msgstr ""
 
 msgid "Enable container expiration and retention policies for projects created earlier than GitLab 12.7."
@@ -18973,6 +18973,9 @@ msgid "How many seconds an IP counts toward the IP address limit."
 msgstr ""
 
 msgid "How the job limiter handles jobs exceeding the thresholds specified below. The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and raises an exception if the compressed size exceeds the limit."
+msgstr ""
+
+msgid "How to export these metrics to Prometheus?"
 msgstr ""
 
 msgid "I accept the %{terms_link}"
@@ -27809,6 +27812,12 @@ msgstr ""
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr ""
 
+msgid "Pipelines|1. Set up a runner"
+msgstr ""
+
+msgid "Pipelines|2. Configure deployment pipeline"
+msgstr ""
+
 msgid "Pipelines|A GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. Install GitLab Runner and register your own runners to get started with CI/CD."
 msgstr ""
 
@@ -27821,16 +27830,19 @@ msgstr ""
 msgid "Pipelines|Auto DevOps"
 msgstr ""
 
+msgid "Pipelines|Based on your project, we recommend this template:"
+msgstr ""
+
 msgid "Pipelines|Build with confidence"
+msgstr ""
+
+msgid "Pipelines|Building for iOS?"
 msgstr ""
 
 msgid "Pipelines|By revoking a trigger you will break any processes making use of it. Are you sure?"
 msgstr ""
 
 msgid "Pipelines|CI lint"
-msgstr ""
-
-msgid "Pipelines|CI/CD template to test and deploy your %{name} project."
 msgstr ""
 
 msgid "Pipelines|Child pipeline (%{link_start}parent%{link_end})"
@@ -27840,6 +27852,12 @@ msgid "Pipelines|Clear runner caches"
 msgstr ""
 
 msgid "Pipelines|Configuration validation currently not available."
+msgstr ""
+
+msgid "Pipelines|Configure pipeline"
+msgstr ""
+
+msgid "Pipelines|Continuous integration and deployment template to test and deploy your %{name} project."
 msgstr ""
 
 msgid "Pipelines|Copy trigger token"
@@ -27854,10 +27872,16 @@ msgstr ""
 msgid "Pipelines|Description"
 msgstr ""
 
+msgid "Pipelines|Don't need a guide? Jump in right away with a template."
+msgstr ""
+
 msgid "Pipelines|Edit"
 msgstr ""
 
 msgid "Pipelines|Editor"
+msgstr ""
+
+msgid "Pipelines|Follow these instructions to install GitLab Runner on macOS."
 msgstr ""
 
 msgid "Pipelines|Get familiar with GitLab CI syntax by  setting up a simple pipeline running a  \"Hello world\" script to see how it runs, explore how CI/CD works."
@@ -27867,6 +27891,9 @@ msgid "Pipelines|Get started with GitLab CI/CD"
 msgstr ""
 
 msgid "Pipelines|GitLab CI/CD can automatically build, test, and deploy your code. Let GitLab take care of time consuming tasks, so you can spend more time creating."
+msgstr ""
+
+msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline."
 msgstr ""
 
 msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. There are active runners available to run your jobs right now. If you prefer, you can %{settingsLinkStart}configure your runners%{settingsLinkEnd} or %{docsLinkStart}learn more%{docsLinkEnd} about runners."
@@ -27887,6 +27914,9 @@ msgstr ""
 msgid "Pipelines|Learn the basics of pipelines and .yml files"
 msgstr ""
 
+msgid "Pipelines|Let's get that runner set up! %{emojiStart}tada%{emojiEnd}"
+msgstr ""
+
 msgid "Pipelines|Lint"
 msgstr ""
 
@@ -27902,10 +27932,16 @@ msgstr ""
 msgid "Pipelines|More Information"
 msgstr ""
 
+msgid "Pipelines|Need more information to set up your runner? %{linkStart}Check out our documentation%{linkEnd}."
+msgstr ""
+
 msgid "Pipelines|No runners detected"
 msgstr ""
 
 msgid "Pipelines|No triggers have been created yet. Add one using the form above."
+msgstr ""
+
+msgid "Pipelines|Not building for iOS or not what you're looking for? %{linkStart}See what else%{linkEnd} GitLab CI/CD has to offer."
 msgstr ""
 
 msgid "Pipelines|Owner"
@@ -27924,6 +27960,9 @@ msgid "Pipelines|Revoke trigger"
 msgstr ""
 
 msgid "Pipelines|Runners are available to run your jobs now"
+msgstr ""
+
+msgid "Pipelines|Set up a runner"
 msgstr ""
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
@@ -28005,6 +28044,15 @@ msgid "Pipelines|View merged YAML"
 msgstr ""
 
 msgid "Pipelines|Visualize"
+msgstr ""
+
+msgid "Pipelines|We'll guide you through a simple pipeline set-up."
+msgstr ""
+
+msgid "Pipelines|We'll walk you through how to deploy to iOS in two easy steps."
+msgstr ""
+
+msgid "Pipelines|You have runners available to run your job now. No need to do anything else."
 msgstr ""
 
 msgid "Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page."

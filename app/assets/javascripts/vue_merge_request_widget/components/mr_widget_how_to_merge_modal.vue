@@ -113,8 +113,10 @@ export default {
     },
   },
   mounted() {
-    document.querySelector('.js-check-out-modal-trigger')?.addEventListener('click', () => {
-      this.$refs.modal.show();
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.js-check-out-modal-trigger')) {
+        this.$refs.modal.show();
+      }
     });
   },
 };

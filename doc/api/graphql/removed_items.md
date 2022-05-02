@@ -12,13 +12,23 @@ According to our [process for removing items](index.md#deprecation-and-removal-p
 
 ## GitLab 15.0
 
-Fields [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85382) in GitLab 15.0:
+Fields removed in GitLab 15.0.
 
 ### GraphQL Mutations
 
+[Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85382) in GitLab 15.0:
+
 | Argument name        | Mutation                 | Deprecated in | Use instead                |
 | -------------------- | --------------------     | ------------- | -------------------------- |
-| -                    | `clusterAgentTokenDelete`| 14.7          | `clusterAgentTokenRevoke`                    |
+| -                    | `clusterAgentTokenDelete`| 14.7          | `clusterAgentTokenRevoke`  |
+
+### GraphQL Fields
+
+[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/342882) in GitLab 15.0:
+
+| Argument name        | Field name          | Deprecated in | Use instead                |
+| -------------------- | --------------------| ------------- | -------------------------- |
+| -                    | `pipelines`         | 14.5          | None                       |
 
 ### GraphQL Types
 

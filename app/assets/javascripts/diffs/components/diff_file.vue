@@ -5,7 +5,6 @@ import {
   GlSafeHtmlDirective as SafeHtml,
   GlSprintf,
   GlAlert,
-  GlModalDirective,
 } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -42,7 +41,6 @@ export default {
   },
   directives: {
     SafeHtml,
-    GlModalDirective,
   },
   mixins: [glFeatureFlagsMixin(), IdState({ idProp: (vm) => vm.file.file_hash })],
   props: {
@@ -430,9 +428,8 @@ export default {
               </template>
               <template #resolveLocally="{ content }">
                 <gl-button
-                  v-gl-modal-directive="'modal-merge-info'"
                   variant="link"
-                  class="gl-vertical-align-text-bottom"
+                  class="gl-vertical-align-text-bottom js-check-out-modal-trigger"
                   >{{ content }}</gl-button
                 >
               </template>
@@ -443,9 +440,8 @@ export default {
             >
               <template #resolveLocally="{ content }">
                 <gl-button
-                  v-gl-modal-directive="'modal-merge-info'"
                   variant="link"
-                  class="gl-vertical-align-text-bottom"
+                  class="gl-vertical-align-text-bottom js-check-out-modal-trigger"
                   >{{ content }}</gl-button
                 >
               </template>

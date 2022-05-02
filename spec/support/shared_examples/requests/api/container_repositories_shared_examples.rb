@@ -21,6 +21,7 @@ RSpec.shared_examples 'returns repositories for allowed users' do |user_type, sc
       expect(json_response.map { |repository| repository['id'] }).to contain_exactly(
         root_repository.id, test_repository.id)
       expect(response.body).not_to include('tags')
+      expect(response.body).not_to include('tags_count')
     end
 
     it 'returns a matching schema' do
@@ -29,7 +30,11 @@ RSpec.shared_examples 'returns repositories for allowed users' do |user_type, sc
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('registry/repositories')
     end
+  end
+end
 
+RSpec.shared_examples 'returns tags for allowed users' do |user_type, scope|
+  context "for #{user_type}" do
     context 'with tags param' do
       let(:url) { "/#{scope}s/#{object.id}/registry/repositories?tags=true" }
 

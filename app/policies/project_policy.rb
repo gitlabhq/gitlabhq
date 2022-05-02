@@ -664,7 +664,7 @@ class ProjectPolicy < BasePolicy
     enable :read_security_configuration
   end
 
-  rule { can?(:guest_access) & can?(:read_commit_status) }.policy do
+  rule { can?(:guest_access) & can?(:download_code) }.policy do
     enable :create_merge_request_in
   end
 

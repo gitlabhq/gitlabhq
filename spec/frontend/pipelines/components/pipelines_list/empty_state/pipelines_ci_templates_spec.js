@@ -16,6 +16,7 @@ import {
 } from '~/pipeline_editor/constants';
 
 const pipelineEditorPath = '/-/ci/editor';
+const ciRunnerSettingsPath = '/-/settings/ci_cd';
 
 jest.mock('~/experimentation/experiment_tracking');
 
@@ -27,8 +28,10 @@ describe('Pipelines CI Templates', () => {
     return shallowMountExtended(PipelinesCiTemplates, {
       provide: {
         pipelineEditorPath,
+        ciRunnerSettingsPath,
+        anyRunnersAvailable: true,
+        ...propsData,
       },
-      propsData,
       stubs,
     });
   };

@@ -45,8 +45,10 @@ describe('RunnerInstructionsModal component', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findPlatformButtonGroup = () => wrapper.findByTestId('platform-buttons');
   const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
+  const findOsxPlatformButton = () => wrapper.find({ ref: 'osx' });
   const findArchitectureDropdownItems = () => wrapper.findAllByTestId('architecture-dropdown-item');
   const findBinaryInstructions = () => wrapper.findByTestId('binary-instructions');
   const findRegisterCommand = () => wrapper.findByTestId('register-command');
@@ -138,6 +140,38 @@ describe('RunnerInstructionsModal component', () => {
         const instructions = findRegisterCommand().text();
 
         expect(instructions).toBe(registerInstructions);
+      });
+    });
+
+    describe('when the modal is shown', () => {
+      it('sets the focus on the selected platform', () => {
+        findPlatformButtons().at(0).element.focus = jest.fn();
+
+        findModal().vm.$emit('shown');
+
+        expect(findPlatformButtons().at(0).element.focus).toHaveBeenCalled();
+      });
+    });
+
+    describe('when providing a defaultPlatformName', () => {
+      beforeEach(async () => {
+        createComponent({ props: { defaultPlatformName: 'osx' } });
+        await waitForPromises();
+      });
+
+      it('runner instructions for the default selected platform are requested', () => {
+        expect(runnerSetupInstructionsHandler).toHaveBeenCalledWith({
+          platform: 'osx',
+          architecture: 'amd64',
+        });
+      });
+
+      it('sets the focus on the default selected platform', () => {
+        findOsxPlatformButton().element.focus = jest.fn();
+
+        findModal().vm.$emit('shown');
+
+        expect(findOsxPlatformButton().element.focus).toHaveBeenCalled();
       });
     });
   });

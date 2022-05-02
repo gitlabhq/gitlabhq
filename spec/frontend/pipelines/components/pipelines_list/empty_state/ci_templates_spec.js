@@ -13,23 +13,21 @@ describe('CI Templates', () => {
   let wrapper;
   let trackingSpy;
 
-  const createWrapper = () => {
-    return shallowMountExtended(CiTemplates, {
+  const createWrapper = (propsData = {}) => {
+    wrapper = shallowMountExtended(CiTemplates, {
       provide: {
         pipelineEditorPath,
         suggestedCiTemplates,
       },
+      propsData,
     });
   };
 
   const findTemplateDescription = () => wrapper.findByTestId('template-description');
   const findTemplateLink = () => wrapper.findByTestId('template-link');
+  const findTemplateNames = () => wrapper.findAllByTestId('template-name');
   const findTemplateName = () => wrapper.findByTestId('template-name');
   const findTemplateLogo = () => wrapper.findByTestId('template-logo');
-
-  beforeEach(() => {
-    wrapper = createWrapper();
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -37,10 +35,13 @@ describe('CI Templates', () => {
   });
 
   describe('renders template list', () => {
-    it('renders all suggested templates', () => {
-      const content = wrapper.text();
+    beforeEach(() => {
+      createWrapper();
+    });
 
-      expect(content).toContain('Android', 'Bash', 'C++');
+    it('renders all suggested templates', () => {
+      expect(findTemplateNames().length).toBe(3);
+      expect(wrapper.text()).toContain('Android', 'Bash', 'C++');
     });
 
     it('has the correct template name', () => {
@@ -53,9 +54,13 @@ describe('CI Templates', () => {
       );
     });
 
+    it('has the link button enabled', () => {
+      expect(findTemplateLink().props('disabled')).toBe(false);
+    });
+
     it('has the description of the template', () => {
       expect(findTemplateDescription().text()).toBe(
-        'CI/CD template to test and deploy your Android project.',
+        'Continuous integration and deployment template to test and deploy your Android project.',
       );
     });
 
@@ -64,8 +69,30 @@ describe('CI Templates', () => {
     });
   });
 
+  describe('filtering the templates', () => {
+    beforeEach(() => {
+      createWrapper({ filterTemplates: ['Bash'] });
+    });
+
+    it('renders only the filtered templates', () => {
+      expect(findTemplateNames()).toHaveLength(1);
+      expect(findTemplateName().text()).toBe('Bash');
+    });
+  });
+
+  describe('disabling the templates', () => {
+    beforeEach(() => {
+      createWrapper({ disabled: true });
+    });
+
+    it('has the link button disabled', () => {
+      expect(findTemplateLink().props('disabled')).toBe(true);
+    });
+  });
+
   describe('tracking', () => {
     beforeEach(() => {
+      createWrapper();
       trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 

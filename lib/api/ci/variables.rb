@@ -35,7 +35,7 @@ module API
           requires :key, type: String, desc: 'The key of the variable'
         end
         # rubocop: disable CodeReuse/ActiveRecord
-        get ':id/variables/:key' do
+        get ':id/variables/:key', urgency: :low do
           variable = find_variable(user_project, params)
           not_found!('Variable') unless variable
 

@@ -794,12 +794,29 @@ RSpec.describe 'Pipelines', :js do
     describe 'Empty State' do
       let(:project) { create(:project, :repository) }
 
-      before do
-        visit project_pipelines_path(project)
+      context 'when `ios_specific_templates` is not enabled' do
+        before do
+          visit project_pipelines_path(project)
+        end
+
+        it 'renders empty state' do
+          expect(page).to have_content 'Try test template'
+        end
       end
 
-      it 'renders empty state' do
-        expect(page).to have_content 'Try test template'
+      describe 'when the `ios_specific_templates` experiment is enabled and the "Set up a runner" button is clicked' do
+        before do
+          stub_experiments(ios_specific_templates: :candidate)
+          create(:project_setting, project: project, target_platforms: %w(ios))
+          visit project_pipelines_path(project)
+          click_button 'Set up a runner'
+        end
+
+        it 'displays a modal with the macOS platform selected and an explanation popover' do
+          expect(page).to have_button 'macOS', class: 'selected'
+          expect(page).to have_selector('#runner-instructions-modal___BV_modal_content_')
+          expect(page).to have_selector('.popover')
+        end
       end
     end
   end

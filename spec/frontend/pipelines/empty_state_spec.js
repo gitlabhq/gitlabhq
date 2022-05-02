@@ -1,7 +1,11 @@
 import '~/commons';
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { GlEmptyState } from '@gitlab/ui';
+import { stubExperiments } from 'helpers/experimentation_helper';
 import EmptyState from '~/pipelines/components/pipelines_list/empty_state.vue';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
+import IosTemplates from '~/pipelines/components/pipelines_list/empty_state/ios_templates.vue';
 
 describe('Pipelines Empty State', () => {
   let wrapper;
@@ -9,44 +13,68 @@ describe('Pipelines Empty State', () => {
   const findIllustration = () => wrapper.find('img');
   const findButton = () => wrapper.find('a');
   const pipelinesCiTemplates = () => wrapper.findComponent(PipelinesCiTemplates);
+  const iosTemplates = () => wrapper.findComponent(IosTemplates);
 
   const createWrapper = (props = {}) => {
-    wrapper = mount(EmptyState, {
+    wrapper = shallowMount(EmptyState, {
       provide: {
         pipelineEditorPath: '',
         suggestedCiTemplates: [],
+        anyRunnersAvailable: true,
+        ciRunnerSettingsPath: '',
       },
       propsData: {
         emptyStateSvgPath: 'foo.svg',
         canSetCi: true,
         ...props,
       },
+      stubs: {
+        GlEmptyState,
+        GitlabExperiment,
+      },
     });
   };
 
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+
   describe('when user can configure CI', () => {
-    beforeEach(() => {
-      createWrapper({}, mount);
+    describe('when the ios_specific_templates experiment is active', () => {
+      beforeEach(() => {
+        stubExperiments({ ios_specific_templates: 'candidate' });
+        createWrapper();
+      });
+
+      it('should render the iOS templates', () => {
+        expect(iosTemplates().exists()).toBe(true);
+      });
+
+      it('should not render the CI/CD templates', () => {
+        expect(pipelinesCiTemplates().exists()).toBe(false);
+      });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
-    });
+    describe('when the ios_specific_templates experiment is inactive', () => {
+      beforeEach(() => {
+        stubExperiments({ ios_specific_templates: 'control' });
+        createWrapper();
+      });
 
-    it('should render the CI/CD templates', () => {
-      expect(pipelinesCiTemplates().exists()).toBe(true);
+      it('should render the CI/CD templates', () => {
+        expect(pipelinesCiTemplates().exists()).toBe(true);
+      });
+
+      it('should not render the iOS templates', () => {
+        expect(iosTemplates().exists()).toBe(false);
+      });
     });
   });
 
   describe('when user cannot configure CI', () => {
     beforeEach(() => {
-      createWrapper({ canSetCi: false }, mount);
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
+      createWrapper({ canSetCi: false });
     });
 
     it('should render empty state SVG', () => {

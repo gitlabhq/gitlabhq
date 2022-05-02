@@ -33,19 +33,7 @@ export default {
   RUNNERS_DOCUMENTATION_LINK_CLICKED_EVENT,
   RUNNERS_SETTINGS_BUTTON_CLICKED_EVENT,
   I18N,
-  inject: ['pipelineEditorPath'],
-  props: {
-    ciRunnerSettingsPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    anyRunnersAvailable: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-  },
+  inject: ['anyRunnersAvailable', 'pipelineEditorPath', 'ciRunnerSettingsPath'],
   data() {
     return {
       gettingStartedTemplateUrl: mergeUrlParams(

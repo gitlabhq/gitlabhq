@@ -104,6 +104,21 @@ A feature flag was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11
 
 In GitLab 15.0, we will remove the feature flag, and you must always authenticate when you use the Dependency Proxy.
 
+### Remove pipelines field from the version field
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/#packagedetailstype) to get the pipelines for package versions:
+
+- The `versions` field's `pipelines` field. This returns all the pipelines associated with all the package's versions, which can pull an unbounded number of objects in memory and create performance concerns.
+- The `pipelines` field of a specific `version`. This returns only the pipelines associated with that single package version.
+
+To mitigate possible performance problems, we will remove the `versions` field's `pipelines` field in GitLab 15.0. Although you will no longer be able to get all pipelines for all versions of a package, you can still get the pipelines of a single version through the remaining `pipelines` field for that version.
+
 ### Test coverage project CI/CD setting
 
 WARNING:

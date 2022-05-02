@@ -49,6 +49,10 @@ RSpec.describe API::GroupContainerRepositories do
       let(:object) { group }
     end
 
+    it_behaves_like 'returns tags for allowed users', :reporter, 'group' do
+      let(:object) { group }
+    end
+
     it_behaves_like 'a package tracking event', described_class.name, 'list_repositories'
 
     context 'with invalid group id' do

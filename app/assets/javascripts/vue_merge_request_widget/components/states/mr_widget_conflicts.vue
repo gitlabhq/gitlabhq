@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModalDirective, GlSkeletonLoader } from '@gitlab/ui';
+import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import userPermissionsQuery from '../../queries/permissions.query.graphql';
@@ -12,9 +12,6 @@ export default {
     GlSkeletonLoader,
     StatusIcon,
     GlButton,
-  },
-  directives: {
-    GlModalDirective,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   apollo: {
@@ -131,9 +128,9 @@ export default {
         </gl-button>
         <gl-button
           v-if="canMerge"
-          v-gl-modal-directive="'modal-merge-info'"
           :size="glFeatures.restructuredMrWidget ? 'small' : 'medium'"
           data-testid="merge-locally-button"
+          class="js-check-out-modal-trigger"
         >
           {{ s__('mrWidget|Resolve locally') }}
         </gl-button>

@@ -40,6 +40,8 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     params,
     ciRunnerSettingsPath,
     anyRunnersAvailable,
+    iosRunnersAvailable,
+    registrationToken,
   } = el.dataset;
 
   return new Vue({
@@ -49,6 +51,9 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
       artifactsEndpoint,
       artifactsEndpointPlaceholder,
       suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
+      ciRunnerSettingsPath,
+      anyRunnersAvailable: parseBoolean(anyRunnersAvailable),
+      iosRunnersAvailable: parseBoolean(iosRunnersAvailable),
     },
     data() {
       return {
@@ -78,8 +83,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
           projectId,
           defaultBranchName,
           params: JSON.parse(params),
-          ciRunnerSettingsPath,
-          anyRunnersAvailable: parseBoolean(anyRunnersAvailable),
+          registrationToken,
         },
       });
     },

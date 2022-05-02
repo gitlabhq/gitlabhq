@@ -107,15 +107,10 @@ export default {
       type: Object,
       required: true,
     },
-    ciRunnerSettingsPath: {
+    registrationToken: {
       type: String,
       required: false,
       default: null,
-    },
-    anyRunnersAvailable: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
   },
   data() {
@@ -386,8 +381,7 @@ export default {
         v-else-if="stateToRender === $options.stateMap.emptyState"
         :empty-state-svg-path="emptyStateSvgPath"
         :can-set-ci="canCreatePipeline"
-        :ci-runner-settings-path="ciRunnerSettingsPath"
-        :any-runners-available="anyRunnersAvailable"
+        :registration-token="registrationToken"
       />
 
       <gl-empty-state

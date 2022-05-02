@@ -103,39 +103,89 @@ RSpec.describe ProjectPolicy do
   end
 
   context 'creating_merge_request_in' do
-    context 'when project is public' do
-      let(:project) { public_project }
+    context 'when the current_user can download_code' do
+      before do
+        expect(subject).to receive(:allowed?).with(:download_code).and_return(true)
+        allow(subject).to receive(:allowed?).with(any_args).and_call_original
+      end
 
-      context 'when the current_user is guest' do
-        let(:current_user) { guest }
+      context 'when project is public' do
+        let(:project) { public_project }
 
-        it { is_expected.to be_allowed(:create_merge_request_in) }
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_allowed(:create_merge_request_in) }
+        end
+      end
+
+      context 'when project is internal' do
+        let(:project) { internal_project }
+
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_allowed(:create_merge_request_in) }
+        end
+      end
+
+      context 'when project is private' do
+        let(:project) { private_project }
+
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
+        end
+
+        context 'when the current_user is reporter or above' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:create_merge_request_in) }
+        end
       end
     end
 
-    context 'when project is internal' do
-      let(:project) { internal_project }
-
-      context 'when the current_user is guest' do
-        let(:current_user) { guest }
-
-        it { is_expected.to be_allowed(:create_merge_request_in) }
-      end
-    end
-
-    context 'when project is private' do
-      let(:project) { private_project }
-
-      context 'when the current_user is guest' do
-        let(:current_user) { guest }
-
-        it { is_expected.not_to be_allowed(:create_merge_request_in) }
+    context 'when the current_user can not download code' do
+      before do
+        expect(subject).to receive(:allowed?).with(:download_code).and_return(false)
+        allow(subject).to receive(:allowed?).with(any_args).and_call_original
       end
 
-      context 'when the current_user is reporter or above' do
-        let(:current_user) { reporter }
+      context 'when project is public' do
+        let(:project) { public_project }
 
-        it { is_expected.to be_allowed(:create_merge_request_in) }
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
+        end
+      end
+
+      context 'when project is internal' do
+        let(:project) { internal_project }
+
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
+        end
+      end
+
+      context 'when project is private' do
+        let(:project) { private_project }
+
+        context 'when the current_user is guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
+        end
+
+        context 'when the current_user is reporter or above' do
+          let(:current_user) { reporter }
+
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
+        end
       end
     end
   end

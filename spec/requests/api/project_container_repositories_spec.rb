@@ -113,6 +113,10 @@ RSpec.describe API::ProjectContainerRepositories do
         it_behaves_like 'returns repositories for allowed users', :reporter, 'project' do
           let(:object) { project }
         end
+
+        it_behaves_like 'returns tags for allowed users', :reporter, 'project' do
+          let(:object) { project }
+        end
       end
     end
 

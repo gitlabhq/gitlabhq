@@ -17,7 +17,6 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_widget_how_to_merge_modal.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -75,7 +74,6 @@ export default {
     PanelResizer,
     GlPagination,
     GlSprintf,
-    MrWidgetHowToMergeModal,
     GlAlert,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -738,15 +736,6 @@ export default {
           />
         </div>
       </div>
-      <mr-widget-how-to-merge-modal
-        :is-fork="isForked"
-        :can-merge="canMerge"
-        :source-branch="branchName"
-        :source-project-path="sourceProjectFullPath"
-        :target-branch="targetBranchName"
-        :source-project-default-url="sourceProjectDefaultUrl"
-        :reviewing-docs-path="$options.howToMergeDocsPath"
-      />
     </div>
   </div>
 </template>

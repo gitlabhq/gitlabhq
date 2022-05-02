@@ -50,6 +50,11 @@ export default {
       required: false,
       default: null,
     },
+    defaultPlatformName: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   apollo: {
     platforms: {
@@ -64,9 +69,10 @@ export default {
         });
       },
       result() {
-        // Select first platform by default
-        if (this.platforms?.[0]) {
-          this.selectPlatform(this.platforms[0]);
+        if (this.platforms.length) {
+          // If it is set and available, select the defaultSelectedPlatform.
+          // Otherwise, select the first available platform
+          this.selectPlatform(this.defaultPlatform() || this.platforms[0]);
         }
       },
       error() {
@@ -138,6 +144,14 @@ export default {
     show() {
       this.$refs.modal.show();
     },
+    focusSelected() {
+      // By default the first platform always gets the focus, but when the `defaultPlatformName`
+      // property is present, any other platform might actually be selected.
+      this.$refs[this.selectedPlatformName]?.[0].$el.focus();
+    },
+    defaultPlatform() {
+      return this.platforms.find((platform) => platform.name === this.defaultPlatformName);
+    },
     selectPlatform(platform) {
       this.selectedPlatform = platform;
 
@@ -182,6 +196,8 @@ export default {
     :title="$options.i18n.installARunner"
     :action-secondary="$options.closeButton"
     v-bind="$attrs"
+    v-on="$listeners"
+    @shown="focusSelected"
   >
     <gl-alert v-if="showAlert" variant="danger" @dismiss="toggleAlert(false)">
       {{ $options.i18n.fetchError }}
@@ -203,6 +219,7 @@ export default {
           <gl-button
             v-for="platform in platforms"
             :key="platform.name"
+            :ref="platform.name"
             :selected="selectedPlatform && selectedPlatform.name === platform.name"
             @click="selectPlatform(platform)"
           >
