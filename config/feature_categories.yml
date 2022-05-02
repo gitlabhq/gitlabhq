@@ -24,8 +24,6 @@
 - code_review
 - code_testing
 - compliance_management
-- container_host_security
-- container_network_security
 - container_registry
 - container_scanning
 - continuous_delivery
@@ -55,6 +53,7 @@
 - experimentation_expansion
 - feature_flags
 - five_minute_production_app
+- fulfillment_platform
 - fuzz_testing
 - geo_replication
 - git_lfs

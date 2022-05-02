@@ -1,5 +1,5 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import { i18n } from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
@@ -11,6 +11,7 @@ export default {
   i18n,
   components: {
     GlAlert,
+    GlSkeletonLoader,
     WorkItemActions,
     WorkItemTitle,
     WorkItemState,
@@ -80,23 +81,35 @@ export default {
       {{ error }}
     </gl-alert>
 
-    <div class="gl-display-flex">
-      <work-item-title
-        :loading="workItemLoading"
-        :work-item-id="workItem.id"
-        :work-item-title="workItem.title"
-        :work-item-type="workItemType"
-        class="gl-mr-5"
-        @error="error = $event"
-      />
-      <work-item-actions
-        :work-item-id="workItem.id"
-        :can-delete="canDelete"
-        class="gl-ml-auto gl-mt-5"
-        @workItemDeleted="handleWorkItemDeleted"
-        @error="error = $event"
-      />
+    <div v-if="workItemLoading" class="gl-max-w-26 gl-py-5">
+      <gl-skeleton-loader :height="65" :width="240">
+        <rect width="240" height="20" x="5" y="0" rx="4" />
+        <rect width="100" height="20" x="5" y="45" rx="4" />
+      </gl-skeleton-loader>
     </div>
-    <work-item-state :loading="workItemLoading" :work-item="workItem" @error="error = $event" />
+    <template v-else>
+      <div class="gl-display-flex">
+        <work-item-title
+          :work-item-id="workItem.id"
+          :work-item-title="workItem.title"
+          :work-item-type="workItemType"
+          class="gl-mr-5"
+          @error="error = $event"
+          @updated="$emit('workItemUpdated')"
+        />
+        <work-item-actions
+          :work-item-id="workItem.id"
+          :can-delete="canDelete"
+          class="gl-ml-auto gl-mt-5"
+          @workItemDeleted="handleWorkItemDeleted"
+          @error="error = $event"
+        />
+      </div>
+      <work-item-state
+        :work-item="workItem"
+        @error="error = $event"
+        @updated="$emit('workItemUpdated')"
+      />
+    </template>
   </section>
 </template>

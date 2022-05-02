@@ -524,13 +524,5 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
     end
 
     it { is_expected.to eq(capacity) }
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(container_registry_expiration_policies_throttling: false)
-      end
-
-      it { is_expected.to eq(0) }
-    end
   end
 end

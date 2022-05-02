@@ -5,7 +5,11 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
 
   data_consistency :always
 
+  # rubocop:disable Scalability/CronWorkerContext
+  # This worker does not perform work scoped to a context
   include CronjobQueue
+  # rubocop:enable Scalability/CronWorkerContext
+
   include ExclusiveLeaseGuard
 
   feature_category :container_registry
@@ -17,7 +21,9 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
   def perform
     process_stale_ongoing_cleanups
     disable_policies_without_container_repositories
-    throttling_enabled? ? perform_throttled : perform_unthrottled
+    try_obtain_lease do
+      ContainerExpirationPolicies::CleanupContainerRepositoryWorker.perform_with_capacity
+    end
     log_counts
   end
 
@@ -52,54 +58,6 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
     threshold = delete_tags_service_timeout.seconds + 30.minutes
     ContainerRepository.with_stale_ongoing_cleanup(threshold.ago)
                        .update_all(expiration_policy_cleanup_status: :cleanup_unfinished)
-  end
-
-  def perform_unthrottled
-    with_runnable_policy(preloaded: true) do |policy|
-      with_context(project: policy.project,
-                   user: nil) do |project:, user:|
-        ContainerExpirationPolicyService.new(project, user)
-                                        .execute(policy)
-      end
-    end
-  end
-
-  def perform_throttled
-    try_obtain_lease do
-      ContainerExpirationPolicies::CleanupContainerRepositoryWorker.perform_with_capacity
-    end
-  end
-
-  # TODO : remove the preload option when cleaning FF container_registry_expiration_policies_throttling
-  def with_runnable_policy(preloaded: false)
-    ContainerExpirationPolicy.runnable_schedules.each_batch(of: BATCH_SIZE) do |policies|
-      # rubocop: disable CodeReuse/ActiveRecord
-      cte = Gitlab::SQL::CTE.new(:batched_policies, policies.limit(BATCH_SIZE))
-      # rubocop: enable CodeReuse/ActiveRecord
-      scope = cte.apply_to(ContainerExpirationPolicy.all).with_container_repositories
-
-      scope = scope.preloaded if preloaded
-
-      scope.each do |policy|
-        if policy.valid?
-          yield policy
-        else
-          disable_invalid_policy!(policy)
-        end
-      end
-    end
-  end
-
-  def disable_invalid_policy!(policy)
-    policy.disable!
-    Gitlab::ErrorTracking.log_exception(
-      ::ContainerExpirationPolicyWorker::InvalidPolicyError.new,
-      container_expiration_policy_id: policy.id
-    )
-  end
-
-  def throttling_enabled?
-    Feature.enabled?(:container_registry_expiration_policies_throttling, default_enabled: :yaml)
   end
 
   def lease_timeout

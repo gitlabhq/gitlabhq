@@ -9,6 +9,8 @@ class Projects::AvatarsController < Projects::ApplicationController
 
   feature_category :projects
 
+  urgency :low, [:show]
+
   def show
     @blob = @repository.blob_at_branch(@repository.root_ref, @project.avatar_in_git)
 

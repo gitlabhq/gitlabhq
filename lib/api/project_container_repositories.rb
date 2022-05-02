@@ -91,7 +91,7 @@ module API
 
         # rubocop:disable CodeReuse/Worker
         CleanupContainerRepositoryWorker.perform_async(current_user.id, repository.id,
-          declared_params.except(:repository_id).merge(container_expiration_policy: false))
+          declared_params.except(:repository_id))
         # rubocop:enable CodeReuse/Worker
 
         track_package_event('delete_tag_bulk', :container, user: current_user, project: user_project, namespace: user_project.namespace)

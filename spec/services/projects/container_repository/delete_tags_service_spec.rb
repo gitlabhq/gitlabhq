@@ -134,10 +134,6 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
 
     subject { service.execute(repository) }
 
-    before do
-      stub_feature_flags(container_registry_expiration_policies_throttling: false)
-    end
-
     context 'without permissions' do
       it { is_expected.to include(status: :error) }
     end

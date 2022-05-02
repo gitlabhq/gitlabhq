@@ -5,6 +5,8 @@ class Projects::StarrersController < Projects::ApplicationController
 
   feature_category :projects
 
+  urgency :low, [:index]
+
   def index
     @starrers = UsersStarProjectsFinder.new(@project, params, current_user: @current_user).execute
     @sort = params[:sort].presence || sort_value_name

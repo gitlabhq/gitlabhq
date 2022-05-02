@@ -1,5 +1,4 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
 import {
@@ -14,16 +13,10 @@ import ItemState from './item_state.vue';
 
 export default {
   components: {
-    GlLoadingIcon,
     ItemState,
   },
   mixins: [Tracking.mixin()],
   props: {
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItem: {
       type: Object,
       required: true,
@@ -94,9 +87,8 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="loading" class="gl-mt-3" size="md" />
   <item-state
-    v-else-if="workItem.state"
+    v-if="workItem.state"
     :state="workItem.state"
     :loading="updateInProgress"
     @changed="updateWorkItemState"

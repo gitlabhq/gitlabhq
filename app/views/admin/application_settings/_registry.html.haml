@@ -13,7 +13,6 @@
       = f.gitlab_ui_checkbox_component :container_expiration_policies_enable_historic_entries,
         '%{label} %{label_link}'.html_safe % { label: label, label_link: label_link },
         help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
-    - if container_registry_expiration_policies_throttling?
       .form-group
         = f.label :container_registry_delete_tags_service_timeout, _('Cleanup policy maximum processing time (seconds)'), class: 'label-bold'
         = f.number_field :container_registry_delete_tags_service_timeout, min: 0, class: 'form-control gl-form-input'

@@ -115,6 +115,21 @@ and mirroring attempts stop. This failure is visible in either the:
 
 To resume project mirroring, [force an update](index.md#force-an-update).
 
+If many projects are affected by this problem, such as after a long network or
+server outage, you can use the [Rails console](../../../../administration/operations/rails_console.md)
+to identify and update all affected projects with this command:
+
+```ruby
+Project.find_each do |p|
+  if p.import_state && p.import_state.retry_count >= 14
+    puts "Resetting mirroring operation for #{p.full_path}"
+    p.import_state.reset_retry_count
+    p.import_state.set_next_execution_to_now(prioritized: true)
+    p.import_state.save!
+  end
+end
+```
+
 ## Related topics
 
 - Configure [pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)

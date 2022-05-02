@@ -396,7 +396,6 @@ RSpec.describe 'Admin updates settings' do
       end
 
       context 'Container Registry' do
-        let(:feature_flag_enabled) { true }
         let(:client_support) { true }
         let(:settings_titles) do
           {
@@ -409,16 +408,7 @@ RSpec.describe 'Admin updates settings' do
 
         before do
           stub_container_registry_config(enabled: true)
-          stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
           allow(ContainerRegistry::Client).to receive(:supports_tag_delete?).and_return(client_support)
-        end
-
-        shared_examples 'not having container registry setting' do |registry_setting|
-          it "lacks the container setting #{registry_setting}" do
-            visit ci_cd_admin_application_settings_path
-
-            expect(page).not_to have_content(settings_titles[registry_setting])
-          end
         end
 
         %i[container_registry_delete_tags_service_timeout container_registry_expiration_policies_worker_capacity container_registry_cleanup_tags_service_max_list_size].each do |setting|
@@ -433,12 +423,6 @@ RSpec.describe 'Admin updates settings' do
 
               expect(current_settings.public_send(setting)).to eq(400)
               expect(page).to have_content "Application settings saved successfully"
-            end
-
-            context 'with feature flag disabled' do
-              let(:feature_flag_enabled) { false }
-
-              it_behaves_like 'not having container registry setting', setting
             end
           end
         end
@@ -456,12 +440,6 @@ RSpec.describe 'Admin updates settings' do
 
             expect(current_settings.container_registry_expiration_policies_caching).to eq(!old_value)
             expect(page).to have_content "Application settings saved successfully"
-          end
-
-          context 'with feature flag disabled' do
-            let(:feature_flag_enabled) { false }
-
-            it_behaves_like 'not having container registry setting', :container_registry_expiration_policies_caching
           end
         end
       end

@@ -250,8 +250,7 @@ RSpec.describe API::ProjectContainerRepositories do
                 name_regex_delete: 'v10.*',
                 name_regex_keep: 'v10.1.*',
                 keep_n: 100,
-                older_than: '1 day',
-                container_expiration_policy: false }
+                older_than: '1 day' }
             end
 
             let(:lease_key) { "container_repository:cleanup_tags:#{root_repository.id}" }
@@ -297,8 +296,7 @@ RSpec.describe API::ProjectContainerRepositories do
                 name_regex_delete: nil,
                 name_regex_keep: 'v10.1.*',
                 keep_n: 100,
-                older_than: '1 day',
-                container_expiration_policy: false }
+                older_than: '1 day' }
             end
 
             it 'schedules cleanup of tags repository' do

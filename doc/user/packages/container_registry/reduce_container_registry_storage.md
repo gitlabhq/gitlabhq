@@ -158,12 +158,8 @@ Here are examples of regex patterns you may want to use:
 ### Set cleanup limits to conserve resources
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `container_registry_expiration_policies_throttling`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80815) in GitLab 14.9.
-
-FLAG:
-By default this feature is available in GitLab 14.9. To disable the feature, an administrator can
-[disable the feature flag](../../../administration/feature_flags.md)
-named `container_registry_expiration_policies_throttling`.
+> - [Enabled by default](https://gitlab.com/groups/gitlab-org/-/epics/2270) in GitLab 14.9.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84996) the feature flag `container_registry_expiration_policies_throttling` in GitLab 15.0.
 
 Cleanup policies are executed as a background process. This process is complex, and depending on the number of tags to delete,
 the process can take time to finish.

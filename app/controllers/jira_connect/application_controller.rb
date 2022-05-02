@@ -20,60 +20,44 @@ class JiraConnect::ApplicationController < ApplicationController
   end
 
   def verify_qsh_claim!
-    payload, _ = decode_auth_token!
-
-    return if request.format.json? && payload['qsh'] == 'context-qsh'
+    return if request.format.json? && jwt.verify_context_qsh_claim
 
     # Make sure `qsh` claim matches the current request
-    render_403 unless payload['qsh'] == Atlassian::Jwt.create_query_string_hash(request.url, request.method, jira_connect_base_url)
-  rescue StandardError
-    render_403
+    render_403 unless jwt.verify_qsh_claim(request.url, request.method, jira_connect_base_url)
   end
 
   def atlassian_jwt_valid?
     return false unless installation_from_jwt
 
     # Verify JWT signature with our stored `shared_secret`
-    decode_auth_token!
-  rescue JWT::DecodeError
-    false
+    jwt.valid?(installation_from_jwt.shared_secret)
   end
 
   def installation_from_jwt
     strong_memoize(:installation_from_jwt) do
-      next unless claims['iss']
+      next unless jwt.iss_claim
 
-      JiraConnectInstallation.find_by_client_key(claims['iss'])
-    end
-  end
-
-  def claims
-    strong_memoize(:claims) do
-      next {} unless auth_token
-
-      # Decode without verification to get `client_key` in `iss`
-      payload, _ = Atlassian::Jwt.decode(auth_token, nil, false)
-      payload
+      JiraConnectInstallation.find_by_client_key(jwt.iss_claim)
     end
   end
 
   def jira_user
     strong_memoize(:jira_user) do
       next unless installation_from_jwt
-      next unless claims['sub']
+      next unless jwt.sub_claim
 
       # This only works for Jira Cloud installations.
-      installation_from_jwt.client.user_info(claims['sub'])
+      installation_from_jwt.client.user_info(jwt.sub_claim)
     end
   end
 
-  def decode_auth_token!
-    Atlassian::Jwt.decode(auth_token, installation_from_jwt.shared_secret)
+  def jwt
+    strong_memoize(:jwt) do
+      Atlassian::JiraConnect::Jwt::Symmetric.new(auth_token)
+    end
   end
 
   def auth_token
-    strong_memoize(:auth_token) do
-      params[:jwt] || request.headers['Authorization']&.split(' ', 2)&.last
-    end
+    params[:jwt] || request.headers['Authorization']&.split(' ', 2)&.last
   end
 end

@@ -691,22 +691,6 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
   end
 
-  describe '#reset_expiration_policy_started_at!' do
-    subject { repository.reset_expiration_policy_started_at! }
-
-    before do
-      repository.start_expiration_policy!
-    end
-
-    it 'resets the expiration policy started at' do
-      started_at = repository.expiration_policy_started_at
-
-      expect(started_at).not_to be_nil
-      expect { subject }
-          .to change { repository.expiration_policy_started_at }.from(started_at).to(nil)
-    end
-  end
-
   context 'registry migration' do
     before do
       allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)

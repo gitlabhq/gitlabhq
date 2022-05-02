@@ -34,8 +34,8 @@ class UsersController < ApplicationController
   feature_category :snippets, [:snippets]
 
   # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357914
-  urgency :low, [:show, :calendar_activities, :activity, :projects, :groups]
-  urgency :medium, [:calendar]
+  urgency :low, [:show, :calendar_activities, :contributed, :activity, :projects, :groups]
+  urgency :default, [:calendar, :followers, :following, :starred]
   urgency :high, [:exists]
 
   def show

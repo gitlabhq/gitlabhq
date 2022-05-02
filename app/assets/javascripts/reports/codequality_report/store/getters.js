@@ -1,5 +1,5 @@
 import { spriteIcon } from '~/lib/utils/common_utils';
-import { sprintf, s__ } from '~/locale';
+import { sprintf, s__, n__ } from '~/locale';
 import { LOADING, ERROR, SUCCESS, STATUS_NOT_FOUND } from '../../constants';
 
 export const hasCodequalityIssues = (state) =>
@@ -29,9 +29,17 @@ export const codequalityText = (state) => {
       },
     );
   } else if (resolvedIssues.length) {
-    text = s__(`ciReport|Code quality improved`);
+    text = n__(
+      `ciReport|Code quality improved due to 1 resolved issue`,
+      `ciReport|Code quality improved due to %d resolved issues`,
+      resolvedIssues.length,
+    );
   } else if (newIssues.length) {
-    text = s__(`ciReport|Code quality degraded`);
+    text = n__(
+      `ciReport|Code quality degraded due to 1 new issue`,
+      `ciReport|Code quality degraded due to %d new issues`,
+      newIssues.length,
+    );
   }
 
   return text;

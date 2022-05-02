@@ -1,4 +1,3 @@
-import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -24,19 +23,16 @@ describe('WorkItemState component', () => {
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
 
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findItemState = () => wrapper.findComponent(ItemState);
 
   const createComponent = ({
     state = STATE_OPEN,
-    loading = false,
     mutationHandler = mutationSuccessHandler,
   } = {}) => {
     const { id, workItemType } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemState, {
       apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
       propsData: {
-        loading,
         workItem: {
           id,
           state,
@@ -50,32 +46,10 @@ describe('WorkItemState component', () => {
     wrapper.destroy();
   });
 
-  describe('when loading', () => {
-    beforeEach(() => {
-      createComponent({ loading: true });
-    });
+  it('renders state', () => {
+    createComponent();
 
-    it('renders loading spinner', () => {
-      expect(findLoadingIcon().exists()).toBe(true);
-    });
-
-    it('does not render state', () => {
-      expect(findItemState().exists()).toBe(false);
-    });
-  });
-
-  describe('when loaded', () => {
-    beforeEach(() => {
-      createComponent({ loading: false });
-    });
-
-    it('does not render loading spinner', () => {
-      expect(findLoadingIcon().exists()).toBe(false);
-    });
-
-    it('renders state', () => {
-      expect(findItemState().props('state')).toBe(workItemQueryResponse.data.workItem.state);
-    });
+    expect(findItemState().props('state')).toBe(workItemQueryResponse.data.workItem.state);
   });
 
   describe('when updating the state', () => {

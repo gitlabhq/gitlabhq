@@ -117,7 +117,6 @@ module Projects
         @counts[:before_truncate_size] = @tags.size
         @counts[:after_truncate_size] = @tags.size
 
-        return unless throttling_enabled?
         return if max_list_size == 0
 
         # truncate the list to make sure that after the #filter_keep_n
@@ -149,10 +148,6 @@ module Projects
                  container_expiration_policy &&
                  older_than.present?
         !!result
-      end
-
-      def throttling_enabled?
-        Feature.enabled?(:container_registry_expiration_policies_throttling, default_enabled: :yaml)
       end
 
       def max_list_size

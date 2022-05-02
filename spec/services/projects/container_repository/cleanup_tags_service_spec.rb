@@ -34,8 +34,6 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
     stub_digest_config('sha256:configB', 5.days.ago)
     stub_digest_config('sha256:configC', 1.month.ago)
     stub_digest_config('sha256:configD', nil)
-
-    stub_feature_flags(container_registry_expiration_policies_throttling: false)
   end
 
   describe '#execute' do
@@ -334,24 +332,17 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
         end
       end
 
-      where(:feature_flag_enabled, :max_list_size, :delete_tags_service_status, :expected_status, :expected_truncated) do
-        false | 10 | :success | :success | false
-        false | 10 | :error   | :error   | false
-        false | 3  | :success | :success | false
-        false | 3  | :error   | :error   | false
-        false | 0  | :success | :success | false
-        false | 0  | :error   | :error   | false
-        true  | 10 | :success | :success | false
-        true  | 10 | :error   | :error   | false
-        true  | 3  | :success | :error   | true
-        true  | 3  | :error   | :error   | true
-        true  | 0  | :success | :success | false
-        true  | 0  | :error   | :error   | false
+      where(:max_list_size, :delete_tags_service_status, :expected_status, :expected_truncated) do
+        10 | :success | :success | false
+        10 | :error   | :error   | false
+        3  | :success | :error   | true
+        3  | :error   | :error   | true
+        0  | :success | :success | false
+        0  | :error   | :error   | false
       end
 
       with_them do
         before do
-          stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
           stub_application_setting(container_registry_cleanup_tags_service_max_list_size: max_list_size)
           allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |service|
             expect(service).to receive(:execute).and_return(status: delete_tags_service_status)
