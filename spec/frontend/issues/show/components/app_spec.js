@@ -487,7 +487,14 @@ describe('Issuable output', () => {
 
         await nextTick();
 
-        expect(findConfidentialBadge().exists()).toBe(isConfidential);
+        const confidentialEl = findConfidentialBadge();
+        expect(confidentialEl.exists()).toBe(isConfidential);
+        if (isConfidential) {
+          expect(confidentialEl.props()).toMatchObject({
+            workspaceType: 'project',
+            issuableType: 'issue',
+          });
+        }
       });
 
       it.each`

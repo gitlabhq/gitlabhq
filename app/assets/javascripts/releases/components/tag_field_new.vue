@@ -62,7 +62,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('editNew', ['updateReleaseTagName', 'updateCreateFrom']),
+    ...mapActions('editNew', ['updateReleaseTagName', 'updateCreateFrom', 'fetchTagNotes']),
     markInputAsDirty() {
       this.isInputDirty = true;
     },
@@ -125,6 +125,7 @@ export default {
           :translations="$options.translations.tagName"
           :enabled-ref-types="$options.tagNameEnabledRefTypes"
           :state="!showTagNameValidationError"
+          @input="fetchTagNotes"
           @hide.once="markInputAsDirty"
         >
           <template #footer="{ isLoading, matches, query }">

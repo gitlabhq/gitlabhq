@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import SidebarConfidentialityContent from '~/sidebar/components/confidential/sidebar_confidentiality_content.vue';
 
@@ -60,12 +60,24 @@ describe('Sidebar Confidentiality Content', () => {
 
     it('displays a correct confidential text for issue', () => {
       createComponent({ confidential: true });
-      expect(findText().text()).toBe('This issue is confidential');
+
+      const alertEl = findText().findComponent(GlAlert);
+
+      expect(alertEl.props()).toMatchObject({
+        showIcon: false,
+        dismissible: false,
+        variant: 'warning',
+      });
+      expect(alertEl.text()).toBe(
+        'Only project members with at least Reporter role can view or be notified about this issue.',
+      );
     });
 
     it('displays a correct confidential text for epic', () => {
       createComponent({ confidential: true, issuableType: 'epic' });
-      expect(findText().text()).toBe('This epic is confidential');
+      expect(findText().findComponent(GlAlert).text()).toBe(
+        'Only group members with at least Reporter role can view or be notified about this epic.',
+      );
     });
   });
 });

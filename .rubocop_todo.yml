@@ -11,11 +11,6 @@ Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
 
-# Offense count: 200
-# Cop supports --auto-correct.
-Lint/RedundantCopDisableDirective:
-  Enabled: false
-
 # Offense count: 22
 # Cop supports --auto-correct.
 # Configuration parameters: AllowComments.
@@ -66,10 +61,6 @@ RSpec/PredicateMatcher:
 
 # Offense count: 118
 RSpec/RepeatedExampleGroupBody:
-  Enabled: false
-
-# Offense count: 225
-RSpec/RepeatedExampleGroupDescription:
   Enabled: false
 
 # Offense count: 667

@@ -91,6 +91,7 @@ To create a release in the Releases page:
    - [Title](#title).
    - [Milestones](#associate-milestones-with-a-release).
    - [Release notes](#release-notes-description).
+   - Whether or not to include the [Tag message](../../../topics/git/tags.md).
    - [Asset links](#links).
 1. Select **Create release**.
 
@@ -439,8 +440,11 @@ Every release has a description. You can add any text you like, but we recommend
 including a changelog to describe the content of your release. This helps users
 quickly scan the differences between each release you publish.
 
-[Git's tagging messages](https://git-scm.com/book/en/v2/Git-Basics-Tagging) and
-Release note descriptions are unrelated. Description supports [Markdown](../../markdown.md).
+[Git's tagging messages](https://git-scm.com/book/en/v2/Git-Basics-Tagging) can
+be included in Release note descriptions by selecting **Include tag message in
+the release notes**.
+
+Description supports [Markdown](../../markdown.md).
 
 ### Release assets
 

@@ -1,4 +1,5 @@
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
+import { IssuableType, WorkspaceType } from '~/issues/constants';
 
 const INTERVALS = {
   minute: 'minute',
@@ -66,3 +67,14 @@ export const getTimeWindow = (timeWindowName) =>
 
 export const AVATAR_SHAPE_OPTION_CIRCLE = 'circle';
 export const AVATAR_SHAPE_OPTION_RECT = 'rect';
+
+export const confidentialityInfoText = (workspaceType, issuableType) =>
+  sprintf(
+    __(
+      'Only %{workspaceType} members with at least Reporter role can view or be notified about this %{issuableType}.',
+    ),
+    {
+      workspaceType: workspaceType === WorkspaceType.project ? __('project') : __('group'),
+      issuableType: issuableType === IssuableType.Issue ? __('issue') : __('epic'),
+    },
+  );

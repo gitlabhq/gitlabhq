@@ -8,7 +8,7 @@ import { confidentialityQueries } from '~/sidebar/constants';
 export default {
   i18n: {
     confidentialityOnWarning: __(
-      'You are going to turn on confidentiality. Only team members with %{strongStart}at least Reporter access%{strongEnd} will be able to see and leave comments on the %{issuableType}.',
+      'You are going to turn on confidentiality. Only %{context} members with %{strongStart}at least Reporter role%{strongEnd} can view or be notified about this %{issuableType}.',
     ),
     confidentialityOffWarning: __(
       'You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}.',
@@ -52,6 +52,9 @@ export default {
       return this.confidential
         ? this.$options.i18n.confidentialityOffWarning
         : this.$options.i18n.confidentialityOnWarning;
+    },
+    context() {
+      return this.issuableType === IssuableType.Issue ? __('project') : __('group');
     },
     workspacePath() {
       return this.issuableType === IssuableType.Issue
@@ -119,6 +122,7 @@ export default {
             <template #strong="{ content }">
               <strong>{{ content }}</strong>
             </template>
+            <template #context>{{ context }}</template>
             <template #issuableType>{{ issuableType }}</template>
           </gl-sprintf>
         </p>

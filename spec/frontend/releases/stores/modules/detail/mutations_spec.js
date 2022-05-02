@@ -237,4 +237,40 @@ describe('Release edit/new mutations', () => {
       expect(state.release.assets.links).not.toContainEqual(linkToRemove);
     });
   });
+  describe(`${types.REQUEST_TAG_NOTES}`, () => {
+    it('sets isFetchingTagNotes to true', () => {
+      state.isFetchingTagNotes = false;
+      mutations[types.REQUEST_TAG_NOTES](state);
+      expect(state.isFetchingTagNotes).toBe(true);
+    });
+  });
+  describe(`${types.RECEIVE_TAG_NOTES_SUCCESS}`, () => {
+    it('sets the tag notes in the state', () => {
+      state.isFetchingTagNotes = true;
+      const message = 'tag notes';
+
+      mutations[types.RECEIVE_TAG_NOTES_SUCCESS](state, { message });
+      expect(state.tagNotes).toBe(message);
+      expect(state.isFetchingTagNotes).toBe(false);
+    });
+  });
+  describe(`${types.RECEIVE_TAG_NOTES_ERROR}`, () => {
+    it('sets tag notes to empty', () => {
+      const message = 'there was an error';
+      state.isFetchingTagNotes = true;
+      state.tagNotes = 'tag notes';
+
+      mutations[types.RECEIVE_TAG_NOTES_ERROR](state, { message });
+      expect(state.tagNotes).toBe('');
+      expect(state.isFetchingTagNotes).toBe(false);
+    });
+  });
+  describe(`${types.UPDATE_INCLUDE_TAG_NOTES}`, () => {
+    it('sets whether or not to include the tag notes', () => {
+      state.includeTagNotes = false;
+
+      mutations[types.UPDATE_INCLUDE_TAG_NOTES](state, true);
+      expect(state.includeTagNotes).toBe(true);
+    });
+  });
 });

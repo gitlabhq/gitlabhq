@@ -216,6 +216,15 @@ export default {
 
       return data[keys[0]];
     },
+    getDrawerHeaderHeight() {
+      const wrapperEl = document.querySelector('.content-wrapper');
+
+      if (wrapperEl) {
+        return `${wrapperEl.offsetTop}px`;
+      }
+
+      return '';
+    },
   },
   MSG_CANCEL,
   INDEX_ROUTE_NAME,
@@ -224,7 +233,12 @@ export default {
 
 <template>
   <mounting-portal v-if="!loading" mount-to="#js-crm-form-portal" append>
-    <gl-drawer class="gl-drawer-responsive gl-absolute" :open="drawerOpen" @close="close(false)">
+    <gl-drawer
+      :header-height="getDrawerHeaderHeight()"
+      class="gl-drawer-responsive"
+      :open="drawerOpen"
+      @close="close(false)"
+    >
       <template #title>
         <h3>{{ title }}</h3>
       </template>

@@ -89,7 +89,7 @@ describe('Sidebar Confidentiality Form', () => {
 
     it('renders a message about making an issue confidential', () => {
       expect(findWarningMessage().text()).toBe(
-        'You are going to turn on confidentiality. Only team members with at least Reporter access will be able to see and leave comments on the issue.',
+        'You are going to turn on confidentiality. Only project members with at least Reporter role can view or be notified about this issue.',
       );
     });
 

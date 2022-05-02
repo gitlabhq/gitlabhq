@@ -2,10 +2,16 @@
 import { GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
-import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
+import {
+  IssuableStatus,
+  IssuableStatusText,
+  WorkspaceType,
+  IssuableType,
+} from '~/issues/constants';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, INCIDENT_TYPE, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
@@ -18,6 +24,7 @@ import PinnedLinks from './pinned_links.vue';
 import titleComponent from './title.vue';
 
 export default {
+  WorkspaceType,
   components: {
     GlIcon,
     GlIntersectionObserver,
@@ -25,6 +32,7 @@ export default {
     editedComponent,
     formComponent,
     PinnedLinks,
+    ConfidentialityBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -156,7 +164,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: IssuableType.Issue,
     },
     canAttachFile: {
       type: Boolean,
@@ -519,9 +527,12 @@ export default {
               <span v-if="isLocked" data-testid="locked" class="issuable-warning-icon">
                 <gl-icon name="lock" :aria-label="__('Locked')" />
               </span>
-              <span v-if="isConfidential" data-testid="confidential" class="issuable-warning-icon">
-                <gl-icon name="eye-slash" :aria-label="__('Confidential')" />
-              </span>
+              <confidentiality-badge
+                v-if="isConfidential"
+                data-testid="confidential"
+                :workspace-type="$options.WorkspaceType.project"
+                :issuable-type="issuableType"
+              />
               <span
                 v-if="isHidden"
                 v-gl-tooltip

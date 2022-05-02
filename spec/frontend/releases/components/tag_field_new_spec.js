@@ -1,5 +1,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import { __ } from '~/locale';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
@@ -14,6 +16,7 @@ const NONEXISTENT_TAG_NAME = 'nonexistent-tag';
 describe('releases/components/tag_field_new', () => {
   let store;
   let wrapper;
+  let mock;
   let RefSelectorStub;
 
   const createComponent = (
@@ -65,11 +68,14 @@ describe('releases/components/tag_field_new', () => {
         links: [],
       },
     };
+
+    mock = new MockAdapter(axios);
+    gon.api_version = 'v4';
   });
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
+    mock.restore();
   });
 
   const findTagNameFormGroup = () => wrapper.find('[data-testid="tag-name-field"]');
@@ -114,8 +120,13 @@ describe('releases/components/tag_field_new', () => {
           expect(store.state.editNew.release.tagName).toBe(updatedTagName);
         });
 
-        it('shows the "Create from" field', () => {
+        it('hides the "Create from" field', () => {
           expect(findCreateFromFormGroup().exists()).toBe(false);
+        });
+
+        it('fetches the release notes for the tag', () => {
+          const expectedUrl = `/api/v4/projects/1234/repository/tags/${updatedTagName}`;
+          expect(mock.history.get).toContainEqual(expect.objectContaining({ url: expectedUrl }));
         });
       });
     });

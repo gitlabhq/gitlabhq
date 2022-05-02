@@ -61,6 +61,27 @@ available, you have to:
 
 All files in the wiki are available in this Git repository.
 
+## Configure group wiki visibility
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208412) in GitLab 15.0.
+
+Wikis are enabled by default in GitLab. Group [administrators](../../permissions.md)
+can enable or disable a group wiki through the group settings.
+
+To open group settings:
+
+```markdown
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+```
+
+In the wiki section you may select one from the following options:
+
+- Enabled: everyone who can access the group can access the wiki.
+- Private: only group members can access the wiki.
+- Disabled: the wiki will be entirely disabled and it won't be accessible nor downloadable.
+
 ## Related topics
 
 - [Wiki settings for administrators](../../../administration/wikis/index.md)

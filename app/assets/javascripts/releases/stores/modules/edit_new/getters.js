@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash';
+import { s__ } from '~/locale';
 import { hasContent } from '~/lib/utils/text_utility';
 import { getDuplicateItemsFromArray } from '~/lib/utils/array_utility';
 
@@ -117,7 +118,7 @@ export const isValid = (_state, getters) => {
 };
 
 /** Returns all the variables for a `releaseUpdate` GraphQL mutation */
-export const releaseUpdateMutatationVariables = (state) => {
+export const releaseUpdateMutatationVariables = (state, getters) => {
   const name = state.release.name?.trim().length > 0 ? state.release.name.trim() : null;
 
   // Milestones may be either a list of milestone objects OR just a list
@@ -129,7 +130,9 @@ export const releaseUpdateMutatationVariables = (state) => {
       projectPath: state.projectPath,
       tagName: state.release.tagName,
       name,
-      description: state.release.description,
+      description: state.includeTagNotes
+        ? getters.formattedReleaseNotes
+        : state.release.description,
       milestones,
     },
   };
@@ -151,3 +154,8 @@ export const releaseCreateMutatationVariables = (state, getters) => {
     },
   };
 };
+
+export const formattedReleaseNotes = ({ includeTagNotes, release: { description }, tagNotes }) =>
+  includeTagNotes && tagNotes
+    ? `${description}\n\n### ${s__('Releases|Tag message')}\n\n${tagNotes}\n`
+    : description;

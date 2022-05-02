@@ -1,3 +1,4 @@
+import { s__ } from '~/locale';
 import * as getters from '~/releases/stores/modules/edit_new/getters';
 
 describe('Release edit/new getters', () => {
@@ -368,5 +369,26 @@ describe('Release edit/new getters', () => {
 
       expect(actualVariables).toEqual(expectedVariables);
     });
+  });
+
+  describe('formattedReleaseNotes', () => {
+    it.each`
+      description        | includeTagNotes | tagNotes       | included
+      ${'release notes'} | ${true}         | ${'tag notes'} | ${true}
+      ${'release notes'} | ${true}         | ${''}          | ${false}
+      ${'release notes'} | ${false}        | ${'tag notes'} | ${false}
+    `(
+      'should include tag notes=$included when includeTagNotes=$includeTagNotes and tagNotes=$tagNotes',
+      ({ description, includeTagNotes, tagNotes, included }) => {
+        const state = { release: { description }, includeTagNotes, tagNotes };
+
+        const text = `### ${s__('Releases|Tag message')}\n\n${tagNotes}\n`;
+        if (included) {
+          expect(getters.formattedReleaseNotes(state)).toContain(text);
+        } else {
+          expect(getters.formattedReleaseNotes(state)).not.toContain(text);
+        }
+      },
+    );
   });
 });

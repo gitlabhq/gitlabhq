@@ -105,18 +105,6 @@ describe('File finder item spec', () => {
       });
     });
 
-    describe('listHeight', () => {
-      it('returns 55 when entries exist', () => {
-        expect(vm.listHeight).toBe(55);
-      });
-
-      it('returns 33 when entries dont exist', () => {
-        vm.searchText = 'testing 123';
-
-        expect(vm.listHeight).toBe(33);
-      });
-    });
-
     describe('filteredBlobsLength', () => {
       it('returns length of filtered blobs', () => {
         vm.searchText = 'index';
@@ -253,11 +241,9 @@ describe('File finder item spec', () => {
 
   describe('without entries', () => {
     it('renders loading text when loading', () => {
-      createComponent({
-        loading: true,
-      });
+      createComponent({ loading: true });
 
-      expect(vm.$el.textContent).toContain('Loading...');
+      expect(vm.$el.querySelector('.gl-spinner')).not.toBe(null);
     });
 
     it('renders no files text', () => {

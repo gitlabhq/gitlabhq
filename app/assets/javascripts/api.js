@@ -857,6 +857,14 @@ const Api = {
     });
   },
 
+  tag(id, tagName) {
+    const url = Api.buildUrl(this.tagPath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':tag_name', encodeURIComponent(tagName));
+
+    return axios.get(url);
+  },
+
   freezePeriods(id) {
     const url = Api.buildUrl(this.freezePeriodsPath).replace(':id', encodeURIComponent(id));
 

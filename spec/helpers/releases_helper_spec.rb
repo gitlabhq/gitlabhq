@@ -9,9 +9,9 @@ RSpec.describe ReleasesHelper do
     end
   end
 
-  describe '#help_page' do
+  describe '#releases_help_page_path' do
     it 'returns the correct link to the help page' do
-      expect(helper.help_page).to include('user/project/releases/index')
+      expect(helper.releases_help_page_path).to include('user/project/releases/index')
     end
   end
 
@@ -63,7 +63,8 @@ RSpec.describe ReleasesHelper do
                   releases_page_path
                   release_assets_docs_path
                   manage_milestones_path
-                  new_milestone_path)
+                  new_milestone_path
+                  edit_release_docs_path)
 
         expect(helper.data_for_edit_release_page.keys).to match_array(keys)
       end
@@ -81,7 +82,8 @@ RSpec.describe ReleasesHelper do
                   release_assets_docs_path
                   manage_milestones_path
                   new_milestone_path
-                  default_branch)
+                  default_branch
+                  edit_release_docs_path)
 
         expect(helper.data_for_new_release_page.keys).to match_array(keys)
       end

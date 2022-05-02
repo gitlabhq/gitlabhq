@@ -2,10 +2,15 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { __ } from '~/locale';
+import { IssuableType, WorkspaceType } from '~/issues/constants';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
 export default {
+  WorkspaceType,
+  IssuableType,
   components: {
     GlIcon,
+    ConfidentialityBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -27,11 +32,6 @@ export default {
           dataTestId: 'locked',
         },
         {
-          iconName: 'eye-slash',
-          visible: this.isConfidential,
-          dataTestId: 'confidential',
-        },
-        {
           iconName: 'spam',
           visible: this.hidden,
           dataTestId: 'hidden',
@@ -45,6 +45,12 @@ export default {
 
 <template>
   <div class="gl-display-inline-block">
+    <confidentiality-badge
+      v-if="isConfidential"
+      data-testid="confidential"
+      :workspace-type="$options.WorkspaceType.project"
+      :issuable-type="$options.IssuableType.Issue"
+    />
     <template v-for="meta in warningIconsMeta">
       <div
         v-if="meta.visible"

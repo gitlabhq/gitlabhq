@@ -108,7 +108,11 @@ RSpec.shared_examples 'issue boards sidebar' do
 
         wait_for_requests
 
-        expect(page).to have_content('This issue is confidential')
+        expect(page).to have_content(
+          _('Only project members with at least' \
+          ' Reporter role can view or be' \
+          ' notified about this issue.')
+        )
       end
     end
   end

@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
 import Vuex from 'vuex';
 import { nextTick } from 'vue';
+import { GlFormCheckbox } from '@gitlab/ui';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -11,6 +12,7 @@ import * as commonUtils from '~/lib/utils/common_utils';
 import ReleaseEditNewApp from '~/releases/components/app_edit_new.vue';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 const originalMilestones = originalRelease.milestones;
 const releasesPagePath = 'path/to/releases/page';
@@ -47,6 +49,7 @@ describe('Release edit/new component', () => {
           links: [],
         },
       }),
+      formattedReleaseNotes: () => 'these notes are formatted',
     };
 
     const store = new Vuex.Store(
@@ -129,6 +132,11 @@ describe('Release edit/new component', () => {
       expect(wrapper.find('#release-notes').element.value).toBe(release.description);
     });
 
+    it('sets the preview text to be the formatted release notes', () => {
+      const notes = getters.formattedReleaseNotes();
+      expect(wrapper.findComponent(MarkdownField).props('textareaValue')).toBe(notes);
+    });
+
     it('renders the "Save changes" button as type="submit"', () => {
       expect(findSubmitButton().attributes('type')).toBe('submit');
     });
@@ -194,6 +202,10 @@ describe('Release edit/new component', () => {
 
     it('renders the submit button with the text "Create release"', () => {
       expect(findSubmitButton().text()).toBe('Create release');
+    });
+
+    it('renders a checkbox to include release notes', () => {
+      expect(wrapper.find(GlFormCheckbox).exists()).toBe(true);
     });
   });
 

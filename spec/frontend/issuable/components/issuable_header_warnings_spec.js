@@ -66,7 +66,15 @@ describe('IssuableHeaderWarnings', () => {
         });
 
         it(`${renderTestMessage(confidentialStatus)} the confidential icon`, () => {
-          expect(findConfidentialIcon().exists()).toBe(confidentialStatus);
+          const confidentialEl = findConfidentialIcon();
+          expect(confidentialEl.exists()).toBe(confidentialStatus);
+
+          if (confidentialStatus && !hiddenStatus) {
+            expect(confidentialEl.props()).toMatchObject({
+              workspaceType: 'project',
+              issuableType: 'issue',
+            });
+          }
         });
 
         it(`${renderTestMessage(confidentialStatus)} the hidden icon`, () => {
