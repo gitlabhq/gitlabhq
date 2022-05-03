@@ -153,7 +153,7 @@ module API
           def token
             strong_memoize(:token) do
               token = nil
-              token = ::Gitlab::ConanToken.from_personal_access_token(access_token) if access_token
+              token = ::Gitlab::ConanToken.from_personal_access_token(find_personal_access_token.user_id, access_token_from_request) if find_personal_access_token
               token = ::Gitlab::ConanToken.from_deploy_token(deploy_token_from_request) if deploy_token_from_request
               token = ::Gitlab::ConanToken.from_job(find_job_from_token) if find_job_from_token
               token
@@ -224,9 +224,27 @@ module API
             forbidden!
           end
 
+          # We override this method from auth_finders because we need to
+          # extract the token from the Conan JWT which is specific to the Conan API
           def find_personal_access_token
-            find_personal_access_token_from_conan_jwt ||
-              find_personal_access_token_from_http_basic_auth
+            strong_memoize(:find_personal_access_token) do
+              PersonalAccessToken.find_by_token(access_token_from_request)
+            end
+          end
+
+          def access_token_from_request
+            strong_memoize(:access_token_from_request) do
+              find_personal_access_token_from_conan_jwt ||
+                find_password_from_basic_auth
+            end
+          end
+
+          def find_password_from_basic_auth
+            return unless route_authentication_setting[:basic_auth_personal_access_token]
+            return unless has_basic_credentials?(current_request)
+
+            _username, password = user_name_and_password(current_request)
+            password
           end
 
           def find_user_from_job_token
@@ -256,7 +274,7 @@ module API
 
             return unless token
 
-            PersonalAccessToken.find_by_id_and_user_id(token.access_token_id, token.user_id)
+            token.access_token_id
           end
 
           def find_deploy_token_from_conan_jwt

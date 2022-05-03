@@ -111,6 +111,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           end
         end
 
+        it 'does not import ci config path' do
+          expect(@project.ci_config_path).to be_nil
+        end
+
         it 'creates a valid pipeline note' do
           expect(Ci::Pipeline.find_by_sha('sha-notes').notes).not_to be_empty
         end

@@ -229,7 +229,13 @@ class CommitStatus < Ci::ApplicationRecord
   end
 
   def group_name
-    name.to_s.sub(%r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+)))+\s*\z}, '').strip
+    # [\b\s:] -> whitespace or column
+    # (\[.*\])|(\d+[\s:\/\\]+\d+) -> variables/matrix or parallel-jobs numbers
+    # {1,3} -> number of times that matches the variables/matrix or parallel-jobs numbers
+    #          we limit this to 3 because of possible abuse
+    regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
+
+    name.to_s.sub(regex, '').strip
   end
 
   def failed_but_allowed?

@@ -4,6 +4,7 @@
   "creator_id": 123,
   "visibility_level": 10,
   "archived": false,
+  "ci_config_path": "config/path",
   "labels": [
     {
       "id": 2,

@@ -11,6 +11,7 @@ module API
     end
 
     feature_category :global_search
+    urgency :low
 
     rescue_from ActiveRecord::QueryCanceled do |e|
       render_api_error!({ error: 'Request timed out' }, 408)

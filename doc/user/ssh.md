@@ -308,6 +308,8 @@ To use SSH with GitLab, copy your public key to your GitLab account.
 
 Verify that your SSH key was added correctly.
 
+The following commands use the example hostname `gitlab.example.com`. Replace this example hostname with your GitLab instance's hostname, for example, `git@gitlab.com`.
+
 1. For GitLab.com, to ensure you're connecting to the correct server, confirm the
    [SSH host keys fingerprints](gitlab_com/index.md#ssh-host-keys-fingerprints).
 1. Open a terminal and run this command, replacing `gitlab.example.com` with your GitLab instance URL:

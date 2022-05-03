@@ -25,8 +25,7 @@ class SearchController < ApplicationController
   layout 'search'
 
   feature_category :global_search
-  urgency :high, [:opensearch]
-  urgency :low, [:count]
+  urgency :low
 
   def show
     @project = search_service.project
