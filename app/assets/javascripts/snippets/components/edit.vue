@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlFormInput, GlFormGroup } from '@gitlab/ui';
 
 import eventHub from '~/blob/components/eventhub';
 import createFlash from '~/flash';
@@ -11,7 +11,6 @@ import {
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
-import TitleField from '~/vue_shared/components/form/title.vue';
 
 import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '../constants';
 import { getSnippetMixin } from '../mixins/snippets';
@@ -31,10 +30,11 @@ export default {
     SnippetDescriptionEdit,
     SnippetVisibilityEdit,
     SnippetBlobActionsEdit,
-    TitleField,
     FormFooterActions,
     GlButton,
     GlLoadingIcon,
+    GlFormInput,
+    GlFormGroup,
   },
   mixins: [getSnippetMixin],
   inject: ['selectedLevel'],
@@ -67,6 +67,7 @@ export default {
         description: '',
         visibilityLevel: this.selectedLevel,
       },
+      showValidation: false,
     };
   },
   computed: {
@@ -85,8 +86,11 @@ export default {
     hasValidBlobs() {
       return this.actions.every((x) => x.content);
     },
-    updatePrevented() {
-      return this.snippet.title === '' || !this.hasValidBlobs || this.isUpdating;
+    isTitleValid() {
+      return this.snippet.title !== '';
+    },
+    isFormValid() {
+      return this.isTitleValid && this.hasValidBlobs;
     },
     isProjectSnippet() {
       return Boolean(this.projectPath);
@@ -111,6 +115,12 @@ export default {
         return joinPaths('/', gon.relative_url_root, this.projectPath, '-/snippets');
       }
       return this.snippet.webUrl;
+    },
+    shouldShowBlobsErrors() {
+      return this.showValidation && !this.hasValidBlobs;
+    },
+    shouldShowTitleErrors() {
+      return this.showValidation && !this.isTitleValid;
     },
   },
   beforeCreate() {
@@ -165,6 +175,12 @@ export default {
       };
     },
     handleFormSubmit() {
+      this.showValidation = true;
+
+      if (!this.isFormValid) {
+        return;
+      }
+
       this.isUpdating = true;
 
       this.$apollo
@@ -206,19 +222,31 @@ export default {
       class="loading-animation prepend-top-20 gl-mb-6"
     />
     <template v-else>
-      <title-field
-        id="snippet-title"
-        v-model="snippet.title"
-        data-qa-selector="snippet_title_field"
-        required
-        :autofocus="true"
-      />
+      <gl-form-group
+        :label="__('Title')"
+        label-for="snippet-title"
+        :invalid-feedback="__('This field is required.')"
+        :state="!shouldShowTitleErrors"
+      >
+        <gl-form-input
+          id="snippet-title"
+          v-model="snippet.title"
+          data-testid="snippet-title-input"
+          data-qa-selector="snippet_title_field"
+          :autofocus="true"
+        />
+      </gl-form-group>
+
       <snippet-description-edit
         v-model="snippet.description"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
       />
-      <snippet-blob-actions-edit :init-blobs="blobs" @actions="updateActions" />
+      <snippet-blob-actions-edit
+        :init-blobs="blobs"
+        :is-valid="!shouldShowBlobsErrors"
+        @actions="updateActions"
+      />
 
       <snippet-visibility-edit
         v-model="snippet.visibilityLevel"
@@ -228,12 +256,13 @@ export default {
       <form-footer-actions>
         <template #prepend>
           <gl-button
+            class="js-no-auto-disable"
             category="primary"
             type="submit"
             variant="confirm"
-            :disabled="updatePrevented"
             data-qa-selector="submit_button"
             data-testid="snippet-submit-btn"
+            :disabled="isUpdating"
             >{{ saveButtonLabel }}</gl-button
           >
         </template>

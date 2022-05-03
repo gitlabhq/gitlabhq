@@ -173,6 +173,20 @@ The new security approvals feature is similar to vulnerability check. For exampl
 - A two-step approval process can be enforced for any desired changes to security approval rules.
 - A single set of security policies can be applied to multiple development projects to allow for ease in maintaining a single, centralized ruleset.
 
+## 14.10
+
+### Permissions change for downloading Composer dependencies
+
+WARNING:
+This feature was changed or removed in 14.10
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GitLab Composer repository can be used to push, search, fetch metadata about, and download PHP dependencies. All these actions require authentication, except for downloading dependencies.
+
+Downloading Composer dependencies without authentication is deprecated in GitLab 14.9, and will be removed in GitLab 15.0. Starting with GitLab 15.0, you must authenticate to download Composer dependencies.
+
 ## 14.9
 
 ### Integrated error tracking disabled by default

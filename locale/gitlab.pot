@@ -23718,6 +23718,9 @@ msgstr ""
 msgid "Maximum number of unique IP addresses per user."
 msgstr ""
 
+msgid "Maximum of 255 characters"
+msgstr ""
+
 msgid "Maximum page reached"
 msgstr ""
 
@@ -35591,6 +35594,9 @@ msgid "Snippets|Give your file a name to add code highlighting, e.g. example.rb 
 msgstr ""
 
 msgid "Snippets|Optionally add a description about what your snippet does or how to use it…"
+msgstr ""
+
+msgid "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them."
 msgstr ""
 
 msgid "Snowplow"

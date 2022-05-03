@@ -273,7 +273,7 @@ export default {
       return IssuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
-      return this.issuableType === IssuableType.Issue;
+      return [IssuableType.Issue, IssuableType.Epic].includes(this.issuableType);
     },
   },
   created() {

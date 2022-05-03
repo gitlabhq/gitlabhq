@@ -208,11 +208,11 @@ module MergeRequestsHelper
 
   def how_merge_modal_data(merge_request)
     {
-      is_fork: merge_request.for_fork?,
-      can_merge: merge_request.can_be_merged_by?(current_user),
+      is_fork: merge_request.for_fork?.to_s,
+      can_merge: merge_request.can_be_merged_by?(current_user).to_s,
       source_branch: merge_request.source_branch,
-      source_project: merge_request.source_project,
       source_project_full_path: merge_request.source_project&.full_path,
+      source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       target_branch: merge_request.target_branch,
       reviewing_docs_path: help_page_path('user/project/merge_requests/reviews/index.md', anchor: "checkout-merge-requests-locally-through-the-head-ref")
     }

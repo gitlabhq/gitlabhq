@@ -465,6 +465,14 @@ describe('Issuable output', () => {
         expect(findStickyHeader().text()).toContain('Sticky header title');
       });
 
+      it('shows with title for an epic', async () => {
+        wrapper.setProps({ issuableType: 'epic' });
+
+        await nextTick();
+
+        expect(findStickyHeader().text()).toContain('Sticky header title');
+      });
+
       it.each`
         title                                        | state
         ${'shows with Open when status is opened'}   | ${IssuableStatus.Open}

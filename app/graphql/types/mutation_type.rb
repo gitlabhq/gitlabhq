@@ -131,6 +131,7 @@ module Types
     mount_mutation Mutations::WorkItems::Create
     mount_mutation Mutations::WorkItems::CreateFromTask
     mount_mutation Mutations::WorkItems::Delete
+    mount_mutation Mutations::WorkItems::DeleteTask
     mount_mutation Mutations::WorkItems::Update
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update
