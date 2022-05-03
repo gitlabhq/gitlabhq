@@ -3,4 +3,3 @@
 --format documentation
 --default-path qa/specs
 --require spec_helper
---tag ~orchestrated

@@ -52,6 +52,8 @@ gitlab/gitlab-ee:11.5.3-ee.0
 
 #### SAML for Authentication
 
+In the following examples, when replacing `<GITLAB_IP_OR_DOMAIN>` and `<SAML_IP_OR_DOMAIN>` it is important to prepend your IP or domain name, with the protocol (`http://` or `https://`) being used.
+
 We can use the [`test-saml-idp` Docker image](https://hub.docker.com/r/jamedjo/test-saml-idp)
 to do the work for us:
 

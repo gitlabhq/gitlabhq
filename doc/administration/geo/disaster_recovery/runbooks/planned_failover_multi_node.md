@@ -69,7 +69,7 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary
 On the **secondary** site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes** to see its status.
+1. On the left sidebar, select **Geo > Sites** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't yet replicated (shown in gray), consider giving the site more
@@ -100,22 +100,22 @@ follow these steps to avoid unnecessary data loss:
    **primary**. Your **secondary** site still needs read-only
    access to the **primary** site during the maintenance window:
 
-   1. At the scheduled time, using your cloud provider or your node's firewall, block
-      all HTTP, HTTPS and SSH traffic to/from the **primary** node, **except** for your IP and
-      the **secondary** node's IP.
+   1. At the scheduled time, using your cloud provider or your site's firewall, block
+      all HTTP, HTTPS and SSH traffic to/from the **primary** site, **except** for your IP and
+      the **secondary** site's IP.
 
-      For instance, you can run the following commands on the **primary** node:
+      For instance, you can run the following commands on the **primary** site:
 
       ```shell
-      sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 22 -j ACCEPT
+      sudo iptables -A INPUT -p tcp -s <secondary_site_ip> --destination-port 22 -j ACCEPT
       sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 22 -j ACCEPT
       sudo iptables -A INPUT --destination-port 22 -j REJECT
 
-      sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 80 -j ACCEPT
+      sudo iptables -A INPUT -p tcp -s <secondary_site_ip> --destination-port 80 -j ACCEPT
       sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 80 -j ACCEPT
       sudo iptables -A INPUT --tcp-dport 80 -j REJECT
 
-      sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 443 -j ACCEPT
+      sudo iptables -A INPUT -p tcp -s <secondary_site_ip> --destination-port 443 -j ACCEPT
       sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 443 -j ACCEPT
       sudo iptables -A INPUT --tcp-dport 443 -j REJECT
       ```
@@ -157,8 +157,8 @@ follow these steps to avoid unnecessary data loss:
          those with `geo` in the name to drop to 0.
          These queues contain work that has been submitted by your users; failing over
          before it is completed, causes the work to be lost.
-      1. On the left sidebar, select **Geo > Nodes** and wait for the
-         following conditions to be true of the **secondary** node you are failing over to:
+      1. On the left sidebar, select **Geo > Sites** and wait for the
+         following conditions to be true of the **secondary** site you are failing over to:
 
          - All replication meters reach 100% replicated, 0% failures.
          - All verification meters reach 100% verified, 0% failures.
@@ -230,13 +230,13 @@ follow these steps to avoid unnecessary data loss:
 
 1. SSH to every Sidekiq, PostgresSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
-   - To promote the secondary node to primary:
+   - To promote the secondary site to primary:
 
      ```shell
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary node to primary **without any further confirmation**:
+   - To promote the secondary site to primary **without any further confirmation**:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -244,13 +244,13 @@ follow these steps to avoid unnecessary data loss:
 
 1. SSH into each Rails node on your **secondary** site and run one of the following commands:
 
-   - To promote the secondary node to primary:
+   - To promote the secondary site to primary:
 
      ```shell
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary node to primary **without any further confirmation**:
+   - To promote the secondary site to primary **without any further confirmation**:
 
      ```shell
      sudo gitlab-ctl geo promote --force

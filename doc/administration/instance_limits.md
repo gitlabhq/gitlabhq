@@ -876,6 +876,10 @@ See the limits in the [Add a design to an issue](../user/project/issues/design_m
 
 ## Push Event Limits
 
+### Max push size
+
+The maximum allowed [push size](../user/admin_area/settings/account_and_limit_settings.md#max-push-size) is set to 5 GB.
+
 ### Webhooks and Project Services
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31009) in GitLab 12.4.

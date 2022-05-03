@@ -166,7 +166,7 @@ Package Registry allows you to install but not publish packages.
 
 Background jobs (cron jobs, Sidekiq) continue running as is, because background jobs are not automatically disabled.
 
-[During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-node),
+[During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-site),
 it is recommended that you disable all cron jobs except for those related to Geo.
 
 To monitor queues and disable jobs:
@@ -210,4 +210,4 @@ For the same reason we don't automatically block background jobs when Maintenanc
 
 The resulting database writes are acceptable. Here, the trade-off is between more service degradation and the completion of replication.
 
-However, during a planned failover, we [ask users to turn off cron jobs that are not related to Geo, manually](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-node). In the absence of new database writes and non-Geo cron jobs, new background jobs would either not be created at all or be minimal.
+However, during a planned failover, we [ask users to turn off cron jobs that are not related to Geo, manually](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-site). In the absence of new database writes and non-Geo cron jobs, new background jobs would either not be created at all or be minimal.

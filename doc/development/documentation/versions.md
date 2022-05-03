@@ -124,8 +124,11 @@ To remove a page:
 
 1. Leave the page title. Remove all other content, including the version history bullets and the word `WARNING:`.
 1. After the title, change `(deprecated)` to `(removed)`.
-1. Add `remove_date` in the YAML metadata. Set the value to a date three months after
-   the release when the feature was removed. For example:
+1. Update the YAML metadata:
+   - For `remove_date`, set the value to a date three months after
+     the release when the feature was removed.
+   - For the `redirect_to`, set a path to a file that makes sense. If no obvious
+     page exists, use the docs home page.
 
    ```markdown
    ---
@@ -133,6 +136,7 @@ To remove a page:
    group: Global Search
    info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
    remove_date: '2022-08-02'
+   redirect_to: '../newpath/to/file/index.md'
    ---
 
    # Title (removed) **(ULTIMATE SELF)**
@@ -158,7 +162,7 @@ To remove a topic:
    For the `remove_date`, set a date three months after the release where it was removed.
 
    ```markdown
-   <!--- The following content will be removed on remove_date: '2023-08-22' -->
+   <!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
    
    ## Title (removed) **(ULTIMATE SELF)**
 
