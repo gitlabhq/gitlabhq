@@ -106,6 +106,11 @@ the scope set to `api` or `read_api`.
 Open your [`~/.netrc`](https://everything.curl.dev/usingcurl/netrc) file
 and add the following text. Replace the variables in `< >` with your values.
 
+WARNING:
+If you use an environment variable called `NETRC`, Go will use its value
+as a filename and ignore `~/.netrc`. If you intend to use `~/.netrc` in 
+the GitLab CI **do not use `NETRC` as an environment variable name**.
+
 ```plaintext
 machine <url> login <username> password <token>
 ```

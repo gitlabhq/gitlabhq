@@ -156,14 +156,6 @@ Example response:
     "location": "gitlab.example.com:5000/group/project",
     "created_at": "2019-01-10T13:38:57.391Z",
     "cleanup_policy_started_at": "2020-08-17T03:12:35.489Z",
-    "tags_count": 1,
-    "tags": [
-      {
-        "name": "0.0.1",
-        "path": "group/project:0.0.1",
-        "location": "gitlab.example.com:5000/group/project:0.0.1"
-      }
-    ]
   },
   {
     "id": 2,
@@ -173,24 +165,6 @@ Example response:
     "location": "gitlab.example.com:5000/group/other_project",
     "created_at": "2019-01-10T13:39:08.229Z",
     "cleanup_policy_started_at": "2020-01-10T15:40:57.391Z",
-    "tags_count": 3,
-    "tags": [
-      {
-        "name": "0.0.1",
-        "path": "group/other_project:0.0.1",
-        "location": "gitlab.example.com:5000/group/other_project:0.0.1"
-      },
-      {
-        "name": "0.0.2",
-        "path": "group/other_project:0.0.2",
-        "location": "gitlab.example.com:5000/group/other_project:0.0.2"
-      },
-      {
-        "name": "latest",
-        "path": "group/other_project:latest",
-        "location": "gitlab.example.com:5000/group/other_project:latest"
-      }
-    ]
   }
 ]
 ```

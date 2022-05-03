@@ -753,6 +753,21 @@ group.members_with_parents.count
 parent.members_with_descendants.count
 ```
 
+### Find gropus that are pending deletion
+
+```ruby
+#
+# This section lists all the groups which are pending deletion
+#
+Group.all.each do |g|
+ if g.marked_for_deletion? 
+    puts "Group ID: #{g.id}"
+    puts "Group name: #{g.name}"
+    puts "Group path: #{g.full_path}"
+ end
+end
+```
+
 ### Delete a group
 
 ```ruby

@@ -419,6 +419,21 @@ sudo gitlab-ctl reconfigure
 To help us resolve this problem, consider commenting on
 [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4489).
 
+### Message: `FATAL:  could not connect to the primary server: server certificate for "PostgreSQL" does not match host name`
+
+This happens because the PostgreSQL certificate that the Omnibus GitLab package automatically creates contains
+the Common Name `PostgreSQL`, but the replication is connecting to a different host and GitLab attempts to use
+the `verify-full` SSL mode by default.
+
+In order to fix this, you can either:
+
+- Use the `--sslmode=verify-ca` argument with the `replicate-geo-database` command.
+- For an already replicated database, change `sslmode=verify-full` to `sslmode=verify-ca`
+  in `/var/opt/gitlab/postgresql/data/gitlab-geo.conf` and run `gitlab-ctl restart postgresql`.
+- [Configure SSL for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-ssl)
+  with a custom certificate (including the host name that's used to connect to the database in the CN or SAN)
+  instead of using the automatically generated certificate.
+
 ### Message: `LOG:  invalid CIDR mask in address`
 
 This happens on wrongly-formatted addresses in `postgresql['md5_auth_cidr_addresses']`.
@@ -1100,6 +1115,21 @@ This bug was [fixed in GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issue
 This is due to [Pages data not being managed by Geo](datatypes.md#limitations-on-replicationverification).
 Find advice to resolve those error messages in the
 [Pages administration documentation](../../../administration/pages/index.md#404-error-after-promoting-a-geo-secondary-to-a-primary-node).
+
+### Primary site returns 500 error when accessing `/admin/geo/replication/projects`
+
+Navigating to **Admin > Geo > Replication** (or `/admin/geo/replication/projects`) on a primary Geo site, shows a 500 error, while that same link on the secondary works fine. The primary's `production.log` has a similar entry to the following:
+
+```plaintext
+Geo::TrackingBase::SecondaryNotConfigured: Geo secondary database is not configured
+  from ee/app/models/geo/tracking_base.rb:26:in `connection'
+  [..]
+  from ee/app/views/admin/geo/projects/_all.html.haml:1
+```
+
+On a Geo primary site this error can be ignored.
+
+This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists). 
 
 ## Fixing client errors
 

@@ -37,19 +37,12 @@ RSpec.describe API::GroupContainerRepositories do
     let(:url) { "/groups/#{group.id}/registry/repositories" }
     let(:snowplow_gitlab_standard_context) { { user: api_user, namespace: group } }
 
-    subject { get api(url, api_user), params: params }
+    subject { get api(url, api_user) }
 
     it_behaves_like 'rejected container repository access', :guest, :forbidden
     it_behaves_like 'rejected container repository access', :anonymous, :not_found
-    it_behaves_like 'handling network errors with the container registry' do
-      let(:params) { { tags: true } }
-    end
 
     it_behaves_like 'returns repositories for allowed users', :reporter, 'group' do
-      let(:object) { group }
-    end
-
-    it_behaves_like 'returns tags for allowed users', :reporter, 'group' do
       let(:object) { group }
     end
 

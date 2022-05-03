@@ -84,12 +84,7 @@ export default {
       <template #actions>
         <runner-edit-button v-if="canUpdate && runner.editAdminUrl" :href="runner.editAdminUrl" />
         <runner-pause-button v-if="canUpdate" :runner="runner" />
-        <runner-delete-button
-          v-if="canDelete"
-          :runner="runner"
-          category="secondary"
-          @deleted="onDeleted"
-        />
+        <runner-delete-button v-if="canDelete" :runner="runner" @deleted="onDeleted" />
       </template>
     </runner-header>
 

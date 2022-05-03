@@ -156,11 +156,6 @@ Rails/NegateInclude:
 Rails/Pick:
   Enabled: false
 
-# Offense count: 123
-# Cop supports --auto-correct.
-Rails/Pluck:
-  Enabled: false
-
 # Offense count: 39
 # Cop supports --auto-correct.
 # Configuration parameters: Include.
@@ -236,11 +231,6 @@ Style/ExplicitBlockArgument:
 Style/FormatString:
   Enabled: false
 
-# Offense count: 897
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Enabled: false
-
 # Offense count: 59
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -256,11 +246,6 @@ Style/HashEachMethods:
 # Offense count: 34
 # Configuration parameters: AllowIfModifier.
 Style/IfInsideElse:
-  Enabled: false
-
-# Offense count: 1934
-# Cop supports --auto-correct.
-Style/IfUnlessModifier:
   Enabled: false
 
 # Offense count: 64
