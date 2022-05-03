@@ -94,6 +94,7 @@ module Types
           method: :public_merge_status, null: true,
           description: 'Merge status of the merge request.'
     field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true,
+          calls_gitaly: true,
           description: 'Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged.'
     field :rebase_commit_sha, GraphQL::Types::String, null: true,
           description: 'Rebase commit SHA of the merge request.'

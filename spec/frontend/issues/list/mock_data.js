@@ -146,8 +146,6 @@ export const locationSearch = [
   'not[epic_id]=34',
   'weight=1',
   'not[weight]=3',
-  'crm_contact_id=123',
-  'crm_organization_id=456',
 ].join('&');
 
 export const locationSearchWithSpecialValues = [
@@ -196,8 +194,6 @@ export const filteredTokens = [
   { type: 'epic_id', value: { data: '34', operator: OPERATOR_IS_NOT } },
   { type: 'weight', value: { data: '1', operator: OPERATOR_IS } },
   { type: 'weight', value: { data: '3', operator: OPERATOR_IS_NOT } },
-  { type: 'crm_contact', value: { data: '123', operator: OPERATOR_IS } },
-  { type: 'crm_organization', value: { data: '456', operator: OPERATOR_IS } },
   { type: 'filtered-search-term', value: { data: 'find' } },
   { type: 'filtered-search-term', value: { data: 'issues' } },
 ];
@@ -226,8 +222,6 @@ export const apiParams = {
   iterationId: ['4', '12'],
   epicId: '12',
   weight: '1',
-  crmContactId: '123',
-  crmOrganizationId: '456',
   not: {
     authorUsername: 'marge',
     assigneeUsernames: ['patty', 'selma'],
@@ -276,8 +270,6 @@ export const urlParams = {
   'not[epic_id]': '34',
   weight: '1',
   'not[weight]': '3',
-  crm_contact_id: '123',
-  crm_organization_id: '456',
 };
 
 export const urlParamsWithSpecialValues = {

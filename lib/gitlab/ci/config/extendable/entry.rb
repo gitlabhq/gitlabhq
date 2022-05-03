@@ -99,7 +99,7 @@ module Gitlab
           end
 
           def circular_dependency?
-            ancestors.include?(key)
+            ancestors.include?(key) # rubocop:disable Performance/AncestorsInclude
           end
 
           def unknown_extensions

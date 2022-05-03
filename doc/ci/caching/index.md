@@ -447,13 +447,11 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 If you use cache and artifacts to store the same path in your jobs, the cache might
 be overwritten because caches are restored before artifacts.
 
-### Segregation of caches between protected and non-protected branches
+#### Cache key names
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 14.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
 
 A suffix is added to the cache key, with the exception of the [fallback cache key](#use-a-fallback-cache-key).
-This is done in order to prevent cache poisoning that might occur through manipulation of the cache in a non-protected
-branch. Any subsequent protected-branch jobs would then potentially use a poisoned cache from the preceding job.
 
 As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that we have two branches `main`
 and `feature`, then the following table represents the resulting cache keys:
