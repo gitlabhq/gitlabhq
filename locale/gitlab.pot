@@ -5931,6 +5931,9 @@ msgstr ""
 msgid "Billings|Extend trial"
 msgstr ""
 
+msgid "Billings|In a seat"
+msgstr ""
+
 msgid "Billings|Reactivate trial"
 msgstr ""
 
@@ -5941,6 +5944,9 @@ msgid "Billings|Seats in use / Seats in subscription"
 msgstr ""
 
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
+msgstr ""
+
+msgid "Billings|To make this member active, you must first remove an existing active member, or toggle them to over limit."
 msgstr ""
 
 msgid "Billings|To use free CI/CD minutes on shared runners, you’ll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
@@ -18553,13 +18559,13 @@ msgstr ""
 msgid "GroupsNew|Create this in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, use a short expiration date when creating the token."
 msgstr ""
 
-msgid "GroupsNew|Export groups with all their related data and move to a new GitLab instance."
-msgstr ""
-
 msgid "GroupsNew|GitLab source URL"
 msgstr ""
 
 msgid "GroupsNew|Groups can also be nested by creating %{linkStart}subgroups%{linkEnd}."
+msgstr ""
+
+msgid "GroupsNew|Import a group and related data from another GitLab instance."
 msgstr ""
 
 msgid "GroupsNew|Import group"
@@ -19543,6 +19549,9 @@ msgid "Import|There is not a valid Git repository at this URL. If your HTTP repo
 msgstr ""
 
 msgid "Improve customer support with Service Desk"
+msgstr ""
+
+msgid "In a seat"
 msgstr ""
 
 msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
@@ -21056,10 +21065,10 @@ msgstr ""
 msgid "InviteMembersModal|Create issues for your new team member to work on (optional)"
 msgstr ""
 
-msgid "InviteMembersModal|GitLab is better with colleagues!"
+msgid "InviteMembersModal|Explore paid plans"
 msgstr ""
 
-msgid "InviteMembersModal|GitLab member or email address"
+msgid "InviteMembersModal|GitLab is better with colleagues!"
 msgstr ""
 
 msgid "InviteMembersModal|How about inviting a colleague or two to join you?"
@@ -21074,10 +21083,10 @@ msgstr ""
 msgid "InviteMembersModal|Invite members"
 msgstr ""
 
-msgid "InviteMembersModal|Members were successfully added"
+msgid "InviteMembersModal|Manage members"
 msgstr ""
 
-msgid "InviteMembersModal|New members will be unable to participate. You can manage your members by removing ones you no longer need."
+msgid "InviteMembersModal|Members were successfully added"
 msgstr ""
 
 msgid "InviteMembersModal|Search for a group to invite"
@@ -21095,10 +21104,19 @@ msgstr ""
 msgid "InviteMembersModal|Something went wrong"
 msgstr ""
 
+msgid "InviteMembersModal|This feature is disabled until this group has space for more members."
+msgstr ""
+
 msgid "InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}"
 msgstr ""
 
 msgid "InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
+msgstr ""
+
+msgid "InviteMembersModal|Username or email address"
+msgstr ""
+
+msgid "InviteMembersModal|You cannot add more members, but you can remove members who no longer need access. To get more members and access to additional paid features, an owner of this namespace can start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "InviteMembersModal|You only have space for %{count} more %{members} in %{name}"
@@ -25822,6 +25840,9 @@ msgid "No test coverage"
 msgstr ""
 
 msgid "No triggers exist yet. Use the form above to create one."
+msgstr ""
+
+msgid "No user provided"
 msgstr ""
 
 msgid "No vulnerabilities present"
@@ -39241,25 +39262,10 @@ msgstr ""
 msgid "ThreatMonitoring|All Environments"
 msgstr ""
 
-msgid "ThreatMonitoring|Anomalous Requests"
-msgstr ""
-
-msgid "ThreatMonitoring|Container Network Policies are not installed or have been disabled. To view this data, ensure your Network Policies are installed and enabled for your cluster."
-msgstr ""
-
-msgid "ThreatMonitoring|Container Network Policy"
-msgstr ""
-
-msgid "ThreatMonitoring|Container NetworkPolicies not detected"
-msgstr ""
-
 msgid "ThreatMonitoring|Date and time"
 msgstr ""
 
 msgid "ThreatMonitoring|Dismissed"
-msgstr ""
-
-msgid "ThreatMonitoring|Dropped Packets"
 msgstr ""
 
 msgid "ThreatMonitoring|Environment"
@@ -39289,31 +39295,13 @@ msgstr ""
 msgid "ThreatMonitoring|No alerts to display."
 msgstr ""
 
-msgid "ThreatMonitoring|No environments detected"
-msgstr ""
-
-msgid "ThreatMonitoring|Operations Per Second"
-msgstr ""
-
-msgid "ThreatMonitoring|Packet Activity"
-msgstr ""
-
-msgid "ThreatMonitoring|Requests"
-msgstr ""
-
 msgid "ThreatMonitoring|Resolved"
-msgstr ""
-
-msgid "ThreatMonitoring|Show last"
 msgstr ""
 
 msgid "ThreatMonitoring|Something went wrong, unable to fetch environments"
 msgstr ""
 
 msgid "ThreatMonitoring|Something went wrong, unable to fetch statistics"
-msgstr ""
-
-msgid "ThreatMonitoring|Statistics"
 msgstr ""
 
 msgid "ThreatMonitoring|Status"
@@ -39329,18 +39317,6 @@ msgid "ThreatMonitoring|Threat Monitoring"
 msgstr ""
 
 msgid "ThreatMonitoring|Threat Monitoring help page link"
-msgstr ""
-
-msgid "ThreatMonitoring|Time"
-msgstr ""
-
-msgid "ThreatMonitoring|To view this data, ensure you have configured an environment for this project and that at least one threat monitoring feature is enabled. %{linkStart}More information%{linkEnd}"
-msgstr ""
-
-msgid "ThreatMonitoring|Total Packets"
-msgstr ""
-
-msgid "ThreatMonitoring|Total Requests"
 msgstr ""
 
 msgid "ThreatMonitoring|Unreviewed"
@@ -43504,6 +43480,9 @@ msgid "You do not have permission to run a pipeline on this branch."
 msgstr ""
 
 msgid "You do not have permission to run the Web Terminal. Please contact a project administrator."
+msgstr ""
+
+msgid "You do not have permission to set a member awaiting"
 msgstr ""
 
 msgid "You do not have permission to update the environment."

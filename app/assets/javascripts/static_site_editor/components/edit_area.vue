@@ -167,7 +167,9 @@ export default {
       :content="editableContent"
       :initial-edit-type="editorMode"
       :image-root="imageRoot"
-      :options="{ customRenderers }"
+      :options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+        customRenderers,
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       class="mb-9 pb-6 h-100"
       @modeChange="onModeChange"
       @input="onInputChange"

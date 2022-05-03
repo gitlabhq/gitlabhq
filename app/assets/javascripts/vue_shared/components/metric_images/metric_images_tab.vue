@@ -90,7 +90,9 @@ export default {
       modal-id="upload-metric-modal"
       size="sm"
       :action-primary="actionPrimaryProps"
-      :action-cancel="{ text: $options.i18n.modalCancel }"
+      :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+        text: $options.i18n.modalCancel,
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :title="$options.i18n.modalTitle"
       :visible="modalVisible"
       @hidden="clearInputs"

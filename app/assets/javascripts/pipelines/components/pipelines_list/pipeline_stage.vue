@@ -114,7 +114,9 @@ export default {
     variant="link"
     :aria-label="stageAriaLabel(stage.title)"
     :lazy="true"
-    :popper-opts="{ placement: 'bottom' }"
+    :popper-opts="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+      placement: 'bottom',
+    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     :toggle-class="['mini-pipeline-graph-dropdown-toggle', triggerButtonClass]"
     menu-class="mini-pipeline-graph-dropdown-menu"
     @show="onShowDropdown"

@@ -204,7 +204,9 @@ export default {
     <h3 class="gl-font-lg gl-text-gray-900 gl-mt-5">{{ $options.i18n.noWalkthroughTitle }}</h3>
     <p>{{ $options.i18n.noWalkthroughExplanation }}</p>
     <ci-templates
-      :filter-templates="[$options.iOSTemplateName]"
+      :filter-templates="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+        $options.iOSTemplateName,
+      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :disabled="!isRunnerSetupFinished"
     />
     <p>

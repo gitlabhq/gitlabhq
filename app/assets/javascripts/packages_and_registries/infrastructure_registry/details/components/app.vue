@@ -191,7 +191,10 @@ export default {
           <package-list-row
             v-for="v in packageEntity.versions"
             :key="v.id"
-            :package-entity="{ name: packageEntity.name, ...v }"
+            :package-entity="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+              name: packageEntity.name,
+              ...v,
+            } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
             :package-link="v.id.toString()"
             :disable-delete="true"
             :show-package-type="false"

@@ -168,7 +168,9 @@ export default {
   <div>
     <persisted-search
       class="gl-mb-5"
-      :sortable-fields="[$options.searchConfig.NAME_SORT_FIELD]"
+      :sortable-fields="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+        $options.searchConfig.NAME_SORT_FIELD,
+      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :default-order="$options.searchConfig.NAME_SORT_FIELD.orderBy"
       default-sort="asc"
       @update="handleSearchUpdate"

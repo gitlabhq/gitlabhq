@@ -16,6 +16,10 @@ module Resolvers
     }).freeze
 
     def ready?(**args)
+      # TODO remove when cleaning up packages_graphql_pipelines_resolver
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/358432
+      context.scoped_set!(:packages_access_level, :group)
+
       context[self.class] ||= { executions: 0 }
       context[self.class][:executions] += 1
       raise GraphQL::ExecutionError, "Packages can be requested only for one group at a time" if context[self.class][:executions] > 1
@@ -26,7 +30,10 @@ module Resolvers
     def resolve(sort:, **filters)
       return unless packages_available?
 
-      ::Packages::GroupPackagesFinder.new(current_user, object, filters.merge(GROUP_SORT_TO_PARAMS_MAP.fetch(sort))).execute
+      params = filters.merge(GROUP_SORT_TO_PARAMS_MAP.fetch(sort))
+      params[:preload_pipelines] = false
+
+      ::Packages::GroupPackagesFinder.new(current_user, object, params).execute
     end
   end
 end

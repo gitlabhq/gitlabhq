@@ -304,7 +304,10 @@ export default {
             :text="data.value || $options.currentUsername"
             class="w-100"
             :aria-label="
-              sprintf($options.dropdownLabel, { jiraDisplayName: data.item.jiraDisplayName })
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf($options.dropdownLabel, {
+                jiraDisplayName: data.item.jiraDisplayName,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
             "
             @hide="resetDropdown"
           >

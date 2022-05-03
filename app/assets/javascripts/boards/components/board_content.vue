@@ -85,10 +85,11 @@ export default {
         :list="list"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :disabled="disabled"
+        :class="{ 'gl-xs-display-none!': addColumnFormVisible }"
       />
 
       <transition name="slide" @after-enter="afterFormEnters">
-        <board-add-new-column v-if="addColumnFormVisible" />
+        <board-add-new-column v-if="addColumnFormVisible" class="gl-xs-w-full!" />
       </transition>
     </component>
 

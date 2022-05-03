@@ -159,7 +159,9 @@ export default {
       size="sm"
       :visible="modalVisible"
       :action-primary="deleteActionPrimaryProps"
-      :action-cancel="{ text: $options.i18n.modalCancel }"
+      :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+        text: $options.i18n.modalCancel,
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       @primary.prevent="onDelete"
       @hidden="resetEditFields"
     >
@@ -177,7 +179,9 @@ export default {
       modal-id="edit-metric-modal"
       size="sm"
       :action-primary="updateActionPrimaryProps"
-      :action-cancel="{ text: $options.i18n.modalCancel }"
+      :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+        text: $options.i18n.modalCancel,
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :visible="editModalVisible"
       data-testid="metric-image-edit-modal"
       @hidden="resetEditFields"

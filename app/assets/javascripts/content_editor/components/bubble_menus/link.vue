@@ -116,7 +116,9 @@ export default {
     :editor="tiptapEditor"
     plugin-key="bubbleMenuLink"
     :should-show="() => shouldShow()"
-    :tippy-options="{ placement: 'bottom' }"
+    :tippy-options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+      placement: 'bottom',
+    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
   >
     <editor-state-observer @transaction="updateLinkToState">
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">

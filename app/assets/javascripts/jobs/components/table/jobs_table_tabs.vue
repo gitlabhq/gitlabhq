@@ -54,7 +54,9 @@ export default {
     <gl-tab
       v-for="tab in tabs"
       :key="tab.text"
-      :title-link-attributes="{ 'data-testid': tab.testId }"
+      :title-link-attributes="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+        'data-testid': tab.testId,
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       @click="$emit('fetchJobsByStatus', tab.scope)"
     >
       <template #title>

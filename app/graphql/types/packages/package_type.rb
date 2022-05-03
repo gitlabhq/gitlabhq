@@ -19,9 +19,9 @@ module Types
         description: 'Package metadata.'
       field :name, GraphQL::Types::String, null: false, description: 'Name of the package.'
       field :package_type, Types::Packages::PackageTypeEnum, null: false, description: 'Package type.'
-      field :pipelines, Types::Ci::PipelineType.connection_type, null: true,
-            description: 'Pipelines that built the package.',
-            deprecated: { reason: 'Due to scalability concerns, this field is going to be removed', milestone: '14.6' }
+      field :pipelines,
+            resolver: Resolvers::PackagePipelinesResolver,
+            description: "Pipelines that built the package. Max page size #{Resolvers::PackagePipelinesResolver::MAX_PAGE_SIZE}."
       field :project, Types::ProjectType, null: false, description: 'Project where the package is stored.'
       field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
       field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'

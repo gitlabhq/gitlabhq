@@ -9,3 +9,6 @@ export const propsData = {
   labelSearchField: '_label_search_field_',
   formGroupDescription: '_form_group_description_',
 };
+
+export const membersPath = '/members_path';
+export const purchasePath = '/purchase_path';

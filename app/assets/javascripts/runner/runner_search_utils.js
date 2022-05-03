@@ -18,7 +18,6 @@ import {
   PARAM_KEY_BEFORE,
   DEFAULT_SORT,
   RUNNER_PAGE_SIZE,
-  STATUS_NEVER_CONTACTED,
 } from './constants';
 import { getPaginationVariables } from './utils';
 
@@ -84,7 +83,6 @@ const getPaginationFromParams = (params) => {
 };
 
 // Outdated URL parameters
-const STATUS_NOT_CONNECTED = 'NOT_CONNECTED';
 const STATUS_ACTIVE = 'ACTIVE';
 const STATUS_PAUSED = 'PAUSED';
 
@@ -116,10 +114,6 @@ export const updateOutdatedUrl = (url = window.location.href) => {
   const status = params[PARAM_KEY_STATUS]?.[0] || null;
 
   switch (status) {
-    case STATUS_NOT_CONNECTED:
-      return updateUrlParams(url, {
-        [PARAM_KEY_STATUS]: [STATUS_NEVER_CONTACTED],
-      });
     case STATUS_ACTIVE:
       return updateUrlParams(url, {
         [PARAM_KEY_PAUSED]: ['false'],

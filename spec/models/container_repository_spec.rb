@@ -631,10 +631,15 @@ RSpec.describe ContainerRepository, :aggregate_failures do
   describe '#start_expiration_policy!' do
     subject { repository.start_expiration_policy! }
 
+    before do
+      repository.update_column(:last_cleanup_deleted_tags_count, 10)
+    end
+
     it 'sets the expiration policy started at to now' do
       freeze_time do
         expect { subject }
           .to change { repository.expiration_policy_started_at }.from(nil).to(Time.zone.now)
+          .and change { repository.last_cleanup_deleted_tags_count }.from(10).to(nil)
       end
     end
   end

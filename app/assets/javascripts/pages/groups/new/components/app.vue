@@ -21,9 +21,7 @@ const PANELS = [
     name: 'import-group-pane',
     selector: '#import-group-pane',
     title: s__('GroupsNew|Import group'),
-    description: s__(
-      'GroupsNew|Export groups with all their related data and move to a new GitLab instance.',
-    ),
+    description: s__('GroupsNew|Import a group and related data from another GitLab instance.'),
     illustration: importGroupIllustration,
     details: 'Migrate your existing groups from another instance of GitLab.',
   },

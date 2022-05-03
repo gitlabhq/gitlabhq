@@ -328,7 +328,7 @@ export default {
 </script>
 
 <template>
-  <div class="vue-filtered-search-bar-container d-md-flex">
+  <div class="vue-filtered-search-bar-container gl-md-display-flex">
     <gl-form-checkbox
       v-if="showCheckbox"
       class="gl-align-self-center"

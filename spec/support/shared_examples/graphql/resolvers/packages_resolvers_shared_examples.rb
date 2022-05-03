@@ -4,7 +4,11 @@ RSpec.shared_examples 'group and projects packages resolver' do
   context 'without sort' do
     let_it_be(:npm_package) { create(:package, project: project) }
 
-    it { is_expected.to contain_exactly(npm_package) }
+    it 'returns the proper packages' do
+      expect(::Packages::Package).not_to receive(:preload_pipelines)
+
+      expect(subject).to contain_exactly(npm_package)
+    end
   end
 
   context 'with sorting and filtering' do

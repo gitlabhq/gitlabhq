@@ -132,12 +132,12 @@ export default {
       v-else
       :option="options"
       :include-legend-avg-max="true"
-      :data="[
+      :data="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
         {
           name: $options.i18n.yAxisTitle,
           data: chartUserData,
         },
-      ]"
+      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     />
   </div>
 </template>

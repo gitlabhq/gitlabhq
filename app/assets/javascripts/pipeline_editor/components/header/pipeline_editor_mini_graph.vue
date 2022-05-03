@@ -87,7 +87,9 @@ export default {
   <div v-if="pipelineStages.length > 0" class="stage-cell gl-mr-5">
     <linked-pipelines-mini-list
       v-if="upstreamPipeline"
-      :triggered-by="[upstreamPipeline]"
+      :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+        upstreamPipeline,
+      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       data-testid="pipeline-editor-mini-graph-upstream"
     />
     <pipeline-mini-graph class="gl-display-inline" :stages="pipelineStages" />

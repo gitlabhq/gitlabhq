@@ -84,7 +84,9 @@ export default {
         content-type="link"
         icon-name="link"
         editor-command="toggleLink"
-        :editor-command-params="{ href: '' }"
+        :editor-command-params="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+          href: '',
+        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
         category="tertiary"
         size="medium"
         :label="__('Insert link')"

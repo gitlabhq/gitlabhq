@@ -124,7 +124,9 @@ export default {
         no-caret
         text-sr-only
         :text="$options.i18n.editTableActions"
-        :popper-opts="{ positionFixed: true }"
+        :popper-opts="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+          positionFixed: true,
+        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
         @hide="handleHide($event)"
       >
         <gl-dropdown-item @click="runCommand('addColumnBefore')">

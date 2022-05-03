@@ -220,13 +220,11 @@ describe('search_params.js', () => {
     });
 
     it.each`
-      query                           | updatedQuery
-      ${'status[]=NOT_CONNECTED'}     | ${'status[]=NEVER_CONTACTED'}
-      ${'status[]=NOT_CONNECTED&a=b'} | ${'status[]=NEVER_CONTACTED&a=b'}
-      ${'status[]=ACTIVE'}            | ${'paused[]=false'}
-      ${'status[]=ACTIVE&a=b'}        | ${'a=b&paused[]=false'}
-      ${'status[]=ACTIVE'}            | ${'paused[]=false'}
-      ${'status[]=PAUSED'}            | ${'paused[]=true'}
+      query                    | updatedQuery
+      ${'status[]=ACTIVE'}     | ${'paused[]=false'}
+      ${'status[]=ACTIVE&a=b'} | ${'a=b&paused[]=false'}
+      ${'status[]=ACTIVE'}     | ${'paused[]=false'}
+      ${'status[]=PAUSED'}     | ${'paused[]=true'}
     `('updates "$query" to "$updatedQuery"', ({ query, updatedQuery }) => {
       const mockUrl = 'http://test.host/admin/runners?';
 

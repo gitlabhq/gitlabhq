@@ -25,7 +25,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
       it 'completely clean up the repository' do
         expect(Projects::ContainerRepository::CleanupTagsService)
           .to receive(:new).with(repository, nil, cleanup_tags_service_params).and_return(cleanup_tags_service)
-        expect(cleanup_tags_service).to receive(:execute).and_return(status: :success)
+        expect(cleanup_tags_service).to receive(:execute).and_return(status: :success, deleted_size: 1)
 
         response = subject
 
@@ -36,6 +36,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
           expect(repository.reload.cleanup_unscheduled?).to be_truthy
           expect(repository.expiration_policy_completed_at).not_to eq(nil)
           expect(repository.expiration_policy_started_at).not_to eq(nil)
+          expect(repository.last_cleanup_deleted_tags_count).to eq(1)
         end
       end
     end
@@ -58,6 +59,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
           expect(repository.reload.cleanup_unfinished?).to be_truthy
           expect(repository.expiration_policy_started_at).not_to eq(nil)
           expect(repository.expiration_policy_completed_at).to eq(nil)
+          expect(repository.last_cleanup_deleted_tags_count).to eq(nil)
         end
       end
 
@@ -94,6 +96,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
             expect(repository.reload.cleanup_unfinished?).to be_truthy
             expect(repository.expiration_policy_started_at).not_to eq(nil)
             expect(repository.expiration_policy_completed_at).to eq(nil)
+            expect(repository.last_cleanup_deleted_tags_count).to eq(nil)
           end
         end
       end
@@ -138,6 +141,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
         expect(repository.reload.cleanup_unfinished?).to be_truthy
         expect(repository.expiration_policy_started_at).not_to eq(nil)
         expect(repository.expiration_policy_completed_at).to eq(nil)
+        expect(repository.last_cleanup_deleted_tags_count).to eq(nil)
       end
     end
 

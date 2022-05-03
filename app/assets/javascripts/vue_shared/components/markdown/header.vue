@@ -198,7 +198,10 @@ export default {
           <toolbar-button
             tag="**"
             :button-title="
-              sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), { modifierKey })
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
             "
             :shortcuts="$options.shortcuts.bold"
             icon="bold"
@@ -206,7 +209,10 @@ export default {
           <toolbar-button
             tag="_"
             :button-title="
-              sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), { modifierKey })
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
             "
             :shortcuts="$options.shortcuts.italic"
             icon="italic"
@@ -215,8 +221,9 @@ export default {
             v-if="!restrictedToolBarItems.includes('strikethrough')"
             tag="~~"
             :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
               sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
-                modifierKey,
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
               })
             "
             :shortcuts="$options.shortcuts.strikethrough"
@@ -273,7 +280,10 @@ export default {
             tag="[{text}](url)"
             tag-select="url"
             :button-title="
-              sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), { modifierKey })
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
             "
             :shortcuts="$options.shortcuts.link"
             icon="link"

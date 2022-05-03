@@ -126,7 +126,9 @@ export default {
     <div v-else>
       <linked-pipelines-mini-list
         v-if="upstreamPipeline"
-        :triggered-by="[upstreamPipeline]"
+        :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+          upstreamPipeline,
+        ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
         data-testid="commit-box-mini-graph-upstream"
       />
 

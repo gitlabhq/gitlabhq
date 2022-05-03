@@ -195,7 +195,10 @@ export default {
       :path-id-separator="pathIdSeparator"
       :input-value="inputValue"
       :auto-complete-sources="transformedAutocompleteSources"
-      :auto-complete-options="{ issues: autoCompleteIssues, epics: autoCompleteEpics }"
+      :auto-complete-options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+        issues: autoCompleteIssues,
+        epics: autoCompleteEpics,
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :issuable-type="issuableType"
       @pendingIssuableRemoveRequest="onPendingIssuableRemoveRequest"
       @formCancel="onFormCancel"

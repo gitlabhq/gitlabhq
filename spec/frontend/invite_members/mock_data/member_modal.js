@@ -18,6 +18,8 @@ export const propsData = {
 
 export const inviteSource = 'unknown';
 export const newProjectPath = 'projects/new';
+export const freeUsersLimit = 5;
+export const membersCount = 1;
 
 export const user1 = { id: 1, name: 'Name One', username: 'one_1', avatar_url: '' };
 export const user2 = { id: 2, name: 'Name Two', username: 'one_2', avatar_url: '' };

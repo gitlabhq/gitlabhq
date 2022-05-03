@@ -982,10 +982,10 @@
     portal-vue "^2.1.6"
     vue-runtime-helpers "^1.1.2"
 
-"@gitlab/visual-review-tools@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.7.0.tgz#18a59911484ddbbee433d3701316b5ab8e4077a5"
-  integrity sha512-o9gM3W6guSl00aS0hJcXePuR/mkmq38F5FhUgTlMBkB5+R68aO87md3cSvSMfJin0MjPlWktBNAfaz+y5CQ39g==
+"@gitlab/visual-review-tools@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.7.1.tgz#9cc51c40bb530a621d0f5cb48ef3e891a79e92cc"
+  integrity sha512-64lbKhJierSKOQxZQ30gimUDZhOXjtC7GdovSJwKMECqUB5pmDzmQn4fY0Nxn8jREWluiur8N3+z3jr2HJJofg==
 
 "@graphql-eslint/eslint-plugin@3.10.2":
   version "3.10.2"

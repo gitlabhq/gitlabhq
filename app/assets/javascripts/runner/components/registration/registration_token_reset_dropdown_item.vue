@@ -115,14 +115,14 @@ export default {
     <gl-modal
       size="sm"
       :modal-id="$options.modalId"
-      :action-primary="{
+      :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
         text: $options.i18n.modalAction,
         attributes: [{ variant: 'danger' }],
-      }"
-      :action-secondary="{
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+      :action-secondary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
         text: $options.i18n.modalCancel,
         attributes: [{ variant: 'default' }],
-      }"
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :title="$options.i18n.modalTitle"
       @primary="handleModalPrimary"
     >

@@ -107,7 +107,9 @@ export default {
     ref="modal"
     :modal-id="modalId"
     :title="__('Please solve the captcha')"
-    :action-cancel="{ text: __('Cancel') }"
+    :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+      text: __('Cancel'),
+    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     @shown="shown"
     @hide="hide"
     @hidden="$emit('hidden')"

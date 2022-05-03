@@ -132,10 +132,10 @@ export default {
 
     <design-note-pin
       v-if="canComment && currentCommentForm"
-      :position="{
+      :position="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
         left: `${currentCommentForm.xPercent}%`,
         top: `${currentCommentForm.yPercent}%`,
-      }"
+      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     />
   </div>
 </template>

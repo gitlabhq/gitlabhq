@@ -132,7 +132,7 @@ export default {
     <gl-area-chart
       ref="areaChart"
       v-bind="$attrs"
-      :data="[]"
+      :data="[] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */"
       :option="chartOptions"
       :format-tooltip-text="formatTooltipText"
       :width="width"

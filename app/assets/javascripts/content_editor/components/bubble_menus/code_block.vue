@@ -97,7 +97,9 @@ export default {
     :editor="tiptapEditor"
     plugin-key="bubbleMenuCodeBlock"
     :should-show="shouldShow"
-    :tippy-options="{ getReferenceClientRect }"
+    :tippy-options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+      getReferenceClientRect,
+    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
   >
     <editor-state-observer @transaction="updateSelectedLanguage">
       <gl-button-group>

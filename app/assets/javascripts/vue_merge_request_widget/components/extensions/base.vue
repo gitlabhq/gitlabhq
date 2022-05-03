@@ -311,7 +311,10 @@ export default {
               data-testid="extension-list-item"
             >
               <gl-intersection-observer
-                :options="{ rootMargin: '100px', thresholds: 0.1 }"
+                :options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+                  rootMargin: '100px',
+                  thresholds: 0.1,
+                } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
                 class="gl-w-full"
                 @appear="appear(index)"
                 @disappear="disappear(index)"
