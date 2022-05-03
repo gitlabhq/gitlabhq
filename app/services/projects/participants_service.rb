@@ -45,7 +45,7 @@ module Projects
     def visible_groups
       visible_groups = project.invited_groups
 
-      unless project_owner?
+      unless project.team.owner?(current_user)
         visible_groups = visible_groups.public_or_visible_to_user(current_user)
       end
 
@@ -59,14 +59,6 @@ module Projects
 
     def individual_project_members
       project.project_members.select(*GroupMember.cached_column_list)
-    end
-
-    def project_owner?
-      if project.group.present?
-        project.group.owners.include?(current_user)
-      else
-        project.namespace.owner == current_user
-      end
     end
   end
 end

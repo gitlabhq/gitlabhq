@@ -3,6 +3,8 @@
 module API
   module Ci
     class ResourceGroups < ::API::Base
+      include PaginationParams
+
       before { authenticate! }
 
       feature_category :continuous_delivery
@@ -12,6 +14,18 @@ module API
         requires :id, type: String, desc: 'The ID of a project'
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        desc 'Get all resource groups for this project' do
+          success Entities::Ci::ResourceGroup
+        end
+        params do
+          use :pagination
+        end
+        get ':id/resource_groups' do
+          authorize! :read_resource_group, user_project
+
+          present paginate(user_project.resource_groups), with: Entities::Ci::ResourceGroup
+        end
+
         desc 'Get a single resource group' do
           success Entities::Ci::ResourceGroup
         end
