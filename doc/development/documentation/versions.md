@@ -7,49 +7,32 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 
 # Documenting product versions
 
-GitLab product documentation pages (not including [Contributor and Development](../../index.md)
-pages in the `/development` directory) can include version information to help
-users be aware of recent improvements or additions.
+The GitLab product documentation includes version-specific information,
+including when features were introduced and when they were updated or removed.
 
-The GitLab Technical Writing team determines which versions of
-documentation to display on this site based on the GitLab
-[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#version-support).
+## View older documentation versions
 
-## View older GitLab documentation versions
+Previous versions of the documentation are available on `docs.gitlab.com`.
+To view a previous version, select the **Versions** button in the top right.
 
-Older versions of GitLab may no longer have documentation available from `docs.gitlab.com`.
-If documentation for your version is no longer available from `docs.gitlab.com`, you can still view a
-tagged and released set of documentation for your installed version:
+To view versions that are not available on `docs.gitlab.com`:
 
-- In the [documentation archives](https://docs.gitlab.com/archives/).
-- At the `/help` URL of your GitLab instance.
-- In the documentation repository based on the respective branch (for example,
-  the [13.2 branch](https://gitlab.com/gitlab-org/gitlab/-/tree/13-2-stable-ee/doc)).
+- View the [documentation archives](https://docs.gitlab.com/archives/).
+- Go to the GitLab repository and select the version-specific branch. For example,
+  the [13.2 branch](https://gitlab.com/gitlab-org/gitlab/-/tree/13-2-stable-ee/doc) has the
+  documentation for GitLab 13.2.
 
-## Where to put version text
+## Documenting version-specific features
 
 When a feature is added or updated, you can include its version information
-either as a **Version history** item or as an inline text reference.
+either as a **Version history** bullet or as an inline text reference.
 
-### Version text in the **Version History**
+You do not need to add version information on the pages in the `/development` directory.
 
-If all content in a section is related, add version text after the header for
-the section. The version information must:
+### Add a **Version history** bullet
 
-- Be surrounded by blank lines.
-- Start with `>`. If there are multiple bullets, each line must start with `> -`.
-- The string must include these words in this order (capitalization doesn't matter):
-  - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended` (as in the
-    [feature flag documentation](feature_flags.md)), `removed`, or `renamed`
-  - `in` or `to`
-  - `GitLab`
-- Whenever possible, include a link to the completed issue, merge request, or epic
-  that introduced the feature. An issue is preferred over a merge request, and
-  a merge request is preferred over an epic.
-- Do not include information about the tier, unless documenting a tier change
-  (for example, `Feature X [moved](issue-link) to Premium in GitLab 19.2`).
-- Do not link to the pricing page.
-  The tier is provided by the [product badge](styleguide/index.md#product-tier-badges) on the heading.
+If all content in a topic is related, add a version history bullet after the topic heading.
+For example:
 
 ```markdown
 ## Feature name
@@ -57,23 +40,29 @@ the section. The version information must:
 > [Introduced](<link-to-issue>) in GitLab 11.3.
 
 This feature does something.
-
-## Feature name 2
-
-> - [Introduced](<link-to-issue>) in GitLab 11.3.
-> - [Enabled by default](<link-to-issue>) in GitLab 11.4.
-
-This feature does something else.
 ```
 
-If you're documenting elements of a feature, start with the feature name or a gerund:
+The bullet text must include these words in order. Capitalization doesn't matter.
+
+- `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
+- `in` or `to`
+- `GitLab`
+
+If possible, include a link to the related issue, merge request, or epic.
+Do not link to the pricing page. Do not include the subscription tier.
+
+#### Introducing a new feature
+
+If you use `introduced`, start the sentence with the feature name or a gerund:
 
 ```markdown
 > - Notifications for expiring tokens [introduced](<link-to-issue>) in GitLab 11.3.
 > - Creating an issue from an issue board [introduced](<link-to-issue>) in GitLab 13.1.
 ```
 
-If a feature is moved to another tier:
+#### Moving subscription tiers
+
+If a feature is moved to another subscription tier, use `moved`:
 
 ```markdown
 > - [Moved](<link-to-issue>) from GitLab Ultimate to GitLab Premium in 11.8.
@@ -83,88 +72,118 @@ If a feature is moved to another tier:
 ### Inline version text
 
 If you're adding content to an existing topic, you can add version information
-inline with the existing text.
-
-In this case, add `([introduced/deprecated](<link-to-issue>) in GitLab X.X)`.
-
-Including the issue link is encouraged, but isn't a requirement. For example:
+inline with the existing text. If possible, include a link to the related issue,
+merge request, or epic. For example:
 
 ```markdown
-The voting strategy in GitLab 13.4 and later requires the primary and secondary
+The voting strategy [in GitLab 13.4 and later](<link-to-issue>) requires the primary and secondary
 voters to agree.
 ```
 
-### Deprecated features
+## Deprecations and removals
 
-When a feature is deprecated, add `(DEPRECATED)` to the page title or to
-the heading of the section documenting the feature, immediately before
-the tier badge:
+When features are deprecated and removed, update the related documentation.
 
-```markdown
-<!-- Page title example: -->
-# Feature A (DEPRECATED) **(ALL TIERS)**
+API documentation follows these guidelines, but the GraphQL docs use
+a [separate process](../api_graphql_styleguide.md#deprecating-fields-arguments-and-enum-values).
 
-<!-- Doc section example: -->
-## Feature B (DEPRECATED) **(PREMIUM SELF)**
-```
+### Deprecate a page or topic
 
-Add the deprecation to the version history note (you can include a link
-to a replacement when available):
+To deprecate a page or topic:
 
-```markdown
-> - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
-```
+1. Add `(deprecated)` after the title. Use a warning to explain when it was deprecated,
+   when it will be removed, and the replacement feature.
 
-You can also describe the replacement in surrounding text, if available. If the
-deprecation isn't obvious in existing text, you may want to include a warning:
+   ```markdown
+   ## Title (deprecated) **(ULTIMATE SELF)**
 
-```markdown
-WARNING:
-This feature was [deprecated](link-to-issue) in GitLab 12.3 and replaced by
-[Feature name](link-to-feature-documentation).
-```
+   WARNING:
+   This feature was [deprecated](<link-to-issue>) in GitLab 14.8
+   and is planned for removal in 15.4. Use [feature X](<link-to-issue>) instead.
+   ```
 
-If you add `(DEPRECATED)` to the page's title and the document is linked from the docs
-navigation, either remove the page from the nav or update the nav item to include the
-same text before the feature name:
+   If you're not sure when the feature will be removed or no
+   replacement feature exists, you don't need to add this information.
 
-```yaml
- - doc_title: (DEPRECATED) Feature A
-```
+1. If the deprecation is a breaking change, add this text:
 
-In the first major GitLab version after the feature was deprecated, be sure to
-remove information about that deprecated feature.
+   ```markdown
+   This change is a breaking change.
+   ```
 
-### End-of-life for features or products
+   You can add any additional context-specific details that might help users.
 
-When a feature or product enters its end-of-life, indicate its status by
-creating a [warning alert](styleguide/index.md#alert-boxes) directly after its relevant header.
-If possible, link to its deprecation and removal issues.
+1. Open a merge request to add the word `(deprecated)` to the left nav, after the page title.
 
-For example:
+### Remove a page
 
-```markdown
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](link-to-issue)
-in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X.
-```
+Mark content as removed during the release the feature was removed.
+The title and a removed indicator remains until three months after the removal.
 
-After the feature or product is officially deprecated and removed, remove
-its information from the GitLab documentation.
+To remove a page:
 
-## Versions in the past or future
+1. Leave the page title. Remove all other content, including the version history bullets and the word `WARNING:`.
+1. After the title, change `(deprecated)` to `(removed)`.
+1. Add `remove_date` in the YAML metadata. Set the value to a date three months after
+   the release when the feature was removed. For example:
 
-When describing functionality available in past or future versions, use:
+   ```markdown
+   ---
+   stage: Enablement
+   group: Global Search
+   info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+   remove_date: '2022-08-02'
+   ---
 
-- Earlier, and not older or before.
-- Later, and not newer or after.
+   # Title (removed) **(ULTIMATE SELF)**
 
-For example:
+   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8
+   and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in 15.0.
+   Use [feature X](<link-to-issue>) instead.
+   ```
 
-- Available in GitLab 13.1 and earlier.
-- Available in GitLab 12.4 and later.
-- In GitLab 12.2 and earlier, ...
-- In GitLab 11.6 and later, ...
+1. Remove the page from the left nav.
+
+This content is removed from the documentation as part of the Technical Writing team's
+[regularly scheduled tasks](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#regularly-scheduled-tasks).
+
+### Remove a topic
+
+To remove a topic:
+
+1. Leave the title and the details of the deprecation and removal. Remove all other content,
+   including the version history bullets and the word `WARNING:`.
+1. Add `(removed)` after the title.
+1. Add the following HTML comments above and below the topic.
+   For the `remove_date`, set a date three months after the release where it was removed.
+
+   ```markdown
+   <!--- The following content will be removed on remove_date: '2023-08-22' -->
+   
+   ## Title (removed) **(ULTIMATE SELF)**
+
+   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8
+   and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in 15.0.
+   Use [feature X](<link-to-issue>) instead.
+
+   <!--- end_remove -->
+   ```
+
+This content is removed from the documentation as part of the Technical Writing team's
+[regularly scheduled tasks](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#regularly-scheduled-tasks).
+
+## Which versions are removed
+
+GitLab supports the current major version and two previous major versions.
+For example, if 14.0 is the current major version, all major and minor releases of
+GitLab 14.0, 13.0 and 12.0 are supported.
+
+[View the list of supported versions](https://about.gitlab.com/support/statement-of-support.html#version-support).
+
+If you see version history bullets or inline text that refers to unsupported versions, you can remove it.
+
+Historical feature information is available in [release posts](https://about.gitlab.com/releases/)
+or by searching for the issue or merge request where the work was done.
 
 ## Promising features in future versions
 
@@ -207,16 +226,3 @@ sole discretion of GitLab Inc.
 If all of the content on the page is not available, use the disclaimer once at the top of the page.
 
 If the content in a topic is not ready, use the disclaimer in the topic.
-
-## Removing versions after each major release
-
-When a major GitLab release occurs, we remove all references
-to now-unsupported versions. This removal includes version-specific instructions. For example,
-if GitLab version 12.1 and later are supported,
-instructions for users of GitLab 11 should be removed.
-
-[View the list of supported versions](https://about.gitlab.com/support/statement-of-support.html#version-support).
-
-To view historical information about a feature, review GitLab
-[release posts](https://about.gitlab.com/releases/), or search for the issue or
-merge request where the work was done.

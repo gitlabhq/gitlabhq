@@ -727,7 +727,6 @@ We include guidance for links in these categories:
   for authoritative sources.
 - When to use [links requiring permissions](#links-requiring-permissions).
 - How to set up a [link to a video](#link-to-video).
-- How to [include links with version text](../versions.md#where-to-put-version-text).
 - How to [link to specific lines of code](#link-to-specific-lines-of-code)
 
 ### Basic link criteria

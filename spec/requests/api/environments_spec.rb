@@ -23,6 +23,7 @@ RSpec.describe API::Environments do
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response.first['name']).to eq(environment.name)
+        expect(json_response.first['tier']).to eq(environment.tier)
         expect(json_response.first['external_url']).to eq(environment.external_url)
         expect(json_response.first['project']).to match_schema('public_api/v4/project')
         expect(json_response.first['enable_advanced_logs_querying']).to eq(false)
@@ -165,12 +166,13 @@ RSpec.describe API::Environments do
   describe 'POST /projects/:id/environments' do
     context 'as a member' do
       it 'creates a environment with valid params' do
-        post api("/projects/#{project.id}/environments", user), params: { name: "mepmep" }
+        post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", tier: 'staging' }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/environment')
         expect(json_response['name']).to eq('mepmep')
         expect(json_response['slug']).to eq('mepmep')
+        expect(json_response['tier']).to eq('staging')
         expect(json_response['external']).to be nil
       end
 
@@ -217,6 +219,15 @@ RSpec.describe API::Environments do
       expect(response).to match_response_schema('public_api/v4/environment')
       expect(json_response['name']).to eq('Mepmep')
       expect(json_response['external_url']).to eq(url)
+    end
+
+    it 'returns a 200 if tier is changed' do
+      put api("/projects/#{project.id}/environments/#{environment.id}", user),
+          params: { tier: 'production' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to match_response_schema('public_api/v4/environment')
+      expect(json_response['tier']).to eq('production')
     end
 
     it "won't allow slug to be changed" do

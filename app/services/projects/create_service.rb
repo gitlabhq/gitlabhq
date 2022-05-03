@@ -4,6 +4,9 @@ module Projects
   class CreateService < BaseService
     include ValidatesClassificationLabel
 
+    ImportSourceDisabledError = Class.new(StandardError)
+    INTERNAL_IMPORT_SOURCES = %w[bare_repository gitlab_custom_project_template gitlab_project_migration].freeze
+
     def initialize(user, params)
       @current_user = user
       @params = params.dup
@@ -24,6 +27,8 @@ module Projects
       end
 
       @project = Project.new(params)
+
+      validate_import_source_enabled!
 
       @project.visibility_level = @project.group.visibility_level unless @project.visibility_level_allowed_by_group?
 
@@ -77,6 +82,9 @@ module Projects
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.inspect}: #{e.record.errors.full_messages.join(", ")}"
       fail(error: message)
+    rescue ImportSourceDisabledError => e
+      @project.errors.add(:import_source_disabled, e.message) if @project
+      fail(error: e.message)
     rescue StandardError => e
       @project.errors.add(:base, e.message) if @project
       fail(error: e.message)
@@ -237,6 +245,18 @@ module Projects
     end
 
     private
+
+    def validate_import_source_enabled!
+      return unless @params[:import_type]
+
+      import_type = @params[:import_type].to_s
+
+      return if INTERNAL_IMPORT_SOURCES.include?(import_type)
+
+      unless ::Gitlab::CurrentSettings.import_sources&.include?(import_type)
+        raise ImportSourceDisabledError, "#{import_type} import source is disabled"
+      end
+    end
 
     def parent_namespace
       @parent_namespace ||= Namespace.find_by_id(@params[:namespace_id]) || current_user.namespace

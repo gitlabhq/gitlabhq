@@ -40,6 +40,7 @@ module API
         requires :name,           type: String,   desc: 'The name of the environment to be created'
         optional :external_url,   type: String,   desc: 'URL on which this deployment is viewable'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }
+        optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the environment to be created'
       end
       post ':id/environments' do
         authorize! :create_environment, user_project
@@ -63,13 +64,14 @@ module API
         optional :name,           type: String,   desc: 'DEPRECATED: Renaming environment can lead to errors, this will be removed in 15.0'
         optional :external_url,   type: String,   desc: 'The new URL on which this deployment is viewable'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }
+        optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the environment to be created'
       end
       put ':id/environments/:environment_id' do
         authorize! :update_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
 
-        update_params = declared_params(include_missing: false).extract!(:name, :external_url)
+        update_params = declared_params(include_missing: false).extract!(:name, :external_url, :tier)
         if environment.update(update_params)
           present environment, with: Entities::Environment, current_user: current_user
         else

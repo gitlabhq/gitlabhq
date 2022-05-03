@@ -121,6 +121,10 @@
   @include btn-color($white, $border-color, $white-normal, $border-white-normal, $white-dark, $border-white-normal, $gl-text-color);
 }
 
+@mixin btn-purple {
+  @include btn-color($purple-700, $purple-800, $purple-800, $purple-900, $purple-900, $purple-950, $white);
+}
+
 @mixin btn-with-margin {
   margin-left: $btn-side-margin;
   float: left;
@@ -192,6 +196,10 @@
 
   &.btn-danger {
     @include btn-red;
+  }
+
+  &.btn-purple {
+    @include btn-purple;
   }
 
   &.btn-grouped {

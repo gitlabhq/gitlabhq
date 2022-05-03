@@ -21,6 +21,8 @@ module Import
 
       if project.persisted?
         success(project)
+      elsif project.errors[:import_source_disabled].present?
+        error(project.errors[:import_source_disabled], :forbidden)
       else
         log_and_return_error(project_save_error(project), :unprocessable_entity)
       end

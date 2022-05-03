@@ -42,7 +42,7 @@ module QA
       end
 
       def interception_enabled?
-        enabled?(ENV['INTERCEPT_REQUESTS'], default: true)
+        enabled?(ENV['QA_INTERCEPT_REQUESTS'], default: false)
       end
 
       def can_intercept?

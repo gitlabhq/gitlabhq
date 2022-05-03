@@ -111,6 +111,33 @@ RSpec.describe Import::GithubService do
       end
     end
 
+    context 'when import source is disabled' do
+      let(:repository_double) do
+        double({
+          name: 'vim',
+          description: 'test',
+          full_name: 'test/vim',
+          clone_url: 'http://repo.com/repo/repo.git',
+          private: false,
+          has_wiki?: false
+        })
+      end
+
+      before do
+        stub_application_setting(import_sources: nil)
+        allow(client).to receive(:repository).and_return(repository_double)
+      end
+
+      it 'returns forbidden' do
+        result = subject.execute(access_params, :github)
+
+        expect(result).to include(
+          status: :error,
+          http_status: :forbidden
+        )
+      end
+    end
+
     context 'when a blocked/local URL is used as github_hostname' do
       let(:message) { 'Error while attempting to import from GitHub' }
       let(:error) { "Invalid URL: #{url}" }
