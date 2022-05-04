@@ -96,7 +96,7 @@ export default {
       <runner-instructions-modal
         v-if="instructionsModalOpened"
         ref="runnerInstructionsModal"
-        :registration-token="registrationToken"
+        :registration-token="currentRegistrationToken"
         data-testid="runner-instructions-modal"
       />
     </gl-dropdown-item>

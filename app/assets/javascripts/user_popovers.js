@@ -32,6 +32,7 @@ const populateUserInfo = (user) => {
     ([userData, status]) => {
       if (userData) {
         Object.assign(user, {
+          id: userId,
           avatarUrl: userData.avatar_url,
           bot: userData.bot,
           username: userData.username,
@@ -42,6 +43,7 @@ const populateUserInfo = (user) => {
           websiteUrl: userData.website_url,
           pronouns: userData.pronouns,
           localTime: userData.local_time,
+          isFollowed: userData.is_followed,
           loaded: true,
         });
       }
@@ -97,6 +99,7 @@ export default function addPopovers(elements = document.querySelectorAll('.js-us
         bio: null,
         workInformation: null,
         status: null,
+        isFollowed: false,
         loaded: false,
       };
       const renderedPopover = new UserPopoverComponent({
@@ -105,6 +108,18 @@ export default function addPopovers(elements = document.querySelectorAll('.js-us
           user,
           placement: el.dataset.placement || 'top',
         },
+      });
+
+      const { userId } = el.dataset;
+
+      renderedPopover.$on('follow', () => {
+        UsersCache.updateById(userId, { is_followed: true });
+        user.isFollowed = true;
+      });
+
+      renderedPopover.$on('unfollow', () => {
+        UsersCache.updateById(userId, { is_followed: false });
+        user.isFollowed = false;
       });
 
       initializedPopovers.set(el, renderedPopover);

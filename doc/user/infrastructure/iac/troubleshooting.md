@@ -80,7 +80,7 @@ This happens because the value of `$CI_JOB_TOKEN` is only valid for the duration
 
 As a workaround, use [http backend configuration variables](https://www.terraform.io/docs/language/settings/backends/http.html#configuration-variables) in your CI job,
 which is what happens behind the scenes when following the
-[Get started using GitLab CI](terraform_state.md#get-started-using-gitlab-ci) instructions.
+[Get started using GitLab CI](terraform_state.md#initialize-a-terraform-state-as-a-backend-by-using-gitlab-cicd) instructions.
 
 ### Error: "address": required field is not set
 

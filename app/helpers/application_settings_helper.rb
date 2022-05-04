@@ -97,24 +97,18 @@ module ApplicationSettingsHelper
     end
   end
 
-  def oauth_providers_checkboxes
+  def oauth_providers_checkboxes(form)
     button_based_providers.map do |source|
-      disabled = @application_setting.disabled_oauth_sign_in_sources.include?(source.to_s)
+      checked = !@application_setting.disabled_oauth_sign_in_sources.include?(source.to_s)
       name = Gitlab::Auth::OAuth::Provider.label_for(source)
-      checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
-      checkbox_id = "application_setting_enabled_oauth_sign_in_sources_#{name.parameterize(separator: '_')}"
 
-      content_tag :div, class: 'form-check' do
-        check_box_tag(
-          checkbox_name,
-          source,
-          !disabled,
-          autocomplete: 'off',
-          id: checkbox_id,
-          class: 'form-check-input'
-        ) +
-        label_tag(checkbox_id, name, class: 'form-check-label')
-      end
+      form.gitlab_ui_checkbox_component(
+        :enabled_oauth_sign_in_sources,
+        name,
+        checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
+        checked_value: source,
+        unchecked_value: nil
+      )
     end
   end
 

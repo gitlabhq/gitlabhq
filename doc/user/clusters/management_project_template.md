@@ -93,12 +93,8 @@ application in the template.
 
 The [built-in supported applications](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/tree/master/applications) are:
 
-- [Apparmor](../infrastructure/clusters/manage/management_project_applications/apparmor.md)
 - [Cert-manager](../infrastructure/clusters/manage/management_project_applications/certmanager.md)
-- [Cilium](../infrastructure/clusters/manage/management_project_applications/cilium.md)
 - [Elastic Stack](../infrastructure/clusters/manage/management_project_applications/elasticstack.md)
-- [Falco](../infrastructure/clusters/manage/management_project_applications/falco.md)
-- [Fluentd](../infrastructure/clusters/manage/management_project_applications/fluentd.md)
 - [GitLab Runner](../infrastructure/clusters/manage/management_project_applications/runner.md)
 - [Ingress](../infrastructure/clusters/manage/management_project_applications/ingress.md)
 - [Prometheus](../infrastructure/clusters/manage/management_project_applications/prometheus.md)

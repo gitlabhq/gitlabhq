@@ -17,6 +17,7 @@ To use the Security Dashboards, you must:
 - Configure jobs to use the [`reports` syntax](../../../ci/yaml/index.md#artifactsreports).
 - Use [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or later. If you use the
   shared runners on GitLab.com, you are using the correct version.
+- Have the [correct role](../../permissions.md) for the project or group.
 
 ## When Security Dashboards are updated
 

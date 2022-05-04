@@ -48,7 +48,7 @@ module Gitlab
 
       def repository_size
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :repository_size, request, timeout: GitalyClient.medium_timeout)
+        response = GitalyClient.call(@storage, :repository_service, :repository_size, request, timeout: GitalyClient.long_timeout)
         response.size
       end
 

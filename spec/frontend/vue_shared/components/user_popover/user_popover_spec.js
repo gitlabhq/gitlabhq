@@ -3,9 +3,19 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
+import axios from '~/lib/utils/axios_utils';
+import createFlash from '~/flash';
+import { followUser, unfollowUser } from '~/api/user_api';
+
+jest.mock('~/flash');
+jest.mock('~/api/user_api', () => ({
+  followUser: jest.fn(),
+  unfollowUser: jest.fn(),
+}));
 
 const DEFAULT_PROPS = {
   user: {
+    id: 1,
     username: 'root',
     name: 'Administrator',
     location: 'Vienna',
@@ -15,6 +25,7 @@ const DEFAULT_PROPS = {
     workInformation: null,
     status: null,
     pronouns: 'they/them',
+    isFollowed: false,
     loaded: true,
   },
 };
@@ -26,6 +37,7 @@ describe('User Popover Component', () => {
 
   beforeEach(() => {
     loadFixtures(fixtureTemplate);
+    gon.features = {};
   });
 
   afterEach(() => {
@@ -37,15 +49,17 @@ describe('User Popover Component', () => {
   const findUserName = () => wrapper.find(UserNameWithStatus);
   const findSecurityBotDocsLink = () => wrapper.findByTestId('user-popover-bot-docs-link');
   const findUserLocalTime = () => wrapper.findByTestId('user-popover-local-time');
+  const findToggleFollowButton = () => wrapper.findByTestId('toggle-follow-button');
 
-  const createWrapper = (props = {}, options = {}) => {
+  const createWrapper = (props = {}, { followInUserPopover = true } = {}) => {
+    gon.features.followInUserPopover = followInUserPopover;
+
     wrapper = mountExtended(UserPopover, {
       propsData: {
         ...DEFAULT_PROPS,
         target: findTarget(),
         ...props,
       },
-      ...options,
     });
   };
 
@@ -287,6 +301,136 @@ describe('User Popover Component', () => {
       createWrapper({ user: SECURITY_BOT_USER });
 
       expect(findUserLocalTime().exists()).toBe(false);
+    });
+  });
+
+  describe('follow actions with `followInUserPopover` flag enabled', () => {
+    describe("when current user doesn't follow the user", () => {
+      beforeEach(() => createWrapper());
+
+      it('renders the Follow button with the correct variant', () => {
+        expect(findToggleFollowButton().text()).toBe('Follow');
+        expect(findToggleFollowButton().props('variant')).toBe('confirm');
+      });
+
+      describe('when clicking', () => {
+        it('follows the user', async () => {
+          followUser.mockResolvedValue({});
+
+          await findToggleFollowButton().trigger('click');
+
+          expect(findToggleFollowButton().props('loading')).toBe(true);
+
+          await axios.waitForAll();
+
+          expect(wrapper.emitted().follow.length).toBe(1);
+          expect(wrapper.emitted().unfollow).toBeFalsy();
+        });
+
+        describe('when an error occurs', () => {
+          beforeEach(() => {
+            followUser.mockRejectedValue({});
+
+            findToggleFollowButton().trigger('click');
+          });
+
+          it('shows an error message', async () => {
+            await axios.waitForAll();
+
+            expect(createFlash).toHaveBeenCalledWith({
+              message: 'An error occurred while trying to follow this user, please try again.',
+              error: {},
+              captureError: true,
+            });
+          });
+
+          it('emits no events', async () => {
+            await axios.waitForAll();
+
+            expect(wrapper.emitted().follow).toBe(undefined);
+            expect(wrapper.emitted().unfollow).toBe(undefined);
+          });
+        });
+      });
+    });
+
+    describe('when current user follows the user', () => {
+      beforeEach(() => createWrapper({ user: { ...DEFAULT_PROPS.user, isFollowed: true } }));
+
+      it('renders the Unfollow button with the correct variant', () => {
+        expect(findToggleFollowButton().text()).toBe('Unfollow');
+        expect(findToggleFollowButton().props('variant')).toBe('default');
+      });
+
+      describe('when clicking', () => {
+        it('unfollows the user', async () => {
+          unfollowUser.mockResolvedValue({});
+
+          findToggleFollowButton().trigger('click');
+
+          await axios.waitForAll();
+
+          expect(wrapper.emitted().follow).toBe(undefined);
+          expect(wrapper.emitted().unfollow.length).toBe(1);
+        });
+
+        describe('when an error occurs', () => {
+          beforeEach(async () => {
+            unfollowUser.mockRejectedValue({});
+
+            findToggleFollowButton().trigger('click');
+
+            await axios.waitForAll();
+          });
+
+          it('shows an error message', () => {
+            expect(createFlash).toHaveBeenCalledWith({
+              message: 'An error occurred while trying to unfollow this user, please try again.',
+              error: {},
+              captureError: true,
+            });
+          });
+
+          it('emits no events', () => {
+            expect(wrapper.emitted().follow).toBe(undefined);
+            expect(wrapper.emitted().unfollow).toBe(undefined);
+          });
+        });
+      });
+    });
+
+    describe('when the current user is the user', () => {
+      beforeEach(() => {
+        gon.current_username = DEFAULT_PROPS.user.username;
+        createWrapper();
+      });
+
+      it("doesn't render the toggle follow button", () => {
+        expect(findToggleFollowButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when API does not support `isFollowed`', () => {
+      beforeEach(() => {
+        const user = {
+          ...DEFAULT_PROPS.user,
+          isFollowed: undefined,
+        };
+
+        createWrapper({ user });
+      });
+
+      it('does not render the toggle follow button', () => {
+        expect(findToggleFollowButton().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('follow actions with `followInUserPopover` flag disabled', () => {
+    beforeEach(() => createWrapper({}, { followInUserPopover: false }));
+
+    it('doesn’t render the toggle follow button', () => {
+      expect(findToggleFollowButton().exists()).toBe(false);
     });
   });
 });

@@ -35,6 +35,17 @@ class UsersCache extends Cache {
     // missing catch is intentional, error handling depends on use case
   }
 
+  updateById(userId, data) {
+    if (!this.hasData(userId)) {
+      return;
+    }
+
+    this.internalStorage[userId] = {
+      ...this.internalStorage[userId],
+      ...data,
+    };
+  }
+
   retrieveStatusById(userId) {
     if (this.hasData(userId) && this.get(userId).status) {
       return Promise.resolve(this.get(userId).status);

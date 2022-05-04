@@ -114,16 +114,18 @@ module WorkhorseHelpers
       end
 
       params["#{key}.remote_id"] = file.remote_id if file.respond_to?(:remote_id) && file.remote_id.present?
+      params["#{key}.sha256"] = file.sha256 if file.respond_to?(:sha256) && file.sha256.present?
     end
   end
 
-  def fog_to_uploaded_file(file)
+  def fog_to_uploaded_file(file, sha256: nil)
     filename = File.basename(file.key)
 
     UploadedFile.new(nil,
                      filename: filename,
                      remote_id: filename,
-                     size: file.content_length
+                     size: file.content_length,
+                     sha256: sha256
                     )
   end
 end

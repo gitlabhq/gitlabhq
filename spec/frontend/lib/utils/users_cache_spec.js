@@ -228,4 +228,29 @@ describe('UsersCache', () => {
       expect(userStatus).toBe(dummyUserStatus);
     });
   });
+
+  describe('updateById', () => {
+    describe('when the user is not cached', () => {
+      it('does nothing and returns undefined', () => {
+        expect(UsersCache.updateById(dummyUserId, { name: 'root' })).toBe(undefined);
+        expect(UsersCache.internalStorage).toStrictEqual({});
+      });
+    });
+
+    describe('when the user is cached', () => {
+      const updatedName = 'has two farms';
+      beforeEach(() => {
+        UsersCache.internalStorage[dummyUserId] = dummyUser;
+      });
+
+      it('updates the user only with the new data', async () => {
+        UsersCache.updateById(dummyUserId, { name: updatedName });
+
+        expect(await UsersCache.retrieveById(dummyUserId)).toStrictEqual({
+          username: dummyUser.username,
+          name: updatedName,
+        });
+      });
+    });
+  });
 });

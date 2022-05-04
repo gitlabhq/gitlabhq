@@ -76,6 +76,10 @@
     "Discussion",
     "Note"
   ],
+  "SecurityPolicySource": [
+    "GroupSecurityPolicySource",
+    "ProjectSecurityPolicySource"
+  ],
   "Service": [
     "BaseService",
     "JiraService"

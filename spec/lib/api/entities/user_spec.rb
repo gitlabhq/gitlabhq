@@ -12,7 +12,40 @@ RSpec.describe API::Entities::User do
   subject { entity.as_json }
 
   it 'exposes correct attributes' do
-    expect(subject).to include(:name, :bio, :location, :public_email, :skype, :linkedin, :twitter, :website_url, :organization, :job_title, :work_information, :pronouns)
+    expect(subject.keys).to contain_exactly(
+      # UserSafe
+      :id, :username, :name,
+      # UserBasic
+      :state, :avatar_url, :web_url,
+      # User
+      :created_at, :bio, :location, :public_email, :skype, :linkedin, :twitter,
+      :website_url, :organization, :job_title, :pronouns, :bot, :work_information,
+      :followers, :following, :is_followed, :local_time
+    )
+  end
+
+  context 'exposing follow relationships' do
+    before do
+      allow(Ability).to receive(:allowed?).with(current_user, :read_user_profile, user).and_return(can_read_user_profile)
+    end
+
+    %i(followers following is_followed).each do |relationship|
+      context 'when current user cannot read user profile' do
+        let(:can_read_user_profile) { false }
+
+        it "does not expose #{relationship}" do
+          expect(subject).not_to include(relationship)
+        end
+      end
+
+      context 'when current user can read user profile' do
+        let(:can_read_user_profile) { true }
+
+        it "exposes #{relationship}" do
+          expect(subject).to include(relationship)
+        end
+      end
+    end
   end
 
   it 'exposes created_at if the current user can read the user profile' do
@@ -132,6 +165,16 @@ RSpec.describe API::Entities::User do
       it 'exposes group bot user name', :enable_admin_mode do
         expect(subject[:name]).to eq('group bot')
       end
+    end
+  end
+
+  context 'with logged-out user' do
+    let(:current_user) { nil }
+
+    it 'exposes is_followed as nil' do
+      allow(Ability).to receive(:allowed?).with(current_user, :read_user_profile, user).and_return(true)
+
+      expect(subject.keys).not_to include(:is_followed)
     end
   end
 

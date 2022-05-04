@@ -215,4 +215,33 @@ describe('Boards - Getters', () => {
       expect(getters.isEpicBoard()).toBe(false);
     });
   });
+
+  describe('hasScope', () => {
+    const boardConfig = {
+      labels: [],
+      assigneeId: null,
+      iterationCadenceId: null,
+      iterationId: null,
+      milestoneId: null,
+      weight: null,
+    };
+
+    it('returns false when boardConfig is empty', () => {
+      const state = { boardConfig };
+
+      expect(getters.hasScope(state)).toBe(false);
+    });
+
+    it('returns true when boardScope has a label', () => {
+      const state = { boardConfig: { ...boardConfig, labels: ['foo'] } };
+
+      expect(getters.hasScope(state)).toBe(true);
+    });
+
+    it('returns true when boardConfig has a value other than null', () => {
+      const state = { boardConfig: { ...boardConfig, assigneeId: 3 } };
+
+      expect(getters.hasScope(state)).toBe(true);
+    });
+  });
 });

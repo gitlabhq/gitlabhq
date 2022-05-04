@@ -19,9 +19,6 @@ GitLab also provides high-level statistics of vulnerabilities across projects an
 
 - The [Security Dashboard](security_dashboard/index.md) provides a
   high-level view of vulnerabilities detected in your projects, pipeline, and groups.
-- The [Threat Monitoring](threat_monitoring/index.md) page provides runtime security metrics
-  for application environments. With the information provided,
-  you can immediately begin risk analysis and remediation.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of GitLab application security, see [Shifting Security Left](https://www.youtube.com/watch?v=XnYstHObqlA&t).

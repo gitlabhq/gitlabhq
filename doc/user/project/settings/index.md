@@ -409,10 +409,13 @@ NOTE:
 Only project owners and administrators have the [permissions](../../permissions.md#project-members-permissions)
 to transfer a project.
 
-You can transfer an existing project into a [group](../../group/index.md).
+You can transfer an existing project to another [group](../../group/index.md),
+or you can transfer a [personal project](../working_with_projects.md#view-personal-projects) to a group.
 
 Prerequisites:
 
+- A group for your project. You can [view your existing groups](../../group/index.md#view-groups)
+  to find a suitable group. If you don't have a group, [create one](../../group/index.md#create-a-group).
 - You must have at least the Maintainer role in that group.
 - You must be the Owner of that project.
 - The group to which the project is being transferred to must allow creation of new projects.
@@ -423,15 +426,15 @@ Prerequisites:
 
 To transfer a project:
 
-1. Navigate to your project's **Settings > General**.
-1. Under **Advanced**, click **Expand**.
-1. Under "Transfer project", choose the namespace you want to transfer the
-   project to.
-1. Confirm the transfer by typing the project's path as instructed.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. Under **Transfer project**, choose the namespace to transfer the project to.
+1. Select **Transfer project**.
+1. Enter the project's name and select **Confirm**.
 
-Once done, you are redirected to the new project's namespace. At this point,
-read what happens with the
-[redirects from the old project to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
+You are redirected to the project's new URL. Read what happens with the
+[redirects from the old URL to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
 GitLab administrators can use the [administration interface](../../admin_area/index.md#administering-projects)

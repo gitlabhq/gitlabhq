@@ -18,6 +18,9 @@ module API
       expose :following, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) } do |user|
         user.followees.size
       end
+      expose :is_followed, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) && opts[:current_user] } do |user, opts|
+        opts[:current_user].following?(user)
+      end
       expose :local_time do |user|
         local_time(user.timezone)
       end

@@ -25,7 +25,6 @@ module BoardsHelper
       labels_manage_path: labels_manage_path,
       releases_fetch_path: releases_fetch_path,
       board_type: board.to_type,
-      has_scope: board.scoped?.to_s,
       has_missing_boards: has_missing_boards?.to_s,
       multiple_boards_available: multiple_boards_available?.to_s,
       board_base_url: board_base_url

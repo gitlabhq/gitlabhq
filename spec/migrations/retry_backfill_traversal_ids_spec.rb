@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210604070207_retry_backfill_traversal_ids.rb')
+require_migration!
 
 RSpec.describe RetryBackfillTraversalIds, :migration do
   include ReloadHelpers

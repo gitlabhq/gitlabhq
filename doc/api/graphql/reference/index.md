@@ -11820,6 +11820,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouprunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="grouprunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 
+##### `Group.scanExecutionPolicies`
+
+Scan Execution Policies of the namespace.
+
+Returns [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`. |
+| <a id="groupscanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Group.timelogs`
 
 Time logged on issues and merge requests in the group and its subgroups.
@@ -11985,6 +12002,17 @@ Contains release-related statistics about a group.
 | ---- | ---- | ----------- |
 | <a id="groupreleasestatsreleasescount"></a>`releasesCount` | [`Int`](#int) | Total number of releases in all descendant projects of the group. |
 | <a id="groupreleasestatsreleasespercentage"></a>`releasesPercentage` | [`Int`](#int) | Percentage of the group's descendant projects that have at least one release. |
+
+### `GroupSecurityPolicySource`
+
+Represents the source of a security policy belonging to a group.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsecuritypolicysourceinherited"></a>`inherited` | [`Boolean!`](#boolean) | Indicates whether this policy is inherited from parent group. |
+| <a id="groupsecuritypolicysourcenamespace"></a>`namespace` | [`Namespace`](#namespace) | Project the policy is associated with. |
 
 ### `GroupStats`
 
@@ -13811,6 +13839,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="namespaceprojectssearch"></a>`search` | [`String`](#string) | Search project with most similar names or paths. |
 | <a id="namespaceprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by this criteria. |
 
+##### `Namespace.scanExecutionPolicies`
+
+Scan Execution Policies of the namespace.
+
+Returns [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacescanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`. |
+| <a id="namespacescanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ### `NetworkPolicy`
 
 Represents the network policy.
@@ -15265,6 +15310,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`. |
+| <a id="projectscanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
 ##### `Project.securityTrainingProviders`
 
@@ -15542,6 +15588,16 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pages` on this resource. |
 | <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `update_wiki` on this resource. |
 | <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | Indicates the user can perform `upload_file` on this resource. |
+
+### `ProjectSecurityPolicySource`
+
+Represents the source of a security policy belonging to a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecuritypolicysourceproject"></a>`project` | [`Project`](#project) | Project the policy is associated with. |
 
 ### `ProjectSecurityTraining`
 
@@ -16047,6 +16103,7 @@ Represents the scan execution policy.
 | <a id="scanexecutionpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="scanexecutionpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="scanexecutionpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="scanexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="scanexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
@@ -18992,6 +19049,13 @@ The status of the security scan.
 | <a id="scanstatusreport_error"></a>`REPORT_ERROR` | The report artifact provided by the CI build couldn't be parsed. |
 | <a id="scanstatussucceeded"></a>`SUCCEEDED` | The report has been successfully prepared. |
 
+### `SecurityPolicyRelationType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securitypolicyrelationtypedirect"></a>`DIRECT` | Policies defined for the project only. |
+| <a id="securitypolicyrelationtypeinherited"></a>`INHERITED` | Policies defined for the project and project's ancestor groups. |
+
 ### `SecurityReportTypeEnum`
 
 | Value | Description |
@@ -20060,6 +20124,15 @@ One of:
 - [`MavenMetadata`](#mavenmetadata)
 - [`NugetMetadata`](#nugetmetadata)
 - [`PypiMetadata`](#pypimetadata)
+
+#### `SecurityPolicySource`
+
+Represents a policy source. Its fields depend on the source type.
+
+One of:
+
+- [`GroupSecurityPolicySource`](#groupsecuritypolicysource)
+- [`ProjectSecurityPolicySource`](#projectsecuritypolicysource)
 
 #### `VulnerabilityDetail`
 

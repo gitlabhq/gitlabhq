@@ -309,7 +309,8 @@ Parameters:
   "work_information": null,
   "followers": 1,
   "following": 1,
-  "local_time": "3:38 PM"
+  "local_time": "3:38 PM",
+  "is_followed": false
 }
 ```
 

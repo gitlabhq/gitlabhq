@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20210629031900_associate_existing_dast_builds_with_variables.rb')
+require_migration!
 
 RSpec.describe AssociateExistingDastBuildsWithVariables do
   subject(:migration) { described_class.new }

@@ -1,4 +1,4 @@
-= form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-signin-settings'), html: { class: 'fieldset-form', id: 'signin-settings' } do |f|
+= gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-signin-settings'), html: { class: 'fieldset-form', id: 'signin-settings' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -23,7 +23,7 @@
       %fieldset.form-group
         %legend.gl-font-base.gl-mb-3.gl-border-none.gl-font-weight-bold= _('Enabled OAuth authentication sources')
         = hidden_field_tag 'application_setting[enabled_oauth_sign_in_sources][]'
-        - oauth_providers_checkboxes.each do |source|
+        - oauth_providers_checkboxes(f).each do |source|
           = source
     .form-group
       = f.label :two_factor_authentication, _('Two-factor authentication'), class: 'label-bold'

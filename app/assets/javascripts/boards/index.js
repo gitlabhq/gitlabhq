@@ -69,7 +69,6 @@ function mountBoardApp(el) {
       timeTrackingLimitToHours: parseBoolean(el.dataset.timeTrackingLimitToHours),
       issuableType: issuableTypes.issue,
       emailsDisabled: parseBoolean(el.dataset.emailsDisabled),
-      hasScope: parseBoolean(el.dataset.hasScope),
       hasMissingBoards: parseBoolean(el.dataset.hasMissingBoards),
       weights: el.dataset.weights ? JSON.parse(el.dataset.weights) : [],
       // Permissions
