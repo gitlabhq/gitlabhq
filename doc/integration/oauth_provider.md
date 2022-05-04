@@ -88,11 +88,13 @@ The user authorization step is automatically skipped for this application.
 
 ## Expiring access tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21745) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21745) in GitLab 14.3, with the ability to opt out.
+> - Ability to opt-out of expiring access token [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0.
 
 WARNING:
-The ability to opt-out of expiring access tokens [is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/340848).
-All existing integrations should be updated to support access token refresh.
+The ability to opt-out of expiring access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/340848)
+in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in 15.0. All
+existing integrations must be updated to support access token refresh.
 
 Access tokens expire in two hours which means that integrations that use them must support generating new access
 tokens at least every two hours. Existing:

@@ -9,10 +9,6 @@ export default {
     WorkItemDetail,
   },
   props: {
-    visible: {
-      type: Boolean,
-      required: true,
-    },
     workItemId: {
       type: String,
       required: false,
@@ -37,18 +33,15 @@ export default {
     setErrorMessage(message) {
       this.error = message;
     },
+    show() {
+      this.$refs.modal.show();
+    },
   },
 };
 </script>
 
 <template>
-  <gl-modal
-    hide-footer
-    size="lg"
-    modal-id="work-item-detail-modal"
-    :visible="visible"
-    @hide="closeModal"
-  >
+  <gl-modal ref="modal" hide-footer size="lg" modal-id="work-item-detail-modal" @hide="closeModal">
     <gl-alert v-if="error" variant="danger" @dismiss="error = false">
       {{ error }}
     </gl-alert>

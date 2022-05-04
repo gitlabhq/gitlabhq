@@ -16,6 +16,8 @@ import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url
 import { __, s__, sprintf } from '~/locale';
 import TaskList from '~/task_list';
 import Tracking from '~/tracking';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
@@ -89,10 +91,20 @@ export default {
         : undefined,
     };
   },
-  computed: {
-    showWorkItemDetailModal() {
-      return Boolean(this.workItemId);
+  apollo: {
+    workItem: {
+      query: workItemQuery,
+      variables() {
+        return {
+          id: this.workItemId,
+        };
+      },
+      skip() {
+        return !this.workItemId || !this.workItemsEnabled;
+      },
     },
+  },
+  computed: {
     workItemsEnabled() {
       return this.glFeatures.workItems;
     },
@@ -125,6 +137,10 @@ export default {
 
     if (this.workItemsEnabled) {
       this.renderTaskActions();
+    }
+
+    if (this.workItemId) {
+      this.$refs.detailsModal.show();
     }
   },
   methods: {
@@ -196,9 +212,12 @@ export default {
         const taskLink = item.querySelector('.gfm-issue');
         if (taskLink) {
           const { issue, referenceType } = taskLink.dataset;
+          const workItemId = convertToGraphQLId(TYPE_WORK_ITEM, issue);
+          this.addHoverListeners(taskLink, workItemId);
           taskLink.addEventListener('click', (e) => {
             e.preventDefault();
-            this.workItemId = convertToGraphQLId(TYPE_WORK_ITEM, issue);
+            this.$refs.detailsModal.show();
+            this.workItemId = workItemId;
             this.updateWorkItemIdUrlQuery(issue);
             this.track('viewed_work_item_from_modal', {
               category: 'workItems:show',
@@ -231,6 +250,19 @@ export default {
         button.setAttribute('aria-label', s__('WorkItem|Convert to work item'));
         button.addEventListener('click', () => this.openCreateTaskModal(button.id));
         item.prepend(button);
+      });
+    },
+    addHoverListeners(taskLink, id) {
+      let workItemPrefetch;
+      taskLink.addEventListener('mouseover', () => {
+        workItemPrefetch = setTimeout(() => {
+          this.workItemId = id;
+        }, 150);
+      });
+      taskLink.addEventListener('mouseout', () => {
+        if (workItemPrefetch) {
+          clearTimeout(workItemPrefetch);
+        }
       });
     },
     openCreateTaskModal(id) {
@@ -318,8 +350,8 @@ export default {
       />
     </gl-modal>
     <work-item-detail-modal
+      ref="detailsModal"
       :can-update="canUpdate"
-      :visible="showWorkItemDetailModal"
       :work-item-id="workItemId"
       @workItemDeleted="handleDeleteTask"
       @close="closeWorkItemDetailModal"

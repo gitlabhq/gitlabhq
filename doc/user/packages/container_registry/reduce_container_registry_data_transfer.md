@@ -9,9 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Depending on the frequency with which images or tags are downloaded from the Container Registry,
 data transfers can exceed the GitLab.com limit. This page offers several recommendations and tips for
 reducing the amount of data you transfer with the Container Registry.
-are downloaded from the Container Registry, data transfers can exceed the GitLab limit. This page
-offers several recommendations and tips for reducing the amount of data you transfer with the
-Container Registry.
 
 ## Check data transfer use
 

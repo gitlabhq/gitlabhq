@@ -57,7 +57,8 @@ If you have:
 
 - Not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the service you are using. NFS is
   supported in 14.x releases but is [deprecated](../../update/deprecations.md#nfs-for-git-repository-storage).
-Support for storing Git repository data on NFS will end for all versions of GitLab with the release of 15.0.
+  Support for storing Git repository data on NFS is scheduled to end for all versions of GitLab with the release of GitLab
+  15.6.
 - Not yet migrated to Gitaly Cluster but want to migrate away from NFS, you have two options:
   - A sharded Gitaly instance.
   - Gitaly Cluster.
@@ -235,7 +236,9 @@ As with normal Gitaly storages, virtual storages can be sharded.
 
 ### Moving beyond NFS
 
-Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting GitLab 15.0. Please see our [statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for more details.
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting
+GitLab 15.6. Please see our [statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs)
+for more details.
 
 [Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
 is not well suited to Git workloads which are CPU and IOPS sensitive.
@@ -689,4 +692,4 @@ The second facet presents the only real solution. For this, we developed
 ## NFS deprecation notice
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
-unavailable from GitLab 15.0. For further information, please see our [NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation) documentation.
+unavailable from GitLab 15.6. For further information, please see our [NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation) documentation.

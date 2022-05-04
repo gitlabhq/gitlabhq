@@ -1,14 +1,20 @@
 import $ from 'jquery';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import '~/behaviors/markdown/render_gfm';
 import { GlTooltip, GlModal } from '@gitlab/ui';
+
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+
 import Description from '~/issues/show/components/description.vue';
 import { updateHistory } from '~/lib/utils/url_utility';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import TaskList from '~/task_list';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
@@ -27,17 +33,28 @@ jest.mock('~/task_list');
 
 const showModal = jest.fn();
 const hideModal = jest.fn();
+const showDetailsModal = jest.fn();
 const $toast = {
   show: jest.fn(),
 };
+const workItemQueryResponse = {
+  data: {
+    workItem: null,
+  },
+};
+
+const queryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
 
 describe('Description component', () => {
   let wrapper;
+
+  Vue.use(VueApollo);
 
   const findGfmContent = () => wrapper.find('[data-testid="gfm-content"]');
   const findTextarea = () => wrapper.find('[data-testid="textarea"]');
   const findTaskActionButtons = () => wrapper.findAll('.js-add-task');
   const findConvertToTaskButton = () => wrapper.find('.js-add-task');
+  const findTaskLink = () => wrapper.find('a.gfm-issue');
 
   const findTooltips = () => wrapper.findAllComponents(GlTooltip);
   const findModal = () => wrapper.findComponent(GlModal);
@@ -52,6 +69,7 @@ describe('Description component', () => {
         ...props,
       },
       provide,
+      apolloProvider: createMockApollo([[workItemQuery, queryHandler]]),
       mocks: {
         $toast,
       },
@@ -60,6 +78,11 @@ describe('Description component', () => {
           methods: {
             show: showModal,
             hide: hideModal,
+          },
+        }),
+        WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
+          methods: {
+            show: showDetailsModal,
           },
         }),
       },
@@ -303,8 +326,6 @@ describe('Description component', () => {
     });
 
     describe('work items detail', () => {
-      const findTaskLink = () => wrapper.find('a.gfm-issue');
-
       describe('when opening and closing', () => {
         beforeEach(() => {
           createComponent({
@@ -319,11 +340,9 @@ describe('Description component', () => {
         });
 
         it('opens when task button is clicked', async () => {
-          expect(findWorkItemDetailModal().props('visible')).toBe(false);
-
           await findTaskLink().trigger('click');
 
-          expect(findWorkItemDetailModal().props('visible')).toBe(true);
+          expect(showDetailsModal).toHaveBeenCalled();
           expect(updateHistory).toHaveBeenCalledWith({
             url: `${TEST_HOST}/?work_item_id=2`,
             replace: true,
@@ -333,12 +352,9 @@ describe('Description component', () => {
         it('closes from an open state', async () => {
           await findTaskLink().trigger('click');
 
-          expect(findWorkItemDetailModal().props('visible')).toBe(true);
-
           findWorkItemDetailModal().vm.$emit('close');
           await nextTick();
 
-          expect(findWorkItemDetailModal().props('visible')).toBe(false);
           expect(updateHistory).toHaveBeenLastCalledWith({
             url: `${TEST_HOST}/`,
             replace: true,
@@ -364,16 +380,16 @@ describe('Description component', () => {
 
       describe('when url query `work_item_id` exists', () => {
         it.each`
-          behavior           | workItemId     | visible
-          ${'opens'}         | ${'123'}       | ${true}
-          ${'does not open'} | ${'123e'}      | ${false}
-          ${'does not open'} | ${'12e3'}      | ${false}
-          ${'does not open'} | ${'1e23'}      | ${false}
-          ${'does not open'} | ${'x'}         | ${false}
-          ${'does not open'} | ${'undefined'} | ${false}
+          behavior           | workItemId     | modalOpened
+          ${'opens'}         | ${'123'}       | ${1}
+          ${'does not open'} | ${'123e'}      | ${0}
+          ${'does not open'} | ${'12e3'}      | ${0}
+          ${'does not open'} | ${'1e23'}      | ${0}
+          ${'does not open'} | ${'x'}         | ${0}
+          ${'does not open'} | ${'undefined'} | ${0}
         `(
           '$behavior when url contains `work_item_id=$workItemId`',
-          async ({ workItemId, visible }) => {
+          async ({ workItemId, modalOpened }) => {
             setWindowLocation(`?work_item_id=${workItemId}`);
 
             createComponent({
@@ -381,9 +397,42 @@ describe('Description component', () => {
               provide: { glFeatures: { workItems: true } },
             });
 
-            expect(findWorkItemDetailModal().props('visible')).toBe(visible);
+            expect(showDetailsModal).toHaveBeenCalledTimes(modalOpened);
           },
         );
+      });
+    });
+
+    describe('when hovering task links', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            descriptionHtml: descriptionHtmlWithTask,
+          },
+          provide: {
+            glFeatures: { workItems: true },
+          },
+        });
+        return nextTick();
+      });
+
+      it('prefetches work item detail after work item link is hovered for 150ms', async () => {
+        await findTaskLink().trigger('mouseover');
+        jest.advanceTimersByTime(150);
+        await waitForPromises();
+
+        expect(queryHandler).toHaveBeenCalledWith({
+          id: 'gid://gitlab/WorkItem/2',
+        });
+      });
+
+      it('does not work item detail after work item link is hovered for less than 150ms', async () => {
+        await findTaskLink().trigger('mouseover');
+        await findTaskLink().trigger('mouseout');
+        jest.advanceTimersByTime(150);
+        await waitForPromises();
+
+        expect(queryHandler).not.toHaveBeenCalled();
       });
     });
   });

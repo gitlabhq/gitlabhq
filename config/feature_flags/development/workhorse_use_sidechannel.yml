@@ -1,8 +1,0 @@
----
-name: workhorse_use_sidechannel
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1193
-milestone: '14.4'
-type: development
-group: 'group::scalability'
-default_enabled: true
