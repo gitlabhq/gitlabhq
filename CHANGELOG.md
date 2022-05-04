@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.10.2 (2022-05-04)
+
+### Fixed (2 changes)
+
+- [Resolve "Fork relationship is not respected for certain projects"](gitlab-org/gitlab@881099bc27d9696ea3b9bcc2a1e43c3207ee4bb3) ([merge request](gitlab-org/gitlab!86476))
+- [Fix mappings errors for ES6.8](gitlab-org/gitlab@5caac54a746a331d828d4e3ce24273cd6173c86f) ([merge request](gitlab-org/gitlab!86476)) **GitLab Enterprise Edition**
+
+### Other (1 change)
+
+- [Add documentation for mr settings audit events part 1](gitlab-org/gitlab@95bfdae5a677de5ac9d0d5ceccd42e88ca4f99c4) ([merge request](gitlab-org/gitlab!86476))
+
 ## 14.10.1 (2022-04-29)
 
 ### Security (14 changes)
