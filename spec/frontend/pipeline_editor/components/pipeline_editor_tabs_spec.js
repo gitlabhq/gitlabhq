@@ -3,7 +3,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
-import WalkthroughPopover from '~/pipeline_editor/components/walkthrough_popover.vue';
+import WalkthroughPopover from '~/pipeline_editor/components/popovers/walkthrough_popover.vue';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';

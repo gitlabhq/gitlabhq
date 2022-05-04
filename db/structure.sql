@@ -17892,6 +17892,15 @@ CREATE SEQUENCE packages_build_infos_id_seq
 
 ALTER SEQUENCE packages_build_infos_id_seq OWNED BY packages_build_infos.id;
 
+CREATE TABLE packages_cleanup_policies (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    next_run_at timestamp with time zone,
+    keep_n_duplicated_package_files text DEFAULT 'all'::text NOT NULL,
+    CONSTRAINT check_e53f35ab7b CHECK ((char_length(keep_n_duplicated_package_files) <= 255))
+);
+
 CREATE TABLE packages_composer_cache_files (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24955,6 +24964,9 @@ ALTER TABLE ONLY operations_user_lists
 
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT packages_build_infos_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY packages_cleanup_policies
+    ADD CONSTRAINT packages_cleanup_policies_pkey PRIMARY KEY (project_id);
 
 ALTER TABLE ONLY packages_composer_cache_files
     ADD CONSTRAINT packages_composer_cache_files_pkey PRIMARY KEY (id);
@@ -32353,6 +32365,9 @@ ALTER TABLE ONLY namespace_settings
 
 ALTER TABLE ONLY self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_3936dadc62 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_cleanup_policies
+    ADD CONSTRAINT fk_rails_393ba98591 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules_groups
     ADD CONSTRAINT fk_rails_396841e79e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -49,6 +49,9 @@ export const BRANCH_PAGINATION_LIMIT = 20;
 export const BRANCH_SEARCH_DEBOUNCE = '500';
 export const SOURCE_EDITOR_DEBOUNCE = 500;
 
+export const FILE_TREE_DISPLAY_KEY = 'pipeline_editor_file_tree_display';
+export const FILE_TREE_POPOVER_DISMISSED_KEY = 'pipeline_editor_file_tree_popover_dismissed';
+
 export const STARTER_TEMPLATE_NAME = 'Getting-Started';
 
 export const pipelineEditorTrackingOptions = {

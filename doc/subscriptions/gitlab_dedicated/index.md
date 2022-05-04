@@ -9,12 +9,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 NOTE:
 GitLab Dedicated is currently in limited availability. Please [contact us](#contact-us) if you are interested.
 
-GitLab Dedicated is a fully isolated, single-tenant GitLab instance that is:
+GitLab Dedicated is a fully isolated, single-tenant SaaS service that is:
 
 - Hosted and managed by GitLab, Inc.
-- Deployed in a region of choice in AWS.
+- Deployed in a region of choice on AWS.
 
-GitLab Dedicated enables you to offload the operational overhead of managing the DevOps Platform. It offers a high level of tenant isolation and deployment customization, ideal for enterprises in highly-regulated industries. By deploying your GitLab instance onto a separate Cloud Infrastructure from other tenants, GitLab Dedicated helps you better meet your security and compliance requirements.
+GitLab Dedicated enables you to offload the operational overhead of managing the DevOps Platform. It offers a high level of tenant isolation and deployment customization, ideal for enterprises in highly-regulated industries. By deploying your GitLab instance onto separate Cloud Infrastructure from other tenants, GitLab Dedicated helps you better meet your security and compliance requirements.
 
 ## Available features
 
@@ -25,9 +25,9 @@ GitLab Dedicated enables you to offload the operational overhead of managing the
     You can specify an AWS IAM Principal and preferred Availability Zones during onboarding to enable this functionality.
 - Upgrade strategy:
   - Monthly upgrades tracking one release behind the latest (n-1), with the latest security release.
-  - Out of band security patches provided for high severity items.
+  - Out of band security patches provided for high severity releases.
 - Backup strategy: regular backups taken and tested.
-- Choice of Cloud Region: upon onboarding, choose the cloud region where you want to deploy your instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not currently supported.
+- Choice of cloud region: upon onboarding, choose the cloud region where you want to deploy your instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not currently supported.
 - Security: Data encrypted at rest and in transit using latest encryption standards.
 - Application: Self-managed [Ultimate feature set](https://about.gitlab.com/pricing/self-managed/feature-comparison/) with the exception of the unsupported features [listed below](#features-not-available-at-launch).
 

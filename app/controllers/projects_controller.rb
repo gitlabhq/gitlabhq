@@ -345,6 +345,8 @@ class ProjectsController < Projects::ApplicationController
   #
   # pages list order: repository readme, wiki home, issues list, customize workflow
   def render_landing_page
+    Gitlab::Tracking.event('project_overview', 'render', user: current_user, project: @project.project)
+
     if can?(current_user, :download_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
 

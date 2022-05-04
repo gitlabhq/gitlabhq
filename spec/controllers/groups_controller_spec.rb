@@ -71,6 +71,17 @@ RSpec.describe GroupsController, factory_default: :keep do
 
     context 'when the group is not importing' do
       it_behaves_like 'details view'
+
+      it 'tracks page views', :snowplow do
+        subject
+
+        expect_snowplow_event(
+          category: 'group_overview',
+          action: 'render',
+          user: user,
+          namespace: group
+        )
+      end
     end
 
     context 'when the group is importing' do
@@ -80,6 +91,17 @@ RSpec.describe GroupsController, factory_default: :keep do
 
       it 'redirects to the import status page' do
         expect(subject).to redirect_to group_import_path(group)
+      end
+
+      it 'does not track page views', :snowplow do
+        subject
+
+        expect_no_snowplow_event(
+          category: 'group_overview',
+          action: 'render',
+          user: user,
+          namespace: group
+        )
       end
     end
   end

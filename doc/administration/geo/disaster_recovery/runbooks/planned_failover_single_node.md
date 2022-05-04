@@ -247,7 +247,7 @@ To promote the secondary site running GitLab 14.4 and earlier:
 
 WARNING:
 The `gitlab-ctl promote-to-primary-node` and `gitlab-ctl promoted-db` commands are
-deprecated in GitLab 14.5 and later, and are scheduled to [be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
+deprecated in GitLab 14.5 and later, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
 Use `gitlab-ctl geo promote` instead.
 
 1. SSH in to your **secondary** site and login as root:

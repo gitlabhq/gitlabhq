@@ -8,7 +8,7 @@ import PipelineEditorFileNav from './components/file_nav/pipeline_editor_file_na
 import PipelineEditorFileTree from './components/file_tree/container.vue';
 import PipelineEditorHeader from './components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from './components/pipeline_editor_tabs.vue';
-import { CREATE_TAB } from './constants';
+import { CREATE_TAB, FILE_TREE_DISPLAY_KEY } from './constants';
 
 export default {
   commitSectionRef: 'commitSectionRef',
@@ -77,6 +77,9 @@ export default {
       return this.showFileTree && this.glFeatures.pipelineEditorFileTree;
     },
   },
+  mounted() {
+    this.showFileTree = JSON.parse(localStorage.getItem(FILE_TREE_DISPLAY_KEY)) || false;
+  },
   methods: {
     closeBranchModal() {
       this.showSwitchBranchModal = false;
@@ -92,6 +95,7 @@ export default {
     },
     toggleFileTree() {
       this.showFileTree = !this.showFileTree;
+      localStorage.setItem(FILE_TREE_DISPLAY_KEY, this.showFileTree);
     },
     switchBranch() {
       this.showSwitchBranchModal = false;

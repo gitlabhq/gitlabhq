@@ -630,6 +630,16 @@ for how to proceed.
 
 ### 14.0.0
 
+Prerequisites:
+
+- The [GitLab 14.0 release post contains several important notes](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#upgrade)
+  about pre-requisites including [using Patroni instead of repmgr](../administration/postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni),
+  migrating [to hashed storage](../administration/raketasks/storage.md#migrate-to-hashed-storage),
+  and [to Puma](../administration/operations/puma.md).
+- The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
+
+Long running batched background database migrations:
+
 - Database changes made by the upgrade to GitLab 14.0 can take hours or days to complete on larger GitLab instances.
   These [batched background migrations](#batched-background-migrations) update whole database tables to mitigate primary key overflow and must be finished before upgrading to GitLab 14.2 or higher.
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were
@@ -650,13 +660,12 @@ for how to proceed.
 
   See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
 
+Other issues:
+
 - In GitLab 13.3 some [pipeline processing methods were deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/218536)
   and this code was completely removed in GitLab 14.0. If you plan to upgrade from
-  **GitLab 13.2 or older** directly to 14.0 ([unsupported](#upgrading-to-a-new-major-version)), you should not have any pipelines running
-  when you upgrade or the pipelines might report the wrong status when the upgrade completes.
+  **GitLab 13.2 or older** directly to 14.0, this is [unsupported](#upgrading-to-a-new-major-version).
   You should instead follow a [supported upgrade path](#upgrade-paths).
-- The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
-
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 - See [Custom Rack Attack initializers](#custom-rack-attack-initializers) if you persist your own custom Rack Attack
   initializers during upgrades.
@@ -673,7 +682,16 @@ for how to proceed.
 
 ### 13.12.0
 
-See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
+- Check the GitLab database [has no references to legacy storage](../administration/raketasks/storage.md#on-legacy-storage).
+  The GitLab 14.0 pre-install check will cause the package update to fail if there is unmigrated data:
+
+  ```plaintext
+  Checking for unmigrated data on legacy storage
+
+  Legacy storage is no longer supported. Please migrate your data to hashed storage.
+  ```
 
 ### 13.11.0
 

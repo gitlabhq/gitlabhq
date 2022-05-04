@@ -229,6 +229,8 @@ class GroupsController < Groups::ApplicationController
   protected
 
   def render_show_html
+    Gitlab::Tracking.event('group_overview', 'render', user: current_user, namespace: @group)
+
     render 'groups/show', locals: { trial: params[:trial] }
   end
 

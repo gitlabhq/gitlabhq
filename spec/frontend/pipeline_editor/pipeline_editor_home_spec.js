@@ -10,7 +10,13 @@ import PipelineEditorFileTree from '~/pipeline_editor/components/file_tree/conta
 import BranchSwitcher from '~/pipeline_editor/components/file_nav/branch_switcher.vue';
 import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
-import { MERGED_TAB, VISUALIZE_TAB, CREATE_TAB, LINT_TAB } from '~/pipeline_editor/constants';
+import {
+  MERGED_TAB,
+  VISUALIZE_TAB,
+  CREATE_TAB,
+  LINT_TAB,
+  FILE_TREE_DISPLAY_KEY,
+} from '~/pipeline_editor/constants';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 
 import { mockLintResponse, mockCiYml } from './mock_data';
@@ -55,6 +61,7 @@ describe('Pipeline editor home wrapper', () => {
   const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
 
   afterEach(() => {
+    localStorage.clear();
     wrapper.destroy();
   });
 
@@ -252,34 +259,69 @@ describe('Pipeline editor home wrapper', () => {
     });
 
     describe('with pipelineEditorFileTree feature flag ON', () => {
-      beforeEach(() => {
-        createComponent({
-          glFeatures: {
-            pipelineEditorFileTree: true,
-          },
-          stubs: {
-            GlButton,
-            PipelineEditorFileNav,
-          },
+      describe('button toggle', () => {
+        beforeEach(() => {
+          createComponent({
+            glFeatures: {
+              pipelineEditorFileTree: true,
+            },
+            stubs: {
+              GlButton,
+              PipelineEditorFileNav,
+            },
+          });
+        });
+
+        it('shows button toggle', () => {
+          expect(findFileTreeBtn().exists()).toBe(true);
+        });
+
+        it('toggles the drawer on button click', async () => {
+          await toggleFileTree();
+
+          expect(findPipelineEditorFileTree().exists()).toBe(true);
+
+          await toggleFileTree();
+
+          expect(findPipelineEditorFileTree().exists()).toBe(false);
+        });
+
+        it('sets the display state in local storage', async () => {
+          await toggleFileTree();
+
+          expect(localStorage.getItem(FILE_TREE_DISPLAY_KEY)).toBe('true');
+
+          await toggleFileTree();
+
+          expect(localStorage.getItem(FILE_TREE_DISPLAY_KEY)).toBe('false');
         });
       });
 
-      it('shows button toggle', () => {
-        expect(findFileTreeBtn().exists()).toBe(true);
+      describe('when file tree display state is saved in local storage', () => {
+        beforeEach(() => {
+          localStorage.setItem(FILE_TREE_DISPLAY_KEY, 'true');
+          createComponent({
+            glFeatures: { pipelineEditorFileTree: true },
+            stubs: { PipelineEditorFileNav },
+          });
+        });
+
+        it('shows the file tree by default', () => {
+          expect(findPipelineEditorFileTree().exists()).toBe(true);
+        });
       });
 
-      it('hides the file tree by default', () => {
-        expect(findPipelineEditorFileTree().exists()).toBe(false);
-      });
+      describe('when file tree display state is not saved in local storage', () => {
+        beforeEach(() => {
+          createComponent({
+            glFeatures: { pipelineEditorFileTree: true },
+            stubs: { PipelineEditorFileNav },
+          });
+        });
 
-      it('toggles the drawer on button click', async () => {
-        await toggleFileTree();
-
-        expect(findPipelineEditorFileTree().exists()).toBe(true);
-
-        await toggleFileTree();
-
-        expect(findPipelineEditorFileTree().exists()).toBe(false);
+        it('hides the file tree by default', () => {
+          expect(findPipelineEditorFileTree().exists()).toBe(false);
+        });
       });
     });
   });

@@ -426,8 +426,11 @@ end
 
 #### `update-example-snapshots.rb` script
 
-The `scripts/glfm/update-example-snapshots.rb` script uses the GLFM `spec.txt` specification
-file to update example snapshots:
+The `scripts/glfm/update-example-snapshots.rb` script uses the GLFM
+`glfm_specification/output/spec.txt` specification file and the
+`glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml`
+file to create and update the [example snapshot](#example-snapshot-files)
+YAML files:
 
 ```mermaid
 graph LR
@@ -436,6 +439,7 @@ subgraph script:
 end
 subgraph input:<br/>input specification file
   B[spec.txt] --> A
+  C[glfm_example_status.yml] --> A
 end
 subgraph output:<br/>example snapshot files
   A --> E[examples_index.yml]

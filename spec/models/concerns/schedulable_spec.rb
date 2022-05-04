@@ -57,6 +57,16 @@ RSpec.describe Schedulable do
     it_behaves_like '.runnable_schedules'
   end
 
+  context 'for a packages cleanup policy' do
+    # let! is used to reset the next_run_at value before each spec
+    let(:object) { create(:packages_cleanup_policy, :runnable) }
+    let(:non_runnable_object) { create(:packages_cleanup_policy) }
+
+    it_behaves_like '#schedule_next_run!'
+    it_behaves_like 'before_save callback'
+    it_behaves_like '.runnable_schedules'
+  end
+
   describe '#next_run_at' do
     let(:schedulable_instance) do
       Class.new(ActiveRecord::Base) do

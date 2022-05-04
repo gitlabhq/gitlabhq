@@ -6,22 +6,22 @@ export default (containerId = 'update-shared-runners-form') => {
 
   const {
     updatePath,
-    sharedRunnersAvailability,
-    parentSharedRunnersAvailability,
-    runnerEnabled,
-    runnerDisabled,
-    runnerAllowOverride,
+    sharedRunnersSetting,
+    parentSharedRunnersSetting,
+    runnerEnabledValue,
+    runnerDisabledValue,
+    runnerAllowOverrideValue,
   } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
     provide: {
       updatePath,
-      sharedRunnersAvailability,
-      parentSharedRunnersAvailability,
-      runnerEnabled,
-      runnerDisabled,
-      runnerAllowOverride,
+      sharedRunnersSetting,
+      parentSharedRunnersSetting,
+      runnerEnabledValue,
+      runnerDisabledValue,
+      runnerAllowOverrideValue,
     },
     render(createElement) {
       return createElement(UpdateSharedRunnersForm);

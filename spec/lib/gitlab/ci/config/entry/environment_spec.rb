@@ -92,35 +92,18 @@ RSpec.describe Gitlab::Ci::Config::Entry::Environment do
   end
 
   context 'when valid action is used' do
-    let(:config) do
-      { name: 'production',
-        action: 'start' }
+    where(:action) do
+      %w(start stop prepare verify access)
     end
 
-    it 'is valid' do
-      expect(entry).to be_valid
-    end
-  end
+    with_them do
+      let(:config) do
+        { name: 'production', action: action }
+      end
 
-  context 'when prepare action is used' do
-    let(:config) do
-      { name: 'production',
-        action: 'prepare' }
-    end
-
-    it 'is valid' do
-      expect(entry).to be_valid
-    end
-  end
-
-  context 'when verify action is used' do
-    let(:config) do
-      { name: 'production',
-        action: 'verify' }
-    end
-
-    it 'is valid' do
-      expect(entry).to be_valid
+      it 'is valid' do
+        expect(entry).to be_valid
+      end
     end
   end
 
@@ -159,7 +142,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Environment do
     describe '#errors' do
       it 'contains error about invalid action' do
         expect(entry.errors)
-          .to include 'environment action should be start, stop, prepare, or verify'
+          .to include 'environment action should be start, stop, prepare, verify, or access'
       end
     end
   end

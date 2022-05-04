@@ -99,17 +99,17 @@ RSpec.describe Ci::RunnersHelper do
 
     let(:runner_constants) do
       {
-        runner_enabled: Namespace::SR_ENABLED,
-        runner_disabled: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
-        runner_allow_override: Namespace::SR_DISABLED_WITH_OVERRIDE
+        runner_enabled_value: Namespace::SR_ENABLED,
+        runner_disabled_value: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
+        runner_allow_override_value: Namespace::SR_DISABLED_WITH_OVERRIDE
       }
     end
 
     it 'returns group data for top level group' do
       result = {
         update_path: "/api/v4/groups/#{parent.id}",
-        shared_runners_availability: Namespace::SR_ENABLED,
-        parent_shared_runners_availability: nil
+        shared_runners_setting: Namespace::SR_ENABLED,
+        parent_shared_runners_setting: nil
       }.merge(runner_constants)
 
       expect(helper.group_shared_runners_settings_data(parent)).to eq result
@@ -118,8 +118,8 @@ RSpec.describe Ci::RunnersHelper do
     it 'returns group data for child group' do
       result = {
         update_path: "/api/v4/groups/#{group.id}",
-        shared_runners_availability: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
-        parent_shared_runners_availability: Namespace::SR_ENABLED
+        shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
+        parent_shared_runners_setting: Namespace::SR_ENABLED
       }.merge(runner_constants)
 
       expect(helper.group_shared_runners_settings_data(group)).to eq result

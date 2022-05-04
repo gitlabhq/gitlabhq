@@ -233,6 +233,23 @@ RSpec.shared_examples 'User creates wiki page' do
                     .and have_content("Last edited by #{user.name}")
                     .and have_content("My awesome wiki!")
       end
+
+      context 'when a server side validation error is returned' do
+        it "still displays edit form", :js do
+          click_link("New page")
+
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "home")
+            fill_in(:wiki_content, with: "My awesome home page!")
+          end
+
+          # Submits page with a name already in use to trigger a validation error
+          click_button("Create page")
+
+          expect(page).to have_field(:wiki_title)
+          expect(page).to have_field(:wiki_content)
+        end
+      end
     end
 
     it "shows the emoji autocompletion dropdown", :js do

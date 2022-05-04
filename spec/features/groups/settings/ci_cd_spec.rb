@@ -17,7 +17,7 @@ RSpec.describe 'Group CI/CD settings' do
   end
 
   describe 'Runners section' do
-    let(:shared_runners_toggle) { page.find('[data-testid="enable-runners-toggle"]') }
+    let(:shared_runners_toggle) { page.find('[data-testid="shared-runners-toggle"]') }
 
     before do
       visit group_settings_ci_cd_path(group)
@@ -30,6 +30,16 @@ RSpec.describe 'Group CI/CD settings' do
 
     it 'has "Enable shared runners for this group" toggle', :js do
       expect(shared_runners_toggle).to have_content(_('Enable shared runners for this group'))
+    end
+
+    it 'clicks on toggle to enable setting', :js do
+      expect(group.shared_runners_setting).to be(Namespace::SR_ENABLED)
+
+      shared_runners_toggle.find('button').click
+      wait_for_requests
+
+      group.reload
+      expect(group.shared_runners_setting).to be(Namespace::SR_DISABLED_AND_UNOVERRIDABLE)
     end
   end
 

@@ -1,6 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-import WalkthroughPopover from '~/pipeline_editor/components/walkthrough_popover.vue';
+import WalkthroughPopover from '~/pipeline_editor/components/popovers/walkthrough_popover.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 Vue.config.ignoredElements = ['gl-emoji'];

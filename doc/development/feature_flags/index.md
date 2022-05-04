@@ -7,7 +7,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 # Feature flags in the development of GitLab
 
-**NOTE**:
+NOTE:
 The documentation below covers feature flags used by GitLab to deploy its own features, which **is not** the same
 as the [feature flags offered as part of the product](../../operations/feature_flags.md).
 
@@ -450,6 +450,22 @@ Feature.enabled?(:a_feature, project) && Feature.disabled?(:a_feature_override, 
 /chatops run feature set a_feature true
 /chatops run feature set --project=gitlab-org/gitlab a_feature_override true
 ```
+
+#### Use actors for verifying in production
+
+WARNING:
+Using production as a testing environment is not recommended. Use our testing
+environments for testing features that are not production-ready.
+
+While the staging environment provides a way to test features in an environment
+that resembles production, it doesn't allow you to compare before-and-after
+performance metrics specific to production environment. It can be useful to have a
+project in production with your development feature flag enabled, to allow tools
+like Sitespeed reports to reveal the metrics of the new code under a feature flag.
+
+This approach is even more useful if you're already tracking the old codebase in
+Sitespeed, enabling you to compare performance accurately before and after the
+feature flag's rollout.
 
 ### Enable additional objects as actors
 

@@ -550,6 +550,7 @@ project:
 - project_registry
 - packages
 - package_files
+- packages_cleanup_policy
 - tracing_setting
 - alerting_setting
 - project_setting

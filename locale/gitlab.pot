@@ -17455,6 +17455,12 @@ msgstr ""
 msgid "GitLabPages|Remove"
 msgstr ""
 
+msgid "GitLabPages|Remove certificate"
+msgstr ""
+
+msgid "GitLabPages|Remove domain"
+msgstr ""
+
 msgid "GitLabPages|Remove pages"
 msgstr ""
 
@@ -35028,9 +35034,6 @@ msgstr ""
 msgid "Set up new password"
 msgstr ""
 
-msgid "Set up shared runner availability"
-msgstr ""
-
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
@@ -45708,6 +45711,9 @@ msgid "pipelineEditorWalkthrough|This %{codeStart}.gitlab-ci.yml%{codeEnd} file 
 msgstr ""
 
 msgid "pipelineEditorWalkthrough|Use the %{boldStart}commit changes%{boldEnd} button at the bottom of the page to run the pipeline."
+msgstr ""
+
+msgid "pipelineEditorWalkthrough|You can use the file tree to view your pipeline configuration files."
 msgstr ""
 
 msgid "pod_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"

@@ -23,7 +23,7 @@ import CiEditorHeader from './editor/ci_editor_header.vue';
 import TextEditor from './editor/text_editor.vue';
 import CiLint from './lint/ci_lint.vue';
 import EditorTab from './ui/editor_tab.vue';
-import WalkthroughPopover from './walkthrough_popover.vue';
+import WalkthroughPopover from './popovers/walkthrough_popover.vue';
 
 export default {
   i18n: {

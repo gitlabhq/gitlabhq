@@ -382,7 +382,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-4 gl-relative">
+  <div class="gl-mt-4 gl-relative" data-qa-selector="pipeline_editor_app">
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
     <pipeline-editor-empty-state
       v-else-if="showStartScreen"

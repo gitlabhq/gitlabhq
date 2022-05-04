@@ -309,6 +309,35 @@ RSpec.describe ProjectsController do
         expect(response.body).to have_content('LICENSE') # would be 'MIT license' if stub not works
       end
 
+      describe 'tracking events', :snowplow do
+        before do
+          allow(controller).to receive(:current_user).and_return(user)
+          get_show
+        end
+
+        it 'tracks page views' do
+          expect_snowplow_event(
+            category: 'project_overview',
+            action: 'render',
+            user: user,
+            project: public_project
+          )
+        end
+
+        context 'when the project is importing' do
+          let_it_be(:public_project) { create(:project, :public, :import_scheduled) }
+
+          it 'does not track page views' do
+            expect_no_snowplow_event(
+              category: 'project_overview',
+              action: 'render',
+              user: user,
+              project: public_project
+            )
+          end
+        end
+      end
+
       describe "PUC highlighting" do
         render_views
 

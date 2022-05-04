@@ -3,11 +3,13 @@ import { GlButton } from '@gitlab/ui';
 import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.query.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { EDITOR_APP_STATUS_EMPTY } from '../../constants';
+import FileTreePopover from '../popovers/file_tree_popover.vue';
 import BranchSwitcher from './branch_switcher.vue';
 
 export default {
   components: {
     BranchSwitcher,
+    FileTreePopover,
     GlButton,
   },
   mixins: [glFeatureFlagMixin()],
@@ -56,11 +58,13 @@ export default {
   <div class="gl-mb-4">
     <gl-button
       v-if="showFileTreeToggle"
+      id="file-tree-toggle"
       icon="file-tree"
       data-testid="file-tree-toggle"
       :aria-label="__('File Tree')"
       @click="onFileTreeBtnClick"
     />
+    <file-tree-popover v-if="showFileTreeToggle" />
     <branch-switcher
       :has-unsaved-changes="hasUnsavedChanges"
       :should-load-new-branch="shouldLoadNewBranch"

@@ -5,6 +5,10 @@ module QA
     module Project
       module PipelineEditor
         class Show < QA::Page::Base
+          view 'app/assets/javascripts/pipeline_editor/pipeline_editor_app.vue' do
+            element :pipeline_editor_app, required: true
+          end
+
           view 'app/assets/javascripts/pipeline_editor/components/file_nav/branch_switcher.vue' do
             element :branch_selector_button, required: true
             element :branch_menu_item_button
@@ -44,6 +48,21 @@ module QA
 
           view 'app/assets/javascripts/pipeline_editor/components/pipeline_editor_tabs.vue' do
             element :file_editor_container
+          end
+
+          view 'app/assets/javascripts/pipeline_editor/components/popovers/file_tree_popover.vue' do
+            element :file_tree_popover
+          end
+
+          def initialize
+            dismiss_file_tree_popover if has_element?(:file_tree_popover)
+
+            super
+          end
+
+          def dismiss_file_tree_popover
+            # clicking outside the popover will dismiss it
+            click_element(:pipeline_editor_app)
           end
 
           def open_branch_selector_dropdown

@@ -12,6 +12,8 @@ RSpec.describe 'Pipeline Editor', :js do
   let(:other_branch) { 'test' }
 
   before do
+    stub_feature_flags(pipeline_editor_file_tree: false)
+
     sign_in(user)
     project.add_developer(user)
 
@@ -22,11 +24,7 @@ RSpec.describe 'Pipeline Editor', :js do
     wait_for_requests
   end
 
-  it 'user sees the Pipeline Editor page' do
-    expect(page).to have_content('Pipeline Editor')
-  end
-
-  describe 'Branch switcher' do
+  shared_examples 'default branch switcher behavior' do
     def switch_to_branch(branch)
       find('[data-testid="branch-selector"]').click
 
@@ -66,6 +64,28 @@ RSpec.describe 'Pipeline Editor', :js do
         expect(page).not_to have_content(default_branch)
       end
     end
+  end
+
+  it 'user sees the Pipeline Editor page' do
+    expect(page).to have_content('Pipeline Editor')
+  end
+
+  describe 'Branch Switcher (pipeline_editor_file_tree disabled)' do
+    it_behaves_like 'default branch switcher behavior'
+  end
+
+  describe 'Branch Switcher (pipeline_editor_file_tree enabled)' do
+    before do
+      stub_feature_flags(pipeline_editor_file_tree: true)
+
+      visit project_ci_pipeline_editor_path(project)
+      wait_for_requests
+
+      # close button for the popover
+      find('[data-testid="close-button"]').click
+    end
+
+    it_behaves_like 'default branch switcher behavior'
   end
 
   describe 'Editor navigation' do

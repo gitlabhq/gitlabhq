@@ -90,42 +90,22 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Deployment do
       end
     end
 
-    context 'when job has environment attribute with stop action' do
-      let(:attributes) do
-        {
-          environment: 'production',
-          options: { environment: { name: 'production', action: 'stop' } }
-        }
+    context 'when job does not start environment' do
+      where(:action) do
+        %w(stop prepare verify access)
       end
 
-      it 'returns nothing' do
-        is_expected.to be_nil
-      end
-    end
+      with_them do
+        let(:attributes) do
+          {
+            environment: 'production',
+            options: { environment: { name: 'production', action: action } }
+          }
+        end
 
-    context 'when job has environment attribute with prepare action' do
-      let(:attributes) do
-        {
-          environment: 'production',
-          options: { environment: { name: 'production', action: 'prepare' } }
-        }
-      end
-
-      it 'returns nothing' do
-        is_expected.to be_nil
-      end
-    end
-
-    context 'when job has environment attribute with verify action' do
-      let(:attributes) do
-        {
-          environment: 'production',
-          options: { environment: { name: 'production', action: 'verify' } }
-        }
-      end
-
-      it 'returns nothing' do
-        is_expected.to be_nil
+        it 'returns nothing' do
+          is_expected.to be_nil
+        end
       end
     end
 

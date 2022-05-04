@@ -135,6 +135,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
+    it { is_expected.to have_one(:packages_cleanup_policy).class_name('Packages::Cleanup::Policy').inverse_of(:project) }
     it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
     it { is_expected.to have_many(:timelogs) }
