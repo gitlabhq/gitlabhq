@@ -227,7 +227,7 @@ class Wiki
   end
 
   def create_page(title, content, format = :markdown, message = nil)
-    if Feature.enabled?(:gitaly_replace_wiki_create_page, container, default_enabled: :yaml)
+    if Feature.enabled?(:gitaly_replace_wiki_create_page, container, type: :undefined, default_enabled: :yaml)
       with_valid_format(format) do |default_extension|
         if file_exists_by_regex?(title)
           raise_duplicate_page_error!
@@ -261,7 +261,7 @@ class Wiki
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
-    if Feature.enabled?(:gitaly_replace_wiki_update_page, container, default_enabled: :yaml)
+    if Feature.enabled?(:gitaly_replace_wiki_update_page, container, type: :undefined, default_enabled: :yaml)
       with_valid_format(format) do |default_extension|
         title = title.presence || Pathname(page.path).sub_ext('').to_s
 

@@ -35,7 +35,7 @@ RSpec.describe ProjectStatistics do
         build_artifacts_size: 1.exabyte,
         snippets_size: 1.exabyte,
         pipeline_artifacts_size: 512.petabytes - 1,
-        uploads_size: 500.petabytes,
+        uploads_size: 512.petabytes,
         container_registry_size: 12.petabytes
       )
 
@@ -49,7 +49,7 @@ RSpec.describe ProjectStatistics do
       expect(statistics.storage_size).to eq(8.exabytes - 1)
       expect(statistics.snippets_size).to eq(1.exabyte)
       expect(statistics.pipeline_artifacts_size).to eq(512.petabytes - 1)
-      expect(statistics.uploads_size).to eq(500.petabytes)
+      expect(statistics.uploads_size).to eq(512.petabytes)
       expect(statistics.container_registry_size).to eq(12.petabytes)
     end
   end
@@ -363,7 +363,7 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '#update_storage_size' do
-    it "sums all storage counters" do
+    it "sums the relevant storage counters" do
       statistics.update!(
         repository_size: 2,
         wiki_size: 4,
@@ -372,13 +372,24 @@ RSpec.describe ProjectStatistics do
         pipeline_artifacts_size: 3,
         build_artifacts_size: 3,
         packages_size: 6,
+        uploads_size: 5
+      )
+
+      statistics.reload
+
+      expect(statistics.storage_size).to eq 28
+    end
+
+    it 'excludes the container_registry_size' do
+      statistics.update!(
+        repository_size: 2,
         uploads_size: 5,
         container_registry_size: 10
       )
 
       statistics.reload
 
-      expect(statistics.storage_size).to eq 38
+      expect(statistics.storage_size).to eq 7
     end
 
     it 'works during wiki_size backfill' do

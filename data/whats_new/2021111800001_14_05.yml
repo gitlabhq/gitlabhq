@@ -53,7 +53,7 @@
   release: 14.5
 - title: GitLab Kubernetes Agent available in GitLab Free
   body: |
-    Connecting a Kubernetes cluster with the GitLab Kubernetes Agent simplifies the setup for cluster applications and enables secure GitOps deployments to the cluster. Initially, the GitLab Kubernetes Agent was available only for Premium users. In our commitment to the open source ethos, we moved the core features of the GitLab Kubernetes Agent and the CI/CD Tunnel to GitLab Free. We expect that the open-sourced features are compelling to many users without dedicated infrastructure teams and strong requirements around cluster management. Advanced features remain available as part of the GitLab Premium offering.
+    Connecting a Kubernetes cluster with the GitLab Kubernetes Agent simplifies the setup for cluster applications and enables secure GitOps deployments to the cluster. Initially, the GitLab Kubernetes Agent was available only for Premium users. In our commitment to the open source ethos, we moved the core features of the GitLab agent for Kubernetes and the ability to use CI/CD with Kubernetes to GitLab Free. We expect that the open-sourced features are compelling to many users without dedicated infrastructure teams and strong requirements around cluster management. Advanced features remain available as part of the GitLab Premium offering.
   stage: Configure
   self-managed: true
   gitlab-com: true

@@ -106,8 +106,7 @@ class ProjectStatistics < ApplicationRecord
                    packages_size +
                    snippets_size +
                    pipeline_artifacts_size +
-                   uploads_size +
-                   container_registry_size
+                   uploads_size
 
     self.storage_size = storage_size
   end

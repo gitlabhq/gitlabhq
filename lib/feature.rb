@@ -67,11 +67,10 @@ class Feature
       persisted_names.include?(feature_name.to_s)
     end
 
-    # use `default_enabled: true` to default the flag to being `enabled`
-    # unless set explicitly.  The default is `disabled`
-    # TODO: remove the `default_enabled:` and read it from the `definition_yaml`
-    # check: https://gitlab.com/gitlab-org/gitlab/-/issues/30228
-    def enabled?(key, thing = nil, type: :development, default_enabled: false)
+    # The default state of feature flag is read from `YAML`
+    # If feature flag does not have YAML it will fallback to `default_enabled: false`
+    # in production environment, but raise exception in development or tests
+    def enabled?(key, thing = nil, type: :development, default_enabled: :yaml)
       if check_feature_flags_definition?
         if thing && !thing.respond_to?(:flipper_id)
           raise InvalidFeatureFlagError,
@@ -97,7 +96,7 @@ class Feature
       feature_value
     end
 
-    def disabled?(key, thing = nil, type: :development, default_enabled: false)
+    def disabled?(key, thing = nil, type: :development, default_enabled: :yaml)
       # we need to make different method calls to make it easy to mock / define expectations in test mode
       thing.nil? ? !enabled?(key, type: type, default_enabled: default_enabled) : !enabled?(key, thing, type: type, default_enabled: default_enabled)
     end

@@ -165,18 +165,14 @@ RSpec.describe Feature::Definition do
     using RSpec::Parameterized::TableSyntax
 
     let(:definition) do
-      Feature::Definition.new("development/enabled_feature_flag.yml",
-                              name: :enabled_feature_flag,
-                              type: 'development',
-                              milestone: milestone,
-                              default_enabled: false)
+      described_class.new("development/enabled_feature_flag.yml",
+                          name: :enabled_feature_flag,
+                          type: 'development',
+                          milestone: milestone,
+                          default_enabled: false)
     end
 
     before do
-      allow(Feature::Definition).to receive(:definitions) do
-        { definition.key => definition }
-      end
-
       allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.parse(current_milestone))
     end
 
@@ -192,7 +188,7 @@ RSpec.describe Feature::Definition do
     end
 
     with_them do
-      it {is_expected.to be(expected)}
+      it { is_expected.to be(expected) }
     end
   end
 
@@ -254,23 +250,23 @@ RSpec.describe Feature::Definition do
     using RSpec::Parameterized::TableSyntax
 
     let(:definition) do
-      Feature::Definition.new("development/enabled_feature_flag.yml",
-                              name: :enabled_feature_flag,
-                              type: 'development',
-                              milestone: milestone,
-                              log_state_changes: log_state_change,
-                              default_enabled: false)
+      described_class.new("development/enabled_feature_flag.yml",
+                          name: :enabled_feature_flag,
+                          type: 'development',
+                          milestone: milestone,
+                          log_state_changes: log_state_change,
+                          default_enabled: false)
     end
 
     before do
-      allow(Feature::Definition).to receive(:definitions) do
-        { definition.key => definition }
-      end
+      stub_feature_flag_definition(:enabled_feature_flag,
+        milestone: milestone,
+        log_state_changes: log_state_change)
 
       allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.new(10, 0, 0))
     end
 
-    subject { Feature::Definition.log_states?(key) }
+    subject { described_class.log_states?(key) }
 
     where(:ctx, :key, :milestone, :log_state_change, :expected) do
       'When flag does not exist'                    | :no_flag              | "0.0"  | true  | false
