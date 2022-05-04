@@ -550,6 +550,20 @@ To monitor the number of repositories that have no healthy, up-to-date replicas:
 
 - `gitaly_praefect_unavailable_repositories`
 
+To monitor [repository verification](praefect.md#repository-verification), use the following Prometheus metrics:
+
+- `gitaly_praefect_verification_queue_depth`, the total number of replicas pending verification. This
+  metric is scraped from the database and is only available when Prometheus is scraping the database metrics.
+- `gitaly_praefect_verification_jobs_dequeued_total`, the number of verification jobs picked up by the
+  worker.
+- `gitaly_praefect_verification_jobs_completed_total`, the number of verification jobs completed by the
+  worker. The `result` label indicates the end result of the jobs:
+  - `valid` indicates the expected replica existed on the storage.
+  - `invalid` indicates the replica expected to exist did not exist on the storage.
+  - `error` indicates the job failed and has to be retried.
+- `gitaly_praefect_stale_verification_leases_released_total`, the number of stale verification leases
+  released.
+
 You can also monitor the [Praefect logs](../logs.md#praefect-logs).
 
 #### Database metrics `/db_metrics` endpoint

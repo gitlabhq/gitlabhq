@@ -333,6 +333,17 @@ class MyClass
 end
 ```
 
+#### Recursion detection
+
+When there are many feature flags, it is not always obvious where they are
+called. Avoid cycles where the evaluation of one feature flag requires the
+evaluation of other feature flags. If this causes a cycle, it will be broken
+and the default value will be returned.
+
+To enable this recursion detection to work correctly, always access feature values through
+`Feature::enabled?`, and avoid the low-level use of `Feature::get`. When this
+happens, we track a `Feature::RecursionError` exception to the error tracker.
+
 ### Frontend
 
 When using a feature flag for UI elements, make sure to _also_ use a feature

@@ -15,22 +15,6 @@ module Gitlab
 
         INSTRUMENTATION_STORE_KEY = :rack_attack_instrumentation
 
-        THROTTLES_WITH_USER_INFORMATION = [
-          :throttle_authenticated_api,
-          :throttle_authenticated_web,
-          :throttle_authenticated_protected_paths_api,
-          :throttle_authenticated_protected_paths_web,
-          :throttle_authenticated_packages_api,
-          :throttle_authenticated_git_lfs,
-          :throttle_authenticated_files_api,
-          :throttle_authenticated_deprecated_api
-        ].freeze
-
-        PAYLOAD_KEYS = [
-          :rack_attack_redis_count,
-          :rack_attack_redis_duration_s
-        ].freeze
-
         def self.payload
           Gitlab::SafeRequestStore[INSTRUMENTATION_STORE_KEY] ||= {
             rack_attack_redis_count: 0,
@@ -49,20 +33,20 @@ module Gitlab
         end
 
         def throttle(event)
-          log_into_auth_logger(event)
+          log_into_auth_logger(event, status: 429)
         end
 
         def blocklist(event)
-          log_into_auth_logger(event)
+          log_into_auth_logger(event, status: 403)
         end
 
         def track(event)
-          log_into_auth_logger(event)
+          log_into_auth_logger(event, status: nil)
         end
 
         private
 
-        def log_into_auth_logger(event)
+        def log_into_auth_logger(event, status:)
           req = event.payload[:request]
           rack_attack_info = {
             message: 'Rack_Attack',
@@ -72,6 +56,10 @@ module Gitlab
             path: req.fullpath,
             matched: req.env['rack.attack.matched']
           }
+
+          if status
+            rack_attack_info[:status] = status
+          end
 
           discriminator = req.env['rack.attack.match_discriminator'].to_s
           discriminator_id = discriminator.split(':').last

@@ -13,6 +13,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-approaching-seats-count-threshold',
   '.js-storage-enforcement-banner',
   '.js-user-over-limit-free-plan-alert',
+  '.js-minute-limit-banner',
 ];
 
 const initCallouts = () => {

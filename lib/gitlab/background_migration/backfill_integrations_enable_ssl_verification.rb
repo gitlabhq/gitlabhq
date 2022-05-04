@@ -27,7 +27,7 @@ module Gitlab
       }.freeze
 
       # Define the `Integration` model
-      class Integration < ActiveRecord::Base
+      class Integration < ::ApplicationRecord
         include IgnorableColumns
 
         self.table_name = :integrations

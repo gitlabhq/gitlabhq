@@ -513,16 +513,19 @@ Replicas:
   Generation: 1, fully up to date
   Healthy: true
   Valid Primary: true
+  Verified At: 2021-04-01 10:04:20 +0000 UTC
 - Storage: "gitaly-2"
   Assigned: true
   Generation: 0, behind by 1 changes
   Healthy: true
   Valid Primary: false
+  Verified At: unverified
 - Storage: "gitaly-3"
   Assigned: true
   Generation: replica not yet created
   Healthy: false
   Valid Primary: false
+  Verified At: unverified
 ```
 
 #### Available metadata
@@ -548,6 +551,7 @@ For each replica, the following metadata is available:
 | `Generation`     | Latest confirmed generation of the replica. It indicates:<br><br>- The replica is fully up to date if the generation matches the repository's generation.<br>- The replica is outdated if the replica's generation is less than the repository's generation.<br>- `replica not yet created` if the replica does not yet exist at all on the storage.                                                                                                          |
 | `Healthy`        | Indicates whether the Gitaly node that is hosting this replica is considered healthy by the consensus of Praefect nodes.                                                                                                                                                                                                                                                                                                                               |
 | `Valid Primary`  | Indicates whether the replica is fit to serve as the primary node. If the repository's primary is not a valid primary, a failover occurs on the next write to the repository if there is another replica that is a valid primary. A replica is a valid primary if:<br><br>- It is stored on a healthy Gitaly node.<br>- It is fully up to date.<br>- It is not targeted by a pending deletion job from decreasing replication factor.<br>- It is assigned. |
+| `Verified At` | Indicates last successful verification of the replica by the [verification worker](praefect.md#repository-verification). If the replica has not yet been verified, `unverified` is displayed in place of the last successful verification time. Introduced in GitLab 15.0. |
 
 ### Check that repositories are in sync
 

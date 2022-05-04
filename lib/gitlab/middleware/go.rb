@@ -21,6 +21,7 @@ module Gitlab
       rescue Gitlab::Auth::IpBlacklisted
         Gitlab::AuthLogger.error(
           message: 'Rack_Attack',
+          status: 403,
           env: :blocklist,
           remote_ip: request.ip,
           request_method: request.request_method,

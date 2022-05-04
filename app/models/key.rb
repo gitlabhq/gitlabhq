@@ -5,7 +5,7 @@ require 'digest/md5'
 class Key < ApplicationRecord
   include AfterCommitQueue
   include Sortable
-  include Sha256Attribute
+  include ShaAttribute
   include Expirable
   include FromUnion
 

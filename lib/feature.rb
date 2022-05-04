@@ -42,8 +42,10 @@ class Feature
       flipper.features.to_a
     end
 
+    RecursionError = Class.new(RuntimeError)
+
     def get(key)
-      flipper.feature(key)
+      with_feature(key, &:itself)
     end
 
     def persisted_names
@@ -82,13 +84,12 @@ class Feature
       # If `default_enabled: :yaml` we fetch the value from the YAML definition instead.
       default_enabled = Feature::Definition.default_enabled?(key) if default_enabled == :yaml
 
-      # During setup the database does not exist yet. So we haven't stored a value
-      # for the feature yet and return the default.
-      return default_enabled unless ApplicationRecord.database.exists?
+      feature_value = with_feature(key) do |feature|
+        feature_value = current_feature_value(feature, thing, default_enabled: default_enabled)
+      end
 
-      feature = get(key)
-
-      feature_value = current_feature_value(feature, thing, default_enabled: default_enabled)
+      # If not yielded, then either recursion is happening, or the database does not exist yet, so use default_enabled.
+      feature_value = default_enabled if feature_value.nil?
 
       # If we don't filter out this flag here we will enter an infinite loop
       log_feature_flag_state(key, feature_value) if log_feature_flag_states?(key)
@@ -103,39 +104,39 @@ class Feature
 
     def enable(key, thing = true)
       log(key: key, action: __method__, thing: thing)
-      get(key).enable(thing)
+      with_feature(key) { _1.enable(thing) }
     end
 
     def disable(key, thing = false)
       log(key: key, action: __method__, thing: thing)
-      get(key).disable(thing)
+      with_feature(key) { _1.disable(thing) }
     end
 
     def enable_percentage_of_time(key, percentage)
       log(key: key, action: __method__, percentage: percentage)
-      get(key).enable_percentage_of_time(percentage)
+      with_feature(key) { _1.enable_percentage_of_time(percentage) }
     end
 
     def disable_percentage_of_time(key)
       log(key: key, action: __method__)
-      get(key).disable_percentage_of_time
+      with_feature(key, &:disable_percentage_of_time)
     end
 
     def enable_percentage_of_actors(key, percentage)
       log(key: key, action: __method__, percentage: percentage)
-      get(key).enable_percentage_of_actors(percentage)
+      with_feature(key) { _1.enable_percentage_of_actors(percentage) }
     end
 
     def disable_percentage_of_actors(key)
       log(key: key, action: __method__)
-      get(key).disable_percentage_of_actors
+      with_feature(key, &:disable_percentage_of_actors)
     end
 
     def remove(key)
       return unless persisted_name?(key)
 
       log(key: key, action: __method__)
-      get(key).remove
+      with_feature(key, &:remove)
     end
 
     def reset
@@ -185,6 +186,42 @@ class Feature
       return true if default_enabled && !Feature.persisted_name?(feature.name)
 
       feature.enabled?(thing)
+    end
+
+    # NOTE: it is not safe to call `Flipper::Feature#enabled?` outside the block
+    def with_feature(key)
+      feature = unsafe_get(key)
+      yield feature if feature.present?
+    ensure
+      pop_recursion_stack
+    end
+
+    def unsafe_get(key)
+      # During setup the database does not exist yet. So we haven't stored a value
+      # for the feature yet and return the default.
+      return unless ApplicationRecord.database.exists?
+
+      flag_stack = ::Thread.current[:feature_flag_recursion_check] || []
+      Thread.current[:feature_flag_recursion_check] = flag_stack
+
+      # Prevent more than 10 levels of recursion. This limit was chosen as a fairly
+      # low limit while allowing some nesting of flag evaluation. We have not seen
+      # this limit hit in production.
+      if flag_stack.size > 10
+        Gitlab::ErrorTracking.track_exception(RecursionError.new('deep recursion'), stack: flag_stack)
+        return
+      elsif flag_stack.include?(key)
+        Gitlab::ErrorTracking.track_exception(RecursionError.new('self recursion'), stack: flag_stack)
+        return
+      end
+
+      flag_stack.push(key)
+      flipper.feature(key)
+    end
+
+    def pop_recursion_stack
+      flag_stack = Thread.current[:feature_flag_recursion_check]
+      flag_stack.pop if flag_stack
     end
 
     def flipper

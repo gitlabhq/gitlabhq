@@ -205,13 +205,6 @@ Style/BarePercentLiterals:
 Style/CaseLikeIf:
   Enabled: false
 
-# Offense count: 55
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty, nil, both
-Style/EmptyElse:
-  Enabled: false
-
 # Offense count: 205
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

@@ -1209,6 +1209,91 @@ You can configure:
 If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
 node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically.
 
+## Repository verification
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
+
+Praefect stores metadata about the repositories in a database. If the repositories are modified on disk
+without going through Praefect, the metadata can become inaccurate. Because the metadata is used for replication
+and routing decisions, any inaccuracies may cause problems. Praefect contains a background worker that
+periodically verifies the metadata against the actual state on the disks. The worker:
+
+1. Picks up a batch of replicas to verify on healthy storages. The replicas are either unverified or have exceeded
+   the configured verification interval. Replicas that have never been verified are prioritized, followed by
+   the other replicas ordered by longest time since the last successful verification.
+1. Checks whether the replicas exist on their respective storages. If the:
+   - Replica exists, update its last successful verification time.
+   - Replica doesn't exist, remove its metadata record.
+   - Check failed, the replica is picked up for verification again when the next worker dequeues more work.
+
+The worker acquires an exclusive verification lease on each of the replicas it is about to verify. This avoids multiple
+workers from verifying the same replica concurrently. The worker releases the leases when it has completed its check.
+Praefect contains a background goroutine that releases stale leases every 10 seconds when workers are terminated for
+some reason without releasing the lease.
+
+The worker logs each of the metadata removals prior to executing them. For example:
+
+```json
+{
+  "level": "info",
+  "msg": "removing metadata records of non-existent replicas",
+  "replicas": {
+    "default": {
+      "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b.git": [
+        "praefect-internal-0"
+      ]
+    }
+  }
+}
+```
+
+### Enable verification worker
+
+The worker is disabled by default. It can be enabled by configuring the verification interval. The interval
+accepts any valid [Go duration string](https://pkg.go.dev/time#ParseDuration).
+
+To enable the worker and verify replicas every 7 days:
+
+```ruby
+praefect['background_verification_verification_interval'] = '168h'
+```
+
+Values of 0 and below disable the background verifier.
+
+```ruby
+praefect['background_verification_verification_interval'] = '0'
+```
+
+### Prioritize verification manually
+
+You can prioritize verification of some replicas ahead of their next scheduled verification time.
+This might be needed after a disk failure, for example, when the administrator knows that the disk contents may have
+changed. Praefect would eventually verify the replicas again, but users may encounter errors in the meantime.
+
+To manually prioritize reverification of some replicas, use the `praefect verify` subcommand. The subcommand marks
+replicas as unverified. Unverified replicas are prioritized by the background verification worker. The verification
+worker must be enabled for the replicas to be verified.
+
+Prioritize verifying the replicas of a specific repository:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml verify -repository-id=<repository-id>
+```
+
+Prioritize verifying all replicas stored on a virtual storage:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml verify -virtual-storage=<virtual-storage>
+```
+
+Prioritize verifying all replicas stored on a storage:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml verify -virtual-storage=<virtual-storage> -storage=<storage>
+```
+
+The output includes the number of replicas that were marked unverified.
+
 ## Automatic failover and primary election strategies
 
 Praefect regularly checks the health of each Gitaly node. This is used to automatically fail over

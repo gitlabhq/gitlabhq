@@ -45,7 +45,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       expect_any_instance_of(Flipper::DSL).to receive(:feature).with(key)
         .and_return(feature)
 
-      expect(described_class.get(key)).to be(feature)
+      expect(described_class.get(key)).to eq(feature)
     end
   end
 
@@ -157,6 +157,48 @@ RSpec.describe Feature, stub_feature_flags: false do
   describe '.enabled?' do
     before do
       allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
+    end
+
+    context 'when self-recursive' do
+      before do
+        allow(Feature).to receive(:with_feature).and_wrap_original do |original, name, &block|
+          original.call(name) do |ff|
+            Feature.enabled?(name)
+            block.call(ff)
+          end
+        end
+      end
+
+      it 'returns the default value' do
+        expect(described_class.enabled?(:ff, default_enabled: true)).to eq true
+      end
+
+      it 'detects self recursion' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(have_attributes(message: 'self recursion'), { stack: [:ff] })
+
+        described_class.enabled?(:ff)
+      end
+    end
+
+    context 'when deeply recursive' do
+      before do
+        allow(Feature).to receive(:with_feature).and_wrap_original do |original, name, &block|
+          original.call(name) do |ff|
+            Feature.enabled?(:"deeper_#{name}")
+            block.call(ff)
+          end
+        end
+      end
+
+      it 'detects deep recursion' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(have_attributes(message: 'deep recursion'), stack: have_attributes(size: be > 10))
+
+        described_class.enabled?(:ff)
+      end
     end
 
     it 'returns false for undefined feature' do
@@ -401,7 +443,7 @@ RSpec.describe Feature, stub_feature_flags: false do
               end
 
               it 'checks the persisted status and returns false' do
-                expect(described_class).to receive(:get).with(:non_existent_flag).and_call_original
+                expect(described_class).to receive(:with_feature).with(:non_existent_flag).and_call_original
 
                 expect(described_class.enabled?(:non_existent_flag, type: optional_type, default_enabled: :yaml)).to eq(false)
               end
