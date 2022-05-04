@@ -8,10 +8,6 @@ module Gitlab
           class String < Lexeme::Value
             PATTERN = /("(?<string>.*?)")|('(?<string>.*?)')/.freeze
 
-            def initialize(value)
-              super(value)
-            end
-
             def evaluate(variables = {})
               @value.to_s
             end

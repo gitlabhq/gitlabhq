@@ -56,3 +56,14 @@ export const METRICS_POPOVER_CONTENT = {
     description: s__('ValueStreamAnalytics|Number of commits pushed to the default branch'),
   },
 };
+
+const KEY_METRICS_TITLE = s__('ValueStreamAnalytics|Key metrics');
+const KEY_METRICS_KEYS = ['lead_time', 'cycle_time', 'issues', 'commits', 'deploys'];
+
+const DORA_METRICS_TITLE = s__('ValueStreamAnalytics|DORA metrics');
+const DORA_METRICS_KEYS = ['deployment_frequency', 'lead_time_for_changes'];
+
+export const VSA_METRICS_GROUPS = [
+  { key: 'key_metrics', title: KEY_METRICS_TITLE, keys: KEY_METRICS_KEYS },
+  { key: 'dora_metrics', title: DORA_METRICS_TITLE, keys: DORA_METRICS_KEYS },
+];

@@ -40835,6 +40835,9 @@ msgstr ""
 msgid "UsageQuota|%{help_link_start}Shared runners%{help_link_end} are disabled, so there are no limits set on pipeline usage"
 msgstr ""
 
+msgid "UsageQuota|%{linkStart}Shared runners%{linkEnd} are disabled, so there are no limits set on pipeline usage"
+msgstr ""
+
 msgid "UsageQuota|%{linkTitle} help link"
 msgstr ""
 
@@ -40932,6 +40935,9 @@ msgid "UsageQuota|Shared runner usage"
 msgstr ""
 
 msgid "UsageQuota|Snippets"
+msgstr ""
+
+msgid "UsageQuota|Something went wrong while fetching pipeline statistics"
 msgstr ""
 
 msgid "UsageQuota|Something went wrong while fetching project storage statistics"
@@ -41663,6 +41669,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Average number of deployments to production per day."
 msgstr ""
 
+msgid "ValueStreamAnalytics|DORA metrics"
+msgstr ""
+
 msgid "ValueStreamAnalytics|Dashboard"
 msgstr ""
 
@@ -41670,6 +41679,9 @@ msgid "ValueStreamAnalytics|Go to docs"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Items in Value Stream Analytics are currently filtered by their creation time. There is an %{epic_link_start}epic%{epic_link_end} that will change the Value Stream Analytics date filter to use the end event time for the selected stage."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Key metrics"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period."

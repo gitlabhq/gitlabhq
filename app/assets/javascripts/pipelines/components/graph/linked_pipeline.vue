@@ -1,5 +1,12 @@
 <script>
-import { GlBadge, GlButton, GlLink, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlButton,
+  GlLink,
+  GlLoadingIcon,
+  GlTooltip,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
@@ -21,6 +28,7 @@ export default {
     GlButton,
     GlLink,
     GlLoadingIcon,
+    GlTooltip,
   },
   actionSizeClasses: ['gl-h-7 gl-w-7'],
   mixins: [glFeatureFlagMixin()],
@@ -48,6 +56,7 @@ export default {
   },
   data() {
     return {
+      hasActionTooltip: false,
       isActionLoading: false,
     };
   },
@@ -139,13 +148,16 @@ export default {
     showAction() {
       return Boolean(this.action?.method && this.action?.icon && this.action?.ariaLabel);
     },
+    showCardTooltip() {
+      return !this.hasActionTooltip;
+    },
     sourceJobName() {
       return this.pipeline.sourceJob?.name ?? '';
     },
     sourceJobInfo() {
       return this.isDownstream ? sprintf(__('Created by %{job}'), { job: this.sourceJobName }) : '';
     },
-    tooltipText() {
+    cardTooltipText() {
       return `${this.downstreamTitle} #${this.pipeline.id} - ${this.pipelineStatus.label} -
       ${this.sourceJobInfo}`;
     },
@@ -191,6 +203,9 @@ export default {
     retryPipeline() {
       this.executePipelineAction(RetryPipelineMutation);
     },
+    setActionTooltip(flag) {
+      this.hasActionTooltip = flag;
+    },
   },
 };
 </script>
@@ -198,14 +213,15 @@ export default {
 <template>
   <div
     ref="linkedPipeline"
-    v-gl-tooltip
     class="gl-h-full gl-display-flex! gl-border-solid gl-border-gray-100 gl-border-1"
     :class="flexDirection"
-    :title="tooltipText"
     data-qa-selector="linked_pipeline_container"
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"
   >
+    <gl-tooltip v-if="showCardTooltip" :target="() => $refs.linkedPipeline">
+      {{ cardTooltipText }}
+    </gl-tooltip>
     <div class="gl-w-full gl-bg-white gl-p-3" :class="cardSpacingClass">
       <div class="gl-display-flex gl-pr-3">
         <ci-status
@@ -227,12 +243,16 @@ export default {
         </div>
         <gl-button
           v-if="showAction"
+          v-gl-tooltip
+          :title="action.ariaLabel"
           :loading="isActionLoading"
           :icon="action.icon"
           class="gl-rounded-full!"
           :class="$options.actionSizeClasses"
           :aria-label="action.ariaLabel"
           @click="action.method"
+          @mouseover="setActionTooltip(true)"
+          @mouseout="setActionTooltip(false)"
         />
         <div v-else :class="$options.actionSizeClasses"></div>
       </div>

@@ -47,6 +47,23 @@ export default {
 
       return this.$options.i18n.noAttentionRequestedNoPermission;
     },
+    request() {
+      const state = {
+        variant: 'default',
+        icon: 'attention',
+        direction: 'add',
+      };
+
+      if (this.user.attention_requested) {
+        Object.assign(state, {
+          variant: 'warning',
+          icon: 'attention-solid',
+          direction: 'remove',
+        });
+      }
+
+      return state;
+    },
   },
   methods: {
     toggleAttentionRequired() {
@@ -57,6 +74,7 @@ export default {
       this.$emit('toggle-attention-requested', {
         user: this.user,
         callback: this.toggleAttentionRequiredComplete,
+        direction: this.request.direction,
       });
     },
     toggleAttentionRequiredComplete() {
@@ -74,8 +92,8 @@ export default {
     >
       <gl-button
         :loading="loading"
-        :variant="user.attention_requested ? 'warning' : 'default'"
-        :icon="user.attention_requested ? 'attention-solid' : 'attention'"
+        :variant="request.variant"
+        :icon="request.icon"
         :aria-label="tooltipTitle"
         :class="{ 'gl-pointer-events-none': !user.can_update_merge_request }"
         size="small"

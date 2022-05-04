@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -37,14 +37,15 @@ describe('Linked pipeline', () => {
   };
 
   const findButton = () => wrapper.find(GlButton);
-  const findRetryButton = () => wrapper.findByLabelText('Retry downstream pipeline');
   const findCancelButton = () => wrapper.findByLabelText('Cancel downstream pipeline');
+  const findCardTooltip = () => wrapper.findComponent(GlTooltip);
   const findDownstreamPipelineTitle = () => wrapper.findByTestId('downstream-title');
-  const findPipelineLabel = () => wrapper.findByTestId('downstream-pipeline-label');
+  const findExpandButton = () => wrapper.findByTestId('expand-pipeline-button');
   const findLinkedPipeline = () => wrapper.find({ ref: 'linkedPipeline' });
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findPipelineLabel = () => wrapper.findByTestId('downstream-pipeline-label');
   const findPipelineLink = () => wrapper.findByTestId('pipelineLink');
-  const findExpandButton = () => wrapper.findByTestId('expand-pipeline-button');
+  const findRetryButton = () => wrapper.findByLabelText('Retry downstream pipeline');
 
   const createWrapper = ({ propsData, downstreamRetryAction = false }) => {
     const mockApollo = createMockApollo();
@@ -101,18 +102,13 @@ describe('Linked pipeline', () => {
       expect(wrapper.text()).toContain(`#${props.pipeline.id}`);
     });
 
-    it('should correctly compute the tooltip text', () => {
-      expect(wrapper.vm.tooltipText).toContain(mockPipeline.project.name);
-      expect(wrapper.vm.tooltipText).toContain(mockPipeline.status.label);
-      expect(wrapper.vm.tooltipText).toContain(mockPipeline.sourceJob.name);
-      expect(wrapper.vm.tooltipText).toContain(mockPipeline.id);
-    });
+    it('adds the card tooltip text to the DOM', () => {
+      expect(findCardTooltip().exists()).toBe(true);
 
-    it('should render the tooltip text as the title attribute', () => {
-      const titleAttr = findLinkedPipeline().attributes('title');
-
-      expect(titleAttr).toContain(mockPipeline.project.name);
-      expect(titleAttr).toContain(mockPipeline.status.label);
+      expect(findCardTooltip().text()).toContain(mockPipeline.project.name);
+      expect(findCardTooltip().text()).toContain(mockPipeline.status.label);
+      expect(findCardTooltip().text()).toContain(mockPipeline.sourceJob.name);
+      expect(findCardTooltip().text()).toContain(mockPipeline.id);
     });
 
     it('should display multi-project label when pipeline project id is not the same as triggered pipeline project id', () => {
@@ -204,6 +200,14 @@ describe('Linked pipeline', () => {
                 expect(findRetryButton().exists()).toBe(true);
               });
 
+              it('hides the card tooltip when the action button tooltip is hovered', async () => {
+                expect(findCardTooltip().exists()).toBe(true);
+
+                await findRetryButton().trigger('mouseover');
+
+                expect(findCardTooltip().exists()).toBe(false);
+              });
+
               describe('and the retry button is clicked', () => {
                 describe('on success', () => {
                   beforeEach(async () => {
@@ -256,6 +260,14 @@ describe('Linked pipeline', () => {
               it('shows only the cancel button ', () => {
                 expect(findCancelButton().exists()).toBe(true);
                 expect(findRetryButton().exists()).toBe(false);
+              });
+
+              it('hides the card tooltip when the action button tooltip is hovered', async () => {
+                expect(findCardTooltip().exists()).toBe(true);
+
+                await findCancelButton().trigger('mouseover');
+
+                expect(findCardTooltip().exists()).toBe(false);
               });
 
               describe('and the cancel button is clicked', () => {

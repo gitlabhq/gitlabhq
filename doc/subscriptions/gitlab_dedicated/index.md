@@ -67,6 +67,11 @@ Fill in the following form to contact us and learn more about this offering.
 
 <!-- markdownlint-disable -->
 
+<!-- NOTE: The following form only shows when the site is served under HTTPS,
+     so it will not appear when developing locally or in a review app.
+     See https://gitlab.com/gitlab-com/marketing/marketing-operations/-/issues/6238#note_923358643
+-->
+
 <script src="//page.gitlab.com/js/forms2/js/forms2.min.js"></script>
 <form id="mktoForm_3226"></form>
 <script>MktoForms2.loadForm("//page.gitlab.com", "194-VVC-221", 3226);</script>

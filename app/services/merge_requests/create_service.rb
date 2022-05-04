@@ -25,9 +25,7 @@ module MergeRequests
 
     # expose issuable create method so it can be called from email
     # handler CreateMergeRequestHandler
-    def create(merge_request)
-      super
-    end
+    public :create
 
     private
 

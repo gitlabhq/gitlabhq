@@ -98,14 +98,19 @@ export default class SidebarMediator {
     }
   }
 
-  async toggleAttentionRequested(type, { user, callback }) {
+  async toggleAttentionRequested(type, { user, callback, direction }) {
+    const mutations = {
+      add: (id) => this.service.requestAttention(id),
+      remove: (id) => this.service.removeAttentionRequest(id),
+    };
+
     try {
       const isReviewer = type === 'reviewer';
       const reviewerOrAssignee = isReviewer
         ? this.store.findReviewer(user)
         : this.store.findAssignee(user);
 
-      await this.service.toggleAttentionRequested(user.id);
+      await mutations[direction]?.(user.id);
 
       if (reviewerOrAssignee.attention_requested) {
         toast(
@@ -138,7 +143,7 @@ export default class SidebarMediator {
         captureError: true,
         actionConfig: {
           title: __('Try again'),
-          clickHandler: () => this.toggleAttentionRequired(type, { user, callback }),
+          clickHandler: () => this.toggleAttentionRequired(type, { user, callback, direction }),
         },
       });
     }

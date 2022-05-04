@@ -75,7 +75,7 @@ export default {
       v-if="!isSwimlanesOn"
       ref="list"
       v-bind="draggableOptions"
-      class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
+      class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap"
       @end="moveList"
     >
       <board-column

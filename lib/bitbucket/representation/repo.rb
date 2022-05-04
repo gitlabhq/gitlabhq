@@ -3,10 +3,6 @@
 module Bitbucket
   module Representation
     class Repo < Representation::Base
-      def initialize(raw)
-        super(raw)
-      end
-
       def owner_and_slug
         @owner_and_slug ||= full_name.split('/', 2)
       end

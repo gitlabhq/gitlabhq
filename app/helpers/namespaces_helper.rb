@@ -93,6 +93,7 @@ module NamespacesHelper
       namespace_actual_plan_name: namespace.actual_plan_name,
       namespace_path: namespace.full_path,
       namespace_id: namespace.id,
+      user_namespace: namespace.user_namespace?.to_s,
       page_size: page_size
     }
   end

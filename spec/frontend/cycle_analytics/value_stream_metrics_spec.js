@@ -1,11 +1,11 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
 import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
-import { METRICS_POPOVER_CONTENT } from '~/analytics/shared/constants';
+import { VSA_METRICS_GROUPS, METRICS_POPOVER_CONTENT } from '~/analytics/shared/constants';
 import { prepareTimeMetricsData } from '~/analytics/shared/utils';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
 import createFlash from '~/flash';
@@ -27,7 +27,7 @@ describe('ValueStreamMetrics', () => {
   });
 
   const createComponent = (props = {}) => {
-    return shallowMount(ValueStreamMetrics, {
+    return shallowMountExtended(ValueStreamMetrics, {
       propsData: {
         requestPath,
         requestParams: {},
@@ -38,6 +38,7 @@ describe('ValueStreamMetrics', () => {
   };
 
   const findMetrics = () => wrapper.findAllComponents(MetricTile);
+  const findMetricsGroups = () => wrapper.findAllByTestId('vsa-metrics-group');
 
   const expectToHaveRequest = (fields) => {
     expect(mockGetValueStreamSummaryMetrics).toHaveBeenCalledWith({
@@ -61,24 +62,6 @@ describe('ValueStreamMetrics', () => {
       await nextTick();
 
       expect(wrapper.findComponent(GlSkeletonLoading).exists()).toBe(true);
-    });
-
-    it('renders hidden MetricTile components for each metric', async () => {
-      await waitForPromises();
-
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ isLoading: true });
-
-      await nextTick();
-
-      const components = findMetrics();
-
-      expect(components).toHaveLength(metricsData.length);
-
-      metricsData.forEach((metric, index) => {
-        expect(components.at(index).isVisible()).toBe(false);
-      });
     });
 
     describe('with data loaded', () => {
@@ -157,6 +140,27 @@ describe('ValueStreamMetrics', () => {
               created_after: '2020-01-01',
               created_before: '2020-02-01',
             },
+          });
+        });
+      });
+
+      describe('groupBy', () => {
+        beforeEach(async () => {
+          mockGetValueStreamSummaryMetrics = jest.fn().mockResolvedValue({ data: metricsData });
+          wrapper = createComponent({ groupBy: VSA_METRICS_GROUPS });
+          await waitForPromises();
+        });
+
+        it('renders the metrics as separate groups', () => {
+          const groups = findMetricsGroups();
+          expect(groups).toHaveLength(VSA_METRICS_GROUPS.length);
+        });
+
+        it('renders titles for each group', () => {
+          const groups = findMetricsGroups();
+          groups.wrappers.forEach((g, index) => {
+            const { title } = VSA_METRICS_GROUPS[index];
+            expect(g.html()).toContain(title);
           });
         });
       });

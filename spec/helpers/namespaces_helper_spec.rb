@@ -275,6 +275,7 @@ RSpec.describe NamespacesHelper do
         namespace_actual_plan_name: user_group.actual_plan_name,
         namespace_path: user_group.full_path,
         namespace_id: user_group.id,
+        user_namespace: user_group.user_namespace?.to_s,
         page_size: Kaminari.config.default_per_page
       })
     end

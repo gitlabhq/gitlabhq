@@ -3,10 +3,6 @@
 module BitbucketServer
   module Representation
     class Repo < Representation::Base
-      def initialize(raw)
-        super(raw)
-      end
-
       def project_key
         raw.dig('project', 'key')
       end

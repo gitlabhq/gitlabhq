@@ -16,10 +16,12 @@ class Import::GiteaController < Import::GithubController
     super
   end
 
-  # Must be defined or it will 404
+  # We need to re-expose controller's internal method 'status' as action.
+  # rubocop:disable Lint/UselessMethodDefinition
   def status
     super
   end
+  # rubocop:enable Lint/UselessMethodDefinition
 
   protected
 

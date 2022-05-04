@@ -10,10 +10,6 @@ module Gitlab
       @expires_in = expires_in
     end
 
-    def cache_key(key)
-      super(key)
-    end
-
     def clear_cache!(key)
       with do |redis|
         keys = read(key).map { |value| "#{cache_namespace}:#{value}" }

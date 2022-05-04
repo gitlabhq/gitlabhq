@@ -49,6 +49,7 @@
   height: calc(100vh - #{$issue-board-list-difference-xs});
   overflow-x: scroll;
   min-height: 200px;
+  border-left: 8px solid var(--gray-10, $white);
 
   @include media-breakpoint-only(sm) {
     height: calc(100vh - #{$issue-board-list-difference-sm});

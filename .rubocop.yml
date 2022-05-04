@@ -747,3 +747,6 @@ Performance/ActiveRecordSubtransactionMethods:
   Exclude:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
+
+Migration/BackgroundMigrationBaseClass:
+  Enabled: false

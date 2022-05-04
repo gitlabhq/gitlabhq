@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class TagsFinder < GitRefsFinder
-  def initialize(repository, params)
-    super(repository, params)
-  end
-
   def execute(gitaly_pagination: false)
     tags = if gitaly_pagination
              repository.tags_sorted_by(sort, pagination_params)

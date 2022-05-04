@@ -13,10 +13,6 @@ module Gitlab
         end
       end
 
-      def initialize(repository, name, target, target_commit)
-        super(repository, name, target, target_commit)
-      end
-
       def active?
         self.dereferenced_target.committed_date >= STALE_BRANCH_THRESHOLD.ago
       end

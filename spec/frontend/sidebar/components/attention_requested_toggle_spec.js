@@ -68,6 +68,7 @@ describe('Attention require toggle', () => {
       {
         user: { attention_requested: true, can_update_merge_request: true },
         callback: expect.anything(),
+        direction: 'remove',
       },
     ]);
   });

@@ -13,7 +13,9 @@ module Projects
       prepend_before_action :repository, :project_without_auth
 
       feature_category :incident_management
-      urgency :medium, [:create]
+      # Goal is to increase the urgency to medium.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/361310.
+      urgency :low, [:create]
 
       def create
         token = extract_alert_manager_token(request)

@@ -190,40 +190,43 @@ data to be in the new format.
 
 ## Example
 
-The table `integrations` has a field called `properties`, stored in JSON. For all rows,
-extract the `url` key from this JSON object and store it in the `integrations.url`
-column. Millions of integrations exist, and parsing JSON is slow, so you can't
-do this work in a regular migration.
+The `routes` table has a `source_type` field that's used for a polymorphic relationship.
+As part of a database redesign, we're removing the polymorphic relationship. One step of
+the work will be migrating data from the `source_id` column into a new singular foreign key.
+Because we intend to delete old rows later, there's no need to update them as part of the
+background migration.
 
-1. Start by defining our migration class:
+1. Start by defining our migration class, which should inherit
+   from `Gitlab::BackgroundMigration::BatchedMigrationJob`:
 
    ```ruby
-   class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
-     class Integration < ::ApplicationRecord
-       self.table_name = 'integrations'
-     end
+   class Gitlab::BackgroundMigration::BackfillRouteNamespaceId < BatchedMigrationJob
+     # For illustration purposes, if we were to use a local model we could
+     # define it like below, using an `ApplicationRecord` as the base class
+     # class Route < ::ApplicationRecord
+     #   self.table_name = 'routes'
+     # end
 
-     def perform(start_id, end_id)
-       Integration.where(id: start_id..end_id).each do |integration|
-         json = JSON.load(integration.properties)
-
-         integration.update(url: json['url']) if json['url']
-       rescue JSON::ParserError
-         # If the JSON is invalid we don't want to keep the job around forever,
-         # instead we'll just leave the "url" field to whatever the default value
-         # is.
-         next
+     def perform
+       each_sub_batch(
+         operation_name: :update_all,
+         batching_scope: -> (relation) { relation.where("source_type <> 'UnusedType'") }
+       ) do |sub_batch|
+         sub_batch.update_all('namespace_id = source_id')
        end
      end
    end
    ```
 
    NOTE:
-   To get a `connection` in the batched background migration,use an inheritance
-   relation using the following base class `Gitlab::BackgroundMigration::BaseJob`.
-   For example: `class Gitlab::BackgroundMigration::ExtractIntegrationsUrl < Gitlab::BackgroundMigration::BaseJob`
+   Job classes must be subclasses of `BatchedMigrationJob` to be
+   correctly handled by the batched migration framework. Any subclass of
+   `BatchedMigrationJob` will be initialized with necessary arguments to
+   execute the batch, as well as a connection to the tracking database.
+   Additional `job_arguments` set on the migration will be passed to the
+   job's `perform` method.
 
-1. Add a new trigger to the database to update newly created and updated integrations,
+1. Add a new trigger to the database to update newly created and updated routes,
    similar to this example:
 
    ```ruby
@@ -232,7 +235,7 @@ do this work in a regular migration.
      LANGUAGE plpgsql
      AS $$
      BEGIN
-       NEW."url" := NEW.properties -> "url"
+       NEW."namespace_id" = NEW."source_id"
        RETURN NEW;
      END;
      $$;
@@ -242,16 +245,16 @@ do this work in a regular migration.
 1. Create a post-deployment migration that queues the migration for existing data:
 
    ```ruby
-   class QueueExtractIntegrationsUrl < Gitlab::Database::Migration[1.0]
+   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[1.0]
      disable_ddl_transaction!
 
-     MIGRATION = 'ExtractIntegrationsUrl'
+     MIGRATION = 'BackfillRouteNamespaceId'
      DELAY_INTERVAL = 2.minutes
 
      def up
        queue_batched_background_migration(
          MIGRATION,
-         :integrations,
+         :routes,
          :id,
          job_interval: DELAY_INTERVAL
        )
@@ -259,7 +262,7 @@ do this work in a regular migration.
 
      def down
        Gitlab::Database::BackgroundMigration::BatchedMigration
-         .for_configuration(MIGRATION, :integrations, :id, []).delete_all
+         .for_configuration(MIGRATION, :routes, :id, []).delete_all
      end
    end
    ```
@@ -272,14 +275,14 @@ do this work in a regular migration.
    that checks that the batched background migration is completed. For example:
 
    ```ruby
-   class FinalizeExtractIntegrationsUrlJobs < Gitlab::Database::Migration[1.0]
-     MIGRATION = 'ExtractIntegrationsUrl'
+   class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[1.0]
+     MIGRATION = 'BackfillRouteNamespaceId'
      disable_ddl_transaction!
 
      def up
        ensure_batched_background_migration_is_finished(
          job_class_name: MIGRATION,
-         table_name: :integrations,
+         table_name: :routes,
          column_name: :id,
          job_arguments: []
        )
@@ -295,7 +298,8 @@ do this work in a regular migration.
    instance, the data is advisory, and not mission-critical), then you can skip this
    final step. This step confirms that the migration is completed, and all of the rows were migrated.
 
-After the batched migration is completed, you can safely remove the `integrations.properties` column.
+After the batched migration is completed, you can safely depend on the
+data in `routes.namespace_id` being populated.
 
 ## Testing
 
