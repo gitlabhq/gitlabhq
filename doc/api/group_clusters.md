@@ -315,7 +315,7 @@ Example response:
 
 ## Delete group cluster
 
-Deletes an existing group cluster.
+Deletes an existing group cluster. Does not remove existing resources within the connected Kubernetes cluster.
 
 ```plaintext
 DELETE /groups/:id/clusters/:cluster_id

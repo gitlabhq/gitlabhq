@@ -1,0 +1,46 @@
+- title: "Compliance report individual violation reporting"
+  body: |
+    The compliance report now reports every individual merge request violation for the projects within a group. This is a huge improvement over the previous version, which only showed the latest MR that had one or more violations. The new version allows you to see history and patterns of violations over time.
+  stage: manage
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: 'https://docs.gitlab.com/ee/user/compliance/compliance_report/'
+  image_url: 'https://about.gitlab.com/images/14_10/manage_compliance_report_individual_violation.png'
+  published_at: 2022-04-22
+  release: 14.10
+- title: "Improved pipeline variables inheritance"
+  body: |
+    Previously, it was possible to pass some CI/CD variables to a downstream pipeline through a trigger job, but variables added in manual pipeline runs or by using the API could not be forwarded.
+
+    In this release we've added a new `trigger:forward` keyword to control what things you forward to downstream parent-child pipelines or multi-project pipelines, which provides a flexible way to handle variable inheritance in downstream pipelines.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/ci/yaml/#triggerforward'
+  image_url: 'https://about.gitlab.com/images/growth/verify.png'
+  published_at: 2022-04-22
+  release: 14.10
+- title: "Escalating manually created incidents"
+  body: |
+    In GitLab 13.10, we [released](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/issues/6) the GitLab Runner Operator for the Red Hat OpenShift container platform for Kubernetes. That release provided OpenShift users with the automation and management capabilities of the Operator Framework and simplified the ongoing management of runners in an OpenShift Kubernetes cluster. Available starting in 14.10 is a GitLab Runner Operator v1.7.0 that you can use in non-OpenShift Kubernetes clusters. This GitLab Runner Operator is available on [OperatorHub.io](https://operatorhub.io/operator/gitlab-runner-operator).
+  stage: monitor
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/operations/incident_management/paging.html#escalating-an-incident'
+  image_url: 'https://about.gitlab.com/images/14_10/manually_escalated_incident.png'
+  published_at: 2022-04-22
+  release: 14.10
+- title: "Expanded view of group runners"
+  body: |
+    Group runners are now displayed in an expanded view, where you can more easily administer and manage the runners associated with the namespace. To view the new UI, on the left sidebar, select **CI/CD**. This view includes the number of online, offline, and stale runners associated with the group and subgroups.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: 'https://docs.gitlab.com/ee/ci/runners/runners_scope.html#group-runners'
+  image_url: 'https://about.gitlab.com/images/14_10/group-runners-view-new-3.png'
+  published_at: 2022-04-22
+  release: 14.10

@@ -558,8 +558,7 @@ RSpec.describe API::Ci::JobArtifacts do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.headers.to_h)
               .to include('Content-Type' => 'application/json',
-                          'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
-                          'Gitlab-Workhorse-Detect-Content-Type' => 'true')
+                          'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
           end
         end
 
@@ -629,8 +628,7 @@ RSpec.describe API::Ci::JobArtifacts do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
-                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
-                        'Gitlab-Workhorse-Detect-Content-Type' => 'true')
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
           expect(response.parsed_body).to be_empty
         end
       end
@@ -648,8 +646,7 @@ RSpec.describe API::Ci::JobArtifacts do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
-                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
-                        'Gitlab-Workhorse-Detect-Content-Type' => 'true')
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
         end
       end
 

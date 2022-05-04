@@ -361,7 +361,6 @@ RSpec.describe Projects::ArtifactsController do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.headers['Gitlab-Workhorse-Detect-Content-Type']).to eq('true')
           expect(send_data).to start_with('artifacts-entry:')
 
           expect(params.keys).to eq(%w(Archive Entry))

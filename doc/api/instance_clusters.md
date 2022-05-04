@@ -290,7 +290,7 @@ Example response:
 
 ## Delete instance cluster
 
-Deletes an existing instance cluster.
+Deletes an existing instance cluster. Does not remove existing resources within the connected Kubernetes cluster.
 
 ```plaintext
 DELETE /admin/clusters/:cluster_id
