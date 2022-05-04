@@ -12,7 +12,7 @@ export default {
     GroupItemName,
   },
   inject: {
-    subscriptionsPath: {
+    addSubscriptionsPath: {
       default: '',
     },
   },
@@ -36,7 +36,7 @@ export default {
     onClick() {
       this.isLoading = true;
 
-      addSubscription(this.subscriptionsPath, this.group.full_path)
+      addSubscription(this.addSubscriptionsPath, this.group.full_path)
         .then(() => {
           persistAlert({
             title: s__('Integrations|Namespace successfully linked'),

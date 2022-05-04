@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -30,8 +30,8 @@ export default {
     usersPath: {
       default: '',
     },
-    subscriptions: {
-      default: [],
+    subscriptionsPath: {
+      default: '',
     },
   },
   data() {
@@ -40,7 +40,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['alert']),
+    ...mapState(['alert', 'subscriptions']),
     shouldShowAlert() {
       return Boolean(this.alert?.message);
     },
@@ -64,16 +64,30 @@ export default {
   created() {
     this.setInitialAlert();
   },
+  mounted() {
+    this.fetchSubscriptionsOauth();
+  },
   methods: {
     ...mapMutations({
       setAlert: SET_ALERT,
     }),
+    ...mapActions(['fetchSubscriptions']),
+    /**
+     * Fetch subscriptions from the REST API,
+     * if the jiraConnectOauth flag is enabled.
+     */
+    fetchSubscriptionsOauth() {
+      if (!this.isOauthEnabled) return;
+
+      this.fetchSubscriptions(this.subscriptionsPath);
+    },
     setInitialAlert() {
       const { linkUrl, title, message, variant } = retrieveAlert() || {};
       this.setAlert({ linkUrl, title, message, variant });
     },
     onSignInOauth(user) {
       this.user = user;
+      this.fetchSubscriptionsOauth();
     },
     onSignInError() {
       this.setAlert({

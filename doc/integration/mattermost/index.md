@@ -95,6 +95,7 @@ mattermost_external_url 'http://mattermost.example.com'
 gitlab_rails['enable'] = false
 redis['enable'] = false
 postgres_exporter['enable'] = false
+grafana['enable'] = false
 ```
 
 Then follow the appropriate steps in the [Authorize GitLab Mattermost section](#authorize-gitlab-mattermost). Last, to enable

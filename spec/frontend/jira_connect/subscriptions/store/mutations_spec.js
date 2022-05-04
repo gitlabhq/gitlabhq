@@ -25,4 +25,21 @@ describe('JiraConnect store mutations', () => {
       });
     });
   });
+
+  describe('SET_SUBSCRIPTIONS_LOADING', () => {
+    it('sets subscriptions loading flag', () => {
+      mutations.SET_SUBSCRIPTIONS_LOADING(localState, true);
+
+      expect(localState.subscriptionsLoading).toBe(true);
+    });
+  });
+
+  describe('SET_SUBSCRIPTIONS', () => {
+    it('sets subscriptions loading flag', () => {
+      const mockSubscriptions = [{ name: 'test' }];
+      mutations.SET_SUBSCRIPTIONS(localState, mockSubscriptions);
+
+      expect(localState.subscriptions).toBe(mockSubscriptions);
+    });
+  });
 });

@@ -114,14 +114,16 @@
   policy: push
 
 .qa-ruby-gems-cache: &qa-ruby-gems-cache
-  key: "qa-ruby-gems-${DEBIAN_VERSION}"
+  key:
+    files:
+      - qa/Gemfile.lock
   paths:
-    - qa/vendor/ruby/
+    - qa/vendor/ruby
   policy: pull
 
 .qa-ruby-gems-cache-push: &qa-ruby-gems-cache-push
   <<: *qa-ruby-gems-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+  policy: pull-push
 
 .setup-test-env-cache:
   cache:

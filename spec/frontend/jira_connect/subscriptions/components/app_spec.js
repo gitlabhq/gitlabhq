@@ -12,6 +12,7 @@ import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '~/jira_connect/subscriptions/constants';
 import { __ } from '~/locale';
 import AccessorUtilities from '~/lib/utils/accessor';
+import * as api from '~/jira_connect/subscriptions/api';
 import { mockSubscription } from '../mock_data';
 
 jest.mock('~/jira_connect/subscriptions/utils', () => ({
@@ -31,7 +32,8 @@ describe('JiraConnectApp', () => {
   const findBrowserSupportAlert = () => wrapper.findComponent(BrowserSupportAlert);
 
   const createComponent = ({ provide, mountFn = shallowMountExtended } = {}) => {
-    store = createStore();
+    store = createStore({ subscriptions: [mockSubscription] });
+    jest.spyOn(store, 'dispatch').mockImplementation();
 
     wrapper = mountFn(JiraConnectApp, {
       store,
@@ -53,7 +55,6 @@ describe('JiraConnectApp', () => {
         createComponent({
           provide: {
             usersPath,
-            subscriptions: [mockSubscription],
           },
         });
       });
@@ -79,14 +80,13 @@ describe('JiraConnectApp', () => {
       createComponent({
         provide: {
           usersPath: '/user',
-          subscriptions: [],
         },
       });
 
       const userLink = findUserLink();
       expect(userLink.exists()).toBe(true);
       expect(userLink.props()).toEqual({
-        hasSubscriptions: false,
+        hasSubscriptions: true,
         user: null,
         userSignedIn: false,
       });
@@ -167,7 +167,6 @@ describe('JiraConnectApp', () => {
         createComponent({
           provide: {
             usersPath: '/mock',
-            subscriptions: [],
           },
         });
         findSignInPage().vm.$emit('sign-in-oauth', mockUser);
@@ -193,7 +192,6 @@ describe('JiraConnectApp', () => {
         createComponent({
           provide: {
             usersPath: '/mock',
-            subscriptions: [],
           },
         });
         findSignInPage().vm.$emit('error');
@@ -235,4 +233,31 @@ describe('JiraConnectApp', () => {
       });
     },
   );
+
+  describe('when `jiraConnectOauth` feature flag is enabled', () => {
+    const mockSubscriptionsPath = '/mockSubscriptionsPath';
+
+    beforeEach(() => {
+      jest.spyOn(api, 'fetchSubscriptions').mockResolvedValue({ data: { subscriptions: [] } });
+
+      createComponent({
+        provide: {
+          glFeatures: { jiraConnectOauth: true },
+          subscriptionsPath: mockSubscriptionsPath,
+        },
+      });
+    });
+
+    describe('when component mounts', () => {
+      it('dispatches `fetchSubscriptions` action', async () => {
+        expect(store.dispatch).toHaveBeenCalledWith('fetchSubscriptions', mockSubscriptionsPath);
+      });
+    });
+
+    describe('when oauth button emits `sign-in-oauth` event', () => {
+      it('dispatches `fetchSubscriptions` action', () => {
+        expect(store.dispatch).toHaveBeenCalledWith('fetchSubscriptions', mockSubscriptionsPath);
+      });
+    });
+  });
 });

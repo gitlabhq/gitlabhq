@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTableLite } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import { removeSubscription } from '~/jira_connect/subscriptions/api';
 import { reloadPage } from '~/jira_connect/subscriptions/utils';
 import { __, s__ } from '~/locale';
@@ -15,11 +15,6 @@ export default {
     GlTableLite,
     GroupItemName,
     TimeagoTooltip,
-  },
-  inject: {
-    subscriptions: {
-      default: [],
-    },
   },
   data() {
     return {
@@ -44,6 +39,9 @@ export default {
   ],
   i18n: {
     unlinkError: s__('Integrations|Failed to unlink namespace. Please try again.'),
+  },
+  computed: {
+    ...mapState(['subscriptions']),
   },
   methods: {
     ...mapMutations({

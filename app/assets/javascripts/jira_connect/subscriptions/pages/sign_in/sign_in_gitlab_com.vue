@@ -40,7 +40,7 @@ export default {
   <div>
     <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
     <div v-if="hasSubscriptions">
-      <div class="gl-display-flex gl-justify-content-end">
+      <div class="gl-display-flex gl-justify-content-end gl-mb-3">
         <sign-in-oauth-button
           v-if="useSignInOauthButton"
           @sign-in="$emit('sign-in-oauth', $event)"

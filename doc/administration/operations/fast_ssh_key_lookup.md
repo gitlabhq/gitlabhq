@@ -134,11 +134,11 @@ This overview is brief. Refer to the above instructions for more context.
 
 ## Use `gitlab-sshd` instead of OpenSSH
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299109) in GitLab 14.5 as an **Alpha** release.
-> - [Changed](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6321) to a **Beta** release in GitLab 15.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299109) in GitLab 14.5 as an **Alpha** release for self-managed customers.
 
-NOTE:
-`gitlab-sshd` is in [**Beta**](../../policy/alpha-beta-support.md#beta-features).
+WARNING:
+`gitlab-sshd` is in [**Alpha**](../../policy/alpha-beta-support.md#alpha-features).
+It is not ready for production use.
 
 `gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
 written in Go. It is provided as a part of the `gitlab-shell` package. It has a lower memory

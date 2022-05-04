@@ -18,3 +18,5 @@ export const i18n = {
 };
 
 export const NEW_NAME_FIELD = 'newName';
+
+export const ROOT_NAMESPACE = { fullPath: '', id: null };

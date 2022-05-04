@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     ...mapState(['pageInfo']),
-    ...mapGetters(['getSuiteTests', 'getSuiteTestCount']),
+    ...mapGetters(['getSuiteTests', 'getSuiteTestCount', 'getSuiteArtifactsExpired']),
     hasSuites() {
       return this.getSuiteTests.length > 0;
     },
@@ -80,7 +80,8 @@ export default {
       <div
         v-for="(testCase, index) in getSuiteTests"
         :key="index"
-        class="gl-responsive-table-row rounded align-items-md-start mt-xs-3 js-case-row"
+        class="gl-responsive-table-row rounded align-items-md-start"
+        data-testid="test-case-row"
       >
         <div class="table-section section-20 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
@@ -157,7 +158,16 @@ export default {
     </div>
 
     <div v-else>
-      <p class="js-no-test-cases">{{ s__('TestReports|There are no test cases to display.') }}</p>
+      <p data-testid="no-test-cases">
+        {{ s__('TestReports|There are no test cases to display.') }}
+      </p>
+      <p v-if="getSuiteArtifactsExpired" data-testid="artifacts-expired">
+        {{
+          s__(
+            'TestReports|Test details are populated by job artifacts. The job artifacts from this pipeline are expired.',
+          )
+        }}
+      </p>
     </div>
   </div>
 </template>

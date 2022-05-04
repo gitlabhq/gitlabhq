@@ -3,7 +3,12 @@
 namespace :knapsack do
   desc "Run tests with knapsack runner"
   task :rspec, [:rspec_args] do |_, args|
-    raise "This environment is not compatible with knapsack runner!" unless QA::Runtime::Env.knapsack?
+    unless QA::Runtime::Env.knapsack?
+      QA::Runtime::Logger.info("This environment is not compatible with parallel knapsack execution!")
+      QA::Runtime::Logger.info("Falling back to standard execution")
+
+      exec(%Q[bundle exec rspec #{args[:rspec_args]}])
+    end
 
     QA::Support::KnapsackReport.configure!
     Knapsack::Runners::RSpecRunner.run(args[:rspec_args])

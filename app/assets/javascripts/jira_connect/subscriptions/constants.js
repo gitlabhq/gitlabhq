@@ -8,6 +8,9 @@ export const ADD_NAMESPACE_MODAL_ID = 'add-namespace-modal';
 
 export const I18N_DEFAULT_SIGN_IN_BUTTON_TEXT = s__('Integrations|Sign in to GitLab');
 export const I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE = s__('Integrations|Failed to sign in to GitLab.');
+export const I18N_DEFAULT_SUBSCRIPTIONS_ERROR_MESSAGE = s__(
+  'Integrations|Failed to load subscriptions.',
+);
 
 const OAUTH_WINDOW_SIZE = 800;
 export const OAUTH_WINDOW_OPTIONS = [

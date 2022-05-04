@@ -13,7 +13,7 @@ jest.mock('~/jira_connect/subscriptions/utils');
 
 describe('GroupsListItem', () => {
   let wrapper;
-  const mockSubscriptionPath = 'subscriptionPath';
+  const mockAddSubscriptionsPath = '/addSubscriptionsPath';
 
   const createComponent = ({ mountFn = shallowMount } = {}) => {
     wrapper = mountFn(GroupsListItem, {
@@ -21,7 +21,7 @@ describe('GroupsListItem', () => {
         group: mockGroup1,
       },
       provide: {
-        subscriptionsPath: mockSubscriptionPath,
+        addSubscriptionsPath: mockAddSubscriptionsPath,
       },
     });
   };
@@ -70,7 +70,10 @@ describe('GroupsListItem', () => {
 
       await waitForPromises();
 
-      expect(addSubscriptionSpy).toHaveBeenCalledWith(mockSubscriptionPath, mockGroup1.full_path);
+      expect(addSubscriptionSpy).toHaveBeenCalledWith(
+        mockAddSubscriptionsPath,
+        mockGroup1.full_path,
+      );
       expect(persistAlert).toHaveBeenCalledWith({
         linkUrl: '/help/integration/jira_development_panel.html#use-the-integration',
         message:

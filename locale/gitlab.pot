@@ -20705,6 +20705,9 @@ msgstr ""
 msgid "Integrations|Failed to load namespaces. Please try again."
 msgstr ""
 
+msgid "Integrations|Failed to load subscriptions."
+msgstr ""
+
 msgid "Integrations|Failed to sign in to GitLab."
 msgstr ""
 
@@ -37744,6 +37747,9 @@ msgid "TestReports|Learn more about pipeline test reports"
 msgstr ""
 
 msgid "TestReports|No test cases were found in the test report."
+msgstr ""
+
+msgid "TestReports|Test details are populated by job artifacts. The job artifacts from this pipeline are expired."
 msgstr ""
 
 msgid "TestReports|Tests"

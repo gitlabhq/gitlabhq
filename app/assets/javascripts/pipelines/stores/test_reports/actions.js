@@ -38,11 +38,7 @@ export const fetchTestSuite = ({ state, commit, dispatch }, index) => {
   return axios
     .get(state.suiteEndpoint, { params: { build_ids } })
     .then(({ data }) => commit(types.SET_SUITE, { suite: data, index }))
-    .catch(() => {
-      createFlash({
-        message: s__('TestReports|There was an error fetching the test suite.'),
-      });
-    })
+    .catch((error) => commit(types.SET_SUITE_ERROR, error))
     .finally(() => {
       dispatch('toggleLoading');
     });

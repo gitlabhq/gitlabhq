@@ -195,9 +195,9 @@ class Settings < Settingslogic
       # Set a default UUID for the case when the UUID hasn't been initialized.
       uuid = Gitlab::CurrentSettings.uuid || 'uuid-not-set'
 
-      minute = Digest::MD5.hexdigest(uuid + 'minute').to_i(16) % 60
-      hour = Digest::MD5.hexdigest(uuid + 'hour').to_i(16) % 24
-      day_of_week = Digest::MD5.hexdigest(uuid).to_i(16) % 7
+      minute = Digest::SHA256.hexdigest(uuid + 'minute').to_i(16) % 60
+      hour = Digest::SHA256.hexdigest(uuid + 'hour').to_i(16) % 24
+      day_of_week = Digest::SHA256.hexdigest(uuid).to_i(16) % 7
 
       "#{minute} #{hour} * * #{day_of_week}"
     end

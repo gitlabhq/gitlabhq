@@ -25,7 +25,7 @@ import importGroupsMutation from '../graphql/mutations/import_groups.mutation.gr
 import updateImportStatusMutation from '../graphql/mutations/update_import_status.mutation.graphql';
 import availableNamespacesQuery from '../graphql/queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
-import { NEW_NAME_FIELD, i18n } from '../constants';
+import { NEW_NAME_FIELD, ROOT_NAMESPACE, i18n } from '../constants';
 import { StatusPoller } from '../services/status_poller';
 import { isFinished, isAvailableForImport, isNameValid, isSameTarget } from '../utils';
 import ImportActionsCell from './import_actions_cell.vue';
@@ -430,10 +430,10 @@ export default {
         return this.importTargets[group.id];
       }
 
-      const defaultTargetNamespace = this.availableNamespaces[0] ?? { fullPath: '', id: null };
+      const defaultTargetNamespace = this.availableNamespaces[0] ?? ROOT_NAMESPACE;
       let importTarget;
       if (group.lastImportTarget) {
-        const targetNamespace = this.availableNamespaces.find(
+        const targetNamespace = [ROOT_NAMESPACE, ...this.availableNamespaces].find(
           (ns) => ns.fullPath === group.lastImportTarget.targetNamespace,
         );
 

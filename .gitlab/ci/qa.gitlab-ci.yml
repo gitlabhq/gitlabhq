@@ -1,4 +1,5 @@
 .qa-job-base:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-bullseye-ruby-2.7-bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
   extends:
     - .default-retry
     - .qa-cache

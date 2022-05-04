@@ -100,6 +100,7 @@ module QA
       # @return [void]
       def setup_environment!
         ENV["KNAPSACK_TEST_FILE_PATTERN"] ||= "qa/specs/features/**/*_spec.rb"
+        ENV["KNAPSACK_TEST_DIR"] = "qa/specs"
         ENV["KNAPSACK_REPORT_PATH"] = report_path
       end
 

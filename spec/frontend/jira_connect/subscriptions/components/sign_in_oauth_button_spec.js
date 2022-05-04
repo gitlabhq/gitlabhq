@@ -11,9 +11,12 @@ import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatus from '~/lib/utils/http_status';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { getCurrentUser } from '~/rest_api';
 
 jest.mock('~/lib/utils/accessor');
 jest.mock('~/jira_connect/subscriptions/utils');
+jest.mock('~/jira_connect/subscriptions/api');
+jest.mock('~/rest_api');
 jest.mock('~/jira_connect/subscriptions/pkce', () => ({
   createCodeVerifier: jest.fn().mockReturnValue('mock-verifier'),
   createCodeChallenge: jest.fn().mockResolvedValue('mock-challenge'),
@@ -147,7 +150,7 @@ describe('SignInOauthButton', () => {
             mockAxios
               .onPost(mockOauthMetadata.oauth_token_url)
               .replyOnce(httpStatus.OK, { access_token: mockAccessToken });
-            mockAxios.onGet('/api/v4/user').replyOnce(httpStatus.OK, mockUser);
+            getCurrentUser.mockResolvedValue({ data: mockUser });
 
             window.dispatchEvent(new MessageEvent('message', mockEvent));
 
@@ -162,7 +165,7 @@ describe('SignInOauthButton', () => {
           });
 
           it('executes GET request to fetch user data', () => {
-            expect(axios.get).toHaveBeenCalledWith('/api/v4/user', {
+            expect(getCurrentUser).toHaveBeenCalledWith({
               headers: { Authorization: `Bearer ${mockAccessToken}` },
             });
           });

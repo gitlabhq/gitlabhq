@@ -9,8 +9,6 @@ import JiraConnectApp from './components/app.vue';
 import createStore from './store';
 import { sizeToParent } from './utils';
 
-const store = createStore();
-
 export function initJiraConnect() {
   const el = document.querySelector('.js-jira-connect-app');
   if (!el) {
@@ -24,6 +22,7 @@ export function initJiraConnect() {
   const {
     groupsPath,
     subscriptions,
+    addSubscriptionsPath,
     subscriptionsPath,
     usersPath,
     gitlabUserPath,
@@ -31,12 +30,14 @@ export function initJiraConnect() {
   } = el.dataset;
   sizeToParent();
 
+  const store = createStore({ subscriptions: JSON.parse(subscriptions) });
+
   return new Vue({
     el,
     store,
     provide: {
       groupsPath,
-      subscriptions: JSON.parse(subscriptions),
+      addSubscriptionsPath,
       subscriptionsPath,
       usersPath,
       gitlabUserPath,

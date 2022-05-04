@@ -533,6 +533,25 @@ Instead of:
 Do not use **list** when referring to a [**dropdown list**](#dropdown-list).
 Use the full phrase **dropdown list** instead.
 
+## license
+
+When writing about licenses:
+
+- Do not use variations such as **cloud license**, **offline license**, or **legacy license**.
+- Do not use interchangeably with **subscription**:
+  - A license grants users access to the subscription they purchased, and contains information such as the number of seats and subscription dates.
+  - A subscription is the subscription tier that the user purchases.
+
+Use:
+
+  - Add a license to your instance.
+  - Purchase a subscription.
+
+Instead of:
+
+  - Buy a license.
+  - Purchase a license.
+
 ## log in, log on
 
 Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.

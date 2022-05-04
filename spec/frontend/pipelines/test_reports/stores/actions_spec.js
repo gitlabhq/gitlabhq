@@ -82,17 +82,16 @@ describe('Actions TestReports Store', () => {
       );
     });
 
-    it('should create flash on API error', async () => {
+    it('should call SET_SUITE_ERROR on error', () => {
       const index = 0;
 
-      await testAction(
+      return testAction(
         actions.fetchTestSuite,
         index,
         { ...state, testReports, suiteEndpoint: null },
-        [],
+        [{ type: types.SET_SUITE_ERROR, payload: expect.any(Error) }],
         [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
       );
-      expect(createFlash).toHaveBeenCalled();
     });
 
     describe('when we already have the suite data', () => {

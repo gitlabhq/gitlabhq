@@ -23,6 +23,7 @@ RSpec.describe JiraConnectHelper do
       it 'includes Jira Connect app attributes' do
         is_expected.to include(
           :groups_path,
+          :add_subscriptions_path,
           :subscriptions_path,
           :users_path,
           :subscriptions,

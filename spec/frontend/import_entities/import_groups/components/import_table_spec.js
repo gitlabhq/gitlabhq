@@ -9,7 +9,7 @@ import createFlash from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
-import { i18n } from '~/import_entities/import_groups/constants';
+import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
@@ -45,6 +45,8 @@ describe('import table', () => {
   const findImportButtons = () =>
     wrapper.findAll('button').wrappers.filter((w) => w.text() === 'Import');
   const findPaginationDropdown = () => wrapper.find('[data-testid="page-size"]');
+  const findTargetNamespaceDropdown = (rowWrapper) =>
+    rowWrapper.find('[data-testid="target-namespace-selector"]');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
 
@@ -135,6 +137,32 @@ describe('import table', () => {
     await waitForPromises();
 
     expect(wrapper.findAll('tbody tr')).toHaveLength(FAKE_GROUPS.length);
+  });
+
+  it('correctly maintains root namespace as last import target', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: [
+          {
+            ...generateFakeEntry({ id: 1, status: STATUSES.FINISHED }),
+            lastImportTarget: {
+              id: 1,
+              targetNamespace: ROOT_NAMESPACE.fullPath,
+              newName: 'does-not-matter',
+            },
+          },
+        ],
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+    });
+
+    await waitForPromises();
+    const firstRow = wrapper.find('tbody tr');
+    const targetNamespaceDropdownButton = findTargetNamespaceDropdown(firstRow).find(
+      '[aria-haspopup]',
+    );
+    expect(targetNamespaceDropdownButton.text()).toBe('No parent');
   });
 
   it('does not render status string when result list is empty', async () => {

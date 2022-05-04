@@ -274,7 +274,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
             action: 'start',
             property: 'control_group',
             value: 1,
-            label: Digest::MD5.hexdigest('abc'),
+            label: Digest::SHA256.hexdigest('abc'),
             user: user
           )
         end
@@ -289,7 +289,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
             action: 'start',
             property: 'control_group',
             value: 1,
-            label: Digest::MD5.hexdigest('somestring'),
+            label: Digest::SHA256.hexdigest('somestring'),
             user: user
           )
         end

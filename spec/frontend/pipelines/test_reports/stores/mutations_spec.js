@@ -1,6 +1,9 @@
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
 import mutations from '~/pipelines/stores/test_reports/mutations';
+import createFlash from '~/flash';
+
+jest.mock('~/flash.js');
 
 describe('Mutations TestReports Store', () => {
   let mockState;
@@ -41,6 +44,24 @@ describe('Mutations TestReports Store', () => {
       expect(mockState.testReports.test_suites[index]).toEqual(
         expectedState.testReports.test_suites[index],
       );
+    });
+  });
+
+  describe('set suite error', () => {
+    it('should set the error message in state if provided', () => {
+      const message = 'Test report artifacts have expired';
+
+      mutations[types.SET_SUITE_ERROR](mockState, {
+        response: { data: { errors: message } },
+      });
+
+      expect(mockState.errorMessage).toBe(message);
+    });
+
+    it('should show a flash message otherwise', () => {
+      mutations[types.SET_SUITE_ERROR](mockState, {});
+
+      expect(createFlash).toHaveBeenCalled();
     });
   });
 

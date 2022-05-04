@@ -1,4 +1,4 @@
-import { GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions_page.vue';
 import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
@@ -10,15 +10,16 @@ describe('SubscriptionsPage', () => {
   let store;
 
   const findAddNamespaceButton = () => wrapper.findComponent(AddNamespaceButton);
+  const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSubscriptionsList = () => wrapper.findComponent(SubscriptionsList);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
-  const createComponent = ({ props } = {}) => {
-    store = createStore();
+  const createComponent = ({ props, initialState } = {}) => {
+    store = createStore(initialState);
 
     wrapper = shallowMount(SubscriptionsPage, {
       store,
-      propsData: props,
+      propsData: { hasSubscriptions: false, ...props },
       stubs: {
         GlEmptyState,
       },
@@ -31,29 +32,40 @@ describe('SubscriptionsPage', () => {
 
   describe('template', () => {
     describe.each`
-      scenario                   | expectSubscriptionsList | expectEmptyState
-      ${'with subscriptions'}    | ${true}                 | ${false}
-      ${'without subscriptions'} | ${false}                | ${true}
-    `('$scenario', ({ expectEmptyState, expectSubscriptionsList }) => {
-      beforeEach(() => {
-        createComponent({
-          props: {
-            hasSubscriptions: expectSubscriptionsList,
-          },
+      scenario                        | subscriptionsLoading | hasSubscriptions | expectSubscriptionsList | expectEmptyState
+      ${'with subscriptions loading'} | ${true}              | ${false}         | ${false}                | ${false}
+      ${'with subscriptions'}         | ${false}             | ${true}          | ${true}                 | ${false}
+      ${'without subscriptions'}      | ${false}             | ${false}         | ${false}                | ${true}
+    `(
+      '$scenario',
+      ({ subscriptionsLoading, hasSubscriptions, expectEmptyState, expectSubscriptionsList }) => {
+        beforeEach(() => {
+          createComponent({
+            initialState: { subscriptionsLoading },
+            props: {
+              hasSubscriptions,
+            },
+          });
         });
-      });
 
-      it('renders button to add namespace', () => {
-        expect(findAddNamespaceButton().exists()).toBe(true);
-      });
+        it(`${
+          subscriptionsLoading ? 'does not render' : 'renders'
+        } button to add namespace`, () => {
+          expect(findAddNamespaceButton().exists()).toBe(!subscriptionsLoading);
+        });
 
-      it(`${expectEmptyState ? 'renders' : 'does not render'} empty state`, () => {
-        expect(findEmptyState().exists()).toBe(expectEmptyState);
-      });
+        it(`${subscriptionsLoading ? 'renders' : 'does not render'} GlLoadingIcon`, () => {
+          expect(findGlLoadingIcon().exists()).toBe(subscriptionsLoading);
+        });
 
-      it(`${expectSubscriptionsList ? 'renders' : 'does not render'} subscriptions list`, () => {
-        expect(findSubscriptionsList().exists()).toBe(expectSubscriptionsList);
-      });
-    });
+        it(`${expectEmptyState ? 'renders' : 'does not render'} empty state`, () => {
+          expect(findEmptyState().exists()).toBe(expectEmptyState);
+        });
+
+        it(`${expectSubscriptionsList ? 'renders' : 'does not render'} subscriptions list`, () => {
+          expect(findSubscriptionsList().exists()).toBe(expectSubscriptionsList);
+        });
+      },
+    );
   });
 });

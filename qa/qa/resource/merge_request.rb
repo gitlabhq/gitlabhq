@@ -78,7 +78,7 @@ module QA
       end
 
       def fabricate!
-        return fabricate_large_merge_request if Runtime::Scenario.large_setup?
+        return fabricate_large_merge_request if large_setup?
 
         populate_target_and_source_if_required
 
@@ -100,7 +100,7 @@ module QA
       end
 
       def fabricate_via_api!
-        return fabricate_large_merge_request if Runtime::Scenario.large_setup?
+        return fabricate_large_merge_request if large_setup?
 
         resource_web_url(api_get)
       rescue ResourceNotFoundError, NoValueError # rescue if iid not populated
@@ -207,6 +207,12 @@ module QA
       end
 
       private
+
+      def large_setup?
+        Runtime::Scenario.large_setup?
+      rescue ArgumentError
+        false
+      end
 
       def transform_api_resource(api_resource)
         raise ResourceNotFoundError if api_resource.blank?

@@ -8,7 +8,7 @@ import {
 } from '~/jira_connect/subscriptions/constants';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
-
+import { getCurrentUser } from '~/rest_api';
 import { createCodeVerifier, createCodeChallenge } from '../pkce';
 
 export default {
@@ -40,6 +40,7 @@ export default {
 
       // Build the initial OAuth authorization URL
       const { oauth_authorize_url: oauthAuthorizeURL } = this.oauthMetadata;
+
       const oauthAuthorizeURLWithChallenge = setUrlParams(
         {
           code_challenge: codeChallenge,
@@ -73,6 +74,7 @@ export default {
       const code = event.data?.code;
       try {
         const accessToken = await this.getOAuthToken(code);
+
         await this.loadUser(accessToken);
       } catch (e) {
         this.handleError();
@@ -97,7 +99,7 @@ export default {
       return data.access_token;
     },
     async loadUser(accessToken) {
-      const { data } = await axios.get('/api/v4/user', {
+      const { data } = await getCurrentUser({
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
