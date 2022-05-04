@@ -338,6 +338,13 @@ pgbouncer['databases'] = {
 
   ...
 }
+
+# Allow the praefect user to connect to PgBouncer
+pgbouncer['users'] = {
+  'praefect': {
+    'password': PRAEFECT_SQL_PASSWORD_HASH,
+  }
+}
 ```
 
 Both `praefect_production` and `praefect_production_direct` use the same database endpoint

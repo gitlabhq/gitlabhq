@@ -6164,6 +6164,9 @@ msgstr ""
 msgid "BoardScope|Current iteration"
 msgstr ""
 
+msgid "BoardScope|Don't filter milestone"
+msgstr ""
+
 msgid "BoardScope|Edit"
 msgstr ""
 
@@ -20837,6 +20840,12 @@ msgstr ""
 msgid "Integrations|can't exceed %{recipients_limit}"
 msgstr ""
 
+msgid "IntelliJ IDEA (HTTPS)"
+msgstr ""
+
+msgid "IntelliJ IDEA (SSH)"
+msgstr ""
+
 msgid "Interactive mode"
 msgstr ""
 
@@ -25726,9 +25735,6 @@ msgid "No matching results for \"%{query}\""
 msgstr ""
 
 msgid "No matching results..."
-msgstr ""
-
-msgid "No member provided"
 msgstr ""
 
 msgid "No members found"
@@ -43387,6 +43393,9 @@ msgid "You can only %{action} files when you are on a branch"
 msgstr ""
 
 msgid "You can only add up to %{max_contacts} contacts at one time"
+msgstr ""
+
+msgid "You can only approve an indivdual user, member, or all members"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"

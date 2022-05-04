@@ -17,7 +17,12 @@ export default function initClonePanel() {
     $('a', $cloneOptions).on('click', (e) => {
       const $this = $(e.currentTarget);
       const url = $this.attr('href');
-      if (url && (url.startsWith('vscode://') || url.startsWith('xcode://'))) {
+      if (
+        url &&
+        (url.startsWith('vscode://') ||
+          url.startsWith('xcode://') ||
+          url.startsWith('jetbrains://'))
+      ) {
         // Clone with "..." should open like a normal link
         return;
       }

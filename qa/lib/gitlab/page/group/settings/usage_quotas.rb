@@ -14,7 +14,7 @@ module Gitlab
           span :purchased_usage_total
           div :ci_purchase_successful_alert, text: /You have successfully purchased CI minutes/
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/
-          h4 :storage_available_alert, text: /purchased storage is available/
+          h2 :storage_available_alert, text: /purchased storage is available/
 
           def plan_ci_limits
             plan_ci_minutes_element.span.text[%r{([^/ ]+)$}]
