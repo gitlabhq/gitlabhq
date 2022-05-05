@@ -161,7 +161,7 @@ ask an administrator to [enable the feature flag](../../administration/feature_f
 On GitLab.com, this feature is not available.
 You should not use this feature for production environments.
 
-You can make a comment **in an issue or an epic** confidential, so that it is visible only to you (the commenting user) and
+You can make a comment **in an issue or an epic** confidential. It's then visible only to you (the commenting user) and
 the project members who have at least the Reporter role.
 
 Keep in mind:
@@ -183,7 +183,7 @@ To mark a comment as confidential:
 1. Below the comment, select the **Make this comment confidential** checkbox.
 1. Select **Comment**.
 
-![Confidential comments](img/confidential_comments_v13_9.png)
+![Confidential comments](img/confidential_comments_v15_0.png)
 
 You can also make an [entire issue confidential](../project/issues/confidential_issues.md).
 

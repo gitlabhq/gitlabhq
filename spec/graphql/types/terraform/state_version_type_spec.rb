@@ -52,8 +52,8 @@ RSpec.describe GitlabSchema.types['TerraformStateVersion'] do
 
     shared_examples 'returning latest version' do
       it 'returns latest version of terraform state' do
-        expect(execute.dig('data', 'project', 'terraformState', 'latestVersion', 'id')).to eq(
-          global_id_of(terraform_state.latest_version)
+        expect(execute.dig('data', 'project', 'terraformState', 'latestVersion')).to match a_graphql_entity_for(
+          terraform_state.latest_version
         )
       end
     end

@@ -323,7 +323,7 @@ export default {
     restructuredWidgetShowMergeButtons() {
       if (this.glFeatures.restructuredMrWidget) {
         return (
-          this.isMergeAllowed &&
+          (this.isMergeAllowed || this.isAutoMergeAvailable) &&
           this.state.userPermissions.canMerge &&
           !this.mr.mergeOngoing &&
           !this.mr.autoMergeEnabled
@@ -443,6 +443,8 @@ export default {
           if (this.glFeatures.mergeRequestWidgetGraphql) {
             this.updateGraphqlState();
           }
+
+          this.isMakingRequest = false;
         })
         .catch(() => {
           this.isMakingRequest = false;
@@ -521,6 +523,7 @@ export default {
 
 <template>
   <div
+    data-testid="ready_to_merge_state"
     :class="{
       'gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7 gl-rounded-bottom-left-base gl-rounded-bottom-right-base':
         glFeatures.restructuredMrWidget,
@@ -633,6 +636,7 @@ export default {
                   glFeatures.restructuredMrWidget && (shouldShowSquashEdit || shouldShowMergeEdit)
                 "
                 v-model="editCommitMessage"
+                data-testid="widget_edit_commit_message"
                 class="gl-display-flex gl-align-items-center"
               >
                 {{ __('Edit commit message') }}

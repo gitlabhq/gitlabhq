@@ -122,12 +122,12 @@ RSpec.describe 'getting dependency proxy manifests in a group' do
     let(:current_user) { owner }
 
     context 'with default sorting' do
-      let_it_be(:descending_manifests) { manifests.reverse.map { |manifest| global_id_of(manifest)} }
+      let_it_be(:descending_manifests) { manifests.reverse.map { |manifest| global_id_of(manifest) } }
 
       it_behaves_like 'sorted paginated query' do
         let(:sort_param) { '' }
         let(:first_param) { 2 }
-        let(:all_records) { descending_manifests }
+        let(:all_records) { descending_manifests.map(&:to_s) }
       end
     end
 

@@ -383,7 +383,6 @@ Layout/HashAlignment:
     - 'ee/lib/gitlab/elastic/helper.rb'
     - 'ee/lib/gitlab/elastic/indexer.rb'
     - 'ee/lib/gitlab/geo/replication/base_transfer.rb'
-    - 'ee/lib/gitlab/prometheus/queries/packet_flow_query.rb'
     - 'ee/spec/controllers/ee/projects/variables_controller_spec.rb'
     - 'ee/spec/controllers/groups/epic_boards_controller_spec.rb'
     - 'ee/spec/controllers/groups/issues_controller_spec.rb'

@@ -24,8 +24,8 @@ RSpec.describe 'getting group members information' do
 
       expect(graphql_errors).to be_nil
       expect(graphql_data_at(:group, :group_members, :edges, :node)).to contain_exactly(
-        { 'user' => { 'id' => global_id_of(user_1) } },
-        { 'user' => { 'id' => global_id_of(user_2) } },
+        { 'user' => a_graphql_entity_for(user_1) },
+        { 'user' => a_graphql_entity_for(user_2) },
         'user' => nil
       )
     end
@@ -224,8 +224,8 @@ RSpec.describe 'getting group members information' do
 
   def expect_array_response(*items)
     expect(response).to have_gitlab_http_status(:success)
-    member_gids = graphql_data_at(:group, :group_members, :edges, :node, :user, :id)
+    members = graphql_data_at(:group, :group_members, :edges, :node, :user)
 
-    expect(member_gids).to match_array(items.map { |u| global_id_of(u) })
+    expect(members).to match_array(items.map { |u| a_graphql_entity_for(u) })
   end
 end

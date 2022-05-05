@@ -30,12 +30,6 @@ RSpec.describe 'Merge request > User assigns themselves' do
       end.to change { merge_request.reload.updated_at }
     end
 
-    it 'returns user to the merge request', :js do
-      click_link 'Assign yourself to these issues'
-
-      expect(page).to have_content merge_request.description
-    end
-
     context 'when related issues are already assigned' do
       before do
         [issue1, issue2].each { |issue| issue.update!(assignees: [user]) }

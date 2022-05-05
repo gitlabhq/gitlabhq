@@ -350,7 +350,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'Namespaces::RefreshRootStatisticsWorker' => 3,
         'Namespaces::RootStatisticsWorker' => 3,
         'Namespaces::ScheduleAggregationWorker' => 3,
-        'NetworkPolicyMetricsWorker' => 3,
         'NewEpicWorker' => 3,
         'NewIssueWorker' => 3,
         'NewMergeRequestWorker' => 3,

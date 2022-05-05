@@ -14,7 +14,7 @@ RSpec.describe Resolvers::DesignManagement::DesignAtVersionResolver do
 
   let(:current_user) { user }
   let(:object) { issue.design_collection }
-  let(:global_id) { GitlabSchema.id_from_object(design_at_version).to_s }
+  let(:global_id) { GitlabSchema.id_from_object(design_at_version) }
 
   let(:design_at_version) { ::DesignManagement::DesignAtVersion.new(design: design_a, version: version_a) }
 

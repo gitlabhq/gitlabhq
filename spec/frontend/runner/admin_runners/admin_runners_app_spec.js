@@ -35,6 +35,8 @@ import {
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
   STATUS_ONLINE,
+  STATUS_OFFLINE,
+  STATUS_STALE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import adminRunnersQuery from '~/runner/graphql/list/admin_runners.query.graphql';
@@ -52,6 +54,7 @@ import {
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 const mockRunners = runnersData.data.runners.nodes;
+const mockRunnersCount = runnersCountData.data.runners.count;
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -124,18 +127,6 @@ describe('AdminRunnersApp', () => {
     wrapper.destroy();
   });
 
-  it('shows total runner counts', async () => {
-    createComponent({ mountFn: mountExtended });
-
-    await waitForPromises();
-
-    const stats = findRunnerStats().text();
-
-    expect(stats).toMatch('Online runners 4');
-    expect(stats).toMatch('Offline runners 4');
-    expect(stats).toMatch('Stale runners 4');
-  });
-
   it('shows the runner tabs with a runner count for each type', async () => {
     mockRunnersCountQuery.mockImplementation(({ type }) => {
       let count;
@@ -195,6 +186,24 @@ describe('AdminRunnersApp', () => {
   it('shows the runner setup instructions', () => {
     expect(findRegistrationDropdown().props('registrationToken')).toBe(mockRegistrationToken);
     expect(findRegistrationDropdown().props('type')).toBe(INSTANCE_TYPE);
+  });
+
+  it('shows total runner counts', async () => {
+    expect(mockRunnersCountQuery).toHaveBeenCalledWith({
+      status: STATUS_ONLINE,
+    });
+    expect(mockRunnersCountQuery).toHaveBeenCalledWith({
+      status: STATUS_OFFLINE,
+    });
+    expect(mockRunnersCountQuery).toHaveBeenCalledWith({
+      status: STATUS_STALE,
+    });
+
+    expect(findRunnerStats().props()).toMatchObject({
+      onlineRunnersCount: mockRunnersCount,
+      offlineRunnersCount: mockRunnersCount,
+      staleRunnersCount: mockRunnersCount,
+    });
   });
 
   it('shows the runners list', () => {
@@ -329,13 +338,30 @@ describe('AdminRunnersApp', () => {
         first: RUNNER_PAGE_SIZE,
       });
     });
+
+    it('fetches count results for requested status', () => {
+      expect(mockRunnersCountQuery).toHaveBeenCalledWith({
+        type: INSTANCE_TYPE,
+        status: STATUS_ONLINE,
+        tagList: ['tag1'],
+      });
+
+      expect(findRunnerStats().props()).toMatchObject({
+        onlineRunnersCount: mockRunnersCount,
+      });
+    });
   });
 
   describe('when a filter is selected by the user', () => {
     beforeEach(() => {
+      mockRunnersCountQuery.mockClear();
+
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
-        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
+        filters: [
+          { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
+          { type: PARAM_KEY_TAG, value: { data: 'tag1', operator: '=' } },
+        ],
         sort: CREATED_ASC,
       });
     });
@@ -343,15 +369,43 @@ describe('AdminRunnersApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: 'http://test.host/admin/runners?status[]=ONLINE&sort=CREATED_ASC',
+        url: 'http://test.host/admin/runners?status[]=ONLINE&tag[]=tag1&sort=CREATED_ASC',
       });
     });
 
     it('requests the runners with filters', () => {
       expect(mockRunnersQuery).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
+        tagList: ['tag1'],
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
+      });
+    });
+
+    it('fetches count results for requested status', () => {
+      expect(mockRunnersCountQuery).toHaveBeenCalledWith({
+        tagList: ['tag1'],
+        status: STATUS_ONLINE,
+      });
+
+      expect(findRunnerStats().props()).toMatchObject({
+        onlineRunnersCount: mockRunnersCount,
+      });
+    });
+
+    it('skips fetching count results for status that were not in filter', () => {
+      expect(mockRunnersCountQuery).not.toHaveBeenCalledWith({
+        tagList: ['tag1'],
+        status: STATUS_OFFLINE,
+      });
+      expect(mockRunnersCountQuery).not.toHaveBeenCalledWith({
+        tagList: ['tag1'],
+        status: STATUS_STALE,
+      });
+
+      expect(findRunnerStats().props()).toMatchObject({
+        offlineRunnersCount: null,
+        staleRunnersCount: null,
       });
     });
   });

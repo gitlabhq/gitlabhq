@@ -456,18 +456,17 @@ To restore a group that is marked for deletion:
 
 ## Prevent group sharing outside the group hierarchy
 
-This setting is only available on top-level groups. It affects all subgroups and projects.
+You can configure a top-level group so its subgroups and projects
+cannot invite other groups outside of the top-level group's hierarchy.
+This option is only available for top-level groups.
 
-When checked, any group in the top-level group hierarchy can only invite other groups from within the top-level
-group's hierarchy.
-
-For example, with this setup:
+For example, in the following group and project hierarchy:
 
 - **Animals > Dogs > Dog Project**
 - **Animals > Cats**
 - **Plants > Trees**
 
-If you select this setting in the **Animals** group:
+If you prevent group sharing outside the hierarchy for the **Animals** group:
 
 - **Dogs** can invite the group **Cats**.
 - **Dogs** cannot invite the group **Trees**.
@@ -476,8 +475,9 @@ If you select this setting in the **Animals** group:
 
 To prevent sharing outside of the group's hierarchy:
 
-1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions and group features** section.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
 1. Select **Prevent members from sending invitations to groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.
 

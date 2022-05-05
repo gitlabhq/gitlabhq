@@ -20602,7 +20602,11 @@ CREATE TABLE slack_integrations (
     alias character varying NOT NULL,
     user_id character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    bot_user_id text,
+    encrypted_bot_access_token bytea,
+    encrypted_bot_access_token_iv bytea,
+    CONSTRAINT check_bc553aea8a CHECK ((char_length(bot_user_id) <= 255))
 );
 
 CREATE SEQUENCE slack_integrations_id_seq
@@ -27886,7 +27890,7 @@ CREATE UNIQUE INDEX index_group_deploy_tokens_on_group_and_deploy_token_ids ON g
 
 CREATE UNIQUE INDEX index_group_group_links_on_shared_group_and_shared_with_group ON group_group_links USING btree (shared_group_id, shared_with_group_id);
 
-CREATE INDEX index_group_group_links_on_shared_with_group_id ON group_group_links USING btree (shared_with_group_id);
+CREATE INDEX index_group_group_links_on_shared_with_group_and_shared_group ON group_group_links USING btree (shared_with_group_id, shared_group_id);
 
 CREATE INDEX index_group_import_states_on_group_id ON group_import_states USING btree (group_id);
 
@@ -28768,7 +28772,7 @@ COMMENT ON INDEX index_project_features_on_project_id_include_container_registry
 
 CREATE INDEX index_project_features_on_project_id_ral_20 ON project_features USING btree (project_id) WHERE (repository_access_level = 20);
 
-CREATE INDEX index_project_group_links_on_group_id ON project_group_links USING btree (group_id);
+CREATE INDEX index_project_group_links_on_group_id_and_project_id ON project_group_links USING btree (group_id, project_id);
 
 CREATE INDEX index_project_group_links_on_project_id ON project_group_links USING btree (project_id);
 

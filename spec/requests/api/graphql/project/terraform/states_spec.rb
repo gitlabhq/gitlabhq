@@ -62,23 +62,22 @@ RSpec.describe 'query terraform states' do
       )
     )
 
-    expect(data['nodes']).to contain_exactly({
-      'id'            => global_id_of(terraform_state),
-      'name'          => terraform_state.name,
+    expect(data['nodes']).to contain_exactly a_graphql_entity_for(
+      terraform_state, :name,
       'lockedAt'      => terraform_state.locked_at.iso8601,
       'createdAt'     => terraform_state.created_at.iso8601,
       'updatedAt'     => terraform_state.updated_at.iso8601,
-      'lockedByUser'  => { 'id' => global_id_of(terraform_state.locked_by_user) },
-      'latestVersion' => {
-        'id'            => eq(global_id_of(latest_version)),
+      'lockedByUser'  => a_graphql_entity_for(terraform_state.locked_by_user),
+      'latestVersion' => a_graphql_entity_for(
+        latest_version,
         'serial'        => eq(latest_version.version),
         'downloadPath'  => eq(download_path),
         'createdAt'     => eq(latest_version.created_at.iso8601),
         'updatedAt'     => eq(latest_version.updated_at.iso8601),
-        'createdByUser' => { 'id' => eq(global_id_of(latest_version.created_by_user)) },
+        'createdByUser' => a_graphql_entity_for(latest_version.created_by_user),
         'job'           => { 'name' => eq(latest_version.build.name) }
-      }
-    })
+      )
+    )
   end
 
   it 'returns count of terraform states' do

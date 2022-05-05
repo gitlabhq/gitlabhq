@@ -18,7 +18,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
       click_button('Merge')
 
-      expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+      expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
     end
 
     context 'when merge method is set to fast-forward merge' do
@@ -31,7 +31,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
         click_button('Merge')
 
-        expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+        expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
       end
 
       it 'accepts a merge request with squash and merge' do
@@ -41,7 +41,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
         click_button('Merge')
 
-        expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+        expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
       end
     end
   end
@@ -55,7 +55,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       check('Delete source branch')
       click_button('Merge')
 
-      expect(page).to have_content('The changes were merged into')
+      expect(page).to have_content('Changes merged into')
       expect(page).not_to have_selector('.js-remove-branch-button')
 
       # Wait for View Resource requests to complete so they don't blow up if they are
@@ -72,7 +72,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
     it 'accepts a merge request' do
       click_button('Merge')
 
-      expect(page).to have_content('The changes were merged into')
+      expect(page).to have_content('Changes merged into')
       expect(page).to have_selector('.js-remove-branch-button')
 
       # Wait for View Resource requests to complete so they don't blow up if they are
@@ -90,7 +90,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       check('Delete source branch')
       click_button('Merge')
 
-      expect(page).to have_content('The changes were merged into')
+      expect(page).to have_content('Changes merged into')
       expect(page).not_to have_selector('.js-remove-branch-button')
 
       # Wait for View Resource requests to complete so they don't blow up if they are
@@ -107,7 +107,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
     end
 
     it 'accepts a merge request' do
-      find('.js-mr-widget-commits-count').click
+      find('[data-testid="widget_edit_commit_message"]').click
       fill_in('merge-message-edit', with: 'wow such merge')
 
       click_button('Merge')

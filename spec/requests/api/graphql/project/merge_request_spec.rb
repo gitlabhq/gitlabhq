@@ -66,7 +66,7 @@ RSpec.describe 'getting merge request information nested in a project' do
 
     it 'includes reviewers' do
       expected = merge_request.reviewers.map do |r|
-        a_hash_including('id' => global_id_of(r), 'username' => r.username)
+        a_graphql_entity_for(r, :username)
       end
 
       post_graphql(query, current_user: current_user)

@@ -46,8 +46,8 @@ RSpec.describe 'Marking all todos done' do
     expect(todo3.reload.state).to eq('done')
     expect(other_user_todo.reload.state).to eq('pending')
 
-    updated_todo_ids = mutation_response['todos'].map { |todo| todo['id'] }
-    expect(updated_todo_ids).to contain_exactly(global_id_of(todo1), global_id_of(todo3))
+    updated_todos = mutation_response['todos']
+    expect(updated_todos).to contain_exactly(a_graphql_entity_for(todo1), a_graphql_entity_for(todo3))
   end
 
   context 'when target_id is given', :aggregate_failures do
@@ -66,8 +66,8 @@ RSpec.describe 'Marking all todos done' do
       expect(todo1.reload.state).to eq('pending')
       expect(todo3.reload.state).to eq('pending')
 
-      updated_todo_ids = mutation_response['todos'].map { |todo| todo['id'] }
-      expect(updated_todo_ids).to contain_exactly(global_id_of(target_todo1), global_id_of(target_todo2))
+      updated_todos = mutation_response['todos']
+      expect(updated_todos).to contain_exactly(a_graphql_entity_for(target_todo1), a_graphql_entity_for(target_todo2))
     end
 
     context 'when target does not exist' do

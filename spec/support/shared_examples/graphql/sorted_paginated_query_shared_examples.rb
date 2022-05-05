@@ -101,7 +101,7 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
 
     context 'when sorting' do
       it 'sorts correctly' do
-        expect(results).to eq all_records
+        expect(results).to match all_records
       end
 
       context 'when paginating' do
@@ -110,17 +110,17 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
         let(:rest) { all_records.drop(first_param) }
 
         it 'paginates correctly' do
-          expect(results).to eq first_page
+          expect(results).to match first_page
 
           fwds = pagination_query(sort_argument.merge(after: end_cursor))
           post_graphql(fwds, current_user: current_user)
 
-          expect(results).to eq rest
+          expect(results).to match rest
 
           bwds = pagination_query(sort_argument.merge(before: start_cursor))
           post_graphql(bwds, current_user: current_user)
 
-          expect(results).to eq first_page
+          expect(results).to match first_page
         end
       end
 
@@ -130,7 +130,7 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
         it 'fetches last elements without error' do
           post_graphql(pagination_query(params), current_user: current_user)
 
-          expect(results.first).to eq(all_records.last)
+          expect(results.first).to match all_records.last
         end
       end
     end

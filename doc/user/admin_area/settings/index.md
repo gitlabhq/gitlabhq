@@ -112,8 +112,6 @@ The **Metrics and profiling** settings contain:
 - [Self monitoring](../../../administration/monitoring/gitlab_self_monitoring_project/index.md#create-the-self-monitoring-project) -
   Enable or disable instance self monitoring.
 - [Usage statistics](usage_statistics.md) - Enable or disable version check and Service Ping.
-- [Pseudonymizer data collection](../../../administration/pseudonymizer.md) -
-  Enable or disable the Pseudonymizer data collection.
 
 ### Network
 

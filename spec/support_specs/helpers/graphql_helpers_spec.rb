@@ -10,6 +10,81 @@ RSpec.describe GraphqlHelpers do
     query.tr("\n", ' ').gsub(/\s+/, ' ').strip
   end
 
+  describe 'a_graphql_entity_for' do
+    context 'when no arguments are passed' do
+      it 'raises an error' do
+        expect { a_graphql_entity_for }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when the model is nil, with no properties' do
+      it 'raises an error' do
+        expect { a_graphql_entity_for(nil) }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when the model is nil, any fields are passed' do
+      it 'raises an error' do
+        expect { a_graphql_entity_for(nil, :username) }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'with no model' do
+      it 'behaves like hash-inclusion with camel-casing' do
+        response = { 'foo' => 1, 'bar' => 2, 'camelCased' => 3 }
+
+        expect(response).to match a_graphql_entity_for(foo: 1, camel_cased: 3)
+        expect(response).not_to match a_graphql_entity_for(missing: 5)
+      end
+    end
+
+    context 'with just a model' do
+      it 'only considers the ID' do
+        user = build_stubbed(:user)
+        response = { 'username' => 'foo', 'id' => global_id_of(user) }
+
+        expect(response).to match a_graphql_entity_for(user)
+      end
+    end
+
+    context 'with a model and some method names' do
+      it 'also considers the method names' do
+        user = build_stubbed(:user)
+        response = { 'username' => user.username, 'id' => global_id_of(user) }
+
+        expect(response).to match a_graphql_entity_for(user, :username)
+        expect(response).not_to match a_graphql_entity_for(user, :name)
+      end
+    end
+
+    context 'with a model and some other properties' do
+      it 'behaves like the superset' do
+        user = build_stubbed(:user)
+        response = { 'username' => 'foo', 'id' => global_id_of(user) }
+
+        expect(response).to match a_graphql_entity_for(user, username: 'foo')
+        expect(response).not_to match a_graphql_entity_for(user, name: 'foo')
+      end
+    end
+
+    context 'with a model, method names, and some other properties' do
+      it 'behaves like the superset' do
+        user = build_stubbed(:user)
+        response = {
+          'username' => user.username,
+          'name' => user.name,
+          'foo' => 'bar',
+          'baz' => 'fop',
+          'id' => global_id_of(user)
+        }
+
+        expect(response).to match a_graphql_entity_for(user, :username, :name, foo: 'bar')
+        expect(response).to match a_graphql_entity_for(user, :name, foo: 'bar')
+        expect(response).not_to match a_graphql_entity_for(user, :name, bar: 'foo')
+      end
+    end
+  end
+
   describe 'graphql_dig_at' do
     it 'transforms symbol keys to graphql field names' do
       data = { 'camelCased' => 'names' }

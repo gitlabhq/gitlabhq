@@ -71,11 +71,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
       it 'finds all the designs as of the given version' do
         post_query
 
-        expect(data).to match(
-          a_hash_including(
-            'id' => global_id_of(design_at_version),
-            'filename' => design.filename
-          ))
+        expect(data).to match a_graphql_entity_for(design_at_version, filename: design.filename)
       end
 
       context 'when the current_user is not authorized' do
@@ -119,7 +115,8 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
     let(:results) do
       issue.designs.visible_at_version(version).map do |d|
         dav = build(:design_at_version, design: d, version: version)
-        { 'id' => global_id_of(dav), 'filename' => d.filename }
+
+        a_graphql_entity_for(dav, filename: d.filename)
       end
     end
 
@@ -132,8 +129,8 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
     describe 'filtering' do
       let(:designs) { issue.designs.sample(3) }
       let(:filenames) { designs.map(&:filename) }
-      let(:ids) do
-        designs.map { |d| global_id_of(build(:design_at_version, design: d, version: version)) }
+      let(:expected_designs) do
+        designs.map { |d| a_graphql_entity_for(build(:design_at_version, design: d, version: version)) }
       end
 
       before do
@@ -144,7 +141,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
         let(:dav_params) { { filenames: filenames } }
 
         it 'finds the designs by filename' do
-          expect(data.map { |e| e.dig('node', 'id') }).to match_array(ids)
+          expect(data.map { |e| e['node'] }).to match_array expected_designs
         end
       end
 
@@ -160,9 +157,9 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
     describe 'pagination' do
       let(:end_cursor) { graphql_data_at(*path_prefix, :designs_at_version, :page_info, :end_cursor) }
 
-      let(:ids) do
+      let(:entities) do
         ::DesignManagement::Design.visible_at_version(version).order(:id).map do |d|
-          global_id_of(build(:design_at_version, design: d, version: version))
+          a_graphql_entity_for(build(:design_at_version, design: d, version: version))
         end
       end
 
@@ -178,19 +175,19 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
       let(:fields) { ['pageInfo { endCursor }', 'edges { node { id } }'] }
 
       def response_values(data = graphql_data)
-        data.dig(*path).map { |e| e.dig('node', 'id') }
+        data.dig(*path).map { |e| e['node'] }
       end
 
       it 'sorts designs for reliable pagination' do
         post_graphql(query, current_user: current_user)
 
-        expect(response_values).to match_array(ids.take(2))
+        expect(response_values).to match_array(entities.take(2))
 
         post_graphql(cursored_query, current_user: current_user)
 
         new_data = Gitlab::Json.parse(response.body).fetch('data')
 
-        expect(response_values(new_data)).to match_array(ids.drop(2))
+        expect(response_values(new_data)).to match_array(entities.drop(2))
       end
     end
   end
@@ -202,9 +199,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
     end
 
     let(:results) do
-      version.designs.map do |design|
-        { 'id' => global_id_of(design), 'filename' => design.filename }
-      end
+      version.designs.map { |design| a_graphql_entity_for(design, :filename) }
     end
 
     it 'finds all the designs as of the given version' do

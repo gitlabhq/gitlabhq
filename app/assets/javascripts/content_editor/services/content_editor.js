@@ -3,12 +3,13 @@ import { LOADING_CONTENT_EVENT, LOADING_SUCCESS_EVENT, LOADING_ERROR_EVENT } fro
 
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
-  constructor({ tiptapEditor, serializer, deserializer, eventHub, languageLoader }) {
+  constructor({ tiptapEditor, serializer, deserializer, assetResolver, eventHub, languageLoader }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
     this._deserializer = deserializer;
     this._eventHub = eventHub;
     this._languageLoader = languageLoader;
+    this._assetResolver = assetResolver;
   }
 
   get tiptapEditor() {
@@ -34,22 +35,27 @@ export class ContentEditor {
     this._eventHub.dispose();
   }
 
+  deserialize(serializedContent) {
+    const { _tiptapEditor: editor, _deserializer: deserializer } = this;
+
+    return deserializer.deserialize({
+      schema: editor.schema,
+      content: serializedContent,
+    });
+  }
+
+  resolveAssetUrl(canonicalSrc) {
+    return this._assetResolver.resolveUrl(canonicalSrc);
+  }
+
   async setSerializedContent(serializedContent) {
-    const {
-      _tiptapEditor: editor,
-      _deserializer: deserializer,
-      _eventHub: eventHub,
-      _languageLoader: languageLoader,
-    } = this;
+    const { _tiptapEditor: editor, _eventHub: eventHub, _languageLoader: languageLoader } = this;
     const { doc, tr } = editor.state;
     const selection = TextSelection.create(doc, 0, doc.content.size);
 
     try {
       eventHub.$emit(LOADING_CONTENT_EVENT);
-      const result = await deserializer.deserialize({
-        schema: editor.schema,
-        content: serializedContent,
-      });
+      const result = await this.deserialize(serializedContent);
 
       if (Object.keys(result).length !== 0) {
         const { document, languages } = result;

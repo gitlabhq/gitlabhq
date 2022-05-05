@@ -9,7 +9,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:label) { create(:label, project: project) }
 
-  let_it_be(:merge_request_a) do
+  let_it_be_with_reload(:merge_request_a) do
     create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label])
   end
 
@@ -412,6 +412,10 @@ RSpec.describe 'getting merge request listings nested in a project' do
   describe 'sorting and pagination' do
     let(:data_path) { [:project, :mergeRequests] }
 
+    def pagination_results_data(nodes)
+      nodes
+    end
+
     def pagination_query(params)
       graphql_query_for(:project, { full_path: project.full_path }, <<~QUERY)
         mergeRequests(#{params}) {
@@ -429,7 +433,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
           merge_request_c,
           merge_request_e,
           merge_request_a
-        ].map { |mr| global_id_of(mr) }
+        ].map { |mr| a_graphql_entity_for(mr) }
       end
 
       before do
@@ -455,7 +459,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
           query = pagination_query(params)
           post_graphql(query, current_user: current_user)
 
-          expect(results.map { |item| item["id"] }).to eq(all_records.last(2))
+          expect(results).to match(all_records.last(2))
         end
       end
     end
@@ -469,7 +473,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
           merge_request_c,
           merge_request_e,
           merge_request_a
-        ].map { |mr| global_id_of(mr) }
+        ].map { |mr| a_graphql_entity_for(mr) }
       end
 
       before do
@@ -495,7 +499,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
           query = pagination_query(params)
           post_graphql(query, current_user: current_user)
 
-          expect(results.map { |item| item["id"] }).to eq(all_records.last(2))
+          expect(results).to match(all_records.last(2))
         end
       end
     end

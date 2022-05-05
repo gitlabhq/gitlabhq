@@ -536,7 +536,6 @@ supported by consolidated configuration form, refer to the following guides:
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| **{dotted-circle}** No |
 | [Packages](packages/index.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
-| [Pseudonymizer](pseudonymizer.md) (optional feature) | **{dotted-circle}** No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
 | [Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
@@ -570,7 +569,7 @@ There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab
 in the future.
 
 Helm-based installs require separate buckets to
-[handle backup restorations](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
+[handle backup restorations](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy).
 
 ### S3 API compatibility issues
 

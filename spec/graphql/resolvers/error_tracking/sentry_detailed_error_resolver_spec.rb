@@ -74,6 +74,6 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
   end
 
   def issue_global_id(issue_id)
-    Gitlab::ErrorTracking::DetailedError.new(id: issue_id).to_global_id.to_s
+    Gitlab::ErrorTracking::DetailedError.new(id: issue_id).to_global_id
   end
 end

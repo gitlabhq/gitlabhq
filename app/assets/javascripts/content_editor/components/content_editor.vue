@@ -7,6 +7,7 @@ import EditorStateObserver from './editor_state_observer.vue';
 import FormattingBubbleMenu from './bubble_menus/formatting.vue';
 import CodeBlockBubbleMenu from './bubble_menus/code_block.vue';
 import LinkBubbleMenu from './bubble_menus/link.vue';
+import MediaBubbleMenu from './bubble_menus/media.vue';
 import TopToolbar from './top_toolbar.vue';
 import LoadingIndicator from './loading_indicator.vue';
 
@@ -20,6 +21,7 @@ export default {
     FormattingBubbleMenu,
     CodeBlockBubbleMenu,
     LinkBubbleMenu,
+    MediaBubbleMenu,
     EditorStateObserver,
   },
   props: {
@@ -95,6 +97,7 @@ export default {
           <formatting-bubble-menu />
           <code-block-bubble-menu />
           <link-bubble-menu />
+          <media-bubble-menu />
           <tiptap-editor-content class="md" :editor="contentEditor.tiptapEditor" />
           <loading-indicator />
         </div>

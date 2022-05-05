@@ -109,6 +109,8 @@ RSpec.describe Resolvers::DesignManagement::DesignsResolver do
   end
 
   def resolve_designs
-    resolve(described_class, obj: issue.design_collection, args: args, ctx: gql_context)
+    Gitlab::Graphql::Lazy.force(
+      resolve(described_class, obj: issue.design_collection, args: args, ctx: gql_context)
+    )
   end
 end

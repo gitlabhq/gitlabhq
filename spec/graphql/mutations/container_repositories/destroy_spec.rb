@@ -9,7 +9,7 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
   let_it_be(:user) { create(:user) }
 
   let(:project) { container_repository.project }
-  let(:id) { container_repository.to_global_id.to_s }
+  let(:id) { container_repository.to_global_id }
 
   specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image) }
 

@@ -26,7 +26,7 @@ describe('content_editor/services/content_editor', () => {
       tiptapEditor,
     }));
 
-    serializer = { deserialize: jest.fn() };
+    serializer = { serialize: jest.fn() };
     deserializer = { deserialize: jest.fn() };
     languageLoader = { loadLanguages: jest.fn() };
     eventHub = eventHubFactory();

@@ -33,7 +33,7 @@ RSpec.describe 'getting milestone listings nested in a project' do
 
   def result_list(expected)
     expected.map do |milestone|
-      a_hash_including('id' => global_id_of(milestone))
+      a_graphql_entity_for(milestone)
     end
   end
 

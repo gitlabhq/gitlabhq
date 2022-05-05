@@ -373,8 +373,6 @@ export default {
         <suggestions
           v-if="hasSuggestion"
           :note-html="markdownPreview"
-          :from-line="lineNumber"
-          :from-content="lineContent"
           :line-type="lineType"
           :disabled="true"
           :suggestions="suggestions"

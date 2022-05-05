@@ -89,17 +89,16 @@ RSpec.describe 'getting pipeline information nested in a project' do
       post_graphql(query, current_user: current_user)
 
       expect(graphql_data_at(*path, :jobs, :nodes)).to contain_exactly(
-        a_hash_including(
-          'name' => build_job.name,
-          'status' => build_job.status.upcase,
-          'duration' => build_job.duration
+        a_graphql_entity_for(
+          build_job, :name, :duration,
+          'status' => build_job.status.upcase
         ),
-        a_hash_including(
-          'id' => global_id_of(failed_build),
+        a_graphql_entity_for(
+          failed_build,
           'status' => failed_build.status.upcase
         ),
-        a_hash_including(
-          'id' => global_id_of(bridge),
+        a_graphql_entity_for(
+          bridge,
           'status' => bridge.status.upcase
         )
       )
@@ -135,7 +134,7 @@ RSpec.describe 'getting pipeline information nested in a project' do
       post_graphql(query, current_user: current_user, variables: variables)
 
       expect(graphql_data_at(*path, :jobs, :nodes))
-        .to contain_exactly(a_hash_including('id' => global_id_of(failed_build)))
+        .to contain_exactly(a_graphql_entity_for(failed_build))
     end
   end
 
@@ -166,7 +165,7 @@ RSpec.describe 'getting pipeline information nested in a project' do
     end
 
     let(:the_job) do
-      a_hash_including('name' => build_job.name, 'id' => global_id_of(build_job))
+      a_graphql_entity_for(build_job, :name)
     end
 
     it 'can request a build by name' do

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Timelogs::Delete do
+  include GraphqlHelpers
+
   let_it_be(:author) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:administrator) { create(:user, :admin) }
@@ -11,7 +13,7 @@ RSpec.describe Mutations::Timelogs::Delete do
   let_it_be_with_reload(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
-  let(:timelog_id) { timelog.to_global_id.to_s }
+  let(:timelog_id) { global_id_of(timelog) }
   let(:mutation_arguments) { { id: timelog_id } }
 
   describe '#resolve' do
@@ -21,7 +23,7 @@ RSpec.describe Mutations::Timelogs::Delete do
 
     context 'when the timelog id is not valid' do
       let(:current_user) { author }
-      let(:timelog_id) { 'gid://gitlab/Timelog/%d' % non_existing_record_id }
+      let(:timelog_id) { global_id_of(model_name: 'Timelog', id: non_existing_record_id) }
 
       it 'raises Gitlab::Graphql::Errors::ResourceNotAvailable' do
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)

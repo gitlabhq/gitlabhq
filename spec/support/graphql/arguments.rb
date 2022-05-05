@@ -40,7 +40,7 @@ module Graphql
       when Array then "[#{value.map { |v| as_graphql_literal(v) }.join(',')}]"
       when Hash then "{#{new(value)}}"
       when Integer, Float, Symbol then value.to_s
-      when String then "\"#{value.gsub(/"/, '\\"')}\""
+      when String, GlobalID then "\"#{value.to_s.gsub(/"/, '\\"')}\""
       when Time, Date then "\"#{value.iso8601}\""
       when nil then 'null'
       when true then 'true'
@@ -49,7 +49,7 @@ module Graphql
         value.to_graphql_value
       end
     rescue NoMethodError
-      raise ArgumentError, "Cannot represent #{value} as GraphQL literal"
+      raise ArgumentError, "Cannot represent #{value} (instance of #{value.class}) as GraphQL literal"
     end
 
     def merge(other)

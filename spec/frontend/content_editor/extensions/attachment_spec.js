@@ -11,32 +11,12 @@ import { VARIANT_DANGER } from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, createDocBuilder } from '../test_utils';
-
-const PROJECT_WIKI_ATTACHMENT_IMAGE_HTML = `<p data-sourcepos="1:1-1:27" dir="auto">
-  <a class="no-attachment-icon" href="/group1/project1/-/wikis/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="test-file.png">
-    <img alt="test-file" class="lazy" data-src="/group1/project1/-/wikis/test-file.png" data-canonical-src="test-file.png">
-  </a>
-</p>`;
-
-const PROJECT_WIKI_ATTACHMENT_VIDEO_HTML = `<p data-sourcepos="1:1-1:132" dir="auto">
-  <span class="media-container video-container">
-    <video src="/group1/project1/-/wikis/test-file.mp4" controls="true" data-setup="{}" data-title="test-file" width="400" preload="metadata" data-canonical-src="test-file.mp4">
-    </video>
-    <a href="/himkp/test/-/wikis/test-file.mp4" target="_blank" rel="noopener noreferrer" title="Download 'test-file'" data-canonical-src="test-file.mp4">test-file</a>
-  </span>
-</p>`;
-
-const PROJECT_WIKI_ATTACHMENT_AUDIO_HTML = `<p data-sourcepos="3:1-3:74" dir="auto">
-  <span class="media-container audio-container">
-    <audio src="/himkp/test/-/wikis/test-file.mp3" controls="true" data-setup="{}" data-title="test-file" data-canonical-src="test-file.mp3">
-    </audio>
-    <a href="/himkp/test/-/wikis/test-file.mp3" target="_blank" rel="noopener noreferrer" title="Download 'test-file'" data-canonical-src="test-file.mp3">test-file</a>
-  </span>
-</p>`;
-
-const PROJECT_WIKI_ATTACHMENT_LINK_HTML = `<p data-sourcepos="1:1-1:26" dir="auto">
-  <a href="/group1/project1/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a>
-</p>`;
+import {
+  PROJECT_WIKI_ATTACHMENT_IMAGE_HTML,
+  PROJECT_WIKI_ATTACHMENT_AUDIO_HTML,
+  PROJECT_WIKI_ATTACHMENT_VIDEO_HTML,
+  PROJECT_WIKI_ATTACHMENT_LINK_HTML,
+} from '../test_constants';
 
 describe('content_editor/extensions/attachment', () => {
   let tiptapEditor;

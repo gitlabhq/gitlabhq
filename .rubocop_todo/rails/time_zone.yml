@@ -13,7 +13,6 @@ Rails/TimeZone:
   - ee/lib/gitlab/geo/log_cursor/logger.rb
   - ee/lib/gitlab/geo/oauth/login_state.rb
   - ee/lib/gitlab/prometheus/queries/cluster_query.rb
-  - ee/lib/gitlab/prometheus/queries/packet_flow_query.rb
   - ee/spec/lib/ee/gitlab/checks/push_rules/commit_check_spec.rb
   - ee/spec/lib/ee/gitlab/ci/pipeline/quota/job_activity_spec.rb
   - ee/spec/lib/gitlab/analytics/cycle_analytics/data_collector_spec.rb
@@ -44,7 +43,6 @@ Rails/TimeZone:
   - ee/spec/lib/gitlab/git_access_spec.rb
   - ee/spec/lib/gitlab/prometheus/queries/additional_metrics_deployment_query_spec.rb
   - ee/spec/lib/gitlab/prometheus/queries/cluster_query_spec.rb
-  - ee/spec/lib/gitlab/prometheus/queries/packet_flow_query_spec.rb
   - lib/api/helpers.rb
   - lib/api/sidekiq_metrics.rb
   - lib/backup/manager.rb

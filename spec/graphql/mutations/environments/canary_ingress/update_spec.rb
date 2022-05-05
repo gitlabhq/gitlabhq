@@ -20,7 +20,7 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
   describe '#resolve' do
     subject { mutation.resolve(id: environment_id, weight: weight) }
 
-    let(:environment_id) { environment.to_global_id.to_s }
+    let(:environment_id) { environment.to_global_id }
     let(:weight) { 50 }
     let(:update_service) { double('update_service') }
 

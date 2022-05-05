@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Discussions::ToggleResolve do
+  include GraphqlHelpers
+
   subject(:mutation) do
     described_class.new(object: nil, context: { current_user: user }, field: nil)
   end
@@ -15,7 +17,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
       mutation.resolve(id: id_arg, resolve: resolve_arg)
     end
 
-    let(:id_arg) { discussion.to_global_id.to_s }
+    let(:id_arg) { global_id_of(discussion) }
     let(:resolve_arg) { true }
     let(:mutated_discussion) { subject[:discussion] }
     let(:errors) { subject[:errors] }
@@ -36,7 +38,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
         let_it_be(:user) { create(:user, developer_projects: [project]) }
 
         context 'when discussion cannot be found' do
-          let(:id_arg) { "#{discussion.to_global_id}foo" }
+          let(:id_arg) { global_id_of(id: non_existing_record_id, model_name: discussion.class.name) }
 
           it 'raises an error' do
             expect { subject }.to raise_error(
@@ -52,7 +54,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
           it 'raises an error' do
             expect { subject }.to raise_error(
               GraphQL::CoercionError,
-              "\"#{discussion.to_global_id}\" does not represent an instance of Discussion"
+              "\"#{global_id_of(discussion)}\" does not represent an instance of Discussion"
             )
           end
         end

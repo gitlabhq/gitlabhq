@@ -40,14 +40,11 @@ To access the Credentials inventory:
 
 If you see a **Revoke** button, you can revoke that user's PAT. Whether you see a **Revoke** button depends on the token state, and if an expiration date has been set. For more information, see the following table:
 
-| Token state | [Token expiration enforced?](settings/account_and_limit_settings.md#allow-expired-access-tokens-to-be-used-deprecated) | Show Revoke button? | Comments |
-|-------------|------------------------|--------------------|----------------------------------------------------------------------------|
-| Active      | Yes                    | Yes                | Allows administrators to revoke the PAT, such as for a compromised account |
-| Active      | No                     | Yes                | Allows administrators to revoke the PAT, such as for a compromised account |
-| Expired     | Yes                    | No                 | PAT expires automatically                                                  |
-| Expired     | No                     | Yes                | The administrator may revoke the PAT to prevent indefinite use             |
-| Revoked     | Yes                    | No                 | Not applicable; token is already revoked                                   |
-| Revoked     | No                     | No                 | Not applicable; token is already revoked                                   |
+| Token state | Show Revoke button? | Comments                                                                   |
+|-------------|---------------------|----------------------------------------------------------------------------|
+| Active      | Yes                 | Allows administrators to revoke the PAT, such as for a compromised account |
+| Expired     | No                  | Not applicable; token is already expired                                   |
+| Revoked     | No                  | Not applicable; token is already revoked                                   |
 
 When a PAT is revoked from the credentials inventory, the instance notifies the user by email.
 

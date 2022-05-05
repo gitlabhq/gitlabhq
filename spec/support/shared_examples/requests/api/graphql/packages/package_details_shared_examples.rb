@@ -28,14 +28,10 @@ RSpec.shared_examples 'a package with files' do
   end
 
   it 'has the basic package files data' do
-    expect(first_file_response).to include(
-      'id' => global_id_of(first_file),
-      'fileName' => first_file.file_name,
-      'size' => first_file.size.to_s,
-      'downloadPath' => first_file.download_path,
-      'fileSha1' => first_file.file_sha1,
-      'fileMd5' => first_file.file_md5,
-      'fileSha256' => first_file.file_sha256
+    expect(first_file_response).to match a_graphql_entity_for(
+      first_file,
+      :file_name, :download_path, :file_sha1, :file_md5, :file_sha256,
+      'size' => first_file.size.to_s
     )
   end
 

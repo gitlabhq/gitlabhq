@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::CustomerRelations::Contacts::Create do
+  include GraphqlHelpers
+
   let_it_be(:user) { create(:user) }
 
   let(:group) { create(:group, :crm_enabled) }
@@ -78,9 +80,9 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
           end
         end
 
-        context 'when organization_id is invalid' do
+        context 'when organization does not exist' do
           before do
-            valid_params[:organization_id] = "gid://gitlab/CustomerRelations::Organization/#{non_existing_record_id}"
+            valid_params[:organization_id] = global_id_of(model_name: 'CustomerRelations::Organization', id: non_existing_record_id)
           end
 
           it 'returns the relevant error' do

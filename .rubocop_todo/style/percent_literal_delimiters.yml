@@ -324,7 +324,6 @@ Style/PercentLiteralDelimiters:
     - 'ee/lib/gitlab/ci/parsers/security/formatters/dast.rb'
     - 'ee/lib/gitlab/geo.rb'
     - 'ee/lib/gitlab/geo/replicator.rb'
-    - 'ee/lib/gitlab/prometheus/queries/packet_flow_query.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/license_metric.rb'
     - 'ee/lib/tasks/gitlab/elastic/test.rake'
     - 'ee/spec/config/metrics/every_metric_definition_spec.rb'

@@ -70,6 +70,8 @@ const uploadContent = async ({ type, editor, file, uploadsPath, renderMarkdown, 
   const position = state.selection.from - 1;
   const { tr } = state;
 
+  editor.commands.setNodeSelection(position);
+
   try {
     const { src, canonicalSrc } = await uploadFile({ file, uploadsPath, renderMarkdown });
 
@@ -81,6 +83,8 @@ const uploadContent = async ({ type, editor, file, uploadsPath, renderMarkdown, 
         canonicalSrc,
       }),
     );
+
+    editor.commands.setNodeSelection(position);
   } catch (e) {
     editor.commands.deleteRange({ from: position, to: position + 1 });
     eventHub.$emit('alert', {

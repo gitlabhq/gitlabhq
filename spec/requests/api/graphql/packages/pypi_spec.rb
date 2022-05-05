@@ -19,9 +19,8 @@ RSpec.describe 'pypi package details' do
   it_behaves_like 'a package with files'
 
   it 'has the correct metadata' do
-    expect(metadata_response).to include(
-      'id' => global_id_of(package.pypi_metadatum),
-      'requiredPython' => package.pypi_metadatum.required_python
+    expect(metadata_response).to match a_graphql_entity_for(
+      package.pypi_metadatum, :required_python
     )
   end
 end

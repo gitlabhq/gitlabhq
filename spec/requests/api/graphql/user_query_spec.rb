@@ -91,11 +91,11 @@ RSpec.describe 'getting user information' do
         presenter = UserPresenter.new(user)
 
         expect(graphql_data['user']).to match(
-          a_hash_including(
-            'id' => global_id_of(user),
+          a_graphql_entity_for(
+            user,
+            :username,
             'state' => presenter.state,
             'name' => presenter.name,
-            'username' => presenter.username,
             'webUrl' => presenter.web_url,
             'avatarUrl' => presenter.avatar_url,
             'email' => presenter.public_email,
@@ -121,9 +121,9 @@ RSpec.describe 'getting user information' do
 
         it 'can be found' do
           expect(assigned_mrs).to contain_exactly(
-            a_hash_including('id' => global_id_of(assigned_mr)),
-            a_hash_including('id' => global_id_of(assigned_mr_b)),
-            a_hash_including('id' => global_id_of(assigned_mr_c))
+            a_graphql_entity_for(assigned_mr),
+            a_graphql_entity_for(assigned_mr_b),
+            a_graphql_entity_for(assigned_mr_c)
           )
         end
 
@@ -145,7 +145,7 @@ RSpec.describe 'getting user information' do
 
             it 'selects the correct MRs' do
               expect(assigned_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(assigned_mr_b))
+                a_graphql_entity_for(assigned_mr_b)
               )
             end
           end
@@ -157,8 +157,8 @@ RSpec.describe 'getting user information' do
 
             it 'selects the correct MRs' do
               expect(assigned_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(assigned_mr_b)),
-                a_hash_including('id' => global_id_of(assigned_mr_c))
+                a_graphql_entity_for(assigned_mr_b),
+                a_graphql_entity_for(assigned_mr_c)
               )
             end
           end
@@ -169,7 +169,7 @@ RSpec.describe 'getting user information' do
 
             it 'finds the authored mrs' do
               expect(assigned_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(assigned_mr_b))
+                a_graphql_entity_for(assigned_mr_b)
               )
             end
           end
@@ -185,8 +185,8 @@ RSpec.describe 'getting user information' do
               post_graphql(query, current_user: current_user)
 
               expect(assigned_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(assigned_mr_b)),
-                a_hash_including('id' => global_id_of(assigned_mr_c))
+                a_graphql_entity_for(assigned_mr_b),
+                a_graphql_entity_for(assigned_mr_c)
               )
             end
           end
@@ -212,9 +212,9 @@ RSpec.describe 'getting user information' do
 
         it 'can be found' do
           expect(reviewed_mrs).to contain_exactly(
-            a_hash_including('id' => global_id_of(reviewed_mr)),
-            a_hash_including('id' => global_id_of(reviewed_mr_b)),
-            a_hash_including('id' => global_id_of(reviewed_mr_c))
+            a_graphql_entity_for(reviewed_mr),
+            a_graphql_entity_for(reviewed_mr_b),
+            a_graphql_entity_for(reviewed_mr_c)
           )
         end
 
@@ -236,7 +236,7 @@ RSpec.describe 'getting user information' do
 
             it 'selects the correct MRs' do
               expect(reviewed_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(reviewed_mr_b))
+                a_graphql_entity_for(reviewed_mr_b)
               )
             end
           end
@@ -248,8 +248,8 @@ RSpec.describe 'getting user information' do
 
             it 'selects the correct MRs' do
               expect(reviewed_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(reviewed_mr_b)),
-                a_hash_including('id' => global_id_of(reviewed_mr_c))
+                a_graphql_entity_for(reviewed_mr_b),
+                a_graphql_entity_for(reviewed_mr_c)
               )
             end
           end
@@ -260,7 +260,7 @@ RSpec.describe 'getting user information' do
 
             it 'finds the authored mrs' do
               expect(reviewed_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(reviewed_mr_b))
+                a_graphql_entity_for(reviewed_mr_b)
               )
             end
           end
@@ -275,7 +275,7 @@ RSpec.describe 'getting user information' do
               post_graphql(query, current_user: current_user)
 
               expect(reviewed_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(reviewed_mr_c))
+                a_graphql_entity_for(reviewed_mr_c)
               )
             end
           end
@@ -301,9 +301,9 @@ RSpec.describe 'getting user information' do
 
         it 'can be found' do
           expect(authored_mrs).to contain_exactly(
-            a_hash_including('id' => global_id_of(authored_mr)),
-            a_hash_including('id' => global_id_of(authored_mr_b)),
-            a_hash_including('id' => global_id_of(authored_mr_c))
+            a_graphql_entity_for(authored_mr),
+            a_graphql_entity_for(authored_mr_b),
+            a_graphql_entity_for(authored_mr_c)
           )
         end
 
@@ -329,8 +329,8 @@ RSpec.describe 'getting user information' do
               post_graphql(query, current_user: current_user)
 
               expect(authored_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(authored_mr)),
-                a_hash_including('id' => global_id_of(authored_mr_c))
+                a_graphql_entity_for(authored_mr),
+                a_graphql_entity_for(authored_mr_c)
               )
             end
           end
@@ -346,8 +346,8 @@ RSpec.describe 'getting user information' do
               post_graphql(query, current_user: current_user)
 
               expect(authored_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(authored_mr_b)),
-                a_hash_including('id' => global_id_of(authored_mr_c))
+                a_graphql_entity_for(authored_mr_b),
+                a_graphql_entity_for(authored_mr_c)
               )
             end
           end
@@ -359,7 +359,7 @@ RSpec.describe 'getting user information' do
 
             it 'selects the correct MRs' do
               expect(authored_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(authored_mr_b))
+                a_graphql_entity_for(authored_mr_b)
               )
             end
           end
@@ -371,8 +371,8 @@ RSpec.describe 'getting user information' do
 
             it 'selects the correct MRs' do
               expect(authored_mrs).to contain_exactly(
-                a_hash_including('id' => global_id_of(authored_mr_b)),
-                a_hash_including('id' => global_id_of(authored_mr_c))
+                a_graphql_entity_for(authored_mr_b),
+                a_graphql_entity_for(authored_mr_c)
               )
             end
           end
@@ -417,7 +417,7 @@ RSpec.describe 'getting user information' do
 
           it 'can be found' do
             expect(group_memberships).to include(
-              a_hash_including('id' => global_id_of(membership_a))
+              a_graphql_entity_for(membership_a)
             )
           end
         end
@@ -440,7 +440,7 @@ RSpec.describe 'getting user information' do
 
           it 'can be found' do
             expect(project_memberships).to include(
-              a_hash_including('id' => global_id_of(membership_a))
+              a_graphql_entity_for(membership_a)
             )
           end
         end
@@ -460,7 +460,7 @@ RSpec.describe 'getting user information' do
 
           it 'can be found' do
             expect(authored_mrs).to include(
-              a_hash_including('id' => global_id_of(authored_mr))
+              a_graphql_entity_for(authored_mr)
             )
           end
         end
@@ -480,9 +480,9 @@ RSpec.describe 'getting user information' do
 
           it 'can be found' do
             expect(assigned_mrs).to contain_exactly(
-              a_hash_including('id' => global_id_of(assigned_mr)),
-              a_hash_including('id' => global_id_of(assigned_mr_b)),
-              a_hash_including('id' => global_id_of(assigned_mr_c))
+              a_graphql_entity_for(assigned_mr),
+              a_graphql_entity_for(assigned_mr_b),
+              a_graphql_entity_for(assigned_mr_c)
             )
           end
         end

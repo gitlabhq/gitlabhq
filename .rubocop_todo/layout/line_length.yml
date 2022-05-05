@@ -4424,7 +4424,6 @@ Layout/LineLength:
     - 'spec/features/projects/files/user_browses_files_spec.rb'
     - 'spec/features/projects/files/user_edits_files_spec.rb'
     - 'spec/features/projects/infrastructure_registry_spec.rb'
-    - 'spec/features/projects/integrations/prometheus_external_alerts_spec.rb'
     - 'spec/features/projects/integrations/user_activates_issue_tracker_spec.rb'
     - 'spec/features/projects/integrations/user_activates_jira_spec.rb'
     - 'spec/features/projects/integrations/user_uses_inherited_settings_spec.rb'

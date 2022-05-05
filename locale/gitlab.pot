@@ -395,11 +395,6 @@ msgid_plural "%d tags per image name"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d token has expired"
-msgid_plural "%d tokens have expired"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d unassigned issue"
 msgid_plural "%d unassigned issues"
 msgstr[0] ""
@@ -3575,9 +3570,6 @@ msgstr ""
 msgid "AlertSettings|You can map default GitLab alert fields to your payload keys in the dropdowns below."
 msgstr ""
 
-msgid "AlertSettings|You can now set up alert endpoints for manually configured Prometheus instances in the Alerts section on the Operations settings page. Alert endpoint fields on this page have been deprecated."
-msgstr ""
-
 msgid "AlertSettings|{ \"events\": [{ \"application\": \"Name of application\" }] }"
 msgstr ""
 
@@ -5140,10 +5132,10 @@ msgstr ""
 msgid "At least one of group_id or project_id must be specified"
 msgstr ""
 
-msgid "At least one of your Personal Access Tokens is expired, but expiration enforcement is disabled. %{generate_new}"
+msgid "At least one of your Personal Access Tokens is expired. %{generate_new}"
 msgstr ""
 
-msgid "At least one of your Personal Access Tokens will expire soon, but expiration enforcement is disabled. %{generate_new}"
+msgid "At least one of your Personal Access Tokens will expire soon. %{generate_new}"
 msgstr ""
 
 msgid "At risk"
@@ -5353,9 +5345,6 @@ msgid "Authored %{timeago} by %{author}"
 msgstr ""
 
 msgid "Authorization code:"
-msgstr ""
-
-msgid "Authorization key"
 msgstr ""
 
 msgid "Authorization required"
@@ -9966,6 +9955,9 @@ msgstr ""
 msgid "Copy URL"
 msgstr ""
 
+msgid "Copy audio URL"
+msgstr ""
+
 msgid "Copy branch name"
 msgstr ""
 
@@ -9997,6 +9989,9 @@ msgid "Copy file contents"
 msgstr ""
 
 msgid "Copy file path"
+msgstr ""
+
+msgid "Copy image URL"
 msgstr ""
 
 msgid "Copy issue URL to clipboard"
@@ -10045,6 +10040,9 @@ msgid "Copy trigger token"
 msgstr ""
 
 msgid "Copy value"
+msgstr ""
+
+msgid "Copy video URL"
 msgstr ""
 
 msgid "Corpus Management"
@@ -11817,6 +11815,9 @@ msgstr ""
 msgid "Delete artifacts"
 msgstr ""
 
+msgid "Delete audio"
+msgstr ""
+
 msgid "Delete badge"
 msgstr ""
 
@@ -11836,6 +11837,9 @@ msgid "Delete deploy key"
 msgstr ""
 
 msgid "Delete file"
+msgstr ""
+
+msgid "Delete image"
 msgstr ""
 
 msgid "Delete image repository"
@@ -11890,6 +11894,9 @@ msgid "Delete user list"
 msgstr ""
 
 msgid "Delete variable"
+msgstr ""
+
+msgid "Delete video"
 msgstr ""
 
 msgid "DeleteProject|Failed to remove events. Please try again or contact administrator."
@@ -12531,6 +12538,9 @@ msgid "Describe the goal of the changes and what reviewers should be aware of."
 msgstr ""
 
 msgid "Description"
+msgstr ""
+
+msgid "Description (alt text)"
 msgstr ""
 
 msgid "Description (optional)"
@@ -13440,6 +13450,9 @@ msgstr ""
 msgid "Edit application"
 msgstr ""
 
+msgid "Edit audio description"
+msgstr ""
+
 msgid "Edit comment"
 msgstr ""
 
@@ -13474,6 +13487,9 @@ msgid "Edit group: %{group_name}"
 msgstr ""
 
 msgid "Edit identity for %{user_name}"
+msgstr ""
+
+msgid "Edit image description"
 msgstr ""
 
 msgid "Edit in pipeline editor"
@@ -13516,6 +13532,9 @@ msgid "Edit topic: %{topic_name}"
 msgstr ""
 
 msgid "Edit user: %{user_name}"
+msgstr ""
+
+msgid "Edit video description"
 msgstr ""
 
 msgid "Edit wiki page"
@@ -13933,9 +13952,6 @@ msgid "Ends: %{endsAt}"
 msgstr ""
 
 msgid "Enforce SSH key expiration"
-msgstr ""
-
-msgid "Enforce access token expiration"
 msgstr ""
 
 msgid "Enforce two-factor authentication"
@@ -15427,9 +15443,6 @@ msgstr ""
 msgid "Failed to request attention because no user was found."
 msgstr ""
 
-msgid "Failed to reset key. Please try again."
-msgstr ""
-
 msgid "Failed to retrieve page"
 msgstr ""
 
@@ -16212,13 +16225,7 @@ msgstr ""
 msgid "Generate group access tokens scoped to this group for your applications that need access to the GitLab API."
 msgstr ""
 
-msgid "Generate key"
-msgstr ""
-
 msgid "Generate new export"
-msgstr ""
-
-msgid "Generate new token"
 msgstr ""
 
 msgid "Generate project access tokens scoped to this project for your applications that need access to the GitLab API."
@@ -22734,7 +22741,7 @@ msgstr ""
 msgid "List of suitable GCP locations"
 msgstr ""
 
-msgid "List of users allowed to exceed the rate limit."
+msgid "List of users who are allowed to exceed the rate limit. Example: username1, username2"
 msgstr ""
 
 msgid "List options"
@@ -27278,9 +27285,6 @@ msgstr ""
 msgid "Personal Access Token prefix"
 msgstr ""
 
-msgid "Personal access tokens are not revoked upon expiration."
-msgstr ""
-
 msgid "Personal project creation is not allowed. Please contact your administrator with questions"
 msgstr ""
 
@@ -30866,9 +30870,6 @@ msgstr ""
 msgid "Receive a %{strongOpen}$50 gift card%{strongClose} as a thank you for your time."
 msgstr ""
 
-msgid "Receive alerts from manually configured Prometheus servers."
-msgstr ""
-
 msgid "Receive any notifications from GitLab."
 msgstr ""
 
@@ -31497,7 +31498,16 @@ msgstr ""
 msgid "Replace all label(s)"
 msgstr ""
 
+msgid "Replace audio"
+msgstr ""
+
 msgid "Replace file"
+msgstr ""
+
+msgid "Replace image"
+msgstr ""
+
+msgid "Replace video"
 msgstr ""
 
 msgid "Replaced all labels with %{label_references} %{label_text}."
@@ -31979,12 +31989,6 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-msgid "Reset authorization key"
-msgstr ""
-
-msgid "Reset authorization key?"
-msgstr ""
-
 msgid "Reset file"
 msgstr ""
 
@@ -31992,9 +31996,6 @@ msgid "Reset filters"
 msgstr ""
 
 msgid "Reset health check access token"
-msgstr ""
-
-msgid "Reset key"
 msgstr ""
 
 msgid "Reset link will be generated and sent to the user. %{break} User will be forced to set the password on first sign in."
@@ -32010,9 +32011,6 @@ msgid "Reset template"
 msgstr ""
 
 msgid "Reset to project defaults"
-msgstr ""
-
-msgid "Resetting the authorization key will invalidate the previous key. Existing alert configurations will need to be updated with the new key."
 msgstr ""
 
 msgid "Resolve"
@@ -34062,9 +34060,6 @@ msgstr ""
 msgid "See the affected projects in the GitLab admin panel"
 msgstr ""
 
-msgid "See the list of available commands in Slack after setting up this service by entering"
-msgstr ""
-
 msgid "See vulnerability %{vulnerability_link} for any Remediation details."
 msgstr ""
 
@@ -35059,10 +35054,19 @@ msgstr ""
 msgid "SlackIntegration|GitLab for Slack was successfully installed."
 msgstr ""
 
+msgid "SlackIntegration|Install Slack app"
+msgstr ""
+
 msgid "SlackIntegration|Project alias"
 msgstr ""
 
+msgid "SlackIntegration|Reinstall Slack app"
+msgstr ""
+
 msgid "SlackIntegration|Remove project"
+msgstr ""
+
+msgid "SlackIntegration|See the list of available commands in Slack after setting up this integration by entering"
 msgstr ""
 
 msgid "SlackIntegration|Select a GitLab project to link with your Slack workspace."
@@ -35074,10 +35078,13 @@ msgstr ""
 msgid "SlackIntegration|Team name"
 msgstr ""
 
-msgid "SlackIntegration|To set up this integration press \"Add to Slack\""
+msgid "SlackIntegration|This integration allows users to perform common operations on this project by entering slash commands in Slack."
 msgstr ""
 
 msgid "SlackIntegration|You can now close this window and go to your Slack workspace."
+msgstr ""
+
+msgid "SlackIntegration|You may need to reinstall the Slack application when we %{linkStart}make updates or change permissions%{linkEnd}."
 msgstr ""
 
 msgid "SlackService|1. %{slash_command_link_start}Add a slash command%{slash_command_link_end} in your Slack team using this information:"
@@ -38731,9 +38738,6 @@ msgstr ""
 msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
-msgid "This service allows users to perform common operations on this project by entering slash commands in Slack."
-msgstr ""
-
 msgid "This setting can be overridden in each project."
 msgstr ""
 
@@ -39275,9 +39279,6 @@ msgstr ""
 msgid "To reactivate your account, sign in to GitLab at %{gitlab_url}."
 msgstr ""
 
-msgid "To receive alerts from manually configured Prometheus services, add the following URL and Authorization key to your Prometheus webhook config file. Learn more about %{linkStart}configuring Prometheus%{linkEnd} to send alerts to GitLab."
-msgstr ""
-
 msgid "To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance."
 msgstr ""
 
@@ -39441,9 +39442,6 @@ msgid "Token Access"
 msgstr ""
 
 msgid "Token name"
-msgstr ""
-
-msgid "Token valid until revoked"
 msgstr ""
 
 msgid "Tokens|Scopes set the permission levels granted to the token."
@@ -40185,9 +40183,6 @@ msgid "Unsupported sort value."
 msgstr ""
 
 msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"
-msgstr ""
-
-msgid "Until revoked, expired personal access tokens pose a security risk."
 msgstr ""
 
 msgid "Unused"
@@ -41544,9 +41539,6 @@ msgid "VisibilityLevel|Public"
 msgstr ""
 
 msgid "VisibilityLevel|Unknown"
-msgstr ""
-
-msgid "Visit settings page"
 msgstr ""
 
 msgid "Visual Studio Code (HTTPS)"

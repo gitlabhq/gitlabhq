@@ -30,14 +30,12 @@ RSpec.shared_examples 'GraphQL query with several integrations requested' do |gr
     it 'returns the correct properties of the integrations', :aggregate_failures do
       post_graphql(multi_selection_query, current_user: current_user)
 
-      expect(graphql_data.dig('project', 'ai', 'nodes')).to include(
-        'id' => global_id_of(active_http_integration),
-        'name' => active_http_integration.name
+      expect(graphql_data.dig('project', 'ai', 'nodes')).to match a_graphql_entity_for(
+        active_http_integration, :name
       )
 
-      expect(graphql_data.dig('project', 'ii', 'nodes')).to include(
-        'id' => global_id_of(inactive_http_integration),
-        'name' => inactive_http_integration.name
+      expect(graphql_data.dig('project', 'ii', 'nodes')).to match a_graphql_entity_for(
+        inactive_http_integration, :name
       )
     end
 

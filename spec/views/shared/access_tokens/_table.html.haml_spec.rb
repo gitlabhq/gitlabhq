@@ -6,7 +6,6 @@ RSpec.describe 'shared/access_tokens/_table.html.haml' do
   let(:type) { 'token' }
   let(:type_plural) { 'tokens' }
   let(:empty_message) { nil }
-  let(:token_expiry_enforced?) { false }
   let(:impersonation) { false }
 
   let_it_be(:user) { create(:user) }
@@ -14,12 +13,6 @@ RSpec.describe 'shared/access_tokens/_table.html.haml' do
   let_it_be(:resource) { false }
 
   before do
-    stub_licensed_features(enforce_personal_access_token_expiration: true)
-    allow(Gitlab::CurrentSettings).to receive(:enforce_pat_expiration?).and_return(false)
-
-    allow(view).to receive(:personal_access_token_expiration_enforced?).and_return(token_expiry_enforced?)
-    allow(view).to receive(:show_profile_token_expiry_notification?).and_return(true)
-
     if resource
       resource.add_maintainer(user)
     end
@@ -50,22 +43,6 @@ RSpec.describe 'shared/access_tokens/_table.html.haml' do
     it 'does not show non-personal content', :aggregate_failures do
       expect(rendered).not_to have_content 'To see all the user\'s personal access tokens you must impersonate them first.'
       expect(rendered).not_to have_selector 'th', text: 'Role'
-    end
-
-    context 'if token expiration is enforced' do
-      let(:token_expiry_enforced?) { true }
-
-      it 'does not show the subtext' do
-        expect(rendered).not_to have_content 'Personal access tokens are not revoked upon expiration.'
-      end
-    end
-
-    context 'if token expiration is not enforced' do
-      let(:token_expiry_enforced?) { false }
-
-      it 'does show the subtext' do
-        expect(rendered).to have_content 'Personal access tokens are not revoked upon expiration.'
-      end
     end
   end
 
@@ -124,16 +101,16 @@ RSpec.describe 'shared/access_tokens/_table.html.haml' do
   context 'with tokens' do
     let_it_be(:tokens) do
       [
-        create(:personal_access_token, user: user, name: 'Access token', last_used_at: 1.day.ago, expires_at: nil),
-        create(:personal_access_token, user: user, expires_at: 5.days.ago),
-        create(:personal_access_token, user: user, expires_at: Time.now),
-        create(:personal_access_token, user: user, expires_at: 5.days.from_now, scopes: [:read_api, :read_user])
+        create(:personal_access_token, user: user, name: 'Access token', last_used_at: 4.days.from_now, expires_at: nil, scopes: [:read_api, :read_user]),
+        create(:personal_access_token, user: user, expires_at: 1.day.from_now, scopes: [:read_api, :read_user])
       ]
     end
 
+    let_it_be(:expired_token) { build(:personal_access_token, name: "Expired token", expires_at: 2.days.ago).tap { |t| t.save!(validate: false) } }
+
     it 'has the correct content', :aggregate_failures do
       # Heading content
-      expect(rendered).to have_content 'Active tokens (4)'
+      expect(rendered).to have_content 'Active tokens (2)'
 
       # Table headers
       expect(rendered).to have_selector 'th', text: 'Token name'
@@ -144,17 +121,15 @@ RSpec.describe 'shared/access_tokens/_table.html.haml' do
 
       # Table contents
       expect(rendered).to have_content 'Access token'
+      expect(rendered).not_to have_content 'Expired token'
       expect(rendered).to have_content 'read_api, read_user'
       expect(rendered).to have_content 'no scopes selected'
       expect(rendered).to have_content Time.now.to_date.to_s(:medium)
-      expect(rendered).to have_content l(1.day.ago, format: "%b %d, %Y")
-
-      # Expiry
-      expect(rendered).to have_content 'Expired', count: 2
+      expect(rendered).to have_content l(4.days.from_now, format: "%b %d, %Y")
 
       # Revoke buttons
       expect(rendered).to have_link 'Revoke', href: 'path/', class: 'btn-danger-secondary', count: 1
-      expect(rendered).to have_link 'Revoke', href: 'path/', count: 4
+      expect(rendered).to have_link 'Revoke', href: 'path/', count: 2
     end
 
     context 'without the last used time' do

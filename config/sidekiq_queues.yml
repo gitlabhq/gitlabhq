@@ -421,6 +421,8 @@
   - 1
 - - security_scans
   - 2
+- - security_sync_scan_policies
+  - 1
 - - self_monitoring_project_create
   - 2
 - - self_monitoring_project_delete

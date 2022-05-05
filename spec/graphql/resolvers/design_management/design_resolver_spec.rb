@@ -24,7 +24,7 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
       create(:design, issue: create(:issue, project: project), versions: [create(:design_version)])
     end
 
-    let(:args) { { id: GitlabSchema.id_from_object(first_design).to_s } }
+    let(:args) { { id: GitlabSchema.id_from_object(first_design) } }
     let(:gql_context) { { current_user: current_user } }
 
     before do
@@ -50,7 +50,7 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
     end
 
     context 'when both arguments have been passed' do
-      let(:args) { { filename: first_design.filename, id: GitlabSchema.id_from_object(first_design).to_s } }
+      let(:args) { { filename: first_design.filename, id: GitlabSchema.id_from_object(first_design) } }
 
       it 'generates an error' do
         expect_graphql_error_to_be_created(::Gitlab::Graphql::Errors::ArgumentError, /may/) do

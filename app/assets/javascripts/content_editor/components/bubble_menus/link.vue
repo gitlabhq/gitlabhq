@@ -26,7 +26,7 @@ export default {
   directives: {
     GlTooltip,
   },
-  inject: ['tiptapEditor'],
+  inject: ['tiptapEditor', 'contentEditor'],
   data() {
     return {
       linkHref: undefined,
@@ -57,8 +57,10 @@ export default {
       this.isEditing = true;
     },
 
-    endEditingLink() {
+    async endEditingLink() {
       this.isEditing = false;
+
+      this.linkHref = await this.contentEditor.resolveLink(this.linkCanonicalSrc);
 
       if (!this.linkCanonicalSrc && !this.linkHref) {
         this.removeLink();
@@ -70,7 +72,7 @@ export default {
       this.updateLinkToState();
     },
 
-    saveEditedLink() {
+    async saveEditedLink() {
       if (!this.linkCanonicalSrc) {
         this.removeLink();
       } else {
@@ -166,12 +168,12 @@ export default {
           @click="removeLink"
         />
       </gl-button-group>
-      <gl-form v-else class="bubble-menu-form gl-p-4 gl-w-100" @submit="saveEditedLink">
-        <gl-form-group data-testid="link-href-group" :label="__('URL')" label-for="link-href">
-          <gl-form-input id="link-href" v-model="linkCanonicalSrc" />
+      <gl-form v-else class="bubble-menu-form gl-p-4 gl-w-100" @submit.prevent="saveEditedLink">
+        <gl-form-group :label="__('URL')" label-for="link-href">
+          <gl-form-input id="link-href" v-model="linkCanonicalSrc" data-testid="link-href" />
         </gl-form-group>
-        <gl-form-group data-testid="link-title-group" :label="__('Title')" label-for="link-title">
-          <gl-form-input id="link-title" v-model="linkTitle" />
+        <gl-form-group :label="__('Title')" label-for="link-title">
+          <gl-form-input id="link-title" v-model="linkTitle" data-testid="link-title" />
         </gl-form-group>
         <div class="gl-display-flex gl-justify-content-end">
           <gl-button class="gl-mr-3" data-testid="cancel-link" @click="cancelEditingLink">

@@ -322,7 +322,6 @@ describe('ReadyToMerge', () => {
 
         await waitForPromises();
 
-        expect(wrapper.vm.isMakingRequest).toBeTruthy();
         expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
         expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
           transition: 'start-auto-merge',
@@ -349,7 +348,6 @@ describe('ReadyToMerge', () => {
 
         await waitForPromises();
 
-        expect(wrapper.vm.isMakingRequest).toBeTruthy();
         expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
 
         const params = wrapper.vm.service.merge.mock.calls[0][0];
@@ -372,7 +370,6 @@ describe('ReadyToMerge', () => {
 
         await waitForPromises();
 
-        expect(wrapper.vm.isMakingRequest).toBeTruthy();
         expect(wrapper.vm.mr.transitionStateMachine).toHaveBeenCalledWith({
           transition: 'start-merge',
         });

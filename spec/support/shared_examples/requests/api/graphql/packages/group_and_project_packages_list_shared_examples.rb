@@ -104,7 +104,7 @@ RSpec.shared_examples 'group and project packages query' do
       }
     end
 
-    let(:expected_packages) { sorted_packages.map { |package| global_id_of(package) } }
+    let(:expected_packages) { sorted_packages.map { |package| global_id_of(package).to_s } }
 
     let(:data_path) { [resource_type, :packages] }
 

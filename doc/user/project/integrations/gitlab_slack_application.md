@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 NOTE:
 The GitLab Slack application is only configurable for GitLab.com. It will **not**
 work for on-premises installations where you can configure the
-[Slack slash commands](slack_slash_commands.md) service instead. We're planning
+[Slack slash commands](slack_slash_commands.md) integration instead. We're planning
 to make this configurable for all GitLab installations, but there's
 no ETA - see [#28164](https://gitlab.com/gitlab-org/gitlab/-/issues/28164).
 
@@ -31,16 +31,20 @@ Alternatively, you can configure the Slack application with a project's
 integration settings.
 
 Keep in mind that you must have the appropriate permissions for your Slack
-team to be able to install a new application, read more in Slack's
+workspace to be able to install a new application. Read more in Slack's
 documentation on [Adding an app to your workspace](https://slack.com/help/articles/202035138-Add-apps-to-your-Slack-workspace).
 
-To enable the GitLab service for your Slack team:
+To enable the GitLab integration for your Slack workspace:
 
 1. Go to your project's **Settings > Integration > Slack application** (only
    visible on GitLab.com).
-1. Select **Add to Slack**.
+1. Select **Install Slack app**.
+1. Select **Allow** on Slack's confirmation screen.
 
 That's all! You can now start using the Slack slash commands.
+
+You can also select **Reinstall Slack app** to update the app in your Slack workspace
+to the latest version. See the [Version history](#version-history) for details.
 
 ## Create a project alias for Slack
 
@@ -62,7 +66,7 @@ GitLab error: project or alias not found
 
 ## Usage
 
-After confirming the installation, you, and everyone else in your Slack team,
+After confirming the installation, you, and everyone else in your Slack workspace,
 can use all the [slash commands](../../../integration/slash_commands.md).
 
 When you perform your first slash command, you are asked to authorize your
@@ -78,3 +82,11 @@ project, you would do:
 ```plaintext
 /gitlab gitlab-org/gitlab issue show 1001
 ```
+
+## Version history
+
+### 15.0+
+
+In GitLab 15.0 the Slack app is updated to [Slack's new granular permissions app model](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
+
+There is no change in functionality. A reinstall is not required but recommended.

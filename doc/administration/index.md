@@ -205,10 +205,6 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [GitLab performance monitoring with Grafana](monitoring/performance/grafana_configuration.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
   - [Performance Bar](monitoring/performance/performance_bar.md): Get performance information for the current page.
 
-## Analytics
-
-- [Pseudonymizer](pseudonymizer.md): Export data from a GitLab database to CSV files in a secure way.
-
 ## Troubleshooting
 
 - [Debugging tips](troubleshooting/debug.md): Tips to debug problems when things go wrong.

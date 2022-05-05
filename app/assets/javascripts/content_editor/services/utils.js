@@ -15,7 +15,7 @@ export const hasSelection = (tiptapEditor) => {
  * @returns {string}
  */
 export const extractFilename = (src) => {
-  return src.replace(/^.*\/|\..+?$/g, '');
+  return src.replace(/^.*\/|\.[^.]+?$/g, '');
 };
 
 export const readFileAsDataURL = (file) => {

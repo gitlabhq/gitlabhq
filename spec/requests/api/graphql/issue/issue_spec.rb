@@ -8,8 +8,8 @@ RSpec.describe 'Query.issue(id)' do
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:issue_params) { { 'id' => issue.to_global_id.to_s } }
 
+  let(:issue_params) { { 'id' => global_id_of(issue) } }
   let(:issue_data) { graphql_data['issue'] }
   let(:issue_fields) { all_graphql_fields_for('Issue'.classify) }
 
@@ -100,7 +100,8 @@ RSpec.describe 'Query.issue(id)' do
       let_it_be(:issue_fields) { ['moved', 'movedTo { title }'] }
       let_it_be(:new_issue) { create(:issue) }
       let_it_be(:issue) { create(:issue, project: project, moved_to: new_issue) }
-      let_it_be(:issue_params) { { 'id' => issue.to_global_id.to_s } }
+
+      let(:issue_params) { { 'id' => global_id_of(issue) } }
 
       before_all do
         new_issue.project.add_developer(current_user)

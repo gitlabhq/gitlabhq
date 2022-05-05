@@ -27,6 +27,7 @@ RSpec.describe "User merges a merge request", :js do
     let(:project) { create(:project, :public, :repository, merge_requests_ff_only_enabled: true) }
 
     before do
+      stub_feature_flags(restructured_mr_widget: false)
       visit(merge_request_path(merge_request))
     end
 

@@ -58,8 +58,8 @@ RSpec.describe 'Getting designs related to an issue' do
 
       post_graphql(query, current_user: current_user)
 
-      expect(design_response).to eq(
-        'id' => design.to_global_id.to_s,
+      expect(design_response).to match a_graphql_entity_for(
+        design,
         'event' => 'CREATION',
         'fullPath' => design.full_path,
         'filename' => design.filename,
@@ -93,7 +93,7 @@ RSpec.describe 'Getting designs related to an issue' do
 
       let(:end_cursor) { design_collection.dig('designs', 'pageInfo', 'endCursor') }
 
-      let(:ids) { issue.designs.order(:id).map { |d| global_id_of(d) } }
+      let(:expected_designs) { issue.designs.order(:id).map { |d| a_graphql_entity_for(d) } }
 
       let(:query) { make_query(designs_fragment(first: 2)) }
 
@@ -107,19 +107,19 @@ RSpec.describe 'Getting designs related to an issue' do
         query_graphql_field(:designs, params, design_query_fields)
       end
 
-      def response_ids(data = graphql_data)
+      def response_designs(data = graphql_data)
         path = %w[project issue designCollection designs edges]
-        data.dig(*path).map { |e| e.dig('node', 'id') }
+        data.dig(*path).map { |e| e['node'] }
       end
 
       it 'sorts designs for reliable pagination' do
-        expect(response_ids).to match_array(ids.take(2))
+        expect(response_designs).to match_array(expected_designs.take(2))
 
         post_graphql(cursored_query, current_user: current_user)
 
         new_data = Gitlab::Json.parse(response.body).fetch('data')
 
-        expect(response_ids(new_data)).to match_array(ids.drop(2))
+        expect(response_designs(new_data)).to match_array(expected_designs.drop(2))
       end
     end
 

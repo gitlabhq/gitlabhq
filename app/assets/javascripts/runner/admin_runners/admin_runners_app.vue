@@ -38,7 +38,7 @@ import {
 } from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
 
-const runnersCountSmartQuery = {
+const countSmartQuery = () => ({
   query: runnersAdminCountQuery,
   fetchPolicy: fetchPolicies.NETWORK_ONLY,
   update(data) {
@@ -47,6 +47,39 @@ const runnersCountSmartQuery = {
   error(error) {
     this.reportToSentry(error);
   },
+});
+
+const tabCountSmartQuery = ({ type }) => {
+  return {
+    ...countSmartQuery(),
+    variables() {
+      return {
+        ...this.countVariables,
+        type,
+      };
+    },
+  };
+};
+
+const statusCountSmartQuery = ({ status, name }) => {
+  return {
+    ...countSmartQuery(),
+    skip() {
+      // skip if filtering by status and not using _this_ status as filter
+      if (this.countVariables.status && this.countVariables.status !== status) {
+        // reset count for given status
+        this[name] = null;
+        return true;
+      }
+      return false;
+    },
+    variables() {
+      return {
+        ...this.countVariables,
+        status,
+      };
+    },
+  };
 };
 
 export default {
@@ -101,65 +134,30 @@ export default {
         this.reportToSentry(error);
       },
     },
+
+    // Tabs counts
     allRunnersCount: {
-      ...runnersCountSmartQuery,
-      variables() {
-        return {
-          ...this.countVariables,
-          type: null,
-        };
-      },
+      ...tabCountSmartQuery({ type: null }),
     },
     instanceRunnersCount: {
-      ...runnersCountSmartQuery,
-      variables() {
-        return {
-          ...this.countVariables,
-          type: INSTANCE_TYPE,
-        };
-      },
+      ...tabCountSmartQuery({ type: INSTANCE_TYPE }),
     },
     groupRunnersCount: {
-      ...runnersCountSmartQuery,
-      variables() {
-        return {
-          ...this.countVariables,
-          type: GROUP_TYPE,
-        };
-      },
+      ...tabCountSmartQuery({ type: GROUP_TYPE }),
     },
     projectRunnersCount: {
-      ...runnersCountSmartQuery,
-      variables() {
-        return {
-          ...this.countVariables,
-          type: PROJECT_TYPE,
-        };
-      },
+      ...tabCountSmartQuery({ type: PROJECT_TYPE }),
     },
+
+    // Runner stats
     onlineRunnersTotal: {
-      ...runnersCountSmartQuery,
-      variables() {
-        return {
-          status: STATUS_ONLINE,
-        };
-      },
+      ...statusCountSmartQuery({ status: STATUS_ONLINE, name: 'onlineRunnersTotal' }),
     },
     offlineRunnersTotal: {
-      ...runnersCountSmartQuery,
-      variables() {
-        return {
-          status: STATUS_OFFLINE,
-        };
-      },
+      ...statusCountSmartQuery({ status: STATUS_OFFLINE, name: 'offlineRunnersTotal' }),
     },
     staleRunnersTotal: {
-      ...runnersCountSmartQuery,
-      variables() {
-        return {
-          status: STATUS_STALE,
-        };
-      },
+      ...statusCountSmartQuery({ status: STATUS_STALE, name: 'staleRunnersTotal' }),
     },
   },
   computed: {
@@ -263,12 +261,6 @@ export default {
 </script>
 <template>
   <div>
-    <runner-stats
-      :online-runners-count="onlineRunnersTotal"
-      :offline-runners-count="offlineRunnersTotal"
-      :stale-runners-count="staleRunnersTotal"
-    />
-
     <div
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
     >
@@ -298,6 +290,12 @@ export default {
       v-model="search"
       :tokens="searchTokens"
       :namespace="$options.filteredSearchNamespace"
+    />
+
+    <runner-stats
+      :online-runners-count="onlineRunnersTotal"
+      :offline-runners-count="offlineRunnersTotal"
+      :stale-runners-count="staleRunnersTotal"
     />
 
     <div v-if="noRunnersFound" class="gl-text-center gl-p-5">

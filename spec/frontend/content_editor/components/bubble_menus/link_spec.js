@@ -1,6 +1,5 @@
-import { GlLink, GlForm, GlFormInput } from '@gitlab/ui';
+import { GlLink, GlForm } from '@gitlab/ui';
 import { BubbleMenu } from '@tiptap/vue-2';
-import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
@@ -12,11 +11,13 @@ const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jes
 describe('content_editor/components/bubble_menus/link', () => {
   let wrapper;
   let tiptapEditor;
+  let contentEditor;
   let bubbleMenu;
   let eventHub;
 
   const buildEditor = () => {
     tiptapEditor = createTestEditor({ extensions: [Link] });
+    contentEditor = { resolveLink: jest.fn() };
     eventHub = eventHubFactory();
   };
 
@@ -24,6 +25,7 @@ describe('content_editor/components/bubble_menus/link', () => {
     wrapper = mountExtended(LinkBubbleMenu, {
       provide: {
         tiptapEditor,
+        contentEditor,
         eventHub,
       },
     });
@@ -133,8 +135,8 @@ describe('content_editor/components/bubble_menus/link', () => {
     beforeEach(async () => {
       await wrapper.findByTestId('edit-link').vm.$emit('click');
 
-      linkHrefInput = wrapper.findByTestId('link-href-group').findComponent(GlFormInput);
-      linkTitleInput = wrapper.findByTestId('link-title-group').findComponent(GlFormInput);
+      linkHrefInput = wrapper.findByTestId('link-href');
+      linkTitleInput = wrapper.findByTestId('link-title');
     });
 
     it('hides the link and copy/edit/remove link buttons', async () => {
@@ -160,11 +162,9 @@ describe('content_editor/components/bubble_menus/link', () => {
 
       tiptapEditor.commands.setTextSelection(3);
       await emitEditorEvent({ event: 'transaction', tiptapEditor });
-      await nextTick();
 
-      // tiptapEditor.commands.setTextSelection(14);
-      // await emitEditorEvent({ event: 'transaction', tiptapEditor });
-      // await nextTick();
+      tiptapEditor.commands.setTextSelection(14);
+      await emitEditorEvent({ event: 'transaction', tiptapEditor });
 
       expectLinkButtonsToExist(true);
       expect(wrapper.findComponent(GlForm).exists()).toBe(false);
@@ -174,6 +174,8 @@ describe('content_editor/components/bubble_menus/link', () => {
       beforeEach(async () => {
         linkHrefInput.setValue('https://google.com');
         linkTitleInput.setValue('Search Google');
+
+        contentEditor.resolveLink.mockResolvedValue('https://google.com');
 
         await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
       });
@@ -214,8 +216,8 @@ describe('content_editor/components/bubble_menus/link', () => {
         // click edit once again to show the form back
         await wrapper.findByTestId('edit-link').vm.$emit('click');
 
-        linkHrefInput = wrapper.findByTestId('link-href-group').findComponent(GlFormInput);
-        linkTitleInput = wrapper.findByTestId('link-title-group').findComponent(GlFormInput);
+        linkHrefInput = wrapper.findByTestId('link-href');
+        linkTitleInput = wrapper.findByTestId('link-title');
 
         expect(linkHrefInput.element.value).toBe('uploads/my_file.pdf');
         expect(linkTitleInput.element.value).toBe('Click here to download');

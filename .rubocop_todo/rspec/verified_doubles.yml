@@ -90,8 +90,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/lib/gitlab/middleware/ip_restrictor_spec.rb
     - ee/spec/lib/gitlab/patch/legacy_database_config_spec.rb
     - ee/spec/lib/gitlab/prometheus/queries/cluster_query_spec.rb
-    - ee/spec/lib/gitlab/prometheus/queries/packet_flow_metrics_query_spec.rb
-    - ee/spec/lib/gitlab/prometheus/queries/packet_flow_query_spec.rb
     - ee/spec/lib/gitlab/subscription_portal/clients/rest_spec.rb
     - ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb
     - ee/spec/lib/system_check/app/elasticsearch_check_spec.rb
