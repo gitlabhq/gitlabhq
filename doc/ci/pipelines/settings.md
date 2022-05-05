@@ -222,37 +222,17 @@ averaged.
 To add test coverage results to a merge request using the project's `.gitlab-ci.yml` file, provide a regular expression
 using the [`coverage`](../yaml/index.md#coverage) keyword.
 
-Setting the regular expression this way takes precedence over project settings.
+<!-- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 
-### Add test coverage results using project settings (REMOVED)
+### Add test coverage results using project settings (removed)
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 14.8. Replaced by [`coverage` keyword](../yaml/index.md#coverage).
 > [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
-WARNING:
 This feature is in its end-of-life process. It was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
 in GitLab 14.8. The feature is [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
-You can add test coverage results to merge requests using the Project's CI/CD settings:
-
-- Set using the GitLab UI:
-
-  1. On the top bar, select **Menu > Projects** and find your project.
-  1. On the left sidebar, select **Settings > CI/CD**.
-  1. Expand **General pipelines**.
-  1. In the **Test coverage parsing** field, enter a regular expression. Leave blank to disable this feature.
-
-- Set when [editing a project](../../api/projects.md#edit-project) or [creating a project](../../api/projects.md#create-project)
-  using the GitLab API with the `build_coverage_regex` attribute:
-
-  ```shell
-  curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
-     --url 'https://gitlab.com/api/v4/projects/<your-project-ID>' \
-     --data "build_coverage_regex=<your-regular-expression>"
-  ```
-
-You can use <https://rubular.com> to test your regular expression. The regular expression returns the **last**
-match found in the output.
+<!-- end_remove -->
 
 ### Test coverage examples
 

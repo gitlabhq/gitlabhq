@@ -22,25 +22,29 @@ from where content is sourced, the `gitlab-docs` project, and the published outp
 
 ```mermaid
   graph LR
-    A[gitlab/doc]
-    B[gitlab-runner/docs]
-    C[omnibus-gitlab/doc]
-    D[charts/doc]
-    E[gitlab-docs]
-    A --> E
-    B --> E
-    C --> E
-    D --> E
-    E -- Build pipeline --> F
-    F[docs.gitlab.com]
-    H[/ee/]
-    I[/runner/]
-    J[/omnibus/]
-    K[/charts/]
-    F --> H
-    F --> I
-    F --> J
-    F --> K
+    A[gitlab-org/gitlab/doc]
+    B[gitlab-org/gitlab-runner/docs]
+    C[gitlab-org/omnibus-gitlab/doc]
+    D[gitlab-org/charts/gitlab/doc]
+    E[gitlab-org/cloud-native/gitlab-operator/doc]
+    Y[gitlab-org/gitlab-docs]
+    A --> Y
+    B --> Y
+    C --> Y
+    D --> Y
+    E --> Y
+    Y -- Build pipeline --> Z
+    Z[docs.gitlab.com]
+    M[//ee/]
+    N[//runner/]
+    O[//omnibus/]
+    P[//charts/]
+    Q[//operator/]
+    Z --> M
+    Z --> N
+    Z --> O
+    Z --> P
+    Z --> Q
 ```
 
 GitLab docs content isn't kept in the `gitlab-docs` repository.
@@ -48,9 +52,10 @@ All documentation files are hosted in the respective repository of each
 product, and all together are pulled to generate the docs website:
 
 - [GitLab](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc)
-- [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc)
+- [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc)
 - [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs)
-- [GitLab Chart](https://gitlab.com/charts/gitlab/tree/master/doc)
+- [GitLab Chart](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc)
+- [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc)
 
 Learn more about [the docs folder structure](folder_structure.md).
 
@@ -231,31 +236,9 @@ If you don't specify `editor:`, the simple one is used by default.
 ## Algolia search engine
 
 The docs site uses [Algolia DocSearch](https://community.algolia.com/docsearch/)
-for its search function. This is how it works:
+for its search function.
 
-1. GitLab is a member of the [DocSearch program](https://community.algolia.com/docsearch/#join-docsearch-program),
-   which is the free tier of [Algolia](https://www.algolia.com/).
-1. Algolia hosts a [DocSearch configuration](https://github.com/algolia/docsearch-configs/blob/master/configs/gitlab.json)
-   for the GitLab docs site, and we've worked together to refine it.
-1. That [configuration](https://community.algolia.com/docsearch/config-file.html) is
-   parsed by their [crawler](https://community.algolia.com/docsearch/crawler-overview.html)
-   every 24h and [stores](https://community.algolia.com/docsearch/inside-the-engine.html)
-   the [DocSearch index](https://community.algolia.com/docsearch/how-do-we-build-an-index.html)
-   on [Algolia's servers](https://community.algolia.com/docsearch/faq.html#where-is-my-data-hosted%3F).
-1. On the docs side, we use a [DocSearch layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/docsearch.html) which
-   is present on pretty much every page except <https://docs.gitlab.com/search/>,
-   which uses its [own layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/instantsearch.html). In those layouts,
-   there's a JavaScript snippet which initiates DocSearch by using an API key
-   and an index name (`gitlab`) that are needed for Algolia to show the results.
-
-### Algolia notes for GitLab team members
-
-If you're a GitLab team member, find credentials for the Algolia dashboard
-in the shared [GitLab 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
-To receive weekly reports of the search usage, search the Google doc with
-title `Email, Slack, and GitLab Groups and Aliases`, search for `docsearch`,
-and add a comment with your email to be added to the alias that gets the weekly
-reports.
+Learn more in <https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/docsearch.md>.
 
 ## Monthly release process (versions)
 

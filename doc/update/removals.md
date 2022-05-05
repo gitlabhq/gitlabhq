@@ -137,8 +137,8 @@ as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#brea
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-To specify a test coverage pattern, beginning in GitLab 15.0 the
-[project setting for test coverage parsing](https://docs.gitlab.com/ee/ci/pipelines/settings.html#add-test-coverage-results-to-a-merge-request-deprecated)
+To specify a test coverage pattern, in GitLab 15.0 the
+[project setting for test coverage parsing](https://docs.gitlab.com/ee/ci/pipelines/settings.html#add-test-coverage-results-to-a-merge-request-removed)
 has been removed.
 
 To set test coverage parsing, use the project’s `.gitlab-ci.yml` file by providing a regular expression with the

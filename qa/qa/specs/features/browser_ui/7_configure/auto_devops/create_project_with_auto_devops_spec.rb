@@ -2,8 +2,11 @@
 
 module QA
   RSpec.describe 'Configure',
-                 only: { subdomain: :staging },
-                 quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1198' } do
+    only: { subdomain: :staging },
+    quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1198',
+      type: :waiting_on
+    } do
     let(:project) do
       Resource::Project.fabricate_via_api! do |project|
         project.name = 'autodevops-project'

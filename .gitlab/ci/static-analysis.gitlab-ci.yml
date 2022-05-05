@@ -112,7 +112,7 @@ rubocop:
   script:
     - run_timed_command "bundle exec rubocop --parallel"
 
-qa:testcases:
+qa:metadata-lint:
   extends:
     - .static-analysis-base
     - .static-analysis:rules:ee-and-foss-qa
@@ -124,6 +124,7 @@ qa:testcases:
     - run_timed_command "bundle exec bin/qa Test::Instance::All http://localhost:3000 --test-metadata-only"
     - cd ..
     - run_timed_command "./scripts/qa/testcases-check qa/tmp/test-metadata.json"
+    - run_timed_command "./scripts/qa/quarantine-types-check qa/tmp/test-metadata.json"
   variables:
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
