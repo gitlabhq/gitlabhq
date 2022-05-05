@@ -13,6 +13,8 @@ module Mutations
                DESC
 
       def resolve(project_path:, iid:, user:)
+        raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless feature_enabled?
+
         merge_request = authorized_find!(project_path: project_path, iid: iid)
 
         result = ::MergeRequests::RequestAttentionService.new(
@@ -26,6 +28,12 @@ module Mutations
           merge_request: merge_request,
           errors: Array(result[:message])
         }
+      end
+
+      private
+
+      def feature_enabled?
+        current_user&.mr_attention_requests_enabled?
       end
     end
   end

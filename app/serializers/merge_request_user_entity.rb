@@ -20,7 +20,7 @@ class MergeRequestUserEntity < ::API::Entities::UserBasic
     find_reviewer_or_assignee(user, options)&.reviewed?
   end
 
-  expose :attention_requested, if: satisfies(:present?, :allows_reviewers?, :attention_requested_enabled?) do |user, options|
+  expose :attention_requested, if: ->(_, options) { options[:merge_request].present? && options[:merge_request].allows_reviewers? && request.current_user&.mr_attention_requests_enabled? } do |user, options|
     find_reviewer_or_assignee(user, options)&.attention_requested?
   end
 

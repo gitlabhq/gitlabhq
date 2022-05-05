@@ -188,6 +188,12 @@ The new security approvals feature is similar to vulnerability check. For exampl
 - A two-step approval process can be enforced for any desired changes to security approval rules.
 - A single set of security policies can be applied to multiple development projects to allow for ease in maintaining a single, centralized ruleset.
 
+### `artifacts:report:cobertura` keyword
+
+As of GitLab 15.0, the `artifacts:report:cobertura` keyword has been replaced by
+[`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura is the only
+supported report file, but this is the first step towards GitLab supporting other report types.
+
 ## 14.10
 
 ### Permissions change for downloading Composer dependencies

@@ -63,4 +63,17 @@ RSpec.describe 'Request attention' do
       expect(mutation_errors).not_to be_empty
     end
   end
+
+  context 'feature flag is disabled' do
+    before do
+      stub_feature_flags(mr_attention_requests: false)
+    end
+
+    it 'returns an error' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(graphql_errors[0]["message"]).to eq "Feature disabled"
+    end
+  end
 end

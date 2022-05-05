@@ -414,6 +414,9 @@ RSpec.describe MergeRequestsFinder do
         before do
           reviewer = merge_request1.find_reviewer(user2)
           reviewer.update!(state: :reviewed)
+
+          merge_request2.find_reviewer(user2).update!(state: :attention_requested)
+          merge_request3.find_assignee(user2).update!(state: :attention_requested)
         end
 
         context 'by username' do

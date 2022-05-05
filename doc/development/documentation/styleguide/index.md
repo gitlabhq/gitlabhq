@@ -980,7 +980,7 @@ If you are documenting multiple fields and only one field needs explanation, do 
 1. Expand **Push rules**.
 1. Complete the fields. **Branch name** must be a regular expression.
 
-To describe multiple fields, use bullets:
+To describe multiple fields, use unordered list items:
 
 1. Expand **General pipelines**.
 1. Complete the fields.

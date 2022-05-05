@@ -84,7 +84,7 @@ RSpec.describe MergeRequestsHelper do
 
     describe 'mr_attention_requests disabled' do
       before do
-        stub_feature_flags(mr_attention_requests: false)
+        allow(user).to receive(:mr_attention_requests_enabled?).and_return(false)
       end
 
       it "returns assigned, review requested and total merge request counts" do
@@ -97,6 +97,10 @@ RSpec.describe MergeRequestsHelper do
     end
 
     describe 'mr_attention_requests enabled' do
+      before do
+        allow(user).to receive(:mr_attention_requests_enabled?).and_return(true)
+      end
+
       it "returns assigned, review requested, attention requests and total merge request counts" do
         expect(subject).to eq(
           assigned: user.assigned_open_merge_requests_count,

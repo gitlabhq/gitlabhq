@@ -7,6 +7,7 @@ module Projects
 
     LEASE_TIMEOUT = 1.hour.to_i
     APPLE_PLATFORM_LANGUAGES = %w(swift objective-c).freeze
+    ANDROID_PLATFORM_LANGUAGES = %w(java kotlin).freeze
 
     feature_category :experimentation_activation
     data_consistency :always
@@ -18,10 +19,10 @@ module Projects
       @project = Project.find_by_id(project_id)
 
       return unless project
-      return unless uses_apple_platform_languages?
+      return unless detector_service
 
       try_obtain_lease do
-        @target_platforms = Projects::RecordTargetPlatformsService.new(project).execute
+        @target_platforms = Projects::RecordTargetPlatformsService.new(project, detector_service).execute
         log_target_platforms_metadata
       end
     end
@@ -30,8 +31,29 @@ module Projects
 
     attr_reader :target_platforms, :project
 
+    def detector_service
+      if uses_apple_platform_languages?
+        AppleTargetPlatformDetectorService
+      elsif uses_android_platform_languages? && detect_android_projects_enabled?
+        AndroidTargetPlatformDetectorService
+      end
+    end
+
+    def detect_android_projects_enabled?
+      Feature.enabled?(:detect_android_projects, project)
+    end
+
     def uses_apple_platform_languages?
-      project.repository_languages.with_programming_language(*APPLE_PLATFORM_LANGUAGES).present?
+      target_languages.with_programming_language(*APPLE_PLATFORM_LANGUAGES).present?
+    end
+
+    def uses_android_platform_languages?
+      target_languages.with_programming_language(*ANDROID_PLATFORM_LANGUAGES).present?
+    end
+
+    def target_languages
+      languages = APPLE_PLATFORM_LANGUAGES + ANDROID_PLATFORM_LANGUAGES
+      @target_languages ||= project.repository_languages.with_programming_language(*languages)
     end
 
     def log_target_platforms_metadata

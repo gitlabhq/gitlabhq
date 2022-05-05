@@ -58,6 +58,10 @@ RSpec.describe MergeRequestUserEntity do
     end
 
     context 'attention_requested' do
+      before do
+        merge_request.find_assignee(user).update!(state: :attention_requested)
+      end
+
       it { is_expected.to include(attention_requested: true ) }
     end
 

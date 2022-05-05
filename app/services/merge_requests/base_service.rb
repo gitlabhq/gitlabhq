@@ -43,6 +43,8 @@ module MergeRequests
     end
 
     def handle_assignees_change(merge_request, old_assignees)
+      bulk_update_assignees_state(merge_request, merge_request.assignees - old_assignees)
+
       MergeRequests::HandleAssigneesChangeService
         .new(project: project, current_user: current_user)
         .async_execute(merge_request, old_assignees)
@@ -58,11 +60,10 @@ module MergeRequests
       new_reviewers = merge_request.reviewers - old_reviewers
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
+      bulk_update_reviewers_state(merge_request, new_reviewers)
 
       unless new_reviewers.include?(current_user)
         remove_attention_requested(merge_request)
-
-        merge_request.merge_request_reviewers_with(new_reviewers).update_all(updated_state_by_user_id: current_user.id)
       end
     end
 
@@ -246,7 +247,7 @@ module MergeRequests
     end
 
     def remove_all_attention_requests(merge_request)
-      return unless merge_request.attention_requested_enabled?
+      return unless current_user.mr_attention_requests_enabled?
 
       users = merge_request.reviewers + merge_request.assignees
 
@@ -254,9 +255,41 @@ module MergeRequests
     end
 
     def remove_attention_requested(merge_request)
-      return unless merge_request.attention_requested_enabled?
+      return unless current_user.mr_attention_requests_enabled?
 
       ::MergeRequests::RemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, user: current_user).execute
+    end
+
+    def bulk_update_assignees_state(merge_request, new_assignees)
+      return unless current_user.mr_attention_requests_enabled?
+      return if new_assignees.empty?
+
+      assignees_map = merge_request.merge_request_assignees_with(new_assignees).to_h do |assignee|
+        state = merge_request.find_reviewer(assignee.assignee)&.state || :attention_requested
+
+        [
+          assignee,
+          { state: MergeRequestAssignee.states[state], updated_state_by_user_id: current_user.id }
+        ]
+      end
+
+      ::Gitlab::Database::BulkUpdate.execute(%i[state updated_state_by_user_id], assignees_map)
+    end
+
+    def bulk_update_reviewers_state(merge_request, new_reviewers)
+      return unless current_user.mr_attention_requests_enabled?
+      return if new_reviewers.empty?
+
+      reviewers_map = merge_request.merge_request_reviewers_with(new_reviewers).to_h do |reviewer|
+        state = merge_request.find_assignee(reviewer.reviewer)&.state || :attention_requested
+
+        [
+          reviewer,
+          { state: MergeRequestReviewer.states[state], updated_state_by_user_id: current_user.id }
+        ]
+      end
+
+      ::Gitlab::Database::BulkUpdate.execute(%i[state updated_state_by_user_id], reviewers_map)
     end
   end
 end

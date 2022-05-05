@@ -151,6 +151,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
       before do
         assignee = merge_request6.find_assignee(user2)
         assignee.update!(state: :reviewed)
+        merge_request2.find_reviewer(user2).update!(state: :attention_requested)
+        merge_request5.find_assignee(user2).update!(state: :attention_requested)
       end
 
       it 'returns MRs that have any attention requests' do

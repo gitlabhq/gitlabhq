@@ -19,7 +19,7 @@ module API
           todos: current_user.todos_pending_count
         }
 
-        if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+        if current_user&.mr_attention_requests_enabled?
           counts[:attention_requests] = current_user.attention_requested_open_merge_requests_count
         end
 

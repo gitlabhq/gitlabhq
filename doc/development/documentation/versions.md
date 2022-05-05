@@ -29,9 +29,9 @@ either as a **Version history** bullet or as an inline text reference.
 
 You do not need to add version information on the pages in the `/development` directory.
 
-### Add a **Version history** bullet
+### Add a **Version history** item
 
-If all content in a topic is related, add a version history bullet after the topic heading.
+If all content in a topic is related, add a version history item after the topic heading.
 For example:
 
 ```markdown
@@ -42,7 +42,7 @@ For example:
 This feature does something.
 ```
 
-The bullet text must include these words in order. Capitalization doesn't matter.
+The item text must include these words in order. Capitalization doesn't matter.
 
 - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
 - `in` or `to`
@@ -122,7 +122,7 @@ The title and a removed indicator remains until three months after the removal.
 
 To remove a page:
 
-1. Leave the page title. Remove all other content, including the version history bullets and the word `WARNING:`.
+1. Leave the page title. Remove all other content, including the version history items and the word `WARNING:`.
 1. After the title, change `(deprecated)` to `(removed)`.
 1. Update the YAML metadata:
    - For `remove_date`, set the value to a date three months after
@@ -156,7 +156,7 @@ This content is removed from the documentation as part of the Technical Writing 
 To remove a topic:
 
 1. Leave the title and the details of the deprecation and removal. Remove all other content,
-   including the version history bullets and the word `WARNING:`.
+   including the version history items and the word `WARNING:`.
 1. Add `(removed)` after the title.
 1. Add the following HTML comments above and below the topic.
    For the `remove_date`, set a date three months after the release where it was removed.
@@ -184,7 +184,7 @@ GitLab 14.0, 13.0 and 12.0 are supported.
 
 [View the list of supported versions](https://about.gitlab.com/support/statement-of-support.html#version-support).
 
-If you see version history bullets or inline text that refers to unsupported versions, you can remove it.
+If you see version history items or inline text that refers to unsupported versions, you can remove it.
 
 Historical feature information is available in [release posts](https://about.gitlab.com/releases/)
 or by searching for the issue or merge request where the work was done.

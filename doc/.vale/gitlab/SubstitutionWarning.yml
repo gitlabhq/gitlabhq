@@ -12,6 +12,7 @@ level: warning
 ignorecase: true
 swap:
   air(?:-| )?gapped: offline environment
+  bullet: list item
   click: select
   code base: codebase
   config: configuration

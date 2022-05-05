@@ -2070,6 +2070,10 @@ class User < ApplicationRecord
     end
   end
 
+  def mr_attention_requests_enabled?
+    Feature.enabled?(:mr_attention_requests, self, default_enabled: :yaml)
+  end
+
   protected
 
   # override, from Devise::Validatable

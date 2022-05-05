@@ -166,6 +166,14 @@ Use **text box** to refer to the UI field. Do not use **field** or **box**. For 
 
 - In the **Variable name** text box, enter a value.
 
+
+## bullet
+
+Don't refer to individual items in an ordered or unordered list as **bullets**. Use **list item** instead. If you need to be less ambiguous, you can use:
+
+- **Ordered list item** for items in an ordered list.
+- **Unordered list item** for items in an unordered list.
+
 ## button
 
 Don't use a descriptor with **button**.

@@ -119,6 +119,10 @@ module AlertManagement
       end
     end
 
+    def self.find_ongoing_alert(project, fingerprint)
+      for_fingerprint(project, fingerprint).not_resolved.take
+    end
+
     def self.last_prometheus_alert_by_project_id
       ids = select(arel_table[:id].maximum).group(:project_id)
       with_prometheus_alert.where(id: ids)

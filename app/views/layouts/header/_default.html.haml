@@ -60,7 +60,7 @@
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
-              - top_level_link = Feature.enabled?(:mr_attention_requests, default_enabled: :yaml) ? attention_requested_mrs_dashboard_path : assigned_mrs_dashboard_path
+              - top_level_link = current_user.mr_attention_requests_enabled? ? attention_requested_mrs_dashboard_path : assigned_mrs_dashboard_path
               = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
                 data: { qa_selector: 'merge_requests_shortcut_button',
                 toggle: "dropdown",
@@ -77,7 +77,7 @@
                 %ul
                   %li.dropdown-header
                     = _('Merge requests')
-                  - if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+                  - if current_user.mr_attention_requests_enabled?
                     %li#js-need-attention-nav
                       #js-need-attention-nav-onboarding
                       = link_to attention_requested_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do

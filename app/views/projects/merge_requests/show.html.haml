@@ -92,7 +92,7 @@
 
 #js-review-bar
 
-- if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+- if current_user&.mr_attention_requests_enabled?
   #js-need-attention-sidebar-onboarding
 
 = render 'projects/invite_members_modal', project: @project

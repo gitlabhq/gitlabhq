@@ -3441,8 +3441,6 @@ Input type: `MergeRequestCreateInput`
 
 ### `Mutation.mergeRequestRemoveAttentionRequest`
 
-Available only when feature flag `mr_attention_requests` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
-
 Input type: `MergeRequestRemoveAttentionRequestInput`
 
 #### Arguments
@@ -3463,8 +3461,6 @@ Input type: `MergeRequestRemoveAttentionRequestInput`
 | <a id="mutationmergerequestremoveattentionrequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestRequestAttention`
-
-Available only when feature flag `mr_attention_requests` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
 
 Input type: `MergeRequestRequestAttentionInput`
 
@@ -3635,8 +3631,6 @@ Input type: `MergeRequestSetSubscriptionInput`
 | <a id="mutationmergerequestsetsubscriptionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestToggleAttentionRequested`
-
-Available only when feature flag `mr_attention_requests` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
 
 Input type: `MergeRequestToggleAttentionRequestedInput`
 

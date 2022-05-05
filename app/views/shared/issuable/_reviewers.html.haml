@@ -3,7 +3,7 @@
 - render_count = reviewers_rendering_overflow ? max_render - 1 : max_render
 - more_reviewers_count = issuable.reviewers.size - render_count
 
-- if issuable.instance_of?(MergeRequest) && Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+- if issuable.instance_of?(MergeRequest) && current_user&.mr_attention_requests_enabled?
   = render 'shared/issuable/merge_request_reviewers', issuable: issuable, count: render_count
 - else
   - issuable.reviewers.take(render_count).each do |reviewer| # rubocop: disable CodeReuse/ActiveRecord

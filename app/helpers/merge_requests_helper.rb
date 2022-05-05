@@ -156,7 +156,7 @@ module MergeRequestsHelper
         total: total_count
       }
 
-      if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+      if current_user&.mr_attention_requests_enabled?
         attention_requested_count = attention_requested_merge_requests_count
 
         counts[:attention_requested_count] = attention_requested_count

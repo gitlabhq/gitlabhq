@@ -328,6 +328,49 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           update_merge_request(reviewer_ids: [user.id])
         end
+
+        context 'setting state of reviewers' do
+          before do
+            stub_feature_flags(mr_attention_requests: false)
+          end
+
+          it 'does not set state as attention_requested if feature flag is disabled' do
+            update_merge_request(reviewer_ids: [user.id])
+
+            expect(merge_request.merge_request_reviewers[0].state).not_to eq('attention_requested')
+          end
+
+          context 'feature flag is enabled for current_user' do
+            before do
+              stub_feature_flags(mr_attention_requests: user)
+            end
+
+            it 'sets state as attention_requested' do
+              update_merge_request(reviewer_ids: [user.id])
+
+              expect(merge_request.merge_request_reviewers[0].state).to eq('attention_requested')
+              expect(merge_request.merge_request_reviewers[0].updated_state_by).to eq(user)
+            end
+
+            it 'keeps original reviewers state' do
+              merge_request.find_reviewer(user2).update!(state: :unreviewed)
+
+              update_merge_request({
+                reviewer_ids: [user2.id]
+              })
+
+              expect(merge_request.find_reviewer(user2).state).to eq('unreviewed')
+            end
+
+            it 'uses reviewers state if it is same user as new assignee' do
+              merge_request.assignees << user
+
+              update_merge_request(reviewer_ids: [user.id])
+
+              expect(merge_request.merge_request_reviewers[0].state).to eq('unreviewed')
+            end
+          end
+        end
       end
 
       it 'creates a resource label event' do
@@ -1063,6 +1106,53 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
             project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
 
             expect { update_merge_request(assignee_ids: [assignee]) }.not_to change(merge_request.assignees, :count)
+          end
+        end
+      end
+
+      context 'setting state of assignees' do
+        before do
+          stub_feature_flags(mr_attention_requests: false)
+        end
+
+        it 'does not set state as attention_requested if feature flag is disabled' do
+          update_merge_request({
+            assignee_ids: [user2.id]
+          })
+
+          expect(merge_request.merge_request_assignees[0].state).not_to eq('attention_requested')
+        end
+
+        context 'feature flag is enabled for current_user' do
+          before do
+            stub_feature_flags(mr_attention_requests: user)
+          end
+
+          it 'sets state as attention_requested' do
+            update_merge_request({
+              assignee_ids: [user2.id]
+            })
+
+            expect(merge_request.merge_request_assignees[0].state).to eq('attention_requested')
+            expect(merge_request.merge_request_assignees[0].updated_state_by).to eq(user)
+          end
+
+          it 'keeps original assignees state' do
+            update_merge_request({
+              assignee_ids: [user3.id]
+            })
+
+            expect(merge_request.find_assignee(user3).state).to eq('unreviewed')
+          end
+
+          it 'uses reviewers state if it is same user as new assignee' do
+            merge_request.reviewers << user2
+
+            update_merge_request({
+              assignee_ids: [user2.id]
+            })
+
+            expect(merge_request.merge_request_assignees[0].state).to eq('unreviewed')
           end
         end
       end

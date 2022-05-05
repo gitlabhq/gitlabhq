@@ -285,7 +285,7 @@ module Gitlab
         end
         types MergeRequest
         condition do
-          Feature.enabled?(:mr_attention_requests, project, default_enabled: :yaml) &&
+          current_user.mr_attention_requests_enabled? &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
         parse_params do |attention_param|
@@ -321,7 +321,7 @@ module Gitlab
         end
         types MergeRequest
         condition do
-          Feature.enabled?(:mr_attention_requests, project, default_enabled: :yaml) &&
+          current_user.mr_attention_requests_enabled? &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
         parse_params do |attention_param|

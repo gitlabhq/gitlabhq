@@ -237,7 +237,7 @@ consider using subsections for each distinct task.
 ### Related topics
 
 If inline links are not sufficient, you can create a topic called **Related topics**
-and include a bulleted list of related topics. This topic should be above the Troubleshooting section.
+and include an unordered list of related topics. This topic should be above the Troubleshooting section.
 
 ```markdown
 # Related topics
