@@ -156,7 +156,7 @@ The following metrics can be controlled by feature flags:
 ## Praefect metrics
 
 You can [configure Praefect](../../gitaly/praefect.md#praefect) to report metrics. For information
-on available metrics, see the [relevant documentation](../../gitaly/index.md#monitor-gitaly-cluster).
+on available metrics, see the [relevant documentation](../../gitaly/monitoring.md#monitor-gitaly-cluster).
 
 ## Sidekiq metrics
 

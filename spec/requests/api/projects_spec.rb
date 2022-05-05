@@ -3563,6 +3563,20 @@ RSpec.describe API::Projects do
         expect(json_response['topics']).to eq(%w[topic2])
       end
 
+      it 'updates enforce_auth_checks_on_uploads' do
+        project3.update!(enforce_auth_checks_on_uploads: false)
+
+        project_param = { enforce_auth_checks_on_uploads: true }
+
+        expect { put api("/projects/#{project3.id}", user), params: project_param }
+          .to change { project3.reload.enforce_auth_checks_on_uploads }
+          .from(false)
+          .to(true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['enforce_auth_checks_on_uploads']).to eq(true)
+      end
+
       it 'updates squash_option' do
         project3.update!(squash_option: 'always')
 

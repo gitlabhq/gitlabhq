@@ -53,7 +53,6 @@ the GitLab agent model on the [agent's blueprint documentation](../../../archite
 - [Cluster cost management](../../clusters/cost_management.md)
 - [Cluster environments](../../clusters/environments.md)
 - [Advanced traffic control with Canary Ingress](../../project/canary_deployments.md#advanced-traffic-control-with-canary-ingress-deprecated)
-- [Serverless](../../project/clusters/serverless/index.md)
 - [Deploy Boards](../../project/deploy_boards.md)
 - [Pod logs](../../project/clusters/kubernetes_pod_logs.md)
 - [Clusters health](manage/clusters_health.md)

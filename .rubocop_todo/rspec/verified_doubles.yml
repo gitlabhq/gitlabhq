@@ -332,7 +332,6 @@ RSpec/VerifiedDoubles:
     - spec/features/projects/integrations/user_activates_jira_spec.rb
     - spec/finders/ci/auth_job_finder_spec.rb
     - spec/finders/merge_requests/oldest_per_commit_finder_spec.rb
-    - spec/finders/projects/serverless/functions_finder_spec.rb
     - spec/finders/repositories/changelog_commits_finder_spec.rb
     - spec/finders/repositories/changelog_tag_finder_spec.rb
     - spec/graphql/features/authorization_spec.rb

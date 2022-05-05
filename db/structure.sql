@@ -19468,6 +19468,7 @@ CREATE TABLE project_settings (
     squash_commit_template text,
     legacy_open_source_license_available boolean DEFAULT true NOT NULL,
     target_platforms character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+    enforce_auth_checks_on_uploads boolean DEFAULT true NOT NULL,
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),

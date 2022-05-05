@@ -419,6 +419,7 @@ class ProjectsController < Projects::ApplicationController
       squash_option
       mr_default_target_self
       warn_about_potentially_unwanted_characters
+      enforce_auth_checks_on_uploads
     ]
   end
 

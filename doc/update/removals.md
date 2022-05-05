@@ -61,6 +61,21 @@ The Container Registry supports [authentication](https://gitlab.com/gitlab-org/c
 
 Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
 
+### GitLab Serverless
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+All functionality related to GitLab Serverless was deprecated in GitLab 14.3 and is scheduled for removal in GitLab 15.0. Users who need a replacement for this functionality are encouraged to explore using the following technologies with GitLab CI/CD:
+
+- [Serverless Framework](https://www.serverless.com)
+- [AWS Serverless Application Model](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/deploying-using-gitlab.html)
+
+For additional context, or to provide feedback regarding this change, please reference our [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/6).
+
 ### GraphQL permissions change for Package settings
 
 WARNING:

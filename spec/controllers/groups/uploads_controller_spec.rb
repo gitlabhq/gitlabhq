@@ -35,6 +35,169 @@ RSpec.describe Groups::UploadsController do
     end
   end
 
+  describe "GET #show" do
+    let(:filename) { "rails_sample.jpg" }
+    let(:user)  { create(:user) }
+    let(:jpg)   { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
+    let(:txt)   { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
+    let(:secret) { FileUploader.generate_secret }
+    let(:uploader_class) { FileUploader }
+
+    let(:upload_service) do
+      UploadService.new(model, jpg, uploader_class).execute
+    end
+
+    let(:show_upload) do
+      get :show, params: params.merge(secret: secret, filename: filename)
+    end
+
+    before do
+      allow(FileUploader).to receive(:generate_secret).and_return(secret)
+
+      allow_next_instance_of(FileUploader) do |instance|
+        allow(instance).to receive(:image?).and_return(true)
+      end
+
+      upload_service
+    end
+
+    context 'when the group is public' do
+      before do
+        model.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      context "when not signed in" do
+        context "enforce_auth_checks_on_uploads feature flag" do
+          context "with flag enabled" do
+            before do
+              stub_feature_flags(enforce_auth_checks_on_uploads: true)
+            end
+
+            it "responds with appropriate status" do
+              show_upload
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+
+          context "with flag disabled" do
+            before do
+              stub_feature_flags(enforce_auth_checks_on_uploads: false)
+            end
+
+            it "responds with status 200" do
+              show_upload
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
+
+      context "when signed in" do
+        before do
+          sign_in(user)
+        end
+
+        context "when the user doesn't have access to the model" do
+          context "enforce_auth_checks_on_uploads feature flag" do
+            context "with flag enabled" do
+              before do
+                stub_feature_flags(enforce_auth_checks_on_uploads: true)
+              end
+
+              it "responds with status 200" do
+                show_upload
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
+
+          context "with flag disabled" do
+            before do
+              stub_feature_flags(enforce_auth_checks_on_uploads: false)
+            end
+
+            it "responds with status 200" do
+              show_upload
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when the group is private' do
+      before do
+        model.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      context "when not signed in" do
+        context "enforce_auth_checks_on_uploads feature flag" do
+          context "with flag enabled" do
+            before do
+              stub_feature_flags(enforce_auth_checks_on_uploads: true)
+            end
+
+            it "responds with appropriate status" do
+              show_upload
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+
+          context "with flag disabled" do
+            before do
+              stub_feature_flags(enforce_auth_checks_on_uploads: false)
+            end
+
+            it "responds with status 200" do
+              show_upload
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
+
+      context "when signed in" do
+        before do
+          sign_in(user)
+        end
+
+        context "when the user doesn't have access to the model" do
+          context "enforce_auth_checks_on_uploads feature flag" do
+            context "with flag enabled" do
+              before do
+                stub_feature_flags(enforce_auth_checks_on_uploads: true)
+              end
+
+              it "responds with status 200" do
+                show_upload
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
+
+          context "with flag disabled" do
+            before do
+              stub_feature_flags(enforce_auth_checks_on_uploads: false)
+            end
+
+            it "responds with status 200" do
+              show_upload
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
+    end
+  end
+
   def post_authorize(verified: true)
     request.headers.merge!(workhorse_internal_api_request_header) if verified
 

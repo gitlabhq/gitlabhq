@@ -614,6 +614,7 @@ module ProjectsHelper
       operationsAccessLevel: feature.operations_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
+      enforceAuthChecksOnUploads: project.enforce_auth_checks_on_uploads?,
       securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
       containerRegistryAccessLevel: feature.container_registry_access_level
     }

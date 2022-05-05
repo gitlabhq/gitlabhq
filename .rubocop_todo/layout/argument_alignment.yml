@@ -688,7 +688,6 @@ Layout/ArgumentAlignment:
     - 'spec/finders/keys_finder_spec.rb'
     - 'spec/finders/merge_requests_finder_spec.rb'
     - 'spec/finders/personal_access_tokens_finder_spec.rb'
-    - 'spec/finders/projects/serverless/functions_finder_spec.rb'
     - 'spec/frontend/fixtures/issues.rb'
     - 'spec/frontend/fixtures/merge_requests.rb'
     - 'spec/frontend/fixtures/merge_requests_diffs.rb'

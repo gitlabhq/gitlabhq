@@ -21221,9 +21221,6 @@ msgstr ""
 msgid "Invited"
 msgstr ""
 
-msgid "Invocations"
-msgstr ""
-
 msgid "IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}"
 msgstr ""
 
@@ -23155,9 +23152,6 @@ msgid "Loading contribution stats for group members"
 msgstr ""
 
 msgid "Loading files, directories, and submodules in the path %{path} for commit reference %{ref}"
-msgstr ""
-
-msgid "Loading functions timed out. Please reload the page to try again."
 msgstr ""
 
 msgid "Loading more"
@@ -34744,78 +34738,6 @@ msgid "Server supports batch API only, please update your Git LFS client to vers
 msgstr ""
 
 msgid "Server version"
-msgstr ""
-
-msgid "Serverless"
-msgstr ""
-
-msgid "Serverless platform"
-msgstr ""
-
-msgid "ServerlessDetails|Configure cluster."
-msgstr ""
-
-msgid "ServerlessDetails|Function invocation metrics require the Prometheus cluster integration."
-msgstr ""
-
-msgid "ServerlessDetails|Invocation metrics loading or not available at this time."
-msgstr ""
-
-msgid "ServerlessDetails|Invocations"
-msgstr ""
-
-msgid "ServerlessDetails|Kubernetes Pods"
-msgstr ""
-
-msgid "ServerlessDetails|More information"
-msgstr ""
-
-msgid "ServerlessDetails|No pods loaded at this time."
-msgstr ""
-
-msgid "ServerlessDetails|Number of Kubernetes pods in use over time based on necessity."
-msgstr ""
-
-msgid "ServerlessDetails|pod in use"
-msgstr ""
-
-msgid "ServerlessDetails|pods in use"
-msgstr ""
-
-msgid "ServerlessURL|Copy URL"
-msgstr ""
-
-msgid "Serverless|Getting started with serverless"
-msgstr ""
-
-msgid "Serverless|If you believe none of these apply, please check back later as the function data may be in the process of becoming available."
-msgstr ""
-
-msgid "Serverless|Learn more about Serverless"
-msgstr ""
-
-msgid "Serverless|No functions available"
-msgstr ""
-
-msgid "Serverless|Serverless was %{linkStart}deprecated%{linkEnd} in GitLab 14.3."
-msgstr ""
-
-msgid "Serverless|Serverless was %{postLinkStart}deprecated%{postLinkEnd}. But if you opt to use it, you must install Knative in your Kubernetes cluster first. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "Serverless|The deploy job has not finished."
-msgstr ""
-
-msgid "Serverless|The functions listed in the %{startTag}serverless.yml%{endTag} file don't match the namespace of your cluster."
-msgstr ""
-
-msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
-msgstr ""
-
-msgid "Serverless|Your %{startTag}.gitlab-ci.yml%{endTag} file is not properly configured."
-msgstr ""
-
-msgid "Serverless|Your repository does not have a corresponding %{startTag}serverless.yml%{endTag} file."
 msgstr ""
 
 msgid "Service"

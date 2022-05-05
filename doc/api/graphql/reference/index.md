@@ -2666,7 +2666,7 @@ Input type: `ExternalAuditEventDestinationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationexternalauditeventdestinationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationexternalauditeventdestinationupdatedestinationurl"></a>`destinationUrl` | [`String`](#string) | Destination URL to change. |
-| <a id="mutationexternalauditeventdestinationupdateid"></a>`id` | [`AuditEventsExternalAuditEventDestinationID!`](#auditeventsexternalauditeventdestinationid) | ID of external audit event destination to destroy. |
+| <a id="mutationexternalauditeventdestinationupdateid"></a>`id` | [`AuditEventsExternalAuditEventDestinationID!`](#auditeventsexternalauditeventdestinationid) | ID of external audit event destination to update. |
 
 #### Fields
 

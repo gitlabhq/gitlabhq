@@ -450,6 +450,7 @@ class Project < ApplicationRecord
     to: :project_feature, allow_nil: true
   alias_method :container_registry_enabled, :container_registry_enabled?
   delegate :show_default_award_emojis, :show_default_award_emojis=, :show_default_award_emojis?,
+    :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=, :enforce_auth_checks_on_uploads?,
     :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=, :warn_about_potentially_unwanted_characters?,
     to: :project_setting, allow_nil: true
   delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,

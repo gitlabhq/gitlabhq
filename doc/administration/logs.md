@@ -1107,7 +1107,7 @@ in `/var/log/gitlab/gitlab-kas/`.
 
 For Omnibus GitLab installations, Praefect logs are in `/var/log/gitlab/praefect/`.
 
-GitLab also tracks [Prometheus metrics for Praefect](gitaly/#monitor-gitaly-cluster).
+GitLab also tracks [Prometheus metrics for Praefect](gitaly/monitoring.md#monitor-gitaly-cluster).
 
 ## Backup log
 

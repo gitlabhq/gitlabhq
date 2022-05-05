@@ -863,7 +863,8 @@ RSpec.describe ProjectsController do
             id: project.path,
             project: {
               project_setting_attributes: {
-                show_default_award_emojis: boolean_value
+                show_default_award_emojis: boolean_value,
+                enforce_auth_checks_on_uploads: boolean_value
               }
             }
           }
@@ -871,6 +872,7 @@ RSpec.describe ProjectsController do
           project.reload
 
           expect(project.show_default_award_emojis?).to eq(result)
+          expect(project.enforce_auth_checks_on_uploads?).to eq(result)
         end
       end
     end

@@ -658,26 +658,11 @@ Here is an example configuration for Knative:
 domain: 'my.wildcard.A.record.dns'
 ```
 
-If you plan to use GitLab Serverless capabilities, be sure to set an `A record`
-wildcard domain on your custom configuration.
-
 Support for installing the Knative managed application is provided by the
 GitLab Configure group. If you run into unknown issues,
 [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
 least 2 people from the
 [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
-
-#### Knative Metrics
-
-GitLab provides [Invocation Metrics](../project/clusters/serverless/index.md#invocation-metrics)
-for your functions. To collect these metrics, you must have:
-
-1. Knative and Prometheus managed applications installed on your cluster.
-1. Manually applied the custom metrics on your cluster by running the following command:
-
-   ```shell
-   kubectl apply -f https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/raw/02c8231e30ef5b6725e6ba368bc63863ceb3c07d/src/default-data/knative/istio-metrics.yaml
-   ```
 
 #### Uninstall Knative
 

@@ -402,6 +402,12 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.10.0
+
+- The upgrade to GitLab 14.10 executes a [concurrent index drop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84308) of unneeded
+  entries from the `ci_job_artifacts` database table. This could potentially run for multiple minutes, especially if the table has a lot of
+  traffic and the migration is unable to acquire a lock. It is advised to let this process finish as restarting may result in data loss.
+
 ### 14.9.0
 
 - Database changes made by the upgrade to GitLab 14.9 can take hours or days to complete on larger GitLab instances. 

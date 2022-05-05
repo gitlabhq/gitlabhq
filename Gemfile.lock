@@ -1088,7 +1088,7 @@ GEM
     rspec-expectations (3.10.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
-    rspec-mocks (3.10.2)
+    rspec-mocks (3.10.3)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-parameterized (0.5.0)

@@ -2,7 +2,6 @@
 stage: Create
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Configure Gitaly **(FREE SELF)**
@@ -710,7 +709,7 @@ To configure Gitaly with TLS:
 ### Observe type of Gitaly connections
 
 For information on observing the type of Gitaly connections being served, see the
-[relevant documentation](index.md#useful-queries).
+[relevant documentation](monitoring.md#useful-queries).
 
 ## `gitaly-ruby`
 
@@ -816,7 +815,7 @@ repository. In the example above:
 - If the queue grows beyond 10, subsequent requests are rejected with an error.
 
 You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
-information, see the [relevant documentation](index.md#monitor-gitaly-concurrency-limiting).
+information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).
 
 ## Background Repository Optimization
 
@@ -871,7 +870,7 @@ server" and "Gitaly client" refers to the same machine.
 ### Verify authentication monitoring
 
 Before rotating a Gitaly authentication token, verify that you can
-[monitor the authentication behavior](index.md#useful-queries) of your GitLab installation using
+[monitor the authentication behavior](monitoring.md#useful-queries) of your GitLab installation using
 Prometheus.
 
 You can then continue the rest of the procedure.
@@ -1081,7 +1080,7 @@ closed it.
 
 ### Observe the cache
 
-The cache can be observed [using metrics](index.md#pack-objects-cache) and in the following logged
+The cache can be observed [using metrics](monitoring.md#pack-objects-cache) and in the following logged
 information:
 
 |Message|Fields|Description|

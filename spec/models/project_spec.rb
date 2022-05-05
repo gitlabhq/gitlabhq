@@ -845,6 +845,9 @@ RSpec.describe Project, factory_default: :keep do
         warn_about_potentially_unwanted_characters
         warn_about_potentially_unwanted_characters=
         warn_about_potentially_unwanted_characters?
+        enforce_auth_checks_on_uploads
+        enforce_auth_checks_on_uploads=
+        enforce_auth_checks_on_uploads?
       ).each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(allow_nil: true) }
       end

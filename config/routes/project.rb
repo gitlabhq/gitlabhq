@@ -303,15 +303,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         concerns :clusterable
 
-        namespace :serverless do
-          scope :functions do
-            get '/:environment_id/:id', to: 'functions#show'
-            get '/:environment_id/:id/metrics', to: 'functions#metrics', as: :metrics
-          end
-
-          resources :functions, only: [:index]
-        end
-
         resources :terraform, only: [:index]
 
         resources :google_cloud, only: [:index]

@@ -124,6 +124,7 @@ module API
       expose :printing_merge_request_link_enabled
       expose :merge_method
       expose :squash_option
+      expose :enforce_auth_checks_on_uploads
       expose :suggestion_commit_message
       expose :merge_commit_template
       expose :squash_commit_template
