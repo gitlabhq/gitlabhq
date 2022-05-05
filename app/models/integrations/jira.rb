@@ -352,16 +352,7 @@ module Integrations
 
       true
     rescue StandardError => error
-      log_error(
-        "Issue transition failed",
-          error: {
-            exception_class: error.class.name,
-            exception_message: error.message,
-            exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(error.backtrace)
-          },
-          client_url: client_url
-      )
-
+      log_exception(error, message: 'Issue transition failed', client_url: client_url)
       false
     end
 
@@ -538,9 +529,7 @@ module Integrations
       yield
     rescue StandardError => error
       @error = error
-      payload = { client_url: client_url }
-      Gitlab::ExceptionLogFormatter.format!(error, payload)
-      log_error("Error sending message", payload)
+      log_exception(error, message: 'Error sending message', client_url: client_url)
       nil
     end
 

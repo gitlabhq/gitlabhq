@@ -164,7 +164,6 @@ RSpec/AnyInstanceOf:
   - spec/controllers/snippets/notes_controller_spec.rb
   - spec/controllers/snippets_controller_spec.rb
   - spec/features/admin/admin_mode/login_spec.rb
-  - spec/features/groups/clusters/eks_spec.rb
   - spec/features/groups/members/tabs_spec.rb
   - spec/features/ide/static_object_external_storage_csp_spec.rb
   - spec/features/issuables/issuable_list_spec.rb

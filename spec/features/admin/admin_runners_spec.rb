@@ -530,6 +530,21 @@ RSpec.describe "Admin Runners" do
       end
     end
 
+    describe 'when a runner is updated', :js do
+      before do
+        click_on _('Save changes')
+        wait_for_requests
+      end
+
+      it 'show success alert' do
+        expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
+      end
+
+      it 'redirects to runner page' do
+        expect(current_url).to match(admin_runner_path(runner))
+      end
+    end
+
     describe 'projects' do
       it 'contains project names' do
         expect(page).to have_content(@project1.full_name)

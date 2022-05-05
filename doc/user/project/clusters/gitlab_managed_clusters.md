@@ -17,7 +17,7 @@ To manage applications, use the [Cluster Project Management Template](../../../u
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster
 is managed by GitLab, resources for your projects are automatically created. See
-the [Access controls](add_remove_clusters.md#access-controls) section for
+the [Access controls](cluster_access.md) section for
 details about the created resources.
 
 If you choose to manage your own cluster, project-specific resources aren't created

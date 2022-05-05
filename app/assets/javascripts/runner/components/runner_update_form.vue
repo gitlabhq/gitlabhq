@@ -14,10 +14,12 @@ import {
   runnerToModel,
 } from 'ee_else_ce/runner/runner_update_form_utils';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { redirectTo } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
 import runnerUpdateMutation from '../graphql/details/runner_update.mutation.graphql';
+import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
   name: 'RunnerUpdateForm',
@@ -46,7 +48,7 @@ export default {
       required: false,
       default: false,
     },
-    runnerUrl: {
+    runnerPath: {
       type: String,
       required: false,
       default: null,
@@ -85,24 +87,23 @@ export default {
         });
 
         if (errors?.length) {
-          // Validation errors need not be thrown
-          createAlert({ message: errors[0] });
-          return;
+          this.onError(errors[0]);
+        } else {
+          this.onSuccess();
         }
-
-        this.onSuccess();
       } catch (error) {
         const { message } = error;
-
-        createAlert({ message });
+        this.onError(message);
         captureException({ error, component: this.$options.name });
-      } finally {
-        this.saving = false;
       }
     },
     onSuccess() {
-      createAlert({ message: __('Changes saved.'), variant: VARIANT_SUCCESS });
-      this.model = runnerToModel(this.runner);
+      saveAlertToLocalStorage({ message: __('Changes saved.'), variant: VARIANT_SUCCESS });
+      redirectTo(this.runnerPath);
+    },
+    onError(message) {
+      this.saving = false;
+      createAlert({ message });
     },
   },
   ACCESS_LEVEL_NOT_PROTECTED,
@@ -210,7 +211,7 @@ export default {
       >
         {{ __('Save changes') }}
       </gl-button>
-      <gl-button :href="runnerUrl">
+      <gl-button :href="runnerPath">
         {{ __('Cancel') }}
       </gl-button>
     </div>

@@ -8,7 +8,7 @@
   - breadcrumb_title runner_name
   - page_title runner_name
 
-#js-admin-runner-edit{ data: {runner_id: @runner.id, runner_url: admin_runner_path(@runner) } }
+#js-admin-runner-edit{ data: {runner_id: @runner.id, runner_path: admin_runner_path(@runner) } }
 
 - if @runner.project_type?
   .gl-overflow-auto

@@ -28,10 +28,6 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     polymorphic_path([clusterable, :clusters], options)
   end
 
-  def new_path(options = {})
-    new_polymorphic_path([clusterable, :cluster], options)
-  end
-
   def connect_path
     polymorphic_path([clusterable, :clusters], action: :connect)
   end
@@ -40,20 +36,8 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     polymorphic_path([clusterable, :clusters], action: :new_cluster_docs)
   end
 
-  def authorize_aws_role_path
-    polymorphic_path([clusterable, :clusters], action: :authorize_aws_role)
-  end
-
   def create_user_clusters_path
     polymorphic_path([clusterable, :clusters], action: :create_user)
-  end
-
-  def create_gcp_clusters_path
-    polymorphic_path([clusterable, :clusters], action: :create_gcp)
-  end
-
-  def create_aws_clusters_path
-    polymorphic_path([clusterable, :clusters], action: :create_aws)
   end
 
   def cluster_status_cluster_path(cluster, params = {})

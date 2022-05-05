@@ -18,6 +18,8 @@ RSpec.describe QA::Scenario::Template do
     allow(QA::Runtime::Env).to receive(:knapsack?).and_return(false)
     allow(QA::Runtime::Env).to receive(:gitlab_url).and_return(gitlab_address_from_env)
 
+    allow(QA::Runtime::Browser).to receive(:configure!)
+
     allow(scenario).to receive(:attributes).and_return({ gitlab_address: gitlab_address })
     allow(scenario).to receive(:define)
 

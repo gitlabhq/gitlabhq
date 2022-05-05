@@ -230,3 +230,22 @@ kubectl create clusterrolebinding permissive-binding \
   --user=kubelet \
   --group=system:serviceaccounts
 ```
+
+## Troubleshooting
+
+### `There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid`
+
+If you encounter this error while connecting a Kubernetes cluster, ensure you're
+properly pasting the service token. Some shells may add a line break to the
+service token, making it invalid. Ensure that there are no line breaks by
+pasting your token into an editor and removing any additional spaces.
+
+You may also experience this error if your certificate is not valid. To check that your certificate's
+subject alternative names contain the correct domain for your cluster's API, run this command:
+
+```shell
+echo | openssl s_client -showcerts -connect kubernetes.example.com:443 2>/dev/null |
+openssl x509 -inform pem -noout -text
+```
+
+The `-connect` argument expects a `host:port` combination. For example, `https://kubernetes.example.com` would be `kubernetes.example.com:443`.

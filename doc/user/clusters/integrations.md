@@ -15,7 +15,7 @@ GitLab provides several ways to integrate applications to your
 Kubernetes cluster.
 
 To enable cluster integrations, first add a Kubernetes cluster to a GitLab
-[project](../project/clusters/add_remove_clusters.md) or
+[project](../project/clusters/index.md) or
 [group](../group/clusters/index.md) or
 [instance](../instance/clusters/index.md).
 

@@ -10,7 +10,7 @@ export function getInvalidNameValidationMessage(importTarget) {
 }
 
 export function isFinished(group) {
-  return [STATUSES.FINISHED, STATUSES.FAILED].includes(group.progress?.status);
+  return [STATUSES.FINISHED, STATUSES.FAILED, STATUSES.TIMEOUT].includes(group.progress?.status);
 }
 
 export function isAvailableForImport(group) {

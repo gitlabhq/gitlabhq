@@ -20,7 +20,7 @@ jest.mock('~/runner/sentry_utils');
 const mockRunner = runnerData.data.runner;
 const mockRunnerGraphqlId = mockRunner.id;
 const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
-const mockRunnerUrl = `/admin/runners/${mockRunnerId}`;
+const mockRunnerPath = `/admin/runners/${mockRunnerId}`;
 
 Vue.use(VueApollo);
 
@@ -36,7 +36,7 @@ describe('AdminRunnerEditApp', () => {
       apolloProvider: createMockApollo([[runnerQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
-        runnerUrl: mockRunnerUrl,
+        runnerPath: mockRunnerPath,
         ...props,
       },
     });
@@ -79,7 +79,7 @@ describe('AdminRunnerEditApp', () => {
     expect(findRunnerUpdateForm().props()).toMatchObject({
       runner: null,
       loading: true,
-      runnerUrl: mockRunnerUrl,
+      runnerPath: mockRunnerPath,
     });
   });
 
@@ -89,7 +89,7 @@ describe('AdminRunnerEditApp', () => {
     expect(findRunnerUpdateForm().props()).toMatchObject({
       runner: mockRunner,
       loading: false,
-      runnerUrl: mockRunnerUrl,
+      runnerPath: mockRunnerPath,
     });
   });
 

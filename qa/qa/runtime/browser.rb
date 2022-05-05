@@ -18,10 +18,6 @@ module QA
 
       CAPYBARA_MAX_WAIT_TIME = 10
 
-      def initialize
-        self.class.configure!
-      end
-
       def self.blank_page?
         ['', 'about:blank', 'data:,'].include?(Capybara.current_session.driver.browser.current_url)
       rescue StandardError
@@ -49,6 +45,8 @@ module QA
 
       # rubocop: disable Metrics/AbcSize
       def self.configure!
+        return if @configured
+
         RSpec.configure do |config|
           config.define_derived_metadata(file_path: %r{/qa/specs/features/}) do |metadata|
             metadata[:type] = :feature
@@ -57,23 +55,19 @@ module QA
           config.append_after(:each) do |example|
             if example.metadata[:screenshot]
               screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
-              example.metadata[:stdout] = %{[[ATTACHMENT|#{screenshot}]]}
+              example.metadata[:stdout] = %([[ATTACHMENT|#{screenshot}]])
             end
           end
         end
 
         Capybara.server_port = 9887 + ENV['TEST_ENV_NUMBER'].to_i
 
-        return if Capybara.drivers.include?(:chrome)
-
         Capybara.register_driver QA::Runtime::Env.browser do |app|
           capabilities = Selenium::WebDriver::Remote::Capabilities.send(QA::Runtime::Env.browser)
 
           case QA::Runtime::Env.browser
           when :chrome
-            if QA::Runtime::Env.accept_insecure_certs?
-              capabilities['acceptInsecureCerts'] = true
-            end
+            capabilities['acceptInsecureCerts'] = true if QA::Runtime::Env.accept_insecure_certs?
 
             # set logging preferences
             # this enables access to logs with `page.driver.manage.get_log(:browser)`
@@ -103,7 +97,9 @@ module QA
 
             # Specify the user-agent to allow challenges to be bypassed
             # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11938
-            capabilities['goog:chromeOptions'][:args] << "user-agent=#{QA::Runtime::Env.user_agent}" if QA::Runtime::Env.user_agent
+            if QA::Runtime::Env.user_agent
+              capabilities['goog:chromeOptions'][:args] << "user-agent=#{QA::Runtime::Env.user_agent}"
+            end
 
             if QA::Runtime::Env.remote_mobile_device_name
               capabilities['platformName'] = 'Android'
@@ -121,9 +117,7 @@ module QA
             end
 
           when :firefox
-            if QA::Runtime::Env.accept_insecure_certs?
-              capabilities['acceptInsecureCerts'] = true
-            end
+            capabilities['acceptInsecureCerts'] = true if QA::Runtime::Env.accept_insecure_certs?
           end
 
           # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
@@ -162,7 +156,10 @@ module QA
         Capybara::Screenshot.append_timestamp = false
 
         Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-          ::File.join(QA::Runtime::Namespace.name(reset_cache: false), example.full_description.downcase.parameterize(separator: "_")[0..99])
+          ::File.join(
+            QA::Runtime::Namespace.name(reset_cache: false),
+            example.full_description.downcase.parameterize(separator: "_")[0..99]
+          )
         end
 
         Capybara.configure do |config|
@@ -183,6 +180,8 @@ module QA
           config.base_url = Runtime::Scenario.attributes[:gitlab_address] # reuse GitLab address
           config.hide_banner = true
         end
+
+        @configured = true
       end
       # rubocop: enable Metrics/AbcSize
 
@@ -221,7 +220,7 @@ module QA
             end
           end
 
-          yield.tap { clear! } if block_given?
+          yield.tap { clear! } if block
         end
 
         # To redirect the browser to a canary or non-canary web node

@@ -11,7 +11,7 @@ module QA
         @user_api_client = Runtime::API::Client.new(:gitlab, personal_access_token: @project_access_token.token)
       end
 
-      context 'for the same project' do
+      context 'for the same project', :reliable do
         it 'can be used to create a file via the project API', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347858' do
           expect do
             Resource::File.fabricate_via_api! do |file|

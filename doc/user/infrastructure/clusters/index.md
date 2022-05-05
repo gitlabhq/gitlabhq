@@ -42,7 +42,6 @@ the GitLab agent model on the [agent's blueprint documentation](../../../archite
 
 ## Deprecated features
 
-- [Create a new cluster through cluster certificates](../../project/clusters/add_remove_clusters.md)
 - [Connect an existing cluster through cluster certificates](../../project/clusters/add_existing_cluster.md)
 - [Access controls](../../project/clusters/cluster_access.md)
 - [GitLab-managed clusters](../../project/clusters/gitlab_managed_clusters.md)

@@ -6,12 +6,9 @@ class Clusters::ClustersController < Clusters::BaseController
   include MetricsDashboard
 
   before_action :cluster, only: [:cluster_status, :show, :update, :destroy, :clear_cache]
-  before_action :generate_gcp_authorize_url, only: [:new]
-  before_action :validate_gcp_token, only: [:new]
-  before_action :gcp_cluster, only: [:new]
-  before_action :user_cluster, only: [:new, :connect]
+  before_action :user_cluster, only: [:connect]
   before_action :authorize_read_cluster!, only: [:show, :index]
-  before_action :authorize_create_cluster!, only: [:new, :connect, :authorize_aws_role]
+  before_action :authorize_create_cluster!, only: [:connect, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :update_applications_status, only: [:cluster_status]
   before_action :ensure_feature_enabled!, except: [:index, :new_cluster_docs]
@@ -43,16 +40,6 @@ class Clusters::ClustersController < Clusters::BaseController
           has_ancestor_clusters: @has_ancestor_clusters
         }
       end
-    end
-  end
-
-  def new
-    if params[:provider] == 'aws'
-      @aws_role = Aws::Role.create_or_find_by!(user: current_user)
-      @instance_types = load_instance_types.to_json
-
-    elsif params[:provider] == 'gcp'
-      redirect_to @authorize_url if @authorize_url && !@valid_gcp_token
     end
   end
 
@@ -106,24 +93,6 @@ class Clusters::ClustersController < Clusters::BaseController
 
     flash[:notice] = response[:message]
     redirect_to clusterable.index_path, status: :found
-  end
-
-  def create_gcp
-    @gcp_cluster = ::Clusters::CreateService
-      .new(current_user, create_gcp_cluster_params)
-      .execute(access_token: token_in_session)
-      .present(current_user: current_user)
-
-    if @gcp_cluster.persisted?
-      redirect_to @gcp_cluster.show_path
-    else
-      generate_gcp_authorize_url
-      validate_gcp_token
-      user_cluster
-      params[:provider] = 'gcp'
-
-      render :new, locals: { active_tab: 'create' }
-    end
   end
 
   def create_aws
@@ -235,24 +204,6 @@ class Clusters::ClustersController < Clusters::BaseController
     end
   end
 
-  def create_gcp_cluster_params
-    params.require(:cluster).permit(
-      *base_permitted_cluster_params,
-      :name,
-      provider_gcp_attributes: [
-        :gcp_project_id,
-        :zone,
-        :num_nodes,
-        :machine_type,
-        :cloud_run,
-        :legacy_abac
-      ]).merge(
-        provider_type: :gcp,
-        platform_type: :kubernetes,
-        clusterable: clusterable.__subject__
-      )
-  end
-
   def create_aws_cluster_params
     params.require(:cluster).permit(
       *base_permitted_cluster_params,
@@ -296,10 +247,10 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def generate_gcp_authorize_url
-    new_path = clusterable.new_path(provider: :gcp).to_s
-    error_path = @project ? project_clusters_path(@project) : new_path
+    connect_path = clusterable.connect_path().to_s
+    error_path = @project ? project_clusters_path(@project) : connect_path
 
-    state = generate_session_key_redirect(new_path, error_path)
+    state = generate_session_key_redirect(connect_path, error_path)
 
     @authorize_url = GoogleApi::CloudPlatform::Client.new(
       nil, callback_google_api_auth_url,

@@ -859,6 +859,7 @@ RSpec.describe Integration do
     let(:arguments) do
       {
         integration_class: integration.class.name,
+        integration_id: integration.id,
         project_path: project.full_path,
         project_id: project.id,
         message: test_message,
@@ -883,6 +884,7 @@ RSpec.describe Integration do
       let(:arguments) do
         {
           integration_class: integration.class.name,
+          integration_id: integration.id,
           project_path: nil,
           project_id: nil,
           message: test_message,
@@ -894,6 +896,28 @@ RSpec.describe Integration do
         expect(Gitlab::IntegrationsLogger).to receive(:info).with(arguments)
 
         integration.log_info(test_message, additional_argument: 'some argument')
+      end
+    end
+
+    context 'logging exceptions' do
+      let(:error) { RuntimeError.new('exception message') }
+      let(:arguments) do
+        super().merge(
+          'exception.class' => 'RuntimeError',
+          'exception.message' => 'exception message'
+        )
+      end
+
+      it 'logs exceptions using json logger' do
+        expect(Gitlab::IntegrationsLogger).to receive(:error).with(arguments.merge(message: 'exception message'))
+
+        integration.log_exception(error, additional_argument: 'some argument')
+      end
+
+      it 'logs exceptions using json logger with a custom message' do
+        expect(Gitlab::IntegrationsLogger).to receive(:error).with(arguments.merge(message: 'custom message'))
+
+        integration.log_exception(error, message: 'custom message', additional_argument: 'some argument')
       end
     end
   end

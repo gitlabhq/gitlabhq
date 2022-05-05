@@ -37,34 +37,16 @@ RSpec.describe GroupClusterablePresenter do
     it { is_expected.to eq(group_clusters_path(group)) }
   end
 
-  describe '#new_path' do
-    subject { presenter.new_path }
-
-    it { is_expected.to eq(new_group_cluster_path(group)) }
-  end
-
   describe '#connect_path' do
     subject { presenter.connect_path }
 
     it { is_expected.to eq(connect_group_clusters_path(group)) }
   end
 
-  describe '#authorize_aws_role_path' do
-    subject { presenter.authorize_aws_role_path }
-
-    it { is_expected.to eq(authorize_aws_role_group_clusters_path(group)) }
-  end
-
   describe '#create_user_clusters_path' do
     subject { presenter.create_user_clusters_path }
 
     it { is_expected.to eq(create_user_group_clusters_path(group)) }
-  end
-
-  describe '#create_gcp_clusters_path' do
-    subject { presenter.create_gcp_clusters_path }
-
-    it { is_expected.to eq(create_gcp_group_clusters_path(group)) }
   end
 
   describe '#cluster_status_cluster_path' do

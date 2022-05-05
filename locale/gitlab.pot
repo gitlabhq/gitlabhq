@@ -3827,9 +3827,6 @@ msgstr ""
 msgid "Amazon Web Services Logo"
 msgstr ""
 
-msgid "Amazon authentication is not %{link_start}correctly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
-msgstr ""
-
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
 msgstr ""
 
@@ -5311,9 +5308,6 @@ msgid "Authenticated web rate limit period in seconds"
 msgstr ""
 
 msgid "Authenticated web requests"
-msgstr ""
-
-msgid "Authenticating"
 msgstr ""
 
 msgid "Authentication"
@@ -8186,12 +8180,6 @@ msgstr ""
 msgid "ClusterAgents|Create a cluster"
 msgstr ""
 
-msgid "ClusterAgents|Create a cluster (certificate - deprecated)"
-msgstr ""
-
-msgid "ClusterAgents|Create a cluster (deprecated)"
-msgstr ""
-
 msgid "ClusterAgents|Create agent access token"
 msgstr ""
 
@@ -8428,9 +8416,6 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster’s integration"
 msgstr ""
 
-msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster. %{linkStart}More information%{linkEnd}"
-msgstr ""
-
 msgid "ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster."
 msgstr ""
 
@@ -8443,18 +8428,6 @@ msgstr ""
 msgid "ClusterIntegration|Amazon EKS"
 msgstr ""
 
-msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
-msgstr ""
-
-msgid "ClusterIntegration|An error occurred while trying to fetch project zones: %{error}"
-msgstr ""
-
-msgid "ClusterIntegration|An error occurred while trying to fetch your projects: %{error}"
-msgstr ""
-
-msgid "ClusterIntegration|An error occurred while trying to fetch zone machine types: %{error}"
-msgstr ""
-
 msgid "ClusterIntegration|An unknown error occurred while attempting to connect to Kubernetes."
 msgstr ""
 
@@ -8462,12 +8435,6 @@ msgid "ClusterIntegration|Any project namespaces"
 msgstr ""
 
 msgid "ClusterIntegration|Apply for credit"
-msgstr ""
-
-msgid "ClusterIntegration|Authenticate with AWS"
-msgstr ""
-
-msgid "ClusterIntegration|Authenticate with Amazon Web Services"
 msgstr ""
 
 msgid "ClusterIntegration|Authentication Error"
@@ -8491,15 +8458,6 @@ msgstr ""
 msgid "ClusterIntegration|Check your token"
 msgstr ""
 
-msgid "ClusterIntegration|Choose the %{linkStart}security group%{linkEnd} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets."
-msgstr ""
-
-msgid "ClusterIntegration|Choose the %{linkStart}subnets %{linkEnd} in your VPC where your worker nodes will run."
-msgstr ""
-
-msgid "ClusterIntegration|Choose the worker node %{linkStart}instance type%{linkEnd}."
-msgstr ""
-
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
@@ -8507,9 +8465,6 @@ msgid "ClusterIntegration|Clear cluster cache"
 msgstr ""
 
 msgid "ClusterIntegration|Clear the local cache of namespace and service accounts."
-msgstr ""
-
-msgid "ClusterIntegration|Cluster Region"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster management project"
@@ -8539,37 +8494,7 @@ msgstr ""
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
-msgid "ClusterIntegration|Could not load IAM roles"
-msgstr ""
-
-msgid "ClusterIntegration|Could not load Key Pairs"
-msgstr ""
-
-msgid "ClusterIntegration|Could not load VPCs for the selected region"
-msgstr ""
-
-msgid "ClusterIntegration|Could not load instance types"
-msgstr ""
-
-msgid "ClusterIntegration|Could not load networks"
-msgstr ""
-
-msgid "ClusterIntegration|Could not load security groups for the selected VPC"
-msgstr ""
-
-msgid "ClusterIntegration|Could not load subnets for the selected VPC"
-msgstr ""
-
-msgid "ClusterIntegration|Could not load subnetworks"
-msgstr ""
-
-msgid "ClusterIntegration|Create Kubernetes cluster"
-msgstr ""
-
 msgid "ClusterIntegration|Create a Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Creating Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Deletes all GitLab resources attached to this cluster during removal"
@@ -8578,16 +8503,10 @@ msgstr ""
 msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared."
 msgstr ""
 
-msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared. %{linkStart}More information%{linkEnd}"
-msgstr ""
-
 msgid "ClusterIntegration|Did you know?"
 msgstr ""
 
 msgid "ClusterIntegration|Elastic Kubernetes Service"
-msgstr ""
-
-msgid "ClusterIntegration|Enable Cloud Run for Anthos"
 msgstr ""
 
 msgid "ClusterIntegration|Enable Elastic Stack integration"
@@ -8606,12 +8525,6 @@ msgid "ClusterIntegration|Enter details about your cluster. %{linkStart}How do I
 msgstr ""
 
 msgid "ClusterIntegration|Enter new Service Token"
-msgstr ""
-
-msgid "ClusterIntegration|Enter the details for your Amazon EKS Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Enter your Kubernetes cluster certificate details"
@@ -8641,15 +8554,6 @@ msgstr ""
 msgid "ClusterIntegration|Failed to run Kubeclient: %{message}"
 msgstr ""
 
-msgid "ClusterIntegration|Fetching machine types"
-msgstr ""
-
-msgid "ClusterIntegration|Fetching projects"
-msgstr ""
-
-msgid "ClusterIntegration|Fetching zones"
-msgstr ""
-
 msgid "ClusterIntegration|GitLab Integration"
 msgstr ""
 
@@ -8662,16 +8566,10 @@ msgstr ""
 msgid "ClusterIntegration|GitLab-managed cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Google Cloud Platform project"
-msgstr ""
-
 msgid "ClusterIntegration|Google GKE"
 msgstr ""
 
 msgid "ClusterIntegration|Google Kubernetes Engine"
-msgstr ""
-
-msgid "ClusterIntegration|Google Kubernetes Engine project"
 msgstr ""
 
 msgid "ClusterIntegration|Group cluster"
@@ -8689,9 +8587,6 @@ msgstr ""
 msgid "ClusterIntegration|Instance cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Instance type"
-msgstr ""
-
 msgid "ClusterIntegration|Integration disabled"
 msgstr ""
 
@@ -8699,9 +8594,6 @@ msgid "ClusterIntegration|Integration enabled"
 msgstr ""
 
 msgid "ClusterIntegration|Integrations allow you to use applications installed in your cluster as part of your GitLab workflow."
-msgstr ""
-
-msgid "ClusterIntegration|Key pair name"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster is being created..."
@@ -8713,18 +8605,6 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes cluster was successfully created."
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes version"
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes version not found"
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
-msgstr ""
-
 msgid "ClusterIntegration|Learn more about Kubernetes."
 msgstr ""
 
@@ -8734,37 +8614,7 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about instance Kubernetes clusters"
 msgstr ""
 
-msgid "ClusterIntegration|Loading IAM Roles"
-msgstr ""
-
-msgid "ClusterIntegration|Loading Key Pairs"
-msgstr ""
-
-msgid "ClusterIntegration|Loading VPCs"
-msgstr ""
-
-msgid "ClusterIntegration|Loading instance types"
-msgstr ""
-
-msgid "ClusterIntegration|Loading networks"
-msgstr ""
-
-msgid "ClusterIntegration|Loading security groups"
-msgstr ""
-
-msgid "ClusterIntegration|Loading subnets"
-msgstr ""
-
-msgid "ClusterIntegration|Loading subnetworks"
-msgstr ""
-
-msgid "ClusterIntegration|Machine type"
-msgstr ""
-
 msgid "ClusterIntegration|Make sure your API endpoint is correct"
-msgstr ""
-
-msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters"
 msgstr ""
 
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{provider_link}"
@@ -8773,52 +8623,7 @@ msgstr ""
 msgid "ClusterIntegration|Namespace per environment"
 msgstr ""
 
-msgid "ClusterIntegration|No IAM Roles found"
-msgstr ""
-
-msgid "ClusterIntegration|No Key Pairs found"
-msgstr ""
-
-msgid "ClusterIntegration|No VPCs found"
-msgstr ""
-
-msgid "ClusterIntegration|No instance type found"
-msgstr ""
-
-msgid "ClusterIntegration|No machine types matched your search"
-msgstr ""
-
-msgid "ClusterIntegration|No networks found"
-msgstr ""
-
-msgid "ClusterIntegration|No projects found"
-msgstr ""
-
-msgid "ClusterIntegration|No projects matched your search"
-msgstr ""
-
-msgid "ClusterIntegration|No security group found"
-msgstr ""
-
-msgid "ClusterIntegration|No subnet found"
-msgstr ""
-
-msgid "ClusterIntegration|No subnetworks found"
-msgstr ""
-
-msgid "ClusterIntegration|No zones matched your search"
-msgstr ""
-
 msgid "ClusterIntegration|Node calculations use the Kubernetes Metrics API. Make sure your cluster has metrics installed"
-msgstr ""
-
-msgid "ClusterIntegration|Number of nodes"
-msgstr ""
-
-msgid "ClusterIntegration|Number of nodes must be a numerical value."
-msgstr ""
-
-msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
 msgstr ""
 
 msgid "ClusterIntegration|Project cluster"
@@ -8833,16 +8638,7 @@ msgstr ""
 msgid "ClusterIntegration|Provider details"
 msgstr ""
 
-msgid "ClusterIntegration|Provision Role ARN"
-msgstr ""
-
 msgid "ClusterIntegration|RBAC-enabled cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Read our %{linkStart}help page%{linkEnd} on Kubernetes cluster integration."
-msgstr ""
-
-msgid "ClusterIntegration|Read our %{link_start}help page%{link_end} on Kubernetes cluster integration."
 msgstr ""
 
 msgid "ClusterIntegration|Remove Kubernetes cluster integration"
@@ -8869,118 +8665,10 @@ msgstr ""
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
-msgid "ClusterIntegration|Search IAM Roles"
-msgstr ""
-
-msgid "ClusterIntegration|Search Key Pairs"
-msgstr ""
-
-msgid "ClusterIntegration|Search VPCs"
-msgstr ""
-
-msgid "ClusterIntegration|Search instance types"
-msgstr ""
-
-msgid "ClusterIntegration|Search machine types"
-msgstr ""
-
-msgid "ClusterIntegration|Search networks"
-msgstr ""
-
-msgid "ClusterIntegration|Search projects"
-msgstr ""
-
-msgid "ClusterIntegration|Search security groups"
-msgstr ""
-
-msgid "ClusterIntegration|Search subnets"
-msgstr ""
-
-msgid "ClusterIntegration|Search subnetworks"
-msgstr ""
-
-msgid "ClusterIntegration|Search zones"
-msgstr ""
-
-msgid "ClusterIntegration|Security group"
-msgstr ""
-
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Select a VPC"
-msgstr ""
-
-msgid "ClusterIntegration|Select a VPC to choose a security group"
-msgstr ""
-
-msgid "ClusterIntegration|Select a VPC to choose a subnet"
-msgstr ""
-
-msgid "ClusterIntegration|Select a VPC to use for your EKS Cluster resources. To use a new VPC, first create one on %{linkStart}Amazon Web Services %{linkEnd}."
-msgstr ""
-
-msgid "ClusterIntegration|Select a network"
-msgstr ""
-
-msgid "ClusterIntegration|Select a network to choose a subnetwork"
-msgstr ""
-
-msgid "ClusterIntegration|Select a region to choose a Key Pair"
-msgstr ""
-
-msgid "ClusterIntegration|Select a region to choose a VPC"
-msgstr ""
-
-msgid "ClusterIntegration|Select a security group"
-msgstr ""
-
-msgid "ClusterIntegration|Select a subnet"
-msgstr ""
-
-msgid "ClusterIntegration|Select a subnetwork"
-msgstr ""
-
-msgid "ClusterIntegration|Select a zone to choose a network"
-msgstr ""
-
-msgid "ClusterIntegration|Select an instance type"
-msgstr ""
-
-msgid "ClusterIntegration|Select key pair"
-msgstr ""
-
-msgid "ClusterIntegration|Select machine type"
-msgstr ""
-
-msgid "ClusterIntegration|Select project"
-msgstr ""
-
-msgid "ClusterIntegration|Select project and zone to choose machine type"
-msgstr ""
-
-msgid "ClusterIntegration|Select project to choose zone"
-msgstr ""
-
-msgid "ClusterIntegration|Select service role"
-msgstr ""
-
-msgid "ClusterIntegration|Select the key pair name that will be used to create EC2 nodes. To use a new key pair name, first create one on %{linkStart}Amazon Web Services%{linkEnd}."
-msgstr ""
-
-msgid "ClusterIntegration|Select the region you want to create the new cluster in. Make sure you have access to this region for your role to be able to authenticate. If no region is selected, we will use %{codeStart}DEFAULT_REGION%{codeEnd}. Learn more about %{linkStart}Regions%{linkEnd}."
-msgstr ""
-
-msgid "ClusterIntegration|Select zone"
-msgstr ""
-
-msgid "ClusterIntegration|Select zone to choose machine type"
-msgstr ""
-
 msgid "ClusterIntegration|Service Token"
-msgstr ""
-
-msgid "ClusterIntegration|Service role"
 msgstr ""
 
 msgid "ClusterIntegration|Service token is required."
@@ -8998,12 +8686,6 @@ msgstr ""
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{linkStart}Auto DevOps.%{linkEnd} The domain should have a wildcard DNS configured matching the domain. "
 msgstr ""
 
-msgid "ClusterIntegration|Subnets"
-msgstr ""
-
-msgid "ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provisioned role, first create one on %{awsLinkStart}Amazon Web Services %{awsLinkEnd} using the above account and external IDs. %{moreInfoStart}More information%{moreInfoEnd}"
-msgstr ""
-
 msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster."
 msgstr ""
 
@@ -9016,16 +8698,10 @@ msgstr ""
 msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, logs, and Web terminals."
 msgstr ""
 
-msgid "ClusterIntegration|The region the new cluster will be created in. You must reauthenticate to change regions."
-msgstr ""
-
 msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
 msgstr ""
 
 msgid "ClusterIntegration|There was an HTTP error when connecting to your cluster."
-msgstr ""
-
-msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
 msgstr ""
 
 msgid "ClusterIntegration|This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts."
@@ -9040,22 +8716,13 @@ msgstr ""
 msgid "ClusterIntegration|This process is %{issue_link_start}deprecated%{issue_link_end}. Use the %{docs_link_start}the GitLab agent for Kubernetes%{docs_link_end} instead."
 msgstr ""
 
-msgid "ClusterIntegration|This project does not have billing enabled. To create a cluster, %{linkToBillingStart}enable billing%{linkToBillingEnd} and try again."
-msgstr ""
-
 msgid "ClusterIntegration|This will permanently delete the following resources:"
-msgstr ""
-
-msgid "ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|To remove your integration and resources, type %{clusterName} to confirm:"
 msgstr ""
 
 msgid "ClusterIntegration|To remove your integration, type %{clusterName} to confirm:"
-msgstr ""
-
-msgid "ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Troubleshooting tips:"
@@ -9076,22 +8743,7 @@ msgstr ""
 msgid "ClusterIntegration|Use the %{linkStart}GitLab agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more."
 msgstr ""
 
-msgid "ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster."
-msgstr ""
-
 msgid "ClusterIntegration|Using AutoDevOps with multiple clusters? %{help_link_start}Read this first.%{help_link_end}"
-msgstr ""
-
-msgid "ClusterIntegration|VPC"
-msgstr ""
-
-msgid "ClusterIntegration|Validating project billing status"
-msgstr ""
-
-msgid "ClusterIntegration|We could not verify that one of your projects on GCP has billing enabled. Please try again."
-msgstr ""
-
-msgid "ClusterIntegration|We were unable to fetch any projects. Ensure that you have a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Where do you want to create a cluster?"
@@ -9103,28 +8755,7 @@ msgstr ""
 msgid "ClusterIntegration|You are about to remove your cluster integration."
 msgstr ""
 
-msgid "ClusterIntegration|You must grant access to your organization’s AWS resources in order to create a new EKS cluster. To grant access, create a provision role using the account and external ID below and provide us the ARN."
-msgstr ""
-
-msgid "ClusterIntegration|You should select at least two subnets"
-msgstr ""
-
-msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
-msgstr ""
-
 msgid "ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct."
-msgstr ""
-
-msgid "ClusterIntegration|Your service role is distinct from the provision role used when authenticating. It will allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf. To use a new role, first create one on %{linkStart}Amazon Web Services%{linkEnd}."
-msgstr ""
-
-msgid "ClusterIntegration|Zone"
-msgstr ""
-
-msgid "ClusterIntegration|access to Google Kubernetes Engine"
-msgstr ""
-
-msgid "ClusterIntegration|meets the requirements"
 msgstr ""
 
 msgid "ClusterIntegration|sign up"
@@ -10318,12 +9949,6 @@ msgid "Copy %{protocol} clone URL"
 msgstr ""
 
 msgid "Copy %{type}"
-msgstr ""
-
-msgid "Copy Account ID to clipboard"
-msgstr ""
-
-msgid "Copy External ID to clipboard"
 msgstr ""
 
 msgid "Copy ID"
@@ -15488,9 +15113,6 @@ msgstr ""
 msgid "Exported requirements"
 msgstr ""
 
-msgid "External ID"
-msgstr ""
-
 msgid "External URL"
 msgstr ""
 
@@ -17792,9 +17414,6 @@ msgid "Google Cloud project misconfigured"
 msgstr ""
 
 msgid "Google Cloud project required"
-msgstr ""
-
-msgid "Google authentication is not %{link_start}properly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
 msgid "GoogleCloud|Cancel"
@@ -34293,6 +33912,9 @@ msgstr ""
 msgid "SecurityReports|Report has expired"
 msgstr ""
 
+msgid "SecurityReports|Results show vulnerabilities introduced by the merge request, in addition to existing vulnerabilities from the latest successful pipeline in your project's default branch."
+msgstr ""
+
 msgid "SecurityReports|Scan details"
 msgstr ""
 
@@ -34561,12 +34183,6 @@ msgid "Select private project"
 msgstr ""
 
 msgid "Select project"
-msgstr ""
-
-msgid "Select project and zone to choose machine type"
-msgstr ""
-
-msgid "Select project to choose zone"
 msgstr ""
 
 msgid "Select project to create %{type}"

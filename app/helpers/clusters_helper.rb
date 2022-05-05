@@ -17,7 +17,6 @@ module ClustersHelper
       clusters_empty_state_image: image_path('illustrations/empty-state/empty-state-clusters.svg'),
       empty_state_image: image_path('illustrations/empty-state/empty-state-agents.svg'),
       empty_state_help_text: clusterable.empty_state_help_text,
-      new_cluster_path: clusterable.new_path,
       add_cluster_path: clusterable.connect_path,
       new_cluster_docs_path: clusterable.new_cluster_docs_path,
       can_add_cluster: clusterable.can_add_cluster?.to_s,
@@ -40,12 +39,6 @@ module ClustersHelper
       application_ingress_external_ip: cluster.application_ingress_external_ip,
       auto_devops_help_path: help_page_path('topics/autodevops/index'),
       external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters.md', anchor: 'base-domain')
-    }
-  end
-
-  def js_cluster_new
-    {
-      cluster_connect_help_path: help_page_path('user/project/clusters/add_remove_clusters', anchor: 'add-existing-cluster')
     }
   end
 

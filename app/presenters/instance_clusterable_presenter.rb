@@ -18,11 +18,6 @@ class InstanceClusterablePresenter < ClusterablePresenter
     admin_clusters_path(options)
   end
 
-  override :new_path
-  def new_path(options = {})
-    new_admin_cluster_path(options)
-  end
-
   override :cluster_status_cluster_path
   def cluster_status_cluster_path(cluster, params = {})
     cluster_status_admin_cluster_path(cluster, params)
@@ -51,21 +46,6 @@ class InstanceClusterablePresenter < ClusterablePresenter
   override :create_user_clusters_path
   def create_user_clusters_path
     create_user_admin_clusters_path
-  end
-
-  override :create_gcp_clusters_path
-  def create_gcp_clusters_path
-    create_gcp_admin_clusters_path
-  end
-
-  override :create_aws_clusters_path
-  def create_aws_clusters_path
-    create_aws_admin_clusters_path
-  end
-
-  override :authorize_aws_role_path
-  def authorize_aws_role_path
-    authorize_aws_role_admin_clusters_path
   end
 
   override :empty_state_help_text

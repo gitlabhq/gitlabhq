@@ -152,4 +152,6 @@ knapsack-report:
     - .generate-knapsack-report-base
   stage: post-qa
   variables:
-    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/tmp/knapsack/*/*.json
+    # knapsack report upload uses gitlab-qa image with code already there
+    GIT_STRATEGY: none
+    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json

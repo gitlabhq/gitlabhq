@@ -26,15 +26,23 @@ module QA
         # Save the scenario class name
         Runtime::Scenario.define(:klass, self.class.name)
 
+        # Set large setup attribute
+        Runtime::Scenario.define(:large_setup?, args.include?('can_use_large_setup'))
+
         ##
         # Setup knapsack and download latest report
         #
         Support::KnapsackReport.configure!
 
         ##
+        # Configure browser
+        #
+        Runtime::Browser.configure!
+
+        ##
         # Perform before hooks, which are different for CE and EE
         #
-        Runtime::Release.perform_before_hooks unless Runtime::Env.dry_run
+        QA::Runtime::Release.perform_before_hooks unless QA::Runtime::Env.dry_run
 
         Runtime::Feature.enable(options[:enable_feature]) if options.key?(:enable_feature)
 

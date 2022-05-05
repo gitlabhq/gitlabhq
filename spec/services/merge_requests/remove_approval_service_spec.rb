@@ -21,14 +21,20 @@ RSpec.describe MergeRequests::RemoveApprovalService do
 
     context 'with a user who has approved' do
       let!(:approval) { create(:approval, user: user, merge_request: merge_request) }
+      let(:notification_service) { NotificationService.new }
+
+      before do
+        allow(service).to receive(:notification_service).and_return(notification_service)
+      end
 
       it 'removes the approval' do
         expect { execute! }.to change { merge_request.approvals.size }.from(2).to(1)
       end
 
-      it 'creates an unapproval note and triggers web hook' do
+      it 'creates an unapproval note, triggers a web hook, and sends a notification' do
         expect(service).to receive(:execute_hooks).with(merge_request, 'unapproved')
         expect(SystemNoteService).to receive(:unapprove_mr)
+        expect(notification_service).to receive_message_chain(:async, :unapprove_mr).with(merge_request, user)
 
         execute!
       end

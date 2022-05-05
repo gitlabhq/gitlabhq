@@ -18,6 +18,8 @@ module QA
       stub_const('QA::Runtime::Scenario', scenario)
       stub_const('QA::Runtime::Feature', feature)
 
+      allow(QA::Runtime::Browser).to receive(:configure!)
+
       allow(scenario).to receive(:attributes).and_return(args)
       allow(runner).to receive(:perform).and_yield(runner)
     end

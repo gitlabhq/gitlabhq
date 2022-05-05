@@ -44,6 +44,11 @@ const STATUS_MAP = {
     text: __('Failed'),
     variant: 'danger',
   },
+  [STATUSES.TIMEOUT]: {
+    icon: 'status-failed',
+    text: __('Timeout'),
+    variant: 'danger',
+  },
   [STATUSES.CANCELLED]: {
     icon: 'status-stopped',
     text: __('Cancelled'),

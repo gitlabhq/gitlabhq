@@ -11,13 +11,6 @@ RSpec.describe Quality::TestLevel do
       end
     end
 
-    context 'when level is geo' do
-      it 'returns a pattern' do
-        expect(subject.pattern(:geo))
-        .to eq("spec/**{,/**/}*_spec.rb")
-      end
-    end
-
     context 'when level is frontend_fixture' do
       it 'returns a pattern' do
         expect(subject.pattern(:frontend_fixture))
@@ -89,13 +82,6 @@ RSpec.describe Quality::TestLevel do
     context 'when level is all' do
       it 'returns a regexp' do
         expect(subject.regexp(:all))
-        .to eq(%r{spec/})
-      end
-    end
-
-    context 'when level is geo' do
-      it 'returns a regexp' do
-        expect(subject.regexp(:geo))
         .to eq(%r{spec/})
       end
     end

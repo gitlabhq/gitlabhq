@@ -621,17 +621,14 @@ RSpec.describe Integrations::Jira do
       end
 
       it 'logs exception when transition id is not valid' do
-        allow(jira_integration).to receive(:log_error)
+        allow(jira_integration).to receive(:log_exception)
         WebMock.stub_request(:post, transitions_url).with(basic_auth: %w(jira-username jira-password)).and_raise("Bad Request")
 
         close_issue
 
-        expect(jira_integration).to have_received(:log_error).with(
-          "Issue transition failed",
-          error: hash_including(
-            exception_class: 'StandardError',
-            exception_message: "Bad Request"
-          ),
+        expect(jira_integration).to have_received(:log_exception).with(
+          kind_of(StandardError),
+          message: 'Issue transition failed',
           client_url: "http://jira.example.com"
         )
       end
@@ -929,14 +926,10 @@ RSpec.describe Integrations::Jira do
         WebMock.stub_request(:get, test_url).with(basic_auth: [username, password])
           .to_raise(JIRA::HTTPError.new(double(message: error_message)))
 
-        expect(jira_integration).to receive(:log_error).with(
-          'Error sending message',
-          {
-            client_url: 'http://jira.example.com',
-            'exception.class' => anything,
-            'exception.message' => error_message,
-            'exception.backtrace' => anything
-          }
+        expect(jira_integration).to receive(:log_exception).with(
+          kind_of(JIRA::HTTPError),
+          message: 'Error sending message',
+          client_url: 'http://jira.example.com'
         )
 
         expect(jira_integration.test(nil)).to eq(success: false, result: error_message)

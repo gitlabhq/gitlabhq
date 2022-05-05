@@ -19,7 +19,7 @@ export default {
       type: String,
       required: true,
     },
-    runnerUrl: {
+    runnerPath: {
       type: String,
       required: false,
       default: null,
@@ -66,7 +66,7 @@ export default {
     <runner-update-form
       :loading="loading"
       :runner="runner"
-      :runner-url="runnerUrl"
+      :runner-path="runnerPath"
       class="gl-my-5"
     />
   </div>

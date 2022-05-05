@@ -40,8 +40,8 @@ for an overview of how this is accomplished in GitLab!
 To create an executable runbook, you need:
 
 - **Kubernetes** - A Kubernetes cluster is required to deploy the rest of the
-  applications. The simplest way to get started is to add a cluster using one
-  of the [GitLab integrations](../add_remove_clusters.md#create-new-cluster).
+  applications. The simplest way to get started is to connect a cluster using the
+  [GitLab agent](../../../clusters/agent/index.md).
 - **Ingress** - Ingress can provide load balancing, SSL termination, and name-based
   virtual hosting. It acts as a web proxy for your applications.
 - **JupyterHub** - [JupyterHub](https://jupyterhub.readthedocs.io/) is a multi-user
