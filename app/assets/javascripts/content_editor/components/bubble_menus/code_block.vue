@@ -72,7 +72,7 @@ export default {
     async applySelectedLanguage(language) {
       this.selectedLanguage = language;
 
-      await codeBlockLanguageLoader.loadLanguages([language.syntax]);
+      await codeBlockLanguageLoader.loadLanguage(language.syntax);
 
       this.tiptapEditor.commands.setCodeBlock({ language: this.selectedLanguage.syntax });
     },

@@ -1,9 +1,10 @@
 <script>
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
 import { __ } from '~/locale';
+import codeBlockLanguageLoader from '../../services/code_block_language_loader';
 
 export default {
-  name: 'FrontMatter',
+  name: 'CodeBlock',
   components: {
     NodeViewWrapper,
     NodeViewContent,
@@ -13,6 +14,16 @@ export default {
       type: Object,
       required: true,
     },
+    updateAttributes: {
+      type: Function,
+      required: true,
+    },
+  },
+  async mounted() {
+    const lang = codeBlockLanguageLoader.findLanguageBySyntax(this.node.attrs.language);
+    await codeBlockLanguageLoader.loadLanguage(lang.syntax);
+
+    this.updateAttributes({ language: this.node.attrs.language });
   },
   i18n: {
     frontmatter: __('frontmatter'),
@@ -22,6 +33,7 @@ export default {
 <template>
   <node-view-wrapper class="content-editor-code-block gl-relative code highlight" as="pre">
     <span
+      v-if="node.attrs.isFrontmatter"
       data-testid="frontmatter-label"
       class="gl-absolute gl-top-0 gl-right-3"
       contenteditable="false"

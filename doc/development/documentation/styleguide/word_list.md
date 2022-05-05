@@ -539,7 +539,7 @@ When writing about licenses:
 
 - Do not use variations such as **cloud license**, **offline license**, or **legacy license**.
 - Do not use interchangeably with **subscription**:
-  - A license grants users access to the subscription they purchased, and contains information such as the number of seats and subscription dates.
+  - A license grants users access to the subscription they purchased, and contains information such as the number of seats they purchased and subscription dates.
   - A subscription is the subscription tier that the user purchases.
 
 Use:

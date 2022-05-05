@@ -40,25 +40,21 @@ const codeBlockLanguageLoader = {
   loadLanguageFromInputRule(match) {
     const { syntax } = this.findLanguageBySyntax(match[1]);
 
-    this.loadLanguages([syntax]);
+    this.loadLanguage(syntax);
 
     return { language: syntax };
   },
 
-  loadLanguages(languageList = []) {
-    const loaders = languageList
-      .filter(
-        (languageName) => !this.isLanguageLoaded(languageName) && languageName in languageLoader,
-      )
-      .map((languageName) => {
-        return languageLoader[languageName]()
-          .then(({ default: language }) => {
-            this.lowlight.registerLanguage(languageName, language);
-          })
-          .catch(() => false);
-      });
+  async loadLanguage(languageName) {
+    if (this.isLanguageLoaded(languageName)) return false;
 
-    return Promise.all(loaders);
+    try {
+      const { default: language } = await languageLoader[languageName]();
+      this.lowlight.registerLanguage(languageName, language);
+      return true;
+    } catch {
+      return false;
+    }
   },
 };
 

@@ -1,19 +1,32 @@
+import { nextTick } from 'vue';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
 import { shallowMount } from '@vue/test-utils';
-import FrontmatterWrapper from '~/content_editor/components/wrappers/frontmatter.vue';
+import CodeBlockWrapper from '~/content_editor/components/wrappers/code_block.vue';
+import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
 
-describe('content/components/wrappers/frontmatter', () => {
+jest.mock('~/content_editor/services/code_block_language_loader');
+
+describe('content/components/wrappers/code_block', () => {
+  const language = 'yaml';
   let wrapper;
+  let updateAttributesFn;
 
-  const createWrapper = async (nodeAttrs = { language: 'yaml' }) => {
-    wrapper = shallowMount(FrontmatterWrapper, {
+  const createWrapper = async (nodeAttrs = { language }) => {
+    updateAttributesFn = jest.fn();
+
+    wrapper = shallowMount(CodeBlockWrapper, {
       propsData: {
         node: {
           attrs: nodeAttrs,
         },
+        updateAttributes: updateAttributesFn,
       },
     });
   };
+
+  beforeEach(() => {
+    codeBlockLanguageLoader.findLanguageBySyntax.mockReturnValue({ syntax: language });
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -38,11 +51,21 @@ describe('content/components/wrappers/frontmatter', () => {
   });
 
   it('renders label indicating that code block is frontmatter', () => {
-    createWrapper();
+    createWrapper({ isFrontmatter: true, language });
 
     const label = wrapper.find('[data-testid="frontmatter-label"]');
 
     expect(label.text()).toEqual('frontmatter:yaml');
     expect(label.classes()).toEqual(['gl-absolute', 'gl-top-0', 'gl-right-3']);
+  });
+
+  it('loads code block’s syntax highlight language', async () => {
+    createWrapper();
+
+    expect(codeBlockLanguageLoader.loadLanguage).toHaveBeenCalledWith(language);
+
+    await nextTick();
+
+    expect(updateAttributesFn).toHaveBeenCalledWith({ language });
   });
 });

@@ -53,23 +53,19 @@ describe('content_editor/services/code_block_language_loader', () => {
     });
   });
 
-  describe('loadLanguages', () => {
+  describe('loadLanguage', () => {
     it('loads highlight.js language packages identified by a list of languages', async () => {
-      const languages = ['javascript', 'ruby'];
+      const language = 'javascript';
 
-      await languageLoader.loadLanguages(languages);
+      await languageLoader.loadLanguage(language);
 
-      languages.forEach((language) => {
-        expect(lowlight.registerLanguage).toHaveBeenCalledWith(language, expect.any(Function));
-      });
+      expect(lowlight.registerLanguage).toHaveBeenCalledWith(language, expect.any(Function));
     });
 
     describe('when language is already registered', () => {
       it('does not load the language again', async () => {
-        const languages = ['javascript'];
-
-        await languageLoader.loadLanguages(languages);
-        await languageLoader.loadLanguages(languages);
+        await languageLoader.loadLanguage('javascript');
+        await languageLoader.loadLanguage('javascript');
 
         expect(lowlight.registerLanguage).toHaveBeenCalledTimes(1);
       });
@@ -94,7 +90,7 @@ describe('content_editor/services/code_block_language_loader', () => {
 
       expect(languageLoader.isLanguageLoaded(language)).toBe(false);
 
-      await languageLoader.loadLanguages([language]);
+      await languageLoader.loadLanguage(language);
 
       expect(languageLoader.isLanguageLoaded(language)).toBe(true);
     });

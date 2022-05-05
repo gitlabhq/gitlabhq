@@ -5545,6 +5545,15 @@ msgstr ""
 msgid "Background color"
 msgstr ""
 
+msgid "BackgroundMigrations|Background Migrations"
+msgstr ""
+
+msgid "BackgroundMigrations|Background migrations are used to perform data migrations whenever a migration exceeds the time limits in our guidelines. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
+msgid "BackgroundMigrations|Database"
+msgstr ""
+
 msgid "Badges"
 msgstr ""
 
@@ -11327,7 +11336,16 @@ msgstr ""
 msgid "DastProfiles|New site profile"
 msgstr ""
 
+msgid "DastProfiles|No scanner profile selected"
+msgstr ""
+
+msgid "DastProfiles|No scanner profile selected."
+msgstr ""
+
 msgid "DastProfiles|No scanner profiles created yet"
+msgstr ""
+
+msgid "DastProfiles|No site profile selected"
 msgstr ""
 
 msgid "DastProfiles|No site profiles created yet"
@@ -11378,7 +11396,25 @@ msgstr ""
 msgid "DastProfiles|Scanner name"
 msgstr ""
 
+msgid "DastProfiles|Scanner profile"
+msgstr ""
+
+msgid "DastProfiles|Scanner profiles define the configuration details of a security scanner. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "DastProfiles|Select a scanner profile to run a DAST scan"
+msgstr ""
+
+msgid "DastProfiles|Select a site profile to run a DAST scan"
+msgstr ""
+
 msgid "DastProfiles|Select branch"
+msgstr ""
+
+msgid "DastProfiles|Select scanner profile"
+msgstr ""
+
+msgid "DastProfiles|Select site profile"
 msgstr ""
 
 msgid "DastProfiles|Show debug messages"
@@ -11391,6 +11427,9 @@ msgid "DastProfiles|Site Profiles"
 msgstr ""
 
 msgid "DastProfiles|Site name"
+msgstr ""
+
+msgid "DastProfiles|Site profiles define the attributes and configuration details of your deployed application, website, or API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "DastProfiles|Site type"

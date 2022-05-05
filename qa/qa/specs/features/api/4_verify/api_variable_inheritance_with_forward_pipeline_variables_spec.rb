@@ -29,7 +29,8 @@ module QA
       it(
         'is determined based on forward:pipeline_variables condition',
         :aggregate_failures,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360745'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360745',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/361400', type: :investigating }
       ) do
         # Is inheritable when true
         expect(child1_pipeline).to have_variable(key: key, value: value),

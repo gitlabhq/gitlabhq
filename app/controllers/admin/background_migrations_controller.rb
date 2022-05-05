@@ -53,9 +53,9 @@ class Admin::BackgroundMigrationsController < Admin::ApplicationController
   end
 
   def base_model
-    database = params[:database] || Gitlab::Database::MAIN_DATABASE_NAME
+    @selected_database = params[:database] || Gitlab::Database::MAIN_DATABASE_NAME
 
-    Gitlab::Database.database_base_models[database]
+    Gitlab::Database.database_base_models[@selected_database]
   end
 
   def batched_migration_class

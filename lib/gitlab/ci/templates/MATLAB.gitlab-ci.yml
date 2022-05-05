@@ -84,7 +84,9 @@ test_artifacts:
   artifacts:
     reports:
       junit: "./artifacts/results.xml"
-      cobertura: "./artifacts/cobertura.xml"
+      coverage_report:
+        coverage_format: cobertura
+        path: "./artifacts/cobertura.xml"
     paths:
       - "./artifacts"
 

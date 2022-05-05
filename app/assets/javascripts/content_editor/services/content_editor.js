@@ -3,12 +3,11 @@ import { LOADING_CONTENT_EVENT, LOADING_SUCCESS_EVENT, LOADING_ERROR_EVENT } fro
 
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
-  constructor({ tiptapEditor, serializer, deserializer, assetResolver, eventHub, languageLoader }) {
+  constructor({ tiptapEditor, serializer, deserializer, assetResolver, eventHub }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
     this._deserializer = deserializer;
     this._eventHub = eventHub;
-    this._languageLoader = languageLoader;
     this._assetResolver = assetResolver;
   }
 
@@ -49,7 +48,7 @@ export class ContentEditor {
   }
 
   async setSerializedContent(serializedContent) {
-    const { _tiptapEditor: editor, _eventHub: eventHub, _languageLoader: languageLoader } = this;
+    const { _tiptapEditor: editor, _eventHub: eventHub } = this;
     const { doc, tr } = editor.state;
     const selection = TextSelection.create(doc, 0, doc.content.size);
 
@@ -58,12 +57,8 @@ export class ContentEditor {
       const result = await this.deserialize(serializedContent);
 
       if (Object.keys(result).length !== 0) {
-        const { document, languages } = result;
-
-        await languageLoader.loadLanguages(languages);
-
         tr.setSelection(selection)
-          .replaceSelectionWith(document, false)
+          .replaceSelectionWith(result.document, false)
           .setMeta('preventUpdate', true);
         editor.view.dispatch(tr);
       }

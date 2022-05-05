@@ -62,7 +62,6 @@ import createGlApiMarkdownDeserializer from './gl_api_markdown_deserializer';
 import createRemarkMarkdownDeserializer from './remark_markdown_deserializer';
 import createAssetResolver from './asset_resolver';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
-import languageLoader from './code_block_language_loader';
 
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
@@ -96,7 +95,7 @@ export const createContentEditor = ({
     BulletList,
     Code,
     ColorChip,
-    CodeBlockHighlight.configure({ lowlight, languageLoader }),
+    CodeBlockHighlight.configure({ lowlight }),
     DescriptionItem,
     DescriptionList,
     Details,
@@ -160,7 +159,6 @@ export const createContentEditor = ({
     serializer,
     eventHub,
     deserializer,
-    languageLoader,
     assetResolver,
   });
 };

@@ -834,10 +834,9 @@ RSpec.describe 'Admin updates settings' do
         stub_database_flavor_check
       end
 
-      context 'when service data cached', :clean_gitlab_redis_cache do
+      context 'when service data cached', :use_clean_rails_memory_store_caching do
         before do
-          allow(Rails.cache).to receive(:exist?).with('usage_data').and_return(true)
-
+          visit usage_data_admin_application_settings_path
           visit service_usage_data_admin_application_settings_path
         end
 

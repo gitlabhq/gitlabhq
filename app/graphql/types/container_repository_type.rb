@@ -21,6 +21,7 @@ module Types
     field :status, Types::ContainerRepositoryStatusEnum, null: true, description: 'Status of the container repository.'
     field :tags_count, GraphQL::Types::Int, null: false, description: 'Number of tags associated with this image.'
     field :updated_at, Types::TimeType, null: false, description: 'Timestamp when the container repository was updated.'
+    field :last_cleanup_deleted_tags_count, GraphQL::Types::Int, null: true, description: 'Number of deleted tags from the last cleanup.'
 
     def can_delete
       Ability.allowed?(current_user, :update_container_image, object)

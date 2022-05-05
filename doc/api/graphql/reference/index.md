@@ -9833,6 +9833,7 @@ A container repository.
 | <a id="containerrepositoryexpirationpolicycleanupstatus"></a>`expirationPolicyCleanupStatus` | [`ContainerRepositoryCleanupStatus`](#containerrepositorycleanupstatus) | Tags cleanup status for the container repository. |
 | <a id="containerrepositoryexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
 | <a id="containerrepositoryid"></a>`id` | [`ID!`](#id) | ID of the container repository. |
+| <a id="containerrepositorylastcleanupdeletedtagscount"></a>`lastCleanupDeletedTagsCount` | [`Int`](#int) | Number of deleted tags from the last cleanup. |
 | <a id="containerrepositorylocation"></a>`location` | [`String!`](#string) | URL of the container repository. |
 | <a id="containerrepositorymigrationstate"></a>`migrationState` | [`String!`](#string) | Migration state of the container repository. |
 | <a id="containerrepositoryname"></a>`name` | [`String!`](#string) | Name of the container repository. |
@@ -9855,6 +9856,7 @@ Details of a container repository.
 | <a id="containerrepositorydetailsexpirationpolicycleanupstatus"></a>`expirationPolicyCleanupStatus` | [`ContainerRepositoryCleanupStatus`](#containerrepositorycleanupstatus) | Tags cleanup status for the container repository. |
 | <a id="containerrepositorydetailsexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
 | <a id="containerrepositorydetailsid"></a>`id` | [`ID!`](#id) | ID of the container repository. |
+| <a id="containerrepositorydetailslastcleanupdeletedtagscount"></a>`lastCleanupDeletedTagsCount` | [`Int`](#int) | Number of deleted tags from the last cleanup. |
 | <a id="containerrepositorydetailslocation"></a>`location` | [`String!`](#string) | URL of the container repository. |
 | <a id="containerrepositorydetailsmigrationstate"></a>`migrationState` | [`String!`](#string) | Migration state of the container repository. |
 | <a id="containerrepositorydetailsname"></a>`name` | [`String!`](#string) | Name of the container repository. |

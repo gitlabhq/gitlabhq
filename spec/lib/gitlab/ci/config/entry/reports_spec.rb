@@ -45,7 +45,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports do
         :load_performance | 'load-performance.json'
         :lsif | 'lsif.json'
         :dotenv | 'build.dotenv'
-        :cobertura | 'cobertura-coverage.xml'
         :terraform | 'tfplan.json'
         :accessibility | 'gl-accessibility.json'
       end
@@ -87,18 +86,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports do
 
           it 'returns artifacts configuration' do
             expect(entry.value).to eq({ coverage_report: coverage_report, dast: ['gl-dast-report.json'] })
-          end
-        end
-
-        context 'and a direct coverage report format is specified' do
-          let(:config) { { coverage_report: coverage_report, cobertura: 'cobertura-coverage.xml' } }
-
-          it 'is not valid' do
-            expect(entry).not_to be_valid
-          end
-
-          it 'reports error' do
-            expect(entry.errors).to include /please use only one the following keys: coverage_report, cobertura/
           end
         end
       end

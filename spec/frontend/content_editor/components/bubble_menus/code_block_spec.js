@@ -124,7 +124,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
 
     describe('when dropdown item is clicked', () => {
       beforeEach(async () => {
-        jest.spyOn(codeBlockLanguageLoader, 'loadLanguages').mockResolvedValue();
+        jest.spyOn(codeBlockLanguageLoader, 'loadLanguage').mockResolvedValue();
 
         findDropdownItems().at(1).vm.$emit('click');
 
@@ -132,7 +132,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
       });
 
       it('loads language', () => {
-        expect(codeBlockLanguageLoader.loadLanguages).toHaveBeenCalledWith(['java']);
+        expect(codeBlockLanguageLoader.loadLanguage).toHaveBeenCalledWith('java');
       });
 
       it('sets code block', () => {

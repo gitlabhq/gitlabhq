@@ -1,13 +1,25 @@
-- page_title _('Background Migrations')
+- page_title s_('BackgroundMigrations|Background Migrations')
+
+.gl-display-flex.gl-sm-flex-direction-column.gl-sm-align-items-flex-end.gl-pb-5.gl-border-b-1.gl-border-b-solid.gl-border-b-gray-100
+  .gl-flex-grow-1.gl-mr-7
+    %h3= s_('BackgroundMigrations|Background Migrations')
+    %p.light.gl-mb-0
+      - learnmore_link = help_page_path('development/database/batched_background_migrations')
+      - learnmore_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: learnmore_link }
+      = html_escape(s_('BackgroundMigrations|Background migrations are used to perform data migrations whenever a migration exceeds the time limits in our guidelines. %{linkStart}Learn more%{linkEnd}')) % { linkStart: learnmore_link_start, linkEnd: '</a>'.html_safe }
+
+  - if @databases.size > 1
+    .gl-display-flex.gl-align-items-center.gl-flex-grow-0.gl-flex-basis-0.gl-sm-mt-0.gl-mt-5
+      #js-database-listbox{ data: { databases: @databases, selected_database: @selected_database } }
 
 = gl_tabs_nav do
-  = gl_tab_link_to admin_background_migrations_path, item_active: @current_tab == 'queued' do
+  = gl_tab_link_to admin_background_migrations_path({ tab: nil, database: params[:database] }), item_active: @current_tab == 'queued' do
     = _('Queued')
     = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['queued'])
-  = gl_tab_link_to admin_background_migrations_path(tab: 'failed'), item_active: @current_tab == 'failed' do
+  = gl_tab_link_to admin_background_migrations_path({ tab: 'failed', database: params[:database] }), item_active: @current_tab == 'failed' do
     = _('Failed')
     = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['failed'])
-  = gl_tab_link_to admin_background_migrations_path(tab: 'finished'), item_active: @current_tab == 'finished' do
+  = gl_tab_link_to admin_background_migrations_path({ tab: 'finished', database: params[:database] }), item_active: @current_tab == 'finished' do
     = _('Finished')
     = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['finished'])
 

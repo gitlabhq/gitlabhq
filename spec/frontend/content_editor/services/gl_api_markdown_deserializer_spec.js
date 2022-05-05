@@ -46,10 +46,6 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
 
       expect(result.document.toJSON()).toEqual(document.toJSON());
     });
-
-    it('returns languages of code blocks found in the document', () => {
-      expect(result.languages).toEqual(['javascript']);
-    });
   });
 
   describe('when the render function returns an empty value', () => {

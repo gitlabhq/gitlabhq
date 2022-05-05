@@ -11,7 +11,6 @@ describe('content_editor/services/content_editor', () => {
   let contentEditor;
   let serializer;
   let deserializer;
-  let languageLoader;
   let eventHub;
   let doc;
   let p;
@@ -28,14 +27,12 @@ describe('content_editor/services/content_editor', () => {
 
     serializer = { serialize: jest.fn() };
     deserializer = { deserialize: jest.fn() };
-    languageLoader = { loadLanguages: jest.fn() };
     eventHub = eventHubFactory();
     contentEditor = new ContentEditor({
       tiptapEditor,
       serializer,
       deserializer,
       eventHub,
-      languageLoader,
     });
   });
 
@@ -76,12 +73,6 @@ describe('content_editor/services/content_editor', () => {
       await contentEditor.setSerializedContent(testMarkdown);
 
       expect(contentEditor.tiptapEditor.state.doc.toJSON()).toEqual(document.toJSON());
-    });
-
-    it('passes deserialized DOM document to language loader', async () => {
-      await contentEditor.setSerializedContent(testMarkdown);
-
-      expect(languageLoader.loadLanguages).toHaveBeenCalledWith(languages);
     });
   });
 

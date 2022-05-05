@@ -273,7 +273,7 @@ two
       markdown: `
     const fn = () => 'GitLab';
 `,
-      doc: doc(codeBlock({ language: '' }, "const fn = () => 'GitLab';\n")),
+      doc: doc(codeBlock({ language: null }, "const fn = () => 'GitLab';")),
     },
     {
       markdown: `
@@ -281,14 +281,14 @@ two
   const fn = () => 'GitLab';
 \`\`\`\
 `,
-      doc: doc(codeBlock({ language: 'javascript' }, "  const fn = () => 'GitLab';\n")),
+      doc: doc(codeBlock({ language: 'javascript' }, "  const fn = () => 'GitLab';")),
     },
     {
       markdown: `
 \`\`\`
 \`\`\`\
 `,
-      doc: doc(codeBlock({ language: '' }, '')),
+      doc: doc(codeBlock({ language: null }, '')),
     },
     {
       markdown: `
@@ -298,7 +298,7 @@ two
 
 \`\`\`\
 `,
-      doc: doc(codeBlock({ language: 'javascript' }, "  const fn = () => 'GitLab';\n\n\n")),
+      doc: doc(codeBlock({ language: 'javascript' }, "  const fn = () => 'GitLab';\n\n")),
     },
   ])('deserializes %s correctly', async ({ markdown, doc: expectedDoc }) => {
     const { schema } = tiptapEditor;

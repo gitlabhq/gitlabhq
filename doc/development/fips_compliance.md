@@ -98,6 +98,20 @@ virtual machine:
 fips-mode-setup --disable
 ```
 
+#### Detect FIPS enablement in code
+
+You can query `GitLab::FIPS` in Ruby code to determine if the instance is FIPS-enabled:
+
+```ruby
+def default_min_key_size(name)
+  if Gitlab::FIPS.enabled?
+    Gitlab::SSHPublicKey.supported_sizes(name).select(&:positive?).min || -1
+  else
+    0
+  end
+end
+```
+
 ## Set up a FIPS-enabled cluster
 
 You can use the [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin

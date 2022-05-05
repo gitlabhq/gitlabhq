@@ -35,10 +35,10 @@ const factorySpecs = {
   pre: {
     block: 'codeBlock',
     skipChildren: true,
-    getContent: ({ hastNodeText }) => hastNodeText,
+    getContent: ({ hastNodeText }) => hastNodeText.replace(/\n$/, ''),
     getAttrs: (hastNode) => {
       const languageClass = hastNode.children[0]?.properties.className?.[0];
-      const language = isString(languageClass) ? languageClass.replace('language-', '') : '';
+      const language = isString(languageClass) ? languageClass.replace('language-', '') : null;
 
       return { language };
     },
@@ -81,7 +81,7 @@ export default () => {
           }),
       });
 
-      return { document, languages: [] };
+      return { document };
     },
   };
 };

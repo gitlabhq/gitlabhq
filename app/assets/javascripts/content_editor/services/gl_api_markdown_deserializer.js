@@ -18,7 +18,6 @@ export default ({ render }) => {
   return {
     deserialize: async ({ schema, content }) => {
       const html = await render(content);
-      const languages = [];
 
       if (!html) return {};
 
@@ -28,11 +27,7 @@ export default ({ render }) => {
       // append original source as a comment that nodes can access
       body.append(document.createComment(content));
 
-      body.querySelectorAll('pre').forEach((preElement) => {
-        languages.push(preElement.getAttribute('lang'));
-      });
-
-      return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body), languages };
+      return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
     },
   };
 };

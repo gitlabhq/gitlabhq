@@ -97,7 +97,10 @@
       "expire_in": "1 week",
       "reports": {
         "junit": "result.xml",
-        "cobertura": "cobertura-coverage.xml",
+        "coverage_report": {
+          "coverage_format": "cobertura",
+          "path": "cobertura-coverage.xml"
+        },
         "codequality": "codequality.json",
         "sast": "sast.json",
         "dependency_scanning": "scan.json",
@@ -147,7 +150,10 @@
     "artifacts": {
       "reports": {
         "junit": ["result.xml"],
-        "cobertura": ["cobertura-coverage.xml"],
+        "coverage_report": {
+          "coverage_format": "cobertura",
+          "path": "cobertura-coverage.xml"
+        },
         "codequality": ["codequality.json"],
         "sast": ["sast.json"],
         "dependency_scanning": ["scan.json"],

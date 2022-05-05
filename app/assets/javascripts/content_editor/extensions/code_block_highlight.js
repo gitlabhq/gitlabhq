@@ -1,6 +1,8 @@
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { textblockTypeInputRule } from '@tiptap/core';
-import codeBlockLanguageLoader from '../services/code_block_language_loader';
+import { VueNodeViewRenderer } from '@tiptap/vue-2';
+import languageLoader from '../services/code_block_language_loader';
+import CodeBlockWrapper from '../components/wrappers/code_block.vue';
 
 const extractLanguage = (element) => element.getAttribute('lang');
 export const backtickInputRegex = /^```([a-z]+)?[\s\n]$/;
@@ -9,14 +11,6 @@ export const tildeInputRegex = /^~~~([a-z]+)?[\s\n]$/;
 export default CodeBlockLowlight.extend({
   isolating: true,
   exitOnArrowDown: false,
-
-  addOptions() {
-    return {
-      ...this.parent?.(),
-      languageLoader: codeBlockLanguageLoader,
-    };
-  },
-
   addAttributes() {
     return {
       language: {
@@ -30,7 +24,6 @@ export default CodeBlockLowlight.extend({
     };
   },
   addInputRules() {
-    const { languageLoader } = this.options;
     const getAttributes = (match) => languageLoader?.loadLanguageFromInputRule(match) || {};
 
     return [
@@ -64,5 +57,9 @@ export default CodeBlockLowlight.extend({
       },
       ['code', {}, 0],
     ];
+  },
+
+  addNodeView() {
+    return new VueNodeViewRenderer(CodeBlockWrapper);
   },
 });

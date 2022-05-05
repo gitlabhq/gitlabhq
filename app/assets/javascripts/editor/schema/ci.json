@@ -170,23 +170,6 @@
                 }
               ]
             },
-            "cobertura": {
-              "description": "Path for file(s) that should be parsed as Cobertura XML coverage report",
-              "oneOf": [
-                {
-                  "type": "string",
-                  "description": "Path to a single XML file"
-                },
-                {
-                  "type": "array",
-                  "description": "A list of paths to XML files that will automatically be merged into one report",
-                  "items": {
-                    "type": "string"
-                  },
-                  "minItems": 1
-                }
-              ]
-            },
             "coverage_report": {
               "type": "object",
               "description": "Used to collect coverage reports from the job.",

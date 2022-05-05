@@ -54,7 +54,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def service_usage_data
-    @service_ping_data_present = Rails.cache.exist?('usage_data')
+    @service_ping_data_present = prerecorded_service_ping_data.present?
   end
 
   def update
@@ -64,7 +64,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def usage_data
     respond_to do |format|
       format.html do
-        usage_data_json = Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values, cached: true))
+        usage_data_json = Gitlab::Json.pretty_generate(service_ping_data)
 
         render html: Gitlab::Highlight.highlight('payload.json', usage_data_json, language: 'json')
       end
@@ -72,7 +72,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       format.json do
         Gitlab::UsageDataCounters::ServiceUsageDataCounter.count(:download_payload_click)
 
-        render json: Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values, cached: true).to_json
+        render json: service_ping_data.to_json
       end
     end
   end
@@ -306,6 +306,14 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   # overridden in EE
   def valid_setting_panels
     VALID_SETTING_PANELS
+  end
+
+  def service_ping_data
+    prerecorded_service_ping_data || Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
+  end
+
+  def prerecorded_service_ping_data
+    Rails.cache.fetch(Gitlab::Usage::ServicePingReport::CACHE_KEY) || ::RawUsageData.for_current_reporting_cycle.first&.payload
   end
 end
 
