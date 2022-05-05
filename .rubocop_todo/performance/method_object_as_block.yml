@@ -38,7 +38,6 @@ Performance/MethodObjectAsBlock:
     - 'ee/lib/ee/container_registry/client.rb'
     - 'ee/lib/ee/gitlab/ci/config_ee.rb'
     - 'ee/lib/ee/gitlab/etag_caching/router/rails.rb'
-    - 'ee/lib/pseudonymizer/dumper.rb'
     - 'ee/spec/services/groups/participants_service_spec.rb'
     - 'lib/api/helpers/packages/conan/api_helpers.rb'
     - 'lib/bulk_imports/pipeline.rb'

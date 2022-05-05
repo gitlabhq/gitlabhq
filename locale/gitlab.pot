@@ -14115,9 +14115,6 @@ msgstr ""
 msgid "Enable PlantUML"
 msgstr ""
 
-msgid "Enable Pseudonymizer data collection"
-msgstr ""
-
 msgid "Enable SSL verification"
 msgstr ""
 
@@ -14215,9 +14212,6 @@ msgid "Enable multipart emails"
 msgstr ""
 
 msgid "Enable only for confidential applications exclusively used by a trusted backend server that can securely store the client secret. Do not enable for native-mobile, single-page, or other JavaScript applications because they cannot keep the client secret confidential."
-msgstr ""
-
-msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
 msgid "Enable or disable version check and Service Ping."
@@ -17375,9 +17369,6 @@ msgid "GitLab metadata URL"
 msgstr ""
 
 msgid "GitLab project export"
-msgstr ""
-
-msgid "GitLab runs a background job to export pseudonymized CSVs of the GitLab database. The CSV files are then uploaded to your configured object storage directory."
 msgstr ""
 
 msgid "GitLab single sign-on URL"
@@ -30945,12 +30936,6 @@ msgid "Provisioned by:"
 msgstr ""
 
 msgid "Proxy support for this API is not available currently"
-msgstr ""
-
-msgid "Pseudonymized data collection is disabled. When enabled, GitLab runs a background job to export pseudonymized CSVs of the GitLab database. The CSV files are then uploaded to your configured object storage directory."
-msgstr ""
-
-msgid "Pseudonymizer data collection"
 msgstr ""
 
 msgid "Public"

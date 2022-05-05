@@ -709,9 +709,6 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
-  Settings.cron_jobs['pseudonymizer_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['pseudonymizer_worker']['cron'] ||= '0 23 * * *'
-  Settings.cron_jobs['pseudonymizer_worker']['job_class'] ||= 'PseudonymizerWorker'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['job_class'] = 'UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker'
@@ -862,16 +859,6 @@ Settings.backup['upload']['encryption'] ||= nil
 Settings.backup['upload']['encryption_key'] ||= ENV['GITLAB_BACKUP_ENCRYPTION_KEY']
 Settings.backup['upload']['storage_class'] ||= nil
 Settings.backup['gitaly_backup_path'] ||= Gitlab::Utils.which('gitaly-backup')
-
-#
-# Pseudonymizer
-#
-Gitlab.ee do
-  Settings['pseudonymizer'] ||= Settingslogic.new({})
-  Settings.pseudonymizer['manifest'] = Settings.absolute(Settings.pseudonymizer['manifest'] || Rails.root.join("config/pseudonymizer.yml"))
-  Settings.pseudonymizer['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
-  # Settings.pseudonymizer['upload']['multipart_chunk_size'] ||= 104857600
-end
 
 #
 # Git

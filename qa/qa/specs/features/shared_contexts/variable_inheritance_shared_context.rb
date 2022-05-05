@@ -2,6 +2,8 @@
 
 module QA
   RSpec.shared_context 'variable inheritance test prep' do
+    let(:key) { 'TEST_VAR' }
+    let(:value) { 'This is great!' }
     let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
 
     let(:group) do
@@ -57,7 +59,7 @@ module QA
       Flow::Pipeline.wait_for_latest_pipeline
       Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
       Page::Project::Pipeline::New.perform do |new|
-        new.add_variable('TEST_VAR', 'This is great!')
+        new.add_variable(key, value)
         new.click_run_pipeline_button
       end
     end
@@ -80,14 +82,14 @@ module QA
     def verify_job_log_shows_variable_value
       Page::Project::Job::Show.perform do |show|
         show.wait_until { show.successful? }
-        expect(show.output).to have_content('This is great!')
+        expect(show.output).to have_content(value)
       end
     end
 
     def verify_job_log_does_not_show_variable_value
       Page::Project::Job::Show.perform do |show|
         show.wait_until { show.successful? }
-        expect(show.output).to have_no_content('This is great!')
+        expect(show.output).to have_no_content(value)
       end
     end
 

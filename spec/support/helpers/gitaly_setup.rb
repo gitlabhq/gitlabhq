@@ -31,6 +31,10 @@ module GitalySetup
     expand_path('tmp/tests/gitaly')
   end
 
+  def runtime_dir
+    expand_path('tmp/run')
+  end
+
   def tmp_tests_gitaly_bin_dir
     File.join(tmp_tests_gitaly_dir, '_build', 'bin')
   end
@@ -259,6 +263,7 @@ module GitalySetup
       { 'default' => repos_path },
       force: true,
       options: {
+        runtime_dir: runtime_dir,
         prometheus_listen_addr: 'localhost:9236'
       }
     )
@@ -267,7 +272,7 @@ module GitalySetup
       { 'default' => repos_path },
       force: true,
       options: {
-        runtime_dir: File.join(gitaly_dir, "run2"),
+        runtime_dir: runtime_dir,
         gitaly_socket: "gitaly2.socket",
         config_filename: "gitaly2.config.toml"
       }

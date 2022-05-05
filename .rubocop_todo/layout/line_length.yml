@@ -1849,7 +1849,6 @@ Layout/LineLength:
     - 'ee/lib/gitlab/usage/metrics/instrumentations/count_users_creating_ci_builds_metric.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/license_metric.rb'
     - 'ee/lib/gitlab/usage_data_counters/license_testing_counter.rb'
-    - 'ee/lib/pseudonymizer/filter.rb'
     - 'ee/lib/system_check/app/elasticsearch_check.rb'
     - 'ee/lib/system_check/geo/authorized_keys_check.rb'
     - 'ee/lib/system_check/geo/current_node_check.rb'

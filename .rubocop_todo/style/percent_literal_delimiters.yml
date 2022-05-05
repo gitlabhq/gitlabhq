@@ -413,8 +413,6 @@ Style/PercentLiteralDelimiters:
     - 'ee/spec/lib/gitlab/status_page/storage/s3_client_spec.rb'
     - 'ee/spec/lib/gitlab/status_page/storage/s3_multipart_upload_spec.rb'
     - 'ee/spec/lib/gitlab/vulnerabilities/parser_spec.rb'
-    - 'ee/spec/lib/pseudonymizer/dumper_spec.rb'
-    - 'ee/spec/lib/pseudonymizer/pager_spec.rb'
     - 'ee/spec/mailers/ci_minutes_usage_mailer_spec.rb'
     - 'ee/spec/mailers/credentials_inventory_mailer_spec.rb'
     - 'ee/spec/mailers/ee/emails/profile_spec.rb'
