@@ -161,7 +161,7 @@ class Integration < ApplicationRecord
   end
 
   def fields
-    self.class.fields
+    self.class.fields.dup
   end
 
   # Provide convenient accessor methods for each serialized property.

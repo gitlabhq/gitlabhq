@@ -4,6 +4,6 @@ classes:
 - SentryIssue
 feature_categories:
 - error_tracking
-description: TODO
+description: Persists issue data for the Error Tracking's Sentry backend
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20629
 milestone: '12.6'

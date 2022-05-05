@@ -858,12 +858,24 @@ RSpec.describe Deployment do
       end
     end
 
-    it 'tracks an exception if an invalid status transition is detected' do
-      expect(Gitlab::ErrorTracking)
+    context 'tracks an exception if an invalid status transition is detected' do
+      it do
+        expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
         .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
 
-      expect(deploy.update_status('running')).to eq(false)
+        expect(deploy.update_status('running')).to eq(false)
+      end
+
+      it do
+        deploy.update_status('success')
+
+        expect(Gitlab::ErrorTracking)
+        .to receive(:track_exception)
+        .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
+
+        expect(deploy.update_status('created')).to eq(false)
+      end
     end
 
     it 'tracks an exception if an invalid argument' do
@@ -871,7 +883,7 @@ RSpec.describe Deployment do
         .to receive(:track_exception)
         .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
 
-      expect(deploy.update_status('created')).to eq(false)
+      expect(deploy.update_status('recreate')).to eq(false)
     end
 
     context 'mapping status to event' do
@@ -891,6 +903,16 @@ RSpec.describe Deployment do
           expect(deploy).to receive(method)
 
           deploy.update_status(status)
+        end
+      end
+
+      context 'for created status update' do
+        let(:deploy) { create(:deployment, status: :created) }
+
+        it 'calls the correct method' do
+          expect(deploy).to receive(:create!)
+
+          deploy.update_status('created')
         end
       end
     end
@@ -974,7 +996,9 @@ RSpec.describe Deployment do
       context 'with created build' do
         let(:build_status) { :created }
 
-        it_behaves_like 'ignoring build'
+        it_behaves_like 'gracefully handling error' do
+          let(:error_message) { %Q{Status cannot transition via \"create\"} }
+        end
       end
 
       context 'with running build' do
@@ -1002,7 +1026,9 @@ RSpec.describe Deployment do
       context 'with created build' do
         let(:build_status) { :created }
 
-        it_behaves_like 'ignoring build'
+        it_behaves_like 'gracefully handling error' do
+          let(:error_message) { %Q{Status cannot transition via \"create\"} }
+        end
       end
 
       context 'with running build' do

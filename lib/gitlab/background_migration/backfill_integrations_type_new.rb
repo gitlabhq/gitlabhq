@@ -22,7 +22,7 @@ module Gitlab
       private
 
       def connection
-        ActiveRecord::Base.connection
+        ApplicationRecord.connection
       end
 
       def process_sub_batch(sub_batch)

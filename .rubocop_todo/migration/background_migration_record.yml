@@ -28,7 +28,6 @@ Migration/BackgroundMigrationRecord:
     - lib/gitlab/background_migration/migrate_merge_request_diff_commit_users.rb
     - lib/gitlab/background_migration/migrate_null_private_profile_to_false.rb
     - lib/gitlab/background_migration/migrate_project_taggings_context_from_tags_to_topics.rb
-    - lib/gitlab/background_migration/migrate_stage_status.rb
     - lib/gitlab/background_migration/migrate_u2f_webauthn.rb
     - lib/gitlab/background_migration/populate_latest_pipeline_ids.rb
     - lib/gitlab/background_migration/populate_topics_non_private_projects_count.rb

@@ -5,7 +5,7 @@ module Gitlab
   module BackgroundMigration
     class UpdateUsersWhereTwoFactorAuthRequiredFromGroup # rubocop:disable Metrics/ClassLength
       def perform(start_id, stop_id)
-        ActiveRecord::Base.connection.execute <<~SQL
+        ApplicationRecord.connection.execute <<~SQL
           UPDATE
             users
           SET

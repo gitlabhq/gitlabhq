@@ -4,6 +4,6 @@ classes:
 - IncidentManagement::IssuableEscalationStatus
 feature_categories:
 - incident_management
-description: TODO
+description: Persists escalation status information for incidents
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65206
 milestone: '14.2'

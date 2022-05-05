@@ -525,6 +525,12 @@ class Namespace < ApplicationRecord
     nil
   end
 
+  def certificate_based_clusters_enabled?
+    ::Gitlab::SafeRequestStore.fetch("certificate_based_clusters:ns:#{self.id}") do
+      Feature.enabled?(:certificate_based_clusters, self, default_enabled: :yaml, type: :ops)
+    end
+  end
+
   private
 
   def expire_child_caches

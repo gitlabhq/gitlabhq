@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def connection
-        @connection ||= ::ActiveRecord::Base.connection
+        @connection ||= ApplicationRecord.connection
       end
 
       def execute(sql)

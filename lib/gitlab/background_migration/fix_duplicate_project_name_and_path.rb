@@ -21,7 +21,7 @@ module Gitlab
         backfill_project_namespaces_service.cleanup_gin_index('projects')
 
         project_ids.each_slice(SUB_BATCH_SIZE) do |ids|
-          ActiveRecord::Base.connection.execute(update_projects_name_and_path_sql(ids))
+          ApplicationRecord.connection.execute(update_projects_name_and_path_sql(ids))
         end
 
         backfill_project_namespaces_service.backfill_project_namespaces

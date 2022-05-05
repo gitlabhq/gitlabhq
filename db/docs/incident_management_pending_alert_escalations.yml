@@ -4,6 +4,6 @@ classes:
 - IncidentManagement::PendingEscalations::Alert
 feature_categories:
 - incident_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e5cc867503dfbd54f99df90cce6be39bc4fde712
+description: Persists information about pending alert escalations for incidents
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64274
 milestone: '14.1'

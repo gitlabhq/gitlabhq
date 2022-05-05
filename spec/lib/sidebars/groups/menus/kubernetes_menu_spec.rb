@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Groups::Menus::KubernetesMenu do
+RSpec.describe Sidebars::Groups::Menus::KubernetesMenu, :request_store do
   let_it_be(:owner) { create(:user) }
   let_it_be(:group) do
     build(:group, :private).tap do |g|

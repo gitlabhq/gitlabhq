@@ -63,8 +63,7 @@ module QA
           end
 
           def save_changes
-            wait_until(reload: false) { !find_element(:submit_button).disabled? }
-            click_element(:submit_button)
+            click_element_coordinates(:submit_button)
             wait_until(reload: false) do
               has_no_element?(:file_name_field)
             end

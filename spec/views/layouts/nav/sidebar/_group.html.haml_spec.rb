@@ -101,7 +101,7 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
     end
   end
 
-  describe 'Kubernetes menu' do
+  describe 'Kubernetes menu', :request_store do
     it 'has a link to the group cluster list path' do
       render
 

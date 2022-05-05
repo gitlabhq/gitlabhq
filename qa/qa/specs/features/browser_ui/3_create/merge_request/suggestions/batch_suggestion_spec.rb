@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', :reliable do
     context 'Add batch suggestions to a Merge Request' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

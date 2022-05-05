@@ -43374,6 +43374,12 @@ msgstr ""
 msgid "You cannot approve your own deployment."
 msgstr ""
 
+msgid "You cannot change the start date after the cadence has started. Please create a new cadence."
+msgstr ""
+
+msgid "You cannot change the start date because the first iteration has already started on %{start_date}."
+msgstr ""
+
 msgid "You cannot combine replace_ids with add_ids or remove_ids"
 msgstr ""
 

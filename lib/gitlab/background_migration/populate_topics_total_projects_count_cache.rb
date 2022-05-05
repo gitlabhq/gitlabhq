@@ -15,7 +15,7 @@ module Gitlab
 
       def perform(start_id, stop_id)
         Topic.where(id: start_id..stop_id).each_batch(of: SUB_BATCH_SIZE) do |batch|
-          ActiveRecord::Base.connection.execute(<<~SQL)
+          ApplicationRecord.connection.execute(<<~SQL)
             WITH batched_relation AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (#{batch.select(:id).limit(SUB_BATCH_SIZE).to_sql})
             UPDATE topics
             SET total_projects_count = (SELECT COUNT(*) FROM project_topics WHERE topic_id = batched_relation.id)

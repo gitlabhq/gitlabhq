@@ -139,7 +139,7 @@ module API
       end
 
       def ensure_feature_enabled!
-        not_found! unless Feature.enabled?(:certificate_based_clusters, user_group, default_enabled: :yaml, type: :ops)
+        not_found! unless user_group.certificate_based_clusters_enabled?
       end
     end
   end

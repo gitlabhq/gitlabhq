@@ -782,8 +782,16 @@ RSpec.describe Integration do
     end
   end
 
-  describe '#api_field_names' do
-    shared_examples 'api field names' do
+  describe 'field definitions' do
+    shared_examples '#fields' do
+      it 'does not return the same array' do
+        integration = fake_integration.new
+
+        expect(integration.fields).not_to be(integration.fields)
+      end
+    end
+
+    shared_examples '#api_field_names' do
       it 'filters out secret fields' do
         safe_fields = %w[some_safe_field safe_field url trojan_gift]
 
@@ -816,7 +824,8 @@ RSpec.describe Integration do
         end
       end
 
-      it_behaves_like 'api field names'
+      it_behaves_like '#fields'
+      it_behaves_like '#api_field_names'
     end
 
     context 'when the class uses the field DSL' do
@@ -839,7 +848,8 @@ RSpec.describe Integration do
         end
       end
 
-      it_behaves_like 'api field names'
+      it_behaves_like '#fields'
+      it_behaves_like '#api_field_names'
     end
   end
 

@@ -4,6 +4,6 @@ classes:
 - StatusPage::ProjectSetting
 feature_categories:
 - incident_management
-description: TODO
+description: Project settings related to Status Page
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25863
 milestone: '12.9'

@@ -1446,6 +1446,44 @@ RSpec.describe Ci::Build do
         expect(deployment).to be_canceled
       end
     end
+
+    # Mimic playing a manual job that needs another job.
+    # `needs + when:manual` scenario, see: https://gitlab.com/gitlab-org/gitlab/-/issues/347502
+    context 'when transits from skipped to created to running' do
+      before do
+        build.skip!
+      end
+
+      context 'during skipped to created' do
+        let(:event) { :process! }
+
+        it 'transitions to created' do
+          subject
+
+          expect(deployment).to be_created
+        end
+      end
+
+      context 'during created to running' do
+        let(:event) { :run! }
+
+        before do
+          build.process!
+          build.enqueue!
+        end
+
+        it 'transitions to running and calls webhook' do
+          freeze_time do
+            expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+
+            subject
+          end
+
+          expect(deployment).to be_running
+        end
+      end
+    end
   end
 
   describe '#on_stop' do

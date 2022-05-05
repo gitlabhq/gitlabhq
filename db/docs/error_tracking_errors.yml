@@ -4,6 +4,6 @@ classes:
 - ErrorTracking::Error
 feature_categories:
 - error_tracking
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/2d1c197ab0bf10071cb52e579edd3808cb0adc21
+description: Persists error data for the Error Tracking's GitLab backend
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64712
 milestone: '14.1'

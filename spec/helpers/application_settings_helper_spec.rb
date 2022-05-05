@@ -295,7 +295,7 @@ RSpec.describe ApplicationSettingsHelper do
     it { is_expected.to eq([%w(Track track), %w(Compress compress)]) }
   end
 
-  describe '#instance_clusters_enabled?' do
+  describe '#instance_clusters_enabled?', :request_store do
     let_it_be(:user) { create(:user) }
 
     subject { helper.instance_clusters_enabled? }

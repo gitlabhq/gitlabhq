@@ -24,6 +24,10 @@ module Resolvers
       end
 
       def resolve(ids: nil, filenames: nil, at_version: nil)
+        # TODO: remove the coercion when the compatibility layer is removed
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+        context.scoped_set!(:at_version_argument, VersionID.coerce_isolated_input(at_version)) if at_version
+
         ::DesignManagement::DesignsFinder.new(
           issue,
           current_user,

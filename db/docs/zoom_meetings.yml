@@ -4,6 +4,6 @@ classes:
 - ZoomMeeting
 feature_categories:
 - incident_management
-description: TODO
+description: Persists Zoom meetings, its associations and its metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17890
 milestone: '12.5'

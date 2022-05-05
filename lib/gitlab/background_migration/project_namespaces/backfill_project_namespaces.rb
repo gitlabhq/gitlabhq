@@ -55,10 +55,10 @@ module Gitlab
         end
 
         def cleanup_gin_index(table_name)
-          index_names = ActiveRecord::Base.connection.select_values("select indexname::text from pg_indexes where tablename = '#{table_name}' and indexdef ilike '%gin%'")
+          index_names = ApplicationRecord.connection.select_values("select indexname::text from pg_indexes where tablename = '#{table_name}' and indexdef ilike '%gin%'")
 
           index_names.each do |index_name|
-            ActiveRecord::Base.connection.execute("select gin_clean_pending_list('#{index_name}')")
+            ApplicationRecord.connection.execute("select gin_clean_pending_list('#{index_name}')")
           end
         end
 
@@ -77,7 +77,7 @@ module Gitlab
           projects = IsolatedModels::Project.where(id: project_ids)
             .select("projects.id, projects.name, projects.path, projects.namespace_id, projects.visibility_level, shared_runners_enabled, '#{PROJECT_NAMESPACE_STI_NAME}', now(), now()")
 
-          ActiveRecord::Base.connection.execute <<~SQL
+          ApplicationRecord.connection.execute <<~SQL
             INSERT INTO namespaces (tmp_project_id, name, path, parent_id, visibility_level, shared_runners_enabled, type, created_at, updated_at)
             #{projects.to_sql}
             ON CONFLICT DO NOTHING;
@@ -89,7 +89,7 @@ module Gitlab
                        .joins("INNER JOIN namespaces ON projects.id = namespaces.tmp_project_id")
                        .select("namespaces.id, namespaces.tmp_project_id")
 
-          ActiveRecord::Base.connection.execute <<~SQL
+          ApplicationRecord.connection.execute <<~SQL
             WITH cte(project_namespace_id, project_id) AS #{::Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
               #{projects.to_sql}
             )
@@ -105,7 +105,7 @@ module Gitlab
                          .joins("INNER JOIN namespaces n2 ON namespaces.parent_id = n2.id")
                          .select("namespaces.id as project_namespace_id, n2.traversal_ids")
 
-          ActiveRecord::Base.connection.execute <<~SQL
+          ApplicationRecord.connection.execute <<~SQL
             UPDATE namespaces
             SET traversal_ids = array_append(project_namespaces.traversal_ids, project_namespaces.project_namespace_id)
             FROM (#{namespaces.to_sql}) as project_namespaces(project_namespace_id, traversal_ids)

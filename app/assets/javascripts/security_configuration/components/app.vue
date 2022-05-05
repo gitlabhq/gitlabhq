@@ -57,6 +57,9 @@ export default {
       update({ currentLicense }) {
         return currentLicense?.plan;
       },
+      error() {
+        this.hasCurrentLicenseFetchError = true;
+      },
     },
   },
   props: {
@@ -99,6 +102,7 @@ export default {
       autoDevopsEnabledAlertDismissedProjects: [],
       errorMessage: '',
       currentLicensePlan: '',
+      hasCurrentLicenseFetchError: false,
     };
   },
   computed: {
@@ -120,7 +124,10 @@ export default {
       );
     },
     shouldShowVulnerabilityManagementTab() {
-      return this.currentLicensePlan === LICENSE_ULTIMATE;
+      // if the query fails (if the plan is `null` also means an error has occurred) we still want to show the feature
+      const hasQueryError = this.hasCurrentLicenseFetchError || this.currentLicensePlan === null;
+
+      return hasQueryError || this.currentLicensePlan === LICENSE_ULTIMATE;
     },
   },
   methods: {

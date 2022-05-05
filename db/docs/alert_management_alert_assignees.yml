@@ -4,6 +4,6 @@ classes:
 - AlertManagement::AlertAssignee
 feature_categories:
 - incident_management
-description: TODO
+description: Persists metadata between users and alerts to support alert assignments
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32609
 milestone: '13.1'

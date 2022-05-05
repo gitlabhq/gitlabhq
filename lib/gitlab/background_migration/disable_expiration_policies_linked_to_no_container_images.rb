@@ -32,7 +32,7 @@ module Gitlab
       private
 
       def execute(sql)
-        ActiveRecord::Base
+        ApplicationRecord
           .connection
           .execute(sql)
       end

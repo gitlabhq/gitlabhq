@@ -54,13 +54,22 @@ describe('App component', () => {
 
   const createComponent = ({
     shouldShowCallout = true,
-    license = LICENSE_ULTIMATE,
+    licenseQueryResponse = LICENSE_ULTIMATE,
     ...propsData
   }) => {
     userCalloutDismissSpy = jest.fn();
 
     mockApollo = createMockApollo([
-      [currentLicenseQuery, jest.fn().mockResolvedValue(getCurrentLicensePlanResponse(license))],
+      [
+        currentLicenseQuery,
+        jest
+          .fn()
+          .mockResolvedValue(
+            licenseQueryResponse instanceof Error
+              ? licenseQueryResponse
+              : getCurrentLicensePlanResponse(licenseQueryResponse),
+          ),
+      ],
     ]);
 
     wrapper = extendedWrapper(
@@ -484,19 +493,23 @@ describe('App component', () => {
     });
 
     it.each`
-      license             | display
-      ${LICENSE_ULTIMATE} | ${true}
-      ${LICENSE_PREMIUM}  | ${false}
-      ${LICENSE_FREE}     | ${false}
-      ${null}             | ${false}
-    `('displays $display for license $license', async ({ license, display }) => {
-      createComponent({
-        license,
-        augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
-      });
-      await waitForPromises();
-      expect(findVulnerabilityManagementTab().exists()).toBe(display);
-    });
+      licenseQueryResponse | display
+      ${LICENSE_ULTIMATE}  | ${true}
+      ${LICENSE_PREMIUM}   | ${false}
+      ${LICENSE_FREE}      | ${false}
+      ${null}              | ${true}
+      ${new Error()}       | ${true}
+    `(
+      'displays $display for license $licenseQueryResponse',
+      async ({ licenseQueryResponse, display }) => {
+        createComponent({
+          licenseQueryResponse,
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock,
+        });
+        await waitForPromises();
+        expect(findVulnerabilityManagementTab().exists()).toBe(display);
+      },
+    );
   });
 });

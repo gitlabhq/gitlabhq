@@ -182,7 +182,7 @@ administrator to [enable the feature flag](../../../administration/feature_flags
 On GitLab.com, this feature is not available. This feature is not ready for production use.
 
 Iteration cadences automate iteration scheduling. You can use them to
-automate creating iterations every 1, 2, 3, 4, or 6 weeks. You can also
+automate creating iterations every 1, 2, 3, or 4 weeks. You can also
 configure iteration cadences to automatically roll over incomplete issues to the next iteration.
 
 ### Create an iteration cadence
@@ -198,7 +198,35 @@ To create an iteration cadence:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select **New iteration cadence**.
-1. Fill out required fields, and select **Create iteration cadence**. The cadence list page opens.
+1. Complete the fields.
+   - Enter the title and description of the iteration cadence.
+   - Enter the start date of the iteration cadence.
+   - From the **Duration** dropdown list, select how many weeks each iteration should last.
+   - From the **Future iterations** dropdown list, select how many future iterations should be
+     created and maintained by GitLab.
+   - Optional. To move incomplete issues to the next iteration, select **Roll over issues**.
+1. Select **Create cadence**. The cadence list page opens.
+
+### Edit an iteration cadence
+
+Prerequisites:
+
+- You must have at least the Developer role for a group.
+
+To edit an iteration cadence:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Issues > Iterations**.
+1. Select **Edit iteration cadence**.
+
+When you edit the **Duration**, **Future iterations**, or **Start date** fields,
+only future iterations are affected.
+
+You can edit the start date of a cadence if the cadence has not started yet.
+
+Editing **Future iterations** is a non-destructive action.
+If ten future iterations already exist, changing the number under **Future iterations** to `2`
+doesn't delete the eight existing future iterations.
 
 ### Delete an iteration cadence
 
@@ -217,18 +245,38 @@ To delete an iteration cadence:
 1. Select the three-dot menu (**{ellipsis_v}**) > **Delete cadence** for the cadence you want to delete.
 1. Select **Delete cadence** in the confirmation modal.
 
-### Convert manual cadence to use automatic scheduling
+### Manual iteration cadences
+
+When you **enable** the iteration cadences feature, all previously
+created iterations are added to a default iteration cadence.
+You can continue to add, edit, and remove iterations in
+this default cadence.
+
+#### Convert a manual cadence to use automatic scheduling
 
 WARNING:
-The upgrade is irreversible. After it's done, manual iteration cadences cannot be created.
+The upgrade is irreversible. After it's done, a new manual iteration cadence cannot be created.
 
-When you **enable** the iteration cadences feature, all iterations are added
-to a default iteration cadence.
-In this default iteration cadence, you can continue to add, edit, and remove iterations.
+Prerequisites:
 
+- You must have created [iterations](#iterations) without cadences before enabling iteration cadences for your group.
 To upgrade the iteration cadence to use the automation features:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select the three-dot menu (**{ellipsis_v}**) > **Edit cadence** for the cadence you want to upgrade.
-1. Fill out required fields, and select **Save changes**.
+1. Complete the required fields **Duration** and **Future iterations**. 
+1. Select **Save changes**.
+
+#### Start dates of converted cadences
+
+The start date of your converted cadence is set to the start date of its
+**first** existing iteration.
+
+If you attempt to set a new start date, the conversion fails with an error message.
+If your manual cadence is empty, converting it to use automatic scheduling is effectively
+the same as creating a new automated cadence.
+
+During the conversion process GitLab does not delete or modify existing **ongoing** or
+**closed** iterations. If you have iterations with start dates in the future,
+they are updated to fit your cadence settings.

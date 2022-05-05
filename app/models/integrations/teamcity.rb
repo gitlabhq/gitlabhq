@@ -8,7 +8,22 @@ module Integrations
 
     TEAMCITY_SAAS_HOSTNAME = /\A[^\.]+\.teamcity\.com\z/i.freeze
 
-    prop_accessor :teamcity_url, :build_type, :username, :password
+    field :teamcity_url,
+      title: s_('ProjectService|TeamCity server URL'),
+      placeholder: 'https://teamcity.example.com',
+      required: true
+
+    field :build_type,
+      help: s_('ProjectService|The build configuration ID of the TeamCity project.'),
+      required: true
+
+    field :username,
+      help: s_('ProjectService|Must have permission to trigger a manual build in TeamCity.')
+
+    field :password,
+      type: 'password',
+      non_empty_password_title: s_('ProjectService|Enter new password'),
+      non_empty_password_help: s_('ProjectService|Leave blank to use your current password')
 
     validates :teamcity_url, presence: true, public_url: true, if: :activated?
     validates :build_type, presence: true, if: :activated?
@@ -49,35 +64,6 @@ module Integrations
 
     def help
       s_('To run CI/CD pipelines with JetBrains TeamCity, input the GitLab project details in the TeamCity project Version Control Settings.')
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'teamcity_url',
-          title: s_('ProjectService|TeamCity server URL'),
-          placeholder: 'https://teamcity.example.com',
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'build_type',
-          help: s_('ProjectService|The build configuration ID of the TeamCity project.'),
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'username',
-          help: s_('ProjectService|Must have permission to trigger a manual build in TeamCity.')
-        },
-        {
-          type: 'password',
-          name: 'password',
-          non_empty_password_title: s_('ProjectService|Enter new password'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current password')
-        }
-      ]
     end
 
     def build_page(sha, ref)

@@ -9,7 +9,7 @@ module Gitlab
       include Gitlab::Database::DynamicModelHelpers
 
       def perform(start_id, stop_id, batch_table, batch_column, sub_batch_size, pause_ms)
-        define_batchable_model(batch_table, connection: ActiveRecord::Base.connection).where(batch_column => start_id..stop_id).each_batch(of: sub_batch_size) do |sub_batch|
+        define_batchable_model(batch_table, connection: ApplicationRecord.connection).where(batch_column => start_id..stop_id).each_batch(of: sub_batch_size) do |sub_batch|
           update_search_data(sub_batch)
 
           sleep(pause_ms * 0.001)

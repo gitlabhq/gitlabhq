@@ -7,7 +7,7 @@ module Gitlab
       include Gitlab::Database::DynamicModelHelpers
 
       def perform(start_id, end_id)
-        define_batchable_model('integrations', connection: ::ActiveRecord::Base.connection)
+        define_batchable_model('integrations', connection: ApplicationRecord.connection)
           .where(id: start_id..end_id, type_new: %w[Integrations::Confluence Integrations::Shimo])
           .update_all(category: 'third_party_wiki')
 

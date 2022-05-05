@@ -173,16 +173,12 @@ class Clusters::ClustersController < Clusters::BaseController
 
   private
 
-  def certificate_based_clusters_enabled?
-    Feature.enabled?(:certificate_based_clusters, clusterable.clusterable_namespace, default_enabled: :yaml, type: :ops)
-  end
-
   def ensure_feature_enabled!
-    render_404 unless certificate_based_clusters_enabled?
+    render_404 unless clusterable.certificate_based_clusters_enabled?
   end
 
   def cluster_list
-    return [] unless certificate_based_clusters_enabled?
+    return [] unless clusterable.certificate_based_clusters_enabled?
 
     finder = ClusterAncestorsFinder.new(clusterable.__subject__, current_user)
     clusters = finder.execute

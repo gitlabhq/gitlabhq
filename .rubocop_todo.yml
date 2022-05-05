@@ -241,10 +241,6 @@ Style/KeywordParametersOrder:
 Style/Lambda:
   Enabled: false
 
-# Offense count: 21
-Style/MissingRespondToMissing:
-  Enabled: false
-
 # Offense count: 35
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, MinBodyLength.

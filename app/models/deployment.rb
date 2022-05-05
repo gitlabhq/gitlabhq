@@ -70,6 +70,11 @@ class Deployment < ApplicationRecord
       transition created: :blocked
     end
 
+    # This transition is possible when we have manual jobs.
+    event :create do
+      transition skipped: :created
+    end
+
     event :unblock do
       transition blocked: :created
     end
@@ -348,7 +353,7 @@ class Deployment < ApplicationRecord
 
   def sync_status_with(build)
     return false unless ::Deployment.statuses.include?(build.status)
-    return false if build.created? || build.status == self.status
+    return false if build.status == self.status
 
     update_status!(build.status)
   rescue StandardError => e
@@ -403,6 +408,8 @@ class Deployment < ApplicationRecord
       skip!
     when 'blocked'
       block!
+    when 'created'
+      create!
     else
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end
