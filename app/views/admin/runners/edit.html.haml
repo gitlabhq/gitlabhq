@@ -1,12 +1,8 @@
 - runner_name = "##{@runner.id} (#{@runner.short_sha})"
-- if Feature.enabled?(:runner_read_only_admin_view, default_enabled: :yaml)
-  - breadcrumb_title _('Edit')
-  - page_title _('Edit'), runner_name
-  - add_to_breadcrumbs _('Runners'), admin_runners_path
-  - add_to_breadcrumbs runner_name, admin_runner_path(@runner)
-- else
-  - breadcrumb_title runner_name
-  - page_title runner_name
+- breadcrumb_title _('Edit')
+- page_title _('Edit'), runner_name
+- add_to_breadcrumbs _('Runners'), admin_runners_path
+- add_to_breadcrumbs runner_name, admin_runner_path(@runner)
 
 #js-admin-runner-edit{ data: {runner_id: @runner.id, runner_path: admin_runner_path(@runner) } }
 

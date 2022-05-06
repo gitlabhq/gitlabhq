@@ -11,6 +11,7 @@ export default () => {
         url: el.dataset.endpoint,
         dom_id: '#js-openapi-viewer',
         deepLinking: true,
+        displayOperationId: true,
       });
     })
     .catch((error) => {
