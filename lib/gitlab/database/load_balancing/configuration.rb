@@ -90,7 +90,7 @@ module Gitlab
           return false unless ::Gitlab::SafeRequestStore.active?
 
           ::Gitlab::SafeRequestStore.fetch(:force_no_sharing_primary_model) do
-            ::Feature::FlipperFeature.table_exists? && ::Feature.enabled?(:force_no_sharing_primary_model, default_enabled: :yaml)
+            ::Feature::FlipperFeature.table_exists? && ::Feature.enabled?(:force_no_sharing_primary_model)
           end
         end
 

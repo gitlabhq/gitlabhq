@@ -76,7 +76,7 @@ module API
 
       resource do
         before do
-          not_found! unless ::Feature.enabled?(:bulk_import, default_enabled: :yaml)
+          not_found! unless ::Feature.enabled?(:bulk_import)
         end
 
         desc 'Start relations export' do

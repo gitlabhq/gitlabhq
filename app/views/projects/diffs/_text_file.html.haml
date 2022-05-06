@@ -4,7 +4,7 @@
     %a.show-suppressed-diff.cursor-pointer.js-show-suppressed-diff= _("Changes suppressed. Click to show.")
 
 %table.text-file.diff-wrap-lines.code.code-commit.js-syntax-highlight.commit-diff{ data: diff_view_data, class: too_big ? 'hide' : '' }
-  - if Feature.enabled?(:inline_haml_diff_line_rendering, @project, default_enabled: :yaml)
+  - if Feature.enabled?(:inline_haml_diff_line_rendering, @project)
     - diff_file.highlighted_diff_lines.each do |line|
       - line_code = diff_file.line_code(line)
 

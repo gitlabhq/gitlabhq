@@ -103,7 +103,7 @@ module CrossDatabaseModification
     def track_gitlab_schema_in_current_transaction?
       return false unless Feature::FlipperFeature.table_exists?
 
-      Feature.enabled?(:track_gitlab_schema_in_current_transaction, default_enabled: :yaml)
+      Feature.enabled?(:track_gitlab_schema_in_current_transaction)
     rescue ActiveRecord::NoDatabaseError, PG::ConnectionBad
       false
     end

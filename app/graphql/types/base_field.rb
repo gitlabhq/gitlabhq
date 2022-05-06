@@ -68,7 +68,7 @@ module Types
     end
 
     def visible?(context)
-      return false if feature_flag.present? && !Feature.enabled?(feature_flag, default_enabled: :yaml)
+      return false if feature_flag.present? && !Feature.enabled?(feature_flag)
 
       super
     end

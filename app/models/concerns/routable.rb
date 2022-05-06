@@ -97,7 +97,7 @@ module Routable
 
   def full_name
     # We have to test for persistence as the cache key uses #updated_at
-    return (route&.name || build_full_name) unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops, default_enabled: :yaml)
+    return (route&.name || build_full_name) unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops)
 
     # Return the name as-is if the parent is missing
     return name if route.nil? && parent.nil? && name.present?
@@ -115,7 +115,7 @@ module Routable
 
   def full_path
     # We have to test for persistence as the cache key uses #updated_at
-    return (route&.path || build_full_path) unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops, default_enabled: :yaml)
+    return (route&.path || build_full_path) unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops)
 
     # Return the path as-is if the parent is missing
     return path if route.nil? && parent.nil? && path.present?

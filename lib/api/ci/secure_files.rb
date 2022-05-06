@@ -96,11 +96,11 @@ module API
 
       helpers do
         def feature_flag_enabled?
-          service_unavailable! unless Feature.enabled?(:ci_secure_files, user_project, default_enabled: :yaml)
+          service_unavailable! unless Feature.enabled?(:ci_secure_files, user_project)
         end
 
         def read_only_feature_flag_enabled?
-          service_unavailable! if Feature.enabled?(:ci_secure_files_read_only, user_project, type: :ops, default_enabled: :yaml)
+          service_unavailable! if Feature.enabled?(:ci_secure_files_read_only, user_project, type: :ops)
         end
       end
     end

@@ -31,7 +31,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
         "id": 2,
         "name": "Rule 1",
         "external_url": "https://gitlab.com/test-endpoint",
-        "status": "pass"
+        "status": "passed"
     },
     {
         "id": 1,

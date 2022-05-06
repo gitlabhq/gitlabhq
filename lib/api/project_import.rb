@@ -179,7 +179,7 @@ module API
         success Entities::ProjectImportStatus
       end
       post 'remote-import-s3' do
-        not_found! unless ::Feature.enabled?(:import_project_from_remote_file_s3, default_enabled: :yaml)
+        not_found! unless ::Feature.enabled?(:import_project_from_remote_file_s3)
 
         check_rate_limit! :project_import, scope: [current_user, :project_import]
 

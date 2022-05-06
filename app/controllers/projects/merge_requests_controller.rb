@@ -33,22 +33,22 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show] do
     push_frontend_feature_flag(:file_identifier_hash)
-    push_frontend_feature_flag(:merge_request_widget_graphql, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:paginated_notes, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:confidential_notes, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:refactor_mr_widgets_extensions, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:refactor_mr_widget_test_summary, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:rebase_without_ci_ui, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:realtime_labels, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:updated_diff_expansion_buttons, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:mr_attention_requests, current_user, default_enabled: :yaml)
+    push_frontend_feature_flag(:paginated_notes, project)
+    push_frontend_feature_flag(:confidential_notes, project)
+    push_frontend_feature_flag(:restructured_mr_widget, project)
+    push_frontend_feature_flag(:refactor_mr_widgets_extensions, project)
+    push_frontend_feature_flag(:refactor_mr_widget_test_summary, project)
+    push_frontend_feature_flag(:rebase_without_ci_ui, project)
+    push_frontend_feature_flag(:issue_assignees_widget, @project)
+    push_frontend_feature_flag(:realtime_labels, project)
+    push_frontend_feature_flag(:updated_diff_expansion_buttons, project)
+    push_frontend_feature_flag(:mr_attention_requests, current_user)
   end
 
   before_action do
-    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]

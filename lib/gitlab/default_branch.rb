@@ -4,7 +4,7 @@
 module Gitlab
   module DefaultBranch
     def self.value(object: nil)
-      Feature.enabled?(:main_branch_over_master, object, default_enabled: :yaml) ? 'main' : 'master'
+      Feature.enabled?(:main_branch_over_master, object) ? 'main' : 'master'
     end
   end
 end

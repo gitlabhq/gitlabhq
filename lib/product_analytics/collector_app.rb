@@ -14,7 +14,7 @@ module ProductAnalytics
       # for project without the feature enabled. During increase of feature adoption, this
       # check will be removed for better performance.
       project = Project.find(params['aid'].to_i)
-      return not_found unless Feature.enabled?(:product_analytics, project, default_enabled: false)
+      return not_found unless Feature.enabled?(:product_analytics, project)
 
       # Snowplow tracker has own format of events.
       # We need to convert them to match the schema of our database.

@@ -41,7 +41,7 @@ module Gitlab
         end
 
         def too_big?
-          return false unless Feature.enabled?(:ci_yaml_limit_size, default_enabled: true)
+          return false unless Feature.enabled?(:ci_yaml_limit_size)
 
           !deep_size.valid?
         end

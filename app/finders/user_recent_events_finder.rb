@@ -73,7 +73,7 @@ class UserRecentEventsFinder
 
     return Event.none if users.empty?
 
-    if Feature.enabled?(:optimized_followed_users_queries, current_user, default_enabled: :yaml)
+    if Feature.enabled?(:optimized_followed_users_queries, current_user)
       query_builder_params = event_filter.in_operator_query_builder_params(users)
 
       Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder

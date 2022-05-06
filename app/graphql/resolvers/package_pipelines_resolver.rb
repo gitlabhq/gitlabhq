@@ -40,7 +40,7 @@ module Resolvers
     # TODO remove when cleaning up packages_graphql_pipelines_resolver
     # https://gitlab.com/gitlab-org/gitlab/-/issues/358432
     def detect_mode
-      return :new_finder if Feature.enabled?(:packages_graphql_pipelines_resolver, default_enabled: :yaml)
+      return :new_finder if Feature.enabled?(:packages_graphql_pipelines_resolver)
       return :object_field if context[:packages_access_level] == :group || context[:packages_access_level] == :project
 
       :old_finder

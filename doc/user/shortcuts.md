@@ -38,9 +38,9 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>i</kbd>    | Go to your Issues page. |
 | <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [Merge requests](project/merge_requests/index.md) page. |
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your To-Do List page. |
-| <kbd>p</kbd> then <kbd>b</kbd>     | Show or hide the Performance Bar. |
+| <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
-| <kbd>g</kbd> then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
+| <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
 | <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/index.md). |
 
 Additionally, the following shortcuts are available when editing text in text
@@ -150,7 +150,7 @@ These shortcuts are available when editing a file with the [Web IDE](project/web
 | <kbd>Command</kbd> + <kbd>U</kbd> |  | Cursor undo |
 | <kbd>Command</kbd> + <kbd>Backspace<kbd> |  | Delete all left |
 | <kbd>Control</kbd> + <kbd>K</kbd> |  | Delete all right |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> <kbd>K</kbd> |  | Delete line |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>K</kbd> |  | Delete line |
 | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>→</kbd> |  | Expand selection |
 | <kbd>Command</kbd> + <kbd>P</kbd> |  | File finder |
 | <kbd>Command</kbd> + <kbd>F</kbd> |  | Find |
@@ -160,25 +160,58 @@ These shortcuts are available when editing a file with the [Web IDE](project/web
 | <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>F3</kbd> |  | Find previous selection |
 | <kbd>Command</kbd> + <kbd>E</kbd> |  | Find with selection |
 | <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>&#91;</kbd> |  | Fold |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>O</kbd> |  | Fold all |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>/</kbd> |  | Fold all block comments |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>8</kbd> |  | Fold all regions |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>-</kbd> |  | Fold all regions except selected |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>1</kbd> |  | Fold level 1 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>2</kbd> |  | Fold level 2 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>3</kbd> |  | Fold level 3 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>4</kbd> |  | Fold level 4 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>5</kbd> |  | Fold level 5 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>6</kbd> |  | Fold level 6 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , <kbd>Command</kbd> + <kbd>7</kbd> |  | Fold level 7 |
-| <kbd>Command</kbd> + <kbd>K</kbd> + <kbd>Command</kbd> + <kbd>&#91;</kbd> |  | Fold recursively |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>O</kbd> |  | Fold all |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>/</kbd> |  | Fold all block comments |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>8</kbd> |  | Fold all regions |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>-</kbd> |  | Fold all regions except selected |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>1</kbd> |  | Fold level 1 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>2</kbd> |  | Fold level 2 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>3</kbd> |  | Fold level 3 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>4</kbd> |  | Fold level 4 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>5</kbd> |  | Fold level 5 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>6</kbd> |  | Fold level 6 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>7</kbd> |  | Fold level 7 |
+| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>&#91;</kbd> |  | Fold recursively |
 | <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>\ </kbd> |  | Go to bracket |
 | <kbd>Control</kbd> + <kbd>G</kbd> |  | Go to line or column |
-| <kbd>Option</kbd> + <kbd>F8</kbd> |  | Go to next problem (error, warning, info) |
-| <kbd>F8</kbd> |  | Go to next problem in files (error, warning, info) |
-| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>F8</kbd> |  | Go to previous problem (error, warning, info) |
-| <kbd>Shift</kbd> + <kbd>F8</kbd> |  | Go to previous problem in files (error, warning, info) |
-| <kbd>Command</kbd> + <kbd>p</kbd> | <kbd>Control</kbd> + <kbd>p</kbd> | Search for, and then open another file for editing. |
+| <kbd>Option</kbd> + <kbd>F8</kbd> |  | Go to next problem (error, warning, information) |
+| <kbd>F8</kbd> |  | Go to next problem in files (error, warning, information) |
+| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>F8</kbd> |  | Go to previous problem (error, warning, information) |
+| <kbd>Shift</kbd> + <kbd>F8</kbd> |  | Go to previous problem in files (error, warning, information) |
+| <kbd>Command</kbd> + <kbd>]</kbd> |  |  Indent line |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> |  |  Enter Insert line above |
+| <kbd>Command</kbd> + <kbd>Enter</kbd> |  |  Insert line below |
+| <kbd>Control</kbd> + <kbd>J</kbd> |  |  Join lines |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>D</kbd> |  |  Move last selection to next find match |
+| <kbd>Option</kbd> + <kbd>↓</kbd> |  |  Move line down |
+| <kbd>Option</kbd> + <kbd>↑</kbd> |  |  Move line up |
+| <kbd>Command</kbd> + <kbd>&#91;</kbd> |  |  Outdent line |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>P</kbd> |  |  Preview Markdown |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>U</kbd> |  |  Remove line comment |
+| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>F</kbd> |  |  Replace |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>.</kbd> |  |  Replace with next value |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>,</kbd> |  |  Replace with previous value |
+| <kbd>Command</kbd> + <kbd>S</kbd> |  |  Save files |
+| <kbd>Command</kbd> + <kbd>P</kbd> | <kbd>Control</kbd> + <kbd>P</kbd> | Search for, and then open another file for editing. |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>L</kbd> |  |  Select all occurrence of Find Match  |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>B</kbd> |  |  Set selection anchor  |
+| <kbd>Option</kbd> + <kbd>F1</kbd> |  |  Show accessibility help |
+| <kbd>Shift</kbd> + <kbd>F10</kbd> |  |  Show editor context menu |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>I</kbd> |  |  Show hover |
+| <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>←</kbd> |  |  Shrink selection |
+| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>A</kbd> |  |  Toggle block comment |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>L</kbd> |  |  Toggle fold |
+| <kbd>Command</kbd> + <kbd>/</kbd> |  |  Toggle line comment |
+| <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> |  |  Toggle Tab key moves focus  |
+| <kbd>Control</kbd> + <kbd>T</kbd> |  |  Transpose letters |
+| <kbd>Control</kbd> + <kbd>Space</kbd> |  |  Trigger Suggest |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>X</kbd> |  |  Trim trailing whitespace |
+| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>]</kbd> |  |  Unfold  |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>J</kbd> |  |  Unfold all |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>9</kbd> |  |  Unfold all regions |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>=</kbd> |  |  Unfold all regions except selected |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>]</kbd> |  |  Unfold recursively |
+| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>X</kbd> |  |  Trim trailing whitespace |
 | <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Commit (when editing the commit message). |
 
 ### Repository graph

@@ -80,7 +80,7 @@ module Gitlab
 
         def json_writer
           @json_writer ||= begin
-            if ::Feature.enabled?(:project_export_as_ndjson, @project.namespace, default_enabled: true)
+            if ::Feature.enabled?(:project_export_as_ndjson, @project.namespace)
               full_path = File.join(@shared.export_path, 'tree')
               Gitlab::ImportExport::Json::NdjsonWriter.new(full_path)
             else

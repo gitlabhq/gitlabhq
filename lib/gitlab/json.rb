@@ -160,7 +160,7 @@ module Gitlab
       # @raise [JSON::ParserError]
       def handle_legacy_mode!(data)
         return data unless feature_table_exists?
-        return data unless Feature.enabled?(:json_wrapper_legacy_mode, default_enabled: true)
+        return data unless Feature.enabled?(:json_wrapper_legacy_mode)
 
         raise parser_error if INVALID_LEGACY_TYPES.any? { |type| data.is_a?(type) }
       end

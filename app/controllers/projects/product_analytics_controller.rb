@@ -54,6 +54,6 @@ class Projects::ProductAnalyticsController < Projects::ApplicationController
   end
 
   def feature_enabled!
-    render_404 unless Feature.enabled?(:product_analytics, @project, default_enabled: false)
+    render_404 unless Feature.enabled?(:product_analytics, @project)
   end
 end

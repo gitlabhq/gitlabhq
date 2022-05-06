@@ -170,7 +170,7 @@ module Types
     end
 
     def hidden?
-      object.hidden? if Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml)
+      object.hidden? if Feature.enabled?(:ban_user_feature_flag)
     end
 
     def escalation_status

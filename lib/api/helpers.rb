@@ -144,7 +144,7 @@ module API
       return true unless job_token_authentication?
       return true unless route_authentication_setting[:job_token_scope] == :project
 
-      ::Feature.enabled?(:ci_job_token_scope, project, default_enabled: :yaml) &&
+      ::Feature.enabled?(:ci_job_token_scope, project) &&
         current_authenticated_job.project == project
     end
 
@@ -580,7 +580,7 @@ module API
 
     def increment_counter(event_name)
       feature_name = "usage_data_#{event_name}"
-      return unless Feature.enabled?(feature_name, default_enabled: :yaml)
+      return unless Feature.enabled?(feature_name)
 
       Gitlab::UsageDataCounters.count(event_name)
     rescue StandardError => error

@@ -39,16 +39,16 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:vue_issues_list, project&.group, default_enabled: :yaml)
-    push_frontend_feature_flag(:contacts_autocomplete, project&.group, default_enabled: :yaml)
-    push_frontend_feature_flag(:incident_timeline, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:vue_issues_list, project&.group)
+    push_frontend_feature_flag(:contacts_autocomplete, project&.group)
+    push_frontend_feature_flag(:incident_timeline, project)
   end
 
   before_action only: :show do
-    push_frontend_feature_flag(:confidential_notes, project&.group, default_enabled: :yaml)
-    push_frontend_feature_flag(:issue_assignees_widget, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:paginated_issue_discussions, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:realtime_labels, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:confidential_notes, project&.group)
+    push_frontend_feature_flag(:issue_assignees_widget, project)
+    push_frontend_feature_flag(:paginated_issue_discussions, project)
+    push_frontend_feature_flag(:realtime_labels, project)
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
   end
 
@@ -253,7 +253,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def vue_issues_list?
     action_name.to_sym == :index &&
       html_request? &&
-      Feature.enabled?(:vue_issues_list, project&.group, default_enabled: :yaml)
+      Feature.enabled?(:vue_issues_list, project&.group)
   end
 
   def sorting_field

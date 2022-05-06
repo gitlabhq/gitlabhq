@@ -312,7 +312,7 @@ module Gitlab
       end
 
       def consistent_archived_trace?(build)
-        ::Feature.enabled?(:gitlab_ci_archived_trace_consistent_reads, build.project, default_enabled: false)
+        ::Feature.enabled?(:gitlab_ci_archived_trace_consistent_reads, build.project)
       end
 
       def being_watched_cache_key

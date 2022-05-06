@@ -19,8 +19,8 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   end
 
   before_action do
-    push_frontend_feature_flag(:jira_connect_oauth, @user, default_enabled: :yaml)
-    push_frontend_feature_flag(:jira_connect_oauth_self_managed, @user, default_enabled: :yaml)
+    push_frontend_feature_flag(:jira_connect_oauth, @user)
+    push_frontend_feature_flag(:jira_connect_oauth_self_managed, @user)
   end
 
   before_action :allow_rendering_in_iframe, only: :index

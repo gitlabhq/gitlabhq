@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Migrate from GitLab Managed Apps to Cluster Management Projects **(FREE)**
 
-The [GitLab Managed Apps](applications.md) were deprecated in GitLab 14.0
-in favor of [Cluster Management Projects](management_project.md).
+The GitLab Managed Apps were deprecated in GitLab 14.0
+in favor of user-controlled Cluster Management projects.
 Managing your cluster applications through a project enables you a
 lot more flexibility to manage your cluster than through the late GitLab Managed Apps.
 To migrate to the cluster management project you need
@@ -21,8 +21,10 @@ follow the steps below.
 See also [video walk-throughs](#video-walk-throughs) with examples.
 
 1. Create a new project based on the [Cluster Management Project template](management_project_template.md#create-a-project-based-on-the-cluster-management-project-template).
-1. [Associate your new Cluster Management Project with your cluster](management_project.md#associate-the-cluster-management-project-with-the-cluster).
+1. [Install an agent](agent/install/index.md) for this project in your cluster.
+1. Set the `KUBE_CONTEXT` CI/CD variable to the newly installed agent's context, as instructed in the `.gitlab-ci.yml` from the Project Template.
 1. Detect apps deployed through Helm v2 releases by using the pre-configured [`.gitlab-ci.yml`](management_project_template.md#the-gitlab-ciyml-file) file:
+
    - In case you had overwritten the default GitLab Managed Apps namespace, edit `.gitlab-ci.yml`,
      and make sure the script is receiving the correct namespace as an argument:
 
@@ -92,6 +94,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
      chart version proposed in `applications/vault/values.yaml`.
 
    - Cert-manager:
+
      - For users on Kubernetes version 1.20 or above, the deprecated cert-manager v0.10 is no longer valid
        and the upgrade includes a breaking change. So we suggest that you [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010),
        and install the latest cert-manager instead. To install this version, uncomment `applications/cert-manager/helmfile.yaml`

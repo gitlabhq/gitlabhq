@@ -8370,9 +8370,6 @@ msgstr ""
 msgid "ClusterAgent|You have insufficient permissions to delete this cluster agent"
 msgstr ""
 
-msgid "ClusterApplicationsRemoved|One-click application management was removed in GitLab 14.0. Your applications are still installed in your cluster, and integrations continue working."
-msgstr ""
-
 msgid "ClusterIntegration|%{linkStart}More information%{linkEnd}"
 msgstr ""
 
@@ -40429,6 +40426,9 @@ msgstr ""
 msgid "UsageQuota|Current period usage"
 msgstr ""
 
+msgid "UsageQuota|Dependency proxy"
+msgstr ""
+
 msgid "UsageQuota|File attachments and smaller design graphics."
 msgstr ""
 
@@ -40451,6 +40451,9 @@ msgid "UsageQuota|Learn more about excess storage usage"
 msgstr ""
 
 msgid "UsageQuota|Learn more about usage quotas"
+msgstr ""
+
+msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "UsageQuota|No CI minutes usage data available."

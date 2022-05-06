@@ -58,7 +58,7 @@ module Ci
     end
 
     def retryable?
-      return false unless Feature.enabled?(:ci_recreate_downstream_pipeline, project, default_enabled: :yaml)
+      return false unless Feature.enabled?(:ci_recreate_downstream_pipeline, project)
 
       return false if failed? && (pipeline_loop_detected? || reached_max_descendant_pipelines_depth?)
 
@@ -215,7 +215,7 @@ module Ci
     end
 
     def downstream_variables
-      if ::Feature.enabled?(:ci_trigger_forward_variables, project, default_enabled: :yaml)
+      if ::Feature.enabled?(:ci_trigger_forward_variables, project)
         calculate_downstream_variables
           .reverse # variables priority
           .uniq { |var| var[:key] } # only one variable key to pass

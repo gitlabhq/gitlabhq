@@ -12,7 +12,7 @@ class ScheduleMergeRequestCleanupRefsWorker
 
   def perform
     return if Gitlab::Database.read_only?
-    return unless Feature.enabled?(:merge_request_refs_cleanup, default_enabled: false)
+    return unless Feature.enabled?(:merge_request_refs_cleanup)
 
     MergeRequestCleanupRefsWorker.perform_with_capacity
   end

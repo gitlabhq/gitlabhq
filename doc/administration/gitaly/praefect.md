@@ -440,6 +440,7 @@ On the **Praefect** node:
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    gitaly['enable'] = false
+   gitlab_kas['enable'] = false
 
    # Enable only the Praefect service
    praefect['enable'] = true

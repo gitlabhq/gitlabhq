@@ -188,6 +188,16 @@ The new security approvals feature is similar to vulnerability check. For exampl
 - A two-step approval process can be enforced for any desired changes to security approval rules.
 - A single set of security policies can be applied to multiple development projects to allow for ease in maintaining a single, centralized ruleset.
 
+### `Managed-Cluster-Applications.gitlab-ci.yml`
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `Managed-Cluster-Applications.gitlab-ci.yml` CI/CD template is being removed. If you need an  alternative, try the [Cluster Management project template](https://gitlab.com/gitlab-org/gitlab/-/issues/333610) instead. If your are not ready to move, you can copy the [last released version](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/v14.10.1/lib/gitlab/ci/templates/Managed-Cluster-Applications.gitlab-ci.yml) of the template into your project.
+
 ### `artifacts:report:cobertura` keyword
 
 As of GitLab 15.0, the `artifacts:report:cobertura` keyword has been replaced by

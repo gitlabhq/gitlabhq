@@ -78,7 +78,7 @@ module Groups
       end
 
       def ndjson?
-        ::Feature.enabled?(:group_export_ndjson, group&.parent, default_enabled: :yaml)
+        ::Feature.enabled?(:group_export_ndjson, group&.parent)
       end
 
       def version_saver

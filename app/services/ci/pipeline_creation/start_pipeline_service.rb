@@ -13,7 +13,7 @@ module Ci
         ##
         # Create a persistent ref for the pipeline.
         # The pipeline ref is fetched in the jobs and deleted when the pipeline transitions to a finished state.
-        if ::Feature.enabled?(:ci_reduce_persistent_ref_writes, pipeline.project, default_enabled: :yaml)
+        if ::Feature.enabled?(:ci_reduce_persistent_ref_writes, pipeline.project)
           pipeline.ensure_persistent_ref
         end
 

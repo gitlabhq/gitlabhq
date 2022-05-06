@@ -45,7 +45,6 @@ the GitLab agent model on the [agent's blueprint documentation](../../../archite
 - [Connect an existing cluster through cluster certificates](../../project/clusters/add_existing_cluster.md)
 - [Access controls](../../project/clusters/cluster_access.md)
 - [GitLab-managed clusters](../../project/clusters/gitlab_managed_clusters.md)
-- [GitLab Managed Apps](../../clusters/applications.md)
 - [Deploy applications through certificate-based connection](../../project/clusters/deploy_to_cluster.md)
 - [Cluster Management Project](../../clusters/management_project.md)
 - [Cluster integrations](../../clusters/integrations.md)
@@ -55,7 +54,6 @@ the GitLab agent model on the [agent's blueprint documentation](../../../archite
 - [Deploy Boards](../../project/deploy_boards.md)
 - [Pod logs](../../project/clusters/kubernetes_pod_logs.md)
 - [Clusters health](manage/clusters_health.md)
-- [Crossplane integration](../../clusters/crossplane.md)
 - [Web terminals](../../../administration/integration/terminal.md)
 
 ### Cluster levels

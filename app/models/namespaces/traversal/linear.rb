@@ -77,38 +77,38 @@ module Namespaces
       end
 
       def sync_traversal_ids?
-        Feature.enabled?(:sync_traversal_ids, root_ancestor, default_enabled: :yaml)
+        Feature.enabled?(:sync_traversal_ids, root_ancestor)
       end
 
       def use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
+        return false unless Feature.enabled?(:use_traversal_ids)
 
         traversal_ids.present?
       end
 
       def use_traversal_ids_for_self_and_hierarchy?
         return false unless use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids_for_self_and_hierarchy, root_ancestor, default_enabled: :yaml)
+        return false unless Feature.enabled?(:use_traversal_ids_for_self_and_hierarchy, root_ancestor)
 
         traversal_ids.present?
       end
 
       def use_traversal_ids_for_ancestors?
         return false unless use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor, default_enabled: :yaml)
+        return false unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor)
 
         traversal_ids.present?
       end
 
       def use_traversal_ids_for_ancestors_upto?
         return false unless use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids_for_ancestors_upto, root_ancestor, default_enabled: :yaml)
+        return false unless Feature.enabled?(:use_traversal_ids_for_ancestors_upto, root_ancestor)
 
         traversal_ids.present?
       end
 
       def use_traversal_ids_for_root_ancestor?
-        return false unless Feature.enabled?(:use_traversal_ids_for_root_ancestor, default_enabled: :yaml)
+        return false unless Feature.enabled?(:use_traversal_ids_for_root_ancestor)
 
         traversal_ids.present?
       end

@@ -465,7 +465,7 @@ module Ci
     end
 
     def self.token_expiration_enforced?
-      Feature.enabled?(:enforce_runner_token_expires_at, default_enabled: :yaml)
+      Feature.enabled?(:enforce_runner_token_expires_at)
     end
 
     private

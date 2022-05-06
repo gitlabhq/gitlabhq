@@ -51,7 +51,7 @@ module Ci
       end
 
       def use_denormalized_data_strategy?
-        ::Feature.enabled?(:ci_queuing_use_denormalized_data_strategy, default_enabled: :yaml)
+        ::Feature.enabled?(:ci_queuing_use_denormalized_data_strategy)
       end
 
       private
@@ -70,7 +70,7 @@ module Ci
       end
 
       def builds_ordered_for_shared_runners(relation)
-        if Feature.enabled?(:ci_queueing_disaster_recovery_disable_fair_scheduling, runner, type: :ops, default_enabled: :yaml)
+        if Feature.enabled?(:ci_queueing_disaster_recovery_disable_fair_scheduling, runner, type: :ops)
           # if disaster recovery is enabled, we fallback to FIFO scheduling
           relation.order('ci_pending_builds.build_id ASC')
         else

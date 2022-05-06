@@ -443,7 +443,7 @@ module SearchHelper
     return false unless can?(current_user, :read_users_list)
     return true if @group
 
-    Feature.enabled?(:global_search_users_tab, current_user, type: :ops, default_enabled: :yaml)
+    Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
   end
 
   def issuable_state_to_badge_class(issuable)

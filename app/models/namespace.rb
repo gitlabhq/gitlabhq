@@ -126,7 +126,7 @@ class Namespace < ApplicationRecord
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
   after_commit :expire_child_caches, on: :update, if: -> {
-    Feature.enabled?(:cached_route_lookups, self, type: :ops, default_enabled: :yaml) &&
+    Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
       saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
   }
 
@@ -351,7 +351,7 @@ class Namespace < ApplicationRecord
   # Includes projects from this namespace and projects from all subgroups
   # that belongs to this namespace
   def all_projects
-    if Feature.enabled?(:recursive_approach_for_all_projects, default_enabled: :yaml)
+    if Feature.enabled?(:recursive_approach_for_all_projects)
       namespace = user_namespace? ? self : self_and_descendant_ids
       Project.where(namespace: namespace)
     else
@@ -516,7 +516,7 @@ class Namespace < ApplicationRecord
   end
 
   def issue_repositioning_disabled?
-    Feature.enabled?(:block_issue_repositioning, self, type: :ops, default_enabled: :yaml)
+    Feature.enabled?(:block_issue_repositioning, self, type: :ops)
   end
 
   def storage_enforcement_date
@@ -527,7 +527,7 @@ class Namespace < ApplicationRecord
 
   def certificate_based_clusters_enabled?
     ::Gitlab::SafeRequestStore.fetch("certificate_based_clusters:ns:#{self.id}") do
-      Feature.enabled?(:certificate_based_clusters, self, default_enabled: :yaml, type: :ops)
+      Feature.enabled?(:certificate_based_clusters, self, type: :ops)
     end
   end
 
@@ -644,7 +644,7 @@ class Namespace < ApplicationRecord
   end
 
   def cache_first_auto_devops_config?
-    ::Feature.enabled?(:namespaces_cache_first_auto_devops_config, default_enabled: :yaml)
+    ::Feature.enabled?(:namespaces_cache_first_auto_devops_config)
   end
 
   def write_projects_repository_config

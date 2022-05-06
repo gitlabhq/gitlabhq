@@ -154,7 +154,6 @@ This process is meant to ensure consistent feature flag usage in the codebase. A
 - Be known. Only use feature flags that are explicitly defined.
 - Not be defined twice. They have to be defined either in FOSS or EE, but not both.
 - Use a valid and consistent `type:` across all invocations.
-- Use the same `default_enabled:` across all invocations.
 - Have an owner.
 
 All feature flags known to GitLab are self-documented in YAML files stored in:
@@ -168,7 +167,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 |---------------------|----------|----------------------------------------------------------------|
 | `name`              | yes      | Name of the feature flag.                                      |
 | `type`              | yes      | Type of feature flag.                                          |
-| `default_enabled`   | yes      | The default state of the feature flag that is strictly validated, with `default_enabled:` passed as an argument. |
+| `default_enabled`   | yes      | The default state of the feature flag.                         |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the feature flag. |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
 | `milestone`         | no       | Milestone in which the feature was added.                      |
@@ -256,42 +255,10 @@ if Feature.disabled?(:my_feature_flag, project)
 end
 ```
 
-In rare cases you may want to make a feature enabled by default. If so, explain the reasoning
-in the merge request. Use `default_enabled: true` when checking the feature flag state:
+Default behavior for not configured feature flags is controlled
+by `default_enabled:` in YAML definition.
 
-```ruby
-if Feature.enabled?(:feature_flag, project, default_enabled: true)
-  # execute code if feature flag is enabled
-else
-  # execute code if feature flag is disabled
-end
-
-if Feature.disabled?(:my_feature_flag, project, default_enabled: true)
-  # execute code if feature flag is disabled
-end
-```
-
-If not specified, `default_enabled` is `false`.
-
-To force reading the `default_enabled` value from the relative YAML definition file, use
-`default_enabled: :yaml`:
-
-```ruby
-if Feature.enabled?(:feature_flag, project, default_enabled: :yaml)
-  # execute code if feature flag is enabled
-end
-```
-
-```ruby
-if Feature.disabled?(:feature_flag, project, default_enabled: :yaml)
-  # execute code if feature flag is disabled
-end
-```
-
-This allows to use the same feature flag check across various parts of the codebase and
-maintain the status of `default_enabled` in the YAML definition file which is the SSOT.
-
-If `default_enabled: :yaml` is used, a YAML definition is expected or an error is raised
+If feature flag does not have a YAML definition an error will be raised
 in development or test environment, while returning `false` on production.
 
 If not specified, the default feature flag type for `Feature.enabled?` and `Feature.disabled?`
@@ -380,16 +347,6 @@ so checking for `gon.features.vim_bindings` would not work.
 
 See the [Vue guide](../fe_guide/vue.md#accessing-feature-flags) for details about
 how to access feature flags in a Vue component.
-
-In rare cases you may want to make a feature enabled by default. If so, explain the reasoning
-in the merge request. Use `default_enabled: true` when checking the feature flag state:
-
-```ruby
-before_action do
-  # Prefer to scope it per project or user e.g.
-  push_frontend_feature_flag(:vim_bindings, project, default_enabled: true)
-end
-```
 
 If not specified, the default feature flag type for `push_frontend_feature_flag`
 is `type: development`. For all other feature flag types, you must specify the `type:`:
@@ -700,9 +657,7 @@ You can control whether the `Flipper::Adapters::Memory` or `ActiveRecord` mode i
 #### `stub_feature_flags: true` (default and preferred)
 
 In this mode Flipper is configured to use `Flipper::Adapters::Memory` and mark all feature
-flags to be on-by-default and persisted on a first use. This overwrites the `default_enabled:`
-of `Feature.enabled?` and `Feature.disabled?` returning always `true` unless feature flag
-is persisted.
+flags to be on-by-default and persisted on a first use.
 
 Make sure behavior under feature flag doesn't go untested in some non-specific contexts.
 

@@ -71,6 +71,6 @@ module SendFileUpload
   end
 
   def scaling_allowed_by_feature_flags?(file_upload)
-    Feature.enabled?(:dynamic_image_resizing, default_enabled: true, type: :ops)
+    Feature.enabled?(:dynamic_image_resizing, type: :ops)
   end
 end

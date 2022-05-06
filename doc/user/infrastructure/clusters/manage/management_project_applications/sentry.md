@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The Sentry Helm chart [recommends](https://github.com/helm/charts/blob/f6e5784f265dd459c5a77430185d0302ed372665/stable/sentry/values.yaml#L284-L285)
 at least 3 GB of available RAM for database migrations.
 
-Assuming you already have a [Cluster management project](../../../../../user/clusters/management_project.md) created from a
+Assuming you already have a project created from a
 [management project template](../../../../../user/clusters/management_project_template.md), to install Sentry you should
 uncomment this line from your `helmfile.yaml`:
 

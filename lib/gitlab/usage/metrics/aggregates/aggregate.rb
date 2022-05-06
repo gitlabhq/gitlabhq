@@ -30,7 +30,7 @@ module Gitlab
 
           def aggregated_metrics_data(start_date:, end_date:, time_frame:)
             aggregated_metrics.each_with_object({}) do |aggregation, data|
-              next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], default_enabled: :yaml, type: :development)
+              next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], type: :development)
               next unless aggregation[:time_frame].include?(time_frame)
 
               case aggregation[:source]

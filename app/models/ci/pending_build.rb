@@ -31,7 +31,7 @@ module Ci
       end
 
       def maintain_denormalized_data?
-        ::Feature.enabled?(:ci_pending_builds_maintain_denormalized_data, default_enabled: :yaml)
+        ::Feature.enabled?(:ci_pending_builds_maintain_denormalized_data)
       end
 
       private

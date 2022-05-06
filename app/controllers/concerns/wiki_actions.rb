@@ -22,7 +22,7 @@ module WikiActions
     before_action :set_content_class
 
     before_action do
-      push_frontend_feature_flag(:preserve_unchanged_markdown, @group, default_enabled: :yaml)
+      push_frontend_feature_flag(:preserve_unchanged_markdown, @group)
     end
 
     before_action only: [:show, :edit, :update] do

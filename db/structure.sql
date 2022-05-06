@@ -89,14 +89,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION integrations_set_type_new() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-UPDATE integrations SET type_new = COALESCE(NEW.type_new, regexp_replace(NEW.type, '\A(.+)Service\Z', 'Integrations::\1')) , type = COALESCE(NEW.type, regexp_replace(NEW.type_new, '\AIntegrations::(.+)\Z', '\1Service')) WHERE integrations.id = NEW.id; RETURN NULL;
-END
-$$;
-
 CREATE FUNCTION next_traversal_ids_sibling(traversal_ids integer[]) RETURNS integer[]
     LANGUAGE plpgsql IMMUTABLE STRICT
     AS $$
@@ -16148,7 +16140,6 @@ ALTER SEQUENCE insights_id_seq OWNED BY insights.id;
 
 CREATE TABLE integrations (
     id integer NOT NULL,
-    type character varying,
     project_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -27986,25 +27977,13 @@ CREATE INDEX index_integrations_on_inherit_from_id ON integrations USING btree (
 
 CREATE INDEX index_integrations_on_project_and_type_new_where_inherit_null ON integrations USING btree (project_id, type_new) WHERE (inherit_from_id IS NULL);
 
-CREATE INDEX index_integrations_on_project_and_type_where_inherit_null ON integrations USING btree (project_id, type) WHERE (inherit_from_id IS NULL);
-
 CREATE UNIQUE INDEX index_integrations_on_project_id_and_type_new_unique ON integrations USING btree (project_id, type_new);
-
-CREATE UNIQUE INDEX index_integrations_on_project_id_and_type_unique ON integrations USING btree (project_id, type);
-
-CREATE INDEX index_integrations_on_type ON integrations USING btree (type);
-
-CREATE UNIQUE INDEX index_integrations_on_type_and_instance_partial ON integrations USING btree (type, instance) WHERE (instance = true);
-
-CREATE INDEX index_integrations_on_type_id_when_active_and_project_id_not_nu ON integrations USING btree (type, id) WHERE ((active = true) AND (project_id IS NOT NULL));
 
 CREATE INDEX index_integrations_on_type_new ON integrations USING btree (type_new);
 
 CREATE INDEX index_integrations_on_type_new_and_instance_partial ON integrations USING btree (type_new, instance) WHERE (instance = true);
 
 CREATE INDEX index_integrations_on_type_new_id_when_active_and_has_project ON integrations USING btree (type_new, id) WHERE ((active = true) AND (project_id IS NOT NULL));
-
-CREATE UNIQUE INDEX index_integrations_on_unique_group_id_and_type ON integrations USING btree (group_id, type);
 
 CREATE INDEX index_integrations_on_unique_group_id_and_type_new ON integrations USING btree (group_id, type_new);
 
@@ -31125,8 +31104,6 @@ CREATE TRIGGER trigger_namespaces_parent_id_on_update AFTER UPDATE ON namespaces
 CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR EACH ROW EXECUTE FUNCTION insert_projects_sync_event();
 
 CREATE TRIGGER trigger_projects_parent_id_on_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((old.namespace_id IS DISTINCT FROM new.namespace_id)) EXECUTE FUNCTION insert_projects_sync_event();
-
-CREATE TRIGGER trigger_type_new_on_insert AFTER INSERT ON integrations FOR EACH ROW EXECUTE FUNCTION integrations_set_type_new();
 
 CREATE TRIGGER trigger_update_has_issues_on_vulnerability_issue_links_delete AFTER DELETE ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION unset_has_issues_on_vulnerability_reads();
 

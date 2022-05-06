@@ -2,12 +2,12 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Metrics::Exporter::HealthChecksMiddleware do
-  let(:app) { double(:app) }
+RSpec.describe Gitlab::HealthChecks::Middleware do
+  let(:app) { instance_double(Proc) }
   let(:env) { { 'PATH_INFO' => path } }
 
-  let(:readiness_probe) { double(:readiness_probe) }
-  let(:liveness_probe) { double(:liveness_probe) }
+  let(:readiness_probe) { instance_double(Gitlab::HealthChecks::Probes::Collection) }
+  let(:liveness_probe) { instance_double(Gitlab::HealthChecks::Probes::Collection) }
   let(:probe_result) { Gitlab::HealthChecks::Probes::Status.new(200, { status: 'ok' }) }
 
   subject(:middleware) { described_class.new(app, readiness_probe, liveness_probe) }

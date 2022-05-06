@@ -19,7 +19,7 @@ module ImportExport
     end
 
     def setup_reader(reader)
-      if reader == :ndjson_reader && Feature.enabled?(:project_import_ndjson, default_enabled: true)
+      if reader == :ndjson_reader && Feature.enabled?(:project_import_ndjson)
         allow_any_instance_of(Gitlab::ImportExport::Json::LegacyReader::File).to receive(:exist?).and_return(false)
         allow_any_instance_of(Gitlab::ImportExport::Json::NdjsonReader).to receive(:exist?).and_return(true)
       else

@@ -29,7 +29,7 @@
       = f.label :starts_at, _("Dismissable")
     .col-sm-10
       = f.gitlab_ui_checkbox_component :dismissable, _('Allow users to dismiss the broadcast message')
-  - if Feature.enabled?(:role_targeted_broadcast_messages, default_enabled: :yaml)
+  - if Feature.enabled?(:role_targeted_broadcast_messages)
     .form-group.row
       .col-sm-2.col-form-label
         = f.label :target_access_levels, _('Target roles')

@@ -130,7 +130,7 @@ module Ci
       end
 
       def fix_expire_at?
-        Feature.enabled?(:ci_detect_wrongly_expired_artifacts, default_enabled: :yaml)
+        Feature.enabled?(:ci_detect_wrongly_expired_artifacts)
       end
 
       def wrongly_expired?(artifact)

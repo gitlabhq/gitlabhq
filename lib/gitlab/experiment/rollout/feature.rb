@@ -14,7 +14,7 @@ module Gitlab
         def enabled?
           return false unless feature_flag_defined?
           return false unless Gitlab.com?
-          return false unless ::Feature.enabled?(:gitlab_experiment, type: :ops, default_enabled: :yaml)
+          return false unless ::Feature.enabled?(:gitlab_experiment, type: :ops)
 
           feature_flag_instance.state != :off
         end
@@ -29,7 +29,7 @@ module Gitlab
         # which will assign the control. Otherwise we call super, which will
         # assign a variant evenly, or based on our provided distribution rules.
         def execute_assignment
-          super if ::Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
+          super if ::Feature.enabled?(feature_flag_name, self, type: :experiment)
         end
 
         # This is what's provided to the `Feature.enabled?` call that will be

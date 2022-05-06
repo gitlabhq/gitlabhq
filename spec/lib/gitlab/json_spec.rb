@@ -290,7 +290,7 @@ RSpec.describe Gitlab::Json do
     end
 
     it "skips legacy mode handling" do
-      expect(Feature).not_to receive(:enabled?).with(:json_wrapper_legacy_mode, default_enabled: true)
+      expect(Feature).not_to receive(:enabled?).with(:json_wrapper_legacy_mode)
 
       subject.send(:handle_legacy_mode!, {})
     end

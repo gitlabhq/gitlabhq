@@ -1152,7 +1152,7 @@ class MergeRequest < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
-    if Feature.enabled?(:improved_mergeability_checks, self.project, default_enabled: :yaml)
+    if Feature.enabled?(:improved_mergeability_checks, self.project)
       additional_checks = MergeRequests::Mergeability::RunChecksService.new(
         merge_request: self,
         params: {
@@ -1457,7 +1457,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def environments_in_head_pipeline(deployment_status: nil)
-    if ::Feature.enabled?(:fix_related_environments_for_merge_requests, target_project, default_enabled: :yaml)
+    if ::Feature.enabled?(:fix_related_environments_for_merge_requests, target_project)
       actual_head_pipeline&.environments_in_self_and_descendants(deployment_status: deployment_status) || Environment.none
     else
       legacy_environments

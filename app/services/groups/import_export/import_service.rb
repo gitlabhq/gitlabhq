@@ -72,7 +72,7 @@ module Groups
       end
 
       def ndjson?
-        ::Feature.enabled?(:group_import_ndjson, group&.parent, default_enabled: true) &&
+        ::Feature.enabled?(:group_import_ndjson, group&.parent) &&
           File.exist?(File.join(shared.export_path, 'tree/groups/_all.ndjson'))
       end
 

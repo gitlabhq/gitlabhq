@@ -41,7 +41,7 @@ module Projects
     private
 
     def track_service(start_time, source_project, exception)
-      return if ::Feature.disabled?(:project_overwrite_service_tracking, source_project, default_enabled: :yaml)
+      return if ::Feature.disabled?(:project_overwrite_service_tracking, source_project)
 
       duration = ::Gitlab::Metrics::System.monotonic_time - start_time
 

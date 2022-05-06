@@ -54,15 +54,13 @@ module Gitlab
             def throttle_enabled?
               ::Feature.enabled?(
                 :ci_throttle_pipelines_creation,
-                project,
-                default_enabled: :yaml)
+                project)
             end
 
             def dry_run?
               ::Feature.enabled?(
                 :ci_throttle_pipelines_creation_dry_run,
-                project,
-                default_enabled: :yaml)
+                project)
             end
           end
         end

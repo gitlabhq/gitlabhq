@@ -211,6 +211,7 @@ module MergeRequestsHelper
       is_fork: merge_request.for_fork?.to_s,
       can_merge: merge_request.can_be_merged_by?(current_user).to_s,
       source_branch: merge_request.source_branch,
+      source_project_path: merge_request.source_project&.path,
       source_project_full_path: merge_request.source_project&.full_path,
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       target_branch: merge_request.target_branch,

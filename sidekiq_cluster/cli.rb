@@ -174,26 +174,12 @@ module Gitlab
         ::Settings.dig('monitoring', 'sidekiq_exporter', 'enabled')
       end
 
-      def exporter_has_a_unique_port?
-        # In https://gitlab.com/gitlab-org/gitlab/-/issues/345802 we added settings for sidekiq_health_checks.
-        # These settings default to the same values as sidekiq_exporter for backwards compatibility.
-        # If a different port for sidekiq_health_checks has been set up, we know that the
-        # user wants to serve health checks and metrics from different servers.
-        return false if sidekiq_health_check_port.nil? || sidekiq_exporter_port.nil?
-
-        sidekiq_exporter_port != sidekiq_health_check_port
-      end
-
       def sidekiq_exporter_port
         ::Settings.dig('monitoring', 'sidekiq_exporter', 'port')
       end
 
-      def sidekiq_health_check_port
-        ::Settings.dig('monitoring', 'sidekiq_health_checks', 'port')
-      end
-
       def metrics_server_enabled?
-        !@dryrun && sidekiq_exporter_enabled? && exporter_has_a_unique_port?
+        !@dryrun && sidekiq_exporter_enabled?
       end
 
       def option_parser

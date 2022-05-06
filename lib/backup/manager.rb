@@ -29,7 +29,7 @@ module Backup
       @progress = progress
 
       @incremental = Feature.feature_flags_available? &&
-        Feature.enabled?(:incremental_repository_backup, default_enabled: :yaml) &&
+        Feature.enabled?(:incremental_repository_backup) &&
         Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
 
       @definitions = definitions || build_definitions

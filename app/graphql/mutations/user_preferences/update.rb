@@ -38,7 +38,7 @@ module Mutations
       def disabled_sort_value?(args)
         return false unless [:escalation_status_asc, :escalation_status_desc].include?(args[:issues_sort])
 
-        Feature.disabled?(:incident_escalations, default_enabled: :yaml)
+        Feature.disabled?(:incident_escalations)
       end
     end
   end

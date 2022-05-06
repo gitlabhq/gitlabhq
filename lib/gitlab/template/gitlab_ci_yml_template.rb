@@ -77,7 +77,7 @@ module Gitlab
           return false unless templates_with_latest_version[key]
 
           flag_name = "redirect_to_latest_template_#{key.underscore.tr('/', '_')}"
-          ::Feature.enabled?(flag_name, project, default_enabled: :yaml)
+          ::Feature.enabled?(flag_name, project)
         end
 
         def templates_with_latest_version

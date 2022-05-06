@@ -348,7 +348,7 @@ class IssuableFinder
     params[:in].blank? &&
       klass.try(:pg_full_text_searchable_columns).present? &&
       params[:search] =~ FULL_TEXT_SEARCH_TERM_REGEX &&
-      Feature.enabled?(:issues_full_text_search, params.project || params.group, default_enabled: :yaml)
+      Feature.enabled?(:issues_full_text_search, params.project || params.group)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -489,7 +489,7 @@ class IssuableFinder
 
   def or_filters_enabled?
     strong_memoize(:or_filters_enabled) do
-      Feature.enabled?(:or_issuable_queries, feature_flag_scope, default_enabled: :yaml)
+      Feature.enabled?(:or_issuable_queries, feature_flag_scope)
     end
   end
 

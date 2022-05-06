@@ -11,7 +11,7 @@ class ProfilesController < Profiles::ApplicationController
   end
   skip_before_action :require_email, only: [:show, :update]
   before_action do
-    push_frontend_feature_flag(:webauthn, default_enabled: :yaml)
+    push_frontend_feature_flag(:webauthn)
   end
 
   feature_category :users

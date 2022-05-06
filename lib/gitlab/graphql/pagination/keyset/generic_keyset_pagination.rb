@@ -68,7 +68,7 @@ module Gitlab
 
           def items
             original_items = super
-            return original_items if Feature.disabled?(:new_graphql_keyset_pagination, default_enabled: :yaml) || Gitlab::Pagination::Keyset::Order.keyset_aware?(original_items)
+            return original_items if Feature.disabled?(:new_graphql_keyset_pagination) || Gitlab::Pagination::Keyset::Order.keyset_aware?(original_items)
 
             strong_memoize(:generic_keyset_pagination_items) do
               rebuilt_items_with_keyset_order, success = Gitlab::Pagination::Keyset::SimpleOrderBuilder.build(original_items)

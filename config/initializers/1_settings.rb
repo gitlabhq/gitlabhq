@@ -966,15 +966,10 @@ Settings.monitoring.sidekiq_exporter['log_enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'
 Settings.monitoring.sidekiq_exporter['port'] ||= 8082
 
-# TODO: Once we split out health checks from SidekiqExporter, we
-# should not let this default to the same settings anymore; we only
-# do this for back-compat currently.
-# https://gitlab.com/gitlab-org/gitlab/-/issues/345804
 Settings.monitoring['sidekiq_health_checks'] ||= Settingslogic.new({})
-Settings.monitoring.sidekiq_health_checks['enabled'] ||= Settings.monitoring.sidekiq_exporter['enabled']
-Settings.monitoring.sidekiq_health_checks['log_enabled'] ||= Settings.monitoring.sidekiq_exporter['log_enabled']
-Settings.monitoring.sidekiq_health_checks['address'] ||= Settings.monitoring.sidekiq_exporter['address']
-Settings.monitoring.sidekiq_health_checks['port'] ||= Settings.monitoring.sidekiq_exporter['port']
+Settings.monitoring.sidekiq_health_checks['enabled'] ||= false
+Settings.monitoring.sidekiq_health_checks['address'] ||= 'localhost'
+Settings.monitoring.sidekiq_health_checks['port'] ||= 8092
 
 Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false

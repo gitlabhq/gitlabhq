@@ -326,7 +326,7 @@ module Ci
 
       after_transition pending: :running do |build|
         build.run_after_commit do
-          if ::Feature.enabled?(:ci_reduce_persistent_ref_writes, build.project, default_enabled: :yaml)
+          if ::Feature.enabled?(:ci_reduce_persistent_ref_writes, build.project)
             build.ensure_persistent_ref
           else
             build.pipeline.persistent_ref.create
@@ -340,7 +340,7 @@ module Ci
         build.run_after_commit do
           build.run_status_commit_hooks!
 
-          if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project, default_enabled: :yaml)
+          if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project)
             Ci::BuildFinishedWorker.perform_async(id)
           else
             ::BuildFinishedWorker.perform_async(id)
@@ -509,7 +509,7 @@ module Ci
         if metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
         else
-          if ::Feature.enabled?(:ci_expand_environment_name_and_url, project, default_enabled: :yaml)
+          if ::Feature.enabled?(:ci_expand_environment_name_and_url, project)
             ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
           else
             ExpandVariables.expand(environment, -> { simple_variables })
@@ -1225,7 +1225,7 @@ module Ci
 
     def job_jwt_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        break variables unless Feature.enabled?(:ci_job_jwt, project, default_enabled: true)
+        break variables unless Feature.enabled?(:ci_job_jwt, project)
 
         jwt = Gitlab::Ci::Jwt.for_build(self)
         jwt_v2 = Gitlab::Ci::JwtV2.for_build(self)

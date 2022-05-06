@@ -38,7 +38,7 @@
     .settings-content
       = render 'registry'
 
-- if Feature.enabled?(:runner_registration_control, default_enabled: :yaml)
+- if Feature.enabled?(:runner_registration_control)
   %section.settings.as-runner.no-animate#js-runner-settings{ class: ('expanded' if expanded_by_default?) }
     .settings-header
       %h4

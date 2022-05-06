@@ -50,11 +50,11 @@ module Gitlab
       end
 
       def use_semantic_ipynb_diff?
-        strong_memoize(:_use_semantic_ipynb_diff) { Feature.enabled?(:ipynb_semantic_diff, repository.project, default_enabled: :yaml) }
+        strong_memoize(:_use_semantic_ipynb_diff) { Feature.enabled?(:ipynb_semantic_diff, repository.project) }
       end
 
       def use_renderable_diff?
-        strong_memoize(:_renderable_diff_enabled) { Feature.enabled?(:rendered_diffs_viewer, repository.project, default_enabled: :yaml) }
+        strong_memoize(:_renderable_diff_enabled) { Feature.enabled?(:rendered_diffs_viewer, repository.project) }
       end
 
       def has_renderable?

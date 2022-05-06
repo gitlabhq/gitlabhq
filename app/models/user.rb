@@ -941,7 +941,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_u2f_enabled?
-    return false if Feature.enabled?(:webauthn, default_enabled: :yaml)
+    return false if Feature.enabled?(:webauthn)
 
     if u2f_registrations.loaded?
       u2f_registrations.any?
@@ -955,7 +955,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_webauthn_enabled?
-    return false unless Feature.enabled?(:webauthn, default_enabled: :yaml)
+    return false unless Feature.enabled?(:webauthn)
 
     (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
   end
@@ -1583,7 +1583,7 @@ class User < ApplicationRecord
   end
 
   def manageable_groups(include_groups_with_developer_maintainer_access: false)
-    owned_and_maintainer_group_hierarchy = if Feature.enabled?(:linear_user_manageable_groups, self, default_enabled: :yaml)
+    owned_and_maintainer_group_hierarchy = if Feature.enabled?(:linear_user_manageable_groups, self)
                                              owned_or_maintainers_groups.self_and_descendants
                                            else
                                              Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
@@ -1673,7 +1673,7 @@ class User < ApplicationRecord
 
   def ci_owned_runners_cross_joins_fix_enabled?
     strong_memoize(:ci_owned_runners_cross_joins_fix_enabled) do
-      Feature.enabled?(:ci_owned_runners_cross_joins_fix, self, default_enabled: :yaml)
+      Feature.enabled?(:ci_owned_runners_cross_joins_fix, self)
     end
   end
 
@@ -1735,7 +1735,7 @@ class User < ApplicationRecord
   end
 
   def attention_requested_open_merge_requests_count(force: false)
-    if Feature.enabled?(:uncached_mr_attention_requests_count, self, default_enabled: :yaml)
+    if Feature.enabled?(:uncached_mr_attention_requests_count, self)
       MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
     else
       Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
@@ -2071,7 +2071,7 @@ class User < ApplicationRecord
   end
 
   def mr_attention_requests_enabled?
-    Feature.enabled?(:mr_attention_requests, self, default_enabled: :yaml)
+    Feature.enabled?(:mr_attention_requests, self)
   end
 
   protected
@@ -2317,7 +2317,7 @@ class User < ApplicationRecord
     # to avoid querying descendants since they are already covered
     # by ancestor namespaces. If the FF is not available fallback to
     # inefficient search: https://gitlab.com/gitlab-org/gitlab/-/issues/336436
-    unless Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
+    unless Feature.enabled?(:use_traversal_ids)
       return Ci::NamespaceMirror.contains_any_of_namespaces(search_members.pluck(:source_id))
     end
 
@@ -2326,7 +2326,7 @@ class User < ApplicationRecord
       .shortest_traversal_ids_prefixes
 
     # Use efficient btree index to perform search
-    if Feature.enabled?(:ci_owned_runners_unnest_index, self, default_enabled: :yaml)
+    if Feature.enabled?(:ci_owned_runners_unnest_index, self)
       Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
     else
       Ci::NamespaceMirror.contains_any_of_namespaces(traversal_ids.map(&:last))

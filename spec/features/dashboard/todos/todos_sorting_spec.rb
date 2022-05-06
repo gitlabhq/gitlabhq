@@ -23,11 +23,12 @@ RSpec.describe 'Dashboard > User sorts todos' do
     let!(:merge_request_1) { create(:merge_request, source_project: project, title: 'merge_request_1') }
 
     before do
-      create(:todo, user: user, project: project, target: issue_4, created_at: 5.hours.ago)
-      create(:todo, user: user, project: project, target: issue_2, created_at: 4.hours.ago)
-      create(:todo, user: user, project: project, target: issue_3, created_at: 3.hours.ago)
-      create(:todo, user: user, project: project, target: issue_1, created_at: 2.hours.ago)
-      create(:todo, user: user, project: project, target: merge_request_1, created_at: 1.hour.ago)
+      create(:todo, user: user, project: project, target: issue_4, created_at: 5.hours.ago, updated_at: 5.hours.ago)
+      create(:todo, user: user, project: project, target: issue_2, created_at: 4.hours.ago, updated_at: 4.hours.ago)
+      create(:todo, user: user, project: project, target: issue_3, created_at: 3.hours.ago, updated_at: 2.minutes.ago)
+      create(:todo, user: user, project: project, target: issue_1, created_at: 2.hours.ago, updated_at: 2.hours.ago)
+      create(:todo, user: user, project: project, target: merge_request_1, created_at: 1.hour.ago,
+             updated_at: 1.hour.ago)
 
       merge_request_1.labels << label_1
       issue_3.labels         << label_1
@@ -62,6 +63,17 @@ RSpec.describe 'Dashboard > User sorts todos' do
 
     it 'sorts by label priority' do
       click_link 'Label priority'
+
+      results_list = page.find('.todos-list')
+      expect(results_list.all('.todo-title')[0]).to have_content('issue_3')
+      expect(results_list.all('.todo-title')[1]).to have_content('merge_request_1')
+      expect(results_list.all('.todo-title')[2]).to have_content('issue_1')
+      expect(results_list.all('.todo-title')[3]).to have_content('issue_2')
+      expect(results_list.all('.todo-title')[4]).to have_content('issue_4')
+    end
+
+    it 'sorts by newest updated todos first' do
+      click_link 'Updated date'
 
       results_list = page.find('.todos-list')
       expect(results_list.all('.todo-title')[0]).to have_content('issue_3')

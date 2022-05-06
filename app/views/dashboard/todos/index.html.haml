@@ -70,6 +70,8 @@
                   = sort_title_recently_created
                 = link_to todos_filter_path(sort: sort_value_oldest_created) do
                   = sort_title_oldest_created
+                = link_to todos_filter_path(sort: sort_value_recently_updated) do
+                  = sort_title_recently_updated
 
 .row.js-todos-all
   - if @allowed_todos.any?

@@ -200,11 +200,6 @@ Style/CaseLikeIf:
 Style/EmptyMethod:
   Enabled: false
 
-# Offense count: 118
-# Cop supports --auto-correct.
-Style/ExplicitBlockArgument:
-  Enabled: false
-
 # Offense count: 581
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -222,11 +217,6 @@ Style/HashAsLastArrayItem:
 # Offense count: 70
 # Cop supports --auto-correct.
 Style/HashEachMethods:
-  Enabled: false
-
-# Offense count: 34
-# Configuration parameters: AllowIfModifier.
-Style/IfInsideElse:
   Enabled: false
 
 # Offense count: 64

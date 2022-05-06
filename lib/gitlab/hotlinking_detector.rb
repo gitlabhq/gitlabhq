@@ -12,7 +12,7 @@ module Gitlab
       def intercept_hotlinking?(request)
         request_accepts = parse_request_accepts(request)
 
-        return false unless Feature.enabled?(:repository_archive_hotlinking_interception, default_enabled: true)
+        return false unless Feature.enabled?(:repository_archive_hotlinking_interception)
 
         # Block attempts to embed as JS
         return true if sec_fetch_invalid?(request)

@@ -18,7 +18,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
 
   let(:sidekiq_exporter_enabled) { false }
   let(:sidekiq_exporter_port) { '3807' }
-  let(:sidekiq_health_checks_port) { '3807' }
 
   let(:config_file) { Tempfile.new('gitlab.yml') }
   let(:config) do
@@ -29,11 +28,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             'address' => 'localhost',
             'enabled' => sidekiq_exporter_enabled,
             'port' => sidekiq_exporter_port
-          },
-          'sidekiq_health_checks' => {
-            'address' => 'localhost',
-            'enabled' => sidekiq_exporter_enabled,
-            'port' => sidekiq_health_checks_port
           }
         }
       }
@@ -310,37 +304,12 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             cli.run(%w(foo))
           end
 
-          context 'when there are no sidekiq_health_checks settings set' do
-            let(:sidekiq_exporter_enabled) { true }
-
-            it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:start_for_sidekiq)
-
-              cli.run(%w(foo))
-            end
-          end
-
-          context 'when the sidekiq_exporter.port setting is not set' do
-            let(:sidekiq_exporter_enabled) { true }
-
-            it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:start_for_sidekiq)
-
-              cli.run(%w(foo))
-            end
-          end
-
-          context 'when sidekiq_exporter.enabled setting is not set' do
+          context 'when sidekiq_exporter is not set up' do
             let(:config) do
               {
                 'test' => {
                   'monitoring' => {
-                    'sidekiq_exporter' => {},
-                    'sidekiq_health_checks' => {
-                      'address' => 'localhost',
-                      'enabled' => sidekiq_exporter_enabled,
-                      'port' => sidekiq_health_checks_port
-                    }
+                    'sidekiq_exporter' => {}
                   }
                 }
               }
@@ -353,13 +322,12 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             end
           end
 
-          context 'with a blank sidekiq_exporter setting' do
+          context 'with missing sidekiq_exporter setting' do
             let(:config) do
               {
                 'test' => {
                   'monitoring' => {
-                    'sidekiq_exporter' => nil,
-                    'sidekiq_health_checks' => nil
+                    'sidekiq_exporter' => nil
                   }
                 }
               }
@@ -376,26 +344,21 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             end
           end
 
-          context 'with valid settings' do
-            using RSpec::Parameterized::TableSyntax
+          context 'when sidekiq_exporter is disabled' do
+            it 'does not start a sidekiq metrics server' do
+              expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
-            where(:sidekiq_exporter_enabled, :sidekiq_exporter_port, :sidekiq_health_checks_port, :start_metrics_server) do
-              true  | '3807' | '3907' | true
-              true  | '3807' | '3807' | false
-              false | '3807' | '3907' | false
-              false | '3807' | '3907' | false
+              cli.run(%w(foo))
             end
+          end
 
-            with_them do
-              specify do
-                if start_metrics_server
-                  expect(MetricsServer).to receive(:start_for_sidekiq).with(metrics_dir: metrics_dir, reset_signals: trapped_signals)
-                else
-                  expect(MetricsServer).not_to receive(:start_for_sidekiq)
-                end
+          context 'when sidekiq_exporter is enabled' do
+            let(:sidekiq_exporter_enabled) { true }
 
-                cli.run(%w(foo))
-              end
+            it 'starts the metrics server' do
+              expect(MetricsServer).to receive(:start_for_sidekiq).with(metrics_dir: metrics_dir, reset_signals: trapped_signals)
+
+              cli.run(%w(foo))
             end
           end
 
@@ -431,7 +394,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
 
     context 'supervising the cluster' do
       let(:sidekiq_exporter_enabled) { true }
-      let(:sidekiq_health_checks_port) { '3907' }
       let(:metrics_server_pid) { 99 }
       let(:sidekiq_worker_pids) { [2, 42] }
 

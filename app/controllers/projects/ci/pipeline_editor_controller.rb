@@ -3,8 +3,8 @@
 class Projects::Ci::PipelineEditorController < Projects::ApplicationController
   before_action :check_can_collaborate!
   before_action do
-    push_frontend_feature_flag(:schema_linting, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:pipeline_editor_file_tree, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:schema_linting, @project)
+    push_frontend_feature_flag(:pipeline_editor_file_tree, @project)
   end
 
   feature_category :pipeline_authoring

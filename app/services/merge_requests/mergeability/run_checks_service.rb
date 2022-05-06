@@ -37,7 +37,7 @@ module MergeRequests
       attr_reader :merge_request, :params
 
       def run_check(check)
-        return check.execute unless Feature.enabled?(:mergeability_caching, merge_request.project, default_enabled: :yaml)
+        return check.execute unless Feature.enabled?(:mergeability_caching, merge_request.project)
         return check.execute unless check.cacheable?
 
         cached_result = results.read(merge_check: check)

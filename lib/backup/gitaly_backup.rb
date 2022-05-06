@@ -31,7 +31,7 @@ module Backup
       args = []
       args += ['-parallel', @max_parallelism.to_s] if @max_parallelism
       args += ['-parallel-storage', @storage_parallelism.to_s] if @storage_parallelism
-      if Feature.enabled?(:incremental_repository_backup, default_enabled: :yaml)
+      if Feature.enabled?(:incremental_repository_backup)
         args += ['-layout', 'pointer']
         if type == :create
           args += ['-incremental'] if @incremental

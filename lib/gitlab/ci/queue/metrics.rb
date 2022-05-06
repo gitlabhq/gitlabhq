@@ -74,7 +74,7 @@ module Gitlab
         end
 
         def observe_queue_depth(queue, size)
-          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
+          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
 
           if !Rails.env.production? && !QUEUE_DEPTH_HISTOGRAMS.include?(queue)
             raise ArgumentError, "unknown queue depth label: #{queue}"
@@ -84,7 +84,7 @@ module Gitlab
         end
 
         def observe_queue_size(size_proc, runner_type)
-          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
+          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
 
           size = size_proc.call.to_f
           self.class.queue_size_total.observe({ runner_type: runner_type }, size)
@@ -96,7 +96,7 @@ module Gitlab
 
           result = yield
 
-          return result unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
+          return result unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
 
           seconds = ::Gitlab::Metrics::System.monotonic_time - start_time
 
@@ -121,7 +121,7 @@ module Gitlab
         end
 
         def self.observe_active_runners(runners_proc)
-          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
+          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
 
           queue_active_runners_total.observe({}, runners_proc.call.to_f)
         end
@@ -250,7 +250,7 @@ module Gitlab
         end
 
         def running_jobs_relation(job)
-          if ::Feature.enabled?(:ci_pending_builds_maintain_denormalized_data, default_enabled: :yaml)
+          if ::Feature.enabled?(:ci_pending_builds_maintain_denormalized_data)
             ::Ci::RunningBuild.instance_type.where(project_id: job.project_id)
           else
             job.project.builds.running.where(runner: ::Ci::Runner.instance_type)

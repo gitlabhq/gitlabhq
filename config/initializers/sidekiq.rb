@@ -8,13 +8,13 @@ end
 def enable_reliable_fetch?
   return true unless Feature::FlipperFeature.table_exists?
 
-  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, type: :ops, default_enabled: true)
+  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, type: :ops)
 end
 
 def enable_semi_reliable_fetch_mode?
   return true unless Feature::FlipperFeature.table_exists?
 
-  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, type: :ops, default_enabled: true)
+  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, type: :ops)
 end
 
 # Custom Queues configuration
@@ -63,6 +63,17 @@ Sidekiq.configure_server do |config|
     Gitlab::SidekiqDaemon::Monitor.instance.start
 
     Gitlab::SidekiqDaemon::MemoryKiller.instance.start if enable_sidekiq_memory_killer && use_sidekiq_daemon_memory_killer
+
+    first_sidekiq_worker = !ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0'
+    health_checks = Settings.monitoring.sidekiq_health_checks
+
+    # Start health-check in-process server
+    if first_sidekiq_worker && health_checks.enabled
+      Gitlab::HealthChecks::Server.instance(
+        address: health_checks.address,
+        port: health_checks.port
+      ).start
+    end
   end
 
   if enable_reliable_fetch?

@@ -249,18 +249,24 @@ RSpec.describe Integration do
     it_behaves_like 'integration instances'
 
     context 'with all existing instances' do
+      def integration_hash(type)
+        Integration.new(instance: true, type: type).to_integration_hash
+      end
+
       before do
-        Integration.insert_all(
-          Integration.available_integration_types(include_project_specific: false).map { |type| { instance: true, type: type } }
-        )
+        attrs = Integration.available_integration_types(include_project_specific: false).map do
+          integration_hash(_1)
+        end
+
+        Integration.insert_all(attrs)
       end
 
       it_behaves_like 'integration instances'
 
-      context 'with a previous existing integration (MockCiService) and a new integration (Asana)' do
+      context 'with a previous existing integration (:mock_ci) and a new integration (:asana)' do
         before do
-          Integration.insert({ type: 'MockCiService', instance: true })
-          Integration.delete_by(type: 'AsanaService', instance: true)
+          Integration.insert(integration_hash(:mock_ci))
+          Integration.delete_by(**integration_hash(:asana))
         end
 
         it_behaves_like 'integration instances'

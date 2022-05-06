@@ -279,7 +279,7 @@ class Integration < ApplicationRecord
   end
 
   def self.dev_integration_names
-    return [] unless Rails.env.development?
+    return [] unless Gitlab.dev_or_test_env?
 
     DEV_INTEGRATION_NAMES
   end

@@ -61,7 +61,7 @@ module Ci
     end
 
     def archive_trace_worker_class(build)
-      if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project, default_enabled: :yaml)
+      if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project)
         Ci::ArchiveTraceWorker
       else
         ::ArchiveTraceWorker

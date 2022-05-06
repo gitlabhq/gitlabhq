@@ -113,7 +113,7 @@ class Project < ApplicationRecord
   default_value_for(:ci_config_path) { Gitlab::CurrentSettings.default_ci_config_path }
 
   add_authentication_token_field :runners_token,
-                                 encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption, default_enabled: true) ? :optional : :required },
+                                 encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required },
                                  prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
@@ -965,7 +965,7 @@ class Project < ApplicationRecord
   end
 
   def ancestors(hierarchy_order: nil)
-    if Feature.enabled?(:linear_project_ancestors, self, default_enabled: :yaml)
+    if Feature.enabled?(:linear_project_ancestors, self)
       group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
     else
       ancestors_upto(hierarchy_order: hierarchy_order)
@@ -1027,7 +1027,7 @@ class Project < ApplicationRecord
   end
 
   def unlink_forks_upon_visibility_decrease_enabled?
-    Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self, default_enabled: true)
+    Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self)
   end
 
   # LFS and hashed repository storage are required for using Design Management.
@@ -2873,12 +2873,12 @@ class Project < ApplicationRecord
   end
 
   def work_items_feature_flag_enabled?
-    group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self, default_enabled: :yaml)
+    group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end
 
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
-    return unless Feature.enabled?(:record_projects_target_platforms, self, default_enabled: :yaml)
+    return unless Feature.enabled?(:record_projects_target_platforms, self)
 
     Projects::RecordTargetPlatformsWorker.perform_async(id)
   end

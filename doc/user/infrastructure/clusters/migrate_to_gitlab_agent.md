@@ -96,8 +96,9 @@ Follow the process for the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.
 
 ## Migrate from GitLab Managed applications
 
-[GitLab Managed Apps (GMA)](../../clusters/applications.md#gitlab-managed-apps-deprecated) were deprecated in GitLab 14.0, and
-the agent for Kubernetes does not support them. To migrate from GMA to the agent, go through the following steps:
+GitLab Managed Apps (GMA) were deprecated in GitLab 14.0, and removed in GitLab 15.0.
+The agent for Kubernetes does not support them. To migrate from GMA to the
+agent, go through the following steps:
 
 1. [Migrate from GitLab Managed Apps to a cluster management project](../../clusters/migrating_from_gma_to_project_template.md).
 1. [Migrate the cluster management project to use the agent](../../clusters/management_project_template.md).

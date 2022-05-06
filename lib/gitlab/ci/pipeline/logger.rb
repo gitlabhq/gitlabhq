@@ -110,7 +110,7 @@ module Gitlab
 
         def enabled?
           strong_memoize(:enabled) do
-            ::Feature.enabled?(:ci_pipeline_creation_logger, project, type: :ops, default_enabled: :yaml)
+            ::Feature.enabled?(:ci_pipeline_creation_logger, project, type: :ops)
           end
         end
 

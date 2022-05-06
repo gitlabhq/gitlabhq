@@ -64,7 +64,7 @@ module Users
       # This ensures we delete records in batches.
       user.destroy_dependent_associations_in_batches(exclude: [:snippets])
 
-      if Feature.enabled?(:nullify_in_batches_on_user_deletion, default_enabled: :yaml)
+      if Feature.enabled?(:nullify_in_batches_on_user_deletion)
         user.nullify_dependent_associations_in_batches
       end
 

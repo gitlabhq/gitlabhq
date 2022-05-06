@@ -2,10 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillIntegrationsTypeNew do
+RSpec.describe Gitlab::BackgroundMigration::BackfillIntegrationsTypeNew, :migration, schema: 20220212120735 do
   let(:migration) { described_class.new }
   let(:integrations) { table(:integrations) }
-  let(:namespaced_integrations) { Gitlab::Integrations::StiType.namespaced_integrations }
+
+  let(:namespaced_integrations) do
+    Set.new(%w[
+      Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
+      Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat Harbor Irker Jenkins Jira Mattermost
+      MattermostSlashCommands MicrosoftTeams MockCi MockMonitoring Packagist PipelinesEmail Pivotaltracker
+      Prometheus Pushover Redmine Shimo Slack SlackSlashCommands Teamcity UnifyCircuit WebexTeams Youtrack Zentao
+      Github GitlabSlackApplication
+    ]).freeze
+  end
 
   before do
     integrations.connection.execute 'ALTER TABLE integrations DISABLE TRIGGER "trigger_type_new_on_insert"'

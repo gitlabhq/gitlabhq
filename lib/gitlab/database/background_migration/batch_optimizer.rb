@@ -41,7 +41,7 @@ module Gitlab
         end
 
         def optimize!
-          return unless Feature.enabled?(:optimize_batched_migrations, type: :ops, default_enabled: :yaml)
+          return unless Feature.enabled?(:optimize_batched_migrations, type: :ops)
 
           if multiplier = batch_size_multiplier
             max_batch = migration.max_batch_size || MAX_BATCH_SIZE

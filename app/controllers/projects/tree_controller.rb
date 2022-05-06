@@ -17,9 +17,9 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:create_dir]
 
   before_action do
-    push_frontend_feature_flag(:lazy_load_commits, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:highlight_js, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:lazy_load_commits, @project)
+    push_frontend_feature_flag(:refactor_blob_viewer, @project)
+    push_frontend_feature_flag(:highlight_js, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
   end
 

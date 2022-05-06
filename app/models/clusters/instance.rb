@@ -12,7 +12,7 @@ module Clusters
 
     def certificate_based_clusters_enabled?
       ::Gitlab::SafeRequestStore.fetch("certificate_based_clusters:") do
-        Feature.enabled?(:certificate_based_clusters, default_enabled: :yaml, type: :ops)
+        Feature.enabled?(:certificate_based_clusters, type: :ops)
       end
     end
   end

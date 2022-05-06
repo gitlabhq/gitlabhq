@@ -282,7 +282,7 @@ namespace :gitlab do
         puts "There are #{Gitlab::Database::Reindexing::QueuedAction.queued.size} queued actions in total."
       end
 
-      unless Feature.enabled?(:database_reindexing, type: :ops, default_enabled: :yaml)
+      unless Feature.enabled?(:database_reindexing, type: :ops)
         puts <<~NOTE.color(:yellow)
           Note: database_reindexing feature is currently disabled.
 

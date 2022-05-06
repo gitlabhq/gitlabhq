@@ -21,7 +21,7 @@ class ProjectSetting < ApplicationRecord
   validate :validates_mr_default_target_self
 
   default_value_for(:legacy_open_source_license_available) do
-    Feature.enabled?(:legacy_open_source_license_available, default_enabled: :yaml, type: :ops)
+    Feature.enabled?(:legacy_open_source_license_available, type: :ops)
   end
 
   def squash_enabled_by_default?

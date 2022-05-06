@@ -83,7 +83,7 @@ module GitGarbageCollectMethods
   def gitaly_call(task, resource)
     repository = resource.repository.raw_repository
 
-    if Feature.enabled?(:optimized_housekeeping, container(resource), default_enabled: :yaml)
+    if Feature.enabled?(:optimized_housekeeping, container(resource))
       client = repository.gitaly_repository_client
 
       if task == :prune

@@ -21,9 +21,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
 
   before_action do
-    push_frontend_feature_flag(:pipeline_tabs_vue, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:downstream_retry_action, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:failed_jobs_tab_vue, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:pipeline_tabs_vue, @project)
+    push_frontend_feature_flag(:downstream_retry_action, @project)
+    push_frontend_feature_flag(:failed_jobs_tab_vue, @project)
   end
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
@@ -149,7 +149,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    if Feature.enabled?(:pipeline_tabs_vue, project, default_enabled: :yaml)
+    if Feature.enabled?(:pipeline_tabs_vue, project)
       redirect_to pipeline_path(@pipeline, tab: 'builds')
     else
       render_show
@@ -159,7 +159,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def dag
     respond_to do |format|
       format.html do
-        if Feature.enabled?(:pipeline_tabs_vue, project, default_enabled: :yaml)
+        if Feature.enabled?(:pipeline_tabs_vue, project)
           redirect_to pipeline_path(@pipeline, tab: 'dag')
         else
           render_show
@@ -174,7 +174,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def failures
-    if Feature.enabled?(:pipeline_tabs_vue, project, default_enabled: :yaml)
+    if Feature.enabled?(:pipeline_tabs_vue, project)
       redirect_to pipeline_path(@pipeline, tab: 'failures')
     elsif @pipeline.failed_builds.present?
       render_show
@@ -231,7 +231,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def test_report
     respond_to do |format|
       format.html do
-        if Feature.enabled?(:pipeline_tabs_vue, project, default_enabled: :yaml)
+        if Feature.enabled?(:pipeline_tabs_vue, project)
           redirect_to pipeline_path(@pipeline, tab: 'test_report')
         else
           render_show

@@ -24,7 +24,7 @@ module Gitlab
       end
 
       def highlight
-        populate_marker_ranges if Feature.enabled?(:use_marker_ranges, project, default_enabled: :yaml)
+        populate_marker_ranges if Feature.enabled?(:use_marker_ranges, project)
 
         @diff_lines.map.with_index do |diff_line, index|
           diff_line = diff_line.dup
@@ -61,7 +61,7 @@ module Gitlab
       end
 
       def apply_marker_ranges_highlight(diff_line, rich_line, index)
-        marker_ranges = if Feature.enabled?(:use_marker_ranges, project, default_enabled: :yaml)
+        marker_ranges = if Feature.enabled?(:use_marker_ranges, project)
                           diff_line.marker_ranges
                         else
                           inline_diffs[index]
@@ -83,7 +83,7 @@ module Gitlab
         return unless diff_file && diff_file.diff_refs
         return diff_line_highlighting(diff_line, plain: true) if blobs_too_large?
 
-        if Feature.enabled?(:diff_line_syntax_highlighting, project, default_enabled: :yaml)
+        if Feature.enabled?(:diff_line_syntax_highlighting, project)
           diff_line_highlighting(diff_line)
         else
           blob_highlighting(diff_line)

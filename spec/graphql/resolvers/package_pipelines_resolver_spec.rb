@@ -134,7 +134,7 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
 
           expectation = expect { GitlabSchema.execute(query, context: { current_user: user }) }
 
-          if Feature.enabled?(:packages_graphql_pipelines_resolver, default_enabled: :yaml)
+          if Feature.enabled?(:packages_graphql_pipelines_resolver)
             expectation.not_to exceed_query_limit(control)
           else
             expectation.to exceed_query_limit(control)

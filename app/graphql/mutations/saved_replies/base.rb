@@ -24,7 +24,7 @@ module Mutations
       end
 
       def feature_enabled?
-        Feature.enabled?(:saved_replies, current_user, default_enabled: :yaml)
+        Feature.enabled?(:saved_replies, current_user)
       end
 
       def find_object(id)

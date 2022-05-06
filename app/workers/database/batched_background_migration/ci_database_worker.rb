@@ -5,7 +5,7 @@ module Database
       include SingleDatabaseWorker
 
       def self.enabled?
-        Feature.enabled?(:execute_batched_migrations_on_schedule_ci_database, type: :ops, default_enabled: :yaml)
+        Feature.enabled?(:execute_batched_migrations_on_schedule_ci_database, type: :ops)
       end
 
       def self.tracking_database

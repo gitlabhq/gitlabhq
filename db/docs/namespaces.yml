@@ -7,6 +7,6 @@ classes:
 - Namespaces::UserNamespace
 feature_categories:
 - subgroups
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e29ccece332e57c9fb6c532a3680e3b457e3a301
+description: Storing namespaces records for groups, users and projects
+introduced_by_url: https://github.com/gitlabhq/gitlabhq/pull/2051
 milestone: "<6.0"

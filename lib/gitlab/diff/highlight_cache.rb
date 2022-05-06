@@ -74,8 +74,8 @@ module Gitlab
             diffable.cache_key,
             VERSION,
             diff_options,
-            Feature.enabled?(:use_marker_ranges, diffable.project, default_enabled: :yaml),
-            Feature.enabled?(:diff_line_syntax_highlighting, diffable.project, default_enabled: :yaml)
+            Feature.enabled?(:use_marker_ranges, diffable.project),
+            Feature.enabled?(:diff_line_syntax_highlighting, diffable.project)
           ].join(":")
         end
       end

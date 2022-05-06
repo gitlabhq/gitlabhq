@@ -198,7 +198,7 @@ module Gitlab
 
       def use_config_variables?
         strong_memoize(:use_config_variables) do
-          ::Feature.enabled?(:ci_variables_builder_config_variables, @project, default_enabled: :yaml)
+          ::Feature.enabled?(:ci_variables_builder_config_variables, @project)
         end
       end
 

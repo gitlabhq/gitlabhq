@@ -388,14 +388,14 @@ RSpec.describe Feature, stub_feature_flags: false do
 
       context 'when `default_enabled: :yaml` is used in code' do
         it 'reads the default from the YAML definition' do
-          expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(false)
+          expect(described_class.enabled?(:my_feature_flag)).to eq(false)
         end
 
         context 'when default_enabled is true in the YAML definition' do
           let(:default_enabled) { true }
 
           it 'reads the default from the YAML definition' do
-            expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(true)
+            expect(described_class.enabled?(:my_feature_flag)).to eq(true)
           end
 
           context 'and feature has been disabled' do
@@ -404,20 +404,20 @@ RSpec.describe Feature, stub_feature_flags: false do
             end
 
             it 'is not enabled' do
-              expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(false)
+              expect(described_class.enabled?(:my_feature_flag)).to eq(false)
             end
           end
         end
 
         context 'with a cached value and the YAML definition is changed thereafter' do
           before do
-            described_class.enabled?(:my_feature_flag, default_enabled: :yaml)
+            described_class.enabled?(:my_feature_flag)
           end
 
           it 'reads new default value' do
             allow(definition).to receive(:default_enabled).and_return(true)
 
-            expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(true)
+            expect(described_class.enabled?(:my_feature_flag)).to eq(true)
           end
         end
 
@@ -426,7 +426,7 @@ RSpec.describe Feature, stub_feature_flags: false do
 
           context 'when in dev or test environment' do
             it 'raises an error for dev' do
-              expect { described_class.enabled?(:non_existent_flag, type: optional_type, default_enabled: :yaml) }
+              expect { described_class.enabled?(:non_existent_flag, type: optional_type) }
                 .to raise_error(
                   Feature::InvalidFeatureFlagError,
                   "The feature flag YAML definition for 'non_existent_flag' does not exist")
@@ -446,7 +446,7 @@ RSpec.describe Feature, stub_feature_flags: false do
               it 'checks the persisted status and returns false' do
                 expect(described_class).to receive(:with_feature).with(:non_existent_flag).and_call_original
 
-                expect(described_class.enabled?(:non_existent_flag, type: optional_type, default_enabled: :yaml)).to eq(false)
+                expect(described_class.enabled?(:non_existent_flag, type: optional_type)).to eq(false)
               end
             end
 
@@ -458,7 +458,7 @@ RSpec.describe Feature, stub_feature_flags: false do
               it 'returns false without checking the status in the database' do
                 expect(described_class).not_to receive(:get)
 
-                expect(described_class.enabled?(:non_existent_flag, type: optional_type, default_enabled: :yaml)).to eq(false)
+                expect(described_class.enabled?(:non_existent_flag, type: optional_type)).to eq(false)
               end
             end
           end

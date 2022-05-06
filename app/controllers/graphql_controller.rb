@@ -64,7 +64,7 @@ class GraphqlController < ApplicationController
     log_exception(exception)
 
     if Rails.env.test? || Rails.env.development?
-      render_error("Internal server error: #{exception.message}")
+      render_error("Internal server error: #{exception.message}", raised_at: exception.backtrace.first)
     else
       render_error("Internal server error")
     end
@@ -207,8 +207,9 @@ class GraphqlController < ApplicationController
     render_error("Not found!", status: :not_found)
   end
 
-  def render_error(message, status: 500)
+  def render_error(message, status: 500, raised_at: nil)
     error = { errors: [message: message] }
+    error[:errors].first['raisedAt'] = raised_at if raised_at
 
     render json: error, status: status
   end

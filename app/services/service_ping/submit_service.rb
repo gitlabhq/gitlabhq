@@ -50,7 +50,7 @@ module ServicePing
         DevopsReportService.new(response).execute
       end
 
-      return unless Feature.enabled?(:measure_service_ping_metric_collection, default_enabled: :yaml)
+      return unless Feature.enabled?(:measure_service_ping_metric_collection)
 
       submit_payload({ metadata: { metrics: metrics_collection_time(usage_data) } }, path: METADATA_PATH)
     end

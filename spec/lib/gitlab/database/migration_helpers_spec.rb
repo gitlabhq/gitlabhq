@@ -2246,7 +2246,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':" \
             "\t#{configuration}" \
             "\n\n" \
-            "Finalize it manualy by running" \
+            "Finalize it manually by running" \
             "\n\n" \
             "\tsudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"id\"]\\,[\"id_convert_to_bigint\"]\\,null]']" \
             "\n\n" \
