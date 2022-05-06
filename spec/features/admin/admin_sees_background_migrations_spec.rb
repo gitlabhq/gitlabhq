@@ -133,6 +133,8 @@ RSpec.describe "Admin > Admin sees background migrations" do
   end
 
   it 'can change tabs and retain database param' do
+    skip_if_multiple_databases_not_setup
+
     visit admin_background_migrations_path(database: 'ci')
 
     within '#content-body' do
@@ -157,6 +159,8 @@ RSpec.describe "Admin > Admin sees background migrations" do
   describe 'selected database toggle', :js do
     context 'when multi database is not enabled' do
       before do
+        skip_if_multiple_databases_are_setup
+
         allow(Gitlab::Database).to receive(:db_config_names).and_return(['main'])
       end
 
@@ -169,6 +173,8 @@ RSpec.describe "Admin > Admin sees background migrations" do
 
     context 'when multi database is enabled' do
       before do
+        skip_if_multiple_databases_not_setup
+
         allow(Gitlab::Database).to receive(:db_config_names).and_return(%w[main ci])
       end
 
