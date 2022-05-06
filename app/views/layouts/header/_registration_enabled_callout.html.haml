@@ -5,10 +5,10 @@
   alert_class: 'js-registration-enabled-callout',
   alert_data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT,
                 dismiss_endpoint: callouts_path },
-  close_button_data: { testid: 'close-registration-enabled-callout' }) do
-  .gl-alert-body
+  close_button_data: { testid: 'close-registration-enabled-callout' }) do |c|
+  = c.body do
     = _('Only allow anyone to register for accounts on GitLab instances that you intend to be used by anyone. Allowing anyone to register makes GitLab instances more vulnerable.')
-  .gl-alert-actions
+  = c.actions do
     = link_to general_admin_application_settings_path(anchor: 'js-signup-settings'), class: 'btn gl-alert-action btn-confirm btn-md gl-button' do
       %span.gl-button-text
         = _('Turn off')

@@ -43,7 +43,7 @@ export class ContentEditor {
     });
   }
 
-  resolveAssetUrl(canonicalSrc) {
+  resolveUrl(canonicalSrc) {
     return this._assetResolver.resolveUrl(canonicalSrc);
   }
 

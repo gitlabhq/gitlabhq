@@ -5,8 +5,8 @@
 - @content_class = 'limit-container-width' unless fluid_layout
 
 - if @teams_error_message
-  = render Pajamas::AlertComponent.new(variant: :danger) do
-    .gl-alert-body
+  = render Pajamas::AlertComponent.new(variant: :danger) do |c|
+    = c.body do
       = @teams_error_message
 
 %h3

@@ -44,6 +44,17 @@ the Gitaly logs and Prometheus:
   - `gitaly_concurrency_limiting_acquiring_seconds` indicates how long a request has to
     wait due to concurrency limits before being processed.
 
+## Monitor Gitaly cgroups
+
+You can observe the status of [control groups (cgroups)](configure_gitaly.md#control-groups) using Prometheus:
+
+- `gitaly_cgroups_memory_failed_total`, a gauge for the total number of times
+   the memory limit has been hit. This number resets each time a server is
+   restarted.
+- `gitaly_cgroups_cpu_usage`, a gauge that measures CPU usage per cgroup.
+- `gitaly_cgroup_procs_total`, a gauge that measures the total number of
+   processes Gitaly has spawned under the control of cgroups.
+
 ## `pack-objects` cache
 
 The following [`pack-objects` cache](configure_gitaly.md#pack-objects-cache) metrics are available:

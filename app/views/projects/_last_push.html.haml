@@ -2,8 +2,8 @@
 - if event && show_last_push_widget?(event)
   = render Pajamas::AlertComponent.new(variant: :success,
     alert_class: 'gl-mt-3',
-    close_button_class: 'js-close-banner') do
-    .gl-alert-body
+    close_button_class: 'js-close-banner') do |c|
+    = c.body do
       %span= s_("LastPushEvent|You pushed to")
       %strong.gl-display-inline-flex.gl-max-w-50p{ data: { toggle: 'tooltip' }, title: event.ref_name }
         = link_to event.ref_name, project_commits_path(event.project, event.ref_name), class: 'ref-name gl-text-truncate'
@@ -15,6 +15,6 @@
       #{time_ago_with_tooltip(event.created_at)}
 
     - if can?(current_user, :create_merge_request_in, event.project.default_merge_request_target)
-      .gl-alert-actions
+      = c.actions do
         = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn gl-button btn-confirm qa-create-merge-request" do
           #{ _('Create merge request') }

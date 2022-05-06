@@ -18,6 +18,8 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [16.5](16.5.md) | AspNet header exposes version information | Low | Passive |
 | [16.6](16.6.md) | AspNetMvc header exposes version information | Low | Passive |
 | [200.1](200.1.md) | Exposure of sensitive information to an unauthorized actor (private IP address) | Low | Passive |
+| [359.1](359.1.md) | Exposure of Private Personal Information (PII) to an unauthorized actor (credit card) | Medium | Passive |
+| [359.2](359.2.md) | Exposure of Private Personal Information (PII) to an unauthorized actor (United States social security number) | Medium | Passive |
 | [548.1](548.1.md) | Exposure of information through directory listing | Low | Passive |
 | [598.1](598.1.md) | Use of GET request method with sensitive query strings (session ID) | Medium | Passive |
 | [598.2](598.2.md) | Use of GET request method with sensitive query strings (password) | Medium | Passive |

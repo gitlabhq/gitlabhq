@@ -43,7 +43,7 @@ describe.each`
 
     const buildEditor = () => {
       tiptapEditor = createTestEditor({ extensions: [Image, Audio, Video] });
-      contentEditor = { resolveLink: jest.fn() };
+      contentEditor = { resolveUrl: jest.fn() };
       eventHub = eventHubFactory();
     };
 
@@ -82,7 +82,7 @@ describe.each`
         .setNodeSelection(4) // select the media
         .run();
 
-      contentEditor.resolveLink.mockResolvedValue(`/group1/project1/-/wikis/${filePath}`);
+      contentEditor.resolveUrl.mockResolvedValue(`/group1/project1/-/wikis/${filePath}`);
 
       await emitEditorEvent({ event: 'transaction', tiptapEditor });
 
@@ -180,7 +180,7 @@ describe.each`
           mediaAltInput.setValue('gitlab favicon');
           mediaTitleInput.setValue('gitlab favicon');
 
-          contentEditor.resolveLink.mockResolvedValue('https://gitlab.com/favicon.png');
+          contentEditor.resolveUrl.mockResolvedValue('https://gitlab.com/favicon.png');
 
           await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
         });

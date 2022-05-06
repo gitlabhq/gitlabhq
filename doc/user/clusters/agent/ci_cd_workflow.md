@@ -238,7 +238,7 @@ See the [official Kubernetes documentation for details](https://kubernetes.io/do
 
 ### `kubectl` commands not supported
 
-The commands `kubectl exec`, `kubectl cp`, `kubectl attach`, and `kubectl port-forward` are not supported.
+The commands `kubectl exec`, `kubectl cp`, `kubectl attach`, `kubectl run --attach=true` and `kubectl port-forward` are not supported.
 Anything that uses these API endpoints does not work, because they use the deprecated
 SPDY protocol.
 [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/346248) to add support for these commands.

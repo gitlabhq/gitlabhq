@@ -4,6 +4,6 @@ classes:
 - GroupWikiRepository
 feature_categories:
 - wiki
-description: TODO
+description: Stores information about group wiki repositories.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31121
 milestone: '13.0'

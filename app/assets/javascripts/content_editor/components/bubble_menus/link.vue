@@ -60,7 +60,7 @@ export default {
     async endEditingLink() {
       this.isEditing = false;
 
-      this.linkHref = await this.contentEditor.resolveLink(this.linkCanonicalSrc);
+      this.linkHref = await this.contentEditor.resolveUrl(this.linkCanonicalSrc);
 
       if (!this.linkCanonicalSrc && !this.linkHref) {
         this.removeLink();

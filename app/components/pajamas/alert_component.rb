@@ -36,6 +36,9 @@ module Pajamas
 
     delegate :sprite_icon, to: :helpers
 
+    renders_one :body
+    renders_one :actions
+
     ICONS = {
       info: 'information-o',
       warning: 'warning',

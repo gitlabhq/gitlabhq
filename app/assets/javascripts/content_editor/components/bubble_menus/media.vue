@@ -114,7 +114,7 @@ export default {
     async saveEditedMedia() {
       this.isUpdating = true;
 
-      this.mediaSrc = await this.contentEditor.resolveLink(this.mediaCanonicalSrc);
+      this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
 
       const position = this.tiptapEditor.state.selection.from;
 
@@ -151,7 +151,7 @@ export default {
       this.mediaAlt = alt;
       this.mediaCanonicalSrc = canonicalSrc || src;
       this.isUploading = uploading;
-      this.mediaSrc = await this.contentEditor.resolveLink(this.mediaCanonicalSrc);
+      this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
 
       this.isUpdating = false;
     },

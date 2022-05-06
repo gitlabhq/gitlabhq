@@ -8,8 +8,8 @@
   - if @merge_request.closed_or_merged_without_fork?
     = render Pajamas::AlertComponent.new(alert_class: 'gl-mb-5',
       variant: :danger,
-      dismissible: false) do
-      .gl-alert-body
+      dismissible: false) do |c|
+      = c.body do
         = _('The source project of this merge request has been removed.')
 
   .detail-page-header.border-bottom-0.pt-0.pb-0

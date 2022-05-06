@@ -1,6 +1,6 @@
 = render Pajamas::AlertComponent.new(alert_class: 'gl-my-5',
   variant: :danger,
   dismissible: false,
-  title: reason) do
-  .gl-alert-body
+  title: reason) do |c|
+  = c.body do
     = s_('The git server, Gitaly, is not available at this time. Please contact your administrator.')

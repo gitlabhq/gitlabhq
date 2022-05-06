@@ -17,7 +17,7 @@ describe('content_editor/components/bubble_menus/link', () => {
 
   const buildEditor = () => {
     tiptapEditor = createTestEditor({ extensions: [Link] });
-    contentEditor = { resolveLink: jest.fn() };
+    contentEditor = { resolveUrl: jest.fn() };
     eventHub = eventHubFactory();
   };
 
@@ -175,7 +175,7 @@ describe('content_editor/components/bubble_menus/link', () => {
         linkHrefInput.setValue('https://google.com');
         linkTitleInput.setValue('Search Google');
 
-        contentEditor.resolveLink.mockResolvedValue('https://google.com');
+        contentEditor.resolveUrl.mockResolvedValue('https://google.com');
 
         await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
       });

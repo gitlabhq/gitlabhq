@@ -42,8 +42,8 @@
           - if @error
             = render Pajamas::AlertComponent.new(title: @error[:message],
               variant: :danger,
-              dismissible: false) do
-              .gl-alert-body
+              dismissible: false) do |c|
+              = c.body do
                 = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
 
           .form-group

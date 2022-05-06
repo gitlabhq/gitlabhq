@@ -5,8 +5,8 @@
         = s_('GroupsNew|Import groups from another instance of GitLab')
       = link_to _('History'), history_import_bulk_imports_path, class: 'gl-link gl-ml-auto'
     = render Pajamas::AlertComponent.new(dismissible: false,
-      variant: :warning) do
-      .gl-alert-body
+      variant: :warning) do |c|
+      = c.body do
         - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
         - docs_link_end = '</a>'.html_safe
         = s_('GroupsNew|Not all related objects are migrated. %{docs_link_start}More info%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: docs_link_end }

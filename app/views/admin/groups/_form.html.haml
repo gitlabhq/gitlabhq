@@ -27,8 +27,8 @@
   - if @group.new_record?
     .form-group.row
       .offset-sm-2.col-sm-10
-        = render Pajamas::AlertComponent.new(dismissible: false) do
-          .gl-alert-body
+        = render Pajamas::AlertComponent.new(dismissible: false) do |c|
+          = c.body do
             = render 'shared/group_tips'
     .form-actions
       = f.submit _('Create group'), class: "gl-button btn btn-confirm"

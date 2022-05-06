@@ -2,13 +2,23 @@
 require "spec_helper"
 
 RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
-  context 'with content' do
+  context 'slots' do
+    let_it_be(:body) { 'Alert body' }
+    let_it_be(:actions) { 'Alert actions' }
+
     before do
-      render_inline(described_class.new) { '_content_' }
+      render_inline described_class.new do |c|
+        c.body { body }
+        c.actions { actions }
+      end
     end
 
-    it 'has content' do
-      expect(rendered_component).to have_text('_content_')
+    it 'renders alert body' do
+      expect(rendered_component).to have_content(body)
+    end
+
+    it 'renders actions' do
+      expect(rendered_component).to have_content(actions)
     end
   end
 

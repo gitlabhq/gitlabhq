@@ -1,7 +1,8 @@
 - if domain_presenter.errors.any?
-  = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do
-    - domain_presenter.errors.full_messages.each do |msg|
-      = msg
+  = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do |c|
+    = c.body do
+      - domain_presenter.errors.full_messages.each do |msg|
+        = msg
 
 .form-group.border-section
   .row

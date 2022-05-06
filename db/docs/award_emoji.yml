@@ -3,7 +3,7 @@ table_name: award_emoji
 classes:
 - AwardEmoji
 feature_categories:
-- snippets
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3bdc57f0a710b3769381ecad7ea4098223ecff56
+- team_planning
+description: Store the awarding of emoji by users on Issues, Epics, and other Awardables.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3785
 milestone: '8.9'

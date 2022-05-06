@@ -11,4 +11,9 @@
     - if @title
       %h4.gl-alert-title
         = @title
-    = content
+    - if body?
+      .gl-alert-body
+        = body
+    - if actions?
+      .gl-alert-actions
+        = actions
