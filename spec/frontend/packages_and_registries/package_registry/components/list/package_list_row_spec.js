@@ -28,6 +28,7 @@ describe('packages_list_row', () => {
 
   const packageWithoutTags = { ...packageData(), project: packageProject() };
   const packageWithTags = { ...packageWithoutTags, tags: { nodes: packageTags() } };
+  const packageCannotDestroy = { ...packageData(), canDestroy: false };
 
   const findPackageTags = () => wrapper.find(PackageTags);
   const findPackagePath = () => wrapper.find(PackagePath);
@@ -101,6 +102,12 @@ describe('packages_list_row', () => {
   });
 
   describe('delete button', () => {
+    it('does not exist when package cannot be destroyed', () => {
+      mountComponent({ packageEntity: packageCannotDestroy });
+
+      expect(findDeleteDropdown().exists()).toBe(false);
+    });
+
     it('exists and has the correct props', () => {
       mountComponent({ packageEntity: packageWithoutTags });
 

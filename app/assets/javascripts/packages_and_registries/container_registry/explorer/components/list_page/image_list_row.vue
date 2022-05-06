@@ -6,12 +6,10 @@ import { n__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
-  ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
   LIST_DELETE_BUTTON_DISABLED,
   LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION,
   REMOVE_REPOSITORY_LABEL,
   ROW_SCHEDULED_FOR_DELETION,
-  CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   IMAGE_DELETE_SCHEDULED_STATUS,
   IMAGE_FAILED_DELETED_STATUS,
   IMAGE_MIGRATING_STATE,
@@ -45,6 +43,11 @@ export default {
       default: false,
       required: false,
     },
+    expirationPolicy: {
+      type: Object,
+      default: () => ({}),
+      required: false,
+    },
   },
   i18n: {
     REMOVE_REPOSITORY_LABEL,
@@ -72,15 +75,6 @@ export default {
         'ContainerRegistry|%{count} Tags',
         this.item.tagsCount,
       );
-    },
-    warningIconText() {
-      if (this.failedDelete) {
-        return ASYNC_DELETE_IMAGE_ERROR_MESSAGE;
-      }
-      if (this.item.expirationPolicyStartedAt) {
-        return CLEANUP_TIMED_OUT_ERROR_MESSAGE;
-      }
-      return null;
     },
     imageName() {
       return this.item.name ? this.item.path : `${this.item.path}/ ${ROOT_IMAGE_TEXT}`;
@@ -140,6 +134,7 @@ export default {
           v-if="item.expirationPolicyCleanupStatus"
           class="ml-2"
           :status="item.expirationPolicyCleanupStatus"
+          :expiration-policy-next-run-at="expirationPolicy.next_run_at"
         />
       </template>
 

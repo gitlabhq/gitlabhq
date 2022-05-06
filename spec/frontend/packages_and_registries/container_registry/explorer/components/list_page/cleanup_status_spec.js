@@ -1,8 +1,8 @@
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import CleanupStatus from '~/packages_and_registries/container_registry/explorer/components/list_page/cleanup_status.vue';
 import {
-  CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   CLEANUP_STATUS_SCHEDULED,
   CLEANUP_STATUS_ONGOING,
   CLEANUP_STATUS_UNFINISHED,
@@ -17,12 +17,20 @@ describe('cleanup_status', () => {
 
   const findMainIcon = () => wrapper.findByTestId('main-icon');
   const findExtraInfoIcon = () => wrapper.findByTestId('extra-info');
+  const findPopover = () => wrapper.findComponent(GlPopover);
+
+  const cleanupPolicyHelpPage = helpPagePath(
+    'user/packages/container_registry/reduce_container_registry_storage.html',
+    { anchor: 'how-the-cleanup-policy-works' },
+  );
 
   const mountComponent = (propsData = { status: SCHEDULED_STATUS }) => {
     wrapper = shallowMountExtended(CleanupStatus, {
       propsData,
-      directives: {
-        GlTooltip: createMockDirective(),
+      stubs: {
+        GlLink,
+        GlPopover,
+        GlSprintf,
       },
     });
   };
@@ -43,7 +51,7 @@ describe('cleanup_status', () => {
       mountComponent({ status });
 
       expect(findMainIcon().exists()).toBe(visible);
-      expect(wrapper.text()).toBe(text);
+      expect(wrapper.text()).toContain(text);
     },
   );
 
@@ -52,12 +60,6 @@ describe('cleanup_status', () => {
       mountComponent();
 
       expect(findMainIcon().exists()).toBe(true);
-    });
-
-    it(`has the orange class when the status is ${UNFINISHED_STATUS}`, () => {
-      mountComponent({ status: UNFINISHED_STATUS });
-
-      expect(findMainIcon().classes('gl-text-orange-500')).toBe(true);
     });
   });
 
@@ -76,12 +78,12 @@ describe('cleanup_status', () => {
       },
     );
 
-    it(`has a tooltip`, () => {
+    it(`has a popover with a learn more link`, () => {
       mountComponent({ status: UNFINISHED_STATUS });
 
-      const tooltip = getBinding(findExtraInfoIcon().element, 'gl-tooltip');
-
-      expect(tooltip.value.title).toBe(CLEANUP_TIMED_OUT_ERROR_MESSAGE);
+      expect(findPopover().exists()).toBe(true);
+      expect(findPopover().findComponent(GlLink).exists()).toBe(true);
+      expect(findPopover().findComponent(GlLink).attributes('href')).toBe(cleanupPolicyHelpPage);
     });
   });
 });

@@ -9543,12 +9543,6 @@ msgstr ""
 msgid "ContainerRegistry|Cleanup ran but some tags were not removed"
 msgstr ""
 
-msgid "ContainerRegistry|Cleanup timed out"
-msgstr ""
-
-msgid "ContainerRegistry|Cleanup timed out before it could delete all tags"
-msgstr ""
-
 msgid "ContainerRegistry|Cleanup will run %{time}"
 msgstr ""
 
@@ -9651,6 +9645,9 @@ msgstr ""
 msgid "ContainerRegistry|Note: Any policy update will result in a change to the scheduled run date and time"
 msgstr ""
 
+msgid "ContainerRegistry|Partial cleanup complete"
+msgstr ""
+
 msgid "ContainerRegistry|Please try different search criteria"
 msgstr ""
 
@@ -9747,6 +9744,9 @@ msgid "ContainerRegistry|Tags with names that match this regex pattern are remov
 msgstr ""
 
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|The cleanup will continue within %{time}. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|The filter returned no results"

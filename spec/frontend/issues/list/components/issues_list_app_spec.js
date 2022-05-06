@@ -8,6 +8,8 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import getIssuesWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_without_crm.query.graphql';
+import getIssuesCountsWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_counts_without_crm.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -118,6 +120,8 @@ describe('CE IssuesListApp component', () => {
     const requestHandlers = [
       [getIssuesQuery, issuesQueryResponse],
       [getIssuesCountsQuery, issuesCountsQueryResponse],
+      [getIssuesWithoutCrmQuery, issuesQueryResponse],
+      [getIssuesCountsWithoutCrmQuery, issuesCountsQueryResponse],
       [setSortPreferenceMutation, sortPreferenceMutationResponse],
     ];
 

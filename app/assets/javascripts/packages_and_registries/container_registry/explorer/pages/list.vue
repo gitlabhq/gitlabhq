@@ -336,6 +336,7 @@ export default {
             :images="images"
             :metadata-loading="$apollo.queries.additionalDetails.loading"
             :page-info="pageInfo"
+            :expiration-policy="config.expirationPolicy"
             @delete="deleteImage"
             @prev-page="fetchPreviousPage"
             @next-page="fetchNextPage"

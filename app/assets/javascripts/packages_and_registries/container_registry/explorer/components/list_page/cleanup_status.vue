@@ -1,7 +1,9 @@
 <script>
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlIcon, GlPopover, GlLink, GlSprintf } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { timeTilRun } from '../../utils';
 import {
-  CLEANUP_TIMED_OUT_ERROR_MESSAGE,
+  PARTIAL_CLEANUP_CONTINUE_MESSAGE,
   CLEANUP_STATUS_SCHEDULED,
   CLEANUP_STATUS_ONGOING,
   CLEANUP_STATUS_UNFINISHED,
@@ -15,9 +17,9 @@ export default {
   name: 'CleanupStatus',
   components: {
     GlIcon,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlPopover,
+    GlLink,
+    GlSprintf,
   },
   props: {
     status: {
@@ -29,12 +31,17 @@ export default {
         );
       },
     },
+    expirationPolicyNextRunAt: {
+      type: String,
+      required: false,
+      default: () => '',
+    },
   },
   i18n: {
     CLEANUP_STATUS_SCHEDULED,
     CLEANUP_STATUS_ONGOING,
     CLEANUP_STATUS_UNFINISHED,
-    CLEANUP_TIMED_OUT_ERROR_MESSAGE,
+    PARTIAL_CLEANUP_CONTINUE_MESSAGE,
   },
   computed: {
     showStatus() {
@@ -46,26 +53,57 @@ export default {
     statusText() {
       return this.$options.i18n[`CLEANUP_STATUS_${this.status}`];
     },
-    expireIconClass() {
-      return this.failedDelete ? 'gl-text-orange-500' : '';
+    calculatedTimeTilNextRun() {
+      return timeTilRun(this.expirationPolicyNextRunAt?.next_run);
     },
   },
+  statusPopoverOptions: {
+    triggers: 'hover',
+    placement: 'top',
+  },
+  cleanupPolicyHelpPage: helpPagePath(
+    'user/packages/container_registry/reduce_container_registry_storage.html',
+    { anchor: 'how-the-cleanup-policy-works' },
+  ),
 };
 </script>
 
 <template>
-  <div v-if="showStatus" class="gl-display-inline-flex gl-align-items-center">
-    <gl-icon name="expire" data-testid="main-icon" :class="expireIconClass" />
+  <div
+    v-if="showStatus"
+    id="status-popover-container"
+    class="gl-display-inline-flex gl-align-items-center"
+  >
+    <div class="gl-display-inline-flex gl-align-items-center">
+      <gl-icon name="expire" data-testid="main-icon" />
+    </div>
     <span class="gl-mx-2">
       {{ statusText }}
     </span>
     <gl-icon
       v-if="failedDelete"
-      v-gl-tooltip="{ title: $options.i18n.CLEANUP_TIMED_OUT_ERROR_MESSAGE }"
+      id="status-info"
       :size="14"
-      class="gl-text-black-normal"
+      class="gl-text-gray-500"
       data-testid="extra-info"
-      name="information"
+      name="information-o"
     />
+    <gl-popover
+      target="status-info"
+      container="status-popover-container"
+      v-bind="$options.statusPopoverOptions"
+    >
+      <template #title>
+        {{ $options.i18n.CLEANUP_STATUS_UNFINISHED }}
+      </template>
+      <gl-sprintf :message="$options.i18n.PARTIAL_CLEANUP_CONTINUE_MESSAGE">
+        <template #time>{{ calculatedTimeTilNextRun }}</template
+        ><template #link="{ content }"
+          ><gl-link :href="$options.cleanupPolicyHelpPage" class="gl-font-sm" target="_blank">{{
+            content
+          }}</gl-link></template
+        >
+      </gl-sprintf>
+    </gl-popover>
   </div>
 </template>

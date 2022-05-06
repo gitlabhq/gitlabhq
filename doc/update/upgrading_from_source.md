@@ -7,10 +7,6 @@ comments: false
 
 # Upgrading Community Edition and Enterprise Edition from source **(FREE SELF)**
 
-NOTE:
-Users wishing to upgrade to 12.0.0 must take some extra steps. See the
-version specific upgrade instructions for 12.0.0 for more details.
-
 Make sure you view this update guide from the branch (version) of GitLab you
 would like to install (for example, `11.8`). You can select the required version of documentation in the dropdown at the top right corner of GitLab documentation page.
 
@@ -420,6 +416,39 @@ Example:
 
 Additional instructions here.
 -->
+
+### 15.0.0
+
+Support for more than one database has been added to GitLab. [As part of this](https://gitlab.com/gitlab-org/gitlab/-/issues/338182),
+`config/database.yml` needs to include a database name in the database configuration.
+The `main: database` must be first. If an invalid or deprecated syntax is used, an error is generated
+during application start:
+
+```plaintext
+ERROR: This installation of GitLab uses unsupported 'config/database.yml'.
+The main: database needs to be defined as a first configuration item instead of primary. (RuntimeError)
+```
+
+Previously, the `config/database.yml` file looked like the following:
+
+```yaml
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: gitlabhq_production
+  ...
+```
+
+Starting with GitLab 15.0, it needs to define a `main` database first:
+
+```yaml
+production:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    ...
+```
 
 ### 14.5.0
 

@@ -126,6 +126,10 @@ class DeployToken < ApplicationRecord
     end
   end
 
+  def impersonated?
+    false
+  end
+
   def expires_at
     expires_at = read_attribute(:expires_at)
     expires_at != Forever.date ? expires_at : nil

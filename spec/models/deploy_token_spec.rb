@@ -469,4 +469,10 @@ RSpec.describe DeployToken do
       end
     end
   end
+
+  describe '.impersonated?' do
+    it 'returns false' do
+      expect(subject.impersonated?).to be(false)
+    end
+  end
 end

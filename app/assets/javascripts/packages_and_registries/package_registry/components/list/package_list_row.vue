@@ -159,7 +159,7 @@ export default {
       </span>
     </template>
 
-    <template #right-action>
+    <template v-if="packageEntity.canDestroy" #right-action>
       <gl-dropdown
         data-testid="delete-dropdown"
         icon="ellipsis_v"

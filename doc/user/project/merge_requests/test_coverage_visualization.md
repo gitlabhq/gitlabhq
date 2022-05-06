@@ -196,7 +196,9 @@ coverage-jdk11:
   needs: ["test-jdk11"]
   artifacts:
     reports:
-      cobertura: target/site/cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: target/site/cobertura.xml
 ```
 
 #### Gradle example
@@ -232,7 +234,9 @@ coverage-jdk11:
   needs: ["test-jdk11"]
   artifacts:
     reports:
-      cobertura: build/cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: build/cobertura.xml
 ```
 
 ### Python example
@@ -254,7 +258,9 @@ run tests:
   coverage: '/TOTAL.*\s([.\d]+)%/'
   artifacts:
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 ```
 
 ### PHP example
@@ -284,7 +290,9 @@ run tests:
     - php ./vendor/bin/phpunit --coverage-text --coverage-cobertura=coverage.cobertura.xml
   artifacts:
     reports:
-      cobertura: coverage.cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.cobertura.xml
 ```
 
 [Codeception](https://codeception.com/), through PHPUnit, also supports generating Cobertura report with
@@ -319,7 +327,9 @@ run tests:
     name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     expire_in: 2 days
     reports:
-      cobertura: build/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: build/coverage.xml
 ```
 
 ### Go example
@@ -346,7 +356,9 @@ run tests:
     - go run github.com/boumenot/gocover-cobertura < coverage.txt > coverage.xml
   artifacts:
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 ```
 
 ### Ruby example
@@ -373,5 +385,7 @@ run tests:
     - bundle exec rspec
   artifacts:
     reports:
-      cobertura: coverage/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/coverage.xml
 ```

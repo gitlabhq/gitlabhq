@@ -13,6 +13,8 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import getIssuesWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_without_crm.query.graphql';
+import getIssuesCountsWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_counts_without_crm.query.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -154,7 +156,9 @@ export default {
   },
   apollo: {
     issues: {
-      query: getIssuesQuery,
+      query() {
+        return this.hasCrmParameter ? getIssuesQuery : getIssuesWithoutCrmQuery;
+      },
       variables() {
         return this.queryVariables;
       },
@@ -178,7 +182,9 @@ export default {
       debounce: 200,
     },
     issuesCounts: {
-      query: getIssuesCountsQuery,
+      query() {
+        return this.hasCrmParameter ? getIssuesCountsQuery : getIssuesCountsWithoutCrmQuery;
+      },
       variables() {
         return this.queryVariables;
       },
@@ -389,6 +395,12 @@ export default {
         state: this.state,
         ...this.urlFilterParams,
       };
+    },
+    hasCrmParameter() {
+      return (
+        window.location.search.includes('crm_contact_id=') ||
+        window.location.search.includes('crm_organization_id=')
+      );
     },
   },
   watch: {

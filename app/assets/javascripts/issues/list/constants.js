@@ -132,6 +132,8 @@ export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
 export const TOKEN_TYPE_ITERATION = 'iteration';
 export const TOKEN_TYPE_EPIC = 'epic_id';
 export const TOKEN_TYPE_WEIGHT = 'weight';
+export const TOKEN_TYPE_CONTACT = 'crm_contact';
+export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
 
 export const filters = {
   [TOKEN_TYPE_AUTHOR]: {
@@ -291,6 +293,26 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[weight]',
+      },
+    },
+  },
+  [TOKEN_TYPE_CONTACT]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'crmContactId',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'crm_contact_id',
+      },
+    },
+  },
+  [TOKEN_TYPE_ORGANIZATION]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'crmOrganizationId',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'crm_organization_id',
       },
     },
   },
