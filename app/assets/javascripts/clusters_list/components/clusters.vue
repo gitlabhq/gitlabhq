@@ -224,7 +224,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="loadingClusters" size="md" />
+  <gl-loading-icon v-if="loadingClusters" size="lg" />
 
   <section v-else>
     <ancestor-notice />

@@ -18,8 +18,7 @@ Otherwise, to add your license:
 1. Sign in to GitLab as an administrator.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
-1. In the **License file** area, select **Add a license**.
-1. Add a license by either uploading the file or pasting the key.
+1. In the **Add License** area, add a license by either uploading the file or entering the key.
 1. Select the **Terms of Service** checkbox.
 1. Select **Add license**.
 

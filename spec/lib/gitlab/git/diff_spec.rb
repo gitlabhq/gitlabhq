@@ -177,9 +177,9 @@ EOT
           expect(diff_two.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
           expect(diff_three.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
 
-          expect { Oj.dump(diff) }.not_to raise_error(EncodingError)
-          expect { Oj.dump(diff_two) }.not_to raise_error(EncodingError)
-          expect { Oj.dump(diff_three) }.not_to raise_error(EncodingError)
+          expect { Oj.dump(diff) }.not_to raise_error
+          expect { Oj.dump(diff_two) }.not_to raise_error
+          expect { Oj.dump(diff_three) }.not_to raise_error
         end
 
         context 'when the diff is binary' do

@@ -42,7 +42,7 @@ RSpec.describe FinalizeProjectNamespacesBackfill, :migration do
 
       context 'when project namespace backfilling migration finished successfully' do
         it 'does not raise exception' do
-          expect { migrate! }.not_to raise_error(/Expected batched background migration for the given configuration to be marked as 'finished'/)
+          expect { migrate! }.not_to raise_error
         end
       end
 

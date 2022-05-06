@@ -64,5 +64,10 @@ module QA
     "registry_with_cdn" => "RegistryWithCDN"
   )
 
+  # Configure knapsack at the very begining of the setup
+  loader.on_setup do
+    QA::Support::KnapsackReport.configure!
+  end
+
   loader.setup
 end

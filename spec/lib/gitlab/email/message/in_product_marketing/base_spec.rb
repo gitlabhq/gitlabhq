@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
       let(:series) { 0 }
 
       it 'does not raise error' do
-        expect { subject }.not_to raise_error(ArgumentError)
+        expect { subject }.not_to raise_error
       end
     end
   end

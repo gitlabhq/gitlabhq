@@ -124,7 +124,7 @@ export default {
 
 <template>
   <div>
-    <gl-loading-icon v-if="isLoading" size="md" />
+    <gl-loading-icon v-if="isLoading" size="lg" />
 
     <div v-else-if="hasEvents">
       <div

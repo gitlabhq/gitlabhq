@@ -3180,15 +3180,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context 'without proper permissions' do
       before do
-        allow(model).to receive(:execute).with(/CREATE EXTENSION IF NOT EXISTS #{extension}/).and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
+        allow(model).to receive(:execute)
+          .with(/CREATE EXTENSION IF NOT EXISTS #{extension}/)
+          .and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
       end
 
-      it 'raises the exception' do
-        expect { subject }.to raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
-      end
-
-      it 'prints an error message' do
-        expect { subject }.to output(/user is not allowed/).to_stderr.and raise_error
+      it 'raises an exception and prints an error message' do
+        expect { subject }
+          .to output(/user is not allowed/).to_stderr
+          .and raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
       end
     end
   end
@@ -3206,15 +3206,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context 'without proper permissions' do
       before do
-        allow(model).to receive(:execute).with(/DROP EXTENSION IF EXISTS #{extension}/).and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
+        allow(model).to receive(:execute)
+          .with(/DROP EXTENSION IF EXISTS #{extension}/)
+          .and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
       end
 
-      it 'raises the exception' do
-        expect { subject }.to raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
-      end
-
-      it 'prints an error message' do
-        expect { subject }.to output(/user is not allowed/).to_stderr.and raise_error
+      it 'raises an exception and prints an error message' do
+        expect { subject }
+          .to output(/user is not allowed/).to_stderr
+          .and raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
       end
     end
   end

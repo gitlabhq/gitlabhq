@@ -108,7 +108,7 @@ module QA
       #
       # @return [Logger]
       def logger
-        @logger ||= Logger.new($stdout)
+        @logger ||= Knapsack.logger
       end
 
       # GCS client

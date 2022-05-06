@@ -26,7 +26,7 @@ RSpec.describe 'Delete a cluster agent' do
                'or you don\'t have permission to perform this action']
 
     it 'does not delete cluster agent' do
-      expect { cluster_agent.reload }.not_to raise_error(ActiveRecord::RecordNotFound)
+      expect { cluster_agent.reload }.not_to raise_error
     end
   end
 

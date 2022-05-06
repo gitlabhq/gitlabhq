@@ -494,7 +494,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       end
 
       it 'does not raise kubeclient http error' do
-        expect { subject }.not_to raise_error(Kubeclient::HttpError)
+        expect { subject }.not_to raise_error
       end
     end
 

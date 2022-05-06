@@ -1182,7 +1182,7 @@ RSpec.describe Packages::Package, type: :model do
 
         it "plan_limits includes column #{plan_limit_name}" do
           expect { package.project.actual_limits.send(plan_limit_name) }
-            .not_to raise_error(NoMethodError)
+            .not_to raise_error
         end
       end
     end

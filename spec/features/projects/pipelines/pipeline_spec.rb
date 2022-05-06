@@ -1188,12 +1188,43 @@ RSpec.describe 'Pipeline', :js do
         expect(page).to have_content('There is an unknown failure, please try again')
       end
 
+      context 'when failed_jobs_tab_vue feature flag is disabled' do
+        before do
+          stub_feature_flags(failed_jobs_tab_vue: false)
+        end
+
+        context 'when user does not have permission to retry build' do
+          it 'shows retry button for failed build' do
+            subject
+
+            page.within(find('.build-failures', match: :first)) do
+              expect(page).not_to have_link('Retry')
+            end
+          end
+        end
+
+        context 'when user does have permission to retry build' do
+          before do
+            create(:protected_branch, :developers_can_merge,
+                   name: pipeline.ref, project: project)
+          end
+
+          it 'shows retry button for failed build' do
+            subject
+
+            page.within(find('.build-failures', match: :first)) do
+              expect(page).to have_link('Retry')
+            end
+          end
+        end
+      end
+
       context 'when user does not have permission to retry build' do
         it 'shows retry button for failed build' do
           subject
 
-          page.within(find('.build-failures', match: :first)) do
-            expect(page).not_to have_link('Retry')
+          page.within(find('#js-tab-failures', match: :first)) do
+            expect(page).not_to have_button('Retry')
           end
         end
       end
@@ -1207,8 +1238,8 @@ RSpec.describe 'Pipeline', :js do
         it 'shows retry button for failed build' do
           subject
 
-          page.within(find('.build-failures', match: :first)) do
-            expect(page).to have_link('Retry')
+          page.within(find('#js-tab-failures', match: :first)) do
+            expect(page).to have_button('Retry')
           end
         end
       end

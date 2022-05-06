@@ -17,9 +17,9 @@ Marginalia::Comment.components = [:application, :correlation_id, :jid, :endpoint
 
 # As mentioned in https://github.com/basecamp/marginalia/pull/93/files,
 # adding :line has some overhead because a regexp on the backtrace has
-# to be run on every SQL query. Only enable this in development because
+# to be run on every SQL query. Only enable this in development and test because
 # we've seen it slow things down.
-if Rails.env.development?
+if Gitlab.dev_or_test_env?
   Marginalia::Comment.components << :line
   Marginalia::Comment.lines_to_ignore = Regexp.union(
     Gitlab::BacktraceCleaner::IGNORE_BACKTRACES + %w[

@@ -85,3 +85,27 @@ export const TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
 
 export const BUTTON_TOOLTIP_RETRY = __('Retry failed jobs');
 export const BUTTON_TOOLTIP_CANCEL = __('Cancel');
+
+export const DEFAULT_FIELDS = [
+  {
+    key: 'name',
+    label: __('Name'),
+    columnClass: 'gl-w-20p',
+  },
+  {
+    key: 'stage',
+    label: __('Stage'),
+    columnClass: 'gl-w-20p',
+  },
+  {
+    key: 'failure',
+    label: __('Failure'),
+    columnClass: 'gl-w-40p',
+  },
+  {
+    key: 'actions',
+    label: '',
+    tdClass: 'gl-text-right',
+    columnClass: 'gl-w-20p',
+  },
+];

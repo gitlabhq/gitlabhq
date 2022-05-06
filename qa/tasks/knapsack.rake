@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/RakeEnvironment
 namespace :knapsack do
   desc "Run tests with knapsack runner"
   task :rspec, [:rspec_args] do |_, args|
@@ -12,7 +13,6 @@ namespace :knapsack do
       exit RSpec::Core::Runner.run([*rspec_args, "qa/specs/features"])
     end
 
-    QA::Support::KnapsackReport.configure!
     exit QA::Specs::KnapsackRunner.run(rspec_args)
   end
 
@@ -31,3 +31,4 @@ namespace :knapsack do
     QA::Support::LongRunningSpecReporter.execute
   end
 end
+# rubocop:enable Rails/RakeEnvironment

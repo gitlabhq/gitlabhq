@@ -38,7 +38,7 @@ RSpec.describe ::Ci::PipelineArtifacts::CoverageReportService do
 
       context 'when pipeline artifact has already been created' do
         it 'do not raise an error and do not persist the same artifact twice' do
-          expect { 2.times { described_class.new.execute(pipeline) } }.not_to raise_error(ActiveRecord::RecordNotUnique)
+          expect { 2.times { described_class.new.execute(pipeline) } }.not_to raise_error
 
           expect(Ci::PipelineArtifact.count).to eq(1)
         end

@@ -29,7 +29,7 @@ RSpec.describe Gitlab::BackgroundMigration::ExtractProjectTopicsIntoSeparateTabl
     # Tagging records
     expect { tagging_1.reload }.to raise_error(ActiveRecord::RecordNotFound)
     expect { tagging_2.reload }.to raise_error(ActiveRecord::RecordNotFound)
-    expect { other_tagging.reload }.not_to raise_error(ActiveRecord::RecordNotFound)
+    expect { other_tagging.reload }.not_to raise_error
     expect { tagging_3.reload }.to raise_error(ActiveRecord::RecordNotFound)
     expect { tagging_4.reload }.to raise_error(ActiveRecord::RecordNotFound)
     expect { tagging_5.reload }.to raise_error(ActiveRecord::RecordNotFound)

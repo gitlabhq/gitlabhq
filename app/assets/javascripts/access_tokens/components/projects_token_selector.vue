@@ -148,7 +148,7 @@ export default {
       </template>
       <template #dropdown-footer>
         <gl-intersection-observer v-if="projects.pageInfo.hasNextPage" @appear="loadMoreProjects">
-          <gl-loading-icon v-if="isLoadingMoreProjects" size="md" />
+          <gl-loading-icon v-if="isLoadingMoreProjects" class="gl-mb-3" size="sm" />
         </gl-intersection-observer>
       </template>
     </gl-token-selector>

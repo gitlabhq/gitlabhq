@@ -6,13 +6,16 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
   let(:app_settings) { build(:application_setting) }
   let(:user) { create(:admin) }
 
+  before do
+    assign(:application_setting, app_settings)
+    allow(view).to receive(:current_user).and_return(user)
+  end
+
   describe 'sourcegraph integration' do
     let(:sourcegraph_flag) { true }
 
     before do
-      assign(:application_setting, app_settings)
       allow(Gitlab::Sourcegraph).to receive(:feature_available?).and_return(sourcegraph_flag)
-      allow(view).to receive(:current_user).and_return(user)
     end
 
     context 'when sourcegraph feature is enabled' do
@@ -35,11 +38,6 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
   end
 
   describe 'prompt user about registration features' do
-    before do
-      assign(:application_setting, app_settings)
-      allow(view).to receive(:current_user).and_return(user)
-    end
-
     context 'when service ping is enabled' do
       before do
         stub_application_setting(usage_ping_enabled: true)
@@ -58,6 +56,16 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
       end
 
       it_behaves_like 'renders registration features prompt', :application_setting_disabled_repository_size_limit
+    end
+  end
+
+  describe 'add license' do
+    before do
+      render
+    end
+
+    it 'does not show the Add License section' do
+      expect(rendered).not_to have_css('#js-add-license-toggle')
     end
   end
 end

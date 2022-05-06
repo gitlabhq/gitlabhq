@@ -621,7 +621,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
             expect(close_action.processed).to be_falsey
 
             # it encounters the StaleObjectError at first, but reloads the object and runs `build.play`
-            expect { subject }.not_to raise_error(ActiveRecord::StaleObjectError)
+            expect { subject }.not_to raise_error
 
             # Now the build should be processed.
             expect(close_action.reload.processed).to be_truthy

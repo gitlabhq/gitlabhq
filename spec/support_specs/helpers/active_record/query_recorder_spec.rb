@@ -78,12 +78,14 @@ RSpec.describe ActiveRecord::QueryRecorder do
   end
 
   describe 'detecting the right number of calls and their origin' do
-    it 'detects two separate queries' do
-      control = ActiveRecord::QueryRecorder.new query_recorder_debug: true do
+    let(:control) do
+      ActiveRecord::QueryRecorder.new query_recorder_debug: true do
         2.times { TestQueries.count }
         TestQueries.first
       end
+    end
 
+    it 'detects two separate queries' do
       # Check #find_query
       expect(control.find_query(/.*/, 0).size)
         .to eq(control.data.keys.size)
@@ -98,8 +100,8 @@ RSpec.describe ActiveRecord::QueryRecorder do
       expect(control.log.size).to eq(3)
       # Ensure memoization value match the raw value above
       expect(control.count).to eq(control.log.size)
-      # Ensure we have only two sources of queries
-      expect(control.data.keys.size).to eq(1)
+      # Ensure we have two sources of queries
+      expect(control.data.keys.size).to eq(2)
     end
   end
 end

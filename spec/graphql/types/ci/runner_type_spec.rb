@@ -11,7 +11,7 @@ RSpec.describe GitlabSchema.types['CiRunner'] do
     expected_fields = %w[
       id description created_at contacted_at maximum_timeout access_level active paused status
       version short_sha revision locked run_untagged ip_address runner_type tag_list
-      project_count job_count admin_url edit_admin_url user_permissions executor_name
+      project_count job_count admin_url edit_admin_url user_permissions executor_name architecture_name platform_name
       groups projects jobs token_expires_at
     ]
 

@@ -30,11 +30,6 @@ module QA
         Runtime::Scenario.define(:large_setup?, args.include?('can_use_large_setup'))
 
         ##
-        # Setup knapsack and download latest report
-        #
-        Support::KnapsackReport.configure!
-
-        ##
         # Configure browser
         #
         Runtime::Browser.configure!

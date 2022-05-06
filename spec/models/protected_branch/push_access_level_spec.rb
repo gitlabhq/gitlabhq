@@ -30,7 +30,7 @@ RSpec.describe ProtectedBranch::PushAccessLevel do
     it 'checks that a deploy key is enabled for the same project as the protected branch\'s' do
       level = build(:protected_branch_push_access_level, deploy_key: create(:deploy_key))
 
-      expect { level.save! }.to raise_error
+      expect { level.save! }.to raise_error(ActiveRecord::RecordInvalid)
       expect(level.errors.full_messages).to contain_exactly('Deploy key is not enabled for this project')
     end
   end

@@ -1,10 +1,11 @@
 import createFlash from '~/flash';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import createDagApp from './pipeline_details_dag';
 import { createPipelinesDetailApp } from './pipeline_details_graph';
 import { createPipelineHeaderApp } from './pipeline_details_header';
 import { createPipelineNotificationApp } from './pipeline_details_notification';
 import { createPipelineJobsApp } from './pipeline_details_jobs';
+import { createPipelineFailedJobsApp } from './pipeline_details_failed_jobs';
 import { apolloProvider } from './pipeline_shared_client';
 import { createTestDetails } from './pipeline_test_details';
 
@@ -16,6 +17,7 @@ const SELECTORS = {
   PIPELINE_TABS: '#js-pipeline-tabs',
   PIPELINE_TESTS: '#js-pipeline-tests-detail',
   PIPELINE_JOBS: '#js-pipeline-jobs-vue',
+  PIPELINE_FAILED_JOBS: '#js-pipeline-failed-jobs-vue',
 };
 
 export default async function initPipelineDetailsBundle() {
@@ -78,6 +80,16 @@ export default async function initPipelineDetailsBundle() {
       createFlash({
         message: __('An error occurred while loading the Jobs tab.'),
       });
+    }
+
+    if (gon.features?.failedJobsTabVue) {
+      try {
+        createPipelineFailedJobsApp(SELECTORS.PIPELINE_FAILED_JOBS);
+      } catch {
+        createFlash({
+          message: s__('Jobs|An error occurred while loading the Failed Jobs tab.'),
+        });
+      }
     }
   }
 }

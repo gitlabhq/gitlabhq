@@ -35,6 +35,12 @@ module Types
       field :executor_name, GraphQL::Types::String, null: true,
             description: 'Executor last advertised by the runner.',
             method: :executor_name
+      field :platform_name, GraphQL::Types::String, null: true,
+            description: 'Platform provided by the runner.',
+            method: :platform
+      field :architecture_name, GraphQL::Types::String, null: true,
+            description: 'Architecture provided by the the runner.',
+            method: :architecture
       field :groups, ::Types::GroupType.connection_type, null: true,
             description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,

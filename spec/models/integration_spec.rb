@@ -681,7 +681,7 @@ RSpec.describe Integration do
 
       integration.properties = { foo: 1, bar: 2 }
 
-      expect { integration.properties[:foo] = 3 }.to raise_error
+      expect { integration.properties[:foo] = 3 }.to raise_error(FrozenError)
     end
   end
 

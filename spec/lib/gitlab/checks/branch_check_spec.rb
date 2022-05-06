@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Checks::BranchCheck do
           it 'prevents force push' do
             expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
 
-            expect { subject.validate! }.to raise_error
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError)
           end
         end
       end
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::Checks::BranchCheck do
           it 'prevents force push' do
             expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
 
-            expect { subject.validate! }.to raise_error
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError)
           end
         end
 
@@ -141,7 +141,7 @@ RSpec.describe Gitlab::Checks::BranchCheck do
           it 'prevents force push' do
             expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
 
-            expect { subject.validate! }.to raise_error
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError)
           end
         end
       end

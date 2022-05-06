@@ -2030,7 +2030,7 @@ RSpec.describe Project, factory_default: :keep do
         it 'returns nil if the path detection throws an error' do
           expect(Rails.application.routes).to receive(:recognize_path).with(url) { raise ActionController::RoutingError, 'test' }
 
-          expect { subject }.not_to raise_error(ActionController::RoutingError)
+          expect { subject }.not_to raise_error
           expect(subject).to be_nil
         end
       end
