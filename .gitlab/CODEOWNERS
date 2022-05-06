@@ -116,8 +116,6 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/services/network_policies/** @gitlab-org/protect/container-security-backend
 /app/models/clusters/applications/cilium.rb @gitlab-org/protect/container-security-backend
 /spec/models/clusters/applications/cilium_spec.rb @gitlab-org/protect/container-security-backend
-/ee/app/controllers/projects/security/network_policies_controller.rb @gitlab-org/protect/container-security-backend
-/ee/spec/controllers/projects/security/network_policies_controller_spec.rb  @gitlab-org/protect/container-security-backend
 /ee/app/services/network_policies/** @gitlab-org/protect/container-security-backend
 /ee/spec/services/network_policies/** @gitlab-org/protect/container-security-backend
 /ee/app/services/security/orchestration/** @gitlab-org/protect/container-security-backend

@@ -62,6 +62,15 @@ RSpec.describe Database::CiNamespaceMirrorsConsistencyCheckWorker do
         expect(worker).to receive(:log_extra_metadata_on_done).with(:results, expected_result)
         worker.perform
       end
+
+      it 'calls the consistency_fix_service to fix the inconsistencies' do
+        allow_next_instance_of(Database::ConsistencyFixService) do |instance|
+          expect(instance).to receive(:execute).with(
+            ids: [missing_namespace.id]
+          ).and_call_original
+        end
+        worker.perform
+      end
     end
   end
 end

@@ -10,7 +10,7 @@ In GitLab, [permissions](../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose
 further restrictions on certain branches, they can be protected.
 
-The default branch for your repository is protected by default.
+The [default branch](repository/branches/default.md) for your repository is protected by default.
 
 ## Who can modify a protected branch
 
@@ -49,6 +49,10 @@ To protect a branch:
 The protected branch displays in the list of protected branches.
 
 ## Configure multiple protected branches by using a wildcard
+
+If both a specific rule and a wildcard rule apply to the same branch, the most
+permissive rule controls how the branch behaves. For merge controls to work properly,
+set **Allowed to push** to a broader set of users than **Allowed to merge**.
 
 Prerequisite:
 
@@ -96,14 +100,19 @@ To create a new branch through the user interface:
 
 ## Require everyone to submit merge requests for a protected branch
 
-You can force everyone to submit a merge request, rather than allowing them to check in directly
-to a protected branch. This is compatible with workflows like the [GitLab workflow](../../topics/gitlab_flow.md).
+You can force everyone to submit a merge request, rather than allowing them to
+check in directly to a protected branch. This setting is compatible with workflows
+like the [GitLab workflow](../../topics/gitlab_flow.md).
 
 1. Go to your project and select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to merge** list, select **Developers + Maintainers**.
 1. From the **Allowed to push** list, select **No one**.
+
+   NOTE:
+   Setting a role, group or user as **Allowed to push** also allows those users to merge.
+
 1. Select **Protect**.
 
 ## Allow everyone to push directly to a protected branch

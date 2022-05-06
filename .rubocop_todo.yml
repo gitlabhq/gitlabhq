@@ -241,13 +241,6 @@ Style/KeywordParametersOrder:
 Style/Lambda:
   Enabled: false
 
-# Offense count: 35
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, MinBodyLength.
-# SupportedStyles: skip_modifier_ifs, always
-Style/Next:
-  Enabled: false
-
 # Offense count: 101
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedOctalStyle.

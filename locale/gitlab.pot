@@ -911,7 +911,7 @@ msgstr ""
 msgid "%{reportType} detected %{totalStart}%{total}%{totalEnd} potential %{vulnMessage}"
 msgstr ""
 
-msgid "%{reportType} detected %{totalStart}no%{totalEnd} vulnerabilities."
+msgid "%{reportType} detected %{totalStart}no%{totalEnd} new vulnerabilities."
 msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."

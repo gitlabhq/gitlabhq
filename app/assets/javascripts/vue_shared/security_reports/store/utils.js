@@ -90,7 +90,7 @@ const createStatusMessage = ({ reportType, status, total }) => {
   if (status) {
     message = __('%{reportType} %{status}');
   } else if (!total) {
-    message = __('%{reportType} detected %{totalStart}no%{totalEnd} vulnerabilities.');
+    message = __('%{reportType} detected %{totalStart}no%{totalEnd} new vulnerabilities.');
   } else {
     message = __(
       '%{reportType} detected %{totalStart}%{total}%{totalEnd} potential %{vulnMessage}',

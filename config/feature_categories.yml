@@ -52,6 +52,7 @@
 - experimentation_conversion
 - experimentation_expansion
 - feature_flags
+- free_user_caps_conversion
 - five_minute_production_app
 - fulfillment_platform
 - fuzz_testing
