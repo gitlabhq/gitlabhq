@@ -8,6 +8,7 @@ module API
     helpers ::API::Helpers::PackagesHelpers
 
     feature_category :package_registry
+    urgency :low
 
     # The Marshal version can be found by "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
     # Updating the version should require a GitLab API version change.

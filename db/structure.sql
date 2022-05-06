@@ -17389,7 +17389,8 @@ CREATE TABLE namespace_root_storage_statistics (
     pipeline_artifacts_size bigint DEFAULT 0 NOT NULL,
     uploads_size bigint DEFAULT 0 NOT NULL,
     dependency_proxy_size bigint DEFAULT 0 NOT NULL,
-    notification_level smallint DEFAULT 100 NOT NULL
+    notification_level smallint DEFAULT 100 NOT NULL,
+    container_registry_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE namespace_settings (
@@ -29752,6 +29753,8 @@ CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING
 CREATE INDEX tmp_index_projects_on_id_and_runners_token ON projects USING btree (id, runners_token) WHERE (runners_token IS NOT NULL);
 
 CREATE INDEX tmp_index_projects_on_id_and_runners_token_encrypted ON projects USING btree (id, runners_token_encrypted) WHERE (runners_token_encrypted IS NOT NULL);
+
+CREATE INDEX tp_index_created_at_cluster_id_project_id_on_deployments ON deployments USING btree (created_at, cluster_id, project_id) WHERE ((cluster_id IS NOT NULL) AND (created_at > '2022-04-03 00:00:00'::timestamp without time zone));
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 

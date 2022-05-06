@@ -9,6 +9,7 @@ module API
     end
 
     feature_category :package_registry
+    urgency :low
 
     helpers ::API::Helpers::PackagesHelpers
 

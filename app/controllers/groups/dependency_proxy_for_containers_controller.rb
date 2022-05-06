@@ -17,6 +17,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   attr_reader :token
 
   feature_category :dependency_proxy
+  urgency :low
 
   def manifest
     result = DependencyProxy::FindCachedManifestService.new(group, image, tag, token).execute

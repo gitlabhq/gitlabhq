@@ -9,6 +9,7 @@ module API
     include ::API::Helpers::Authentication
 
     feature_category :package_registry
+    urgency :low
 
     PACKAGE_FILENAME = 'package.tgz'
     HELM_REQUIREMENTS = {

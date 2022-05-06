@@ -12119,9 +12119,6 @@ msgstr ""
 msgid "DependencyProxy|Dependency Proxy"
 msgstr ""
 
-msgid "DependencyProxy|Dependency Proxy feature is limited to public groups for now."
-msgstr ""
-
 msgid "DependencyProxy|Dependency Proxy image prefix"
 msgstr ""
 

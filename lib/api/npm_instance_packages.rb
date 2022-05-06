@@ -4,6 +4,7 @@ module API
     helpers ::API::Helpers::Packages::Npm
 
     feature_category :package_registry
+    urgency :low
 
     rescue_from ActiveRecord::RecordInvalid do |e|
       render_api_error!(e.message, 400)

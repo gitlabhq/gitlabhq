@@ -105,7 +105,7 @@ module API
         params do
           use :file_params
         end
-        put do
+        put urgency: :low do
           upload_nuget_package_file do |package|
             track_package_event(
               'push_package',
@@ -121,7 +121,7 @@ module API
 
           forbidden!
         end
-        put 'authorize' do
+        put 'authorize', urgency: :low do
           authorize_nuget_upload
         end
 
@@ -133,7 +133,7 @@ module API
         params do
           use :file_params
         end
-        put 'symbolpackage' do
+        put 'symbolpackage', urgency: :low do
           upload_nuget_package_file(symbol_package: true) do |package|
             track_package_event(
               'push_symbol_package',
@@ -149,7 +149,7 @@ module API
 
           forbidden!
         end
-        put 'symbolpackage/authorize' do
+        put 'symbolpackage/authorize', urgency: :low do
           authorize_nuget_upload
         end
 
@@ -165,7 +165,7 @@ module API
           desc 'The NuGet Content Service - index request' do
             detail 'This feature was introduced in GitLab 12.8'
           end
-          get 'index', format: :json do
+          get 'index', format: :json, urgency: :low do
             present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages(params[:package_name])),
                     with: ::API::Entities::Nuget::PackagesVersions
           end
@@ -177,7 +177,7 @@ module API
             requires :package_version, type: String, desc: 'The NuGet package version', regexp: API::NO_SLASH_URL_PART_REGEX
             requires :package_filename, type: String, desc: 'The NuGet package filename', regexp: API::NO_SLASH_URL_PART_REGEX
           end
-          get '*package_version/*package_filename', format: [:nupkg, :snupkg] do
+          get '*package_version/*package_filename', format: [:nupkg, :snupkg], urgency: :low do
             filename = "#{params[:package_filename]}.#{params[:format]}"
             package_file = ::Packages::PackageFileFinder.new(find_package(params[:package_name], params[:package_version]), filename, with_file_name_like: true)
                                                         .execute

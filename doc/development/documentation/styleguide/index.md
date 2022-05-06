@@ -654,7 +654,10 @@ In the Markdown document:
 For the heading text, **do**:
 
 - Be clear and direct. Make every word count.
-- Use active verbs for tasks. For example, `Configure GDK` instead of `Configuring GDK`.
+- Use active, imperative verbs for [tasks](../structure.md#task). For example, `Create an issue`.
+- Use `ing` (gerund) verbs only when you need a topic that introduces tasks. For example, `Configuring GDK`.
+- Use nouns for [concepts](../structure.md#concept). For example, `GDK dependency management`. If a noun is
+  ambiguous, you can add a gerund. For example, `Documenting versions` instead of `Versions`.
 - Talk about what the product does, realistically but from a positive perspective. Instead of
   `Limitations`, move the content near other similar information. If you must, you can
   use the title `Known issues`.

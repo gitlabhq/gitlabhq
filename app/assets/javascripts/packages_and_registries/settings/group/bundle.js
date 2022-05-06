@@ -21,7 +21,6 @@ export default () => {
       groupPath: el.dataset.groupPath,
       groupDependencyProxyPath: el.dataset.groupDependencyProxyPath,
       defaultExpanded: parseBoolean(el.dataset.defaultExpanded),
-      dependencyProxyAvailable: parseBoolean(el.dataset.dependencyProxyAvailable),
     },
     render(createElement) {
       return createElement(SettingsApp);

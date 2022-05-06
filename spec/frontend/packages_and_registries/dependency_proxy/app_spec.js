@@ -47,7 +47,6 @@ describe('DependencyProxyApp', () => {
   const provideDefaults = {
     groupPath: 'gitlab-org',
     groupId: dummyGrouptId,
-    dependencyProxyAvailable: true,
     noManifestsIllustration: 'noManifestsIllustration',
   };
 
@@ -74,7 +73,6 @@ describe('DependencyProxyApp', () => {
     });
   }
 
-  const findProxyNotAvailableAlert = () => wrapper.findByTestId('proxy-not-available');
   const findClipBoardButton = () => wrapper.findComponent(ClipboardButton);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
@@ -103,41 +101,6 @@ describe('DependencyProxyApp', () => {
     mock.restore();
   });
 
-  describe('when the dependency proxy is not available', () => {
-    const createComponentArguments = {
-      provide: { ...provideDefaults, dependencyProxyAvailable: false },
-    };
-
-    it('renders an info alert', () => {
-      createComponent(createComponentArguments);
-
-      expect(findProxyNotAvailableAlert().text()).toBe(
-        DependencyProxyApp.i18n.proxyNotAvailableText,
-      );
-    });
-
-    it('does not render the main area', () => {
-      createComponent(createComponentArguments);
-
-      expect(findMainArea().exists()).toBe(false);
-    });
-
-    it('does not call the graphql endpoint', async () => {
-      resolver = jest.fn().mockResolvedValue(proxyDetailsQuery());
-      createComponent({ ...createComponentArguments });
-
-      await waitForPromises();
-
-      expect(resolver).not.toHaveBeenCalled();
-    });
-
-    it('hides the clear cache dropdown list', () => {
-      createComponent(createComponentArguments);
-
-      expect(findClearCacheDropdownList().exists()).toBe(false);
-    });
-  });
-
   describe('when the dependency proxy is available', () => {
     describe('when is loading', () => {
       beforeEach(() => {
@@ -155,10 +118,6 @@ describe('DependencyProxyApp', () => {
       it('does not show the main section', () => {
         expect(findMainArea().exists()).toBe(false);
       });
-
-      it('does not render the info alert', () => {
-        expect(findProxyNotAvailableAlert().exists()).toBe(false);
-      });
     });
 
     describe('when the app is loaded', () => {
@@ -166,10 +125,6 @@ describe('DependencyProxyApp', () => {
         beforeEach(() => {
           createComponent();
           return waitForPromises();
-        });
-
-        it('does not render the info alert', () => {
-          expect(findProxyNotAvailableAlert().exists()).toBe(false);
         });
 
         it('renders the main area', () => {

@@ -39,11 +39,8 @@ export default {
   directives: {
     GlModalDirective,
   },
-  inject: ['groupPath', 'groupId', 'dependencyProxyAvailable', 'noManifestsIllustration'],
+  inject: ['groupPath', 'groupId', 'noManifestsIllustration'],
   i18n: {
-    proxyNotAvailableText: s__(
-      'DependencyProxy|Dependency Proxy feature is limited to public groups for now.',
-    ),
     proxyImagePrefix: s__('DependencyProxy|Dependency Proxy image prefix'),
     copyImagePrefixText: s__('DependencyProxy|Copy prefix'),
     blobCountAndSize: s__('DependencyProxy|Contains %{count} blobs of images (%{size})'),
@@ -77,9 +74,6 @@ export default {
   apollo: {
     group: {
       query: getDependencyProxyDetailsQuery,
-      skip() {
-        return !this.dependencyProxyAvailable;
-      },
       variables() {
         return this.queryVariables;
       },
@@ -214,15 +208,7 @@ export default {
       </template>
     </gl-form-group>
 
-    <gl-alert
-      v-if="!dependencyProxyAvailable"
-      :dismissible="false"
-      data-testid="proxy-not-available"
-    >
-      {{ $options.i18n.proxyNotAvailableText }}
-    </gl-alert>
-
-    <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
+    <gl-skeleton-loader v-if="$apollo.queries.group.loading" />
 
     <div v-else data-testid="main-area">
       <manifests-list

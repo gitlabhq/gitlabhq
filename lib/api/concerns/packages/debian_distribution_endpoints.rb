@@ -10,6 +10,7 @@ module API
           include PaginationParams
 
           feature_category :package_registry
+          urgency :low
 
           helpers ::API::Helpers::PackagesHelpers
           helpers ::API::Helpers::Packages::BasicAuthHelpers

@@ -8,6 +8,7 @@ module Groups
       before_action :verify_packages_enabled!
 
       feature_category :package_registry
+      urgency :low
 
       def show
       end

@@ -8,6 +8,7 @@ module Groups
     before_action :verify_dependency_proxy_enabled!
 
     feature_category :dependency_proxy
+    urgency :low
 
     private
 

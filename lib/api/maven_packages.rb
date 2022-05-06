@@ -6,6 +6,7 @@ module API
     }.freeze
 
     feature_category :package_registry
+    urgency :low
 
     content_type :md5, 'text/plain'
     content_type :sha1, 'text/plain'

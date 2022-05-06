@@ -65,17 +65,8 @@ Prerequisites:
 
 ### Authenticate with the Dependency Proxy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication). **(FREE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-The requirement to authenticate is a breaking change added in 13.7. An [administrator can temporarily
-disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication) if it
-has disrupted your existing Dependency Proxy usage.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `dependency_proxy_for_private_groups`. Enabled by default.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
 
 Because the Dependency Proxy is storing Docker images in a space associated with your group,
 you must authenticate against the Dependency Proxy.

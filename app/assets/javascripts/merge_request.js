@@ -5,6 +5,7 @@ import createFlash from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import { getParameterValues, setUrlParams } from './lib/utils/url_utility';
@@ -72,8 +73,7 @@ MergeRequest.prototype.initMRBtnListeners = function () {
         const wipEvent = getParameterValues('merge_request[wip_event]', url)[0];
         const mobileDropdown = draftToggle.closest('.dropdown.show');
 
-        const loader = document.createElement('span');
-        loader.classList.add('gl-spinner', 'gl-mr-3');
+        const loader = loadingIconForLegacyJS({ inline: true, classes: ['gl-mr-3'] });
 
         if (mobileDropdown) {
           $(mobileDropdown.firstElementChild).dropdown('toggle');

@@ -5,6 +5,7 @@ module API
     module ContainerRegistry
       class Migration < ::API::Base
         feature_category :container_registry
+        urgency :low
 
         STATUS_PRE_IMPORT_COMPLETE = 'pre_import_complete'
         STATUS_PRE_IMPORT_FAILED = 'pre_import_failed'

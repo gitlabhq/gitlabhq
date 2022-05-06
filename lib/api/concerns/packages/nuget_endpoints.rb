@@ -56,7 +56,7 @@ module API
           desc 'The NuGet Service Index' do
             detail 'This feature was introduced in GitLab 12.6'
           end
-          get 'index', format: :json do
+          get 'index', format: :json, urgency: :default do
             authorize_read_package!(project_or_group)
 
             track_package_event('cli_metadata', :nuget, **snowplow_gitlab_standard_context.merge(category: 'API::NugetPackages'))
@@ -77,7 +77,7 @@ module API
             desc 'The NuGet Metadata Service - Package name level' do
               detail 'This feature was introduced in GitLab 12.8'
             end
-            get 'index', format: :json do
+            get 'index', format: :json, urgency: :low do
               present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages(params[:package_name])),
                       with: ::API::Entities::Nuget::PackagesMetadata
             end
@@ -88,7 +88,7 @@ module API
             params do
               requires :package_version, type: String, desc: 'The NuGet package version', regexp: API::NO_SLASH_URL_PART_REGEX
             end
-            get '*package_version', format: :json do
+            get '*package_version', format: :json, urgency: :low do
               present ::Packages::Nuget::PackageMetadataPresenter.new(find_package(params[:package_name], params[:package_version])),
                       with: ::API::Entities::Nuget::PackageMetadata
             end
@@ -109,7 +109,7 @@ module API
             desc 'The NuGet Search Service' do
               detail 'This feature was introduced in GitLab 12.8'
             end
-            get format: :json do
+            get format: :json, urgency: :low do
               search_options = {
                 include_prerelease_versions: params[:prerelease],
                 per_page: params[:take],

@@ -144,6 +144,26 @@ changes to your code, settings, or workflow.
 
 The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` has been removed in GitLab 15.0. From now on, push rules will supersede CODEOWNERS. The CODEOWNERS feature is no longer available for access control.
 
+### Request profiling
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+[Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/request_profiling.html) has been removed in GitLab 15.0.
+
+We're working on [consolidating our profiling tools](https://gitlab.com/groups/gitlab-org/-/epics/7327) and making them more easily accessible.
+We [evaluated](https://gitlab.com/gitlab-org/gitlab/-/issues/350152) the use of this feature and we found that it is not widely used.
+It also depends on a few third-party gems that are not actively maintained anymore, have not been updated for the latest version of Ruby, or crash frequently when profiling heavy page loads.
+
+For more information, check the [summary section of the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352488#deprecation-summary).
+
+### Static Site Editor
+
+The Static Site Editor was deprecated in GitLab 14.7 and the feature is being removed in GitLab 15.0. Incoming requests to the Static Site Editor will be redirected and open the target file to edit in the Web IDE. Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/static_site_editor/) for more information, including how to remove the configuration files from existing projects. We will continue investing in improvements to the Markdown editing experience by [maturing the Content Editor](https://gitlab.com/groups/gitlab-org/-/epics/5401) and making it available as a way to edit content across GitLab.
+
 ### Test coverage project CI/CD setting
 
 WARNING:

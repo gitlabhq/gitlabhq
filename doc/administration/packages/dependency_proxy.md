@@ -248,23 +248,6 @@ Verify that there are no files on disk in the `dependency_proxy` folder:
 sudo find /var/opt/gitlab/gitlab-rails/shared/dependency_proxy -type f | grep -v tmp | wc -l
 ```
 
-## Disabling Authentication
-
-Authentication was introduced in 13.7 as part of [enabling private groups to use the
-Dependency Proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/11582). If you
-previously used the Dependency Proxy without authentication and need to disable
-this feature while you update your workflow to [authenticate with the Dependency
-Proxy](../../user/packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy),
-the following commands can be issued in a Rails console:
-
-```ruby
-# Disable the authentication
-Feature.disable(:dependency_proxy_for_private_groups)
-
-# Re-enable the authentication
-Feature.enable(:dependency_proxy_for_private_groups)
-```
-
 ## Changing the JWT expiration
 
 The Dependency Proxy follows the [Docker v2 token authentication flow](https://docs.docker.com/registry/spec/auth/token/),

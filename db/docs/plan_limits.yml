@@ -4,6 +4,6 @@ classes:
 - PlanLimits
 feature_categories:
 - purchase
-description: TODO
+description: Contains Plan specific limits (CI minute quantities for example)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19438
 milestone: '12.5'

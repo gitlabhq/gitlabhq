@@ -9,6 +9,7 @@ module Groups
       before_action :authorize_read_container_image!
 
       feature_category :container_registry
+      urgency :low
 
       def index
         respond_to do |format|

@@ -16,6 +16,7 @@ module API
 
         included do
           feature_category :package_registry
+          urgency :low
 
           helpers ::API::Helpers::PackagesHelpers
           helpers ::API::Helpers::Packages::BasicAuthHelpers

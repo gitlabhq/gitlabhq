@@ -54,11 +54,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:dependency_proxy_access_allowed) do
-    if Feature.enabled?(:dependency_proxy_for_private_groups)
-      access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
-    else
-      can?(:read_group)
-    end
+    access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
   end
 
   desc "Deploy token with read_package_registry scope"
