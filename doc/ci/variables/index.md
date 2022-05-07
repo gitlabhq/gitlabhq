@@ -367,16 +367,20 @@ a large value to the trace log has the potential to be [revealed](https://gitlab
 When using GitLab Runner 14.2, only the tail of the variable, characters beyond 4KiB in length, have the potential to
 be revealed.
 
-### Protect a CI/CD variable
+### Protected CI/CD variables
 
-You can protect a project, group or instance CI/CD variable so it is only passed
+You can configure a project, group or instance CI/CD variable to be only available
 to pipelines running on [protected branches](../../user/project/protected_branches.md)
 or [protected tags](../../user/project/protected_tags.md).
 
-[Merge request pipelines](../pipelines/merge_request_pipelines.md) do not have access to protected variables.
-An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/28002) regarding this limitation.
+These variables are only exported to CI environments running on protected refs. Therefore,
+[merged results pipelines](../pipelines/merge_request_pipelines.md#types-of-merge-request-pipelines), which run on a
+merge commit at the head of the merge request ref, will not have access to these variables.
 
-To protect a variable:
+Pipelines that run directly on the merge request's source branch, with no added merge commit, can access
+these variables if the source branch is a protected branch.
+
+To mark a variable as protected:
 
 1. Go to **Settings > CI/CD** in the project, group or instance admin area.
 1. Expand the **Variables** section.
@@ -729,7 +733,7 @@ the variable can be available for.
 To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scope-environments-with-specs).
 
 To learn more about ensuring CI/CD variables are only exposed in pipelines running from protected
-branches or tags, see [Protect a CI/CD Variable](#protect-a-cicd-variable).
+branches or tags, see [Protect a CI/CD Variable](#protected-cicd-variables).
 
 ## Deployment variables
 

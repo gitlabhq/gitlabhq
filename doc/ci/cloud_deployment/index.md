@@ -59,7 +59,7 @@ Some credentials are required to be able to run `aws` commands:
    | `AWS_DEFAULT_REGION`           | Your region code       |
 
    NOTE:
-   When you create a variable it's set to be [protected by default](../variables/index.md#protect-a-cicd-variable). If you want to use the `aws` commands on branches or tags that are not protected, make sure to uncheck the **Protect variable** checkbox.
+   When you create a variable it's set to be [protected by default](../variables/index.md#protected-cicd-variables). If you want to use the `aws` commands on branches or tags that are not protected, make sure to uncheck the **Protect variable** checkbox.
 
 1. You can now use `aws` commands in the `.gitlab-ci.yml` file of this project:
 

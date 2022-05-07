@@ -201,5 +201,5 @@ Contributors can configure Danger for their forks with the following steps:
 to your fork that has the `api` scope set.
 1. Making the variable [masked](../ci/variables/index.md#mask-a-cicd-variable) makes sure it
 doesn't show up in the job logs. The variable cannot be
-[protected](../ci/variables/index.md#protect-a-cicd-variable), as it needs
+[protected](../ci/variables/index.md#protected-cicd-variables), as it needs
 to be present for all feature branches.
