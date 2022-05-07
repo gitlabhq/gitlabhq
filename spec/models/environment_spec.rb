@@ -683,19 +683,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
           expect(actions.count).to eq(environment.successful_deployments.count)
         end
       end
-
-      context 'when the feature is disabled' do
-        before do
-          stub_feature_flags(environment_multiple_stop_actions: false)
-        end
-
-        it 'returns the last deployment job stop action' do
-          stop_actions = subject
-
-          expect(stop_actions.first).to eq(close_actions[1])
-          expect(stop_actions.count).to eq(1)
-        end
-      end
     end
   end
 

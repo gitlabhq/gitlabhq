@@ -314,13 +314,9 @@ class Environment < ApplicationRecord
 
   def stop_actions
     strong_memoize(:stop_actions) do
-      if ::Feature.enabled?(:environment_multiple_stop_actions, project)
-        # Fix N+1 queries it brings to the serializer.
-        # Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/358780
-        last_deployment_group.map(&:stop_action).compact
-      else
-        [last_deployment&.stop_action].compact
-      end
+      # Fix N+1 queries it brings to the serializer.
+      # Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/358780
+      last_deployment_group.map(&:stop_action).compact
     end
   end
 
