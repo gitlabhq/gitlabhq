@@ -1,0 +1,17 @@
+<%= _('Hi %{username},') % { username: sanitize_name(@user.name) } %>
+
+<%= _("Due to inactivity, the %{project_name} (%{project_link}) project is scheduled to be deleted on %{deletion_date}. To unschedule the deletion of %{project_name}, perform some activity on it. For example:") %
+      { project_name: @project.name, project_link: @project.http_url_to_repo, deletion_date: @deletion_date } %>
+
+<%= _("- Create or close an issue.") %>
+<%= _("- Create, update, or delete a merge request.") %>
+<%= _("- Push code to the repository.") %>
+<%= _("- Add or remove a user.") %>
+
+<%= _("To ensure %{project_name} is unscheduled for deletion, check that activity has been logged by GitLab. For example:") % { project_name: @project.name } %>
+
+<%= _("- Go to the Activity page for %{project_name}.") % { project_name: @project.name } %>
+<%= _("- View the last_activity_at attribute for %{project_name} using the Project API %{projects_api_link}.") % { project_name: @project.name, projects_api_link: help_page_url('api/projects') } %>
+<%= _("- List the visible events for %{project_name} using the Events API %{events_api_link}.") % { project_name: @project.name, events_api_link: help_page_url('api/events', anchor: 'list-a-projects-visible-events') } %>
+
+<%= _("This email supersedes any previous emails about scheduled deletion you may have received for %{project_name}.") % { project_name: @project.name } %>

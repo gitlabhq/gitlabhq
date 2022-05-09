@@ -211,9 +211,9 @@ RSpec.describe 'Dashboard Todos' do
         visit dashboard_todos_path
       end
 
-      it 'shows you directly addressed yourself message' do
+      it 'shows you directly addressed yourself message being displayed as mentioned yourself' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("You directly addressed yourself on issue #{issue.to_reference} \"Fix bug\" at #{project.namespace.owner_name} / #{project.name}")
+          expect(page).to have_content("You mentioned yourself on issue #{issue.to_reference} \"Fix bug\" at #{project.namespace.owner_name} / #{project.name}")
           expect(page).not_to have_content('to yourself')
         end
       end

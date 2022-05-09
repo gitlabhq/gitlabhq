@@ -3708,6 +3708,26 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  describe '#inactive_project_deletion_warning' do
+    let_it_be(:deletion_date) { Date.current }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+
+    before do
+      project.add_maintainer(maintainer)
+    end
+
+    subject { notification.inactive_project_deletion_warning(project, deletion_date) }
+
+    it "sends email to project owners and maintainers" do
+      expect { subject }.to have_enqueued_email(project, maintainer, deletion_date,
+                                                mail: "inactive_project_deletion_warning_email")
+      expect { subject }.not_to have_enqueued_email(project, developer, deletion_date,
+                                                    mail: "inactive_project_deletion_warning_email")
+    end
+  end
+
   def build_team(project)
     @u_watcher               = create_global_setting_for(create(:user), :watch)
     @u_participating         = create_global_setting_for(create(:user), :participating)

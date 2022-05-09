@@ -883,6 +883,9 @@ msgstr ""
 msgid "%{policy_link} (notifying after %{elapsed_time} minutes unless %{status})"
 msgstr ""
 
+msgid "%{project_name}"
+msgstr ""
+
 msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more.%{help_link_end}"
 msgstr ""
 
@@ -1277,7 +1280,16 @@ msgstr ""
 msgid "- %{policy_name} (notifying after %{elapsed_time} minutes unless %{status})"
 msgstr ""
 
+msgid "- Add or remove a user."
+msgstr ""
+
 msgid "- Available to run jobs."
+msgstr ""
+
+msgid "- Create or close an issue."
+msgstr ""
+
+msgid "- Create, update, or delete a merge request."
 msgstr ""
 
 msgid "- Event"
@@ -1285,7 +1297,16 @@ msgid_plural "- Events"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "- Go to the Activity page for %{project_name}."
+msgstr ""
+
+msgid "- List the visible events for %{project_name} using the Events API %{events_api_link}."
+msgstr ""
+
 msgid "- Not available to run jobs."
+msgstr ""
+
+msgid "- Push code to the repository."
 msgstr ""
 
 msgid "- Select -"
@@ -1295,6 +1316,9 @@ msgid "- User"
 msgid_plural "- Users"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "- View the last_activity_at attribute for %{project_name} using the Project API %{projects_api_link}."
+msgstr ""
 
 msgid "- of - issues closed"
 msgstr ""
@@ -2210,6 +2234,9 @@ msgid "Add new application"
 msgstr ""
 
 msgid "Add new directory"
+msgstr ""
+
+msgid "Add or remove a user."
 msgstr ""
 
 msgid "Add or remove previously merged commits"
@@ -10427,6 +10454,9 @@ msgstr ""
 msgid "Create one"
 msgstr ""
 
+msgid "Create or close an issue."
+msgstr ""
+
 msgid "Create or import your first project"
 msgstr ""
 
@@ -10464,6 +10494,9 @@ msgid "Create your first page"
 msgstr ""
 
 msgid "Create your group"
+msgstr ""
+
+msgid "Create, update, or delete a merge request."
 msgstr ""
 
 msgid "Create/import your first project"
@@ -13373,6 +13406,12 @@ msgstr ""
 msgid "Due date"
 msgstr ""
 
+msgid "Due to inactivity, the %{project_link} project is scheduled to be deleted on %{b_open}%{deletion_date}%{b_close}. To unschedule the deletion of %{project_link}, perform some activity on it. For example:"
+msgstr ""
+
+msgid "Due to inactivity, the %{project_name} (%{project_link}) project is scheduled to be deleted on %{deletion_date}. To unschedule the deletion of %{project_name}, perform some activity on it. For example:"
+msgstr ""
+
 msgid "Duplicate page: %{error_message}"
 msgstr ""
 
@@ -14886,6 +14925,9 @@ msgid "EventFilterBy|Filter by wiki"
 msgstr ""
 
 msgid "Events"
+msgstr ""
+
+msgid "Events API"
 msgstr ""
 
 msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
@@ -17394,6 +17436,9 @@ msgstr ""
 msgid "Go to snippets"
 msgstr ""
 
+msgid "Go to the %{b_open}Activity%{b_close} page for %{project_link}."
+msgstr ""
+
 msgid "Go to the 'Admin area &gt; Sign-up restrictions', and check 'Allowed domains for sign-ups'."
 msgstr ""
 
@@ -18599,6 +18644,9 @@ msgid "Helps reduce request volume for protected paths."
 msgstr ""
 
 msgid "Hi %{username}!"
+msgstr ""
+
+msgid "Hi %{username},"
 msgstr ""
 
 msgid "Hidden"
@@ -22791,6 +22839,9 @@ msgid "List settings"
 msgstr ""
 
 msgid "List the merge requests that must be merged before this one."
+msgstr ""
+
+msgid "List the visible events for %{project_link} using the %{events_api_link}."
 msgstr ""
 
 msgid "List view"
@@ -29944,6 +29995,9 @@ msgstr ""
 msgid "Projects (%{count})"
 msgstr ""
 
+msgid "Projects API"
+msgstr ""
+
 msgid "Projects Successfully Retrieved"
 msgstr ""
 
@@ -30659,6 +30713,9 @@ msgid "Push an existing Git repository"
 msgstr ""
 
 msgid "Push an existing folder"
+msgstr ""
+
+msgid "Push code to the repository."
 msgstr ""
 
 msgid "Push commits to the source branch or add previously merged commits to review them."
@@ -38397,6 +38454,12 @@ msgstr ""
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
 msgstr ""
 
+msgid "This email supersedes any previous emails about scheduled deletion you may have received for %{project_link}."
+msgstr ""
+
+msgid "This email supersedes any previous emails about scheduled deletion you may have received for %{project_name}."
+msgstr ""
+
 msgid "This endpoint has been requested too many times. Try again later."
 msgstr ""
 
@@ -39239,6 +39302,12 @@ msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
 msgid "To enable Registration Features, first enable Service Ping."
+msgstr ""
+
+msgid "To ensure %{project_link} is unscheduled for deletion, check that activity has been logged by GitLab. For example:"
+msgstr ""
+
+msgid "To ensure %{project_name} is unscheduled for deletion, check that activity has been logged by GitLab. For example:"
 msgstr ""
 
 msgid "To ensure no loss of personal content, this account should only be used for matters related to %{group_name}."
@@ -41242,9 +41311,6 @@ msgstr ""
 msgid "ValueStreamAnalytics|Go to docs"
 msgstr ""
 
-msgid "ValueStreamAnalytics|Items in Value Stream Analytics are currently filtered by their creation time. There is an %{epic_link_start}epic%{epic_link_end} that will change the Value Stream Analytics date filter to use the end event time for the selected stage."
-msgstr ""
-
 msgid "ValueStreamAnalytics|Key metrics"
 msgstr ""
 
@@ -41516,6 +41582,9 @@ msgid "View seat usage"
 msgstr ""
 
 msgid "View supported languages and frameworks"
+msgstr ""
+
+msgid "View the %{code_open}last_activity_at%{code_close} attribute for %{project_link} using the %{projects_api_link}."
 msgstr ""
 
 msgid "View the documentation"

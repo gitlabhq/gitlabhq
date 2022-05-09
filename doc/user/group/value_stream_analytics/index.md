@@ -45,9 +45,6 @@ To view value stream analytics for your group:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
-   1. Select whether to view metrics for items with a start or stop event:
-      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
-      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date. The charts and list show workflow items created
@@ -82,9 +79,6 @@ To view the median time spent in each stage by a group:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
-   1. Select whether to view metrics for items with a start or stop event:
-      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
-      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
@@ -108,9 +102,6 @@ To view the lead time and cycle time for issues:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
-   1. Select whether to view metrics for items with a start or stop event:
-      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
-      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
@@ -131,9 +122,6 @@ To view the lead time for changes for merge requests in your group:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
-   1. Select whether to view metrics for items with a start or stop event:
-      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
-      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
@@ -160,12 +148,13 @@ To view deployment metrics for your group:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
-   1. Select whether to view metrics for items with a start or stop event:
-      - To view items with a stop event in the date range, turn on the **Filter by stop date** toggle. Enabled by default.
-      - To view items with a start event in the date range, turn off the **Filter by stop date** toggle.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
+
+NOTE:
+The date range selector filters items by the event time. This is the time when the currently
+selected stage finished for the given item.
 
 The **Deploys** and **Deployment Frequency** metrics display below the **Filter results** text box.
 
@@ -181,19 +170,22 @@ In GitLab 13.8 and earlier, metrics are calculated based on when the deployment 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5 [with a flag](../../../administration/feature_flags.md) named `use_vsa_aggregated_tables`. Disabled by default.
 > - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
 > - Data refresh badge [added](https://gitlab.com/gitlab-org/gitlab/-/issues/341739) in GitLab 14.9
+> - Filter by stop date toggle [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84356) in GitLab 14.9
+> - Enable filtering by stop date [added](https://gitlab.com/gitlab-org/gitlab/-/issues/355000) in GitLab 15.0
 
-Plans for value stream analytics to filter items by stop event instead of start event are tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/6046). With the completion of this work, value stream analytics will only display items with a stop event in the date range.
+Value stream analytics uses a backend process to collect and aggregate stage-level data, which
+ensures it can scale for large groups with a high number of issues and merge requests. Due to this process,
+there may be a slight delay between when an action is taken (for example, closing an issue) and when the data
+displays on the value stream analytics page.
 
-To preview this functionality, you can use the **Filter by stop date** toggle to enable or disable this filter until the [default filtering mode is introduced](../../../update/deprecations.md#value-stream-analytics-filtering-calculation-change) and the toggle is removed.
-
-If you turn on the **Filter by stop date** toggle, the results show items with a stop event within the date range. When this function is enabled, it may take up to 10 minutes for results to show due to data aggregation. There are occasions when it may take longer than 10 minutes for results to display:
+It may take up to 10 minutes to process the data and display results. Data collection may take
+longer than 10 minutes in the following cases:
 
 - If this is the first time you are viewing value stream analytics and have not yet [created a value stream](#create-a-value-stream-with-gitlab-default-stages).
 - If the group hierarchy has been re-arranged.
 - If there have been bulk updates on issues and merge requests.
 
-To view when the data was most recently updated, in the right corner next to **Edit**, hover over the **Last updated** badge. This badge is only available if you have turned on the **Filter by start date** toggle.
-![Aggregated data toggle](img/vsa_aggregated_data_toggle_v14_9.png "Aggregated data toggle")
+To view when the data was most recently updated, in the right corner next to **Edit**, hover over the **Last updated** badge.
 
 ## How value stream analytics measures stages
 

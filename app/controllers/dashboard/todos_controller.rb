@@ -98,6 +98,14 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def todo_params
-    params.permit(:action_id, :author_id, :project_id, :type, :sort, :state, :group_id)
+    aliased_action_id(
+      params.permit(:action_id, :author_id, :project_id, :type, :sort, :state, :group_id)
+    )
+  end
+
+  def aliased_action_id(original_params)
+    return original_params unless original_params[:action_id].to_i == ::Todo::MENTIONED
+
+    original_params.merge(action_id: [::Todo::MENTIONED, ::Todo::DIRECTLY_ADDRESSED])
   end
 end

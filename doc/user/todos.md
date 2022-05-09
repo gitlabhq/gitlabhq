@@ -84,28 +84,25 @@ You can manually add an item to your To-Do List.
 
    ![Adding a to-do item from the issuable sidebar](img/todos_add_todo_sidebar_v14_1.png)
 
-## Create a to-do item by directly addressing someone
+## Create a to-do item by mentioning someone
 
-You can create a to-do item by directly addressing someone at the start of a line.
-For example, in the following comment:
+You can create a to-do item by mentioning someone anywhere except for a code block. Mentioning a user many times in one message only creates one to-do item.
 
-```markdown
+For example, from the following comment, everyone except `frank` gets a to-do item created for them:
+
+````markdown
 @alice What do you think? cc: @bob
 
 - @carol can you please have a look?
 
 > @dan what do you think?
 
-@erin @frank thank you!
+Hey @erin, this is what they said:
+
 ```
-
-The people who receive to-do items are `@alice`, `@erin`, and
-`@frank`.
-
-To view to-do items where a user was directly addressed, go to the To-Do List and
-from the **Action** filter, select **Directly addressed**.
-
-Mentioning a user many times only creates one to-do item.
+Hi, please message @frank :incoming_envelope:
+```
+````
 
 ## Actions that mark a to-do item as done
 

@@ -201,6 +201,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.merge_when_pipeline_succeeds_email(user.id, merge_request.id, user.id).message
   end
 
+  def inactive_project_deletion_warning
+    Notify.inactive_project_deletion_warning_email(project, user, '2022-04-22').message
+  end
+
   private
 
   def project
