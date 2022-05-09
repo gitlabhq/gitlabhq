@@ -6,7 +6,7 @@ module ContainerRegistry
       include ApplicationWorker
       include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
       include Gitlab::Utils::StrongMemoize
-      include Gitlab::ExclusiveLeaseHelpers
+      include ExclusiveLeaseGuard
 
       DEFAULT_LEASE_TIMEOUT = 30.minutes.to_i.freeze
 
@@ -18,15 +18,11 @@ module ContainerRegistry
 
       def perform
         re_enqueue = false
+        try_obtain_lease do
+          break unless runnable?
 
-        took_lease = with_a_lease_on_repository do
-          if runnable?
-            re_enqueue = handle_aborted_migration || handle_next_migration
-          end
+          re_enqueue = handle_aborted_migration || handle_next_migration
         end
-
-        log_extra_metadata_on_done(:lease_already_taken, true) unless took_lease
-
         re_enqueue_if_capacity if re_enqueue
       end
 
@@ -36,20 +32,6 @@ module ContainerRegistry
       end
 
       private
-
-      def with_a_lease_on_repository
-        repository = next_aborted_repository || next_repository
-
-        if repository
-          in_lock(lease_key_for(repository), retries: 0, ttl: DEFAULT_LEASE_TIMEOUT) { yield }
-        else
-          log_extra_metadata_on_done(:no_container_repository_found, true)
-        end
-
-        true
-      rescue FailedToObtainLockError
-        false
-      end
 
       def handle_aborted_migration
         return unless next_aborted_repository
@@ -183,8 +165,14 @@ module ContainerRegistry
         log_extra_metadata_on_done(:container_repository_migration_state, repository.migration_state)
       end
 
-      def lease_key_for(repository)
-        "container_registry:migration:enqueuer_worker:for:#{repository.id}"
+      # used by ExclusiveLeaseGuard
+      def lease_key
+        'container_registry:migration:enqueuer_worker'
+      end
+
+      # used by ExclusiveLeaseGuard
+      def lease_timeout
+        DEFAULT_LEASE_TIMEOUT
       end
     end
   end

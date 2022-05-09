@@ -97,18 +97,38 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
         end
 
         context 'for Golang server' do
+          let(:log_enabled) { false }
+          let(:settings) do
+            {
+              'web_exporter' => {
+                'enabled' => true,
+                'address' => 'localhost',
+                'port' => '8083',
+                'log_enabled' => log_enabled
+              },
+              'sidekiq_exporter' => {
+                'enabled' => true,
+                'address' => 'localhost',
+                'port' => '8082',
+                'log_enabled' => log_enabled
+              }
+            }
+          end
+
           let(:expected_port) { target == 'puma' ? '8083' : '8082' }
           let(:expected_env) do
             {
               'GME_MMAP_METRICS_DIR' => metrics_dir,
               'GME_PROBES' => 'self,mmap',
               'GME_SERVER_HOST' => 'localhost',
-              'GME_SERVER_PORT' => expected_port
+              'GME_SERVER_PORT' => expected_port,
+              'GME_LOG_LEVEL' => 'quiet'
             }
           end
 
           before do
             stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
+            allow(::Settings).to receive(:monitoring).and_return(settings)
           end
 
           it 'spawns a new server process and returns its PID' do
@@ -132,6 +152,24 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
             ).and_return(99)
 
             described_class.spawn(target, metrics_dir: metrics_dir, path: '/path/to/gme/')
+          end
+
+          context 'when logs are enabled' do
+            let(:log_enabled) { true }
+            let(:expected_log_file) { target == 'puma' ? 'web_exporter.log' : 'sidekiq_exporter.log' }
+
+            it 'sets log related environment variables' do
+              expect(Process).to receive(:spawn).with(
+                expected_env.merge(
+                  'GME_LOG_LEVEL' => 'info',
+                  'GME_LOG_FILE' => File.join(Rails.root, 'log', expected_log_file)
+                ),
+                'gitlab-metrics-exporter',
+                hash_including(pgroup: true)
+              ).and_return(99)
+
+              described_class.spawn(target, metrics_dir: metrics_dir)
+            end
           end
         end
       end

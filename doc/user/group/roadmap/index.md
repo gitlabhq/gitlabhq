@@ -1,5 +1,4 @@
 ---
-type: reference
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
@@ -7,7 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Roadmap **(PREMIUM)**
 
-> - Introduced in GitLab 10.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
 > - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/5164) and later, the epic bars show epics' title, progress, and completed weight percentage.
 > - Milestones appear in roadmaps in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/6802), and later.
@@ -27,10 +25,10 @@ You can expand epics that contain child epics to show their child epics in the r
 You can select the chevron (**{chevron-down}**) next to the epic title to expand and collapse the
 child epics.
 
-On top of the milestone bars, you can see their title.
-When you hover over a milestone bar or title, a popover appears with its title, start date, and due
-date. You can also select the chevron (**{chevron-down}**) next to the **Milestones** heading to
-toggle the list of the milestone bars.
+On top of the milestone bars, you can see their title. When you point to a
+milestone bar or title, a popover appears with its title, start date, and due
+date. You can also select the chevron (**{chevron-down}**) next to the **Milestones**
+heading to toggle the list of the milestone bars.
 
 ![roadmap view](img/roadmap_view_v14_3.png)
 
@@ -41,8 +39,8 @@ toggle the list of the milestone bars.
 > - Filtering by epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218623) in GitLab 13.11.
 > - Filtering by milestone [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.5.
 
-WARNING:
-Filtering roadmaps by milestone might not be available to you. Check the **version history** note above for details.
+NOTE:
+Filtering roadmaps by milestone might not be available to you. Be sure to review this section's version history for details.
 
 When you want to explore a roadmap, there are several ways to make it easier by sorting epics or
 filtering them by what's important for you.
@@ -52,8 +50,9 @@ You can sort epics in the Roadmap view by:
 - Start date
 - Due date
 
-Each option contains a button that toggles the sort order between **ascending** and **descending**.
-The sort option and order persist when browsing Epics, including the [epics list view](../epics/index.md).
+Each option contains a button that toggles the sort order between **ascending**
+and **descending**. The sort option and order persist when browsing Epics, including
+the [epics list view](../epics/index.md).
 
 You can also filter epics in the Roadmap view by the epics':
 
@@ -66,7 +65,7 @@ You can also filter epics in the Roadmap view by the epics':
 
 ![roadmap date range in weeks](img/roadmap_filters_v13_11.png)
 
-Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-epics).
+You can also [visualize roadmaps inside of an epic](../epics/index.md#roadmap-in-epics).
 
 ### Roadmap settings
 
@@ -78,38 +77,40 @@ When you enable the roadmap settings sidebar, you can use it to refine epics sho
 You can configure the following:
 
 - Select date range.
-- Turn milestones on or off and select whether to show all, group, subgroup, or project milestones.
+- Turn milestones on or off, and select whether to show all, group, subgroup, or
+  project milestones.
 - Show all, open, or closed epics.
 - Turn progress tracking for child issues on or off and select whether
   to use issue weights or counts.
 
-  The progress tracking setting is not saved in user preferences but is saved or shared using URL parameters.
+The progress tracking setting isn't saved in user preferences, but is saved or
+shared using URL parameters.
 
 ## Timeline duration
 
-> - Introduced in GitLab 11.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
 
 ### Date range presets
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/204994) in GitLab 14.3. [Deployed behind the `roadmap_daterange_filter` flag](../../../administration/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/204994) in GitLab 14.3 [with a flag](../../../administration/feature_flags.md) named `roadmap_daterange_filter`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.3.
-> - [Feature flag `roadmap_daterange_filter` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72419) in GitLab 14.5.
+> - Generally available in GitLab 14.5. [Feature flag `roadmap_daterange_filter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72419) removed.
 
-Roadmap provides three date range options, each with predetermined timeline duration:
+Roadmap provides these date range options, each with a predetermined timeline duration:
 
-- **This quarter**: includes weeks present in current quarter.
-- **This year**: includes weeks or months present in current year.
-- **Within 3 years**: includes weeks, months, or quarters present in the previous 18 months and
-  upcoming 18 months (that is, three years in total).
+- **This quarter**: Includes the weeks present in the current quarter.
+- **This year**: Includes the weeks or months present in the current year.
+- **Within 3 years**: Includes the weeks, months, or quarters present both in
+  the previous 18 months and the upcoming 18 months (three years in total).
 
 ### Layout presets
 
-Depending on selected [date range preset](#date-range-presets), Roadmap supports the following layout presets:
+Depending on selected [date range preset](#date-range-presets), Roadmap supports
+these layout presets:
 
-- **Quarters**: only available when the "Within 3 years" date range is selected.
-- **Months**: available when either "This year" or "Within 3 years" date range is selected.
-- **Weeks** (default): available for all the date range presets.
+- **Quarters**: Available only when the **Within 3 years** date range is selected.
+- **Months**: Available when either **This year** or **Within 3 years** date range is selected.
+- **Weeks** (default): Available for all the date range presets.
 
 ### Quarters
 
@@ -125,12 +126,11 @@ the timeline header represent the month of the quarter.
 
 ![roadmap date range in months](img/roadmap_timeline_months.png)
 
-In the **Months** preset, roadmap shows epics and milestones which have start or due dates
-**falling within** or
-**going through** currently selected date range preset, where **today**
-is shown by the vertical red line in the timeline. The sub-headers underneath the month name on
-the timeline header represent the date on starting day (Sunday) of the week. This preset is
-selected by default.
+In the **Months** preset, roadmap shows epics and milestones which have start or
+due dates **falling within** or **going through** currently selected date range
+preset, where **today** is shown by the vertical red line in the timeline. The
+sub-headers underneath the month name on the timeline header represent the date
+on the start day (Sunday) of the week. This preset is selected by default.
 
 ### Weeks
 

@@ -70,12 +70,14 @@ module API
         optional :feature_group, type: String, desc: 'A Feature group name'
         optional :user, type: String, desc: 'A GitLab username'
         optional :group, type: String, desc: "A GitLab group's path, such as 'gitlab-org'"
+        optional :namespace, type: String, desc: "A GitLab group or user namespace path, such as 'gitlab-org'"
         optional :project, type: String, desc: 'A projects path, like gitlab-org/gitlab-ce'
         optional :force, type: Boolean, desc: 'Skip feature flag validation checks, ie. YAML definition'
 
         mutually_exclusive :key, :feature_group
         mutually_exclusive :key, :user
         mutually_exclusive :key, :group
+        mutually_exclusive :key, :namespace
         mutually_exclusive :key, :project
       end
       post ':name' do

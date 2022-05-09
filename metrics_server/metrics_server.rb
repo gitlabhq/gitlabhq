@@ -38,7 +38,8 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     def spawn(target, metrics_dir:, **options)
       return spawn_ruby_server(target, metrics_dir: metrics_dir, **options) unless new_metrics_server?
 
-      settings = settings_for(target)
+      name = settings_key(target)
+      settings = ::Settings.monitoring[name]
       path = options[:path]&.then { |p| Pathname.new(p) } || Pathname.new('')
       cmd = path.join('gitlab-metrics-exporter').to_path
       env = {
@@ -47,6 +48,13 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
         'GME_SERVER_HOST' => settings['address'],
         'GME_SERVER_PORT' => settings['port'].to_s
       }
+
+      if settings['log_enabled']
+        env['GME_LOG_FILE'] = File.join(Rails.root, 'log', "#{name}.log")
+        env['GME_LOG_LEVEL'] = 'info'
+      else
+        env['GME_LOG_LEVEL'] = 'quiet'
+      end
 
       Process.spawn(env, cmd, err: $stderr, out: $stdout, pgroup: true).tap do |pid|
         Process.detach(pid)
@@ -102,14 +110,12 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
       raise "Target must be one of [puma,sidekiq]" unless %w(puma sidekiq).include?(target)
     end
 
-    def settings_for(target)
-      settings_key =
-        case target
-        when 'puma' then 'web_exporter'
-        when 'sidekiq' then 'sidekiq_exporter'
-        else ensure_valid_target!(target)
-        end
-      ::Settings.monitoring[settings_key]
+    def settings_key(target)
+      case target
+      when 'puma' then 'web_exporter'
+      when 'sidekiq' then 'sidekiq_exporter'
+      else ensure_valid_target!(target)
+      end
     end
   end
 

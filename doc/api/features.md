@@ -129,11 +129,12 @@ POST /features/:name
 | `feature_group` | string | no | A Feature group name |
 | `user` | string | no | A GitLab username |
 | `group` | string | no | A GitLab group's path, for example `gitlab-org` |
+| `namespace` | string | no | A GitLab group or user namespace's path, for example `gitlab-org` or username path |
 | `project` | string | no | A projects path, for example `gitlab-org/gitlab-foss` |
 | `force` | boolean | no | Skip feature flag validation checks, such as a YAML definition |
 
 You can enable or disable a feature for a `feature_group`, a `user`,
-a `group`, and a `project` in a single API call.
+a `group`, a `namespace` and a `project` in a single API call.
 
 ```shell
 curl --data "value=30" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/features/new_library"

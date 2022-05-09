@@ -253,22 +253,12 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
     end
 
     context 'when no repository qualifies' do
-      before do
-        allow(ContainerRepository).to receive(:ready_for_import).and_return(ContainerRepository.none)
-      end
-
-      context 'idempotency' do
-        include_examples 'an idempotent worker' do
-          it_behaves_like 'no action'
+      include_examples 'an idempotent worker' do
+        before do
+          allow(ContainerRepository).to receive(:ready_for_import).and_return(ContainerRepository.none)
         end
-      end
 
-      context 'logging' do
-        it 'logs no_container_repository_found' do
-          expect_log_extra_metadata(no_container_repository_found: true)
-
-          subject
-        end
+        it_behaves_like 'no action'
       end
     end
 
@@ -334,7 +324,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
     end
 
     context 'with the exclusive lease taken' do
-      let(:lease_key) { "container_registry:migration:enqueuer_worker:for:#{container_repository.id}" }
+      let(:lease_key) { worker.send(:lease_key) }
 
       before do
         stub_exclusive_lease_taken(lease_key, timeout: 30.minutes)
@@ -343,23 +333,6 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
       it 'does not perform' do
         expect(worker).not_to receive(:runnable?)
         expect(worker).not_to receive(:re_enqueue_if_capacity)
-        expect_log_extra_metadata(lease_already_taken: true)
-
-        subject
-      end
-    end
-
-    context 'with exclusive lease taken for a different repository' do
-      let(:lease_key) { "container_registry:migration:enqueuer_worker:for:test" }
-
-      before do
-        Gitlab::ExclusiveLease.new(lease_key, timeout: 30.minutes).try_obtain
-      end
-
-      it 'does perform' do
-        expect(worker).to receive(:runnable?).and_return(true)
-        expect(worker).to receive(:handle_aborted_migration).and_return(container_repository)
-        expect(worker).to receive(:re_enqueue_if_capacity)
 
         subject
       end

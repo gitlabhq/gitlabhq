@@ -219,7 +219,9 @@ should be confident that:
 
 The best way to do this, and to avoid unnecessary back-and-forth with reviewers,
 is to perform a self-review of your own merge request, following the
-[Code Review](#reviewing-a-merge-request) guidelines.
+[Code Review](#reviewing-a-merge-request) guidelines. During this self-review,
+try to include comments in the MR on lines
+where decisions or trade-offs were made, or where a contextual explanation might aid the reviewer in more easily understanding the code.
 
 To reach the required level of confidence in their solution, an author is expected
 to involve other people in the investigation and implementation processes as
