@@ -47,11 +47,11 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 > - Introduced in GitLab 14.9, `passed` status to pass external status checks. Introduced [with a flag](../administration/feature_flags.md) named `status_checks_add_status_field`. Disabled by default.
 > - Introduced in GitLab 14.9, `failed` status to fail external status checks. Introduced [with a flag](../administration/feature_flags.md) named `status_checks_add_status_field`. Disabled by default.
 > - `pass` status to pass checks is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/339039) in GitLab 14.9. Replaced with `passed`.
+> - Support for `failed` and `passed` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/353836) in GitLab 15.0.
 
 FLAG:
-On self-managed GitLab, by default setting `passed` instead of `pass` is unavailable. Also, setting `failed` is unavailable by default. To support
-setting `passed` and `failed` instead of only `pass`, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named
-`status_checks_add_status_field`. On GitLab.com, this feature is not available.
+To remove support for `failed` checks (and `pass` instead of `passed`), ask an administrator to
+[disable the feature flag](../administration/feature_flags.md) named `status_checks_add_status_field`.
 
 For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.
 To set the status of an external check, the personal access token used must belong to a user with at least the Developer role on the target project of the merge request.
@@ -64,14 +64,13 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 
 **Parameters:**
 
-| Attribute                  | Type    | Required | Description                                                                  |
-| -------------------------- | ------- | -------- | ---------------------------------------------------------------------------- |
-| `id`                       | integer | yes      | ID of a project                                                              |
-| `merge_request_iid`        | integer | yes      | IID of a merge request                                                       |
-| `sha`                      | string  | yes      | SHA at `HEAD` of the source branch                                           |
-| `external_status_check_id` | integer | yes      | ID of an external status check                                               |
-| `status`                   | string  | no       | Set to `passed` to pass the check or `failed` to fail it (GitLab 14.9 and later with feature flag `status_checks_add_status_field` enabled) |
-| `status`                   | string  | no       | Set to `pass` to pass the check (GitLab 14.0 to GitLab 14.8, and GitLab 14.9 and later with feature flag `status_checks_add_status_field` disabled) |
+| Attribute                  | Type    | Required | Description                                              |
+| -------------------------- | ------- | -------- |----------------------------------------------------------|
+| `id`                       | integer | yes      | ID of a project                                          |
+| `merge_request_iid`        | integer | yes      | IID of a merge request                                   |
+| `sha`                      | string  | yes      | SHA at `HEAD` of the source branch                       |
+| `external_status_check_id` | integer | yes      | ID of an external status check                           |
+| `status`                   | string  | no       | Set to `passed` to pass the check or `failed` to fail it |
 
 NOTE:
 `sha` must be the SHA at the `HEAD` of the merge request's source branch.

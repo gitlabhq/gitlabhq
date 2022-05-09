@@ -10,12 +10,21 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode do
   end
 
   describe 'GET #show' do
-    let(:migration) { create(:batched_background_migration) }
+    context 'when the migration is valid' do
+      let(:migration) { create(:batched_background_migration) }
+      let!(:failed_job) { create(:batched_background_migration_job, :failed, batched_migration: migration) }
 
-    it 'fetches the migration' do
-      get admin_background_migration_path(migration)
+      it 'fetches the migration' do
+        get admin_background_migration_path(migration)
 
-      expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns failed jobs' do
+        get admin_background_migration_path(migration)
+
+        expect(assigns(:failed_jobs)).to match_array([failed_job])
+      end
     end
 
     context 'when the migration does not exist' do

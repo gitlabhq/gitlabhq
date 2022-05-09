@@ -42,6 +42,28 @@ RSpec.describe "Admin > Admin sees background migrations" do
     end
   end
 
+  it 'can view failed jobs' do
+    visit admin_background_migration_path(failed_migration)
+
+    within '#content-body' do
+      expect(page).to have_content('Failed jobs')
+      expect(page).to have_content('Id')
+      expect(page).to have_content('Started at')
+      expect(page).to have_content('Finished at')
+      expect(page).to have_content('Batch size')
+    end
+  end
+
+  context 'when there are no failed jobs' do
+    it 'dos not display failed jobs' do
+      visit admin_background_migration_path(active_migration)
+
+      within '#content-body' do
+        expect(page).not_to have_content('Failed jobs')
+      end
+    end
+  end
+
   it 'can view queued migrations and pause and resume them' do
     visit admin_background_migrations_path
 

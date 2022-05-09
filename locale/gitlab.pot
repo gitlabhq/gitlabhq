@@ -5543,7 +5543,19 @@ msgstr ""
 msgid "BackgroundMigrations|Background migrations are used to perform data migrations whenever a migration exceeds the time limits in our guidelines. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
+msgid "BackgroundMigrations|Batch size"
+msgstr ""
+
 msgid "BackgroundMigrations|Database"
+msgstr ""
+
+msgid "BackgroundMigrations|Failed jobs:"
+msgstr ""
+
+msgid "BackgroundMigrations|Finished at"
+msgstr ""
+
+msgid "BackgroundMigrations|Started at"
 msgstr ""
 
 msgid "Badges"
@@ -44405,9 +44417,6 @@ msgid "entries cannot be nil"
 msgstr ""
 
 msgid "entries cannot contain HTML tags"
-msgstr ""
-
-msgid "environment_id parameter is required when type is container_policy"
 msgstr ""
 
 msgid "epic"

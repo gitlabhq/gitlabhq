@@ -21,6 +21,8 @@ class Admin::BackgroundMigrationsController < Admin::ApplicationController
 
   def show
     @migration = batched_migration_class.find(params[:id])
+
+    @failed_jobs = @migration.batched_jobs.with_status(:failed).page(params[:page])
   end
 
   def pause

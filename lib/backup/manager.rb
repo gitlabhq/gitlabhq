@@ -37,9 +37,10 @@ module Backup
 
     def create
       if incremental?
-        unpack
+        unpack(ENV.fetch('PREVIOUS_BACKUP', ENV['BACKUP']))
         read_backup_information
         verify_backup_version
+        update_backup_information
       end
 
       @definitions.keys.each do |task_name|
@@ -79,7 +80,7 @@ module Backup
       end
 
       puts_time "Dumping #{definition.human_name} ... ".color(:blue)
-      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
+      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path), full_backup_id)
       puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
@@ -87,7 +88,7 @@ module Backup
     end
 
     def restore
-      cleanup_required = unpack
+      cleanup_required = unpack(ENV['BACKUP'])
       read_backup_information
       verify_backup_version
 
@@ -248,6 +249,17 @@ module Backup
       }
     end
 
+    def update_backup_information
+      @backup_information.merge!(
+        full_backup_id: full_backup_id,
+        db_version: ActiveRecord::Migrator.current_version.to_s,
+        backup_created_at: Time.zone.now,
+        gitlab_version: Gitlab::VERSION,
+        tar_version: tar_version,
+        installation_type: Gitlab::INSTALLATION_TYPE
+      )
+    end
+
     def backup_information
       raise Backup::Error, "#{MANIFEST_NAME} not yet loaded" unless @backup_information
 
@@ -374,8 +386,8 @@ module Backup
       end
     end
 
-    def unpack
-      if ENV['BACKUP'].blank? && non_tarred_backup?
+    def unpack(source_backup_id)
+      if source_backup_id.blank? && non_tarred_backup?
         puts_time "Non tarred backup found in #{backup_path}, using that"
 
         return false
@@ -387,14 +399,14 @@ module Backup
           puts_time "No backups found in #{backup_path}"
           puts_time "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
           exit 1
-        elsif backup_file_list.many? && ENV["BACKUP"].nil?
+        elsif backup_file_list.many? && source_backup_id.nil?
           puts_time 'Found more than one backup:'
           # print list of available backups
           puts_time " " + available_timestamps.join("\n ")
 
           if incremental?
             puts_time 'Please specify which one you want to create an incremental backup for:'
-            puts_time 'rake gitlab:backup:create INCREMENTAL=true BACKUP=timestamp_of_backup'
+            puts_time 'rake gitlab:backup:create INCREMENTAL=true PREVIOUS_BACKUP=timestamp_of_backup'
           else
             puts_time 'Please specify which one you want to restore:'
             puts_time 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
@@ -403,8 +415,8 @@ module Backup
           exit 1
         end
 
-        tar_file = if ENV['BACKUP'].present?
-                     File.basename(ENV['BACKUP']) + FILE_NAME_SUFFIX
+        tar_file = if source_backup_id.present?
+                     File.basename(source_backup_id) + FILE_NAME_SUFFIX
                    else
                      backup_file_list.first
                    end
@@ -501,12 +513,19 @@ module Backup
       @tar_file ||= "#{backup_id}#{FILE_NAME_SUFFIX}"
     end
 
+    def full_backup_id
+      full_backup_id = backup_information[:full_backup_id]
+      full_backup_id ||= File.basename(ENV['PREVIOUS_BACKUP']) if ENV['PREVIOUS_BACKUP'].present?
+      full_backup_id ||= backup_id
+      full_backup_id
+    end
+
     def backup_id
-      @backup_id ||= if ENV['BACKUP'].present?
-                       File.basename(ENV['BACKUP'])
-                     else
-                       "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
-                     end
+      if ENV['BACKUP'].present?
+        File.basename(ENV['BACKUP'])
+      else
+        "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
+      end
     end
 
     def create_attributes

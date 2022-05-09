@@ -147,6 +147,7 @@ RSpec.describe Backup::Manager do
     let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz task2.tar.gz} }
     let(:backup_time) { Time.utc(2019, 1, 1) }
     let(:backup_id) { "1546300800_2019_01_01_#{Gitlab::VERSION}" }
+    let(:full_backup_id) { backup_id }
     let(:pack_tar_file) { "#{backup_id}_gitlab_backup.tar" }
     let(:pack_tar_system_options) { { out: [pack_tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
     let(:pack_tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, pack_tar_system_options] }
@@ -166,8 +167,8 @@ RSpec.describe Backup::Manager do
       allow(Gitlab::BackupLogger).to receive(:info)
       allow(Kernel).to receive(:system).and_return(true)
 
-      allow(task1).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'), backup_id)
-      allow(task2).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'), backup_id)
+      allow(task1).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'), full_backup_id)
+      allow(task2).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'), full_backup_id)
     end
 
     it 'executes tar' do
@@ -588,6 +589,14 @@ RSpec.describe Backup::Manager do
         end
 
         expect(Kernel).not_to have_received(:system).with(*pack_tar_cmdline)
+        expect(YAML.load_file(File.join(Gitlab.config.backup.path, 'backup_information.yml'))).to include(
+          backup_created_at: backup_time.localtime,
+          db_version: be_a(String),
+          gitlab_version: Gitlab::VERSION,
+          installation_type: Gitlab::INSTALLATION_TYPE,
+          skipped: 'tar',
+          tar_version: be_a(String)
+        )
       end
     end
 
@@ -595,11 +604,11 @@ RSpec.describe Backup::Manager do
       let(:incremental_env) { 'true' }
       let(:gitlab_version) { Gitlab::VERSION }
       let(:backup_id) { "1546300800_2019_01_01_#{gitlab_version}" }
-      let(:pack_tar_file) { "#{backup_id}_gitlab_backup.tar" }
-      let(:unpack_tar_cmdline) { ['tar', '-xf', pack_tar_file] }
+      let(:unpack_tar_file) { "#{full_backup_id}_gitlab_backup.tar" }
+      let(:unpack_tar_cmdline) { ['tar', '-xf', unpack_tar_file] }
       let(:backup_information) do
         {
-          backup_created_at: backup_time,
+          backup_created_at: Time.zone.parse('2018-01-01'),
           gitlab_version: gitlab_version
         }
       end
@@ -682,7 +691,9 @@ RSpec.describe Backup::Manager do
         end
 
         it 'unpacks and packs the backup' do
-          subject.create # rubocop:disable Rails/SaveBang
+          travel_to(backup_time) do
+            subject.create # rubocop:disable Rails/SaveBang
+          end
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
           expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
@@ -732,21 +743,137 @@ RSpec.describe Backup::Manager do
         end
       end
 
+      context 'when PREVIOUS_BACKUP variable is set to a non-existing file' do
+        before do
+          allow(Dir).to receive(:glob).and_return(
+            [
+              '1451606400_2016_01_01_gitlab_backup.tar'
+            ]
+          )
+          allow(File).to receive(:exist?).and_return(false)
+
+          stub_env('PREVIOUS_BACKUP', 'wrong')
+        end
+
+        it 'fails the operation and prints an error' do
+          expect { subject.create }.to raise_error SystemExit # rubocop:disable Rails/SaveBang
+          expect(File).to have_received(:exist?).with('wrong_gitlab_backup.tar')
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching('The backup file wrong_gitlab_backup.tar does not exist'))
+        end
+      end
+
+      context 'when PREVIOUS_BACKUP variable is set to a correct file' do
+        let(:full_backup_id) { 'some_previous_backup' }
+
+        before do
+          allow(Gitlab::BackupLogger).to receive(:info)
+          allow(Dir).to receive(:glob).and_return(
+            [
+              'some_previous_backup_gitlab_backup.tar'
+            ]
+          )
+          allow(File).to receive(:exist?).with('some_previous_backup_gitlab_backup.tar').and_return(true)
+          allow(Kernel).to receive(:system).and_return(true)
+
+          stub_env('PREVIOUS_BACKUP', '/ignored/path/some_previous_backup')
+        end
+
+        it 'unpacks and packs the backup' do
+          travel_to(backup_time) do
+            subject.create # rubocop:disable Rails/SaveBang
+          end
+
+          expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
+          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+        end
+
+        context 'untar fails' do
+          before do
+            expect(Kernel).to receive(:system).with(*unpack_tar_cmdline).and_return(false)
+          end
+
+          it 'logs a failure' do
+            expect do
+              travel_to(backup_time) do
+                subject.create # rubocop:disable Rails/SaveBang
+              end
+            end.to raise_error(SystemExit)
+
+            expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Unpacking backup failed')
+          end
+        end
+
+        context 'tar fails' do
+          before do
+            expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
+          end
+
+          it 'logs a failure' do
+            expect do
+              travel_to(backup_time) do
+                subject.create # rubocop:disable Rails/SaveBang
+              end
+            end.to raise_error(Backup::Error, 'Backup failed')
+
+            expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
+          end
+        end
+
+        context 'on version mismatch' do
+          let(:backup_information) do
+            {
+              backup_created_at: Time.zone.parse('2018-01-01'),
+              gitlab_version: "not #{gitlab_version}"
+            }
+          end
+
+          it 'stops the process' do
+            expect { subject.create }.to raise_error SystemExit # rubocop:disable Rails/SaveBang
+            expect(progress).to have_received(:puts)
+              .with(a_string_matching('GitLab version mismatch'))
+          end
+        end
+      end
+
       context 'when there is a non-tarred backup in the directory' do
+        let(:full_backup_id) { "1514764800_2018_01_01_#{Gitlab::VERSION}" }
+        let(:backup_information) do
+          {
+            backup_created_at: Time.zone.parse('2018-01-01'),
+            gitlab_version: gitlab_version,
+            skipped: 'tar'
+          }
+        end
+
         before do
           allow(Dir).to receive(:glob).and_return(
             [
               'backup_information.yml'
             ]
           )
-          allow(File).to receive(:exist?).and_return(true)
+          allow(File).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'backup_information.yml')).and_return(true)
         end
 
-        it 'selects the non-tarred backup to restore from' do
-          subject.create # rubocop:disable Rails/SaveBang
+        after do
+          FileUtils.rm(File.join(Gitlab.config.backup.path, 'backup_information.yml'), force: true)
+        end
+
+        it 'updates the non-tarred backup' do
+          travel_to(backup_time) do
+            subject.create # rubocop:disable Rails/SaveBang
+          end
 
           expect(progress).to have_received(:puts)
             .with(a_string_matching('Non tarred backup found '))
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching("Backup #{backup_id} is done"))
+          expect(YAML.load_file(File.join(Gitlab.config.backup.path, 'backup_information.yml'))).to include(
+            backup_created_at: backup_time,
+            full_backup_id: full_backup_id,
+            gitlab_version: Gitlab::VERSION,
+            skipped: 'tar'
+          )
         end
 
         context 'on version mismatch' do

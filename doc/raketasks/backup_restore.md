@@ -379,18 +379,24 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 
 > - Introduced in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 14.10.
+> - `PREVIOUS_BACKUP` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4184) in GitLab 15.0.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `incremental_repository_backup`.
 On GitLab.com, this feature is not available.
 
 Incremental backups can be faster than full backups because they only pack changes since the last backup into the backup
-bundle for each repository. There must be an existing backup to create an incremental backup from and this backup will be overwritten. You can use the `BACKUP=timestamp_of_backup` option to choose which backup will be used.
+bundle for each repository. There must be an existing backup to create an incremental backup from:
+
+- In GitLab 14.9 and 14.10, use the `BACKUP=<timestamp_of_backup>` option to choose the backup to use. The chosen previous backup is overwritten.
+- In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<timestamp_of_backup>` option to choose the backup to use. By default, a backup file is created
+  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the filename by setting the 
+  [`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:
 
 ```shell
-sudo gitlab-backup create INCREMENTAL=yes
+sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<timestamp_of_backup>
 ```
 
 Incremental backups can also be created from [an untarred backup](#skipping-tar-creation) by using `SKIP=tar`:
@@ -1399,6 +1405,7 @@ To prepare the new server:
 1. Copy the
    [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
    from the old server to avoid man-in-the-middle attack warnings.
+   See [Manually replicate the primary site’s SSH host keys](../administration/geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
 1. [Install and configure GitLab](https://about.gitlab.com/install) except
    [incoming email](../administration/incoming_email.md):
    1. Install GitLab.

@@ -430,12 +430,6 @@ RSpec.describe "Admin Runners" do
     end
 
     context "when visiting outdated URLs" do
-      it 'updates NOT_CONNECTED runner status to NEVER_CONNECTED' do
-        visit admin_runners_path('status[]': 'NOT_CONNECTED')
-
-        expect(page).to have_current_path(admin_runners_path('status[]': 'NEVER_CONTACTED') )
-      end
-
       it 'updates ACTIVE runner status to paused=false' do
         visit admin_runners_path('status[]': 'ACTIVE')
 
