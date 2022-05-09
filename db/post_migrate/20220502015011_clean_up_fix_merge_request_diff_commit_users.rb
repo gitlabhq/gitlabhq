@@ -3,6 +3,8 @@
 class CleanUpFixMergeRequestDiffCommitUsers < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
   MIGRATION_CLASS = 'FixMergeRequestDiffCommitUsers'
 
   def up

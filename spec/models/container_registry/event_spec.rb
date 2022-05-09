@@ -26,11 +26,65 @@ RSpec.describe ContainerRegistry::Event do
   end
 
   describe '#handle!' do
-    let(:raw_event) { { 'action' => 'push', 'target' => { 'mediaType' => ContainerRegistry::Client::DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE } } }
+    let(:action) { 'push' }
+    let(:repository) { project.full_path }
+    let(:target) do
+      {
+        'mediaType' => ContainerRegistry::Client::DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE,
+        'tag' => 'latest',
+        'repository' => repository
+      }
+    end
 
-    subject { described_class.new(raw_event).handle! }
+    let(:raw_event) { { 'action' => action, 'target' => target } }
 
-    it { is_expected.to eq nil }
+    subject(:handle!) { described_class.new(raw_event).handle! }
+
+    it 'enqueues a project statistics update' do
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:container_registry_size])
+
+      handle!
+    end
+
+    shared_examples 'event without project statistics update' do
+      it 'does not queue a project statistics update' do
+        expect(ProjectCacheWorker).not_to receive(:perform_async)
+
+        handle!
+      end
+    end
+
+    context 'with :container_registry_project_statistics feature flag disabled' do
+      before do
+        stub_feature_flags(container_registry_project_statistics: false)
+      end
+
+      it_behaves_like 'event without project statistics update'
+    end
+
+    context 'with no target tag' do
+      let(:target) { super().without('tag') }
+
+      it_behaves_like 'event without project statistics update'
+    end
+
+    context 'with an unsupported action' do
+      let(:action) { 'pull' }
+
+      it_behaves_like 'event without project statistics update'
+    end
+
+    context 'with an invalid project repository path' do
+      let(:repository) { 'does/not/exist' }
+
+      it_behaves_like 'event without project statistics update'
+    end
+
+    context 'with no project repository path' do
+      let(:repository) { nil }
+
+      it_behaves_like 'event without project statistics update'
+    end
   end
 
   describe '#track!' do

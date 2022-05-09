@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::NullifyOrphanRunnerIdOnCiBuilds, :migration, schema: 20220223112304 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
-  let(:ci_runners) { table(:ci_runners) }
-  let(:ci_pipelines) { table(:ci_pipelines) }
-  let(:ci_builds) { table(:ci_builds) }
+  let(:ci_runners) { table(:ci_runners, database: :ci) }
+  let(:ci_pipelines) { table(:ci_pipelines, database: :ci) }
+  let(:ci_builds) { table(:ci_builds, database: :ci) }
 
   subject { described_class.new }
 
@@ -26,9 +26,9 @@ RSpec.describe Gitlab::BackgroundMigration::NullifyOrphanRunnerIdOnCiBuilds, :mi
   describe '#perform' do
     let(:namespace) { namespaces.create!(name: 'test', path: 'test', type: 'Group') }
     let(:project) { projects.create!(namespace_id: namespace.id, name: 'test') }
-    let(:pipeline) { ci_pipelines.create!(project_id: project.id, ref: 'master', sha: 'adf43c3a', status: 'success') }
 
     it 'nullifies runner_id for orphan ci_builds in range' do
+      pipeline = ci_pipelines.create!(project_id: project.id, ref: 'master', sha: 'adf43c3a', status: 'success')
       ci_runners.create!(id: 2, runner_type: 'project_type')
 
       ci_builds.create!(id: 5, type: 'Ci::Build', commit_id: pipeline.id, runner_id: 2)

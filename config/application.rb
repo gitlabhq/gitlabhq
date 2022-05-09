@@ -72,7 +72,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
 
-    config.exceptions_app = Gitlab::ExceptionsApp.new(Rails.public_path)
+    config.exceptions_app = Gitlab::ExceptionsApp.new(Gitlab.jh? ? Rails.root.join('jh/public') : Rails.public_path)
 
     # This preload is required to:
     #

@@ -208,6 +208,17 @@ RSpec.describe Projects::EnvironmentsController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'avoids N+1 queries on environment detail page'
+
+    def create_deployment_with_associations(sequence:)
+      commit = project.commit("HEAD~#{sequence}")
+      create(:user, email: commit.author_email)
+
+      deployer = create(:user)
+      build = create(:ci_build, environment: environment.name, pipeline: create(:ci_pipeline, project: environment.project), user: deployer)
+      create(:deployment, :success, environment: environment, deployable: build, user: deployer, project: project, sha: commit.sha)
+    end
   end
 
   describe 'GET edit' do

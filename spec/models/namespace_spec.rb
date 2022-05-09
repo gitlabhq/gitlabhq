@@ -32,6 +32,10 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
 
+    it do
+      is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)
+    end
+
     describe '#children' do
       let_it_be(:group) { create(:group) }
       let_it_be(:subgroup) { create(:group, parent: group) }

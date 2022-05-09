@@ -26,11 +26,8 @@ module Gitlab
         @source_ref_path = pipeline&.source_ref_path
         @project = project
 
-        if use_config_variables?
-          pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, user: user, source: source)
-        end
-
         @context = self.logger.instrument(:config_build_context) do
+          pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, user: user, source: source)
           build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline)
         end
 
@@ -149,57 +146,20 @@ module Gitlab
           sha: sha || find_sha(project),
           user: user,
           parent_pipeline: parent_pipeline,
-          variables: build_variables(project: project, pipeline: pipeline),
+          variables: build_variables(pipeline: pipeline),
           logger: logger)
       end
 
-      def build_variables(project:, pipeline:)
+      def build_variables(pipeline:)
         logger.instrument(:config_build_variables) do
-          build_variables_without_instrumentation(
-            project: project,
-            pipeline: pipeline
-          )
-        end
-      end
-
-      def build_variables_without_instrumentation(project:, pipeline:)
-        if use_config_variables?
-          return pipeline.variables_builder.config_variables
-        end
-
-        Gitlab::Ci::Variables::Collection.new.tap do |variables|
-          break variables unless project
-
-          # The order of the following lines is important as priority of CI variables is
-          # defined globally within GitLab.
-          #
-          # See more detail in the docs: https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-          variables.concat(project.predefined_variables)
-          variables.concat(pipeline.predefined_variables) if pipeline
-          variables.concat(secret_variables(project: project, pipeline: pipeline))
-          variables.concat(project.group.ci_variables_for(source_ref_path, project)) if project.group
-          variables.concat(project.ci_variables_for(ref: source_ref_path))
-          variables.concat(pipeline.variables) if pipeline
-          variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline&.pipeline_schedule
-        end
-      end
-
-      def secret_variables(project:, pipeline:)
-        if pipeline
-          pipeline.variables_builder.secret_instance_variables
-        else
-          Gitlab::Ci::Variables::Builder::Instance.new.secret_variables
+          pipeline
+            .variables_builder
+            .config_variables
         end
       end
 
       def track_and_raise_for_dev_exception(error)
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, @context.sentry_payload)
-      end
-
-      def use_config_variables?
-        strong_memoize(:use_config_variables) do
-          ::Feature.enabled?(:ci_variables_builder_config_variables, @project)
-        end
       end
 
       # Overridden in EE

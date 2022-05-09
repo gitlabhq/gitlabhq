@@ -325,11 +325,6 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d new license"
-msgid_plural "%d new licenses"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d open issue"
 msgid_plural "%d open issues"
 msgstr[0] ""
@@ -362,11 +357,6 @@ msgstr[1] ""
 
 msgid "%d project selected"
 msgid_plural "%d projects selected"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d removed license"
-msgid_plural "%d removed licenses"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4601,31 +4591,10 @@ msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCoun
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ApprovalRule|%{firstLabel} +%{numberOfAdditionalLabels} more"
-msgstr ""
-
 msgid "ApprovalRule|A merge request author collaborating with a merge request approver"
 msgstr ""
 
 msgid "ApprovalRule|Add approvers"
-msgstr ""
-
-msgid "ApprovalRule|All scanners"
-msgstr ""
-
-msgid "ApprovalRule|All severity levels"
-msgstr ""
-
-msgid "ApprovalRule|All vulnerability states"
-msgstr ""
-
-msgid "ApprovalRule|Apply this approval rule to consider only the selected security scanners."
-msgstr ""
-
-msgid "ApprovalRule|Apply this approval rule to consider only the selected severity levels."
-msgstr ""
-
-msgid "ApprovalRule|Apply this approval rule to consider only the selected vulnerability states."
 msgstr ""
 
 msgid "ApprovalRule|Approval rules"
@@ -4664,21 +4633,6 @@ msgstr ""
 msgid "ApprovalRule|Newly detected"
 msgstr ""
 
-msgid "ApprovalRule|Number of vulnerabilities allowed before approval rule is triggered."
-msgstr ""
-
-msgid "ApprovalRule|Please enter a number equal or greater than zero"
-msgstr ""
-
-msgid "ApprovalRule|Please select at least one security scanner"
-msgstr ""
-
-msgid "ApprovalRule|Please select at least one severity level"
-msgstr ""
-
-msgid "ApprovalRule|Please select at least one vulnerability state"
-msgstr ""
-
 msgid "ApprovalRule|Previously detected"
 msgstr ""
 
@@ -4691,37 +4645,13 @@ msgstr ""
 msgid "ApprovalRule|Rule name"
 msgstr ""
 
-msgid "ApprovalRule|Security scanners"
-msgstr ""
-
-msgid "ApprovalRule|Select All"
-msgstr ""
-
 msgid "ApprovalRule|Select eligible approvers by expertise or files changed."
-msgstr ""
-
-msgid "ApprovalRule|Select scanners"
-msgstr ""
-
-msgid "ApprovalRule|Select severity levels"
-msgstr ""
-
-msgid "ApprovalRule|Select vulnerability states"
-msgstr ""
-
-msgid "ApprovalRule|Severity levels"
 msgstr ""
 
 msgid "ApprovalRule|Target branch"
 msgstr ""
 
 msgid "ApprovalRule|Try for free"
-msgstr ""
-
-msgid "ApprovalRule|Vulnerabilities allowed"
-msgstr ""
-
-msgid "ApprovalRule|Vulnerability states"
 msgstr ""
 
 msgid "ApprovalSettings|Merge request approval settings have been updated."
@@ -22611,11 +22541,6 @@ msgid_plural "LicenseCompliance|License Compliance detected %d new licenses and 
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d removed license"
-msgid_plural "LicenseCompliance|License Compliance detected %d removed licenses"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "LicenseCompliance|License Compliance detected no licenses for the source branch only"
 msgstr ""
 
@@ -33317,9 +33242,6 @@ msgstr ""
 msgid "Security report is out of date. Run %{newPipelineLinkStart}a new pipeline%{newPipelineLinkEnd} for the target branch (%{targetBranchName})"
 msgstr ""
 
-msgid "SecurityApprovals|A merge request approval is required when a security report contains a new vulnerability."
-msgstr ""
-
 msgid "SecurityApprovals|A merge request approval is required when test coverage declines."
 msgstr ""
 
@@ -33335,9 +33257,6 @@ msgstr ""
 msgid "SecurityApprovals|Learn more about License-Check"
 msgstr ""
 
-msgid "SecurityApprovals|Learn more about Vulnerability-Check"
-msgstr ""
-
 msgid "SecurityApprovals|License-Check"
 msgstr ""
 
@@ -33345,12 +33264,6 @@ msgid "SecurityApprovals|Requires approval for Denied licenses. %{linkStart}Lear
 msgstr ""
 
 msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "SecurityApprovals|Requires approval for vulnerabilities. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "SecurityApprovals|Vulnerability-Check"
 msgstr ""
 
 msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"

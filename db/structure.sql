@@ -17359,6 +17359,11 @@ CREATE TABLE namespace_aggregation_schedules (
     namespace_id integer NOT NULL
 );
 
+CREATE TABLE namespace_ci_cd_settings (
+    namespace_id bigint NOT NULL,
+    allow_stale_runner_pruning boolean DEFAULT false NOT NULL
+);
+
 CREATE TABLE namespace_limits (
     additional_purchased_storage_size bigint DEFAULT 0 NOT NULL,
     additional_purchased_storage_ends_on date,
@@ -24888,6 +24893,9 @@ ALTER TABLE ONLY namespace_admin_notes
 
 ALTER TABLE ONLY namespace_aggregation_schedules
     ADD CONSTRAINT namespace_aggregation_schedules_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY namespace_ci_cd_settings
+    ADD CONSTRAINT namespace_ci_cd_settings_pkey PRIMARY KEY (namespace_id);
 
 ALTER TABLE ONLY namespace_limits
     ADD CONSTRAINT namespace_limits_pkey PRIMARY KEY (namespace_id);
@@ -33148,6 +33156,9 @@ ALTER TABLE ONLY vulnerability_occurrence_identifiers
 
 ALTER TABLE ONLY alert_management_http_integrations
     ADD CONSTRAINT fk_rails_bec49f52cc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespace_ci_cd_settings
+    ADD CONSTRAINT fk_rails_bf04185d54 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT fk_rails_bf5b788ca7 FOREIGN KEY (scanner_id) REFERENCES vulnerability_scanners(id) ON DELETE CASCADE;

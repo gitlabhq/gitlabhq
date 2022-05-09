@@ -16,7 +16,6 @@ Database/MultipleDatabases:
     - 'lib/backup/manager.rb'
     - lib/gitlab/background_migration/backfill_projects_with_coverage.rb
     - lib/gitlab/background_migration/copy_ci_builds_columns_to_security_scans.rb
-    - lib/gitlab/background_migration/nullify_orphan_runner_id_on_ci_builds.rb
     - 'lib/gitlab/database.rb'
     - 'lib/gitlab/database/load_balancing/load_balancer.rb'
     - 'lib/gitlab/database/migrations/observers/query_log.rb'
