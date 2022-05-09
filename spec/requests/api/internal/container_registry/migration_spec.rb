@@ -127,6 +127,12 @@ RSpec.describe API::Internal::ContainerRegistry::Migration, :aggregate_failures 
 
             it_behaves_like 'updating the repository migration status', from: 'pre_importing', to: 'import_aborted'
           end
+
+          context 'with repository in unabortable migration state' do
+            let(:repository) { create(:container_repository, :import_skipped) }
+
+            it_behaves_like 'returning an error', with_message: 'Wrong migration state (import_skipped)'
+          end
         end
       end
 

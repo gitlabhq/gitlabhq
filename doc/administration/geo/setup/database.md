@@ -391,7 +391,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    make sure to replace `verify-ca` to `verify-full` when
    running the command.
 
-   When prompted enter the password you set in the first step for the
+   When prompted enter the _plaintext_ password you set in the first step for the
    `gitlab_replicator` user. If all worked correctly, you should see
    the list of **primary** node's databases.
 

@@ -10590,7 +10590,7 @@ Returns [`[DoraMetric!]`](#dorametric).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dorametricdate"></a>`date` | [`String`](#string) | Date of the data point. |
-| <a id="dorametricvalue"></a>`value` | [`Int`](#int) | Value of the data point. |
+| <a id="dorametricvalue"></a>`value` | [`Float`](#float) | Value of the data point. |
 
 ### `Environment`
 

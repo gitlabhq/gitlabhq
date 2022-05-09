@@ -787,7 +787,7 @@ RSpec.describe GroupsController, factory_default: :keep do
       end
 
       it 'does not update the attribute' do
-        expect { subject }.not_to change { group.namespace_settings.reload.prevent_sharing_groups_outside_hierarchy }
+        expect { subject }.not_to change { group.reload.prevent_sharing_groups_outside_hierarchy }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

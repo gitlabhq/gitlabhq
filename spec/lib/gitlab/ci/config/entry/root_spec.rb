@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
         # The purpose of `Root` is have only globally defined configuration.
         expect(described_class.nodes.keys)
           .to match_array(%i[before_script image services after_script
-                             variables cache stages types include default workflow])
+                             variables cache stages include default workflow])
       end
     end
   end
@@ -53,41 +53,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
             }
           }
         }
-      end
-
-      context 'when deprecated types/type keywords are defined' do
-        let(:project) { create(:project, :repository) }
-        let(:user) { create(:user) }
-
-        let(:hash) do
-          { types: %w(test deploy),
-            rspec: { script: 'rspec', type: 'test' } }
-        end
-
-        before do
-          root.compose!
-        end
-
-        it 'returns array of types as stages with a warning' do
-          expect(root.jobs_value[:rspec][:stage]).to eq 'test'
-          expect(root.stages_value).to eq %w[test deploy]
-          expect(root.warnings).to match_array([
-            "root `types` is deprecated in 9.0 and will be removed in 15.0.",
-            "jobs:rspec `type` is deprecated in 9.0 and will be removed in 15.0."
-          ])
-        end
-
-        it 'logs usage of keywords' do
-          expect(Gitlab::AppJsonLogger).to(
-            receive(:info)
-              .with(event: 'ci_used_deprecated_keyword',
-                    entry: root[:stages].key.to_s,
-                    user_id: user.id,
-                    project_id: project.id)
-          )
-
-          root.compose!
-        end
       end
 
       describe '#compose!' do

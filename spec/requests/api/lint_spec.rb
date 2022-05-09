@@ -154,19 +154,6 @@ RSpec.describe API::Lint do
         end
       end
 
-      context 'with valid .gitlab-ci.yml using deprecated keywords' do
-        let(:yaml_content) { { job: { script: 'ls', type: 'test' }, types: ['test'] }.to_yaml }
-
-        it 'passes validation but returns warnings' do
-          post api('/ci/lint', api_user), params: { content: yaml_content }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['status']).to eq('valid')
-          expect(json_response['warnings']).not_to be_empty
-          expect(json_response['errors']).to match_array([])
-        end
-      end
-
       context 'with an invalid .gitlab-ci.yml' do
         context 'with invalid syntax' do
           let(:yaml_content) { 'invalid content' }

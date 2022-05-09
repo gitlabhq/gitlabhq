@@ -630,7 +630,7 @@ module Gitlab
 
       describe 'only / except policies validations' do
         context 'when `only` has an invalid value' do
-          let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
+          let(:config) { { rspec: { script: "rspec", stage: "test", only: only } } }
 
           subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
@@ -2606,19 +2606,19 @@ module Gitlab
         end
 
         context 'returns errors if job stage is not a string' do
-          let(:config) { YAML.dump({ rspec: { script: "test", type: 1 } }) }
+          let(:config) { YAML.dump({ rspec: { script: "test", stage: 1 } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec:type config should be a string'
+          it_behaves_like 'returns errors', 'jobs:rspec:stage config should be a string'
         end
 
         context 'returns errors if job stage is not a pre-defined stage' do
-          let(:config) { YAML.dump({ rspec: { script: "test", type: "acceptance" } }) }
+          let(:config) { YAML.dump({ rspec: { script: "test", stage: "acceptance" } }) }
 
           it_behaves_like 'returns errors', 'rspec job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post'
         end
 
         context 'returns errors if job stage is not a defined stage' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", type: "acceptance" } }) }
+          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", stage: "acceptance" } }) }
 
           it_behaves_like 'returns errors', 'rspec job: chosen stage does not exist; available stages are .pre, build, test, .post'
         end

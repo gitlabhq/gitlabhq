@@ -2,7 +2,6 @@
 Migration/BackgroundMigrationRecord:
   Exclude:
     - lib/gitlab/background_migration/add_primary_email_to_emails_if_user_confirmed.rb
-    - lib/gitlab/background_migration/backfill_artifact_expiry_date.rb
     - lib/gitlab/background_migration/backfill_ci_namespace_mirrors.rb
     - lib/gitlab/background_migration/backfill_ci_project_mirrors.rb
     - lib/gitlab/background_migration/backfill_ci_queuing_tables.rb

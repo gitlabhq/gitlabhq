@@ -351,7 +351,6 @@ Layout/SpaceInLambdaLiteral:
     - 'lib/container_registry/base_client.rb'
     - 'lib/container_registry/client.rb'
     - 'lib/file_size_validator.rb'
-    - 'lib/gitlab/background_migration/backfill_artifact_expiry_date.rb'
     - 'lib/gitlab/background_migration/populate_latest_pipeline_ids.rb'
     - 'lib/gitlab/background_migration/remove_all_trace_expiration_dates.rb'
     - 'lib/gitlab/cache/helpers.rb'

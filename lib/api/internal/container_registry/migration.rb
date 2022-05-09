@@ -54,7 +54,7 @@ module API
                 bad_request!("Couldn't transition from importing to import_done")
               end
             when STATUS_IMPORT_FAILED, STATUS_PRE_IMPORT_FAILED
-              repository.abort_import
+              repository.abort_import!
             end
           end
 

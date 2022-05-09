@@ -15,7 +15,7 @@ describe('DateTimePicker', () => {
   const dropdownToggle = () => wrapper.find('.dropdown-toggle');
   const dropdownMenu = () => wrapper.find('.dropdown-menu');
   const cancelButton = () => wrapper.find('[data-testid="cancelButton"]');
-  const applyButtonElement = () => wrapper.find('button.btn-success').element;
+  const applyButtonElement = () => wrapper.find('button.btn-confirm').element;
   const findQuickRangeItems = () => wrapper.findAll('.dropdown-item');
 
   const createComponent = (props) => {

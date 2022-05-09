@@ -338,6 +338,15 @@ RSpec.describe Namespace do
   describe 'delegate' do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix.with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:avatar_url).to(:owner).with_arguments(allow_nil: true) }
+    it do
+      is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy)
+                       .to(:namespace_settings).with_arguments(allow_nil: true)
+    end
+
+    it do
+      is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=)
+                       .to(:namespace_settings).with_arguments(allow_nil: true)
+    end
   end
 
   describe "Respond to" do

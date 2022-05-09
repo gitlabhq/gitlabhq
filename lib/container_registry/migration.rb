@@ -66,5 +66,9 @@ module ContainerRegistry
     def self.all_plans?
       Feature.enabled?(:container_registry_migration_phase2_all_plans)
     end
+
+    def self.enqueue_twice?
+      Feature.enabled?(:container_registry_migration_phase2_enqueue_twice)
+    end
   end
 end

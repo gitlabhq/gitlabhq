@@ -49,7 +49,7 @@ const findForm = () => wrapper.find('form');
 
 describe('Delete branch modal', () => {
   const expectedUnmergedWarning =
-    'This branch hasn’t been merged into default. To avoid data loss, consider merging this branch before deleting it.';
+    "This branch hasn't been merged into default. To avoid data loss, consider merging this branch before deleting it.";
 
   afterEach(() => {
     wrapper.destroy();
@@ -110,7 +110,7 @@ describe('Delete branch modal', () => {
       "You're about to permanently delete the protected branch test_modal.";
     const expectedMessageProtected = `${expectedWarningProtected} ${expectedUnmergedWarning}`;
     const expectedConfirmationText =
-      'Once you confirm and press Yes, delete protected branch, it cannot be undone or recovered. Please type the following to confirm: test_modal';
+      'After you confirm and select Yes, delete protected branch, you cannot recover this branch. Please type the following to confirm: test_modal';
 
     beforeEach(() => {
       createComponent({ isProtectedBranch: true });

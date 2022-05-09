@@ -217,7 +217,7 @@ class ContainerRepository < ApplicationRecord
 
     before_transition any => %i[import_done import_aborted import_skipped] do |container_repository|
       container_repository.run_after_commit do
-        ::ContainerRegistry::Migration::EnqueuerWorker.perform_async
+        ::ContainerRegistry::Migration::EnqueuerWorker.enqueue_a_job
       end
     end
   end

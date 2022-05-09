@@ -37,8 +37,22 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
 
         it 're-enqueues the worker' do
           expect(described_class).to receive(:perform_async)
+          expect(described_class).to receive(:perform_in).with(7.seconds)
 
           subject
+        end
+
+        context 'enqueue_twice feature flag disabled' do
+          before do
+            stub_feature_flags(container_registry_migration_phase2_enqueue_twice: false)
+          end
+
+          it 'only enqueues the worker once' do
+            expect(described_class).to receive(:perform_async)
+            expect(described_class).not_to receive(:perform_in)
+
+            subject
+          end
         end
       end
 
@@ -49,6 +63,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
 
         it 'does not re-enqueue the worker' do
           expect(described_class).not_to receive(:perform_async)
+          expect(described_class).not_to receive(:perform_in).with(7.seconds)
 
           subject
         end
@@ -95,6 +110,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
 
         it 'does not re-enqueue the worker' do
           expect(described_class).not_to receive(:perform_async)
+          expect(described_class).not_to receive(:perform_in)
 
           subject
         end
@@ -142,6 +158,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
 
       it 'does not re-enqueue the worker' do
         expect(ContainerRegistry::Migration::EnqueuerWorker).not_to receive(:perform_async)
+        expect(ContainerRegistry::Migration::EnqueuerWorker).not_to receive(:perform_in)
 
         subject
       end

@@ -223,7 +223,7 @@ RSpec.describe 'Edit group settings' do
       check 'group_prevent_sharing_groups_outside_hierarchy'
 
       expect { save_permissions_group }.to change {
-        group.reload.namespace_settings.prevent_sharing_groups_outside_hierarchy
+        group.reload.prevent_sharing_groups_outside_hierarchy
       }.to(true)
     end
 

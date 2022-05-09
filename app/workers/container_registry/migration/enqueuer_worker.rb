@@ -30,6 +30,11 @@ module ContainerRegistry
         re_enqueue_if_capacity if re_enqueue
       end
 
+      def self.enqueue_a_job
+        perform_async
+        perform_in(7.seconds) if ::ContainerRegistry::Migration.enqueue_twice?
+      end
+
       private
 
       def with_a_lease_on_repository
@@ -164,7 +169,7 @@ module ContainerRegistry
       def re_enqueue_if_capacity
         return unless below_capacity?
 
-        self.class.perform_async
+        self.class.enqueue_a_job
       end
 
       def log_repository(repository)

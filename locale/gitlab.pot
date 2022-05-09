@@ -6346,6 +6346,9 @@ msgstr ""
 msgid "Branches|Active branches"
 msgstr ""
 
+msgid "Branches|After you confirm and select %{strongStart}%{buttonText},%{strongEnd} you cannot recover this branch."
+msgstr ""
+
 msgid "Branches|All"
 msgstr ""
 
@@ -6394,9 +6397,6 @@ msgstr ""
 msgid "Branches|No branches to show"
 msgstr ""
 
-msgid "Branches|Once you confirm and press %{strongStart}%{buttonText},%{strongEnd} it cannot be undone or recovered."
-msgstr ""
-
 msgid "Branches|Only a project maintainer or owner can delete a protected branch"
 msgstr ""
 
@@ -6436,7 +6436,7 @@ msgstr ""
 msgid "Branches|The default branch cannot be deleted"
 msgstr ""
 
-msgid "Branches|This branch hasn’t been merged into %{defaultBranchName}. To avoid data loss, consider merging this branch before deleting it."
+msgid "Branches|This branch hasn't been merged into %{defaultBranchName}. To avoid data loss, consider merging this branch before deleting it."
 msgstr ""
 
 msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
@@ -6451,10 +6451,10 @@ msgstr ""
 msgid "Branches|Yes, delete protected branch"
 msgstr ""
 
-msgid "Branches|You're about to permanently delete the branch %{strongStart}%{branchName}.%{strongEnd}"
+msgid "Branches|You're about to permanently delete the branch %{branchName}."
 msgstr ""
 
-msgid "Branches|You're about to permanently delete the protected branch %{strongStart}%{branchName}.%{strongEnd}"
+msgid "Branches|You're about to permanently delete the protected branch %{branchName}."
 msgstr ""
 
 msgid "Branches|diverged from upstream"
@@ -10963,12 +10963,6 @@ msgstr ""
 msgid "CycleAnalytics|'%{name}' is collecting the data. This can take a few minutes."
 msgstr ""
 
-msgid "CycleAnalytics|Aggregation disabled"
-msgstr ""
-
-msgid "CycleAnalytics|Aggregation enabled"
-msgstr ""
-
 msgid "CycleAnalytics|Average time to completion"
 msgstr ""
 
@@ -10988,9 +10982,6 @@ msgid "CycleAnalytics|Date"
 msgstr ""
 
 msgid "CycleAnalytics|Display chart filters"
-msgstr ""
-
-msgid "CycleAnalytics|Filter by stop date"
 msgstr ""
 
 msgid "CycleAnalytics|If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display."
@@ -11048,16 +11039,10 @@ msgstr ""
 msgid "CycleAnalytics|There is no data for 'Total time' available. Adjust the current filters."
 msgstr ""
 
-msgid "CycleAnalytics|There was an error updating the aggregation status, please try again."
-msgstr ""
-
 msgid "CycleAnalytics|Total time"
 msgstr ""
 
 msgid "CycleAnalytics|Type of work"
-msgstr ""
-
-msgid "CycleAnalytics|When enabled, the results show items with a stop event within the date range. When disabled, the results show items with a start event within the date range."
 msgstr ""
 
 msgid "CycleAnalytics|group dropdown filter"
@@ -33425,9 +33410,6 @@ msgstr ""
 msgid "SecurityOrchestration|All policies"
 msgstr ""
 
-msgid "SecurityOrchestration|Allow up to 10 minutes for any policy changes to take effect."
-msgstr ""
-
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
@@ -33525,9 +33507,6 @@ msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
 msgid "SecurityOrchestration|Policies"
-msgstr ""
-
-msgid "SecurityOrchestration|Policies created in this project are applied through a background job that runs once every 10 minutes."
 msgstr ""
 
 msgid "SecurityOrchestration|Policy Type"

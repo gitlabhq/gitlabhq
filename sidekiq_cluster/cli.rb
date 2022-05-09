@@ -20,7 +20,7 @@ require_relative 'sidekiq_cluster'
 module Gitlab
   module SidekiqCluster
     class CLI
-      THREAD_NAME = 'supervisor'
+      THREAD_NAME = 'sidekiq-cluster'
 
       # The signals that should terminate both the master and workers.
       TERMINATE_SIGNALS = %i(INT TERM).freeze
@@ -134,23 +134,17 @@ module Gitlab
         )
 
         metrics_server_pid = start_metrics_server
-
-        all_pids = worker_pids + Array(metrics_server_pid)
-
-        supervisor.supervise(all_pids) do |dead_pids|
+        supervisor.supervise(worker_pids + Array(metrics_server_pid)) do |dead_pids|
           # If we're not in the process of shutting down the cluster,
           # and the metrics server died, restart it.
-          if supervisor.alive && dead_pids.include?(metrics_server_pid)
+          if dead_pids == Array(metrics_server_pid)
             @logger.info('Sidekiq metrics server terminated, restarting...')
             metrics_server_pid = restart_metrics_server
-            all_pids = worker_pids + Array(metrics_server_pid)
           else
             # If a worker process died we'll just terminate the whole cluster.
             # We let an external system (runit, kubernetes) handle the restart.
             @logger.info('A worker terminated, shutting down the cluster')
-
-            ProcessManagement.signal_processes(all_pids - dead_pids, :TERM)
-            # Signal supervisor not to respawn workers and shut down.
+            supervisor.shutdown
             []
           end
         end

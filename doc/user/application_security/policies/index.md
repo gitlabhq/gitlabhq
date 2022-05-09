@@ -41,8 +41,9 @@ stored there. Examples and schema information are available for the following po
 - [Scan execution policy](scan-execution-policies.md#example-security-policies-project)
 - [Scan result policy](scan-result-policies.md#example-security-scan-result-policies-project)
 
-Policies created in this project are applied through a background job that runs once every 10
-minutes. Allow up to 10 minutes for any policy changes committed to this project to take effect.
+Most policy changes take effect as soon as the merge request is merged. Any changes that
+do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
+before the policy changes take effect.
 
 ### Managing the linked security policy project
 

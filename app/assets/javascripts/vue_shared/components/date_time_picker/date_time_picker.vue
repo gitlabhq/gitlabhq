@@ -248,7 +248,7 @@ export default {
               __('Cancel')
             }}</gl-button>
             <gl-button
-              variant="success"
+              variant="confirm"
               category="primary"
               :disabled="!isValid"
               @click="setFixedRange()"

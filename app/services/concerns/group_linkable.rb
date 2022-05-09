@@ -25,7 +25,7 @@ module GroupLinkable
   end
 
   def sharing_outside_hierarchy_allowed?
-    !root_ancestor.namespace_settings.prevent_sharing_groups_outside_hierarchy
+    !root_ancestor.prevent_sharing_groups_outside_hierarchy
   end
 
   def within_hierarchy?

@@ -476,9 +476,11 @@ code. It contains only shell scripting commands for the relevant
 
 ```mermaid
 graph LR
-subgraph script:
-  A{run-snapshopt-tests.sh} --> B
+subgraph tests:
   B[relevant rspec+jest test files]
+end
+subgraph script:
+  A{run-snapshopt-tests.sh} -->|invokes| B
 end
 subgraph input:<br/>YAML
   C[examples_index.yml] --> B
@@ -487,7 +489,7 @@ subgraph input:<br/>YAML
   F[prosemirror_json.yml] --> B
 end
 subgraph output:<br/>test results/output
-  B --> G[rspec/jest output]
+  B --> H[rspec+jest output]
 end
 ```
 
@@ -534,7 +536,7 @@ is the manually updated canonical Markdown+HTML examples for GLFM extensions.
   each of which contain a Markdown example and the corresponding canonical HTML.
 - The `update-specification.rb` script inserts it as new sections before the appendix
   of generated `spec.txt`.
-- It should consist of `H1` header sections, with a examples nested exactly 2 levels deep within `H2`
+- It should consist of `H1` header sections, with all examples nested exactly 2 levels deep within `H2`
   header sections.
 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt` sample entries:

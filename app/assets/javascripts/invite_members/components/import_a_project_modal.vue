@@ -145,7 +145,7 @@ export default {
           <gl-button
             :disabled="importDisabled"
             :loading="isLoading"
-            variant="success"
+            variant="confirm"
             data-testid="import-button"
             @click="submitImport"
             >{{ $options.i18n.modalPrimaryButton }}</gl-button

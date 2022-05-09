@@ -267,28 +267,13 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     end
 
     context 'when the supervisor callback is invoked' do
-      context 'and the supervisor is alive' do
-        it 'restarts the metrics server' do
-          expect(supervisor).to receive(:alive).and_return(true)
-          expect(supervisor).to receive(:supervise).and_yield
-          expect(Process).to receive(:spawn).with(
-            include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
-          ).twice.and_return(42)
+      it 'restarts the metrics server' do
+        expect(supervisor).to receive(:supervise).and_yield
+        expect(Process).to receive(:spawn).with(
+          include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
+        ).twice.and_return(42)
 
-          described_class.start_for_puma
-        end
-      end
-
-      context 'and the supervisor is not alive' do
-        it 'does not restart the server' do
-          expect(supervisor).to receive(:alive).and_return(false)
-          expect(supervisor).to receive(:supervise).and_yield
-          expect(Process).to receive(:spawn).with(
-            include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
-          ).once.and_return(42)
-
-          described_class.start_for_puma
-        end
+        described_class.start_for_puma
       end
     end
   end

@@ -1,21 +1,13 @@
 <script>
-import { GlIcon, GlToggle, GlTooltipDirective } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { GlTooltipDirective } from '@gitlab/ui';
 import DateRange from '~/analytics/shared/components/daterange.vue';
 import ProjectsDropdownFilter from '~/analytics/shared/components/projects_dropdown_filter.vue';
 import { DATE_RANGE_LIMIT, PROJECTS_PER_PAGE } from '~/analytics/shared/constants';
 import FilterBar from './filter_bar.vue';
 
-export const AGGREGATION_TOGGLE_LABEL = s__('CycleAnalytics|Filter by stop date');
-export const AGGREGATION_DESCRIPTION = s__(
-  'CycleAnalytics|When enabled, the results show items with a stop event within the date range. When disabled, the results show items with a start event within the date range.',
-);
-
 export default {
   name: 'ValueStreamFilters',
   components: {
-    GlIcon,
-    GlToggle,
     DateRange,
     ProjectsDropdownFilter,
     FilterBar,
@@ -57,21 +49,6 @@ export default {
       required: false,
       default: null,
     },
-    canToggleAggregation: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isAggregationEnabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isUpdatingAggregationData: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     projectsQueryParams() {
@@ -81,19 +58,8 @@ export default {
       };
     },
   },
-  methods: {
-    onUpdateAggregation(ev) {
-      if (!this.isUpdatingAggregationData) {
-        this.$emit('toggleAggregation', ev);
-      }
-    },
-  },
   multiProjectSelect: true,
   maxDateRange: DATE_RANGE_LIMIT,
-  i18n: {
-    AGGREGATION_TOGGLE_LABEL,
-    AGGREGATION_DESCRIPTION,
-  },
 };
 </script>
 <template>
@@ -123,27 +89,6 @@ export default {
         />
       </div>
       <div class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row">
-        <div
-          v-if="canToggleAggregation"
-          class="gl-display-flex gl-text-align-center gl-my-2 gl-lg-mt-0 gl-lg-mb-0 gl-mr-5"
-        >
-          <gl-toggle
-            class="gl-flex-direction-row"
-            :value="isAggregationEnabled"
-            :label="$options.i18n.AGGREGATION_TOGGLE_LABEL"
-            :disabled="isUpdatingAggregationData"
-            label-position="left"
-            @change="onUpdateAggregation"
-          >
-            <template #label>
-              {{ $options.i18n.AGGREGATION_TOGGLE_LABEL }}&nbsp;<gl-icon
-                v-gl-tooltip.hover
-                :title="$options.i18n.AGGREGATION_DESCRIPTION"
-                name="information-o"
-              />
-            </template>
-          </gl-toggle>
-        </div>
         <date-range
           v-if="hasDateRangeFilter"
           :start-date="startDate"

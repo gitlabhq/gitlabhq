@@ -402,32 +402,18 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
       end
 
       it 'stops the entire process cluster if one of the workers has been terminated' do
-        expect(supervisor).to receive(:alive).and_return(true)
-        expect(supervisor).to receive(:supervise).and_yield([2])
         expect(MetricsServer).to receive(:start_for_sidekiq).once.and_return(metrics_server_pid)
-        expect(Gitlab::ProcessManagement).to receive(:signal_processes).with([42, 99], :TERM)
+        expect(supervisor).to receive(:supervise).and_yield([2, 99])
+        expect(supervisor).to receive(:shutdown)
 
         cli.run(%w(foo))
       end
 
-      context 'when the supervisor is alive' do
-        it 'restarts the metrics server when it is down' do
-          expect(supervisor).to receive(:alive).and_return(true)
-          expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
-          expect(MetricsServer).to receive(:start_for_sidekiq).twice.and_return(metrics_server_pid)
+      it 'restarts the metrics server when it is down' do
+        expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
+        expect(MetricsServer).to receive(:start_for_sidekiq).twice.and_return(metrics_server_pid)
 
-          cli.run(%w(foo))
-        end
-      end
-
-      context 'when the supervisor is shutting down' do
-        it 'does not restart the metrics server' do
-          expect(supervisor).to receive(:alive).and_return(false)
-          expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
-          expect(MetricsServer).to receive(:start_for_sidekiq).once.and_return(metrics_server_pid)
-
-          cli.run(%w(foo))
-        end
+        cli.run(%w(foo))
       end
     end
   end

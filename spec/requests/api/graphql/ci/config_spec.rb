@@ -234,24 +234,6 @@ RSpec.describe 'Query.ciConfig' do
     )
   end
 
-  context 'when using deprecated keywords' do
-    let_it_be(:content) do
-      YAML.dump(
-        rspec: { script: 'ls', type: 'test' },
-        types: ['test']
-      )
-    end
-
-    it 'returns a warning' do
-      post_graphql_query
-
-      expect(graphql_data['ciConfig']['warnings']).to include(
-        'root `types` is deprecated in 9.0 and will be removed in 15.0.',
-        'jobs:rspec `type` is deprecated in 9.0 and will be removed in 15.0.'
-      )
-    end
-  end
-
   context 'when the config file includes other files' do
     let_it_be(:content) do
       YAML.dump(

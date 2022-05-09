@@ -35,7 +35,7 @@ RSpec.describe InviteMembersHelper do
       let_it_be(:group) { create(:group) }
 
       before do
-        group.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: true)
+        group.update!(prevent_sharing_groups_outside_hierarchy: true)
       end
 
       it 'provides the correct attributes' do
@@ -45,7 +45,7 @@ RSpec.describe InviteMembersHelper do
 
     context 'when sharing with groups outside the hierarchy is enabled' do
       before do
-        group.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: false)
+        group.update!(prevent_sharing_groups_outside_hierarchy: false)
       end
 
       it 'does not return filter attributes' do

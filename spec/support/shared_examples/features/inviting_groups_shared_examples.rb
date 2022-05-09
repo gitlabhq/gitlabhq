@@ -125,7 +125,7 @@ RSpec.shared_examples 'inviting groups search results' do
 
     context 'when sharing with groups outside the hierarchy is disabled' do
       before do
-        group.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: true)
+        group.update!(prevent_sharing_groups_outside_hierarchy: true)
       end
 
       it 'shows only groups within the hierarchy in search results' do

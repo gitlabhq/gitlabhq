@@ -22,8 +22,6 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
 
       supervisor = PumaProcessSupervisor.instance
       supervisor.supervise(start_server.call) do
-        next unless supervisor.alive
-
         Gitlab::AppLogger.info('Puma metrics server terminated, restarting...')
         start_server.call
       end

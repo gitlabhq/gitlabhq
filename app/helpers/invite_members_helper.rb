@@ -56,7 +56,7 @@ module InviteMembersHelper
   private
 
   def group_select_data(source)
-    if source.root_ancestor.namespace_settings.prevent_sharing_groups_outside_hierarchy
+    if source.root_ancestor.prevent_sharing_groups_outside_hierarchy
       { groups_filter: 'descendant_groups', parent_id: source.root_ancestor.id }
     else
       {}

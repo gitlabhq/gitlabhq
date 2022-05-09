@@ -32,8 +32,9 @@ If a security policy project doesn't link to your project, GitLab creates such a
 Existing policies can also be removed from the editor interface by selecting **Delete policy** at
 the bottom of the editor.
 
-All scan result policy changes are applied through a background job that runs once every 10 minutes.
-Allow up to 10 minutes for any policy changes committed to this project to take effect.
+Most policy changes take effect as soon as the merge request is merged. Any changes that
+do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
+before the policy changes take effect.
 
 The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
 
