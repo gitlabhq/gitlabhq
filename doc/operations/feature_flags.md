@@ -402,7 +402,7 @@ docker run \
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.
 > - Showing related feature flags in issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220333) in GitLab 14.1.
 
-You can link related issues to a feature flag. In the **Linked issues** section,
+You can link related issues to a feature flag. In the Feature Flag **Linked issues** section,
 click the `+` button and input the issue reference number or the full URL of the issue.
 The issues then appear in the related feature flag and the other way round.
 

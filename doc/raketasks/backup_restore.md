@@ -1177,6 +1177,40 @@ project or group from there:
 A feature request to provide direct restore of individual projects or groups
 is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issues/17517).
 
+### Restore options
+
+The command line tool GitLab provides to restore from backup can accept more
+options.
+
+#### Excluding tasks on restore
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19347) in GitLab 14.10.
+
+You can exclude specific tasks on restore by adding the environment variable `SKIP`, whose values are a comma-separated list of the following options:
+
+- `db` (database)
+- `uploads` (attachments)
+- `builds` (CI job output logs)
+- `artifacts` (CI job artifacts)
+- `lfs` (LFS objects)
+- `terraform_state` (Terraform states)
+- `registry` (Container Registry images)
+- `pages` (Pages content)
+- `repositories` (Git repositories data)
+- `packages` (Packages)
+
+For Omnibus GitLab packages:
+
+```shell
+sudo gitlab-backup restore BACKUP=timestamp_of_backup SKIP=db,uploads
+```
+
+For installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup SKIP=db,uploads RAILS_ENV=production
+```
+
 ## Alternative backup strategies
 
 If your GitLab instance contains a lot of Git repository data, you may find the
