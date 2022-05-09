@@ -32,8 +32,16 @@ function MergeRequest(opts) {
       selector: '.detail-page-description',
       lockVersion: this.$el.data('lockVersion'),
       onSuccess: (result) => {
-        document.querySelector('#task_status').innerText = result.task_status;
-        document.querySelector('#task_status_short').innerText = result.task_status_short;
+        const taskStatus = document.querySelector('#task_status');
+        const taskStatusShort = document.querySelector('#task_status_short');
+
+        if (taskStatus) {
+          taskStatus.innerText = result.task_status;
+        }
+
+        if (taskStatusShort) {
+          document.querySelector('#task_status_short').innerText = result.task_status_short;
+        }
       },
       onError: () => {
         createFlash({
@@ -148,7 +156,11 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
   } else {
     toast(__('Marked as draft. Can only be merged when marked as ready.'));
   }
-  const titleEl = document.querySelector('.merge-request .detail-page-description .title');
+  const titleEl = document.querySelector(
+    `.merge-request .detail-page-${
+      window.gon?.features?.updatedMrHeader ? 'header' : 'description'
+    } .title`,
+  );
 
   if (titleEl) {
     titleEl.textContent = title;

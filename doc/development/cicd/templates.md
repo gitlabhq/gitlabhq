@@ -342,32 +342,6 @@ include:
   - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v13.0.1-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
 ```
 
-### Use a feature flag to roll out a `latest` template
-
-With a major version release like 13.0 or 14.0, [stable templates](#stable-version) must be
-updated with their corresponding [latest template versions](#latest-version).
-It may be hard to gauge the impact of this change, so use the `redirect_to_latest_template_<name>`
-feature flag to test the impact on a subset of users. Using a feature flag can help
-reduce the risk of reverts or rollbacks on production.
-
-For example, to redirect the stable `Jobs/Deploy` template to its latest template in 25% of
-projects on `gitlab.com`:
-
-```shell
-/chatops run feature set redirect_to_latest_template_jobs_deploy 25 --actors
-```
-
-After you're confident the latest template can be moved to stable:
-
-1. Update the stable template with the content of the latest version.
-1. Remove the migration template from `Gitlab::Template::GitlabCiYmlTemplate::TEMPLATES_WITH_LATEST_VERSION` const.
-1. Remove the corresponding feature flag.
-
-NOTE:
-Feature flags are enabled by default in RSpec, so all tests are performed
-against the latest templates. You should also test the stable templates
-with `stub_feature_flags(redirect_to_latest_template_<name>: false)`.
-
 ### Further reading
 
 There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/17716) about

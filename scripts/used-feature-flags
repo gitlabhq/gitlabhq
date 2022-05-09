@@ -70,13 +70,6 @@ flags_paths.each do |flags_path|
       next
     end
 
-    # Dynamic feature flag names for redirect to latest CI templates
-    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63144/diffs#fa2193ace3f6a02f7ef9995ef9bc519eca92c4ee_57_84
-    if feature_flag_name.start_with?('redirect_to_latest_template_')
-      puts "Skipping the #{feature_flag_name} feature flag since it starts with 'redirect_to_latest_template_'."
-      next
-    end
-
     all_flags[feature_flag_name] = File.exist?(File.join('tmp', 'feature_flags', feature_flag_name + '.used'))
   end
 end

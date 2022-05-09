@@ -99,6 +99,15 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '.created_after' do
+    let!(:migration_old) { create :batched_background_migration, created_at: 2.days.ago }
+    let!(:migration_new) { create :batched_background_migration, created_at: 0.days.ago }
+
+    it 'only returns migrations created after the specified time' do
+      expect(described_class.created_after(1.day.ago)).to contain_exactly(migration_new)
+    end
+  end
+
   describe '.queued' do
     let!(:migration1) { create(:batched_background_migration, :finished) }
     let!(:migration2) { create(:batched_background_migration, :paused) }

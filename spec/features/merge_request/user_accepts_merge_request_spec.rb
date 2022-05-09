@@ -112,9 +112,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
       click_button('Merge')
 
-      page.within('.status-box') do
-        expect(page).to have_content('Merged')
-      end
+      expect(page).to have_selector('.gl-badge', text: 'Merged')
     end
   end
 end

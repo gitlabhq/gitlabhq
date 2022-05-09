@@ -36,6 +36,7 @@ export default function initMergeRequestShow() {
       return h(StatusBox, {
         props: {
           initialState: el.dataset.state,
+          issuableType: 'merge_request',
         },
       });
     },

@@ -30,10 +30,10 @@ module QA
           end
 
           def fill_scopes(read_repository: false, read_registry: false, read_package_registry: false, write_package_registry: false )
-            check_element(:deploy_token_read_repository_checkbox) if read_repository
-            check_element(:deploy_token_read_package_registry_checkbox) if read_package_registry
-            check_element(:deploy_token_read_registry_checkbox) if read_registry
-            check_element(:deploy_token_write_package_registry_checkbox) if write_package_registry
+            check_element(:deploy_token_read_repository_checkbox, true) if read_repository
+            check_element(:deploy_token_read_package_registry_checkbox, true) if read_package_registry
+            check_element(:deploy_token_read_registry_checkbox, true) if read_registry
+            check_element(:deploy_token_write_package_registry_checkbox, true) if write_package_registry
           end
 
           def add_token

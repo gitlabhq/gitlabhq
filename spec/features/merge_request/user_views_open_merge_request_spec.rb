@@ -71,13 +71,14 @@ RSpec.describe 'User views an open merge request' do
       let(:merge_request) { create(:merge_request, :rebased, source_project: project, target_project: project) }
 
       before do
+        project.add_maintainer(project.creator)
+        sign_in(project.creator)
+
         visit(merge_request_path(merge_request))
       end
 
       it 'does not show diverged commits count' do
-        page.within('.mr-source-target') do
-          expect(page).not_to have_content(/([0-9]+ commits? behind)/)
-        end
+        expect(page).not_to have_content(/([0-9]+ commits? behind)/)
       end
     end
 
@@ -85,13 +86,14 @@ RSpec.describe 'User views an open merge request' do
       let(:merge_request) { create(:merge_request, :diverged, source_project: project, target_project: project) }
 
       before do
+        project.add_maintainer(project.creator)
+        sign_in(project.creator)
+
         visit(merge_request_path(merge_request))
       end
 
       it 'shows diverged commits count' do
-        page.within('.mr-source-target') do
-          expect(page).to have_content(/([0-9]+ commits behind)/)
-        end
+        expect(page).not_to have_content(/([0-9]+ commits? behind)/)
       end
     end
 

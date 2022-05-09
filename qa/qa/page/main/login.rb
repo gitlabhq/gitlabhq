@@ -30,9 +30,8 @@ module QA
           element :register_tab
         end
 
-        view 'app/views/devise/shared/_tabs_normal.html.haml' do
+        view 'app/views/devise/shared/_tab_single.html.haml' do
           element :sign_in_tab
-          element :register_tab
         end
 
         view 'app/helpers/auth_helper.rb' do

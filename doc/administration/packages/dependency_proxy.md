@@ -140,8 +140,6 @@ This section describes the earlier configuration format.
    gitlab_rails['dependency_proxy_storage_path'] = "/var/opt/gitlab/gitlab-rails/shared/dependency_proxy"
    gitlab_rails['dependency_proxy_object_store_enabled'] = true
    gitlab_rails['dependency_proxy_object_store_remote_directory'] = "dependency_proxy" # The bucket name.
-   gitlab_rails['dependency_proxy_object_store_direct_upload'] = false         # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
-   gitlab_rails['dependency_proxy_object_store_background_upload'] = true      # Temporary option to limit automatic upload (Default: true).
    gitlab_rails['dependency_proxy_object_store_proxy_download'] = false        # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
    gitlab_rails['dependency_proxy_object_store_connection'] = {
      ##
@@ -177,8 +175,6 @@ This section describes the earlier configuration format.
      object_store:
        enabled: false
        remote_directory: dependency_proxy  # The bucket name.
-       #  direct_upload: false      # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
-       #  background_upload: true   # Temporary option to limit automatic upload (Default: true).
        #  proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
        connection:
        ##

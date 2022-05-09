@@ -160,6 +160,28 @@ It also depends on a few third-party gems that are not actively maintained anymo
 
 For more information, check the [summary section of the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352488#deprecation-summary).
 
+### Sidekiq configuration for metrics and health checks
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GitLab 15.0, you can no longer serve Sidekiq metrics and health checks over a single address and port.
+
+To improve stability, availability, and prevent data loss in edge cases, GitLab now serves
+[Sidekiq metrics and health checks from two separate servers](https://gitlab.com/groups/gitlab-org/-/epics/6409).
+
+When you use Omnibus or Helm charts, if GitLab is configured for both servers to bind to the same address,
+a configuration error occurs.
+To prevent this error, choose different ports for the metrics and health check servers:
+
+- [Configure Sidekiq health checks](https://docs.gitlab.com/ee/administration/sidekiq.html#configure-health-checks)
+- [Configure the Sidekiq metrics server](https://docs.gitlab.com/ee/administration/sidekiq.html#configure-the-sidekiq-metrics-server)
+
+If you installed GitLab from source, verify manually that both servers are configured to bind to separate addresses and ports.
+
 ### Static Site Editor
 
 The Static Site Editor was deprecated in GitLab 14.7 and the feature is being removed in GitLab 15.0. Incoming requests to the Static Site Editor will be redirected and open the target file to edit in the Web IDE. Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/static_site_editor/) for more information, including how to remove the configuration files from existing projects. We will continue investing in improvements to the Markdown editing experience by [maturing the Content Editor](https://gitlab.com/groups/gitlab-org/-/epics/5401) and making it available as a way to edit content across GitLab.

@@ -291,7 +291,7 @@ describe('ShortcutsIssuable', () => {
       window.shortcut = new ShortcutsIssuable();
 
       [sidebarCollapsedBtn, sidebarExpandedBtn] = document.querySelectorAll(
-        '.js-sidebar-source-branch button',
+        '.js-source-branch-copy',
       );
 
       [sidebarCollapsedBtn, sidebarExpandedBtn].forEach((btn) => jest.spyOn(btn, 'click'));
@@ -312,22 +312,6 @@ describe('ShortcutsIssuable', () => {
 
       it('clicks the "expanded" version of the copy source branch button', () => {
         expect(sidebarExpandedBtn.click).toHaveBeenCalled();
-        expect(sidebarCollapsedBtn.click).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when the sidebar is collapsed', () => {
-      beforeEach(() => {
-        // simulate the applied CSS styles when the
-        // sidebar is collapsed
-        sidebarExpandedBtn.style.display = 'none';
-
-        Mousetrap.trigger('b');
-      });
-
-      it('clicks the "collapsed" version of the copy source branch button', () => {
-        expect(sidebarCollapsedBtn.click).toHaveBeenCalled();
-        expect(sidebarExpandedBtn.click).not.toHaveBeenCalled();
       });
     });
   });

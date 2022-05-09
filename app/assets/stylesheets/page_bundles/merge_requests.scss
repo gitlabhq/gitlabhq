@@ -666,12 +666,12 @@ $tabs-holder-z-index: 250;
   margin-top: $gl-padding;
   position: relative;
 
-  &::before {
+  &:not(:last-child)::before {
     content: '';
     border-left: 1px solid var(--gray-100, $gray-100);
     position: absolute;
     left: 28px;
-    top: -17px;
+    bottom: -17px;
     height: 16px;
   }
 }

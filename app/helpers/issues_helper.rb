@@ -28,16 +28,18 @@ module IssuesHelper
   end
 
   def status_box_class(item)
+    updated_mr_header_enabled = Feature.enabled?(:updated_mr_header, @project)
+
     if item.try(:expired?)
       'status-box-expired'
     elsif item.try(:merged?)
-      'status-box-mr-merged'
+      updated_mr_header_enabled ? 'badge-info' : 'status-box-mr-merged'
     elsif item.closed?
-      'status-box-mr-closed'
+      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-danger' : 'status-box-mr-closed'
     elsif item.try(:upcoming?)
       'status-box-upcoming'
     else
-      'status-box-open'
+      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-success' : 'status-box-open'
     end
   end
 

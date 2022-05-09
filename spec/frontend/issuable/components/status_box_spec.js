@@ -1,37 +1,37 @@
-import { GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import StatusBox from '~/issuable/components/status_box.vue';
 
 let wrapper;
 
 function factory(propsData) {
-  wrapper = shallowMount(StatusBox, { propsData, stubs: { GlSprintf } });
+  wrapper = shallowMount(StatusBox, {
+    propsData,
+    stubs: { GlSprintf },
+    provide: { glFeatures: { updatedMrHeader: true } },
+  });
 }
 
 const testCases = [
   {
     name: 'Open',
     state: 'opened',
-    class: 'status-box-open',
-    icon: 'issue-open-m',
+    class: 'badge-success',
   },
   {
     name: 'Open',
     state: 'locked',
-    class: 'status-box-open',
-    icon: 'issue-open-m',
+    class: 'badge-success',
   },
   {
     name: 'Closed',
     state: 'closed',
-    class: 'status-box-mr-closed',
-    icon: 'issue-close',
+    class: 'badge-danger',
   },
   {
     name: 'Merged',
     state: 'merged',
-    class: 'status-box-mr-merged',
-    icon: 'git-merge',
+    class: 'badge-info',
   },
 ];
 
@@ -46,6 +46,7 @@ describe('Merge request status box component', () => {
       it('renders human readable test', () => {
         factory({
           initialState: testCase.state,
+          issuableType: 'merge_request',
         });
 
         expect(wrapper.text()).toContain(testCase.name);
@@ -54,17 +55,10 @@ describe('Merge request status box component', () => {
       it('sets css class', () => {
         factory({
           initialState: testCase.state,
+          issuableType: 'merge_request',
         });
 
         expect(wrapper.classes()).toContain(testCase.class);
-      });
-
-      it('renders icon', () => {
-        factory({
-          initialState: testCase.state,
-        });
-
-        expect(wrapper.findComponent(GlIcon).props('name')).toBe(testCase.icon);
       });
     });
   });

@@ -252,7 +252,7 @@ Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci
 Settings['ci_secure_files'] ||= Settingslogic.new({})
 Settings.ci_secure_files['enabled']      = true if Settings.ci_secure_files['enabled'].nil?
 Settings.ci_secure_files['storage_path'] = Settings.absolute(Settings.ci_secure_files['storage_path'] || File.join(Settings.shared['path'], "ci_secure_files"))
-Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_secure_files['object_store'])
+Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_secure_files['object_store'], 'secure_files')
 
 #
 # Reply by email
@@ -276,7 +276,7 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
-Settings.artifacts['object_store'] = ObjectStoreSettings.legacy_parse(Settings.artifacts['object_store'])
+Settings.artifacts['object_store'] = ObjectStoreSettings.legacy_parse(Settings.artifacts['object_store'], 'artifacts')
 
 #
 # Registry
@@ -321,7 +321,7 @@ Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_secret')
 # We want pages zip archives to be stored on the same directory as old pages hierarchical structure
 # this will allow us to easier migrate existing instances with NFS
 Settings.pages['storage_path']      = Settings.pages['path']
-Settings.pages['object_store']      = ObjectStoreSettings.legacy_parse(Settings.pages['object_store'])
+Settings.pages['object_store']      = ObjectStoreSettings.legacy_parse(Settings.pages['object_store'], 'pages')
 Settings.pages['local_store'] ||= Settingslogic.new({})
 Settings.pages['local_store']['path'] = Settings.absolute(Settings.pages['local_store']['path'] || File.join(Settings.shared['path'], "pages"))
 Settings.pages['local_store']['enabled'] = true if Settings.pages['local_store']['enabled'].nil?
@@ -362,7 +362,7 @@ Settings['external_diffs'] ||= Settingslogic.new({})
 Settings.external_diffs['enabled']      = false if Settings.external_diffs['enabled'].nil?
 Settings.external_diffs['when']         = 'always' if Settings.external_diffs['when'].nil?
 Settings.external_diffs['storage_path'] = Settings.absolute(Settings.external_diffs['storage_path'] || File.join(Settings.shared['path'], 'external-diffs'))
-Settings.external_diffs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.external_diffs['object_store'])
+Settings.external_diffs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.external_diffs['object_store'], 'external_diffs')
 
 #
 # Git LFS
@@ -370,7 +370,7 @@ Settings.external_diffs['object_store'] = ObjectStoreSettings.legacy_parse(Setti
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
-Settings.lfs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.lfs['object_store'])
+Settings.lfs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.lfs['object_store'], 'lfs')
 
 #
 # Uploads
@@ -378,7 +378,7 @@ Settings.lfs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.lfs['ob
 Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
-Settings.uploads['object_store'] = ObjectStoreSettings.legacy_parse(Settings.uploads['object_store'])
+Settings.uploads['object_store'] = ObjectStoreSettings.legacy_parse(Settings.uploads['object_store'], 'uploads')
 Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
 
 #
@@ -388,7 +388,7 @@ Settings['packages'] ||= Settingslogic.new({})
 Settings.packages['enabled']       = true if Settings.packages['enabled'].nil?
 Settings.packages['dpkg_deb_path'] = '/usr/bin/dpkg-deb' if Settings.packages['dpkg_deb_path'].nil?
 Settings.packages['storage_path']  = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
-Settings.packages['object_store']  = ObjectStoreSettings.legacy_parse(Settings.packages['object_store'])
+Settings.packages['object_store']  = ObjectStoreSettings.legacy_parse(Settings.packages['object_store'], 'packages')
 
 #
 # Dependency Proxy
@@ -396,7 +396,7 @@ Settings.packages['object_store']  = ObjectStoreSettings.legacy_parse(Settings.p
 Settings['dependency_proxy'] ||= Settingslogic.new({})
 Settings.dependency_proxy['enabled']      = true if Settings.dependency_proxy['enabled'].nil?
 Settings.dependency_proxy['storage_path'] = Settings.absolute(Settings.dependency_proxy['storage_path'] || File.join(Settings.shared['path'], "dependency_proxy"))
-Settings.dependency_proxy['object_store'] = ObjectStoreSettings.legacy_parse(Settings.dependency_proxy['object_store'])
+Settings.dependency_proxy['object_store'] = ObjectStoreSettings.legacy_parse(Settings.dependency_proxy['object_store'], 'dependency_proxy')
 
 # For first iteration dependency proxy uses Rails server to download blobs.
 # To ensure acceptable performance we only allow feature to be used with
@@ -410,7 +410,7 @@ Settings.dependency_proxy['enabled'] = false unless Gitlab::Runtime.puma?
 Settings['terraform_state'] ||= Settingslogic.new({})
 Settings.terraform_state['enabled']      = true if Settings.terraform_state['enabled'].nil?
 Settings.terraform_state['storage_path'] = Settings.absolute(Settings.terraform_state['storage_path'] || File.join(Settings.shared['path'], "terraform_state"))
-Settings.terraform_state['object_store'] = ObjectStoreSettings.legacy_parse(Settings.terraform_state['object_store'])
+Settings.terraform_state['object_store'] = ObjectStoreSettings.legacy_parse(Settings.terraform_state['object_store'], 'terraform_state')
 
 #
 # Mattermost

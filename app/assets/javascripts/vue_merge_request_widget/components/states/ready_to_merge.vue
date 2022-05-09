@@ -716,6 +716,20 @@ export default {
                   {{ __('Merge details') }}
                 </strong>
                 <ul class="gl-pl-4 gl-m-0">
+                  <li
+                    v-if="mr.divergedCommitsCount > 0 && glFeatures.updatedMrHeader"
+                    class="gl-line-height-normal"
+                  >
+                    <gl-sprintf
+                      :message="s__('mrWidget|The source branch is %{link} the target branch')"
+                    >
+                      <template #link>
+                        <gl-link :href="mr.targetBranchPath">{{
+                          n__('%d commit behind', '%d commits behind', mr.divergedCommitsCount)
+                        }}</gl-link>
+                      </template>
+                    </gl-sprintf>
+                  </li>
                   <li class="gl-line-height-normal">
                     <added-commit-message
                       :state="mr.state"
@@ -756,6 +770,8 @@ export default {
                     :state="mr.state"
                     :related-links="mr.relatedLinks"
                     :show-assign-to-me="false"
+                    :diverged-commits-count="mr.divergedCommitsCount"
+                    :target-branch-path="mr.targetBranchPath"
                     class="mr-ready-merge-related-links gl-display-inline"
                   />
                 </template>
@@ -768,6 +784,22 @@ export default {
             data-testid="failed-pipeline-merge-train-text"
           >
             {{ __('The latest pipeline for this merge request did not complete successfully.') }}
+          </div>
+          <div
+            v-if="
+              mr.divergedCommitsCount > 0 &&
+              glFeatures.updatedMrHeader &&
+              !glFeatures.restructuredMrWidget
+            "
+            class="diverged-commits-count gl-mt-4"
+          >
+            <gl-sprintf :message="s__('mrWidget|The source branch is %{link} the target branch')">
+              <template #link>
+                <gl-link :href="mr.targetBranchPath">{{
+                  n__('%d commit behind', '%d commits behind', mr.divergedCommitsCount)
+                }}</gl-link>
+              </template>
+            </gl-sprintf>
           </div>
         </div>
       </div>

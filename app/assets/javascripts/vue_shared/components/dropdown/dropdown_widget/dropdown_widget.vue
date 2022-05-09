@@ -140,7 +140,7 @@ export default {
       <gl-dropdown-form class="gl-relative gl-min-h-7" data-qa-selector="labels_dropdown_content">
         <gl-loading-icon
           v-if="isLoading"
-          size="md"
+          size="lg"
           class="gl-absolute gl-left-0 gl-top-0 gl-right-0"
         />
         <template v-else>

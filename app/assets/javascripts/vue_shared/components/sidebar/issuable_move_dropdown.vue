@@ -175,7 +175,7 @@ export default {
           :debounce="300"
         />
         <div data-testid="content" class="dropdown-content">
-          <gl-loading-icon v-if="projectsListLoading" size="md" class="gl-p-5" />
+          <gl-loading-icon v-if="projectsListLoading" size="lg" class="gl-p-5" />
           <ul v-else>
             <gl-dropdown-item
               v-for="project in projects"

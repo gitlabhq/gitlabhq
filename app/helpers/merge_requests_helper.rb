@@ -232,6 +232,30 @@ module MergeRequestsHelper
   def default_suggestion_commit_message
     @project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
   end
+
+  def merge_request_source_branch(merge_request)
+    branch = if merge_request.for_fork?
+               "#{merge_request.source_project_path}:#{merge_request.source_branch}"
+             else
+               merge_request.source_branch
+             end
+
+    branch_path = if merge_request.source_project
+                    project_tree_path(merge_request.source_project, merge_request.source_branch)
+                  else
+                    ''
+                  end
+
+    link_to branch, branch_path, class: 'gl-link gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-p-2'
+  end
+
+  def merge_request_header(project, merge_request)
+    link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold', avatar: false)
+    copy_button = clipboard_button(text: merge_request.source_branch, title: _('Copy branch name'), class: 'btn btn-default btn-sm gl-button btn-default-tertiary btn-icon gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
+    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), class: 'gl-link gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-p-2'
+
+    _('%{author} requested to merge %{span_start}%{source_branch} %{copy_button}%{span_end} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-display-inline-block').html_safe, span_start: '<span class="gl-display-inline-block">'.html_safe, span_end: '</span>'.html_safe }
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

@@ -113,8 +113,6 @@ and then `object_store:`. On Omnibus GitLab installs they are prefixed by
 |---------------------|---------|-------------|
 | `enabled`           | `false` | Enable or disable object storage. |
 | `remote_directory`  |         | The bucket name where Artifacts are stored. Use the name only, do not include the path. |
-| `direct_upload`     | `false` | Set to `true` to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. |
-| `background_upload` | `true`  | Set to `false` to disable automatic upload. Option may be removed once upload is direct to S3. |
 | `proxy_download`    | `false` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
 | `connection`        |         | Various connection options described below. |
 
@@ -549,7 +547,7 @@ Bucket names that include folder paths are not supported with [consolidated obje
 For example, `bucket/path`. If a bucket name has a path in it, you might receive an error similar to:
 
 ```plaintext
-WARNING: Uploading artifacts as "archive" to coordinator... POST https://gitlab.example.com/api/v4/jobs/job_id/artifacts?artifact_format=zip&artifact_type=archive&expire_in=1+day: 500 Internal Server Error (Missing file) 
+WARNING: Uploading artifacts as "archive" to coordinator... POST https://gitlab.example.com/api/v4/jobs/job_id/artifacts?artifact_format=zip&artifact_type=archive&expire_in=1+day: 500 Internal Server Error (Missing file)
 FATAL: invalid argument
 ```
 

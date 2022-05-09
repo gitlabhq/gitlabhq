@@ -697,6 +697,34 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         run_rake_task('gitlab:db:migration_testing:sample_background_migrations', '[100]')
       end
     end
+
+    describe '#sample_batched_background_migrations' do
+      let(:batched_runner) { instance_double(::Gitlab::Database::Migrations::TestBatchedBackgroundRunner) }
+
+      it 'delegates to the migration runner for the main database with a default sample duration' do
+        expect(::Gitlab::Database::Migrations::Runner).to receive(:batched_background_migrations)
+                                                            .with(for_database: 'main').and_return(batched_runner)
+        expect(batched_runner).to receive(:run_jobs).with(for_duration: 30.minutes)
+
+        run_rake_task('gitlab:db:migration_testing:sample_batched_background_migrations')
+      end
+
+      it 'delegates to the migration runner for a specified database with a default sample duration' do
+        expect(::Gitlab::Database::Migrations::Runner).to receive(:batched_background_migrations)
+                                                            .with(for_database: 'ci').and_return(batched_runner)
+        expect(batched_runner).to receive(:run_jobs).with(for_duration: 30.minutes)
+
+        run_rake_task('gitlab:db:migration_testing:sample_batched_background_migrations', '[ci]')
+      end
+
+      it 'delegates to the migration runner for a specified database and sample duration' do
+        expect(::Gitlab::Database::Migrations::Runner).to receive(:batched_background_migrations)
+                                                            .with(for_database: 'ci').and_return(batched_runner)
+        expect(batched_runner).to receive(:run_jobs).with(for_duration: 100.seconds)
+
+        run_rake_task('gitlab:db:migration_testing:sample_batched_background_migrations', '[ci, 100]')
+      end
+    end
   end
 
   describe '#execute_batched_migrations' do

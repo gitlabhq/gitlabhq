@@ -49,7 +49,7 @@ export default {
     ]"
     class="gl-rounded-full gl-mr-3 gl-relative gl-p-2"
   >
-    <gl-loading-icon v-if="isLoading" size="md" inline class="gl-display-block" />
+    <gl-loading-icon v-if="isLoading" size="lg" inline class="gl-display-block" />
     <gl-icon
       v-else
       :name="$options.EXTENSION_ICON_NAMES[iconName]"

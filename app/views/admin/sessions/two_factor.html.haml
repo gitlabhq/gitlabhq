@@ -5,9 +5,9 @@
   .col-md-5.new-session-forms-container
     .login-page
       #signin-container
-        = render 'devise/shared/tabs_normal', tab_title: _('Enter Admin Mode'), render_signup_link: false
+        = render 'devise/shared/tab_single', tab_title: _('Enter Admin Mode')
         .tab-content
-          .login-box.tab-pane.active{ id: 'login-pane', role: 'tabpanel' }
+          .login-box.tab-pane.gl-p-5.active{ id: 'login-pane', role: 'tabpanel' }
             .login-body
               - if current_user.two_factor_otp_enabled?
                 = render 'admin/sessions/two_factor_otp'

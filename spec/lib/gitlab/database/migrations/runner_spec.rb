@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Runner do
+  include Database::MultipleDatabases
+
   let(:result_dir) { Pathname.new(Dir.mktmpdir) }
 
   let(:migration_runs) { [] } # This list gets populated as the runner tries to run migrations
@@ -134,6 +136,37 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
       runner = described_class.background_migrations
 
       expect(runner.result_dir).to eq(described_class::BASE_RESULT_DIR.join( 'background_migrations'))
+    end
+  end
+
+  describe '.batched_background_migrations' do
+    it 'is a TestBatchedBackgroundRunner' do
+      expect(described_class.batched_background_migrations(for_database: 'main')).to be_a(Gitlab::Database::Migrations::TestBatchedBackgroundRunner)
+    end
+
+    context 'choosing the database to test against' do
+      it 'chooses the main database' do
+        runner = described_class.batched_background_migrations(for_database: 'main')
+
+        chosen_connection_name = Gitlab::Database.db_config_name(runner.connection)
+
+        expect(chosen_connection_name).to eq('main')
+      end
+
+      it 'chooses the ci database' do
+        skip_if_multiple_databases_not_setup
+
+        runner = described_class.batched_background_migrations(for_database: 'ci')
+
+        chosen_connection_name = Gitlab::Database.db_config_name(runner.connection)
+
+        expect(chosen_connection_name).to eq('ci')
+      end
+
+      it 'throws an error with an invalid name' do
+        expect { described_class.batched_background_migrations(for_database: 'not_a_database') }
+          .to raise_error(/not a valid database name/)
+      end
     end
   end
 end

@@ -1,5 +1,5 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlLink } from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -10,6 +10,7 @@ export default {
   },
   components: {
     GlLink,
+    GlSprintf,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -27,6 +28,16 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    divergedCommitsCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    targetBranchPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -81,5 +92,19 @@ export default {
         }}</gl-link>
       </span>
     </p>
+    <div
+      v-if="
+        divergedCommitsCount > 0 && glFeatures.updatedMrHeader && !glFeatures.restructuredMrWidget
+      "
+      class="diverged-commits-count"
+    >
+      <gl-sprintf :message="s__('mrWidget|The source branch is %{link} the target branch')">
+        <template #link>
+          <gl-link :href="targetBranchPath">{{
+            n__('%d commit behind', '%d commits behind', divergedCommitsCount)
+          }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
   </section>
 </template>

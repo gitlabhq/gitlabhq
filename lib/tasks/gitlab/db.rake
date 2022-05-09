@@ -328,6 +328,15 @@ namespace :gitlab do
 
         Gitlab::Database::Migrations::Runner.background_migrations.run_jobs(for_duration: duration)
       end
+
+      desc 'Sample batched background migrations with instrumentation'
+      task :sample_batched_background_migrations, [:database, :duration_s] => [:environment] do |_t, args|
+        database_name = args[:database] || 'main'
+        duration = args[:duration_s]&.to_i&.seconds || 30.minutes # Default of 30 minutes
+
+        Gitlab::Database::Migrations::Runner.batched_background_migrations(for_database: database_name)
+                                            .run_jobs(for_duration: duration)
+      end
     end
 
     desc 'Run all pending batched migrations'

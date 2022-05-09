@@ -192,7 +192,7 @@ export default {
       <div>
         <gl-loading-icon
           v-if="$apollo.queries.workItemTypes.loading"
-          size="md"
+          size="lg"
           data-testid="loading-types"
         />
         <gl-form-select

@@ -3,6 +3,7 @@ import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import { IssuableType, WorkspaceType } from '~/issues/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
 export default {
@@ -15,6 +16,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['hidden'],
   computed: {
     ...mapGetters(['getNoteableData']),
@@ -23,6 +25,9 @@ export default {
     },
     isConfidential() {
       return this.getNoteableData.confidential;
+    },
+    isMergeRequest() {
+      return this.getNoteableData.targetType === 'merge_request' && this.glFeatures.updatedMrHeader;
     },
     warningIconsMeta() {
       return [
@@ -58,7 +63,8 @@ export default {
         v-gl-tooltip
         :data-testid="meta.dataTestId"
         :title="meta.tooltip || null"
-        class="issuable-warning-icon inline"
+        :class="{ 'gl-mr-3 gl-mt-2': isMergeRequest }"
+        class="issuable-warning-icon gl-display-flex gl-justify-content-center gl-align-items-center"
       >
         <gl-icon :name="meta.iconName" class="icon" />
       </div>

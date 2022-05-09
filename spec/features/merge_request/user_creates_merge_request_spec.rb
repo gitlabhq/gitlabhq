@@ -118,7 +118,7 @@ RSpec.describe "User creates a merge request", :js do
 
       click_button("Create merge request")
 
-      expect(page).to have_content(title).and have_content("Request to merge #{user.namespace.path}:#{source_branch} into master")
+      expect(page).to have_content(title).and have_content("requested to merge #{forked_project.full_path}:#{source_branch} into master")
     end
   end
 end

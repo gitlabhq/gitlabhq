@@ -17,9 +17,7 @@ RSpec.describe "User merges a merge request", :js do
         click_button("Merge")
       end
 
-      page.within(".status-box") do
-        expect(page).to have_content("Merged")
-      end
+      expect(page).to have_selector('.gl-badge', text: 'Merged')
     end
   end
 

@@ -1,6 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
 
@@ -11,9 +12,12 @@ export const statusBoxState = Vue.observable({
 
 const CLASSES = {
   opened: 'status-box-open',
+  merge_request_opened: 'badge-success',
   locked: 'status-box-open',
+  merge_request_locked: 'badge-success',
   closed: 'status-box-mr-closed',
-  merged: 'status-box-mr-merged',
+  merge_request_closed: 'badge-danger',
+  merged: 'badge-info',
 };
 
 const STATUS = {
@@ -27,6 +31,7 @@ export default {
   components: {
     GlIcon,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     query: { default: null },
     projectPath: { default: null },
@@ -52,8 +57,17 @@ export default {
     return statusBoxState;
   },
   computed: {
+    isMergeRequest() {
+      return this.issuableType === 'merge_request' && this.glFeatures.updatedMrHeader;
+    },
     statusBoxClass() {
-      return CLASSES[`${this.issuableType}_${this.state}`] || CLASSES[this.state];
+      return [
+        CLASSES[`${this.issuableType}_${this.state}`] || CLASSES[this.state],
+        {
+          'badge badge-pill gl-badge gl-mr-3': this.isMergeRequest,
+          'issuable-status-box status-box': !this.isMergeRequest,
+        },
+      ];
     },
     statusHumanName() {
       return (STATUS[`${this.issuableType}_${this.state}`] || STATUS[this.state])[0];
@@ -90,9 +104,13 @@ export default {
 </script>
 
 <template>
-  <div :class="statusBoxClass" class="issuable-status-box status-box">
-    <gl-icon :name="statusIconName" class="gl-display-block gl-sm-display-none!" />
-    <span class="gl-display-none gl-sm-display-block">
+  <div :class="statusBoxClass">
+    <gl-icon
+      v-if="!isMergeRequest"
+      :name="statusIconName"
+      class="gl-display-block gl-sm-display-none!"
+    />
+    <span :class="{ 'gl-display-none gl-sm-display-block': !isMergeRequest }">
       {{ statusHumanName }}
     </span>
   </div>
