@@ -9,6 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
 
+See some of these settings on the [instance configuration page](https://gitlab.com/help/instance_configuration) of GitLab.com.
+
 ## Password requirements
 
 GitLab.com has the following requirements for passwords on new accounts and password changes:

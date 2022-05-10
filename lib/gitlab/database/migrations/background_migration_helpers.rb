@@ -133,6 +133,11 @@ module Gitlab
         # This method does not garauntee that all jobs completed successfully.
         # It can only be used if the previous background migration used the queue_background_migration_jobs_by_range_at_intervals helper.
         def finalize_background_migration(class_name, delete_tracking_jobs: ['succeeded'])
+          if self.is_a?(::Gitlab::Database::MigrationHelpers::RestrictGitlabSchema)
+            raise 'The `#finalize_background_migration` is currently not supported with `Migration[2.0]`. Use `Migration[1.0]`. ' \
+              'For more information visit: https://docs.gitlab.com/ee/development/database/migrations_for_multiple_databases.html'
+          end
+
           job_coordinator = coordinator_for_tracking_database
 
           # Empty the sidekiq queue.

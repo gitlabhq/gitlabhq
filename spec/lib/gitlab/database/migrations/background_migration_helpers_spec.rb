@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
+  let(:base_class) { ActiveRecord::Migration }
+
   let(:model) do
-    ActiveRecord::Migration.new.extend(described_class)
+    base_class.new.extend(described_class)
   end
 
   shared_examples_for 'helpers that enqueue background migrations' do |worker_class, tracking_database|
@@ -290,7 +292,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       end
     end
 
-    describe '#finalized_background_migration' do
+    describe '#finalize_background_migration' do
       let(:coordinator) { Gitlab::BackgroundMigration::JobCoordinator.new(worker_class) }
 
       let!(:tracked_pending_job) { create(:background_migration_job, class_name: job_class_name, status: :pending, arguments: [1]) }
@@ -309,8 +311,8 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
         allow(Gitlab::BackgroundMigration).to receive(:coordinator_for_database)
           .with(tracking_database).and_return(coordinator)
 
-        expect(coordinator).to receive(:migration_class_for)
-          .with(job_class_name).at_least(:once) { job_class }
+        allow(coordinator).to receive(:migration_class_for)
+          .with(job_class_name) { job_class }
 
         Sidekiq::Testing.disable! do
           worker_class.perform_async(job_class_name, [1, 2])
@@ -323,6 +325,22 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       it_behaves_like 'finalized tracked background migration', worker_class do
         before do
           model.finalize_background_migration(job_class_name)
+        end
+      end
+
+      context 'when using Migration[2.0]' do
+        let(:base_class) { ::Gitlab::Database::Migration[2.0] }
+
+        let!(:job_class) do
+          Class.new do
+            def perform(*arguments)
+            end
+          end
+        end
+
+        it 'does raise an exception' do
+          expect { model.finalize_background_migration(job_class_name, delete_tracking_jobs: %w[pending succeeded]) }
+            .to raise_error /is currently not supported with/
         end
       end
 

@@ -441,6 +441,9 @@ Please note, we support the following types of Java project structures:
 - [multi-project Gradle builds](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html)
 - [multi-module maven projects](https://maven.apache.org/pom.html#Aggregation)
 
+We do not support multiple lockfiles for Java and Scala. When multiple lockfiles exist, `gemnasium-maven`
+analyzes the first file in the list of package managers detected.
+
 #### JavaScript
 
 The following analyzers are executed, each of which have different behavior when processing multiple files:

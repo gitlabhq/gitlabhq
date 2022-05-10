@@ -560,11 +560,8 @@ GitLab automatically triggers the `stop_review_app` job to stop the environment.
 
 #### Multiple stop actions for an environment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22456) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`.
-On GitLab.com, this feature is not available. We are enabling in phases and the status can be tracked in [issue 358911](https://gitlab.com/gitlab-org/gitlab/-/issues/358911).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22456) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/358911) in GitLab 15.0. [Feature flag `environment_multiple_stop_actions`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86685) removed.
 
 This feature is useful when you need to perform multiple **parallel** stop actions on an environment.
 
