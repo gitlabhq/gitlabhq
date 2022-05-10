@@ -85,7 +85,6 @@ RSpec/AnyInstanceOf:
   - ee/spec/requests/groups_controller_spec.rb
   - ee/spec/requests/omniauth_kerberos_spnego_spec.rb
   - ee/spec/requests/repositories/git_http_controller_spec.rb
-  - ee/spec/services/alert_management/network_alert_service_spec.rb
   - ee/spec/services/ci/expire_pipeline_cache_service_spec.rb
   - ee/spec/services/ci/run_dast_scan_service_spec.rb
   - ee/spec/services/ee/git/branch_push_service_spec.rb

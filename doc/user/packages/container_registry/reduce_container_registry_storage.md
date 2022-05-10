@@ -24,6 +24,7 @@ which doesn't include the Container Registry. To track work on this, see the epi
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15398) in GitLab 12.8.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/218737) from "expiration policy" to "cleanup policy" in GitLab 13.2.
+> - [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
 
 The cleanup policy is a scheduled job you can use to remove tags from the Container Registry.
 For the project where it's defined, tags matching the regex pattern are removed.

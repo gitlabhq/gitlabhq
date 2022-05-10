@@ -54,7 +54,7 @@ module Mutations
 
           original_position = note.position.to_h
 
-          Gitlab::Diff::Position.new(original_position.merge(args[:position]))
+          Gitlab::Diff::Position.new(original_position.merge(args[:position].to_h))
         end
       end
     end

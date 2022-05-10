@@ -40,7 +40,6 @@ namespace :tw do
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
       CodeOwnerRule.new('Integrations', '@kpaizee'),
       CodeOwnerRule.new('Knowledge', '@aqualls'),
-      CodeOwnerRule.new('License', '@sselhorn'),
       CodeOwnerRule.new('Memory', '@sselhorn'),
       CodeOwnerRule.new('Monitor', '@msedlakjakubowski'),
       CodeOwnerRule.new('Observability', 'msedlakjakubowski'),
@@ -53,8 +52,8 @@ namespace :tw do
       CodeOwnerRule.new('Product Intelligence', '@claytoncornell'),
       CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
       CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
-      CodeOwnerRule.new('Provision', '@sselhorn'),
-      CodeOwnerRule.new('Purchase', '@sselhorn'),
+      CodeOwnerRule.new('Provision', '@fneill'),
+      CodeOwnerRule.new('Purchase', '@fneill'),
       CodeOwnerRule.new('Redirect', 'Redirect'),
       CodeOwnerRule.new('Release', '@rdickenson'),
       CodeOwnerRule.new('Respond', '@msedlakjakubowski'),
@@ -66,7 +65,7 @@ namespace :tw do
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@claytoncornell'),
-      CodeOwnerRule.new('Utilization', '@sselhorn'),
+      CodeOwnerRule.new('Utilization', '@fneill'),
       CodeOwnerRule.new('Vulnerability Research', '@claytoncornell'),
       CodeOwnerRule.new('Workspace', '@fneill')
     ].freeze

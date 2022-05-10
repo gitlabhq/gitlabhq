@@ -28,7 +28,7 @@ module ContainerExpirationPolicies
     end
 
     def allowed?
-      Ability.allowed?(current_user, :destroy_container_image, @container)
+      Ability.allowed?(current_user, :admin_container_image, @container)
     end
 
     def container_expiration_policy_params

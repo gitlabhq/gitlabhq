@@ -76,7 +76,7 @@
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
-.if-merge-request-labels-run-search-tests: &if-merge-request-labels-run-search-tests
+.if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
   if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
 
 .if-security-merge-request: &if-security-merge-request
@@ -263,7 +263,7 @@
   - "config.ru"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/,jh/}{bin,cable,config,db,generator_templates,lib}/**/*"
+  - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
   # CI changes
   - ".gitlab-ci.yml"
@@ -272,6 +272,14 @@
   - "scripts/rspec_helpers.sh"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+
+.search-backend-patterns: &search-backend-patterns
+  - "{,jh/}Gemfile.lock"
+  - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
+  # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
+  - "{,ee/,jh/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
+  - "{,ee/,jh/}spec/**/*"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -521,7 +529,8 @@
 
 .rails:rules:run-search-tests:
   rules:
-    - <<: *if-merge-request-labels-run-search-tests
+    - <<: *if-merge-request-labels-group-global-search
+      changes: *search-backend-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:

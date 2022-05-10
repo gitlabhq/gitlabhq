@@ -208,7 +208,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/spec/serializers/issues/linked_issue_feature_flag_entity_spec.rb'
     - 'ee/spec/serializers/license_entity_spec.rb'
     - 'ee/spec/serializers/linked_feature_flag_issue_entity_spec.rb'
-    - 'ee/spec/services/alert_management/network_alert_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/data_loader_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/profile_schedules/audit/update_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/profiles/audit/update_service_spec.rb'

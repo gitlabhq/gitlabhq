@@ -26,7 +26,7 @@ RSpec.describe Mutations::Issues::SetDueDate do
 
       it 'returns the issue with updated due date', :aggregate_failures do
         expect(mutated_issue).to eq(issue)
-        expect(mutated_issue.due_date).to eq(Date.today + 2.days)
+        expect(mutated_issue.due_date).to eq(due_date.to_date)
         expect(subject[:errors]).to be_empty
       end
 

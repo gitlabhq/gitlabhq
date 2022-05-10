@@ -2776,7 +2776,6 @@ Layout/LineLength:
     - 'ee/spec/serializers/vulnerabilities/finding_reports_comparer_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/finding_serializer_spec.rb'
     - 'ee/spec/services/alert_management/metric_images/upload_service_spec.rb'
-    - 'ee/spec/services/alert_management/network_alert_service_spec.rb'
     - 'ee/spec/services/alert_management/process_prometheus_alert_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/consistency_check_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/data_loader_service_spec.rb'

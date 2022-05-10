@@ -7,7 +7,7 @@ module Mutations
 
       include FindsProject
 
-      authorize :destroy_container_image
+      authorize :admin_container_image
 
       argument :project_path,
                GraphQL::Types::ID,

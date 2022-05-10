@@ -135,7 +135,7 @@ RSpec.describe 'Updating the container expiration policy' do
     context 'with existing container expiration policy' do
       where(:user_role, :shared_examples_name) do
         :maintainer | 'accepting the mutation request updating the container expiration policy'
-        :developer  | 'accepting the mutation request updating the container expiration policy'
+        :developer  | 'denying the mutation request'
         :reporter   | 'denying the mutation request'
         :guest      | 'denying the mutation request'
         :anonymous  | 'denying the mutation request'
@@ -155,7 +155,7 @@ RSpec.describe 'Updating the container expiration policy' do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'accepting the mutation request creating the container expiration policy'
-        :developer  | 'accepting the mutation request creating the container expiration policy'
+        :developer  | 'denying the mutation request'
         :reporter   | 'denying the mutation request'
         :guest      | 'denying the mutation request'
         :anonymous  | 'denying the mutation request'

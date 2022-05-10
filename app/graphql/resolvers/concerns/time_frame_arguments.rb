@@ -24,10 +24,13 @@ module TimeFrameArguments
   # TODO: remove when the start_date and end_date arguments are removed
   def validate_timeframe_params!(args)
     return unless %i[start_date end_date timeframe].any? { |k| args[k].present? }
-    return if args[:timeframe] && %i[start_date end_date].all? { |k| args[k].nil? }
+
+    # the timeframe is passed in as a TimeframeInputType
+    timeframe = args[:timeframe].to_h if args[:timeframe]
+    return if timeframe && %i[start_date end_date].all? { |k| args[k].nil? }
 
     error_message =
-      if args[:timeframe].present?
+      if timeframe.present?
         "startDate and endDate are deprecated in favor of timeframe. Please use only timeframe."
       elsif args[:start_date].nil? || args[:end_date].nil?
         "Both startDate and endDate must be present."
@@ -42,7 +45,7 @@ module TimeFrameArguments
 
   def transform_timeframe_parameters(args)
     if args[:timeframe]
-      args[:timeframe].transform_keys { |k| :"#{k}_date" }
+      args[:timeframe].to_h.transform_keys { |k| :"#{k}_date" }
     else
       args.slice(:start_date, :end_date)
     end

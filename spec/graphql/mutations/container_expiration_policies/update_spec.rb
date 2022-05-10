@@ -11,7 +11,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
   let(:container_expiration_policy) { project.container_expiration_policy }
   let(:params) { { project_path: project.full_path, cadence: '3month', keep_n: 100, older_than: '14d' } }
 
-  specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_container_image) }
 
   describe '#resolve' do
     subject { described_class.new(object: project, context: { current_user: user }, field: nil).resolve(**params) }
@@ -76,7 +76,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
     context 'with existing container expiration policy' do
       where(:user_role, :shared_examples_name) do
         :maintainer | 'updating the container expiration policy'
-        :developer  | 'updating the container expiration policy'
+        :developer  | 'denying access to container expiration policy'
         :reporter   | 'denying access to container expiration policy'
         :guest      | 'denying access to container expiration policy'
         :anonymous  | 'denying access to container expiration policy'
@@ -96,7 +96,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'creating the container expiration policy'
-        :developer  | 'creating the container expiration policy'
+        :developer  | 'denying access to container expiration policy'
         :reporter   | 'denying access to container expiration policy'
         :guest      | 'denying access to container expiration policy'
         :anonymous  | 'denying access to container expiration policy'

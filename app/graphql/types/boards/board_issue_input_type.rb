@@ -7,7 +7,6 @@ module Types
 
       argument :not, NegatedBoardIssueInputType,
                required: false,
-               prepare: ->(negated_args, ctx) { negated_args.to_h },
                description: 'List of negated arguments.'
 
       argument :search, GraphQL::Types::String,

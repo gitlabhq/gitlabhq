@@ -28,6 +28,8 @@ module Types
             raise GraphQL::ExecutionError, "At least one property of `#{self.class.graphql_name}` must be set"
           end
         end
+
+        super
       end
     end
   end

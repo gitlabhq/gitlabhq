@@ -217,6 +217,11 @@ module FilteredSearchHelpers
     all('.gl-filtered-search-suggestion').size
   end
 
+  def submit_search_term(value)
+    click_filtered_search_bar
+    send_keys(value, :enter)
+  end
+
   def click_filtered_search_bar
     find('.gl-filtered-search-last-item').click
   end
@@ -251,6 +256,22 @@ module FilteredSearchHelpers
 
   def expect_author_token(value)
     expect(page).to have_css '.gl-filtered-search-token', text: "Author = #{value}"
+  end
+
+  def expect_label_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: "Label = ~#{value}"
+  end
+
+  def expect_negated_label_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: "Label != ~#{value}"
+  end
+
+  def expect_milestone_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: "Milestone = %#{value}"
+  end
+
+  def expect_negated_milestone_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: "Milestone != %#{value}"
   end
 
   def expect_search_term(value)
