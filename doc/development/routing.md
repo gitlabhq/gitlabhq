@@ -31,6 +31,16 @@ we introduced the `/-/` scope. The purpose of it is to separate group or
 project paths from the rest of the routes. Also it helps to reduce the
 number of [reserved names](../user/reserved_names.md).
 
+## View all available routes
+
+You can view and find routes from the console by running:
+
+```shell
+rails routes | grep crm
+```
+
+You can also view routes in your browser by going to [http://gdk.test:3000/rails/info/routes](http://gdk.test:3000/rails/info/routes).
+
 ## Global routes
 
 We have a number of global routes. For example:

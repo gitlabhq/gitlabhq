@@ -523,7 +523,8 @@ If you want to use the fork for yourself and don't need to send
 you can safely remove the fork relationship.
 
 WARNING:
-Once removed, the fork relationship cannot be restored. You can't send merge requests to the source, and if anyone has forked your project, their fork also loses the relationship.
+Once removed, you can't send merge requests to the source, and if anyone has forked your project, their fork also loses the relationship.
+To restore the fork relationship, [use the API](../../../api/projects.md#create-a-forked-fromto-relation-between-existing-projects).
 
 To do so:
 

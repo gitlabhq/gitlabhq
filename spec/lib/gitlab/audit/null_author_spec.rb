@@ -48,6 +48,15 @@ RSpec.describe Gitlab::Audit::NullAuthor do
       expect(subject.for(-1, audit_event)).to be_a(Gitlab::Audit::CiRunnerTokenAuthor)
       expect(subject.for(-1, audit_event)).to have_attributes(id: -1, name: 'Authentication token: cde456')
     end
+
+    it 'returns DeployTokenAuthor when id equals -2', :aggregate_failures do
+      allow(audit_event).to receive(:[]).with(:author_name).and_return('Test deploy token')
+      allow(audit_event).to receive(:details).and_return({})
+      allow(audit_event).to receive(:target_type)
+
+      expect(subject.for(-2, audit_event)).to be_a(Gitlab::Audit::DeployTokenAuthor)
+      expect(subject.for(-2, audit_event)).to have_attributes(id: -2, name: 'Test deploy token')
+    end
   end
 
   describe '#current_sign_in_ip' do

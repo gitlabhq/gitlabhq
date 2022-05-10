@@ -12124,6 +12124,9 @@ msgstr[1] ""
 msgid "Deploy Keys"
 msgstr ""
 
+msgid "Deploy Token"
+msgstr ""
+
 msgid "Deploy container based web apps on Google managed clusters"
 msgstr ""
 

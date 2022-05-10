@@ -1244,7 +1244,7 @@ unauthorized: authentication required
 
 GitLab has a default token expiration of 5 minutes for the registry. When pushing
 larger images, or images that take longer than 5 minutes to push, users may
-encounter this error.
+encounter this error. On GitLab.com, the expiration time is 15 minutes.
 
 Administrators can increase the token duration in **Admin area > Settings >
 CI/CD > Container Registry > Authorization token duration (minutes)**.

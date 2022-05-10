@@ -20,6 +20,16 @@ Currently, these levels are recognized:
 60 => Admin access
 ```
 
+## Group inheritance types
+
+Group inheritance allows deploy access levels and access rules to take inherited group membership into account. The group inheritance types are defined by `ProtectedEnvironments::Authorizable::GROUP_INHERITANCE_TYPE`.
+The following types are recognized:
+
+```plaintext
+0 => Direct group membership only (default)
+1 => All inherited groups
+```
+
 ## List protected environments
 
 Gets a list of protected environments from a project:
@@ -47,7 +57,8 @@ Example response:
             "access_level":40,
             "access_level_description":"Maintainers",
             "user_id":null,
-            "group_id":null
+            "group_id":null,
+            "group_inheritance_type": 0
          }
       ],
      "required_approval_count": 0
@@ -82,7 +93,8 @@ Example response:
          "access_level": 40,
          "access_level_description": "Maintainers",
          "user_id": null,
-         "group_id": null
+         "group_id": null,
+         "group_inheritance_type": 0
       }
    ],
   "required_approval_count": 0
@@ -114,7 +126,8 @@ curl --header 'Content-Type: application/json' --request POST \
 
 Elements in the `deploy_access_levels` and `approval_rules` array should be one of `user_id`, `group_id` or
 `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
-`{access_level: integer}`.
+`{access_level: integer}`. Optionally you can specify the `group_inheritance_type` on each as one of the [valid group inheritance types](#group-inheritance-types).
+
 Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md).
 
 Example response:
@@ -127,7 +140,8 @@ Example response:
          "access_level": 40,
          "access_level_description": "protected-access-group",
          "user_id": null,
-         "group_id": 9899826
+         "group_id": 9899826,
+         "group_inheritance_type": 0
       }
    ],
   "required_approval_count": 0,
@@ -137,14 +151,16 @@ Example response:
       "group_id": 134,
       "access_level": null,
       "access_level_description": "qa-group",
-      "required_approvals": 1
+      "required_approvals": 1,
+      "group_inheritance_type": 0
     },
     {
       "user_id": null,
       "group_id": 135,
       "access_level": null,
       "access_level_description": "security-group",
-      "required_approvals": 2
+      "required_approvals": 2,
+      "group_inheritance_type": 0
     }
   ]
 }

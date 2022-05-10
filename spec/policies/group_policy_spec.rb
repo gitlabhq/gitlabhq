@@ -1171,6 +1171,24 @@ RSpec.describe GroupPolicy do
     end
   end
 
+  describe 'change_prevent_sharing_groups_outside_hierarchy' do
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:change_prevent_sharing_groups_outside_hierarchy) }
+    end
+
+    context 'with non-owner roles' do
+      where(role: %w[admin maintainer reporter developer guest])
+
+      with_them do
+        let(:current_user) { public_send role }
+
+        it { is_expected.to be_disallowed(:change_prevent_sharing_groups_outside_hierarchy) }
+      end
+    end
+  end
+
   context 'with customer relations feature flag disabled' do
     let(:current_user) { owner }
 

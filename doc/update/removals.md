@@ -273,6 +273,21 @@ As of GitLab 15.0, the `artifacts:report:cobertura` keyword has been replaced by
 [`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura is the only
 supported report file, but this is the first step towards GitLab supporting other report types.
 
+### `omniauth-kerberos` gem
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `omniauth-kerberos` gem is no longer supported. This gem has not been maintained and has very little usage. Therefore, we
+removed support for this authentication method and recommend using [SPEGNO](https://en.wikipedia.org/wiki/SPNEGO) instead. You can
+follow the [upgrade instructions](https://docs.gitlab.com/ee/integration/kerberos.html#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins)
+to upgrade from the removed integration to the new supported one.
+
+We are not removing Kerberos SPNEGO integration. We are removing the old password-based Kerberos.
+
 ## 14.10
 
 ### Permissions change for downloading Composer dependencies
