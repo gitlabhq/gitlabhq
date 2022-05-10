@@ -79,7 +79,7 @@ namespace :gitlab do
           Gitlab::TaskHelpers.run_command!(['tar', 'xf', 'archive.tar.gz'])
           extracted_project_basename = Dir['*/'].first
           Dir.chdir(extracted_project_basename) do
-            Gitlab::TaskHelpers.run_command!(%w(git init))
+            Gitlab::TaskHelpers.run_command!(%w(git init --initial-branch=master))
             Gitlab::TaskHelpers.run_command!(%w(git add .))
             Gitlab::TaskHelpers.run_command!(['git', 'commit', '--author', 'GitLab <root@localhost>', '--message', commit_message])
 

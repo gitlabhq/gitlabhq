@@ -232,6 +232,27 @@ using the [`coverage`](../yaml/index.md#coverage) keyword.
 This feature is in its end-of-life process. It was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
 in GitLab 14.8. The feature is [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
+To migrate from project settings to `coverage` keyword settings, add the former project setting to a CI/CD job with the `coverage` keyword. For
+example:
+
+- A Go test coverage project setting:  `coverage: \d+.\d+% of statements`.
+- A CI/CD job with `coverage` keyword setting:
+
+  ```yaml
+  unit-test:
+    stage: test
+    coverage: '/coverage: \d+.\d+% of statements/'
+    script:
+      - go test -cover
+  ```
+
+The `.gitlab-ci.yml` job [`coverage`](../yaml/index.md#coverage) keyword must:
+
+- Be a regular expression starts and ends with the `/` character.
+- Be defined as single-quoted string.
+
+You can verify correct syntax using the [pipeline editor](../pipeline_editor/index.md).
+
 <!-- end_remove -->
 
 ### Test coverage examples
