@@ -52,7 +52,8 @@ Some commands have a keyboard shortcut assigned to them. The command palette
 displays this shortcut next to each command. You can use this shortcut to invoke
 the command without having to select it in the command palette.
 
-![Command palette](img/command_palette_v13_6.png)
+For a full list of keyboard shortcuts in the Web IDE, refer to the
+[Keyboard shortcuts](../../shortcuts.md#web-ide) list.
 
 ## Syntax highlighting
 

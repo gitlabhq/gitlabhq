@@ -15341,6 +15341,7 @@ Returns [`[SecurityTrainingUrl!]`](#securitytrainingurl).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectsecuritytrainingurlsidentifierexternalids"></a>`identifierExternalIds` | [`[String!]!`](#string) | List of external IDs of vulnerability identifiers. |
+| <a id="projectsecuritytrainingurlslanguage"></a>`language` | [`String`](#string) | Desired language for training urls. |
 
 ##### `Project.sentryDetailedError`
 

@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, how-to
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Group wikis **(PREMIUM)**
@@ -76,11 +75,11 @@ To open group settings:
 1. Expand **Permissions and group features**.
 ```
 
-In the wiki section you may select one from the following options:
+In the wiki section, select one of these options:
 
-- Enabled: everyone who can access the group can access the wiki.
-- Private: only group members can access the wiki.
-- Disabled: the wiki will be entirely disabled and it won't be accessible nor downloadable.
+- Enabled: Everyone who can access the group can access the wiki.
+- Private: Only group members can access the wiki.
+- Disabled: The wiki isn't accessible, and cannot be downloaded.
 
 ## Related topics
 

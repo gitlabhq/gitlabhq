@@ -313,17 +313,17 @@ we have added helpers and shared examples to standardize the way we test subscri
 
 ```ruby
 RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
-  let(:event) { Ci::PipelineCreatedEvent.new(data: ({ pipeline_id: pipeline.id })) }
+  let(:pipeline_created_event) { Ci::PipelineCreatedEvent.new(data: ({ pipeline_id: pipeline.id })) }
 
   # This shared example ensures that an event is published and correctly processed by
   # the current subscriber (`described_class`).
-  it_behaves_like 'consumes the published event' do
-    let(:event) { event }
+  it_behaves_like 'subscribes to event' do
+    let(:event) { pipeline_created_event }
   end
   
   it 'does something' do
     # This helper directly executes `perform` ensuring that `handle_event` is called correctly.
-    consume_event(subscriber: described_class, event: event)
+    consume_event(subscriber: described_class, event: pipeline_created_event)
 
     # run expectations
   end

@@ -152,11 +152,6 @@ Rails/NegateInclude:
 Rails/RakeEnvironment:
   Enabled: false
 
-# Offense count: 62
-# Cop supports --auto-correct.
-Rails/RedundantForeignKey:
-  Enabled: false
-
 # Offense count: 278
 # Cop supports --auto-correct.
 Rails/SquishedSQLHeredocs:

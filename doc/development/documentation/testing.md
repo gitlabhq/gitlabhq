@@ -23,6 +23,10 @@ in the relevant projects:
 - <https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/docs.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml>
 - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml>
+
+We also run some documentation tests in the GitLab Development Kit project:
+<https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>.
 
 ## Run tests locally
 
@@ -169,6 +173,7 @@ To update the linting images:
    - <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml> ([Example MR](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6037))
    - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2511))
    - <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/merge_requests/462))
+   - <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2417))
 1. In each merge request, check the relevant job output to confirm the updated image was
    used for the test. ([Example job output](https://gitlab.com/gitlab-org/charts/gitlab/-/jobs/2335470260#L24))
 1. Assign the merge requests to any technical writer to review and merge.
@@ -202,6 +207,7 @@ markdownlint configuration is found in the following projects:
 - [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab)
 - [`charts`](https://gitlab.com/gitlab-org/charts/gitlab)
 - [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit)
+- [`gitlab-operator`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)
 
 This configuration is also used in build pipelines.
 

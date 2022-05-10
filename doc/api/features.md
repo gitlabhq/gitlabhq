@@ -129,7 +129,7 @@ POST /features/:name
 | `feature_group` | string | no | A Feature group name |
 | `user` | string | no | A GitLab username |
 | `group` | string | no | A GitLab group's path, for example `gitlab-org` |
-| `namespace` | string | no | A GitLab group or user namespace's path, for example `gitlab-org` or username path |
+| `namespace` | string | no | A GitLab group or user namespace's path, for example `gitlab-org` or username path. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |
 | `project` | string | no | A projects path, for example `gitlab-org/gitlab-foss` |
 | `force` | boolean | no | Skip feature flag validation checks, such as a YAML definition |
 

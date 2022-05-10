@@ -201,56 +201,24 @@ By default, the vulnerability report does not show vulnerabilities of `dismissed
 
 ## Security approvals in merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in GitLab 12.2.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 
 You can enforce an additional approval for merge requests that would introduce one of the following
 security issues:
 
-- A security vulnerability. For more details, read
-  [Vulnerability-Check rule](#vulnerability-check-rule).
+- A security vulnerability. For more details, read [Scan result policies](policies/scan-result-policies.md).
 - A software license compliance violation. For more details, read
   [Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
 
-### Vulnerability-Check rule
+### Migration of existing Vulnerability-Check rules
 
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](../../update/deprecations.md#vulnerability-check)
-in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
-[Security Approval Policies](policies/scan-result-policies.md).
+If your projects have rules that have a security orchestration project, a new MR with 
+the existing rule's content is created automatically against the default branch belonging
+to the security orchestration project. To maintain the same security approval rules you 
+had before GitLab 15.0, we recommend merging this new MR.
 
-To prevent a merge request introducing a security vulnerability in a project, enable the
-Vulnerability-Check rule. While this rule is enabled, additional merge request approval by
-[eligible approvers](../project/merge_requests/approvals/rules.md#eligible-approvers)
-is required when the latest security report in a merge request:
-
-- Contains vulnerabilities with states (for example, `previously detected`, `dismissed`) matching the rule's vulnerability states. Only `newly detected` are considered if the target branch differs from the project default branch.
-- Contains vulnerabilities with severity levels (for example, `high`, `critical`, or `unknown`)
-  matching the rule's severity levels.
-- Contains a vulnerability count higher than the rule allows.
-- Is not yet generated (until pipeline completion).
-
-An approval is optional when the security report:
-
-- Contains only vulnerabilities with states (for example, `newly detected`, `resolved`) **NOT** matching the rule's vulnerability states.
-- Contains only vulnerabilities with severity levels (for example, `low`, `medium`) **NOT** matching
-  the rule's severity levels.
-- Contains a vulnerability count equal to or less than what the rule allows.
-
-Project members with at least the Maintainer role can enable or edit
-the Vulnerability-Check rule.
-
-#### Enable the Vulnerability-Check rule
-
-To enable or edit the Vulnerability-Check rule:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge request approvals**.
-1. Select **Activate** or **Edit** of the Vulnerability-Check.
-1. Complete the fields. **Approvals required** must be at least 1.
-1. Select **Add approval rule**.
-
-The approval rule is enabled for all merge requests. Any code changes reset the approvals required.
+If your projects have rules without a security orchestration project, a new security orchestration project is created automatically with the content of the existing rule. No additional action is required.
 
 ## Using private Maven repositories
 
@@ -691,3 +659,6 @@ These security pages can be populated by running the jobs from the manual step o
 There is [an issue open to handle this scenario](https://gitlab.com/gitlab-org/gitlab/-/issues/346843).
 Please upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).
+  doc/user/project/merge_requests/approvals/settings.md 
++
+0

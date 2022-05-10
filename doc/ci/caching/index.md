@@ -2,12 +2,11 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: index, concepts, howto
 ---
 
 # Caching in GitLab CI/CD **(FREE)**
 
-A cache is one or more files that a job downloads and saves. Subsequent jobs that use
+A cache is one or more files a job downloads and saves. Subsequent jobs that use
 the same cache don't have to download the files again, so they execute more quickly.
 
 To learn how to define the cache in your `.gitlab-ci.yml` file,
@@ -550,12 +549,10 @@ The next time the pipeline runs, the cache is stored in a different location.
 
 ### Clear the cache manually
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41249) in GitLab 10.4.
-
 You can clear the cache in the GitLab UI:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Pipelines** page.
+1. On the left sidebar, select **CI/CD > Pipelines**.
 1. In the top right, select **Clear runner caches**.
 
 On the next commit, your CI/CD jobs use a new cache.
@@ -574,7 +571,7 @@ If you have a cache mismatch, follow these steps to troubleshoot.
 | You use multiple standalone runners (not in autoscale mode) attached to one project without a shared cache. | Use only one runner for your project or use multiple runners with distributed cache enabled. |
 | You use runners in autoscale mode without a distributed cache enabled. | Configure the autoscale runner to use a distributed cache. |
 | The machine the runner is installed on is low on disk space or, if you've set up distributed cache, the S3 bucket where the cache is stored doesn't have enough space. | Make sure you clear some space to allow new caches to be stored. There's no automatic way to do this. |
-| You use the same `key` for jobs where they cache different paths. | Use different cache keys to that the cache archive is stored to a different location and doesn't overwrite wrong caches. |
+| You use the same `key` for jobs where they cache different paths. | Use different cache keys so that the cache archive is stored to a different location and doesn't overwrite wrong caches. |
 
 #### Cache mismatch example 1
 
