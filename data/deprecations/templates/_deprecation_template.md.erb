@@ -36,15 +36,22 @@ For deprecation reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
 
+{::options parse_block_html="true" /}
+
 View deprecations by the product versions in which they were announced.
 
 Each deprecation has a **planned removal milestone** and indicates whether it is a breaking change.
 
 Most of the deprecations are **planned for removal in 15.0**, and many of them are **breaking changes**.
+<div class="js-deprecation-filters"></div>
 <% if milestones.any? -%>
   <%- milestones.each do |milestone| %>
+<div class="announcement-milestone">
+
 ## <%= milestone %>
     <%- entries.select{|d| d["announcement_milestone"] == milestone}.each do |deprecation| %>
+<div class="deprecation removal-<%= deprecation["removal_milestone"].gsub('.', '') %><% if deprecation["breaking_change"] -%> breaking-change<% end %>">
+
 ### <%= deprecation["name"]%>
 <% if deprecation["breaking_change"] -%>
 
@@ -57,9 +64,11 @@ changes to your code, settings, or workflow.
 <%= deprecation["body"] -%><% else %>
 <%= deprecation["body"] -%><% end %><%- if deprecation["removal_milestone"] -%>
 
-**Planned removal milestone: <%= deprecation["removal_milestone"]%> (<%= deprecation["removal_date"]%>)**
+**Planned removal milestone: <span class="removal-milestone"><%= deprecation["removal_milestone"]%></span> (<%= deprecation["removal_date"]%>)**
+</div>
       <%- end -%>
     <%- end -%>
+</div>
   <%- end -%>
 <%- else -%>
 

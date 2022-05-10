@@ -129,7 +129,7 @@ keys must be manually replicated to the **secondary** site.
 
    ```shell
    chown root:root /etc/ssh/ssh_host_*_key*
-   chmod 0600 /etc/ssh/ssh_host_*_key*
+   chmod 0600 /etc/ssh/ssh_host_*_key
    ```
 
 1. To verify key fingerprint matches, execute the following command on both primary and secondary nodes on each site:

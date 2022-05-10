@@ -415,6 +415,13 @@ Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trad
 
 **GitLab.com** refers to the GitLab instance managed by GitLab itself.
 
+## GitLab Flavored Markdown
+
+When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
+([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
+If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
+
 ## GitLab SaaS
 
 **GitLab SaaS** refers to the product license that provides access to GitLab.com. It does not refer to the

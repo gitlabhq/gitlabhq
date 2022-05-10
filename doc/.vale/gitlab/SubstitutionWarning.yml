@@ -21,6 +21,7 @@ swap:
   distro: distribution
   file name: filename
   filesystem: file system
+  GFM: GLFM
   info: information
   repo: repository
   timezone: time zone
