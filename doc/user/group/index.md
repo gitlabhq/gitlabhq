@@ -613,15 +613,16 @@ applies to:
 
 You should consider these security implications before configuring IP address restrictions:
 
-- **SSH requests**: While you can restrict HTTP traffic on GitLab.com with IP address restrictions,
+- **SSH requests, including `git` operations will fail from all IP addresses**: While you can restrict HTTP traffic on GitLab.com with IP address restrictions,
   they cause SSH requests, including Git operations over SSH, to fail. For more information,
   read [issue 271673](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
-- **Administrators and group owners**: Users with these permission levels can always
+- **Administrators and group owners can access group settings from any IP address**: Users with these permission levels can always
   access the group settings, regardless of IP restriction, but they cannot access projects
   belonging to the group when accessing from a disallowed IP address.
-- **GitLab API and runner activities**: Only the [group](../../api/groups.md) (including all
+- **Some GitLab API endpoints will remain accessible from any IP**: Only the [group](../../api/groups.md) (including all
   [group resources](../../api/api_resources.md#group-resources)) APIs and [project](../../api/api_resources.md#project-resources)
   (including all [project resources](../../api/api_resources.md#project-resources)) APIs are protected by IP address restrictions.
+-**Activities performed by GitLab Runners are not bound by IP restrictions**: 
   When you register a runner, it is not bound by the IP restrictions. When the runner
   requests a new job or an update to a job's state, it is also not bound by
   the IP restrictions. But when the running CI/CD job sends Git requests from a

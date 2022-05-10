@@ -231,5 +231,5 @@ building medical, aviation, and automotive software. Continuous Integration is
 a mission critical part of software engineering.
 
 When you are working on a subsystem for pipeline processing and transitioning
-CI/CD statuses, request an additional review from a domain expert and hold
-others accountable for doing the same.
+CI/CD statuses, request an additional opinion on the design from a domain expert
+as early as possible and hold others accountable for doing the same.

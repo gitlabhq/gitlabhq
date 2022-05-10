@@ -273,8 +273,8 @@ create custom stages in addition to those provided in the default template.
 1. Enter a name for the value stream.
 1. Select **Create from default template**.
 1. Customize the default stages:
-   - To re-oder stages, select the up or down arrows.
-   - To hide a stage, select **Hide** ({**eye-slash**}).
+   - To re-order stages, select the up or down arrows.
+   - To hide a stage, select **Hide** (**{eye-slash}**).
 1. To add a custom stage, select **Add another stage**.
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.

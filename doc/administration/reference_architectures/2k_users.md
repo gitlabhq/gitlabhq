@@ -444,21 +444,18 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
-   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
+- all reference architecture pages
+-->
 
    ```ruby
-   # /etc/gitlab/gitlab.rb
-
-   # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
-   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
-   # The following two values must be the same as their respective values
-   # of the GitLab Rails application setup
-   gitaly['auth_token'] = 'gitalysecret'
-   gitlab_shell['secret_token'] = 'shellsecret'
-
    # Avoid running unnecessary services on the Gitaly server
    postgresql['enable'] = false
    redis['enable'] = false
+   nginx['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
@@ -467,7 +464,6 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
-   nginx['enable'] = false
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -485,6 +481,13 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    # Comment out following line if you only want to support TLS connections
    gitaly['listen_addr'] = "0.0.0.0:8075"
    gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
+
+   # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
+   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
+   # The following two values must be the same as their respective values
+   # of the GitLab Rails application setup
+   gitaly['auth_token'] = 'gitalysecret'
+   gitlab_shell['secret_token'] = 'shellsecret'
 
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'

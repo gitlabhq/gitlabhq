@@ -428,26 +428,33 @@ On the **Praefect** node:
 
 1. Disable all other services by editing `/etc/gitlab/gitlab.rb`:
 
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md
+- all reference architecture pages
+-->
+
    ```ruby
-   # Disable all other services on the Praefect node
+   # Avoid running unnecessary services on the Praefect server
+   gitaly['enable'] = false
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
-   alertmanager['enable'] = false
-   prometheus['enable'] = false
-   grafana['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
-   gitaly['enable'] = false
+   prometheus['enable'] = false
+   alertmanager['enable'] = false
+   grafana['enable'] = false
+   gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
    # Enable only the Praefect service
    praefect['enable'] = true
 
-   # Disable database migrations to prevent database connections during 'gitlab-ctl reconfigure'
-   gitlab_rails['auto_migrate'] = false
+   # Prevent database migrations from running on upgrade automatically
    praefect['auto_migrate'] = false
+   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Configure **Praefect** to listen on network interfaces by editing

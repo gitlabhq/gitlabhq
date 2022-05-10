@@ -216,7 +216,12 @@ disable enforcement. For more information, see the documentation on configuring
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
+- all reference architecture pages
+-->
 
    ```ruby
    # Avoid running unnecessary services on the Gitaly server
@@ -228,10 +233,11 @@ disable enforcement. For more information, see the documentation on configuring
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
 
    # If you run a separate monitoring node you can disable these services
-   alertmanager['enable'] = false
    prometheus['enable'] = false
+   alertmanager['enable'] = false
 
    # If you don't run a separate monitoring node you can
    # enable Prometheus access & disable these extra services.
@@ -251,14 +257,14 @@ disable enforcement. For more information, see the documentation on configuring
    # Don't forget to copy `/etc/gitlab/gitlab-secrets.json` from Gitaly client to Gitaly server.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
 
-   # Authentication token to ensure only authorized servers can communicate with
-   # Gitaly server
-   gitaly['auth_token'] = 'AUTH_TOKEN'
-
    # Make Gitaly accept connections on all network interfaces. You must use
    # firewalls to restrict access to this address/port.
    # Comment out following line if you only want to support TLS connections
    gitaly['listen_addr'] = "0.0.0.0:8075"
+
+   # Authentication token to ensure only authorized servers can communicate with
+   # Gitaly server
+   gitaly['auth_token'] = 'AUTH_TOKEN'
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective Gitaly server:

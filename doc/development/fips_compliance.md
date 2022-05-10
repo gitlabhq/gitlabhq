@@ -112,6 +112,17 @@ def default_min_key_size(name)
 end
 ```
 
+## Nightly Omnibus FIPS builds
+
+The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds). These
+GitLab builds are compiled to use the system OpenSSL instead of the Omnibus-embedded version of OpenSSL.
+
+See [the section on how FIPS builds are created](#how-fips-builds-are-created).
+
+## Runner
+
+See the [documentation on installing a FIPS-compliant GitLab Runner](https://docs.gitlab.com/runner/install/#fips-compliant-gitlab-runner).
+
 ## Set up a FIPS-enabled cluster
 
 You can use the [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin
@@ -411,10 +422,24 @@ Google maintains a [`dev.boringcrypto` branch](https://github.com/golang/go/tree
 that makes it possible to statically link BoringSSL, a FIPS-validated module forked from OpenSSL.
 However, BoringSSL is not intended for public use.
 
-We use [a fork of the `dev.boringcrypto` branch](https://github.com/golang-fips/go) to build Go programs that
-dynamically link OpenSSL via `dlopen`. We can check whether a given
-binary is using OpenSSL via `go tool nm` and look for symbols named
-`Cfunc__goboringcrypto`. For example:
+We use [`golang-fips`](https://github.com/golang-fips/go), [a fork of the `dev.boringcrypto` branch](https://github.com/golang/go/blob/2fb6bf8a4a51f92f98c2ae127eff2b7ac392c08f/README.boringcrypto.md) to build Go programs that
+[dynamically link OpenSSL via `dlopen`](https://github.com/golang-fips/go/blob/go1.18.1-1-openssl-fips/src/crypto/internal/boring/boring.go#L47-L65). This has several advantages:
+
+- Using a FIPS-validated, system OpenSSL is straightforward.
+- This is the source code used by [Red Hat's go-toolset package](https://gitlab.com/redhat/centos-stream/rpms/golang#sources).
+- Unlike [go-toolset](https://developers.redhat.com/blog/2019/06/24/go-and-fips-140-2-on-red-hat-enterprise-linux#), this fork appears to keep up with the latest Go releases.
+
+However, [cgo](https://pkg.go.dev/cmd/cgo) must be enabled via `CGO_ENABLED=1` for this to work. There
+is a performance hit when calling into C code.
+
+Projects that are compiled with `golang-fips` on Linux x86 automatically
+get built the crypto routines that use OpenSSL. While the `boringcrypto`
+build tag is automatically present, no extra build tags are actually
+needed. There are [specific build tags](https://github.com/golang-fips/go/blob/go1.18.1-1-openssl-fips/src/crypto/internal/boring/boring.go#L6)
+that disable these crypto hooks.
+
+We can [check whether a given binary is using OpenSSL](https://go.googlesource.com/go/+/dev.boringcrypto/misc/boring/#caveat) via `go tool nm`
+and look for symbols named `Cfunc__goboringcrypto`. For example:
 
 ```plaintext
 $ go tool nm nginx-ingress-controller  | grep Cfunc__goboringcrypto | tail
@@ -429,3 +454,57 @@ $ go tool nm nginx-ingress-controller  | grep Cfunc__goboringcrypto | tail
  2a0b690 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_internal_ERR_error_string_n
  2a0b698 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_internal_ERR_get_error
 ```
+
+In addition, LabKit contains routines to [check whether FIPS is enabled](https://gitlab.com/gitlab-org/labkit/-/tree/master/fips).
+
+## How FIPS builds are created
+
+Many GitLab projects (for example: Gitaly, GitLab Pages) have
+standardized on using `FIPS_MODE=1 make` to build FIPS binaries locally.
+
+### Omnibus
+
+The Omnibus FIPS builds are triggered with the `USE_SYSTEM_SSL`
+environment variable set to `true`. When this environment variable is
+set, the Omnibus recipes dependencies such as `curl`, NGINX, and libgit2
+will link against the system OpenSSL. OpenSSL will NOT be included in
+the Omnibus build.
+
+The Omnibus builds are created using container images [that use the `golang-fips` compiler](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/blob/master/docker/snippets/go_fips). For
+example, [this job](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/jobs/2363742108) created
+the `registry.gitlab.com/gitlab-org/gitlab-omnibus-builder/centos_8_fips:3.3.1` image used to
+build packages for RHEL 8.
+
+#### Add a new FIPS build for another Linux distribution
+
+First, you need to make sure there is an Omnibus builder image for the
+desired Linux distribution. The images used to build Omnibus packages are
+created with [Omnibus Builder images](https://gitlab.com/gitlab-org/gitlab-omnibus-builder).
+
+Review [this merge request](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/218). A
+new image can be added by:
+
+1. Adding CI jobs with the `_fips` suffix (for example: `ubuntu_18.04_fips`).
+1. Making sure the `Dockerfile` uses `Snippets.new(fips: fips).populate` instead of `Snippets.new.populate`.
+
+After this image has been tagged, add a new [CI job to Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/911fbaccc08398dfc4779be003ea18014b3e30e9/gitlab-ci-config/dev-gitlab-org.yml#L594-602).
+
+### Cloud Native GitLab (CNG)
+
+The Cloud Native GitLab CI pipeline generates images using several base images:
+
+- Debian
+- [Red Hat's Universal Base Image (UBI)](https://developers.redhat.com/products/rhel/ubi)
+
+UBI images ship with the same OpenSSL package as those used by
+RHEL. This makes it possible to build FIPS-compliant binaries without
+needing RHEL. Note that RHEL 8.2 ships a [FIPS-validated OpenSSL](https://access.redhat.com/articles/2918071), but 8.5 is in
+review for FIPS validation.
+
+[This merge request](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/981)
+introduces a FIPS pipeline for CNG images. Images tagged for FIPS have the `-fips` suffix. For example,
+the `webservice` container has the following tags:
+
+- `master`
+- `master-ubi8`
+- `master-fips`

@@ -1295,11 +1295,18 @@ To configure the Praefect nodes, on each one:
    on the page.
 1. Edit the `/etc/gitlab/gitlab.rb` file to configure Praefect:
 
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md
+- all reference architecture pages
+-->
+
    ```ruby
    # Avoid running unnecessary services on the Praefect server
    gitaly['enable'] = false
    postgresql['enable'] = false
    redis['enable'] = false
+   nginx['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
@@ -1308,7 +1315,6 @@ To configure the Praefect nodes, on each one:
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
-   nginx['enable'] = false
 
    # Praefect Configuration
    praefect['enable'] = true
@@ -1439,10 +1445,18 @@ On each node:
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
+- all reference architecture pages
+-->
+
    ```ruby
    # Avoid running unnecessary services on the Gitaly server
    postgresql['enable'] = false
    redis['enable'] = false
+   nginx['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
@@ -1451,7 +1465,6 @@ On each node:
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
-   nginx['enable'] = false
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -1639,11 +1652,18 @@ To configure the Sidekiq nodes, one each one:
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
 
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
+- all reference architecture pages
+-->
+
    ```ruby
    # Avoid running unnecessary services on the Sidekiq server
    gitaly['enable'] = false
    postgresql['enable'] = false
    redis['enable'] = false
+   nginx['enable'] = false
    puma['enable'] = false
    gitlab_workhorse['enable'] = false
    prometheus['enable'] = false
@@ -1651,7 +1671,6 @@ To configure the Sidekiq nodes, one each one:
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
-   nginx['enable'] = false
 
    # External URL
    ## This should match the URL of the external load balancer

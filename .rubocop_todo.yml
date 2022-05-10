@@ -145,11 +145,6 @@ Rails/MailerName:
 Rails/NegateInclude:
   Enabled: false
 
-# Offense count: 46
-# Cop supports --auto-correct.
-Rails/Pick:
-  Enabled: false
-
 # Offense count: 39
 # Cop supports --auto-correct.
 # Configuration parameters: Include.
@@ -236,11 +231,6 @@ Style/Lambda:
 # Configuration parameters: EnforcedOctalStyle.
 # SupportedOctalStyles: zero_with_o, zero_only
 Style/NumericLiteralPrefix:
-  Enabled: false
-
-# Offense count: 206
-# Cop supports --auto-correct.
-Style/RedundantInterpolation:
   Enabled: false
 
 # Offense count: 279
