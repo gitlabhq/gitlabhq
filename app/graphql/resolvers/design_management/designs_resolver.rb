@@ -24,17 +24,17 @@ module Resolvers
       end
 
       def resolve(ids: nil, filenames: nil, at_version: nil)
-        # TODO: remove the coercion when the compatibility layer is removed
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
         context.scoped_set!(:at_version_argument, VersionID.coerce_isolated_input(at_version)) if at_version
 
-        ::DesignManagement::DesignsFinder.new(
-          issue,
-          current_user,
-          ids: design_ids(ids),
-          filenames: filenames,
-          visible_at_version: version(at_version)
-        ).execute
+        ::Gitlab::Graphql::Lazy.with_value(version(at_version)) do |visible_at|
+          ::DesignManagement::DesignsFinder.new(
+            issue,
+            current_user,
+            ids: design_ids(ids),
+            filenames: filenames,
+            visible_at_version: visible_at
+          ).execute
+        end
       end
 
       private
@@ -42,19 +42,12 @@ module Resolvers
       def version(at_version)
         return unless at_version
 
-        # TODO: remove this line when the compatibility layer is removed
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        at_version = VersionID.coerce_isolated_input(at_version)
-        # TODO: when we get promises use this to make resolve lazy
-        Gitlab::Graphql::Lazy.force(GitlabSchema.find_by_gid(at_version))
+        GitlabSchema.find_by_gid(at_version)
       end
 
       def design_ids(gids)
         return if gids.nil?
 
-        # TODO: remove this line when the compatibility layer is removed
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        gids = gids.map { |id| DesignID.coerce_isolated_input(id) }
         gids.map(&:model_id)
       end
 

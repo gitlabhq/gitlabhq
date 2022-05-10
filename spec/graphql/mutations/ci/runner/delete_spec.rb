@@ -44,14 +44,6 @@ RSpec.describe Mutations::Ci::Runner::Delete do
       end
     end
 
-    context 'with invalid params' do
-      let(:mutation_params) { { id: "invalid-id" } }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(::GraphQL::CoercionError)
-      end
-    end
-
     context 'when required arguments are missing' do
       let(:mutation_params) { {} }
 

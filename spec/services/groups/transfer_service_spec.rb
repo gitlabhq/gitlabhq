@@ -574,7 +574,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
 
         context 'resets project authorizations' do
           let_it_be(:old_parent_group) { create(:group) }
-          let_it_be_with_reload(:group) { create(:group, :private, parent: old_parent_group) }
+          let_it_be_with_refind(:group) { create(:group, :private, parent: old_parent_group) }
           let_it_be(:new_group_member) { create(:user) }
           let_it_be(:old_group_member) { create(:user) }
           let_it_be(:unique_subgroup_member) { create(:user) }

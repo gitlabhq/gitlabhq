@@ -57,14 +57,6 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
         expect(result).to be_nil
       end
     end
-
-    context 'with blank id' do
-      let(:args) { { id: '' } }
-
-      it 'responds with an error' do
-        expect { resolve_error(args) }.to raise_error(::GraphQL::CoercionError)
-      end
-    end
   end
 
   private

@@ -24,10 +24,6 @@ module Types
 
       class << self
         def work_item_type_global_id(global_id)
-          # TODO: remove this line when the compatibility layer is removed
-          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-          global_id = ::Types::GlobalIDType[::WorkItems::Type].coerce_isolated_input(global_id)
-
           global_id&.model_id
         end
       end

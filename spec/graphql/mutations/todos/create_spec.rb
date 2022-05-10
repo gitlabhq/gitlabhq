@@ -10,12 +10,19 @@ RSpec.describe Mutations::Todos::Create do
     context 'when target does not support todos' do
       it 'raises error' do
         current_user = create(:user)
-        mutation = described_class.new(object: nil, context: { current_user: current_user }, field: nil)
-
         target = create(:milestone)
 
-        expect { mutation.resolve(target_id: global_id_of(target)) }
-          .to raise_error(GraphQL::CoercionError)
+        ctx = { current_user: current_user }
+        input = { target_id: global_id_of(target).to_s }
+        mutation = graphql_mutation(described_class, input)
+
+        response = GitlabSchema.execute(mutation.query, context: ctx, variables: mutation.variables).to_h
+
+        expect(response).to include(
+          'errors' => contain_exactly(
+            include('message' => /invalid value for targetId/)
+          )
+        )
       end
     end
 

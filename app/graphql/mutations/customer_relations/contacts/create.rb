@@ -59,7 +59,7 @@ module Mutations
         def set_organization!(args)
           return unless args[:organization_id]
 
-          args[:organization_id] = resolve_ids(args[:organization_id], ::Types::GlobalIDType[::CustomerRelations::Organization])[0]
+          args[:organization_id] = args[:organization_id].model_id
         end
       end
     end

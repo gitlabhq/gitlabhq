@@ -25,9 +25,6 @@ module Resolvers
       end
 
       def resolve(id: nil, sha: nil)
-        # TODO: remove this line when the compatibility layer is removed
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        id &&= VersionID.coerce_isolated_input(id)
         version = cutoff(id, sha)
 
         raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, 'cutoff not found' unless version.present?

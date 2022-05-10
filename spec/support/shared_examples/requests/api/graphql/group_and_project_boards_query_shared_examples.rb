@@ -67,11 +67,15 @@ RSpec.shared_examples 'group and project boards query' do
             let(:sort_param) { }
             let(:first_param) { 2 }
 
+            def pagination_results_data(nodes)
+              nodes
+            end
+
             let(:all_records) do
               if board_parent.multiple_issue_boards_available?
-                boards.map { |board| global_id_of(board) }
+                boards.map { |board| a_graphql_entity_for(board) }
               else
-                [global_id_of(boards.first)]
+                [a_graphql_entity_for(boards.first)]
               end
             end
           end

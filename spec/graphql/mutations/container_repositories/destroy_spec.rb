@@ -57,11 +57,5 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
         it_behaves_like params[:shared_examples_name]
       end
     end
-
-    context 'with invalid id' do
-      let(:id) { 'gid://gitlab/ContainerRepository/5555' }
-
-      it_behaves_like 'denying access to container respository'
-    end
   end
 end

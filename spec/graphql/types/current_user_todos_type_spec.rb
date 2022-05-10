@@ -178,22 +178,22 @@ RSpec.describe GitlabSchema.types['CurrentUserTodos'] do
                              raise_on_error: true).to_h
 
       expect(result.dig('data', 'a', 'todos', 'nodes')).to contain_exactly(
-        { "id" => global_id_of(todo_a) },
-        { "id" => global_id_of(todo_b) }
+        a_graphql_entity_for(todo_a),
+        a_graphql_entity_for(todo_b)
       )
       expect(result.dig('data', 'b', 'todos', 'nodes')).to contain_exactly(
-        { "id" => global_id_of(todo_c) },
-        { "id" => global_id_of(todo_d) }
+        a_graphql_entity_for(todo_c),
+        a_graphql_entity_for(todo_d)
       )
       expect(result.dig('data', 'c', 'todos', 'nodes')).to contain_exactly(
-        { "id" => global_id_of(todo_e) }
+        a_graphql_entity_for(todo_e)
       )
       expect(result.dig('data', 'd', 'todos', 'nodes')).to contain_exactly(
-        { "id" => global_id_of(todo_e) }
+        a_graphql_entity_for(todo_e)
       )
       expect(result.dig('data', 'e', 'todos', 'nodes')).to contain_exactly(
-        { "id" => global_id_of(todo_a) },
-        { "id" => global_id_of(todo_b) }
+        a_graphql_entity_for(todo_a),
+        a_graphql_entity_for(todo_b)
       )
     end
 
@@ -203,13 +203,13 @@ RSpec.describe GitlabSchema.types['CurrentUserTodos'] do
                              graphql: with_state_arguments).to_h
 
       expect(result.dig('data', 'a', 'todos', 'nodes')).to contain_exactly(
-        include("id" => global_id_of(todo_a))
+        a_graphql_entity_for(todo_a)
       )
       expect(result.dig('data', 'b', 'todos', 'nodes')).to contain_exactly(
-        include("id" => global_id_of(todo_d))
+        a_graphql_entity_for(todo_d)
       )
       expect(result.dig('data', 'c', 'todos', 'nodes')).to contain_exactly(
-        include("id" => global_id_of(todo_e))
+        a_graphql_entity_for(todo_e)
       )
     end
   end

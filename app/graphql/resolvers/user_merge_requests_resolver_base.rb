@@ -57,9 +57,6 @@ module Resolvers
     end
 
     def load_project(project_path, project_id)
-      # TODO: remove this line when the compatibility layer is removed
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-      project_id &&= ::Types::GlobalIDType[::Project].coerce_isolated_input(project_id)
       @project = ::Gitlab::Graphql::Lazy.force(resolve_project(full_path: project_path, project_id: project_id))
     end
 

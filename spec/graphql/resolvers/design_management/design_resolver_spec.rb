@@ -71,15 +71,6 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
           expect(resolve_design).to be_nil
         end
       end
-
-      context 'the ID does not belong to a design at all' do
-        let(:args) { { id: global_id_of(issue) } }
-        let(:msg) { /does not represent an instance of DesignManagement::Design/ }
-
-        it 'complains meaningfully' do
-          expect { resolve_design }.to raise_error(msg)
-        end
-      end
     end
 
     context 'by filename' do

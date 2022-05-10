@@ -22,11 +22,8 @@ module Mutations
         def create_note_params(noteable, args)
           discussion_id = nil
 
-          if args[:discussion_id]
-            # TODO: remove this line when the compatibility layer is removed
-            # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-            discussion_gid = ::Types::GlobalIDType[::Discussion].coerce_isolated_input(args[:discussion_id])
-            discussion = GitlabSchema.find_by_gid(discussion_gid)
+          if gid = args[:discussion_id]
+            discussion = GitlabSchema.find_by_gid(gid)
 
             authorize_discussion!(discussion)
 

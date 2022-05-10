@@ -38,14 +38,5 @@ RSpec.describe Mutations::Clusters::Agents::Delete do
         expect { cluster_agent.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
-
-    context 'with invalid params' do
-      subject { mutation.resolve(id: cluster_agent.id) }
-
-      it 'raises an error if the cluster agent id is invalid', :aggregate_failures do
-        expect { subject }.to raise_error(::GraphQL::CoercionError)
-        expect { cluster_agent.reload }.not_to raise_error
-      end
-    end
   end
 end

@@ -56,15 +56,6 @@ RSpec.describe Mutations::Todos::MarkDone do
       expect(todo2.reload.state).to eq('done')
       expect(other_user_todo.reload.state).to eq('pending')
     end
-
-    it 'ignores invalid GIDs' do
-      expect { mutation.resolve(id: author.to_global_id.to_s) }
-        .to raise_error(::GraphQL::CoercionError)
-
-      expect(todo1.reload.state).to eq('pending')
-      expect(todo2.reload.state).to eq('done')
-      expect(other_user_todo.reload.state).to eq('pending')
-    end
   end
 
   def mark_done_mutation(todo)

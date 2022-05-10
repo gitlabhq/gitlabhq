@@ -194,13 +194,5 @@ RSpec.describe Mutations::ReleaseAssetLinks::Update do
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
-
-    context "when the provided ID is invalid" do
-      let(:mutation_arguments) { super().merge(id: 'not-a-valid-gid') }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(::GraphQL::CoercionError)
-      end
-    end
   end
 end

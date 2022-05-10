@@ -10,7 +10,6 @@ RSpec.describe ResolvesIds do
   # gid://gitlab/Project/6 gid://gitlab/Issue/6
   context 'with a single project' do
     let(:ids) { global_id_of(model_name: 'Project', id: 6) }
-    let(:type) { ::Types::GlobalIDType[::Project] }
 
     it 'returns the correct array' do
       expect(resolve_ids).to contain_exactly('6')
@@ -19,7 +18,6 @@ RSpec.describe ResolvesIds do
 
   context 'with a single issue' do
     let(:ids) { global_id_of(model_name: 'Issue', id: 9) }
-    let(:type) { ::Types::GlobalIDType[::Issue] }
 
     it 'returns the correct array' do
       expect(resolve_ids).to contain_exactly('9')
@@ -28,7 +26,6 @@ RSpec.describe ResolvesIds do
 
   context 'with multiple users' do
     let(:ids) { [7, 13, 21].map { global_id_of(model_name: 'User', id: _1) } }
-    let(:type) { ::Types::GlobalIDType[::User] }
 
     it 'returns the correct array' do
       expect(resolve_ids).to eq %w[7 13 21]
@@ -40,6 +37,6 @@ RSpec.describe ResolvesIds do
   end
 
   def resolve_ids
-    mock_resolver.resolve_ids(ids, type)
+    mock_resolver.resolve_ids(ids)
   end
 end

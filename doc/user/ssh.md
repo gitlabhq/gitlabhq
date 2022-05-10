@@ -106,7 +106,7 @@ If you do not have an existing SSH key pair, generate a new one:
    ssh-keygen -t rsa -b 2048 -C "<comment>"
    ```
 
-1. Press Enter. Output similar to the following is displayed:
+1. Press <kbd>Enter</kbd>. Output similar to the following is displayed:
 
    ```plaintext
    Generating public/private ed25519 key pair.
@@ -172,7 +172,7 @@ You can update the passphrase for your SSH key:
    ssh-keygen -p -f /path/to/ssh_key
    ```
 
-1. At the prompts, enter the passphrase and then press Enter.
+1. At the prompts, enter the passphrase and then press <kbd>Enter</kbd>.
 
 ### Upgrade your RSA key pair to a more secure format
 
@@ -225,7 +225,7 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
    from the security key by [`ssh-add -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-add.1#K)
    or  [`ssh-keygen -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen#K).
 
-1. Press Enter. Output similar to the following is displayed:
+1. Press <kbd>Enter</kbd>. Output similar to the following is displayed:
 
    ```plaintext
    Generating public/private ed25519-sk key pair.
@@ -325,7 +325,7 @@ The following commands use the example hostname `gitlab.example.com`. Replace th
    Warning: Permanently added 'gitlab.example.com' (ECDSA) to the list of known hosts.
    ```
 
-   Type `yes` and press Enter.
+   Type `yes` and press <kbd>Enter</kbd>.
 
 1. Run the `ssh -T git@gitlab.example.com` command again. You should receive a _Welcome to GitLab, `@username`!_ message.
 

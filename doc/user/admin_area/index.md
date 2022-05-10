@@ -326,7 +326,7 @@ To search runners' descriptions:
 
 1. In the **Search or filter results...** field, type the description of the runner you want to
    find.
-1. Press Enter.
+1. Press <kbd>Enter</kbd>.
 
 You can also filter runners by status, type, and tag. To filter:
 

@@ -195,7 +195,6 @@ module Types
         raise ::Gitlab::Graphql::Errors::ArgumentError, 'One of id or name is required' unless id || name
 
         if id
-          id = ::Types::GlobalIDType[::CommitStatus].coerce_isolated_input(id) if id
           pipeline.statuses.id_in(id.model_id)
         else
           pipeline.statuses.by_name(name)

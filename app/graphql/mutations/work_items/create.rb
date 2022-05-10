@@ -53,9 +53,6 @@ module Mutations
       private
 
       def global_id_compatibility_params(params)
-        # TODO: remove this line when the compatibility layer is removed
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        params[:work_item_type_id] = ::Types::GlobalIDType[::WorkItems::Type].coerce_isolated_input(params[:work_item_type_id]) if params[:work_item_type_id]
         params[:work_item_type_id] = params[:work_item_type_id]&.model_id
 
         params

@@ -50,7 +50,8 @@ Example response:
   "npm_max_file_size": 524288000,
   "nuget_max_file_size": 524288000,
   "pypi_max_file_size": 3221225472,
-  "terraform_module_max_file_size": 1073741824
+  "terraform_module_max_file_size": 1073741824,
+  "storage_size_limit": 15000
 }
 ```
 
@@ -81,6 +82,7 @@ PUT /application/plan_limits
 | `nuget_max_file_size`             | integer | no       | Maximum NuGet package file size in bytes. |
 | `pypi_max_file_size`              | integer | no       | Maximum PyPI package file size in bytes. |
 | `terraform_module_max_file_size`  | integer | no       | Maximum Terraform Module package file size in bytes. |
+| `storage_size_limit`              | integer | no       | Maximum storage size for the root namespace in megabytes. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/plan_limits?plan_name=default&conan_max_file_size=3221225472"

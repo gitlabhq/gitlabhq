@@ -51,6 +51,7 @@ module API
         optional :nuget_max_file_size, type: Integer, desc: 'Maximum NuGet package file size in bytes'
         optional :pypi_max_file_size, type: Integer, desc: 'Maximum PyPI package file size in bytes'
         optional :terraform_module_max_file_size, type: Integer, desc: 'Maximum Terraform Module package file size in bytes'
+        optional :storage_size_limit, type: Integer, desc: 'Maximum storage size for the root namespace in megabytes'
       end
       put "application/plan_limits" do
         params = declared_params(include_missing: false)

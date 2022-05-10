@@ -14,7 +14,7 @@ RSpec.shared_examples 'a noteable graphql type we can query' do
       noteable.discussions.map do |discussion|
         a_graphql_entity_for(
           discussion,
-          'replyId' => global_id_of(discussion, id: discussion.reply_id),
+          'replyId' => global_id_of(discussion, id: discussion.reply_id).to_s,
           'createdAt' => discussion.created_at.iso8601,
           'notes' => include(
             'nodes' => have_attributes(size: discussion.notes.size)

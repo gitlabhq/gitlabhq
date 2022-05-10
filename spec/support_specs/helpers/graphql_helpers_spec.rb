@@ -41,7 +41,7 @@ RSpec.describe GraphqlHelpers do
     context 'with just a model' do
       it 'only considers the ID' do
         user = build_stubbed(:user)
-        response = { 'username' => 'foo', 'id' => global_id_of(user) }
+        response = { 'username' => 'foo', 'id' => global_id_of(user).to_s }
 
         expect(response).to match a_graphql_entity_for(user)
       end
@@ -50,7 +50,7 @@ RSpec.describe GraphqlHelpers do
     context 'with a model and some method names' do
       it 'also considers the method names' do
         user = build_stubbed(:user)
-        response = { 'username' => user.username, 'id' => global_id_of(user) }
+        response = { 'username' => user.username, 'id' => global_id_of(user).to_s }
 
         expect(response).to match a_graphql_entity_for(user, :username)
         expect(response).not_to match a_graphql_entity_for(user, :name)
@@ -60,7 +60,7 @@ RSpec.describe GraphqlHelpers do
     context 'with a model and some other properties' do
       it 'behaves like the superset' do
         user = build_stubbed(:user)
-        response = { 'username' => 'foo', 'id' => global_id_of(user) }
+        response = { 'username' => 'foo', 'id' => global_id_of(user).to_s }
 
         expect(response).to match a_graphql_entity_for(user, username: 'foo')
         expect(response).not_to match a_graphql_entity_for(user, name: 'foo')
@@ -75,7 +75,7 @@ RSpec.describe GraphqlHelpers do
           'name' => user.name,
           'foo' => 'bar',
           'baz' => 'fop',
-          'id' => global_id_of(user)
+          'id' => global_id_of(user).to_s
         }
 
         expect(response).to match a_graphql_entity_for(user, :username, :name, foo: 'bar')

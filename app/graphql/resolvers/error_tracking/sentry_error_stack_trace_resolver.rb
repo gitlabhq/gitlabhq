@@ -10,10 +10,6 @@ module Resolvers
                 description: 'ID of the Sentry issue.'
 
       def resolve(id:)
-        # TODO: remove this line when the compatibility layer is removed
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        id = ::Types::GlobalIDType[::Gitlab::ErrorTracking::DetailedError].coerce_isolated_input(id)
-
         # Get data from Sentry
         response = ::ErrorTracking::IssueLatestEventService.new(
           project,

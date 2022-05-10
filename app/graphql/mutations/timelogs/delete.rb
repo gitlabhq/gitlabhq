@@ -26,8 +26,6 @@ module Mutations
       end
 
       def find_object(id:)
-        # TODO: Remove coercion when working on https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        id = ::Types::GlobalIDType[::Timelog].coerce_isolated_input(id)
         GitlabSchema.find_by_gid(id)
       end
     end

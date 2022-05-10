@@ -118,7 +118,8 @@ RSpec.describe Tooling::Danger::Specs do
         "- expect(foo).to match(['bar'])",
         "- expect(foo).to match ['bar']",
         "- expect(foo).to eq(['bar'])",
-        "- expect(foo).to eq ['bar']"
+        "- expect(foo).to eq ['bar']",
+        "+ expect(foo).to eq([])"
       ] + matching_lines
     end
 
@@ -126,7 +127,7 @@ RSpec.describe Tooling::Danger::Specs do
       allow(specs.helper).to receive(:changed_lines).with(filename).and_return(changed_lines)
     end
 
-    it 'returns added, modified, and renamed_after files by default' do
+    it 'returns all lines using an array equality matcher' do
       expect(specs.added_line_matching_match_with_array(filename)).to match_array(matching_lines)
     end
   end

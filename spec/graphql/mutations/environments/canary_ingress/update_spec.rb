@@ -62,14 +62,6 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
       end
     end
 
-    context 'when environment is not found' do
-      let(:environment_id) { non_existing_record_id.to_s }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(GraphQL::CoercionError)
-      end
-    end
-
     context 'when user is reporter who does not have permission to access the environment' do
       let(:user) { reporter }
 

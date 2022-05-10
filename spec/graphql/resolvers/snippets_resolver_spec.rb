@@ -40,12 +40,6 @@ RSpec.describe Resolvers::SnippetsResolver do
 
           expect(snippets).to contain_exactly(personal_snippet, project_snippet)
         end
-
-        it 'returns an error if the param id is invalid' do
-          expect do
-            resolve_snippets(args: { author_id: 'foo' })
-          end.to raise_error(GraphQL::CoercionError)
-        end
       end
 
       it 'returns the snippets by type' do
@@ -60,12 +54,6 @@ RSpec.describe Resolvers::SnippetsResolver do
           snippets = resolve_snippets(args: { project_id: project.to_global_id })
 
           expect(snippets).to contain_exactly(project_snippet, other_project_snippet)
-        end
-
-        it 'returns an error if the param id is invalid' do
-          expect do
-            resolve_snippets(args: { project_id: 'foo' })
-          end.to raise_error(GraphQL::CoercionError)
         end
       end
 
@@ -96,16 +84,6 @@ RSpec.describe Resolvers::SnippetsResolver do
         found = resolve_snippets(args: args)
 
         expect(found).to match_array(snippets)
-      end
-
-      it 'returns an error if the id cannot be coerced' do
-        args = {
-          ids: [personal_snippet.to_global_id, 'foo']
-        }
-
-        expect do
-          resolve_snippets(args: args)
-        end.to raise_error(GraphQL::CoercionError, '"foo" is not a valid Global ID')
       end
 
       it 'generates an error if both project and author are provided' do

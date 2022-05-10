@@ -11,7 +11,7 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
   let(:user) { package.project.first_owner }
 
   describe '#resolve' do
-    let(:returned_pipeline_ids) { graphql_dig_at(subject, 'data', 'package', 'pipelines', 'nodes', 'id') }
+    let(:returned_pipelines) { graphql_dig_at(subject, 'data', 'package', 'pipelines', 'nodes') }
     let(:returned_errors) { graphql_dig_at(subject, 'errors', 'message') }
     let(:pagination_args) { {} }
     let(:query) do
@@ -90,7 +90,7 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
         let_it_be(:user) { create(:user) }
 
         it 'returns nothing' do
-          expect(returned_pipeline_ids).to eq(nil)
+          expect(returned_pipelines).to be_nil
         end
       end
 
@@ -98,8 +98,8 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
         let_it_be_with_reload(:other_package) { create(:package, project: package.project) }
         let_it_be(:other_pipelines) { create_list(:ci_pipeline, 3, project: package.project) }
 
-        let(:returned_pipeline_ids) do
-          graphql_dig_at(subject, 'data', 'project', 'packages', 'nodes', 'pipelines', 'nodes', 'id')
+        let(:returned_pipelines) do
+          graphql_dig_at(subject, 'data', 'project', 'packages', 'nodes', 'pipelines', 'nodes')
         end
 
         let(:query) do
@@ -175,8 +175,8 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
     end
 
     def expect_to_contain_exactly(*pipelines)
-      ids = pipelines.map { |pipeline| global_id_of(pipeline) }
-      expect(returned_pipeline_ids).to contain_exactly(*ids)
+      entities = pipelines.map { |pipeline| a_graphql_entity_for(pipeline) }
+      expect(returned_pipelines).to match_array(entities)
     end
 
     def expect_detect_mode(modes)

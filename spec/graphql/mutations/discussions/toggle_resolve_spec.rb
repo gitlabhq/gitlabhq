@@ -48,17 +48,6 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
           end
         end
 
-        context 'when discussion is not a Discussion' do
-          let(:discussion) { create(:note, noteable: noteable, project: project) }
-
-          it 'raises an error' do
-            expect { subject }.to raise_error(
-              GraphQL::CoercionError,
-              "\"#{global_id_of(discussion)}\" does not represent an instance of Discussion"
-            )
-          end
-        end
-
         shared_examples 'returns a resolved discussion without errors' do
           it 'returns a resolved discussion' do
             expect(mutated_discussion).to be_resolved

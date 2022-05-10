@@ -7,6 +7,8 @@ module AuthorizedProjectUpdate
     end
 
     def execute(blocking: true)
+      return if @project_ids.empty?
+
       bulk_args = @project_ids.map { |id| [id] }
 
       if blocking

@@ -40,16 +40,6 @@ RSpec.describe Mutations::Clusters::AgentTokens::Revoke do
 
         expect(token.reload).to be_revoked
       end
-
-      context 'supplied ID is invalid' do
-        let(:global_id) { token.id }
-
-        it 'raises a coercion error' do
-          expect { subject }.to raise_error(::GraphQL::CoercionError)
-
-          expect(token.reload).not_to be_revoked
-        end
-      end
     end
   end
 end

@@ -4,7 +4,6 @@ module Resolvers
   class BaseResolver < GraphQL::Schema::Resolver
     extend ::Gitlab::Utils::Override
     include ::Gitlab::Utils::StrongMemoize
-    include ::Gitlab::Graphql::GlobalIDCompatibility
 
     argument_class ::Types::BaseArgument
 

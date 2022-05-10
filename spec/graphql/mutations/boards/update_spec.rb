@@ -29,14 +29,6 @@ RSpec.describe Mutations::Boards::Update do
       end
     end
 
-    context 'with invalid params' do
-      it 'raises an error' do
-        mutation_params[:id] = project.to_global_id
-
-        expect { subject }.to raise_error(::GraphQL::CoercionError)
-      end
-    end
-
     context 'when user can update board' do
       before do
         board.resource_parent.add_reporter(user)

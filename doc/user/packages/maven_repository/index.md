@@ -184,7 +184,7 @@ published to the GitLab Package Registry.
    Project name (default: test):
    ```
 
-1. Enter a project name or press Enter to use the directory name as project name.
+1. Enter a project name or press <kbd>Enter</kbd> to use the directory name as project name.
 
 ## Authenticate to the Package Registry with Maven
 

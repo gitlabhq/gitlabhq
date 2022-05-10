@@ -17,11 +17,6 @@ RSpec.describe GitlabSchema.types['Duration'] do
     expect(described_class.coerce_isolated_input(0.5)).to eq(0.5)
   end
 
-  it 'rejects invalid input' do
-    expect { described_class.coerce_isolated_input('not valid') }
-      .to raise_error(GraphQL::CoercionError)
-  end
-
   it 'rejects nil' do
     expect { described_class.coerce_isolated_input(nil) }
       .to raise_error(GraphQL::CoercionError)

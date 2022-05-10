@@ -197,7 +197,7 @@ can install it with:
 sudo apt-get install -y postfix
 ```
 
-Then select 'Internet Site' and press enter to confirm the hostname.
+Then select 'Internet Site' and press <kbd>Enter</kbd> to confirm the hostname.
 
 <!-- vale gitlab.Spelling = NO -->
 

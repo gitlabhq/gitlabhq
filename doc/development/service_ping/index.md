@@ -93,23 +93,53 @@ sequenceDiagram
    the required URL is <https://version.gitlab.com/>.
 1. In case of an error, it will be reported to the Version application along with following pieces of information:
 
-- `uuid` - GitLab instance unique identifier
-- `hostname` - GitLab instance hostname
-- `version` - GitLab instance current versions
-- `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
-- `message` - Error message
+    - `uuid` - GitLab instance unique identifier
+    - `hostname` - GitLab instance hostname
+    - `version` - GitLab instance current versions
+    - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
+    - `message` - Error message
 
-<pre>
-<code>
-{
-  "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
-  "hostname"=>"127.0.0.1",
-  "version"=>"14.7.0-pre",
-  "elapsed"=>0.006946,
-  "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
-}
-</code>
-</pre>
+    <pre>
+    <code>
+    {
+      "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
+      "hostname"=>"127.0.0.1",
+      "version"=>"14.7.0-pre",
+      "elapsed"=>0.006946,
+      "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
+    }
+    </code>
+    </pre>
+
+1. Finally, the timing metadata information that is used for diagnostic purposes is submitted to the Versions application. It consists of a list of metric identifiers and the time it took to calculate the metrics:
+
+   > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 15.0 [with a flag(../../user/feature_flags.md), enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `measure_service_ping_metric_collection`.
+On GitLab.com, this feature is available.
+
+```ruby
+    {"metadata"=>
+      {"metrics"=>
+        [{"name"=>"version", "time_elapsed"=>1.1811964213848114e-05},
+         {"name"=>"installation_type", "time_elapsed"=>0.00017242692410945892},
+         {"name"=>"license_billable_users", "time_elapsed"=>0.009520471096038818},
+         ....
+         {"name"=>"counts.clusters_platforms_eks",
+          "time_elapsed"=>0.05638605775311589},
+         {"name"=>"counts.clusters_platforms_gke",
+          "time_elapsed"=>0.40995341585949063},
+         {"name"=>"counts.clusters_platforms_user",
+          "time_elapsed"=>0.06410990096628666},
+         {"name"=>"counts.clusters_management_project",
+          "time_elapsed"=>0.24020783510059118},
+         {"name"=>"counts.clusters_integrations_elastic_stack",
+          "time_elapsed"=>0.03484998410567641}
+        ]
+      }
+    }
+    ```
 
 ### On a Geo secondary site
 
@@ -132,6 +162,25 @@ We also collect metrics specific to [Geo](../../administration/geo/index.md) sec
      }
    ]
    ```
+
+### Enable or disable service ping metadata reporting 
+
+Service Ping timing metadata reporting is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:measure_service_ping_metric_collection)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:measure_service_ping_metric_collection)
+```
 
 ## Implementing Service Ping
 

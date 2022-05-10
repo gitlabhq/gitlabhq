@@ -58,12 +58,6 @@ RSpec.describe Resolvers::Projects::SnippetsResolver do
 
         expect(snippets).to contain_exactly(project_snippet, other_project_snippet)
       end
-
-      it 'returns an error if the gid is invalid' do
-        expect do
-          resolve_snippets(args: { ids: ['foo'] })
-        end.to raise_error(GraphQL::CoercionError)
-      end
     end
 
     context 'when no project is provided' do

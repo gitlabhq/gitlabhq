@@ -64,16 +64,6 @@ RSpec.describe Resolvers::Users::SnippetsResolver do
 
         expect(found).to match_array(snippets)
       end
-
-      it 'returns an error if the gid is invalid' do
-        args = {
-          ids: [global_id_of(private_personal_snippet), 'foo']
-        }
-
-        expect do
-          resolve_snippets(args: args)
-        end.to raise_error(GraphQL::CoercionError)
-      end
     end
 
     context 'when user profile is private' do

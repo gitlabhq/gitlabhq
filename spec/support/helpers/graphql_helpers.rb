@@ -663,9 +663,9 @@ module GraphqlHelpers
 
   def global_id_of(model = nil, id: nil, model_name: nil)
     if id || model_name
-      ::Gitlab::GlobalId.as_global_id(id || model.id, model_name: model_name || model.class.name).to_s
+      ::Gitlab::GlobalId.as_global_id(id || model.id, model_name: model_name || model.class.name)
     else
-      model.to_global_id.to_s
+      model.to_global_id
     end
   end
 
@@ -776,7 +776,7 @@ module GraphqlHelpers
     raise ArgumentError, 'model is nil' if model.nil? && fields.any?
 
     attrs.transform_keys! { GraphqlHelpers.fieldnamerize(_1) }
-    attrs['id'] = global_id_of(model) if model
+    attrs['id'] = global_id_of(model).to_s if model
     fields.each do |name|
       attrs[GraphqlHelpers.fieldnamerize(name)] = model.public_send(name)
     end

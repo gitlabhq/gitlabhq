@@ -34,11 +34,6 @@ module Resolvers
         def resolve(design_id: nil, filename: nil, design_at_version_id: nil)
           validate_arguments(design_id, filename, design_at_version_id)
 
-          # TODO: remove this when the compatibility layer is removed
-          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-          design_id &&= DesignID.coerce_isolated_input(design_id)
-          design_at_version_id &&= DesignAtVersionID.coerce_isolated_input(design_at_version_id)
-
           return unless Ability.allowed?(current_user, :read_design, issue)
           return specific_design_at_version(design_at_version_id) if design_at_version_id
 

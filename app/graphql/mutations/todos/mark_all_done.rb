@@ -39,7 +39,7 @@ module Mutations
 
         if args[:target_id].present?
           target = Gitlab::Graphql::Lazy.force(
-            GitlabSchema.find_by_gid(TodoableID.coerce_isolated_input(args[:target_id]))
+            GitlabSchema.find_by_gid(args[:target_id])
           )
 
           raise Gitlab::Graphql::Errors::ResourceNotAvailable, "Resource not available: #{args[:target_id]}" if target.nil?

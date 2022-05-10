@@ -114,7 +114,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when sorting by created_at' do
-      let_it_be(:ascending_users) { [user3, user2, user1, user0].map { |u| global_id_of(u) } }
+      let_it_be(:ascending_users) { [user3, user2, user1, user0].map { |u| global_id_of(u).to_s } }
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
