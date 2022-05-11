@@ -17,12 +17,6 @@
       help_text: _('Enable only for confidential applications exclusively used by a trusted backend server that can securely store the client secret. Do not enable for native-mobile, single-page, or other JavaScript applications because they cannot keep the client secret confidential.')
 
   .form-group
-    - help_text = _('Enable access tokens to expire after 2 hours. If disabled, tokens do not expire.')
-    - help_link = link_to _('Learn more.'), help_page_path('integration/oauth_provider.md', anchor: 'expiring-access-tokens'), target: '_blank', rel: 'noopener noreferrer'
-    = f.gitlab_ui_checkbox_component :expire_access_tokens, _('Expire access tokens'),
-      help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
-
-  .form-group
     = f.label :scopes, class: 'label-bold'
     = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: @application, scopes: @scopes, f: f
 

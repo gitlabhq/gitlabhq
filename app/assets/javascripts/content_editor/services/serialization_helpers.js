@@ -349,3 +349,17 @@ export function renderCodeBlock(state, node) {
   state.write('```');
   state.closeBlock(node);
 }
+
+export function preserveUnchanged(render) {
+  return (state, node, parent, index) => {
+    const { sourceMarkdown } = node.attrs;
+    const same = state.options.changeTracker.get(node);
+
+    if (same) {
+      state.write(sourceMarkdown);
+      state.closeBlock(node);
+    } else {
+      render(state, node, parent, index);
+    }
+  };
+}

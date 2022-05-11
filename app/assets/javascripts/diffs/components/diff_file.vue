@@ -358,10 +358,12 @@ export default {
       class="js-file-fork-suggestion-section file-fork-suggestion"
     >
       <span v-safe-html="forkMessage" class="file-fork-suggestion-note"></span>
-      <a
+      <gl-button
         :href="file.fork_path"
-        class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
-        >{{ $options.i18n.fork }}</a
+        class="js-fork-suggestion-button"
+        category="secondary"
+        variant="confirm"
+        >{{ $options.i18n.fork }}</gl-button
       >
       <button
         class="js-cancel-fork-suggestion-button btn btn-grouped"

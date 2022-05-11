@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import getStandardContext from './get_standard_context';
 
 export function dispatchSnowplowEvent(
@@ -24,5 +25,11 @@ export function dispatchSnowplowEvent(
     value = Number(value);
   }
 
-  return window.snowplow('trackStructEvent', category, action, label, property, value, contexts);
+  try {
+    window.snowplow('trackStructEvent', category, action, label, property, value, contexts);
+    return true;
+  } catch (error) {
+    Sentry.captureException(error);
+    return false;
+  }
 }

@@ -143,7 +143,8 @@ deploy:
   variables:
     KUBE_CONTEXT: my-context # The name to use for the new context
     AGENT_ID: 1234 # replace with your agent's numeric ID
-    K8S_PROXY_URL: wss://kas.gitlab.com/k8s-proxy/ # replace with your agent server (KAS) Kubernetes proxy URL
+    K8S_PROXY_URL: https://<KAS_DOMAIN>/k8s-proxy/ # For agent server (KAS) deployed in Kubernetes cluster (for gitlab.com use kas.gitlab.com); replace with your URL
+    # K8S_PROXY_URL: https://<GITLAB_DOMAIN>/-/kubernetes-agent/k8s-proxy/ # For agent server (KAS) in Omnibus
     # ... any other variables you have configured
   before_script:
     - kubectl config set-credentials agent:$AGENT_ID --token="ci:${AGENT_ID}:${CI_JOB_TOKEN}"

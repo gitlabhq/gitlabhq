@@ -339,11 +339,18 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
   describe '#list_new_commits' do
     let(:revisions) { [revision] }
     let(:gitaly_commits) { create_list(:gitaly_commit, 3) }
-    let(:commits) { gitaly_commits.map { |c| Gitlab::Git::Commit.new(repository, c) }}
+    let(:expected_commits) { gitaly_commits.map { |c| Gitlab::Git::Commit.new(repository, c) }}
+    let(:filter_quarantined_commits) { false }
 
-    subject { client.list_new_commits(revisions, allow_quarantine: allow_quarantine) }
+    subject do
+      client.list_new_commits(revisions, allow_quarantine: allow_quarantine)
+    end
 
     shared_examples 'a #list_all_commits message' do
+      before do
+        stub_feature_flags(filter_quarantined_commits: filter_quarantined_commits)
+      end
+
       it 'sends a list_all_commits message' do
         expected_repository = repository.gitaly_repository.dup
         expected_repository.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
@@ -352,9 +359,33 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
           expect(service).to receive(:list_all_commits)
             .with(gitaly_request_with_params(repository: expected_repository), kind_of(Hash))
             .and_return([Gitaly::ListAllCommitsResponse.new(commits: gitaly_commits)])
+
+          if filter_quarantined_commits
+            # The object directory of the repository must not be set so that we
+            # don't use the quarantine directory.
+            objects_exist_repo = repository.gitaly_repository.dup
+            objects_exist_repo.git_object_directory = ""
+
+            # The first request contains the repository, the second request the
+            # commit IDs we want to check for existence.
+            objects_exist_request = [
+              gitaly_request_with_params(repository: objects_exist_repo),
+              gitaly_request_with_params(revisions: gitaly_commits.map(&:id))
+            ]
+
+            objects_exist_response = Gitaly::CheckObjectsExistResponse.new(revisions: revision_existence.map do
+              |rev, exists| Gitaly::CheckObjectsExistResponse::RevisionExistence.new(name: rev, exists: exists)
+            end)
+
+            expect(service).to receive(:check_objects_exist)
+              .with(objects_exist_request, kind_of(Hash))
+              .and_return([objects_exist_response])
+          else
+            expect(service).not_to receive(:check_objects_exist)
+          end
         end
 
-        expect(subject).to eq(commits)
+        expect(subject).to eq(expected_commits)
       end
     end
 
@@ -366,7 +397,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
             .and_return([Gitaly::ListCommitsResponse.new(commits: gitaly_commits)])
         end
 
-        expect(subject).to eq(commits)
+        expect(subject).to eq(expected_commits)
       end
     end
 
@@ -390,7 +421,40 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
       context 'with allowed quarantine' do
         let(:allow_quarantine) { true }
 
-        it_behaves_like 'a #list_all_commits message'
+        context 'without commit filtering' do
+          it_behaves_like 'a #list_all_commits message'
+        end
+
+        context 'with commit filtering' do
+          let(:filter_quarantined_commits) { true }
+
+          context 'reject commits which exist in target repository' do
+            let(:revision_existence) { gitaly_commits.to_h { |c| [c.id, true] } }
+            let(:expected_commits) { [] }
+
+            it_behaves_like 'a #list_all_commits message'
+          end
+
+          context 'keep commits which do not exist in target repository' do
+            let(:revision_existence) { gitaly_commits.to_h { |c| [c.id, false] } }
+
+            it_behaves_like 'a #list_all_commits message'
+          end
+
+          context 'mixed existing and nonexisting commits' do
+            let(:revision_existence) do
+              {
+                gitaly_commits[0].id => true,
+                gitaly_commits[1].id => false,
+                gitaly_commits[2].id => true
+              }
+            end
+
+            let(:expected_commits) { [Gitlab::Git::Commit.new(repository, gitaly_commits[1])] }
+
+            it_behaves_like 'a #list_all_commits message'
+          end
+        end
       end
 
       context 'with disallowed quarantine' do
@@ -490,6 +554,61 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
         .with(request, kind_of(Hash)).and_return([])
 
       client.find_commits(order: 'default', author: "Billy Baggins <bilbo@shire.com>")
+    end
+  end
+
+  describe '#object_existence_map' do
+    shared_examples 'a CheckObjectsExistRequest' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'returns expected results' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service)
+            .to receive(:check_objects_exist)
+            .and_call_original
+        end
+
+        expect(client.object_existence_map(revisions.keys)).to eq(revisions)
+      end
+    end
+
+    context 'with empty request' do
+      let(:revisions) { {} }
+
+      it_behaves_like 'a CheckObjectsExistRequest'
+    end
+
+    context 'when revision exists' do
+      let(:revisions) { { 'refs/heads/master' => true } }
+
+      it_behaves_like 'a CheckObjectsExistRequest'
+    end
+
+    context 'when revision does not exist' do
+      let(:revisions) { { 'refs/does/not/exist' => false } }
+
+      it_behaves_like 'a CheckObjectsExistRequest'
+    end
+
+    context 'when request contains mixed revisions' do
+      let(:revisions) do
+        {
+          "refs/heads/master" => true,
+          "refs/does/not/exist" => false
+        }
+      end
+
+      it_behaves_like 'a CheckObjectsExistRequest'
+    end
+
+    context 'when requesting many revisions' do
+      let(:revisions) do
+        Array(1..1234).to_h { |i| ["refs/heads/#{i}", false] }
+      end
+
+      it_behaves_like 'a CheckObjectsExistRequest'
     end
   end
 

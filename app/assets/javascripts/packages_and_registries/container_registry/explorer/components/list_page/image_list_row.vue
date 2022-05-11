@@ -134,7 +134,7 @@ export default {
           v-if="item.expirationPolicyCleanupStatus"
           class="ml-2"
           :status="item.expirationPolicyCleanupStatus"
-          :expiration-policy-next-run-at="expirationPolicy.next_run_at"
+          :expiration-policy="expirationPolicy"
         />
       </template>
 

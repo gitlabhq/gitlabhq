@@ -3,6 +3,8 @@
 module Gitlab
   module Checks
     class ChangesAccess
+      include Gitlab::Utils::StrongMemoize
+
       ATTRIBUTES = %i[user_access project protocol changes logger].freeze
 
       attr_reader(*ATTRIBUTES)
@@ -33,29 +35,37 @@ module Gitlab
       # changes. This set may also contain commits which are not referenced by
       # any of the new revisions.
       def commits
-        allow_quarantine = true
+        strong_memoize(:commits) do
+          allow_quarantine = true
 
-        newrevs = @changes.map do |change|
-          oldrev = change[:oldrev]
-          newrev = change[:newrev]
+          newrevs = @changes.map do |change|
+            oldrev = change[:oldrev]
+            newrev = change[:newrev]
 
-          next if blank_rev?(newrev)
+            next if blank_rev?(newrev)
 
-          # In case any of the old revisions is blank, then we cannot reliably
-          # detect which commits are new for a given change when enumerating
-          # objects via the object quarantine directory given that the client
-          # may have pushed too many commits, and we don't know when to
-          # terminate the walk. We thus fall back to using `git rev-list --not
-          # --all`, which is a lot less efficient but at least can only ever
-          # returns commits which really are new.
-          allow_quarantine = false if allow_quarantine && blank_rev?(oldrev)
+            # In case any of the old revisions is blank, then we cannot reliably
+            # detect which commits are new for a given change when enumerating
+            # objects via the object quarantine directory given that the client
+            # may have pushed too many commits, and we don't know when to
+            # terminate the walk. We thus fall back to using `git rev-list --not
+            # --all`, which is a lot less efficient but at least can only ever
+            # returns commits which really are new.
+            allow_quarantine = false if allow_quarantine && blank_rev?(oldrev)
 
-          newrev
-        end.compact
+            newrev
+          end.compact
 
-        return [] if newrevs.empty?
+          next [] if newrevs.empty?
 
-        @commits ||= project.repository.new_commits(newrevs, allow_quarantine: allow_quarantine)
+          # When filtering quarantined commits we can enable usage of the object
+          # quarantine no matter whether we have an `oldrev` or not.
+          if Feature.enabled?(:filter_quarantined_commits)
+            allow_quarantine = true
+          end
+
+          project.repository.new_commits(newrevs, allow_quarantine: allow_quarantine)
+        end
       end
 
       # All commits which have been newly introduced via the given revision.

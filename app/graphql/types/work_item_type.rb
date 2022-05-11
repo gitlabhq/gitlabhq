@@ -19,7 +19,8 @@ module Types
     field :title, GraphQL::Types::String, null: false,
           description: 'Title of the work item.'
     field :work_item_type, Types::WorkItems::TypeType, null: false,
-          description: 'Type assigned to the work item.'
+          description: 'Type assigned to the work item.',
+          method: :work_item_type_with_fallback # necessary until we validate the not null constraint
 
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true

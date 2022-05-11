@@ -159,7 +159,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
 
       stub_feature_flag_definition(:disabled_feature_flag)
-      stub_feature_flag_definition(:enabled_feature_flag)
+      stub_feature_flag_definition(:enabled_feature_flag, default_enabled: true)
     end
 
     context 'when self-recursive' do
@@ -173,7 +173,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       end
 
       it 'returns the default value' do
-        expect(described_class.enabled?(:enabled_feature_flag, default_enabled: true)).to eq true
+        expect(described_class.enabled?(:enabled_feature_flag)).to eq true
       end
 
       it 'detects self recursion' do
@@ -189,7 +189,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       before do
         allow(Feature).to receive(:with_feature).and_wrap_original do |original, name, &block|
           original.call(name) do |ff|
-            Feature.enabled?(:"deeper_#{name}", type: :undefined, default_enabled: true)
+            Feature.enabled?(:"deeper_#{name}", type: :undefined, default_enabled_if_undefined: true)
             block.call(ff)
           end
         end
@@ -210,12 +210,12 @@ RSpec.describe Feature, stub_feature_flags: false do
       expect(described_class.enabled?(:some_random_feature_flag)).to be_falsey
     end
 
-    it 'returns false for undefined feature with default_enabled: false' do
-      expect(described_class.enabled?(:some_random_feature_flag, default_enabled: false)).to be_falsey
+    it 'returns false for undefined feature with default_enabled_if_undefined: false' do
+      expect(described_class.enabled?(:some_random_feature_flag, default_enabled_if_undefined: false)).to be_falsey
     end
 
-    it 'returns true for undefined feature with default_enabled: true' do
-      expect(described_class.enabled?(:some_random_feature_flag, default_enabled: true)).to be_truthy
+    it 'returns true for undefined feature with default_enabled_if_undefined: true' do
+      expect(described_class.enabled?(:some_random_feature_flag, default_enabled_if_undefined: true)).to be_truthy
     end
 
     it 'returns false for existing disabled feature in the database' do
@@ -235,8 +235,8 @@ RSpec.describe Feature, stub_feature_flags: false do
 
     it 'caches the status in L1 and L2 caches',
        :request_store, :use_clean_rails_memory_store_caching do
-      described_class.enable(:enabled_feature_flag)
-      flipper_key = "flipper/v1/feature/enabled_feature_flag"
+      described_class.enable(:disabled_feature_flag)
+      flipper_key = "flipper/v1/feature/disabled_feature_flag"
 
       expect(described_class.send(:l2_cache_backend))
         .to receive(:fetch)
@@ -251,7 +251,7 @@ RSpec.describe Feature, stub_feature_flags: false do
         .and_call_original
 
       2.times do
-        expect(described_class.enabled?(:enabled_feature_flag)).to be_truthy
+        expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
       end
     end
 
@@ -259,7 +259,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       fake_default = double('fake default')
       expect(ActiveRecord::Base).to receive(:connection) { raise ActiveRecord::NoDatabaseError, "No database" }
 
-      expect(described_class.enabled?(:a_feature, default_enabled: fake_default)).to eq(fake_default)
+      expect(described_class.enabled?(:a_feature, default_enabled_if_undefined: fake_default)).to eq(fake_default)
     end
 
     context 'logging is enabled', :request_store do
@@ -284,18 +284,16 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
 
     context 'cached feature flag', :request_store do
-      let(:flag) { :enabled_feature_flag }
-
       before do
         described_class.send(:flipper).memoize = false
-        described_class.enabled?(flag)
+        described_class.enabled?(:disabled_feature_flag)
       end
 
       it 'caches the status in L1 cache for the first minute' do
         expect do
           expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
           expect(described_class.send(:l2_cache_backend)).not_to receive(:fetch)
-          expect(described_class.enabled?(flag)).to be_truthy
+          expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
         end.not_to exceed_query_limit(0)
       end
 
@@ -304,7 +302,7 @@ RSpec.describe Feature, stub_feature_flags: false do
           expect do
             expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original
-            expect(described_class.enabled?(flag)).to be_truthy
+            expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
           end.not_to exceed_query_limit(0)
         end
       end
@@ -314,7 +312,7 @@ RSpec.describe Feature, stub_feature_flags: false do
           expect do
             expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original
-            expect(described_class.enabled?(flag)).to be_truthy
+            expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
           end.not_to exceed_query_limit(1)
         end
       end
@@ -381,31 +379,26 @@ RSpec.describe Feature, stub_feature_flags: false do
           .to raise_error(/The `type:` of/)
       end
 
-      it 'when invalid default_enabled is used' do
-        expect { described_class.enabled?(:my_feature_flag, default_enabled: true) }
-          .to raise_error(/The `default_enabled:` of/)
+      context 'when default_enabled: is false in the YAML definition' do
+        it 'reads the default from the YAML definition' do
+          expect(described_class.enabled?(:my_feature_flag)).to eq(default_enabled)
+        end
       end
 
-      context 'when `default_enabled: :yaml` is used in code' do
+      context 'when default_enabled: is true in the YAML definition' do
+        let(:default_enabled) { true }
+
         it 'reads the default from the YAML definition' do
-          expect(described_class.enabled?(:my_feature_flag)).to eq(false)
+          expect(described_class.enabled?(:my_feature_flag)).to eq(true)
         end
 
-        context 'when default_enabled is true in the YAML definition' do
-          let(:default_enabled) { true }
-
-          it 'reads the default from the YAML definition' do
-            expect(described_class.enabled?(:my_feature_flag)).to eq(true)
+        context 'and feature has been disabled' do
+          before do
+            described_class.disable(:my_feature_flag)
           end
 
-          context 'and feature has been disabled' do
-            before do
-              described_class.disable(:my_feature_flag)
-            end
-
-            it 'is not enabled' do
-              expect(described_class.enabled?(:my_feature_flag)).to eq(false)
-            end
+          it 'is not enabled' do
+            expect(described_class.enabled?(:my_feature_flag)).to eq(false)
           end
         end
 
@@ -474,12 +467,12 @@ RSpec.describe Feature, stub_feature_flags: false do
       expect(described_class.disabled?(:some_random_feature_flag)).to be_truthy
     end
 
-    it 'returns true for undefined feature with default_enabled: false' do
-      expect(described_class.disabled?(:some_random_feature_flag, default_enabled: false)).to be_truthy
+    it 'returns true for undefined feature with default_enabled_if_undefined: false' do
+      expect(described_class.disabled?(:some_random_feature_flag, default_enabled_if_undefined: false)).to be_truthy
     end
 
-    it 'returns false for undefined feature with default_enabled: true' do
-      expect(described_class.disabled?(:some_random_feature_flag, default_enabled: true)).to be_falsey
+    it 'returns false for undefined feature with default_enabled_if_undefined: true' do
+      expect(described_class.disabled?(:some_random_feature_flag, default_enabled_if_undefined: true)).to be_falsey
     end
 
     it 'returns true for existing disabled feature in the database' do

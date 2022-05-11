@@ -67,21 +67,22 @@ class Feature
       persisted_names.include?(feature_name.to_s)
     end
 
-    # The default state of feature flag is read from `YAML`
-    # If feature flag does not have YAML it will fallback to `default_enabled: false`
-    # in production environment, but raise exception in development or tests
-    def enabled?(key, thing = nil, type: :development, default_enabled: :yaml)
+    # The default state of feature flag is read from `YAML`:
+    # 1. If feature flag does not have YAML it will fallback to `default_enabled: false`
+    #    in production environment, but raise exception in development or tests.
+    # 2. The `default_enabled_if_undefined:` is tech debt related to Gitaly flags
+    #    and should not be used outside of Gitaly's `lib/feature/gitaly.rb`
+    def enabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
       if check_feature_flags_definition?
         if thing && !thing.respond_to?(:flipper_id)
           raise InvalidFeatureFlagError,
             "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
         end
 
-        Feature::Definition.valid_usage!(key, type: type, default_enabled: default_enabled)
+        Feature::Definition.valid_usage!(key, type: type)
       end
 
-      # If `default_enabled: :yaml` we fetch the value from the YAML definition instead.
-      default_enabled = Feature::Definition.default_enabled?(key) if default_enabled == :yaml
+      default_enabled = Feature::Definition.default_enabled?(key, default_enabled_if_undefined: default_enabled_if_undefined)
 
       feature_value = with_feature(key) do |feature|
         feature_value = current_feature_value(feature, thing, default_enabled: default_enabled)
@@ -96,9 +97,9 @@ class Feature
       feature_value
     end
 
-    def disabled?(key, thing = nil, type: :development, default_enabled: :yaml)
+    def disabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
       # we need to make different method calls to make it easy to mock / define expectations in test mode
-      thing.nil? ? !enabled?(key, type: type, default_enabled: default_enabled) : !enabled?(key, thing, type: type, default_enabled: default_enabled)
+      thing.nil? ? !enabled?(key, type: type, default_enabled_if_undefined: default_enabled_if_undefined) : !enabled?(key, thing, type: type, default_enabled_if_undefined: default_enabled_if_undefined)
     end
 
     def enable(key, thing = true)

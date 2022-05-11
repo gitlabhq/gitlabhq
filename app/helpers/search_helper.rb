@@ -477,7 +477,7 @@ module SearchHelper
   end
 
   def feature_flag_tab_enabled?(flag)
-    @group || Feature.enabled?(flag, current_user, type: :ops, default_enabled: true)
+    @group || Feature.enabled?(flag, current_user, type: :ops)
   end
 end
 

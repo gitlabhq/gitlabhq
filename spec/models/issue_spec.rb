@@ -257,13 +257,18 @@ RSpec.describe Issue do
   end
 
   # TODO: Remove when NOT NULL constraint is added to the relationship
-  describe '#work_item_type' do
-    let(:issue) { create(:issue, :incident, project: reusable_project, work_item_type: nil) }
+  describe '#work_item_type_with_fallback' do
+    let(:issue) { create(:issue, project: reusable_project) }
 
+    # Hard to test this scenario as no way to create a record in the DB with no work item type, so emulating in memory
     it 'returns a default type if the legacy issue does not have a work item type associated yet' do
-      expect(issue.work_item_type_id).to be_nil
-      expect(issue.issue_type).to eq('incident')
-      expect(issue.work_item_type).to eq(WorkItems::Type.default_by_type(:incident))
+      expect(issue.work_item_type.base_type).to eq('issue')
+      expect(issue.issue_type).to eq('issue')
+
+      issue.issue_type = 'incident'
+      issue.work_item_type = nil
+
+      expect(issue.work_item_type_with_fallback).to eq(WorkItems::Type.default_by_type(:incident))
     end
   end
 

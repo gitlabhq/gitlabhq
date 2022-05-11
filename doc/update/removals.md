@@ -112,6 +112,18 @@ The permissions model for GraphQL is being updated. After 15.0, users with the G
 
 The issue for this removal is [GitLab-#350682](https://gitlab.com/gitlab-org/gitlab/-/issues/350682)
 
+### OAuth tokens without an expiration
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+GitLab no longer supports OAuth tokens [without an expiration](https://docs.gitlab.com/ee/integration/oauth_provider.html#expiring-access-tokens).
+
+Any existing token without an expiration has one automatically generated and applied.
+
 ### Remove Versions from PackageType
 
 WARNING:

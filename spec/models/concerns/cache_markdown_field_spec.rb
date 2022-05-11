@@ -9,6 +9,8 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       include CacheMarkdownField
       cache_markdown_field :title, pipeline: :single_line
       cache_markdown_field :description
+
+      before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
     end
   end
 

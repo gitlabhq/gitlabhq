@@ -132,6 +132,8 @@ describe('RunnerUpdateForm', () => {
       shortSha,
       ipAddress,
       executorName,
+      architectureName,
+      platformName,
       runnerType,
       createdAt,
       status,

@@ -101,7 +101,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
               milestone_id: milestone.id,
               state_id: 1,
               created_at: created_at,
-              updated_at: updated_at
+              updated_at: updated_at,
+              work_item_type_id: ::WorkItems::Type.default_issue_type.id
             },
             project.issues
           )
@@ -130,7 +131,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
               milestone_id: milestone.id,
               state_id: 1,
               created_at: created_at,
-              updated_at: updated_at
+              updated_at: updated_at,
+              work_item_type_id: ::WorkItems::Type.default_issue_type.id
             },
             project.issues
           )

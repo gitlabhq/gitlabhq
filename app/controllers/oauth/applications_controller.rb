@@ -57,10 +57,8 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     @authorized_anonymous_tokens = @authorized_tokens.reject(&:application)
     @authorized_apps = @authorized_tokens.map(&:application).uniq.reject(&:nil?)
 
-    # Default access tokens to expire. This preserves backward compatibility
-    # with existing applications. This will be removed in 15.0.
-    # Removal issue: https://gitlab.com/gitlab-org/gitlab/-/issues/340848
-    @application ||= Doorkeeper::Application.new(expire_access_tokens: true)
+    # Don't overwrite a value possibly set by `create`
+    @application ||= Doorkeeper::Application.new
   end
 
   # Override Doorkeeper to scope to the current user

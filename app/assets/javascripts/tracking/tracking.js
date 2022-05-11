@@ -49,8 +49,11 @@ export default class Tracking {
    * dispatched (data-attributes, load-events), they will be added
    * to a queue to be flushed afterwards.
    *
+   * If there is an error when using the library, it will return ´false´
+   * and ´true´ otherwise.
+   *
    * @param  {...any} eventData defined event taxonomy
-   * @returns {undefined|Boolean}
+   * @returns {Boolean}
    */
   static event(...eventData) {
     if (!this.enabled()) {
@@ -85,7 +88,7 @@ export default class Tracking {
    *
    * @param {String} basename
    * @param {Object} eventData
-   * @returns {undefined|Boolean}
+   * @returns {Boolean}
    */
   static definition(basename, eventData = {}) {
     if (!this.enabled()) {
@@ -105,7 +108,7 @@ export default class Tracking {
    *
    * @param {String} basename
    * @param {Object} eventData
-   * @returns {undefined|Boolean}
+   * @returns {Boolean}
    */
   static dispatchFromDefinition(basename, eventData) {
     if (!this.definitionsLoaded) {

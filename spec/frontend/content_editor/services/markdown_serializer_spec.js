@@ -151,8 +151,7 @@ const {
 
 const serialize = (...content) =>
   markdownSerializer({}).serialize({
-    schema: tiptapEditor.schema,
-    content: doc(...content).toJSON(),
+    doc: doc(...content),
   });
 
 describe('markdownSerializer', () => {

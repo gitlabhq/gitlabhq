@@ -9,6 +9,8 @@ fragment RunnerDetailsShared on CiRunner {
   locked
   ipAddress
   executorName
+  architectureName
+  platformName
   description
   maximumTimeout
   jobCount

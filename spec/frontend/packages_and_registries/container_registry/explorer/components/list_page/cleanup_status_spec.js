@@ -78,10 +78,16 @@ describe('cleanup_status', () => {
       },
     );
 
-    it(`has a popover with a learn more link`, () => {
-      mountComponent({ status: UNFINISHED_STATUS });
+    it(`has a popover with a learn more link and a time frame for the next run`, () => {
+      jest.spyOn(Date, 'now').mockImplementation(() => new Date('2063-04-04T00:42:00Z').getTime());
+
+      mountComponent({
+        status: UNFINISHED_STATUS,
+        expirationPolicy: { next_run: '2063-04-08T01:44:03Z' },
+      });
 
       expect(findPopover().exists()).toBe(true);
+      expect(findPopover().text()).toContain('The cleanup will continue within 4 days. Learn more');
       expect(findPopover().findComponent(GlLink).exists()).toBe(true);
       expect(findPopover().findComponent(GlLink).attributes('href')).toBe(cleanupPolicyHelpPage);
     });

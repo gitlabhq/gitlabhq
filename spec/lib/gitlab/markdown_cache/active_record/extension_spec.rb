@@ -11,6 +11,8 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
 
       attribute :author
       attribute :project
+
+      before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
     end
   end
 

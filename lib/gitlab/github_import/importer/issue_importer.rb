@@ -54,7 +54,8 @@ module Gitlab
             milestone_id: milestone_finder.id_for(issue),
             state_id: ::Issue.available_states[issue.state],
             created_at: issue.created_at,
-            updated_at: issue.updated_at
+            updated_at: issue.updated_at,
+            work_item_type_id: ::WorkItems::Type.default_issue_type.id
           }
 
           insert_and_return_id(attributes, project.issues)

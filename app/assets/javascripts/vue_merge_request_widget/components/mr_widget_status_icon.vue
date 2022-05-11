@@ -46,7 +46,7 @@ export default {
     <gl-button
       v-if="!glFeatures.restructuredMrWidget && showDisabledButton"
       category="primary"
-      variant="success"
+      variant="confirm"
       data-testid="disabled-merge-button"
       :disabled="true"
     >

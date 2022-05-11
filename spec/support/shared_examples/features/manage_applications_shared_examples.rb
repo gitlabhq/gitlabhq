@@ -9,11 +9,9 @@ RSpec.shared_examples 'manage applications' do
     visit new_application_path
 
     expect(page).to have_content 'Add new application'
-    expect(find('#doorkeeper_application_expire_access_tokens')).to be_checked
 
     fill_in :doorkeeper_application_name, with: application_name
     fill_in :doorkeeper_application_redirect_uri, with: application_redirect_uri
-    uncheck :doorkeeper_application_expire_access_tokens
     check :doorkeeper_application_scopes_read_user
     click_on 'Save application'
 
@@ -24,8 +22,6 @@ RSpec.shared_examples 'manage applications' do
     expect(page).to have_css("button[title=\"Copy secret\"][data-clipboard-text=\"#{application.secret}\"]", text: 'Copy')
 
     click_on 'Edit'
-
-    expect(find('#doorkeeper_application_expire_access_tokens')).not_to be_checked
 
     application_name_changed = "#{application_name} changed"
 

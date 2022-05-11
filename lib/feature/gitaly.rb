@@ -8,7 +8,7 @@ class Feature
       def enabled?(feature_flag, project = nil)
         return false unless Feature::FlipperFeature.table_exists?
 
-        Feature.enabled?("#{PREFIX}#{feature_flag}", project, type: :undefined, default_enabled: false)
+        Feature.enabled?("#{PREFIX}#{feature_flag}", project, type: :undefined, default_enabled_if_undefined: false)
       rescue ActiveRecord::NoDatabaseError, PG::ConnectionBad
         false
       end

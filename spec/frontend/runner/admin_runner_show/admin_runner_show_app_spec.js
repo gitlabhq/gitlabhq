@@ -92,6 +92,8 @@ describe('AdminRunnerShowApp', () => {
                         Version 1.0.0
                         IP Address 127.0.0.1
                         Executor None
+                        Architecture None
+                        Platform darwin
                         Configuration Runs untagged jobs
                         Maximum job timeout None
                         Tags None`.replace(/\s+/g, ' ');

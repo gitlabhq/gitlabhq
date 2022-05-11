@@ -1857,9 +1857,6 @@ msgstr ""
 msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
-msgid "Access tokens expire after 2 hours. A refresh token may be used at any time to generate a new access token. Non-expiring access tokens are deprecated. Clear this setting to enable backward compatibility."
-msgstr ""
-
 msgid "AccessDropdown|Deploy Keys"
 msgstr ""
 
@@ -13777,9 +13774,6 @@ msgstr ""
 msgid "Enable access to the performance bar for non-administrators in a given group."
 msgstr ""
 
-msgid "Enable access tokens to expire after 2 hours. If disabled, tokens do not expire."
-msgstr ""
-
 msgid "Enable admin mode"
 msgstr ""
 
@@ -15031,9 +15025,6 @@ msgid "Expiration date (optional)"
 msgstr ""
 
 msgid "Expiration date:"
-msgstr ""
-
-msgid "Expire access tokens"
 msgstr ""
 
 msgid "Expired"
@@ -36519,6 +36510,9 @@ msgstr ""
 msgid "SuperSonics|Buy subscription"
 msgstr ""
 
+msgid "SuperSonics|Cannot activate instance due to a connectivity issue."
+msgstr ""
+
 msgid "SuperSonics|Cloud licensing"
 msgstr ""
 
@@ -36532,9 +36526,6 @@ msgid "SuperSonics|Export license usage file"
 msgstr ""
 
 msgid "SuperSonics|Free trial"
-msgstr ""
-
-msgid "SuperSonics|Get help for the most common connectivity issues by %{linkStart}troubleshooting the activation code%{linkEnd}."
 msgstr ""
 
 msgid "SuperSonics|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
@@ -36600,7 +36591,7 @@ msgstr ""
 msgid "SuperSonics|This is the number of %{billableUsersLinkStart}billable users%{billableUsersLinkEnd} on your installation, and this is the minimum number you need to purchase when you renew your license."
 msgstr ""
 
-msgid "SuperSonics|To activate your subscription, connect to GitLab servers through the %{linkStart}Cloud Licensing%{linkEnd} service, a hassle-free way to manage your subscription."
+msgid "SuperSonics|To activate your subscription, your instance needs to connect to GitLab. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
 msgstr ""
 
 msgid "SuperSonics|User in subscription"
@@ -36615,6 +36606,9 @@ msgid "SuperSonics|Users over subscription"
 msgstr ""
 
 msgid "SuperSonics|Users with a Guest role or those who don't belong to a Project or Group will not use a seat from your license."
+msgstr ""
+
+msgid "SuperSonics|You can %{purchaseSubscriptionLinkStart}purchase a new subscription%{purchaseSubscriptionLinkEnd} and try again. If you need further assistance, please %{supportLinkStart}contact GitLab Support%{supportLinkEnd}."
 msgstr ""
 
 msgid "SuperSonics|You can no longer sync your subscription details with GitLab. Get help for the most common connectivity issues by %{connectivityHelpLinkStart}troubleshooting the activation code%{connectivityHelpLinkEnd}."
@@ -36648,6 +36642,9 @@ msgid "SuperSonics|Your subscription"
 msgstr ""
 
 msgid "SuperSonics|Your subscription details will sync shortly."
+msgstr ""
+
+msgid "SuperSonics|Your subscription is expired."
 msgstr ""
 
 msgid "SuperSonics|Your subscription was successfully activated. You can see the details below."
@@ -38839,9 +38836,6 @@ msgid "ThreatMonitoring|Resolved"
 msgstr ""
 
 msgid "ThreatMonitoring|Something went wrong, unable to fetch environments"
-msgstr ""
-
-msgid "ThreatMonitoring|Something went wrong, unable to fetch statistics"
 msgstr ""
 
 msgid "ThreatMonitoring|Status"

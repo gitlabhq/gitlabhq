@@ -9,6 +9,7 @@ export class ContentEditor {
     this._deserializer = deserializer;
     this._eventHub = eventHub;
     this._assetResolver = assetResolver;
+    this._pristineDoc = null;
   }
 
   get tiptapEditor() {
@@ -17,6 +18,10 @@ export class ContentEditor {
 
   get eventHub() {
     return this._eventHub;
+  }
+
+  get changed() {
+    return this._pristineDoc?.eq(this.tiptapEditor.state.doc);
   }
 
   get empty() {
@@ -54,11 +59,12 @@ export class ContentEditor {
 
     try {
       eventHub.$emit(LOADING_CONTENT_EVENT);
-      const result = await this.deserialize(serializedContent);
+      const { document } = await this.deserialize(serializedContent);
 
-      if (Object.keys(result).length !== 0) {
+      if (document) {
+        this._pristineDoc = document;
         tr.setSelection(selection)
-          .replaceSelectionWith(result.document, false)
+          .replaceSelectionWith(document, false)
           .setMeta('preventUpdate', true);
         editor.view.dispatch(tr);
       }
@@ -71,8 +77,9 @@ export class ContentEditor {
   }
 
   getSerializedContent() {
-    const { _tiptapEditor: editor, _serializer: serializer } = this;
+    const { _tiptapEditor: editor, _serializer: serializer, _pristineDoc: pristineDoc } = this;
+    const { doc } = editor.state;
 
-    return serializer.serialize({ schema: editor.schema, content: editor.getJSON() });
+    return serializer.serialize({ doc, pristineDoc });
   }
 }

@@ -33,7 +33,7 @@
 
   - if @pipeline.failed_builds.present?
     #js-tab-failures.tab-pane
-      - if Feature.enabled?(:failed_jobs_tab_vue, @project, default_enabled: :yaml)
+      - if Feature.enabled?(:failed_jobs_tab_vue, @project)
         #js-pipeline-failed-jobs-vue{ data: { full_path: @project.full_path, pipeline_iid: @pipeline.iid, failed_jobs_summary_data: prepare_failed_jobs_summary_data(@pipeline.failed_builds) } }
       - else
         .build-failures.build-page

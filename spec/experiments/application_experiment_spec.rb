@@ -8,13 +8,9 @@ RSpec.describe ApplicationExperiment, :experiment do
   let(:context) { {} }
   let(:feature_definition) { { name: 'namespaced_stub', type: 'experiment', default_enabled: false } }
 
-  around do |example|
-    Feature::Definition.definitions[:namespaced_stub] = Feature::Definition.new('namespaced_stub.yml', feature_definition)
-    example.run
-    Feature::Definition.definitions.delete(:namespaced_stub)
-  end
-
   before do
+    stub_feature_flag_definition(:namespaced_stub, feature_definition)
+
     allow(application_experiment).to receive(:enabled?).and_return(true)
   end
 

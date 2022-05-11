@@ -31,10 +31,10 @@ export default {
         );
       },
     },
-    expirationPolicyNextRunAt: {
-      type: String,
+    expirationPolicy: {
+      type: Object,
+      default: () => ({}),
       required: false,
-      default: () => '',
     },
   },
   i18n: {
@@ -54,7 +54,7 @@ export default {
       return this.$options.i18n[`CLEANUP_STATUS_${this.status}`];
     },
     calculatedTimeTilNextRun() {
-      return timeTilRun(this.expirationPolicyNextRunAt?.next_run);
+      return timeTilRun(this.expirationPolicy?.next_run);
     },
   },
   statusPopoverOptions: {
