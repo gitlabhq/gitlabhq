@@ -1,6 +1,6 @@
 <script>
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
-import { flatten, isEqual } from 'lodash';
+import { flatten, isEqual, keyBy } from 'lodash';
 import createFlash from '~/flash';
 import { sprintf, s__ } from '~/locale';
 import { METRICS_POPOVER_CONTENT } from '../constants';
@@ -30,7 +30,8 @@ const fetchMetricsData = (reqs = [], path, params) => {
 
 const extractMetricsGroupData = (keyList = [], data = []) => {
   if (!keyList.length || !data.length) return [];
-  return data.filter(({ identifier = '' }) => identifier.length && keyList.includes(identifier));
+  const kv = keyBy(data, 'identifier');
+  return keyList.map((id) => kv[id] || null).filter((obj) => Boolean(obj));
 };
 
 const groupRawMetrics = (groups = [], rawData = []) => {

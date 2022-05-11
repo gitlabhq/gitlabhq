@@ -238,7 +238,7 @@ export default {
           </div>
         </template>
         <template v-if="dagDocPath" #actions>
-          <gl-button :href="dagDocPath" target="__blank" variant="success">
+          <gl-button :href="dagDocPath" target="_blank" variant="confirm">
             {{ $options.emptyStateTexts.button }}
           </gl-button>
         </template>

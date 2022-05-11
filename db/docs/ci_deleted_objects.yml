@@ -5,5 +5,5 @@ classes:
 feature_categories:
 - build_artifacts
 description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44928
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9bf76fe03f8edf4f67023448161af27abb8fb521
 milestone: '13.5'

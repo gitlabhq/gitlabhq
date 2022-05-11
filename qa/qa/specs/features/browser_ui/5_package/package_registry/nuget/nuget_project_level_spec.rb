@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable, quarantine: {
+    type: :flaky,
+    issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/361704"
+  } do
     describe 'NuGet project level endpoint' do
       include Support::Helpers::MaskToken
 
@@ -129,12 +132,12 @@ module QA
                       file_path: 'dotnetcore.csproj',
                       content: <<~EOF
                           <Project Sdk="Microsoft.NET.Sdk">
-  
+
                             <PropertyGroup>
                               <OutputType>Exe</OutputType>
                               <TargetFramework>net5.0</TargetFramework>
                             </PropertyGroup>
-  
+
                           </Project>
                       EOF
                   }

@@ -44,8 +44,12 @@ module Projects
     end
 
     override :update_db_repository_statistics
-    def update_db_repository_statistics(resource)
-      Projects::UpdateStatisticsService.new(resource, nil, statistics: [:repository_size, :lfs_objects_size]).execute
+    def update_db_repository_statistics(resource, stats)
+      Projects::UpdateStatisticsService.new(resource, nil, statistics: stats).execute
+    end
+
+    def stats
+      [:repository_size, :lfs_objects_size]
     end
   end
 end

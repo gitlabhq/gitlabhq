@@ -199,11 +199,6 @@ Style/FormatString:
 Style/HashAsLastArrayItem:
   Enabled: false
 
-# Offense count: 70
-# Cop supports --auto-correct.
-Style/HashEachMethods:
-  Enabled: false
-
 # Offense count: 64
 # Cop supports --auto-correct.
 Style/KeywordParametersOrder:

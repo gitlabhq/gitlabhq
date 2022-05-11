@@ -64,7 +64,7 @@ class GraphqlController < ApplicationController
     log_exception(exception)
 
     if Rails.env.test? || Rails.env.development?
-      render_error("Internal server error: #{exception.message}", raised_at: exception.backtrace.first)
+      render_error("Internal server error: #{exception.message}", raised_at: exception.backtrace[0..10].join(' <-- '))
     else
       render_error("Internal server error")
     end

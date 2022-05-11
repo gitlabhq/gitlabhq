@@ -140,7 +140,7 @@ export default {
     <div v-if="editable" class="form group gl-display-flex gl-justify-content-end">
       <gl-button
         category="primary"
-        variant="success"
+        variant="confirm"
         type="submit"
         :disabled="!canSubmit"
         :aria-disabled="!canSubmit"

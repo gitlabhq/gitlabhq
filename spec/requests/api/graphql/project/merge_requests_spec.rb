@@ -96,7 +96,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
       where(:field, :subfield, :is_connection) do
         nested_fields_of('MergeRequest').flat_map do |name, field|
           type = field_type(field)
-          is_connection = type.name.ends_with?('Connection')
+          is_connection = type.graphql_name.ends_with?('Connection')
           type = field_type(type.fields['nodes']) if is_connection
 
           type.fields

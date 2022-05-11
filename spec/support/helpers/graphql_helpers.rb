@@ -250,10 +250,10 @@ module GraphqlHelpers
     mutation_field = GitlabSchema.mutation.fields[mutation_name]
 
     fields = yield if block_given?
-    fields ||= all_graphql_fields_for(mutation_field.type.to_graphql)
+    fields ||= all_graphql_fields_for(mutation_field.type.to_type_signature)
 
     query = <<~MUTATION
-      mutation(#{input_variable_name}: #{mutation_field.arguments['input'].type.to_graphql}) {
+      mutation(#{input_variable_name}: #{mutation_field.arguments['input'].type.to_type_signature}) {
         #{mutation_name}(input: #{input_variable_name}) {
           #{fields}
         }
@@ -302,7 +302,7 @@ module GraphqlHelpers
   def input_variable_name_for_mutation(mutation_name)
     mutation_name = GraphqlHelpers.fieldnamerize(mutation_name)
     mutation_field = GitlabSchema.mutation.fields[mutation_name]
-    input_type = field_type(mutation_field.arguments['input'])
+    input_type = mutation_field.arguments['input'].type.unwrap.to_type_signature
 
     GraphqlHelpers.fieldnamerize(input_type)
   end

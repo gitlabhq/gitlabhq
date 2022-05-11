@@ -7104,6 +7104,9 @@ msgstr ""
 msgid "Certificate Subject"
 msgstr ""
 
+msgid "Change Failure Rate"
+msgstr ""
+
 msgid "Change assignee"
 msgstr ""
 
@@ -10966,6 +10969,9 @@ msgstr ""
 msgid "CycleAnalytics|Average time to completion"
 msgstr ""
 
+msgid "CycleAnalytics|Change Failure Rate"
+msgstr ""
+
 msgid "CycleAnalytics|Create a custom value stream to view metrics about stages specific to your development process. Use your value stream to visualize your DevSecOps lifecycle, determine the velocity of your group, and identify inefficient processes."
 msgstr ""
 
@@ -11037,6 +11043,9 @@ msgid "CycleAnalytics|There is no data for 'Stage time' available. Adjust the cu
 msgstr ""
 
 msgid "CycleAnalytics|There is no data for 'Total time' available. Adjust the current filters."
+msgstr ""
+
+msgid "CycleAnalytics|Time to Restore Service"
 msgstr ""
 
 msgid "CycleAnalytics|Total time"
@@ -13424,6 +13433,9 @@ msgid "Edit Password"
 msgstr ""
 
 msgid "Edit Pipeline Schedule"
+msgstr ""
+
+msgid "Edit Profile"
 msgstr ""
 
 msgid "Edit Release"
@@ -26043,6 +26055,9 @@ msgstr ""
 msgid "OnDemandScans|%{learnMoreLinkStart}Learn more about on-demand scans%{learnMoreLinkEnd}."
 msgstr ""
 
+msgid "OnDemandScans|%{scannerType} profile library"
+msgstr ""
+
 msgid "OnDemandScans|Add a schedule to run this scan at a specified date and time or on a recurring basis. Scheduled scans are automatically saved to scan library."
 msgstr ""
 
@@ -26118,13 +26133,22 @@ msgstr ""
 msgid "OnDemandScans|My daily scan"
 msgstr ""
 
+msgid "OnDemandScans|New %{scannerType} profile"
+msgstr ""
+
 msgid "OnDemandScans|New on-demand DAST scan"
 msgstr ""
 
 msgid "OnDemandScans|New on-demand scan"
 msgstr ""
 
+msgid "OnDemandScans|New profile"
+msgstr ""
+
 msgid "OnDemandScans|New scan"
+msgstr ""
+
+msgid "OnDemandScans|No %{scannerType} profiles found for DAST"
 msgstr ""
 
 msgid "OnDemandScans|No profile yet. In order to create a new scan, you need to have at least one completed scanner profile."
@@ -26182,6 +26206,9 @@ msgid "OnDemandScans|Select one of the existing profiles"
 msgstr ""
 
 msgid "OnDemandScans|Site profile"
+msgstr ""
+
+msgid "OnDemandScans|Start by creating a new profile. Profiles make it easy to save and reuse configuration details for GitLab’s security tools."
 msgstr ""
 
 msgid "OnDemandScans|Start time"
@@ -34058,6 +34085,9 @@ msgstr ""
 msgid "Select Page"
 msgstr ""
 
+msgid "Select Profile"
+msgstr ""
+
 msgid "Select a branch"
 msgstr ""
 
@@ -38919,6 +38949,9 @@ msgstr ""
 msgid "Time spent"
 msgstr ""
 
+msgid "Time to Restore Service"
+msgstr ""
+
 msgid "Time to merge"
 msgstr ""
 
@@ -41206,6 +41239,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Key metrics"
 msgstr ""
 
+msgid "ValueStreamAnalytics|Median time an incident was open on a production environment in the given time period."
+msgstr ""
+
 msgid "ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period."
 msgstr ""
 
@@ -41219,6 +41255,9 @@ msgid "ValueStreamAnalytics|Number of commits pushed to the default branch"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Number of new issues created."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Percentage of deployments that cause an incident in production."
 msgstr ""
 
 msgid "ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data."

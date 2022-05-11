@@ -466,7 +466,7 @@ RSpec.describe Ci::CreatePipelineService do
         it 'pull it from Auto-DevOps' do
           pipeline = execute_service.payload
           expect(pipeline).to be_auto_devops_source
-          expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality eslint-sast secret_detection semgrep-sast test])
+          expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality container_scanning eslint-sast secret_detection semgrep-sast test])
         end
       end
 
