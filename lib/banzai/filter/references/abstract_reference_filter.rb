@@ -206,6 +206,7 @@ module Banzai
                                                     link_content: !!link_content,
                                                     link_reference: link_reference)
               data_attributes[:reference_format] = matches[:format] if matches.names.include?("format")
+              data_attributes.merge!(additional_object_attributes(object))
 
               data = data_attribute(data_attributes)
 
@@ -293,6 +294,10 @@ module Banzai
           escaped.gsub(REFERENCE_PLACEHOLDER_PATTERN) do |match|
             placeholder_data[Regexp.last_match(1).to_i]
           end
+        end
+
+        def additional_object_attributes(object)
+          {}
         end
       end
     end

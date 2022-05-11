@@ -386,7 +386,7 @@ export default {
                   data-testid="add-to-review-button"
                   type="submit"
                   category="primary"
-                  variant="success"
+                  variant="confirm"
                   @click.prevent="handleSaveDraft()"
                   >{{ __('Add to review') }}</gl-button
                 >

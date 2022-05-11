@@ -49,6 +49,12 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 NOTE:
 The upload request is sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
 
+NOTE:
+As an administrator, you can modify the maximum export file size. By default,
+it is set to `0`, for unlimited. To change this value, edit `max_export_size`
+in the [Application settings API](settings.md#change-application-settings)
+or the [Admin UI](../user/admin_area/settings/account_and_limit_settings.md).
+
 ## Export status
 
 Get the status of export.

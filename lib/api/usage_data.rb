@@ -40,7 +40,7 @@ module API
       desc 'Get a list of all metric definitions' do
         detail 'This feature was introduced in GitLab 13.11.'
       end
-      get 'metric_definitions' do
+      get 'metric_definitions', urgency: :low do
         content_type 'application/yaml'
         env['api.format'] = :binary
 

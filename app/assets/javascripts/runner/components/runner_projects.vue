@@ -2,7 +2,7 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import { sprintf, formatNumber } from '~/locale';
 import { createAlert } from '~/flash';
-import runnerProjectsQuery from '../graphql/details/runner_projects.query.graphql';
+import runnerProjectsQuery from '../graphql/show/runner_projects.query.graphql';
 import {
   I18N_ASSIGNED_PROJECTS,
   I18N_NONE,

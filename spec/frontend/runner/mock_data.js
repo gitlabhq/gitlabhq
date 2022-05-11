@@ -8,11 +8,14 @@ import groupRunnersData from 'test_fixtures/graphql/runner/list/group_runners.qu
 import groupRunnersDataPaginated from 'test_fixtures/graphql/runner/list/group_runners.query.graphql.paginated.json';
 import groupRunnersCountData from 'test_fixtures/graphql/runner/list/group_runners_count.query.graphql.json';
 
-// Details queries
-import runnerData from 'test_fixtures/graphql/runner/details/runner.query.graphql.json';
-import runnerWithGroupData from 'test_fixtures/graphql/runner/details/runner.query.graphql.with_group.json';
-import runnerProjectsData from 'test_fixtures/graphql/runner/details/runner_projects.query.graphql.json';
-import runnerJobsData from 'test_fixtures/graphql/runner/details/runner_jobs.query.graphql.json';
+// Show runner queries
+import runnerData from 'test_fixtures/graphql/runner/show/runner.query.graphql.json';
+import runnerWithGroupData from 'test_fixtures/graphql/runner/show/runner.query.graphql.with_group.json';
+import runnerProjectsData from 'test_fixtures/graphql/runner/show/runner_projects.query.graphql.json';
+import runnerJobsData from 'test_fixtures/graphql/runner/show/runner_jobs.query.graphql.json';
+
+// Edit runner queries
+import runnerFormData from 'test_fixtures/graphql/runner/edit/runner_form.query.graphql.json';
 
 // Other mock data
 export const onlineContactTimeoutSecs = 2 * 60 * 60;
@@ -20,13 +23,14 @@ export const staleTimeoutSecs = 5259492; // Ruby's `2.months`
 
 export {
   runnersData,
-  runnersCountData,
   runnersDataPaginated,
+  runnersCountData,
+  groupRunnersData,
+  groupRunnersDataPaginated,
+  groupRunnersCountData,
   runnerData,
   runnerWithGroupData,
   runnerProjectsData,
   runnerJobsData,
-  groupRunnersData,
-  groupRunnersCountData,
-  groupRunnersDataPaginated,
+  runnerFormData,
 };

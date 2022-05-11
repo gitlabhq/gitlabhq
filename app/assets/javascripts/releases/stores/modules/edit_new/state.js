@@ -53,4 +53,5 @@ export default ({
 
   tagNotes: '',
   includeTagNotes: false,
+  existingRelease: null,
 });

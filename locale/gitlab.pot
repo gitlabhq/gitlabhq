@@ -454,7 +454,7 @@ msgstr ""
 msgid "%{authorsName}'s thread"
 msgstr ""
 
-msgid "%{author} requested to merge %{span_start}%{source_branch} %{copy_button}%{span_end} into %{target_branch} %{created_at}"
+msgid "%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}"
 msgstr ""
 
 msgid "%{board_target} not found"
@@ -13960,9 +13960,6 @@ msgstr ""
 msgid "Ends: %{endsAt}"
 msgstr ""
 
-msgid "Enforce SSH key expiration"
-msgstr ""
-
 msgid "Enforce two-factor authentication"
 msgstr ""
 
@@ -23312,6 +23309,12 @@ msgstr ""
 msgid "Maximum duration of a session."
 msgstr ""
 
+msgid "Maximum export size"
+msgstr ""
+
+msgid "Maximum export size (MB)"
+msgstr ""
+
 msgid "Maximum field length"
 msgstr ""
 
@@ -23430,6 +23433,9 @@ msgid "Maximum size limit for each repository."
 msgstr ""
 
 msgid "Maximum size of Elasticsearch bulk indexing requests."
+msgstr ""
+
+msgid "Maximum size of export files."
 msgstr ""
 
 msgid "Maximum size of import files."
@@ -28807,9 +28813,6 @@ msgstr ""
 msgid "Profiles|Expiration date"
 msgstr ""
 
-msgid "Profiles|Expired key is not valid."
-msgstr ""
-
 msgid "Profiles|Expired:"
 msgstr ""
 
@@ -28837,9 +28840,6 @@ msgstr ""
 msgid "Profiles|Increase your account's security by enabling Two-Factor Authentication (2FA)"
 msgstr ""
 
-msgid "Profiles|Invalid key."
-msgstr ""
-
 msgid "Profiles|Invalid password"
 msgstr ""
 
@@ -28858,13 +28858,7 @@ msgstr ""
 msgid "Profiles|Key becomes invalid on this date. Maximum lifetime for SSH keys is %{max_ssh_key_lifetime} days"
 msgstr ""
 
-msgid "Profiles|Key can still be used after expiration."
-msgstr ""
-
 msgid "Profiles|Key titles are publicly visible."
-msgstr ""
-
-msgid "Profiles|Key usable beyond expiration date."
 msgstr ""
 
 msgid "Profiles|Last used:"
@@ -31196,10 +31190,10 @@ msgstr ""
 msgid "Release|Something went wrong while getting the release details."
 msgstr ""
 
-msgid "Release|Something went wrong while getting the tag notes."
+msgid "Release|Something went wrong while saving the release details."
 msgstr ""
 
-msgid "Release|Something went wrong while saving the release details."
+msgid "Release|Unable to fetch the tag notes."
 msgstr ""
 
 msgid "Release|You can edit the content later by editing the release. %{linkStart}How do I edit a release?%{linkEnd}"
@@ -34256,6 +34250,9 @@ msgstr ""
 msgid "Selected projects"
 msgstr ""
 
+msgid "Selected tag is already in use. Choose another option."
+msgstr ""
+
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By %{link_open}@johnsmith%{link_close}\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
@@ -34551,6 +34548,9 @@ msgid "Set time estimate"
 msgstr ""
 
 msgid "Set time estimate to %{time_estimate}."
+msgstr ""
+
+msgid "Set to 0 for no size limit."
 msgstr ""
 
 msgid "Set up CI/CD"
@@ -36815,7 +36815,7 @@ msgstr ""
 msgid "Tag name"
 msgstr ""
 
-msgid "Tag name is required"
+msgid "Tag name is required."
 msgstr ""
 
 msgid "Tag push"
@@ -37744,6 +37744,9 @@ msgid "The project is accessible only by members of the project. Access must be 
 msgstr ""
 
 msgid "The project is still being deleted. Please try again later."
+msgstr ""
+
+msgid "The project size exceeds the export limit."
 msgstr ""
 
 msgid "The project was successfully forked."

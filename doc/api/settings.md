@@ -36,6 +36,7 @@ Example response:
   "password_authentication_enabled_for_web" : true,
   "after_sign_out_path" : null,
   "max_attachment_size" : 10,
+  "max_export_size": 50,
   "max_import_size": 50,
   "user_oauth_applications" : true,
   "updated_at" : "2016-01-04T15:44:55.176Z",
@@ -147,6 +148,7 @@ Example response:
   "default_branch_protection": 2,
   "restricted_visibility_levels": [],
   "max_attachment_size": 10,
+  "max_export_size": 50,
   "max_import_size": 50,
   "session_expire_delay": 10080,
   "default_ci_config_path" : null,
@@ -367,6 +369,7 @@ listed in the descriptions of the relevant settings.
 | `maintenance_mode` **(PREMIUM)**         | boolean          | no                                   | When instance is in maintenance mode, non-administrative users can sign in with read-only access and make read-only API requests. |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB. |
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB. |
+| `max_export_size`                        | integer          | no                                   | Maximum export size in MB. 0 for unlimited. Default = 0 (unlimited). |
 | `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited) [Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
 | `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for access tokens in days. |

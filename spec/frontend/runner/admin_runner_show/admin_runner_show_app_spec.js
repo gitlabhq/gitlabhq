@@ -11,7 +11,7 @@ import RunnerHeader from '~/runner/components/runner_header.vue';
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
-import runnerQuery from '~/runner/graphql/details/runner.query.graphql';
+import runnerQuery from '~/runner/graphql/show/runner.query.graphql';
 import AdminRunnerShowApp from '~/runner/admin_runner_show/admin_runner_show_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 import { saveAlertToLocalStorage } from '~/runner/local_storage_alert/save_alert_to_local_storage';

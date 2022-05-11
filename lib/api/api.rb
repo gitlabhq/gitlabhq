@@ -184,6 +184,7 @@ module API
       mount ::API::Ci::Triggers
       mount ::API::Ci::Variables
       mount ::API::Clusters::Agents
+      mount ::API::Clusters::AgentTokens
       mount ::API::CommitStatuses
       mount ::API::Commits
       mount ::API::ComposerPackages

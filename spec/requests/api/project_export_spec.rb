@@ -410,6 +410,27 @@ RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
 
         it_behaves_like 'post project export start'
 
+        context 'with project export size limit' do
+          before do
+            stub_application_setting(max_export_size: 1)
+          end
+
+          it 'starts if limit not exceeded' do
+            post api(path, user)
+
+            expect(response).to have_gitlab_http_status(:accepted)
+          end
+
+          it '400 response if limit exceeded' do
+            project.statistics.update!(lfs_objects_size: 2.megabytes, repository_size: 2.megabytes)
+
+            post api(path, user)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response["message"]).to include('The project size exceeds the export limit.')
+          end
+        end
+
         context 'when rate limit is exceeded across projects' do
           before do
             allow(Gitlab::ApplicationRateLimiter)

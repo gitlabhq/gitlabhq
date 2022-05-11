@@ -21,6 +21,14 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   let(:target_branch) { 'feature' }
   let(:title) { 'my title' }
   let(:description) { 'my description' }
+  let(:multiline_description) do
+    <<~MD.chomp
+      Line 1
+      Line 2
+      Line 3
+    MD
+  end
+
   let(:label1) { 'mylabel1' }
   let(:label2) { 'mylabel2' }
   let(:label3) { 'mylabel3' }
@@ -61,6 +69,16 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       service.execute
 
       expect(last_mr.description).to eq(description)
+    end
+  end
+
+  shared_examples_for 'a service that can set the multiline description of a merge request' do
+    subject(:last_mr) { MergeRequest.last }
+
+    it 'sets the multiline description' do
+      service.execute
+
+      expect(last_mr.description).to eq(multiline_description)
     end
   end
 
@@ -417,6 +435,13 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
 
       it_behaves_like 'a service that does not create a merge request'
       it_behaves_like 'a service that can set the description of a merge request'
+
+      context 'with a multiline description' do
+        let(:push_options) { { description: "Line 1\\nLine 2\\nLine 3" } }
+
+        it_behaves_like 'a service that does not create a merge request'
+        it_behaves_like 'a service that can set the multiline description of a merge request'
+      end
     end
 
     it_behaves_like 'with a deleted branch'

@@ -249,9 +249,10 @@ describe('Release edit/new mutations', () => {
       state.isFetchingTagNotes = true;
       const message = 'tag notes';
 
-      mutations[types.RECEIVE_TAG_NOTES_SUCCESS](state, { message });
+      mutations[types.RECEIVE_TAG_NOTES_SUCCESS](state, { message, release });
       expect(state.tagNotes).toBe(message);
       expect(state.isFetchingTagNotes).toBe(false);
+      expect(state.existingRelease).toBe(release);
     });
   });
   describe(`${types.RECEIVE_TAG_NOTES_ERROR}`, () => {

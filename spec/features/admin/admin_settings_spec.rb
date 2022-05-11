@@ -111,6 +111,16 @@ RSpec.describe 'Admin updates settings' do
         expect(page).to have_content "Application settings saved successfully"
       end
 
+      it 'change Maximum export size' do
+        page.within('.as-account-limit') do
+          fill_in 'Maximum export size (MB)', with: 25
+          click_button 'Save changes'
+        end
+
+        expect(current_settings.max_export_size).to eq 25
+        expect(page).to have_content "Application settings saved successfully"
+      end
+
       it 'change Maximum import size' do
         page.within('.as-account-limit') do
           fill_in 'Maximum import size (MB)', with: 15

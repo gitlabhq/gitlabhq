@@ -28,8 +28,10 @@ module API
           expose :artifacts, using: Entities::Ci::JobRequest::Artifacts
           expose :cache, using: Entities::Ci::JobRequest::Cache
           expose :credentials, using: Entities::Ci::JobRequest::Credentials
-          expose :all_dependencies, as: :dependencies, using: Entities::Ci::JobRequest::Dependency
           expose :features
+          expose :dependencies do |job, options|
+            Entities::Ci::JobRequest::Dependency.represent(job.all_dependencies, options.merge(running_job: job))
+          end
         end
       end
     end

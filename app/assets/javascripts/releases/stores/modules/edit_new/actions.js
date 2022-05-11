@@ -236,7 +236,7 @@ export const fetchTagNotes = ({ commit, state }, tagName) => {
     })
     .catch((error) => {
       createFlash({
-        message: s__('Release|Something went wrong while getting the tag notes.'),
+        message: s__('Release|Unable to fetch the tag notes.'),
       });
 
       commit(types.RECEIVE_TAG_NOTES_ERROR, error);

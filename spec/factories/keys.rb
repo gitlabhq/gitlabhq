@@ -5,6 +5,16 @@ FactoryBot.define do
     title
     key { SSHData::PrivateKey::RSA.generate(1024, unsafe_allow_small_key: true).public_key.openssh(comment: 'dummy@gitlab.com') }
 
+    trait :expired do
+      to_create { |key| key.save!(validate: false) }
+      expires_at { 2.days.ago }
+    end
+
+    trait :expired_today do
+      to_create { |key| key.save!(validate: false) }
+      expires_at { Date.today.beginning_of_day + 3.hours }
+    end
+
     factory :key_without_comment do
       key { SSHData::PrivateKey::RSA.generate(1024, unsafe_allow_small_key: true).public_key.openssh }
     end

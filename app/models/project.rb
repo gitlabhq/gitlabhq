@@ -49,6 +49,7 @@ class Project < ApplicationRecord
   ignore_columns :container_registry_enabled, remove_after: '2021-09-22', remove_with: '14.4'
 
   BoardLimitExceeded = Class.new(StandardError)
+  ExportLimitExceeded = Class.new(StandardError)
 
   ignore_columns :mirror_last_update_at, :mirror_last_successful_update_at, remove_after: '2021-09-22', remove_with: '14.4'
   ignore_columns :pull_mirror_branch_prefix, remove_after: '2021-09-22', remove_with: '14.4'
@@ -2054,6 +2055,8 @@ class Project < ApplicationRecord
   end
 
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
+    check_project_export_limit!
+
     job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
 
     if job_id
@@ -3110,6 +3113,14 @@ class Project < ApplicationRecord
   def schedule_sync_event_worker
     run_after_commit do
       Projects::SyncEvent.enqueue_worker
+    end
+  end
+
+  def check_project_export_limit!
+    return if Gitlab::CurrentSettings.current_application_settings.max_export_size == 0
+
+    if self.statistics.storage_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
+      raise ExportLimitExceeded, _('The project size exceeds the export limit.')
     end
   end
 end

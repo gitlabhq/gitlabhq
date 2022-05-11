@@ -32,6 +32,8 @@ module QA
       # @return [void]
       def download_report
         logger.debug("Downloading latest knapsack report for '#{report_name}' to '#{report_path}'")
+        return logger.debug("Report already exists, skipping!") if File.exist?(report_path)
+
         file = client.get_object(BUCKET, report_file)
         File.write(report_path, file[:body])
       rescue StandardError => e
@@ -146,7 +148,7 @@ module QA
       #
       # @return [String]
       def report_name
-        @report_name ||= ENV["CI_JOB_NAME"].split(" ").first.tr(":", "-")
+        @report_name ||= ENV["QA_KNAPSACK_REPORT_NAME"] || ENV["CI_JOB_NAME"].split(" ").first.tr(":", "-")
       end
 
       # GCS credentials json

@@ -228,6 +228,15 @@ RSpec.describe Gitlab::GitAccess do
       project.add_maintainer(user)
     end
 
+    context 'key is expired' do
+      let(:actor) { create(:rsa_key_2048, :expired) }
+
+      it 'does not allow expired keys', :aggregate_failures do
+        expect { pull_access_check }.to raise_forbidden('Your SSH key has expired.')
+        expect { push_access_check }.to raise_forbidden('Your SSH key has expired.')
+      end
+    end
+
     context 'key is too small' do
       before do
         stub_application_setting(rsa_key_restriction: 4096)

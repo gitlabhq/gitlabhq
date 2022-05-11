@@ -1454,6 +1454,41 @@ RSpec.describe ProjectsController do
 
           expect(response).to have_gitlab_http_status(:found)
         end
+
+        context 'when the project storage_size exceeds the application setting max_export_size' do
+          it 'returns 302 with alert' do
+            stub_application_setting(max_export_size: 1)
+            project.statistics.update!(lfs_objects_size: 2.megabytes, repository_size: 2.megabytes)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(flash[:alert]).to include('The project size exceeds the export limit.')
+          end
+        end
+
+        context 'when the project storage_size does not exceed the application setting max_export_size' do
+          it 'returns 302 without alert' do
+            stub_application_setting(max_export_size: 1)
+            project.statistics.update!(lfs_objects_size: 0.megabytes, repository_size: 0.megabytes)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(flash[:alert]).to be_nil
+          end
+        end
+
+        context 'when application setting max_export_size is not set' do
+          it 'returns 302 without alert' do
+            project.statistics.update!(lfs_objects_size: 2.megabytes, repository_size: 2.megabytes)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(flash[:alert]).to be_nil
+          end
+        end
       end
 
       context 'when project export is disabled' do

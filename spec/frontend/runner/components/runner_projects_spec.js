@@ -16,7 +16,7 @@ import RunnerAssignedItem from '~/runner/components/runner_assigned_item.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 import { captureException } from '~/runner/sentry_utils';
 
-import runnerProjectsQuery from '~/runner/graphql/details/runner_projects.query.graphql';
+import runnerProjectsQuery from '~/runner/graphql/show/runner_projects.query.graphql';
 
 import { runnerData, runnerProjectsData } from '../mock_data';
 

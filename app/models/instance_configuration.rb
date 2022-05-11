@@ -47,6 +47,7 @@ class InstanceConfiguration
     {
       max_attachment_size: application_settings[:max_attachment_size].megabytes,
       receive_max_input_size: application_settings[:receive_max_input_size]&.megabytes,
+      max_export_size: application_settings[:max_export_size] > 0 ? application_settings[:max_export_size].megabytes : nil,
       max_import_size: application_settings[:max_import_size] > 0 ? application_settings[:max_import_size].megabytes : nil,
       diff_max_patch_bytes: application_settings[:diff_max_patch_bytes].bytes,
       max_artifacts_size: application_settings[:max_artifacts_size].megabytes,

@@ -406,7 +406,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 14.10.0
 
-- The upgrade to GitLab 14.10 executes a [concurrent index drop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84308) of unneeded
+- Before upgrading to GitLab 14.10, you need to already have the latest 14.9.Z installed on your instance.
+  The upgrade to GitLab 14.10 executes a [concurrent index drop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84308) of unneeded
   entries from the `ci_job_artifacts` database table. This could potentially run for multiple minutes, especially if the table has a lot of
   traffic and the migration is unable to acquire a lock. It is advised to let this process finish as restarting may result in data loss.
 

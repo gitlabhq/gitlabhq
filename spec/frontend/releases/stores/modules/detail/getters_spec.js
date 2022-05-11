@@ -146,6 +146,8 @@ describe('Release edit/new getters', () => {
               ],
             },
           },
+          // tag has an existing release
+          existingRelease: {},
         };
 
         actualErrors = getters.validationErrors(state);
@@ -154,6 +156,14 @@ describe('Release edit/new getters', () => {
       it('returns a validation error if the tag name is empty', () => {
         const expectedErrors = {
           isTagNameEmpty: true,
+        };
+
+        expect(actualErrors).toMatchObject(expectedErrors);
+      });
+
+      it('returns a validation error if the tag has an existing release', () => {
+        const expectedErrors = {
+          existingRelease: true,
         };
 
         expect(actualErrors).toMatchObject(expectedErrors);

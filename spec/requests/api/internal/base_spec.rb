@@ -802,13 +802,13 @@ RSpec.describe API::Internal::Base do
 
       context 'git pull' do
         context 'with a key that has expired' do
-          let(:key) { create(:key, user: user, expires_at: 2.days.ago) }
+          let(:key) { create(:key, :expired, user: user) }
 
-          it 'includes the `key expired` message in the response' do
+          it 'includes the `key expired` message in the response and fails' do
             pull(key, project)
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key has expired. Please generate a new key.'])
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response['message']).to eq('Your SSH key has expired.')
           end
         end
 

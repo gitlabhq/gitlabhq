@@ -417,6 +417,14 @@ RSpec.describe ApplicationSetting do
         .is_greater_than(0)
     end
 
+    it { is_expected.to validate_presence_of(:max_export_size) }
+
+    specify do
+      is_expected.to validate_numericality_of(:max_export_size)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
+    end
+
     it { is_expected.to validate_presence_of(:max_import_size) }
 
     specify do

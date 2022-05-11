@@ -15,6 +15,14 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
   let(:issue_path) { "/#{issue.project.namespace.path}/#{issue.project.path}/-/issues/#{issue.iid}" }
   let(:issue_url) { "http://#{Gitlab.config.gitlab.host}#{issue_path}" }
 
+  shared_examples 'a reference with issue type information' do
+    it 'contains issue-type as a data attribute' do
+      doc = reference_filter("Fixed #{reference}")
+
+      expect(doc.css('a').first.attr('data-issue-type')).to eq('issue')
+    end
+  end
+
   it 'requires project context' do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
@@ -43,6 +51,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     let(:reference) { "##{issue.iid}" }
 
     it_behaves_like 'a reference containing an element node'
+
+    it_behaves_like 'a reference with issue type information'
 
     it 'links to a valid reference' do
       doc = reference_filter("Fixed #{reference}")
@@ -158,6 +168,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
     it_behaves_like 'a reference containing an element node'
 
+    it_behaves_like 'a reference with issue type information'
+
     it 'ignores valid references when cross-reference project uses external tracker' do
       expect_any_instance_of(described_class).to receive(:find_object)
         .with(project2, issue.iid)
@@ -207,6 +219,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     let(:namespace) { create(:namespace) }
 
     it_behaves_like 'a reference containing an element node'
+
+    it_behaves_like 'a reference with issue type information'
 
     it 'ignores valid references when cross-reference project uses external tracker' do
       expect_any_instance_of(described_class).to receive(:find_object)
@@ -258,6 +272,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
     it_behaves_like 'a reference containing an element node'
 
+    it_behaves_like 'a reference with issue type information'
+
     it 'ignores valid references when cross-reference project uses external tracker' do
       expect_any_instance_of(described_class).to receive(:find_object)
         .with(project2, issue.iid)
@@ -307,6 +323,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
     it_behaves_like 'a reference containing an element node'
 
+    it_behaves_like 'a reference with issue type information'
+
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
@@ -342,6 +360,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
     it_behaves_like 'a reference containing an element node'
 
+    it_behaves_like 'a reference with issue type information'
+
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference_link}")
 
@@ -370,6 +390,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     let(:namespace) { create(:namespace, name: 'cross-reference') }
 
     it_behaves_like 'a reference containing an element node'
+
+    it_behaves_like 'a reference with issue type information'
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference_link}")

@@ -238,6 +238,11 @@ class ProjectsController < Projects::ApplicationController
       edit_project_path(@project, anchor: 'js-export-project'),
       notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
+  rescue Project::ExportLimitExceeded => ex
+    redirect_to(
+      edit_project_path(@project, anchor: 'js-export-project'),
+      alert: ex.to_s
+    )
   end
 
   def download_export

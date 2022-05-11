@@ -69,6 +69,27 @@ be present during the 16.x cycle to avoid breaking the API signature, and will b
 **Planned removal milestone: <span class="removal-milestone">16.0</span> (2023-05-22)**
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### PostgreSQL 12 deprecated
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Support for PostgreSQL 12 is scheduled for removal in GitLab 16.0.
+In GitLab 16.0, PostgreSQL 13 becomes the minimum required PostgreSQL version.
+
+PostgreSQL 12 will be supported for the full GitLab 15 release cycle.
+PostgreSQL 13 will also be supported for instances that want to upgrade prior to GitLab 16.0.
+
+Upgrading to PostgreSQL 13 is not yet supported for GitLab instances with Geo enabled. Geo support for PostgreSQL 13 will be announced in a minor release version of GitLab 15, after the process is fully supported and validated. For more information, read the Geo related verifications on the [support epic for PostgreSQL 13](https://gitlab.com/groups/gitlab-org/-/epics/3832).
+
+**Planned removal milestone: <span class="removal-milestone">16.0</span> (2023-05-22)**
+</div>
+
 <div class="deprecation removal-152">
 
 ### Vulnerability Report sort by State

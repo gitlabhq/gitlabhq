@@ -147,6 +147,10 @@ module MergeRequests
         params[:milestone] = milestone if milestone
       end
 
+      if params.key?(:description)
+        params[:description] = params[:description].gsub('\n', "\n")
+      end
+
       params
     end
 

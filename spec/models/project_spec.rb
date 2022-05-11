@@ -7158,11 +7158,33 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#add_export_job' do
-    context 'if not already present' do
-      it 'starts project export job' do
-        user = create(:user)
-        project = build(:project)
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
 
+    context 'when project storage_size does not exceed the application setting max_export_size' do
+      it 'starts project export worker' do
+        stub_application_setting(max_export_size: 1)
+        allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
+
+        expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+
+        project.add_export_job(current_user: user)
+      end
+    end
+
+    context 'when project storage_size exceeds the application setting max_export_size' do
+      it 'raises Project::ExportLimitExceeded' do
+        stub_application_setting(max_export_size: 1)
+        allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
+
+        expect(ProjectExportWorker).not_to receive(:perform_async).with(user.id, project.id, nil, {})
+        expect { project.add_export_job(current_user: user) }.to raise_error(Project::ExportLimitExceeded)
+      end
+    end
+
+    context 'when application setting max_export_size is not set' do
+      it 'starts project export worker' do
+        allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
         expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
 
         project.add_export_job(current_user: user)

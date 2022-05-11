@@ -8,16 +8,16 @@ import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
 import RunnerUpdateForm from '~/runner/components/runner_update_form.vue';
-import runnerQuery from '~/runner/graphql/details/runner.query.graphql';
+import runnerFormQuery from '~/runner/graphql/edit/runner_form.query.graphql';
 import AdminRunnerEditApp from '~//runner/admin_runner_edit/admin_runner_edit_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 
-import { runnerData } from '../mock_data';
+import { runnerFormData } from '../mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
 
-const mockRunner = runnerData.data.runner;
+const mockRunner = runnerFormData.data.runner;
 const mockRunnerGraphqlId = mockRunner.id;
 const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
 const mockRunnerPath = `/admin/runners/${mockRunnerId}`;
@@ -33,7 +33,7 @@ describe('AdminRunnerEditApp', () => {
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(AdminRunnerEditApp, {
-      apolloProvider: createMockApollo([[runnerQuery, mockRunnerQuery]]),
+      apolloProvider: createMockApollo([[runnerFormQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
         runnerPath: mockRunnerPath,
@@ -45,7 +45,7 @@ describe('AdminRunnerEditApp', () => {
   };
 
   beforeEach(() => {
-    mockRunnerQuery = jest.fn().mockResolvedValue(runnerData);
+    mockRunnerQuery = jest.fn().mockResolvedValue(runnerFormData);
   });
 
   afterEach(() => {

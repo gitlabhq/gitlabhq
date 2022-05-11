@@ -18,7 +18,7 @@ import { redirectTo } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
-import runnerUpdateMutation from '../graphql/details/runner_update.mutation.graphql';
+import runnerUpdateMutation from '../graphql/edit/runner_update.mutation.graphql';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {

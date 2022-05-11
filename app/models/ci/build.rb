@@ -757,7 +757,7 @@ module Ci
     end
 
     def valid_token?(token)
-      self.token && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
+      self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
     end
 
     # acts_as_taggable uses this method create/remove tags with contexts

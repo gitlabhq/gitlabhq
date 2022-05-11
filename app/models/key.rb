@@ -29,6 +29,7 @@ class Key < ApplicationRecord
     presence: { message: 'cannot be generated' }
 
   validate :key_meets_restrictions
+  validate :expiration, on: :create
 
   delegate :name, :email, to: :user, prefix: true
 
@@ -147,6 +148,10 @@ class Key < ApplicationRecord
     allowed_types = Gitlab::CurrentSettings.allowed_key_types.map(&:upcase)
 
     "type is forbidden. Must be #{Gitlab::Utils.to_exclusive_sentence(allowed_types)}"
+  end
+
+  def expiration
+    errors.add(:key, message: 'has expired') if expired?
   end
 end
 

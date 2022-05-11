@@ -54,6 +54,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['runner_token_expiration_interval']).to be_nil
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
+      expect(json_response['max_export_size']).to eq(0)
     end
   end
 
@@ -138,6 +139,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             spam_check_api_key: 'SPAM_CHECK_API_KEY',
             mailgun_events_enabled: true,
             mailgun_signing_key: 'MAILGUN_SIGNING_KEY',
+            max_export_size: 6,
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
             wiki_page_max_content_bytes: 12345,
@@ -193,6 +195,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['spam_check_api_key']).to eq('SPAM_CHECK_API_KEY')
         expect(json_response['mailgun_events_enabled']).to be(true)
         expect(json_response['mailgun_signing_key']).to eq('MAILGUN_SIGNING_KEY')
+        expect(json_response['max_export_size']).to eq(6)
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w(github bitbucket))
         expect(json_response['wiki_page_max_content_bytes']).to eq(12345)

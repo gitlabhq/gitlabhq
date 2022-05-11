@@ -24,6 +24,9 @@
           %td= _('Maximum push size')
           %td= instance_configuration_human_size_cell(size_limits[:receive_max_input_size])
         %tr
+          %td= _('Maximum export size')
+          %td= instance_configuration_human_size_cell(size_limits[:max_export_size])
+        %tr
           %td= _('Maximum import size')
           %td= instance_configuration_human_size_cell(size_limits[:max_import_size])
         %tr

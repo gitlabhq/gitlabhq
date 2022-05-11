@@ -127,9 +127,9 @@ scripts/regenerate-schema
 TARGET=12-9-stable-ee scripts/regenerate-schema
 ```
 
-There may be times when the `scripts/regenerate-schema` script creates
-additional differences. In this case, a manual procedure can be used,
-where <migration ID> is the DATETIME part of the migration file.
+The `scripts/regenerate-schema` script can create additional differences.
+If this happens, use a manual procedure where `<migration ID>` is the `DATETIME`
+part of the migration file.
 
 ```shell
 # Rebase against master

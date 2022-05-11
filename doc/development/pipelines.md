@@ -93,7 +93,7 @@ In addition, there are a few circumstances where we would always run the full Je
 ### Fork pipelines
 
 We only run the minimal RSpec & Jest jobs for fork pipelines unless the `pipeline:run-all-rspec`
-label is set on the MR. The goal is to reduce the CI minutes consumed by fork pipelines.
+label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
 

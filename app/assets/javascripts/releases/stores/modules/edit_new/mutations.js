@@ -103,6 +103,7 @@ export default {
     state.fetchError = undefined;
     state.isFetchingTagNotes = false;
     state.tagNotes = data.message;
+    state.existingRelease = data.release;
   },
   [types.RECEIVE_TAG_NOTES_ERROR](state, error) {
     state.fetchError = error;

@@ -52,13 +52,21 @@ export default {
       },
     },
     showTagNameValidationError() {
-      return this.isInputDirty && this.validationErrors.isTagNameEmpty;
+      return (
+        this.isInputDirty &&
+        (this.validationErrors.isTagNameEmpty || this.validationErrors.existingRelease)
+      );
     },
     tagNameInputId() {
       return uniqueId('tag-name-input-');
     },
     createFromSelectorId() {
       return uniqueId('create-from-selector-');
+    },
+    tagFeedback() {
+      return this.validationErrors.existingRelease
+        ? __('Selected tag is already in use. Choose another option.')
+        : __('Tag name is required.');
     },
   },
   methods: {
@@ -112,7 +120,7 @@ export default {
     <gl-form-group
       data-testid="tag-name-field"
       :state="!showTagNameValidationError"
-      :invalid-feedback="__('Tag name is required')"
+      :invalid-feedback="tagFeedback"
       :label="$options.translations.tagName.label"
       :label-for="tagNameInputId"
       :label-description="$options.translations.tagName.labelDescription"

@@ -99,6 +99,7 @@ RSpec.describe InstanceConfiguration do
             max_attachment_size: 10,
             receive_max_input_size: 20,
             max_import_size: 30,
+            max_export_size: 40,
             diff_max_patch_bytes: 409600,
             max_artifacts_size: 50,
             max_pages_size: 60,
@@ -112,6 +113,7 @@ RSpec.describe InstanceConfiguration do
           expect(size_limits[:max_attachment_size]).to eq(10.megabytes)
           expect(size_limits[:receive_max_input_size]).to eq(20.megabytes)
           expect(size_limits[:max_import_size]).to eq(30.megabytes)
+          expect(size_limits[:max_export_size]).to eq(40.megabytes)
           expect(size_limits[:diff_max_patch_bytes]).to eq(400.kilobytes)
           expect(size_limits[:max_artifacts_size]).to eq(50.megabytes)
           expect(size_limits[:max_pages_size]).to eq(60.megabytes)
@@ -127,11 +129,16 @@ RSpec.describe InstanceConfiguration do
         end
 
         it 'returns nil if set to 0 (unlimited)' do
-          Gitlab::CurrentSettings.current_application_settings.update!(max_import_size: 0, max_pages_size: 0)
+          Gitlab::CurrentSettings.current_application_settings.update!(
+            max_import_size: 0,
+            max_export_size: 0,
+            max_pages_size: 0
+          )
 
           size_limits = subject.settings[:size_limits]
 
           expect(size_limits[:max_import_size]).to be_nil
+          expect(size_limits[:max_export_size]).to be_nil
           expect(size_limits[:max_pages_size]).to be_nil
         end
       end

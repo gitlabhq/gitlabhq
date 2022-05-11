@@ -1048,8 +1048,8 @@ RSpec.describe User do
     context 'SSH key expiration scopes' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }
-      let_it_be(:expired_today_not_notified) { create(:key, expires_at: Time.current, user: user1) }
-      let_it_be(:expired_today_already_notified) { create(:key, expires_at: Time.current, user: user2, expiry_notification_delivered_at: Time.current) }
+      let_it_be(:expired_today_not_notified) { create(:key, :expired_today, user: user1) }
+      let_it_be(:expired_today_already_notified) { create(:key, :expired_today, user: user2, expiry_notification_delivered_at: Time.current) }
       let_it_be(:expiring_soon_not_notified) { create(:key, expires_at: 2.days.from_now, user: user2) }
       let_it_be(:expiring_soon_notified) { create(:key, expires_at: 2.days.from_now, user: user1, before_expiry_notification_delivered_at: Time.current) }
 

@@ -34,9 +34,6 @@ export default {
       variables() {
         return { environment: this.nestedEnvironment.latest, scope: this.scope };
       },
-      pollInterval() {
-        return this.interval;
-      },
     },
     interval: {
       query: pollIntervalQuery,
@@ -73,6 +70,11 @@ export default {
   methods: {
     toggleCollapse() {
       this.visible = !this.visible;
+      if (this.visible) {
+        this.$apollo.queries.folder.startPolling(this.interval);
+      } else {
+        this.$apollo.queries.folder.stopPolling();
+      }
     },
     isFirstEnvironment(index) {
       return index === 0;

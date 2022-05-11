@@ -18,7 +18,7 @@ namespace :knapsack do
 
   desc "Download latest knapsack report"
   task :download do
-    QA::Support::KnapsackReport.download
+    QA::Support::KnapsackReport.download_report
   end
 
   desc "Merge and upload knapsack report"

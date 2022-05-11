@@ -5,6 +5,12 @@ include:
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
 
+.bundler_variables:
+  variables:
+    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+    BUNDLE_SILENCE_ROOT_WARNING: "true"
+    BUNDLE_PATH: vendor
+
 .test_variables:
   variables:
     QA_DEBUG: "true"
@@ -21,16 +27,17 @@ include:
     - .use-docker-in-docker
     - .qa-cache
     - .test_variables
+    - .bundler_variables
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-bullseye-ruby-2.7-bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
   stage: qa
-  needs: ["review-deploy"]
+  needs:
+    - review-deploy
+    - download-knapsack-report
   variables:
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: /certs
     DOCKER_CERT_PATH: /certs/client
     DOCKER_TLS_VERIFY: 1
-    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
-    BUNDLE_PATH: vendor
   before_script:
     - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
     - export QA_GITLAB_URL="$(cat environment_url.txt)"
@@ -70,6 +77,25 @@ include:
     ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
     ALLURE_RESULTS_GLOB: qa/tmp/allure-results/*
+
+# Store knapsack report as artifact so the same report is reused across all jobs
+download-knapsack-report:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-99
+  extends:
+    - .qa-cache
+    - .bundler_variables
+    - .review:rules:review-qa-reliable
+  stage: prepare
+  before_script:
+    - cd qa && bundle install
+  script:
+    - QA_KNAPSACK_REPORT_NAME=review-qa-reliable bundle exec rake "knapsack:download"
+    - QA_KNAPSACK_REPORT_NAME=review-qa-all bundle exec rake "knapsack:download"
+  allow_failure: true
+  artifacts:
+    paths:
+      - qa/knapsack/review-qa-*.json
+    expire_in: 1 day
 
 review-qa-smoke:
   extends:
@@ -145,7 +171,7 @@ allure-report-qa-all:
   variables:
     ALLURE_JOB_NAME: review-qa-all
 
-knapsack-report:
+upload-knapsack-report:
   extends:
     - .generate-knapsack-report-base
   stage: post-qa

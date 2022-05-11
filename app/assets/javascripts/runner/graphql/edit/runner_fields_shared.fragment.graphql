@@ -1,0 +1,15 @@
+fragment RunnerFieldsShared on CiRunner {
+  __typename
+  id
+  shortSha
+  runnerType
+  active
+  accessLevel
+  runUntagged
+  locked
+  description
+  maximumTimeout
+  tagList
+  createdAt
+  status(legacyMode: null)
+}

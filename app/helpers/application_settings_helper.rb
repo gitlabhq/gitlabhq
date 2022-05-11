@@ -272,6 +272,7 @@ module ApplicationSettingsHelper
       :invisible_captcha_enabled,
       :max_artifacts_size,
       :max_attachment_size,
+      :max_export_size,
       :max_import_size,
       :max_pages_size,
       :max_yaml_size_bytes,

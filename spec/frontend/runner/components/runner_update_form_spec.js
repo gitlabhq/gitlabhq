@@ -14,17 +14,17 @@ import {
   ACCESS_LEVEL_REF_PROTECTED,
   ACCESS_LEVEL_NOT_PROTECTED,
 } from '~/runner/constants';
-import runnerUpdateMutation from '~/runner/graphql/details/runner_update.mutation.graphql';
+import runnerUpdateMutation from '~/runner/graphql/edit/runner_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import { saveAlertToLocalStorage } from '~/runner/local_storage_alert/save_alert_to_local_storage';
-import { runnerData } from '../mock_data';
+import { runnerFormData } from '../mock_data';
 
 jest.mock('~/runner/local_storage_alert/save_alert_to_local_storage');
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
 jest.mock('~/lib/utils/url_utility');
 
-const mockRunner = runnerData.data.runner;
+const mockRunner = runnerFormData.data.runner;
 const mockRunnerPath = '/admin/runners/1';
 
 Vue.use(VueApollo);
@@ -127,24 +127,7 @@ describe('RunnerUpdateForm', () => {
     await submitFormAndWait();
 
     // Some read-only fields are not submitted
-    const {
-      __typename,
-      shortSha,
-      ipAddress,
-      executorName,
-      architectureName,
-      platformName,
-      runnerType,
-      createdAt,
-      status,
-      editAdminUrl,
-      contactedAt,
-      userPermissions,
-      version,
-      groups,
-      jobCount,
-      ...submitted
-    } = mockRunner;
+    const { __typename, shortSha, runnerType, createdAt, status, ...submitted } = mockRunner;
 
     expectToHaveSubmittedRunnerContaining(submitted);
   });

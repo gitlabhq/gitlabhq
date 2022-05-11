@@ -608,7 +608,7 @@ describe('Release edit/new actions', () => {
       );
 
       expect(createFlash).toHaveBeenCalledWith({
-        message: s__('Release|Something went wrong while getting the tag notes.'),
+        message: s__('Release|Unable to fetch the tag notes.'),
       });
       expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);
     });

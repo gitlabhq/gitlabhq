@@ -13,6 +13,7 @@ class ApplicationSetting < ApplicationRecord
   ignore_column %i[max_package_files_for_package_destruction], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
   ignore_column :pseudonymizer_enabled, remove_with: '15.1', remove_after: '2022-06-22'
+  ignore_column :enforce_ssh_key_expiration, remove_with: '15.2', remove_after: '2022-07-22'
   ignore_column :enforce_pat_expiration, remove_with: '15.2', remove_after: '2022-07-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
@@ -200,6 +201,10 @@ class ApplicationSetting < ApplicationRecord
   validates :max_artifacts_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
+
+  validates :max_export_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :max_import_size,
             presence: true,

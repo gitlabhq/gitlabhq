@@ -199,7 +199,7 @@ export default {
         >
           <gl-button
             category="primary"
-            variant="success"
+            variant="confirm"
             :disabled="!Boolean(selectedProject)"
             class="gl-text-center! issuable-move-button"
             @click="handleMoveClick"

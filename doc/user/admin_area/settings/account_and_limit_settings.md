@@ -66,6 +66,16 @@ because the [web server](../../../development/architecture.md#components)
 must receive the file before GitLab can generate the commit.
 Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a repository.
 
+## Max export size
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86124) in GitLab 15.0.
+
+To modify the maximum file size for exports in GitLab:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. Increase or decrease by changing the value in **Maximum export size (MB)**.
+
 ## Max import size
 
 > [Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
@@ -231,25 +241,17 @@ Once a lifetime for SSH keys is set, GitLab:
 NOTE:
 When a user's SSH key becomes invalid they can delete and re-add the same key again.
 
-## Allow expired SSH keys to be used (DEPRECATED) **(ULTIMATE SELF)**
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
+## Allow expired SSH keys to be used (removed) **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320970) in GitLab 14.0.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 15.0.
 
-WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8.
-
-By default, expired SSH keys **are not usable**.
-
-To allow the use of expired SSH keys:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Account and limit** section.
-1. Uncheck the **Enforce SSH key expiration** checkbox.
-
-Disabling SSH key expiration immediately enables all expired SSH keys.
+This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 15.0.
+<!--- end_remove -->
 
 ## Limit the lifetime of access tokens **(ULTIMATE SELF)**
 

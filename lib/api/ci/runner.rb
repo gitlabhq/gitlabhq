@@ -324,9 +324,14 @@ module API
           optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
         end
         get '/:id/artifacts', feature_category: :build_artifacts do
-          job = authenticate_job!(require_running: false)
+          if Feature.enabled?(:ci_authenticate_running_job_token_for_artifacts, current_job&.project) &&
+            request_using_running_job_token?
+            authenticate_job_via_dependent_job!
+          else
+            authenticate_job!(require_running: false)
+          end
 
-          present_carrierwave_file!(job.artifacts_file, supports_direct_download: params[:direct_download])
+          present_carrierwave_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
         end
       end
     end

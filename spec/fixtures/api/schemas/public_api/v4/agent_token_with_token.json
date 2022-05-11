@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "description",
+    "agent_id",
+    "status",
+    "created_at",
+    "created_by_user_id",
+    "last_used_at",
+    "token"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "agent_id": { "type": "integer" },
+    "status": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "created_by_user_id": { "type": "integer" },
+    "last_used_at": { "type": ["string", "null"], "format": "date-time" },
+    "token": { "type": "string" }
+  },
+  "additionalProperties": false
+}

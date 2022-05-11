@@ -188,6 +188,18 @@ describe('releases/components/tag_field_new', () => {
 
           await expectValidationMessageToBe('hidden');
         });
+
+        it('displays a validation error if the tag has an associated release', async () => {
+          findTagNameDropdown().vm.$emit('input', 'vTest');
+          findTagNameDropdown().vm.$emit('hide');
+
+          store.state.editNew.existingRelease = {};
+
+          await expectValidationMessageToBe('shown');
+          expect(findTagNameFormGroup().text()).toContain(
+            __('Selected tag is already in use. Choose another option.'),
+          );
+        });
       });
 
       describe('when the user has interacted with the component and the value is empty', () => {
@@ -196,6 +208,7 @@ describe('releases/components/tag_field_new', () => {
           findTagNameDropdown().vm.$emit('hide');
 
           await expectValidationMessageToBe('shown');
+          expect(findTagNameFormGroup().text()).toContain(__('Tag name is required.'));
         });
       });
     });

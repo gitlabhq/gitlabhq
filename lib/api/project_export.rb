@@ -66,9 +66,13 @@ module API
         if export_strategy&.invalid?
           render_validation_error!(export_strategy)
         else
-          user_project.add_export_job(current_user: current_user,
-                                      after_export_strategy: export_strategy,
-                                      params: project_export_params)
+          begin
+            user_project.add_export_job(current_user: current_user,
+                                        after_export_strategy: export_strategy,
+                                        params: project_export_params)
+          rescue Project::ExportLimitExceeded => e
+            render_api_error!(e.message, 400)
+          end
         end
 
         accepted!

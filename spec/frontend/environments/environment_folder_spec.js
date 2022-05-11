@@ -15,12 +15,13 @@ Vue.use(VueApollo);
 describe('~/environments/components/environments_folder.vue', () => {
   let wrapper;
   let environmentFolderMock;
+  let intervalMock;
   let nestedEnvironment;
 
   const findLink = () => wrapper.findByRole('link', { name: s__('Environments|Show all') });
 
   const createApolloProvider = () => {
-    const mockResolvers = { Query: { folder: environmentFolderMock } };
+    const mockResolvers = { Query: { folder: environmentFolderMock, interval: intervalMock } };
 
     return createMockApollo([], mockResolvers);
   };
@@ -40,6 +41,8 @@ describe('~/environments/components/environments_folder.vue', () => {
     environmentFolderMock = jest.fn();
     [nestedEnvironment] = resolvedEnvironmentsApp.environments;
     environmentFolderMock.mockReturnValue(resolvedFolder);
+    intervalMock = jest.fn();
+    intervalMock.mockReturnValue(2000);
   });
 
   afterEach(() => {
@@ -70,6 +73,8 @@ describe('~/environments/components/environments_folder.vue', () => {
       beforeEach(() => {
         collapse = wrapper.findComponent(GlCollapse);
         icons = wrapper.findAllComponents(GlIcon);
+        jest.spyOn(wrapper.vm.$apollo.queries.folder, 'startPolling');
+        jest.spyOn(wrapper.vm.$apollo.queries.folder, 'stopPolling');
       });
 
       it('is collapsed by default', () => {
@@ -93,6 +98,8 @@ describe('~/environments/components/environments_folder.vue', () => {
         expect(iconNames).toEqual(['angle-down', 'folder-open']);
         expect(folderName.classes('gl-font-weight-bold')).toBe(true);
         expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
+
+        expect(wrapper.vm.$apollo.queries.folder.startPolling).toHaveBeenCalledWith(2000);
       });
 
       it('displays all environments when opened', async () => {
@@ -105,6 +112,16 @@ describe('~/environments/components/environments_folder.vue', () => {
           .findAllComponents(EnvironmentItem)
           .wrappers.map((w) => w.text());
         expect(environments).toEqual(expect.arrayContaining(names));
+      });
+
+      it('stops polling on click', async () => {
+        await button.trigger('click');
+        expect(wrapper.vm.$apollo.queries.folder.startPolling).toHaveBeenCalledWith(2000);
+
+        const collapseButton = wrapper.findByRole('button', { name: __('Collapse') });
+        await collapseButton.trigger('click');
+
+        expect(wrapper.vm.$apollo.queries.folder.stopPolling).toHaveBeenCalled();
       });
     });
   });

@@ -102,15 +102,15 @@ RSpec.describe Key, :mailer do
 
     context 'expiration scopes' do
       let_it_be(:user) { create(:user) }
-      let_it_be(:expired_today_not_notified) { create(:key, expires_at: Time.current, user: user) }
-      let_it_be(:expired_today_already_notified) { create(:key, expires_at: Time.current, user: user, expiry_notification_delivered_at: Time.current) }
-      let_it_be(:expired_yesterday) { create(:key, expires_at: 1.day.ago, user: user) }
+      let_it_be(:expired_today_not_notified) { create(:key, :expired_today, user: user) }
+      let_it_be(:expired_today_already_notified) { create(:key, :expired_today, user: user, expiry_notification_delivered_at: Time.current) }
+      let_it_be(:expired_yesterday) { create(:key, :expired, user: user) }
       let_it_be(:expiring_soon_unotified) { create(:key, expires_at: 3.days.from_now, user: user) }
       let_it_be(:expiring_soon_notified) { create(:key, expires_at: 4.days.from_now, user: user, before_expiry_notification_delivered_at: Time.current) }
       let_it_be(:future_expiry) { create(:key, expires_at: 1.month.from_now, user: user) }
 
       describe '.expired_today_and_not_notified' do
-        it 'returns keys that expire today and in the past' do
+        it 'returns keys that expire today and have not been notified' do
           expect(described_class.expired_today_and_not_notified).to contain_exactly(expired_today_not_notified)
         end
       end

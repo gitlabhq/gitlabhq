@@ -10,7 +10,7 @@ import RunnerPauseButton from '../components/runner_pause_button.vue';
 import RunnerHeader from '../components/runner_header.vue';
 import RunnerDetails from '../components/runner_details.vue';
 import { I18N_FETCH_ERROR } from '../constants';
-import runnerQuery from '../graphql/details/runner.query.graphql';
+import runnerQuery from '../graphql/show/runner.query.graphql';
 import { captureException } from '../sentry_utils';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
