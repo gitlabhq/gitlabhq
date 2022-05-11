@@ -3,16 +3,10 @@
 module Mutations
   module CustomerRelations
     module Contacts
-      class Create < BaseMutation
+      class Create < Base
         graphql_name 'CustomerRelationsContactCreate'
 
-        include ResolvesIds
         include Gitlab::Graphql::Authorize::AuthorizeResource
-
-        field :contact,
-              Types::CustomerRelations::ContactType,
-              null: true,
-              description: 'Contact after the mutation.'
 
         argument :group_id, ::Types::GlobalIDType[::Group],
                  required: true,
@@ -42,8 +36,6 @@ module Mutations
                  required: false,
                  description: 'Description of or notes for the contact.'
 
-        authorize :admin_crm_contact
-
         def resolve(args)
           group = authorized_find!(id: args[:group_id])
 
@@ -54,12 +46,6 @@ module Mutations
 
         def find_object(id:)
           GitlabSchema.object_from_id(id, expected_type: ::Group)
-        end
-
-        def set_organization!(args)
-          return unless args[:organization_id]
-
-          args[:organization_id] = args[:organization_id].model_id
         end
       end
     end

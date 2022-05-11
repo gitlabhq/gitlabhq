@@ -268,6 +268,7 @@ Use this regex for commonly used test tools.
 - gcovr (C/C++). Example: `^TOTAL.*\s+(\d+\%)$`.
 - `tap --coverage-report=text-summary` (NodeJS). Example: `^Statements\s*:\s*([^%]+)`.
 - `nyc npm test` (NodeJS). Example: `All files[^|]*\|[^|]*\s+([\d\.]+)`.
+- `jest --ci --coverage` (NodeJS). Example: `All files[^|]*\|[^|]*\s+([\d\.]+)`.
 - excoveralls (Elixir). Example: `\[TOTAL\]\s+(\d+\.\d+)%`.
 - `mix test --cover` (Elixir). Example: `\d+.\d+\%\s+\|\s+Total`.
 - JaCoCo (Java/Kotlin). Example: `Total.*?([0-9]{1,3})%`.

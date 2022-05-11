@@ -1,7 +1,12 @@
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import UserLimitNotification from '~/invite_members/components/user_limit_notification.vue';
-import { REACHED_LIMIT_MESSAGE } from '~/invite_members/constants';
+
+import {
+  REACHED_LIMIT_MESSAGE,
+  REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
+} from '~/invite_members/constants';
+
 import { freeUsersLimit, membersCount } from '../mock_data/member_modal';
 
 describe('UserLimitNotification', () => {
@@ -31,21 +36,17 @@ describe('UserLimitNotification', () => {
   });
 
   describe('when limit is not reached', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('renders empty block', () => {
+      createComponent();
+
       expect(findAlert().exists()).toBe(false);
     });
   });
 
   describe('when close to limit', () => {
-    beforeEach(() => {
-      createComponent(false, { membersCount: 3 });
-    });
-
     it("renders user's limit notification", () => {
+      createComponent(false, { membersCount: 3 });
+
       const alert = findAlert();
 
       expect(alert.attributes('title')).toEqual(
@@ -59,15 +60,27 @@ describe('UserLimitNotification', () => {
   });
 
   describe('when limit is reached', () => {
-    beforeEach(() => {
-      createComponent(true);
-    });
-
     it("renders user's limit notification", () => {
+      createComponent(true);
+
       const alert = findAlert();
 
       expect(alert.attributes('title')).toEqual("You've reached your 5 members limit for my group");
-      expect(alert.text()).toEqual(REACHED_LIMIT_MESSAGE);
+      expect(alert.text()).toEqual(REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE);
+    });
+
+    describe('when free user namespace', () => {
+      it("renders user's limit notification", () => {
+        createComponent(true, { userNamespace: true });
+
+        const alert = findAlert();
+
+        expect(alert.attributes('title')).toEqual(
+          "You've reached your 5 members limit for my group",
+        );
+
+        expect(alert.text()).toEqual(REACHED_LIMIT_MESSAGE);
+      });
     });
   });
 });

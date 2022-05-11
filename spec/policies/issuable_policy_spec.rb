@@ -3,10 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe IssuablePolicy, models: true do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+
   let(:issue) { create(:issue, project: project) }
   let(:policies) { described_class.new(user, issue) }
+
+  before do
+    project.add_developer(developer)
+    project.add_guest(guest)
+    project.add_reporter(reporter)
+  end
+
+  def permissions(user, issue)
+    described_class.new(user, issue)
+  end
 
   describe '#rules' do
     context 'when user is author of issuable' do
@@ -23,6 +37,20 @@ RSpec.describe IssuablePolicy, models: true do
         end
       end
 
+      context 'Timeline events' do
+        it 'allows non-members to read time line events' do
+          expect(permissions(guest, issue)).to be_allowed(:read_incident_management_timeline_event)
+        end
+
+        it 'disallows reporters from managing timeline events' do
+          expect(permissions(reporter, issue)).to be_disallowed(:admin_incident_management_timeline_event)
+        end
+
+        it 'allows developers to manage timeline events' do
+          expect(permissions(developer, issue)).to be_allowed(:admin_incident_management_timeline_event)
+        end
+      end
+
       context 'when project is private' do
         let(:project) { create(:project, :private) }
 
@@ -36,6 +64,24 @@ RSpec.describe IssuablePolicy, models: true do
 
         it 'disallows user from reading and updating issuables from that project' do
           expect(policies).to be_disallowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request, :reopen_merge_request)
+        end
+
+        context 'Timeline events' do
+          it 'disallows non-members from reading timeline events' do
+            expect(permissions(user, issue)).to be_disallowed(:read_incident_management_timeline_event)
+          end
+
+          it 'allows guests to read time line events' do
+            expect(permissions(guest, issue)).to be_allowed(:read_incident_management_timeline_event)
+          end
+
+          it 'disallows reporters from managing timeline events' do
+            expect(permissions(reporter, issue)).to be_disallowed(:admin_incident_management_timeline_event)
+          end
+
+          it 'allows developers to manage timeline events' do
+            expect(permissions(developer, issue)).to be_allowed(:admin_incident_management_timeline_event)
+          end
         end
       end
     end

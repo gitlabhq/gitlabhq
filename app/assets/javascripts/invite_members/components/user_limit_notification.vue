@@ -6,6 +6,7 @@ import {
   WARNING_ALERT_TITLE,
   DANGER_ALERT_TITLE,
   REACHED_LIMIT_MESSAGE,
+  REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
   CLOSE_TO_LIMIT_MESSAGE,
 } from '../constants';
 
@@ -66,9 +67,16 @@ export default {
     title() {
       return this.reachedLimit ? this.dangerAlertTitle : this.warningAlertTitle;
     },
+    reachedLimitMessage() {
+      if (this.usersLimitDataset.userNamespace) {
+        return this.$options.i18n.reachedLimitMessage;
+      }
+
+      return this.$options.i18n.reachedLimitUpgradeSuggestionMessage;
+    },
     message() {
       if (this.reachedLimit) {
-        return this.$options.i18n.reachedLimitMessage;
+        return this.reachedLimitMessage;
       }
 
       return this.$options.i18n.closeToLimitMessage;
@@ -81,6 +89,7 @@ export default {
   },
   i18n: {
     reachedLimitMessage: REACHED_LIMIT_MESSAGE,
+    reachedLimitUpgradeSuggestionMessage: REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
     closeToLimitMessage: CLOSE_TO_LIMIT_MESSAGE,
   },
 };

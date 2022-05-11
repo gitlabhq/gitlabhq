@@ -21,6 +21,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
                                   :override
 
   feature_category :subgroups
+  urgency :low
 
   def index
     push_frontend_feature_flag(:group_member_inherited_group, @group)

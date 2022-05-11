@@ -145,7 +145,7 @@ describe('InviteModalBase', () => {
 
       beforeEach(() => {
         createComponent(
-          { membersPath, purchasePath, reachedLimit: true },
+          { usersLimitDataset: { membersPath, purchasePath }, reachedLimit: true },
           { GlModal, GlFormGroup },
         );
       });
@@ -183,6 +183,20 @@ describe('InviteModalBase', () => {
         expectTracking('click_button', ON_SUBMIT_TRACK_LABEL);
 
         unmockTracking();
+      });
+
+      describe('when free user namespace', () => {
+        it('hides cancel button', () => {
+          createComponent(
+            {
+              usersLimitDataset: { membersPath, purchasePath, userNamespace: true },
+              reachedLimit: true,
+            },
+            { GlModal, GlFormGroup },
+          );
+
+          expect(findCancelButton().exists()).toBe(false);
+        });
       });
     });
 

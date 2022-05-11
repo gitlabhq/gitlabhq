@@ -19,7 +19,7 @@ RSpec.describe CustomerRelations::Contacts::UpdateService do
         response = update
 
         expect(response).to be_error
-        expect(response.message).to match_array(['You have insufficient permissions to update a contact for this group'])
+        expect(response.message).to match_array(['You have insufficient permissions to manage contacts for this group'])
       end
     end
 

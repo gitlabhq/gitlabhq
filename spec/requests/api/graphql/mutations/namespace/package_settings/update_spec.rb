@@ -109,7 +109,7 @@ RSpec.describe 'Updating the package settings' do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'accepting the mutation request updating the package settings'
-        :developer  | 'accepting the mutation request updating the package settings'
+        :developer  | 'denying the mutation request'
         :reporter   | 'denying the mutation request'
         :guest      | 'denying the mutation request'
         :anonymous  | 'denying the mutation request'
@@ -131,7 +131,7 @@ RSpec.describe 'Updating the package settings' do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'accepting the mutation request creating the package settings'
-        :developer  | 'accepting the mutation request creating the package settings'
+        :developer  | 'denying the mutation request'
         :reporter   | 'denying the mutation request'
         :guest      | 'denying the mutation request'
         :anonymous  | 'denying the mutation request'

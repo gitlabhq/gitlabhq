@@ -366,10 +366,26 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: issue, project: issue.project, author: author).change_issue_type
   end
 
+  def add_timeline_event(timeline_event)
+    incidents_service(timeline_event.incident).add_timeline_event(timeline_event)
+  end
+
+  def edit_timeline_event(timeline_event, author, was_changed:)
+    incidents_service(timeline_event.incident).edit_timeline_event(timeline_event, author, was_changed: was_changed)
+  end
+
+  def delete_timeline_event(noteable, author)
+    incidents_service(noteable).delete_timeline_event(author)
+  end
+
   private
 
   def merge_requests_service(noteable, project, author)
     ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author)
+  end
+
+  def incidents_service(incident)
+    ::SystemNotes::IncidentsService.new(noteable: incident)
   end
 end
 

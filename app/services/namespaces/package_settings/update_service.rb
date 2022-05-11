@@ -32,7 +32,7 @@ module Namespaces
       end
 
       def allowed?
-        Ability.allowed?(current_user, :create_package_settings, @container)
+        Ability.allowed?(current_user, :admin_package, @container)
       end
 
       def package_settings_params

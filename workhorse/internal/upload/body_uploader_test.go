@@ -49,19 +49,6 @@ func TestRequestBodyCustomPreparer(t *testing.T) {
 	require.Equal(t, fileContent, string(uploadEcho))
 }
 
-func TestRequestBodyCustomVerifier(t *testing.T) {
-	body := strings.NewReader(fileContent)
-	verifier := &mockVerifier{}
-
-	resp := testUpload(&rails{}, &alwaysLocalPreparer{verifier: verifier}, echoProxy(t, fileLen), body)
-	require.Equal(t, http.StatusOK, resp.StatusCode)
-
-	uploadEcho, err := ioutil.ReadAll(resp.Body)
-	require.NoError(t, err, "Can't read response body")
-	require.Equal(t, fileContent, string(uploadEcho))
-	require.True(t, verifier.invoked, "Verifier.Verify not invoked")
-}
-
 func TestRequestBodyAuthorizationFailure(t *testing.T) {
 	testNoProxyInvocation(t, http.StatusUnauthorized, &rails{unauthorized: true}, &alwaysLocalPreparer{})
 }
@@ -72,7 +59,6 @@ func TestRequestBodyErrors(t *testing.T) {
 		preparer *alwaysLocalPreparer
 	}{
 		{name: "Prepare failure", preparer: &alwaysLocalPreparer{prepareError: fmt.Errorf("")}},
-		{name: "Verify failure", preparer: &alwaysLocalPreparer{verifier: &alwaysFailsVerifier{}}},
 	}
 
 	for _, test := range tests {
@@ -165,31 +151,14 @@ func (r *rails) PreAuthorizeHandler(next api.HandleFunc, _ string) http.Handler 
 }
 
 type alwaysLocalPreparer struct {
-	verifier     Verifier
 	prepareError error
 }
 
-func (a *alwaysLocalPreparer) Prepare(_ *api.Response) (*destination.UploadOpts, Verifier, error) {
+func (a *alwaysLocalPreparer) Prepare(_ *api.Response) (*destination.UploadOpts, error) {
 	opts, err := destination.GetOpts(&api.Response{TempPath: os.TempDir()})
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return opts, a.verifier, a.prepareError
-}
-
-type alwaysFailsVerifier struct{}
-
-func (alwaysFailsVerifier) Verify(handler *destination.FileHandler) error {
-	return fmt.Errorf("Verification failed")
-}
-
-type mockVerifier struct {
-	invoked bool
-}
-
-func (m *mockVerifier) Verify(handler *destination.FileHandler) error {
-	m.invoked = true
-
-	return nil
+	return opts, a.prepareError
 }

@@ -18,14 +18,14 @@ func NewObjectStoragePreparer(c config.Config) Preparer {
 	return &ObjectStoragePreparer{credentials: c.ObjectStorageCredentials, config: c.ObjectStorageConfig}
 }
 
-func (p *ObjectStoragePreparer) Prepare(a *api.Response) (*destination.UploadOpts, Verifier, error) {
+func (p *ObjectStoragePreparer) Prepare(a *api.Response) (*destination.UploadOpts, error) {
 	opts, err := destination.GetOpts(a)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	opts.ObjectStorageConfig.URLMux = p.config.URLMux
 	opts.ObjectStorageConfig.S3Credentials = p.credentials.S3Credentials
 
-	return opts, nil, nil
+	return opts, nil
 }

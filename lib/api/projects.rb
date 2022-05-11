@@ -215,7 +215,7 @@ module API
         use :statistics_params
         use :with_custom_attributes
       end
-      get ":user_id/projects", feature_category: :projects, urgency: :default do
+      get ":user_id/projects", feature_category: :projects, urgency: :low do
         user = find_user(params[:user_id])
         not_found!('User') unless user
 

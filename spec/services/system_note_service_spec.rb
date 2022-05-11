@@ -708,4 +708,38 @@ RSpec.describe SystemNoteService do
       described_class.change_issue_type(incident, author)
     end
   end
+
+  describe '.add_timeline_event' do
+    let(:timeline_event) { instance_double('IncidentManagement::TimelineEvent', incident: noteable, project: project) }
+
+    it 'calls IncidentsService' do
+      expect_next_instance_of(::SystemNotes::IncidentsService) do |service|
+        expect(service).to receive(:add_timeline_event).with(timeline_event)
+      end
+
+      described_class.add_timeline_event(timeline_event)
+    end
+  end
+
+  describe '.edit_timeline_event' do
+    let(:timeline_event) { instance_double('IncidentManagement::TimelineEvent', incident: noteable, project: project) }
+
+    it 'calls IncidentsService' do
+      expect_next_instance_of(::SystemNotes::IncidentsService) do |service|
+        expect(service).to receive(:edit_timeline_event).with(timeline_event, author, was_changed: :occurred_at)
+      end
+
+      described_class.edit_timeline_event(timeline_event, author, was_changed: :occurred_at)
+    end
+  end
+
+  describe '.delete_timeline_event' do
+    it 'calls IncidentsService' do
+      expect_next_instance_of(::SystemNotes::IncidentsService) do |service|
+        expect(service).to receive(:delete_timeline_event).with(author)
+      end
+
+      described_class.delete_timeline_event(noteable, author)
+    end
+  end
 end

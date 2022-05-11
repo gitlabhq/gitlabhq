@@ -71,7 +71,7 @@ RSpec.describe ::Namespaces::PackageSettings::UpdateService do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'updating the namespace package setting'
-        :developer  | 'updating the namespace package setting'
+        :developer  | 'denying access to namespace package setting'
         :reporter   | 'denying access to namespace package setting'
         :guest      | 'denying access to namespace package setting'
         :anonymous  | 'denying access to namespace package setting'
@@ -91,7 +91,7 @@ RSpec.describe ::Namespaces::PackageSettings::UpdateService do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'creating the namespace package setting'
-        :developer  | 'creating the namespace package setting'
+        :developer  | 'denying access to namespace package setting'
         :reporter   | 'denying access to namespace package setting'
         :guest      | 'denying access to namespace package setting'
         :anonymous  | 'denying access to namespace package setting'

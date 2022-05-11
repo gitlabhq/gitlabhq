@@ -43,7 +43,8 @@ module SystemNoteHelper
     'issue_type' => 'pencil-square',
     'attention_requested' => 'user',
     'attention_request_removed' => 'user',
-    'contact' => 'users'
+    'contact' => 'users',
+    'timeline_event' => 'clock'
   }.freeze
 
   def system_note_icon_name(note)

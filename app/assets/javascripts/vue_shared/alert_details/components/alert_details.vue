@@ -278,7 +278,7 @@ export default {
           data-testid="viewIncidentBtn"
           :href="incidentPath(alert.issue.iid)"
           category="primary"
-          variant="success"
+          variant="confirm"
         >
           {{ s__('AlertManagement|View incident') }}
         </gl-button>

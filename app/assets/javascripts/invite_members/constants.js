@@ -134,9 +134,17 @@ export const WARNING_ALERT_TITLE = s__(
 export const DANGER_ALERT_TITLE = s__(
   "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}",
 );
+
 export const REACHED_LIMIT_MESSAGE = s__(
-  'InviteMembersModal|You cannot add more members, but you can remove members who no longer need access. To get more members and access to additional paid features, an owner of this namespace can start a trial or upgrade to a paid tier.',
+  'InviteMembersModal|You cannot add more members, but you can remove members who no longer need access.',
 );
+
+export const REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE = REACHED_LIMIT_MESSAGE.concat(
+  s__(
+    'InviteMembersModal| To get more members and access to additional paid features, an owner of this namespace can start a trial or upgrade to a paid tier.',
+  ),
+);
+
 export const CLOSE_TO_LIMIT_MESSAGE = s__(
   'InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
 );

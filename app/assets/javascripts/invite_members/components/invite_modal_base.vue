@@ -136,15 +136,10 @@ export default {
       required: false,
       default: false,
     },
-    membersPath: {
-      type: String,
+    usersLimitDataset: {
+      type: Object,
       required: false,
-      default: '',
-    },
-    purchasePath: {
-      type: String,
-      required: false,
-      default: '',
+      default: () => ({}),
     },
   },
   data() {
@@ -181,14 +176,16 @@ export default {
           disabled: this.reachedLimit ? false : this.submitDisabled,
           loading: this.reachedLimit ? false : this.isLoading,
           'data-qa-selector': 'invite_button',
-          ...(this.reachedLimit && { href: this.membersPath }),
+          ...(this.reachedLimit && { href: this.usersLimitDataset.membersPath }),
         },
       };
     },
     actionCancel() {
+      if (this.reachedLimit && this.usersLimitDataset.userNamespace) return undefined;
+
       return {
         text: this.reachedLimit ? CANCEL_BUTTON_TEXT_DISABLED : this.cancelButtonText,
-        ...(this.reachedLimit && { attributes: { href: this.purchasePath } }),
+        ...(this.reachedLimit && { attributes: { href: this.usersLimitDataset.purchasePath } }),
       };
     },
     selectLabelClass() {

@@ -37,7 +37,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDraftStatusOnMergeRequests, 
       end
     end
 
-    it "updates all open draft merge request's draft field to true" do
+    it "updates all eligible draft merge request's draft field to true" do
       mr_count = merge_requests.all.count
 
       expect { subject.perform(mr_ids.first, mr_ids.last) }

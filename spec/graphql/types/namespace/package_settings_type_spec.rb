@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['PackageSettings'] do
 
   specify { expect(described_class.description).to eq('Namespace-level Package Registry settings') }
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_package_settings) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_package) }
 
   describe 'maven_duplicate_exception_regex field' do
     subject { described_class.fields['mavenDuplicateExceptionRegex'] }

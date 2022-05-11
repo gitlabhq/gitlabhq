@@ -140,7 +140,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :update_metrics_dashboard_annotation
     enable :create_custom_emoji
     enable :create_package
-    enable :create_package_settings
     enable :developer_access
     enable :admin_crm_organization
     enable :admin_crm_contact
@@ -158,13 +157,13 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_metrics_dashboard_annotation
     enable :read_prometheus
     enable :read_package
-    enable :read_package_settings
     enable :read_crm_organization
     enable :read_crm_contact
   end
 
   rule { maintainer }.policy do
     enable :destroy_package
+    enable :admin_package
     enable :create_projects
     enable :admin_pipeline
     enable :admin_build

@@ -10,7 +10,7 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
 
   let(:params) { { namespace_path: namespace.full_path } }
 
-  specify { expect(described_class).to require_graphql_authorizations(:create_package_settings) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_package) }
 
   describe '#resolve' do
     subject { described_class.new(object: namespace, context: { current_user: user }, field: nil).resolve(**params) }
@@ -68,7 +68,7 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'updating the namespace package setting'
-        :developer  | 'updating the namespace package setting'
+        :developer  | 'denying access to namespace package setting'
         :reporter   | 'denying access to namespace package setting'
         :guest      | 'denying access to namespace package setting'
         :anonymous  | 'denying access to namespace package setting'
@@ -88,7 +88,7 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'creating the namespace package setting'
-        :developer  | 'creating the namespace package setting'
+        :developer  | 'denying access to namespace package setting'
         :reporter   | 'denying access to namespace package setting'
         :guest      | 'denying access to namespace package setting'
         :anonymous  | 'denying access to namespace package setting'

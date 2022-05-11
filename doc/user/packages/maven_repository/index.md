@@ -617,7 +617,8 @@ To delete these older package versions, consider using the Packages API or the U
 
 #### Do not allow duplicate Maven packages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296895) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296895) in GitLab 13.9.
+> - [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
 
 To prevent users from publishing duplicate Maven packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
 

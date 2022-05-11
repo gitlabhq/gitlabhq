@@ -133,11 +133,6 @@ $system-note-svg-size: 16px;
     display: block;
     position: relative;
 
-    .timeline-discussion-body {
-      overflow-x: auto;
-      overflow-y: hidden;
-    }
-
     .diff-content {
       overflow: visible;
       padding: 0;
@@ -199,10 +194,13 @@ $system-note-svg-size: 16px;
     }
 
     .note-body {
-      overflow-x: auto;
-      overflow-y: hidden;
+      display: flex;
+      flex-direction: column;
+
 
       .note-text {
+        overflow-x: auto;
+        overflow-y: hidden;
         word-wrap: break-word;
       }
     }

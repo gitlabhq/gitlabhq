@@ -10705,7 +10705,13 @@ msgstr ""
 msgid "Crm|No contacts found"
 msgstr ""
 
+msgid "Crm|No organization"
+msgstr ""
+
 msgid "Crm|No organizations found"
+msgstr ""
+
+msgid "Crm|Organization"
 msgstr ""
 
 msgid "Crm|Organization has been added."
@@ -20694,6 +20700,9 @@ msgstr ""
 msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
 msgstr ""
 
+msgid "InviteMembersModal| To get more members and access to additional paid features, an owner of this namespace can start a trial or upgrade to a paid tier."
+msgstr ""
+
 msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions"
 msgstr ""
 
@@ -20766,7 +20775,7 @@ msgstr ""
 msgid "InviteMembersModal|Username or email address"
 msgstr ""
 
-msgid "InviteMembersModal|You cannot add more members, but you can remove members who no longer need access. To get more members and access to additional paid features, an owner of this namespace can start a trial or upgrade to a paid tier."
+msgid "InviteMembersModal|You cannot add more members, but you can remove members who no longer need access."
 msgstr ""
 
 msgid "InviteMembersModal|You only have space for %{count} more %{members} in %{name}"

@@ -3,17 +3,8 @@
 module Mutations
   module CustomerRelations
     module Contacts
-      class Update < Mutations::BaseMutation
+      class Update < Base
         graphql_name 'CustomerRelationsContactUpdate'
-
-        include ResolvesIds
-
-        authorize :admin_crm_contact
-
-        field :contact,
-              Types::CustomerRelations::ContactType,
-              null: true,
-              description: 'Contact after the mutation.'
 
         argument :id, ::Types::GlobalIDType[::CustomerRelations::Contact],
                  required: true,
@@ -54,6 +45,7 @@ module Mutations
           group = contact.group
           authorize!(group)
 
+          set_organization!(args)
           result = ::CustomerRelations::Contacts::UpdateService.new(group: group, current_user: current_user, params: args).execute(contact)
           { contact: result.payload, errors: result.errors }
         end
