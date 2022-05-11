@@ -1,7 +1,7 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { take } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
-import { FREQUENT_ITEMS, HOUR_IN_MS } from './constants';
+import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from './constants';
 
 export const isMobile = () => ['md', 'sm', 'xs'].includes(bp.getBreakpointSize());
 
@@ -38,7 +38,8 @@ export const updateExistingFrequentItem = (frequentItem, item) => {
   // `frequentItem` comes from localStorage and it's possible it doesn't have a `lastAccessedOn`
   const neverAccessed = !frequentItem.lastAccessedOn;
   const shouldUpdate =
-    neverAccessed || Math.abs(item.lastAccessedOn - frequentItem.lastAccessedOn) / HOUR_IN_MS > 1;
+    neverAccessed ||
+    Math.abs(item.lastAccessedOn - frequentItem.lastAccessedOn) / FIFTEEN_MINUTES_IN_MS > 1;
 
   return {
     ...item,

@@ -1,5 +1,5 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { HOUR_IN_MS, FREQUENT_ITEMS } from '~/frequent_items/constants';
+import { FIFTEEN_MINUTES_IN_MS, FREQUENT_ITEMS } from '~/frequent_items/constants';
 import {
   isMobile,
   getTopFrequentItems,
@@ -67,8 +67,8 @@ describe('Frequent Items utils spec', () => {
 
   describe('updateExistingFrequentItem', () => {
     const LAST_ACCESSED = 1497979281815;
-    const WITHIN_AN_HOUR = LAST_ACCESSED + HOUR_IN_MS;
-    const OVER_AN_HOUR = WITHIN_AN_HOUR + 1;
+    const WITHIN_FIFTEEN_MINUTES = LAST_ACCESSED + FIFTEEN_MINUTES_IN_MS;
+    const OVER_FIFTEEN_MINUTES = WITHIN_FIFTEEN_MINUTES + 1;
     const EXISTING_ITEM = Object.freeze({
       ...mockProject,
       frequency: 1,
@@ -76,10 +76,10 @@ describe('Frequent Items utils spec', () => {
     });
 
     it.each`
-      desc                                           | existingProps                    | newProps                              | expected
-      ${'updates item if accessed over an hour ago'} | ${{}}                            | ${{ lastAccessedOn: OVER_AN_HOUR }}   | ${{ lastAccessedOn: Date.now(), frequency: 2 }}
-      ${'does not update is accessed with an hour'}  | ${{}}                            | ${{ lastAccessedOn: WITHIN_AN_HOUR }} | ${{ lastAccessedOn: EXISTING_ITEM.lastAccessedOn, frequency: 1 }}
-      ${'updates if lastAccessedOn not found'}       | ${{ lastAccessedOn: undefined }} | ${{ lastAccessedOn: WITHIN_AN_HOUR }} | ${{ lastAccessedOn: Date.now(), frequency: 2 }}
+      desc                                              | existingProps                    | newProps                                      | expected
+      ${'updates item if accessed over 15 minutes ago'} | ${{}}                            | ${{ lastAccessedOn: OVER_FIFTEEN_MINUTES }}   | ${{ lastAccessedOn: Date.now(), frequency: 2 }}
+      ${'does not update is accessed with 15 minutes'}  | ${{}}                            | ${{ lastAccessedOn: WITHIN_FIFTEEN_MINUTES }} | ${{ lastAccessedOn: EXISTING_ITEM.lastAccessedOn, frequency: 1 }}
+      ${'updates if lastAccessedOn not found'}          | ${{ lastAccessedOn: undefined }} | ${{ lastAccessedOn: WITHIN_FIFTEEN_MINUTES }} | ${{ lastAccessedOn: Date.now(), frequency: 2 }}
     `('$desc', ({ existingProps, newProps, expected }) => {
       const newItem = {
         ...EXISTING_ITEM,

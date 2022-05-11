@@ -17804,7 +17804,7 @@ Filters the alerts based on given domain.
 | Value | Description |
 | ----- | ----------- |
 | <a id="alertmanagementdomainfilteroperations"></a>`operations` | Alerts for operations domain. |
-| <a id="alertmanagementdomainfilterthreat_monitoring"></a>`threat_monitoring` | Alerts for threat monitoring domain. |
+| <a id="alertmanagementdomainfilterthreat_monitoring"></a>`threat_monitoring` **{warning-solid}** | **Deprecated** in 15.0. Network policies are deprecated and will be removed in GitLab 16.0. |
 
 ### `AlertManagementIntegrationType`
 

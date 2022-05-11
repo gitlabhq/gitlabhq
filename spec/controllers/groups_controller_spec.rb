@@ -18,6 +18,7 @@ RSpec.describe GroupsController, factory_default: :keep do
   let_it_be(:guest) { group.add_guest(create(:user)).user }
 
   before do
+    stub_feature_flags(vue_issues_list: true)
     enable_admin_mode!(admin_with_admin_mode)
   end
 
@@ -488,53 +489,12 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
   end
 
-  describe 'GET #issues', :sidekiq_might_not_need_inline do
-    let_it_be(:issue_1) { create(:issue, project: project, title: 'foo') }
-    let_it_be(:issue_2) { create(:issue, project: project, title: 'bar') }
-
+  describe 'GET #issues' do
     before do
-      create_list(:award_emoji, 3, awardable: issue_2)
-      create_list(:award_emoji, 2, awardable: issue_1)
-      create_list(:award_emoji, 2, :downvote, awardable: issue_2)
-
       sign_in(user)
     end
 
-    context 'sorting by votes' do
-      it 'sorts most popular issues' do
-        get :issues, params: { id: group.to_param, sort: 'upvotes_desc' }
-        expect(assigns(:issues)).to eq [issue_2, issue_1]
-      end
-
-      it 'sorts least popular issues' do
-        get :issues, params: { id: group.to_param, sort: 'downvotes_desc' }
-        expect(assigns(:issues)).to eq [issue_2, issue_1]
-      end
-    end
-
-    context 'searching' do
-      it 'works with popularity sort' do
-        get :issues, params: { id: group.to_param, search: 'foo', sort: 'popularity' }
-
-        expect(assigns(:issues)).to eq([issue_1])
-      end
-
-      it 'works with priority sort' do
-        get :issues, params: { id: group.to_param, search: 'foo', sort: 'priority' }
-
-        expect(assigns(:issues)).to eq([issue_1])
-      end
-
-      it 'works with label priority sort' do
-        get :issues, params: { id: group.to_param, search: 'foo', sort: 'label_priority' }
-
-        expect(assigns(:issues)).to eq([issue_1])
-      end
-    end
-
     it 'saves the sort order to user preferences' do
-      stub_feature_flags(vue_issues_list: true)
-
       get :issues, params: { id: group.to_param, sort: 'priority' }
 
       expect(user.reload.user_preference.issues_sort).to eq('priority')

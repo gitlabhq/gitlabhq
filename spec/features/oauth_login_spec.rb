@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
+RSpec.describe 'OAuth Login', :allow_forgery_protection do
   include DeviseHelpers
 
   def enter_code(code)
@@ -28,7 +28,7 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
   end
 
   providers.each do |provider|
-    context "when the user logs in using the #{provider} provider" do
+    context "when the user logs in using the #{provider} provider", :js do
       let(:uid) { 'my-uid' }
       let(:remember_me) { false }
       let(:user) { create(:omniauth_user, extern_uid: uid, provider: provider.to_s) }
@@ -123,6 +123,67 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
             expect(page).to have_current_path new_user_session_path, ignore_query: true
           end
         end
+      end
+    end
+  end
+
+  context 'using GitLab as an OAuth provider' do
+    let_it_be(:user) { create(:user) }
+
+    let(:redirect_uri) { Gitlab::Routing.url_helpers.root_url }
+
+    # We can't use let_it_be to set the redirect_uri when creating the
+    # record as the host / port depends on whether or not the spec uses
+    # JS.
+    let(:application) do
+      create(:oauth_application, scopes: 'api', redirect_uri: redirect_uri, confidential: false)
+    end
+
+    let(:params) do
+      {
+        response_type: 'code',
+        client_id: application.uid,
+        redirect_uri: redirect_uri,
+        state: 'state'
+      }
+    end
+
+    before do
+      sign_in(user)
+
+      create(:oauth_access_token, application: application, resource_owner_id: user.id, scopes: 'api')
+    end
+
+    context 'when JS is enabled', :js do
+      it 'includes the fragment in the redirect if it is simple' do
+        visit "#{Gitlab::Routing.url_helpers.oauth_authorization_url(params)}#a_test-hash"
+
+        expect(page).to have_current_path("#{Gitlab::Routing.url_helpers.root_url}#a_test-hash", ignore_query: true)
+      end
+
+      it 'does not include the fragment if it contains forbidden characters' do
+        visit "#{Gitlab::Routing.url_helpers.oauth_authorization_url(params)}#a_test-hash."
+
+        expect(page).to have_current_path(Gitlab::Routing.url_helpers.root_url, ignore_query: true)
+      end
+
+      it 'does not include the fragment for an implicit grant' do
+        implicit_grant_params = params.merge(response_type: 'token')
+        escaped_url = Regexp.escape(Gitlab::Routing.url_helpers.root_url)
+        auth_params_fragment = '#[a-zA-Z0-9&=_]+'
+
+        visit "#{Gitlab::Routing.url_helpers.oauth_authorization_url(implicit_grant_params)}#a_test-hash"
+
+        expect(page).to have_current_path(%r{\A#{escaped_url}#{auth_params_fragment}\z}, ignore_query: true, url: true)
+      end
+    end
+
+    context 'when JS is disabled' do
+      it 'provides a basic HTML page including a link without the fragment' do
+        visit "#{Gitlab::Routing.url_helpers.oauth_authorization_url(params)}#a_test-hash"
+
+        expect(page).to have_current_path(oauth_authorization_path(params))
+        expect(page).to have_selector("a[href^='#{redirect_uri}']")
       end
     end
   end

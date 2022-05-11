@@ -28324,7 +28324,7 @@ msgstr ""
 msgid "Policy '%{escalation_policy_name}' does not exist."
 msgstr ""
 
-msgid "Policy management project does have any policies in %{policy_path}"
+msgid "Policy management project does not have any policies in %{policy_path}"
 msgstr ""
 
 msgid "Policy project doesn't exist"
@@ -44260,6 +44260,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "ciReport|View full report"
+msgstr ""
+
+msgid "ciReport|in"
 msgstr ""
 
 msgid "ciReport|is loading"

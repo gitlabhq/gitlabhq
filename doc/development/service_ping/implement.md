@@ -286,10 +286,6 @@ Enabled by default in GitLab 13.7 and later.
    Increment event count using an ordinary Redis counter, for a given event name.
 
    API requests are protected by checking for a valid CSRF token.
-
-   To increment the values, the related feature `usage_data_<event_name>` must be enabled.
-
-   Feature flags are required for this API and they can't be removed, they can be set to `default_enabled: true`.
    
    ```plaintext
    POST /usage_data/increment_counter

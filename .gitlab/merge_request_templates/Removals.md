@@ -67,7 +67,7 @@ with the same process as regular docs MRs. Add suggestions as needed, @ message
 the PM to inform them the first review is complete, and remove
 yourself as a reviewer if it's not yet ready for merge.
 
-**Removal notices should not be merged before the code is removed from the product.** 
+**Removal notices should not be merged before the code is removed from the product.**
 
 <details>
 <summary>Expand for Details</summary>
@@ -75,7 +75,7 @@ yourself as a reviewer if it's not yet ready for merge.
 - [ ] Title:
   - Length limit: 7 words (not including articles or prepositions).
   - Capitalization: ensure the title is [sentence cased](https://design.gitlab.com/content/punctuation#case).
-  - No Markdown `` `code` `` formatting in the title, as it doesn't render correctly in the release post.
+  - Rewrite to exclude the words `removal` and `remove` if necessary.
 - [ ] Consistency:
   - Ensure that all resources (docs, removal, etc.) refer to the feature with the same term / feature name.
 - [ ] Content:

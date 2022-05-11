@@ -44,7 +44,6 @@ RSpec.describe API::UsageData do
     context 'with authentication' do
       before do
         stub_feature_flags(usage_data_api: true)
-        stub_feature_flags("usage_data_#{known_event}" => true)
         stub_application_setting(usage_ping_enabled: true)
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
       end
@@ -69,7 +68,6 @@ RSpec.describe API::UsageData do
           stub_application_setting(usage_ping_enabled: true)
           stub_feature_flags(usage_data_api: true)
           allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
-          stub_feature_flags("usage_data_#{prefix}_#{event}" => true)
         end
 
         with_them do
@@ -137,7 +135,6 @@ RSpec.describe API::UsageData do
     context 'with authentication' do
       before do
         stub_feature_flags(usage_data_api: true)
-        stub_feature_flags("usage_data_#{known_event}" => true)
         stub_application_setting(usage_ping_enabled: true)
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
       end

@@ -6,7 +6,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import App from '~/frequent_items/components/app.vue';
 import FrequentItemsList from '~/frequent_items/components/frequent_items_list.vue';
-import { FREQUENT_ITEMS, HOUR_IN_MS } from '~/frequent_items/constants';
+import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
 import eventHub from '~/frequent_items/event_hub';
 import { createStore } from '~/frequent_items/store';
 import { getTopFrequentItems } from '~/frequent_items/utils';
@@ -200,15 +200,15 @@ describe('Frequent Items App Component', () => {
         ]);
       });
 
-      it('should increase frequency, when created an hour later', () => {
-        const hourLater = Date.now() + HOUR_IN_MS + 1;
+      it('should increase frequency, when created 15 minutes later', () => {
+        const fifteenMinutesLater = Date.now() + FIFTEEN_MINUTES_IN_MS + 1;
 
-        jest.spyOn(Date, 'now').mockReturnValue(hourLater);
-        createComponent({ currentItem: { ...TEST_PROJECT, lastAccessedOn: hourLater } });
+        jest.spyOn(Date, 'now').mockReturnValue(fifteenMinutesLater);
+        createComponent({ currentItem: { ...TEST_PROJECT, lastAccessedOn: fifteenMinutesLater } });
 
         expect(getStoredProjects()).toEqual([
           expect.objectContaining({
-            lastAccessedOn: hourLater,
+            lastAccessedOn: fifteenMinutesLater,
             frequency: 2,
           }),
         ]);

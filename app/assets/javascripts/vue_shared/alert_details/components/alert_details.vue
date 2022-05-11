@@ -288,7 +288,7 @@ export default {
           data-testid="createIncidentBtn"
           :loading="incidentCreationInProgress"
           category="primary"
-          variant="success"
+          variant="confirm"
           @click="createIncident()"
         >
           {{ s__('AlertManagement|Create incident') }}

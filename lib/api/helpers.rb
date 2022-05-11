@@ -579,9 +579,6 @@ module API
     end
 
     def increment_counter(event_name)
-      feature_name = "usage_data_#{event_name}"
-      return unless Feature.enabled?(feature_name)
-
       Gitlab::UsageDataCounters.count(event_name)
     rescue StandardError => error
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")

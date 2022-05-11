@@ -187,6 +187,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_liquibase
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_flutter
   category: ci_templates
   redis_slot: ci_templates
@@ -204,10 +208,6 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_kaniko
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-- name: p_ci_templates_managed_cluster_applications
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
@@ -231,10 +231,6 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-- name: p_ci_templates_serverless
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
 - name: p_ci_templates_go
   category: ci_templates
   redis_slot: ci_templates
@@ -252,6 +248,10 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_indeni_cloudrail
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_matlab
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
@@ -632,14 +632,6 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_cluster_image_scanning
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-- name: p_ci_templates_liquibase
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-- name: p_ci_templates_matlab
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly

@@ -242,6 +242,24 @@ RSpec.describe GroupPolicy do
     end
   end
 
+  context 'migration bot' do
+    let_it_be(:migration_bot) { User.migration_bot }
+    let_it_be(:current_user) { migration_bot }
+
+    it :aggregate_failures do
+      expect_allowed(:read_resource_access_tokens, :destroy_resource_access_tokens)
+      expect_disallowed(*guest_permissions)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
+      expect_disallowed(*maintainer_permissions)
+      expect_disallowed(*owner_permissions)
+    end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { migration_bot.id }
+    end
+  end
+
   describe 'private nested group use the highest access level from the group and inherited permissions' do
     let_it_be(:nested_group) do
       create(:group, :private, :owner_subgroup_creation_only, :crm_enabled, parent: group)

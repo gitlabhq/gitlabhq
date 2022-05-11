@@ -25,7 +25,7 @@ module Gitlab
             amd64: "https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64"
           },
           install_script_template_path: "lib/gitlab/ci/runner_instructions/templates/osx/install.sh",
-          runner_executable: "sudo gitlab-runner"
+          runner_executable: "gitlab-runner"
         },
         windows: {
           human_readable_name: "Windows",

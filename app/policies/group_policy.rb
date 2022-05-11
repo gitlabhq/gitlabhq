@@ -22,6 +22,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
+  condition(:migration_bot, scope: :user) { @user.migration_bot? }
 
   desc "User is a project bot"
   condition(:project_bot) { user.project_bot? && access_level >= GroupMember::GUEST }
@@ -284,6 +285,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
+  end
+
+  rule { migration_bot }.policy do
+    enable :read_resource_access_tokens
+    enable :destroy_resource_access_tokens
   end
 
   def access_level(for_any_session: false)
