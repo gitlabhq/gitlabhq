@@ -154,7 +154,7 @@ with [domain expertise](#domain-experts).
 
 #### Acceptance checklist
 
-This checklist encourages the authors, reviewers, and maintainers of merge requests (MRs) to confirm changes were analyzed for high-impact risks to quality, performance, reliability, security, and maintainability.
+This checklist encourages the authors, reviewers, and maintainers of merge requests (MRs) to confirm changes were analyzed for high-impact risks to quality, performance, reliability, security, observability, and maintainability.
 
 Using checklists improves quality in software engineering. This checklist is a straightforward tool to support and bolster the skills of contributors to the GitLab codebase.
 
@@ -181,6 +181,10 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. I have considered the availability and reliability risks of this change.
 1. I have considered the scalability risk based on future predicted growth.
 1. I have considered the performance, reliability, and availability impacts of this change on large customers who may have significantly more data than the average customer.
+
+##### Observability instrumentation
+
+1. I have included enough instrumentation to facilitate debugging and proactive performance improvements through observability.
 
 ##### Documentation
 

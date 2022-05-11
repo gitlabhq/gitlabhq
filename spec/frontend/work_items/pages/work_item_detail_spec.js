@@ -104,4 +104,18 @@ describe('WorkItemDetail component', () => {
       issuableId: workItemQueryResponse.data.workItem.id,
     });
   });
+
+  it('emits workItemUpdated event when fields updated', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    findWorkItemState().vm.$emit('updated');
+
+    expect(wrapper.emitted('workItemUpdated')).toEqual([[]]);
+
+    findWorkItemTitle().vm.$emit('updated');
+
+    expect(wrapper.emitted('workItemUpdated')).toEqual([[], []]);
+  });
 });

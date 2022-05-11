@@ -57,6 +57,15 @@ describe('WorkItemTitle component', () => {
       });
     });
 
+    it('emits updated event', async () => {
+      createComponent();
+
+      findItemTitle().vm.$emit('title-changed', 'new title');
+      await waitForPromises();
+
+      expect(wrapper.emitted('updated')).toEqual([[]]);
+    });
+
     it('does not call a mutation when the title has not changed', () => {
       createComponent();
 

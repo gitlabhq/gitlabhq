@@ -987,7 +987,7 @@ This procedure assumes that:
 
 First ensure your backup tar file is in the backup directory described in the
 `gitlab.rb` configuration `gitlab_rails['backup_path']`. The default is
-`/var/opt/gitlab/backups`. It needs to be owned by the `git` user.
+`/var/opt/gitlab/backups`. The backup file needs to be owned by the `git` user.
 
 ```shell
 sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/

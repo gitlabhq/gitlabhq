@@ -651,7 +651,7 @@ POST /runners
 |--------------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens)                                                                                                 |
 | `description`      | string       | no       | Runner's description                                                                                                                                          |
-| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin area of the UI |
+| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin Area of the UI |
 | `active`           | boolean      | no       | Deprecated: Use `:paused` instead. Whether the runner is allowed to receive jobs                                                                              |
 | `paused`           | boolean      | no       | Whether the runner should ignore new jobs                                                                                                                     |
 | `locked`           | boolean      | no       | Whether the runner should be locked for current project                                                                                                       |

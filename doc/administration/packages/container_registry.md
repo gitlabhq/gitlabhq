@@ -158,7 +158,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
 
 An administrator may want the container registry listening on an arbitrary port such as `5678`.
 However, the registry and application server are behind an AWS application load balancer that only
-listens on ports `80` and `443`. The admin may simply remove the port number for
+listens on ports `80` and `443`. The administrator may simply remove the port number for
 `registry_external_url`, so HTTP or HTTPS is assumed. Then, the rules apply that map the load
 balancer to the registry from ports `80` or `443` to the arbitrary port. This is important if users
 rely on the `docker login` example in the container registry. Here's an example:
@@ -1246,7 +1246,7 @@ GitLab has a default token expiration of 5 minutes for the registry. When pushin
 larger images, or images that take longer than 5 minutes to push, users may
 encounter this error. On GitLab.com, the expiration time is 15 minutes.
 
-Administrators can increase the token duration in **Admin area > Settings >
+Administrators can increase the token duration in **Admin Area > Settings >
 CI/CD > Container Registry > Authorization token duration (minutes)**.
 
 ### Docker login attempt fails with: 'token signed by untrusted key'

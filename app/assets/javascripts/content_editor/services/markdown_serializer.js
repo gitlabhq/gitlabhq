@@ -48,7 +48,6 @@ import Text from '../extensions/text';
 import Video from '../extensions/video';
 import WordBreak from '../extensions/word_break';
 import {
-  isPlainURL,
   renderCodeBlock,
   renderHardBreak,
   renderTable,
@@ -62,36 +61,29 @@ import {
   renderHTMLNode,
   renderContent,
   preserveUnchanged,
+  bold,
+  italic,
+  link,
+  code,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
   marks: {
-    [Bold.name]: defaultMarkdownSerializer.marks.strong,
-    [Italic.name]: { open: '_', close: '_', mixable: true, expelEnclosingWhitespace: true },
-    [Code.name]: defaultMarkdownSerializer.marks.code,
+    [Bold.name]: bold,
+    [Italic.name]: italic,
+    [Code.name]: code,
     [Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
     [Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
     [InlineDiff.name]: {
       mixable: true,
-      open(state, mark) {
+      open(_, mark) {
         return mark.attrs.type === 'addition' ? '{+' : '{-';
       },
-      close(state, mark) {
+      close(_, mark) {
         return mark.attrs.type === 'addition' ? '+}' : '-}';
       },
     },
-    [Link.name]: {
-      open(state, mark, parent, index) {
-        return isPlainURL(mark, parent, index, 1) ? '<' : '[';
-      },
-      close(state, mark, parent, index) {
-        const href = mark.attrs.canonicalSrc || mark.attrs.href;
-
-        return isPlainURL(mark, parent, index, -1)
-          ? '>'
-          : `](${state.esc(href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`;
-      },
-    },
+    [Link.name]: link,
     [MathInline.name]: {
       open: (...args) => `$${defaultMarkdownSerializer.marks.code.open(...args)}`,
       close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,

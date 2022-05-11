@@ -125,6 +125,7 @@ export default {
               :title="$options.i18n.cancelJobButtonLabel"
               :aria-label="$options.i18n.cancelJobButtonLabel"
               :href="job.cancel_path"
+              variant="danger"
               icon="cancel"
               data-method="post"
               data-testid="cancel-button"

@@ -311,5 +311,5 @@ To do this:
 
 NOTE:
 When this ability is disabled, GitLab administrators can still use the
-[Admin UI](../index.md#administering-users) or the
+[Admin Area](../index.md#administering-users) or the
 [API](../../../api/users.md#user-modification) to update usernames.

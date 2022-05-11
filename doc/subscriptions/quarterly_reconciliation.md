@@ -70,7 +70,7 @@ sent and subject to your terms.
 
 ### Self-managed instances
 
-Admins receive an email **six days after the reconciliation date**.
+Administrators receive an email **six days after the reconciliation date**.
 This email communicates the [overage seat quantity](self_managed/index.md#users-over-license)
 and expected invoice amount.
 

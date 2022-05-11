@@ -127,6 +127,24 @@ scripts/regenerate-schema
 TARGET=12-9-stable-ee scripts/regenerate-schema
 ```
 
+There may be times when the `scripts/regenerate-schema` script creates
+additional differences. In this case, a manual procedure can be used,
+where <migration ID> is the DATETIME part of the migration file.
+
+```shell
+# Rebase against master
+git rebase master
+
+# Rollback changes
+VERSION=<migration ID> bundle exec rails db:rollback:main
+
+# Checkout db/structure.sql from master
+git checkout origin/master db/structure.sql
+
+# Migrate changes
+VERSION=<migration ID> bundle exec rails db:migrate:main
+```
+
 ## Avoiding downtime
 
 The document ["Avoiding downtime in migrations"](database/avoiding_downtime_in_migrations.md) specifies

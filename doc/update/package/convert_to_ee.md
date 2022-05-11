@@ -91,7 +91,7 @@ The steps can be summed up to:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Now go to the GitLab admin panel of your server (`/admin/subscription`) and
+1. Now go to the GitLab Admin Area of your server (`/admin/subscription`) and
    [add your license](../../user/admin_area/license.md).
 
 1. After you confirm that GitLab is working as expected, you may remove the old

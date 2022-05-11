@@ -41,7 +41,7 @@ If you are using an HTTPS connection to GitLab, you must [configure HTTPS](https
 
 ### Connect your Sourcegraph instance to your GitLab instance
 
-1. Navigate to the site admin area in Sourcegraph.
+1. Navigate to the site Admin Area in Sourcegraph.
 1. [Configure your GitLab external service](https://docs.sourcegraph.com/admin/external_service/gitlab).
 You can skip this step if you already have your GitLab repositories searchable in Sourcegraph.
 1. Validate that you can search your repositories from GitLab in your Sourcegraph instance by running a test query.

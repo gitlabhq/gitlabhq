@@ -5,6 +5,7 @@ module API
     before { authenticated_as_admin! }
 
     feature_category :service_ping
+    urgency :low
 
     namespace 'usage_data' do
       before do

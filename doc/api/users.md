@@ -105,7 +105,7 @@ parameter `without_project_bots=true`.
 GET /users?without_project_bots=true
 ```
 
-### For admins
+### For administrators
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
@@ -314,7 +314,7 @@ Parameters:
 }
 ```
 
-### For admin
+### For administrator
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
@@ -453,7 +453,7 @@ Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
 | :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `admin`                              | No       | User is admin - true or false (default)                                                                                                                 |
+| `admin`                              | No       | User is an administrator - true or false (default)                                                                                                                 |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
@@ -467,7 +467,7 @@ Parameters:
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
 | `location`                           | No       | User's location                                                                                                                                         |
 | `name`                               | Yes      | Name                                                                                                                                                    |
-| `note`                               | No       | Admin notes for this user                                                                                                                               |
+| `note`                               | No       | Administrator notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
@@ -497,7 +497,7 @@ Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
 | :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `admin`                              | No       | User is admin - true or false (default)                                                                                                                 |
+| `admin`                              | No       | User is an administrator - true or false (default)                                                                                                                 |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
@@ -511,7 +511,7 @@ Parameters:
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
 | `location`                           | No       | User's location                                                                                                                                         |
 | `name`                               | No       | Name                                                                                                                                                    |
-| `note`                               | No       | Admin notes for this user                                                                                                                               |
+| `note`                               | No       | Administration notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
@@ -619,7 +619,7 @@ GET /user
 
 Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
 
-## List current user (for admins)
+## List current user (for administrators)
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
@@ -1895,7 +1895,7 @@ Example response:
 }
 ```
 
-## Get user activities (admin only)
+## Get user activities (administrator only)
 
 NOTE:
 This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
@@ -1951,7 +1951,7 @@ Example response:
 
 `last_activity_at` is deprecated. Use `last_activity_on` instead.
 
-## User memberships (admin only)
+## User memberships (administrator only)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
 

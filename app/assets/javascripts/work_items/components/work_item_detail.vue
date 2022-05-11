@@ -67,11 +67,6 @@ export default {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
   },
-  methods: {
-    handleWorkItemDeleted() {
-      this.$emit('workItemDeleted');
-    },
-  },
 };
 </script>
 
@@ -101,7 +96,7 @@ export default {
           :work-item-id="workItem.id"
           :can-delete="canDelete"
           class="gl-ml-auto gl-mt-5"
-          @workItemDeleted="handleWorkItemDeleted"
+          @deleteWorkItem="$emit('deleteWorkItem')"
           @error="error = $event"
         />
       </div>

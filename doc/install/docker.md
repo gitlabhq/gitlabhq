@@ -664,7 +664,7 @@ writing value to /dev/shm/gitlab/sidekiq/histogram_sidekiq_0-0.db failed with un
 writing value to /dev/shm/gitlab/sidekiq/histogram_sidekiq_0-0.db failed with unmapped file
 ```
 
-Other than disabling the Prometheus Metrics from the Admin page, the recommended
+Other than disabling the Prometheus Metrics from the Admin Area, the recommended
 solution to fix this problem is to increase the size of shared memory to at least 256MB.
 If using `docker run`, this can be done by passing the flag `--shm-size 256m`.
 If using a `docker-compose.yml` file, the `shm_size` key can be used for this

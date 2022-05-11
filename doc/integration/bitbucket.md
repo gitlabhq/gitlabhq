@@ -124,4 +124,4 @@ After the above configuration is set up, you can use Bitbucket to sign into
 GitLab and [start importing your projects](../user/project/import/bitbucket.md).
 
 If you want to import projects from Bitbucket, but don't want to enable signing in,
-you can [disable Sign-Ins in the admin panel](omniauth.md#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
+you can [disable Sign-Ins in the Admin Area](omniauth.md#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).

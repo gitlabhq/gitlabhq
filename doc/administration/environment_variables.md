@@ -37,31 +37,6 @@ You can use the following environment variables to override certain values:
 | `RAILS_ENV`                                | string  | The Rails environment; can be one of `production`, `development`, `staging`, or `test`.                 |
 | `UNSTRUCTURED_RAILS_LOG`                   | string  | Enables the unstructured log in addition to JSON logs (defaults to `true`).                             |
 
-## Complete database variables
-
-The recommended method for specifying your database connection information is
-to set the `DATABASE_URL` environment variable. This variable contains
-connection information (`adapter`, `database`, `username`, `password`, `host`,
-and `port`), but no behavior information (`encoding` or `pool`). If you don't
-want to use `DATABASE_URL`, or want to set database behavior information,
-either:
-
-- Copy the template file, `cp config/database.yml.env config/database.yml`.
-- Set a value for some `GITLAB_DATABASE_XXX` variables.
-
-The list of `GITLAB_DATABASE_XXX` variables that you can set is:
-
-| Variable                    | Default value                  | Overridden by `DATABASE_URL`? |
-|-----------------------------|--------------------------------|-------------------------------|
-| `GITLAB_DATABASE_ADAPTER`   | `postgresql`                   | **{check-circle}** Yes        |
-| `GITLAB_DATABASE_DATABASE`  | `gitlab_#{ENV['RAILS_ENV']`    | **{check-circle}** Yes        |
-| `GITLAB_DATABASE_ENCODING`  | `unicode`                      | **{dotted-circle}** No        |
-| `GITLAB_DATABASE_HOST`      | `localhost`                    | **{check-circle}** Yes        |
-| `GITLAB_DATABASE_PASSWORD`  | _none_                         | **{check-circle}** Yes        |
-| `GITLAB_DATABASE_POOL`      | `10`                           | **{dotted-circle}** No        |
-| `GITLAB_DATABASE_PORT`      | `5432`                         | **{check-circle}** Yes        |
-| `GITLAB_DATABASE_USERNAME`  | `root`                         | **{check-circle}** Yes        |
-
 ## Adding more variables
 
 We welcome merge requests to make more settings configurable by using variables.

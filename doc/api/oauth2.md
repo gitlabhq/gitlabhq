@@ -33,7 +33,7 @@ Implicit grant and Resource Owner Password Credentials flows.
 Refer to the [OAuth RFC](https://tools.ietf.org/html/rfc6749) to find out
 how all those flows work and pick the right one for your use case.
 
-Both **authorization code** (with or without PKCE) and **implicit grant** flows require `application` to be
+Authorization code (with or without PKCE) flow requires `application` to be
 registered first via the `/profile/applications` page in your user's account.
 During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you obtain the
@@ -59,8 +59,6 @@ For development, GitLab allows insecure HTTP redirect URIs.
 As OAuth 2.0 bases its security entirely on the transport layer, you should not use unprotected
 URIs. For more information, see the [OAuth 2.0 RFC](https://tools.ietf.org/html/rfc6749#section-3.1.2.1)
 and the [OAuth 2.0 Threat Model RFC](https://tools.ietf.org/html/rfc6819#section-4.4.2.1).
-These factors are particularly important when using the
-[Implicit grant flow](#implicit-grant-flow-deprecated), where actual credentials are included in the `redirect_uri`.
 
 In the following sections you can find detailed instructions on how to obtain
 authorization with each flow.
@@ -319,12 +317,13 @@ access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
 ```
 
-### Implicit grant flow (DEPRECATED)
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
 
-WARNING:
+### Implicit grant flow (removed)
+
 Implicit grant flow is inherently insecure and the IETF has removed it in [OAuth 2.1](https://oauth.net/2.1/).
-It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) in GitLab 14.0, and is planned for
-[removal](https://gitlab.com/gitlab-org/gitlab/-/issues/344609) in GitLab 15.0.
+It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) in GitLab 14.0 and is
+[removed](https://gitlab.com/gitlab-org/gitlab/-/issues/344609) in GitLab 15.0.
 
 We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce)
 instead.
@@ -352,6 +351,8 @@ parameters, for example:
 ```plaintext
 https://example.com/oauth/redirect#access_token=ABCDExyz123&state=YOUR_UNIQUE_STATE_HASH&token_type=bearer&expires_in=3600
 ```
+
+<!--- end_remove -->
 
 ## Access GitLab API with `access token`
 

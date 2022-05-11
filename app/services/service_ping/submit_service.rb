@@ -101,3 +101,5 @@ module ServicePing
     end
   end
 end
+
+ServicePing::SubmitService.prepend_mod

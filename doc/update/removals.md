@@ -78,6 +78,29 @@ The Container Registry supports [authentication](https://gitlab.com/gitlab-org/c
 
 Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
 
+### Custom `geo:db:*` Rake tasks are no longer available
+
+In GitLab 14.8, we [deprecated the `geo:db:*` Rake tasks and replaced them with built-in tasks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77269/diffs) after [switching the Geo tracking database to use Rails' 6 support of multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6458).
+The following `geo:db:*` tasks have been removed from GitLab 15.0 and have been replaced with their corresponding `db:*:geo` tasks:
+
+- `geo:db:drop` -> `db:drop:geo`
+- `geo:db:create` -> `db:create:geo`
+- `geo:db:setup` -> `db:setup:geo`
+- `geo:db:migrate` -> `db:migrate:geo`
+- `geo:db:rollback` -> `db:rollback:geo`
+- `geo:db:version` -> `db:version:geo`
+- `geo:db:reset` -> `db:reset:geo`
+- `geo:db:seed` -> `db:seed:geo`
+- `geo:schema:load:geo` -> `db:schema:load:geo`
+- `geo:db:schema:dump` -> `db:schema:dump:geo`
+- `geo:db:migrate:up` -> `db:migrate:up:geo`
+- `geo:db:migrate:down` -> `db:migrate:down:geo`
+- `geo:db:migrate:redo` -> `db:migrate:redo:geo`
+- `geo:db:migrate:status` -> `db:migrate:status:geo`
+- `geo:db:test:prepare` -> `db:test:prepare:geo`
+- `geo:db:test:load` -> `db:test:load:geo`
+- `geo:db:test:purge` -> `db:test:purge:geo`
+
 ### GitLab Serverless
 
 WARNING:
@@ -111,6 +134,10 @@ The permissions model for GraphQL is being updated. After 15.0, users with the G
 - [Enabling the Dependency Proxy for your group](https://docs.gitlab.com/ee/api/graphql/reference/#dependencyproxysetting)
 
 The issue for this removal is [GitLab-#350682](https://gitlab.com/gitlab-org/gitlab/-/issues/350682)
+
+### Legacy Geo Admin UI routes
+
+In GitLab 13.0, we introduced new project and design replication details routes in the Geo Admin UI. These routes are `/admin/geo/replication/projects` and `/admin/geo/replication/designs`. We kept the legacy routes and redirected them to the new routes. These legacy routes `/admin/geo/projects` and `/admin/geo/designs` have been removed in GitLab 15.0. Please update any bookmarks or scripts that may use the legacy routes.
 
 ### OAuth tokens without an expiration
 
@@ -225,6 +252,22 @@ If you installed GitLab from source, verify manually that both servers are confi
 
 The Static Site Editor was deprecated in GitLab 14.7 and the feature is being removed in GitLab 15.0. Incoming requests to the Static Site Editor will be redirected and open the target file to edit in the Web IDE. Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/static_site_editor/) for more information, including how to remove the configuration files from existing projects. We will continue investing in improvements to the Markdown editing experience by [maturing the Content Editor](https://gitlab.com/groups/gitlab-org/-/epics/5401) and making it available as a way to edit content across GitLab.
 
+### Support for legacy format of `config/database.yml` removed
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The syntax of [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
+configuration located in `database.yml` has changed and the legacy format has been removed.
+The legacy format supported a single PostgreSQL adapter, whereas the new format supports multiple databases.
+The `main:` database needs to be defined as a first configuration item.
+
+This change only impacts users compiling GitLab from source, all the other installation methods handle this configuration automatically.
+Instructions are available [in the source update documentation](https://docs.gitlab.com/ee/update/upgrading_from_source.html#new-configuration-options-for-databaseyml).
+
 ### Test coverage project CI/CD setting
 
 WARNING:
@@ -239,6 +282,16 @@ has been removed.
 
 To set test coverage parsing, use the project’s `.gitlab-ci.yml` file by providing a regular expression with the
 [`coverage` keyword](https://docs.gitlab.com/ee/ci/yaml/index.html#coverage).
+
+### The `promote-db` command is no longer available from `gitlab-ctl`
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-db` which is used to promote database nodes in multi-node Geo secondary sites. The `gitlab-ctl promote-db` command has been removed in GitLab 15.0.
 
 ### Update to the Container Registry group-level API
 

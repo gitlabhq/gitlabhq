@@ -90,11 +90,10 @@ Doorkeeper.configure do
   # strings and the flows they enable are:
   #
   # "authorization_code" => Authorization Code Grant Flow
-  # "implicit"           => Implicit Grant Flow
   # "password"           => Resource Owner Password Credentials Grant Flow
   # "client_credentials" => Client Credentials Grant Flow
   #
-  grant_flows %w(authorization_code implicit password client_credentials)
+  grant_flows %w(authorization_code password client_credentials)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.

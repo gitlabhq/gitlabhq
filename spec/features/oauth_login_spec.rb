@@ -166,16 +166,6 @@ RSpec.describe 'OAuth Login', :allow_forgery_protection do
 
         expect(page).to have_current_path(Gitlab::Routing.url_helpers.root_url, ignore_query: true)
       end
-
-      it 'does not include the fragment for an implicit grant' do
-        implicit_grant_params = params.merge(response_type: 'token')
-        escaped_url = Regexp.escape(Gitlab::Routing.url_helpers.root_url)
-        auth_params_fragment = '#[a-zA-Z0-9&=_]+'
-
-        visit "#{Gitlab::Routing.url_helpers.oauth_authorization_url(implicit_grant_params)}#a_test-hash"
-
-        expect(page).to have_current_path(%r{\A#{escaped_url}#{auth_params_fragment}\z}, ignore_query: true, url: true)
-      end
     end
 
     context 'when JS is disabled' do

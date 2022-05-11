@@ -75,6 +75,8 @@ export default {
         if (workItemUpdate?.errors?.length) {
           throw new Error(workItemUpdate.errors[0]);
         }
+
+        this.$emit('updated');
       } catch (error) {
         this.$emit('error', i18n.updateError);
         Sentry.captureException(error);

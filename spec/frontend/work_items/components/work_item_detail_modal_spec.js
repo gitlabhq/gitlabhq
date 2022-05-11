@@ -1,21 +1,51 @@
-import { GlModal, GlAlert } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import deleteWorkItemFromTaskMutation from '~/work_items/graphql/delete_task_from_work_item.mutation.graphql';
 
 describe('WorkItemDetailModal component', () => {
   let wrapper;
 
   Vue.use(VueApollo);
 
+  const hideModal = jest.fn();
+  const GlModal = {
+    template: `
+    <div>
+      <slot></slot>
+    </div>
+  `,
+    methods: {
+      hide: hideModal,
+    },
+  };
+
   const findModal = () => wrapper.findComponent(GlModal);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findWorkItemDetail = () => wrapper.findComponent(WorkItemDetail);
 
   const createComponent = ({ workItemId = '1', error = false } = {}) => {
+    const apolloProvider = createMockApollo([
+      [
+        deleteWorkItemFromTaskMutation,
+        jest.fn().mockResolvedValue({
+          data: {
+            workItemDeleteTask: {
+              workItem: { id: 123, descriptionHtml: 'updated work item desc' },
+              errors: [],
+            },
+          },
+        }),
+      ],
+    ]);
+
     wrapper = shallowMount(WorkItemDetailModal, {
+      apolloProvider,
       propsData: { workItemId },
       data() {
         return {
@@ -35,7 +65,9 @@ describe('WorkItemDetailModal component', () => {
   it('renders WorkItemDetail', () => {
     createComponent();
 
-    expect(findWorkItemDetail().props()).toEqual({ workItemId: '1' });
+    expect(findWorkItemDetail().props()).toEqual({
+      workItemId: '1',
+    });
   });
 
   it('renders alert if there is an error', () => {
@@ -65,10 +97,24 @@ describe('WorkItemDetailModal component', () => {
     expect(wrapper.emitted('close')).toBeTruthy();
   });
 
-  it('emits `workItemDeleted` event on deleting work item', () => {
+  it('emits `workItemUpdated` event on updating work item', () => {
     createComponent();
-    findWorkItemDetail().vm.$emit('workItemDeleted');
+    findWorkItemDetail().vm.$emit('workItemUpdated');
 
-    expect(wrapper.emitted('workItemDeleted')).toBeTruthy();
+    expect(wrapper.emitted('workItemUpdated')).toBeTruthy();
+  });
+
+  describe('delete work item', () => {
+    it('emits workItemDeleted and closes modal', async () => {
+      createComponent();
+      const newDesc = 'updated work item desc';
+
+      findWorkItemDetail().vm.$emit('deleteWorkItem');
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('workItemDeleted')).toEqual([[newDesc]]);
+      expect(hideModal).toHaveBeenCalled();
+    });
   });
 });

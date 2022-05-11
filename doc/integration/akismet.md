@@ -12,7 +12,7 @@ Akismet for review, and instance administrators can
 [mark snippets as spam](../user/snippets.md#mark-snippet-as-spam).
 
 Detected spam is rejected, and an entry is added in the **Spam Log** section of the
-Admin page.
+Admin Area.
 
 Privacy note: GitLab submits the user's IP and user agent to Akismet.
 

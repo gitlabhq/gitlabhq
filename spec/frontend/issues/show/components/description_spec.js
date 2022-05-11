@@ -37,6 +37,7 @@ const showDetailsModal = jest.fn();
 const $toast = {
   show: jest.fn(),
 };
+
 const workItemQueryResponse = {
   data: {
     workItem: null,
@@ -319,8 +320,10 @@ describe('Description component', () => {
       });
 
       it('shows toast after delete success', async () => {
-        findWorkItemDetailModal().vm.$emit('workItemDeleted');
+        const newDesc = 'description';
+        findWorkItemDetailModal().vm.$emit('workItemDeleted', newDesc);
 
+        expect(wrapper.emitted('updateDescription')).toEqual([[newDesc]]);
         expect($toast.show).toHaveBeenCalledWith('Work item deleted');
       });
     });
@@ -381,7 +384,8 @@ describe('Description component', () => {
       describe('when url query `work_item_id` exists', () => {
         it.each`
           behavior           | workItemId     | modalOpened
-          ${'opens'}         | ${'123'}       | ${1}
+          ${'opens'}         | ${'2'}         | ${1}
+          ${'does not open'} | ${'123'}       | ${0}
           ${'does not open'} | ${'123e'}      | ${0}
           ${'does not open'} | ${'12e3'}      | ${0}
           ${'does not open'} | ${'1e23'}      | ${0}

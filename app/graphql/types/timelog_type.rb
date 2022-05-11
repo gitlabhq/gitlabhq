@@ -6,6 +6,8 @@ module Types
 
     authorize :read_issue
 
+    expose_permissions Types::PermissionTypes::Timelog
+
     field :id,
           GraphQL::Types::ID,
           null: false,

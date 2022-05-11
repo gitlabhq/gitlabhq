@@ -196,11 +196,11 @@ is not shared to forks.
 
 Contributors can configure Danger for their forks with the following steps:
 
-1. Create a [personal API token](https://gitlab.com/-/profile/personal_access_tokens?name=GitLab+Dangerbot&scopes=api).
-that has the `api` scope set (don't forget to copy it to the clipboard).
-1. Add a [project CI/CD variable](../ci/variables/index.md#add-a-cicd-variable-to-a-project)
-called `DANGER_GITLAB_API_TOKEN` with the token copied in the previous step.
+1. Create a [personal API token](https://gitlab.com/-/profile/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
+  that has the `api` scope set (don't forget to copy it to the clipboard).
+1. In your fork, add a [project CI/CD variable](../ci/variables/index.md#add-a-cicd-variable-to-a-project)
+  called `DANGER_GITLAB_API_TOKEN` with the token copied in the previous step.
 1. Make the variable [masked](../ci/variables/index.md#mask-a-cicd-variable) so it
-doesn't show up in the job logs. The variable cannot be
-[protected](../ci/variables/index.md#protected-cicd-variables), because it needs
-to be present for all branches.
+  doesn't show up in the job logs. The variable cannot be
+  [protected](../ci/variables/index.md#protected-cicd-variables), because it needs
+  to be present for all branches.

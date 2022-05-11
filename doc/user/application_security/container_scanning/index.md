@@ -5,7 +5,7 @@ group: Container Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Container Scanning **(ULTIMATE)**
+# Container Scanning **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in GitLab 10.4.
 
@@ -43,6 +43,26 @@ GitLab compares the found vulnerabilities between the source and target branches
 information directly in the merge request.
 
 ![Container Scanning Widget](img/container_scanning_v13_2.png)
+
+### Capabilities
+
+| Capability | In Free | In Ultimate |
+| --- | ------ | ------ |
+| [Configure Scanners](#configuration) | Yes | Yes |
+| Customize Settings ([Variables](#available-cicd-variables), [Overriding](#overriding-the-container-scanning-template), [offline environment support](#running-container-scanning-in-an-offline-environment), etc) | Yes | Yes |
+| [View JSON Report](#reports-json-format) as a CI job artifact | Yes | Yes |
+| Generation of a JSON report of [dependencies](#dependency-list) as a CI job artifact | Yes | Yes |
+| Ability to enable container scanning via an MR in the GitLab UI | Yes | Yes |
+| [UBI Image Support](#fips-enabled-images) | Yes | Yes |
+| Support for Trivy | Yes | Yes |
+| Support for Grype | Yes | Yes |
+| Inclusion of GitLab Advisory Database | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
+| Presentation of Report data in Merge Request and Security tab of the CI pipeline job | No | Yes |
+| [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) such as merge request approvals | No | Yes |
+| [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation) | No | Yes |
+| Support for the [vulnerability allow list](#vulnerability-allowlisting) | No | Yes |
+| [Access to Security Dashboard page](#security-dashboard) | No | Yes |
+| [Access to Dependency List page](../dependency_list/) | No | Yes |
 
 ## Requirements
 
@@ -405,7 +425,7 @@ container_scanning:
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
-### Vulnerability allowlisting
+### Vulnerability allowlisting **(ULTIMATE)**
 
 To allowlist specific vulnerabilities, follow these steps:
 
@@ -770,7 +790,7 @@ Database update information for other analyzers is available in the
 
 After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 
-## Solutions for vulnerabilities (auto-remediation)
+## Solutions for vulnerabilities (auto-remediation) **(ULTIMATE)**
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.

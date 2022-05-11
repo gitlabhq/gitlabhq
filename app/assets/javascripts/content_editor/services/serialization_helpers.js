@@ -363,3 +363,120 @@ export function preserveUnchanged(render) {
     }
   };
 }
+
+const generateBoldTags = (open = true) => {
+  return (_, mark) => {
+    const type = /^(\*\*|__|<strong|<b).*/.exec(mark.attrs.sourceMarkdown)?.[1];
+
+    switch (type) {
+      case '**':
+      case '__':
+        return type;
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      case '<strong':
+      case '<b':
+        return (open ? openTag : closeTag)(type.substring(1));
+      default:
+        return '**';
+    }
+  };
+};
+
+export const bold = {
+  open: generateBoldTags(),
+  close: generateBoldTags(false),
+  mixable: true,
+  expelEnclosingWhitespace: true,
+};
+
+const generateItalicTag = (open = true) => {
+  return (_, mark) => {
+    const type = /^(\*|_|<em|<i).*/.exec(mark.attrs.sourceMarkdown)?.[1];
+
+    switch (type) {
+      case '*':
+      case '_':
+        return type;
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      case '<em':
+      case '<i':
+        return (open ? openTag : closeTag)(type.substring(1));
+      default:
+        return '_';
+    }
+  };
+};
+
+export const italic = {
+  open: generateItalicTag(),
+  close: generateItalicTag(false),
+  mixable: true,
+  expelEnclosingWhitespace: true,
+};
+
+const generateCodeTag = (open = true) => {
+  return (_, mark) => {
+    const type = /^(`|<code).*/.exec(mark.attrs.sourceMarkdown)?.[1];
+
+    if (type === '<code') {
+      return (open ? openTag : closeTag)(type.substring(1));
+    }
+
+    return '`';
+  };
+};
+
+export const code = {
+  open: generateCodeTag(),
+  close: generateCodeTag(false),
+  mixable: true,
+  expelEnclosingWhitespace: true,
+};
+
+const LINK_HTML = 'linkHtml';
+const LINK_MARKDOWN = 'linkMarkdown';
+
+const linkType = (sourceMarkdown) => {
+  const expression = /^(\[|<a).*/.exec(sourceMarkdown)?.[1];
+
+  if (!expression || expression === '[') {
+    return LINK_MARKDOWN;
+  }
+
+  return LINK_HTML;
+};
+
+export const link = {
+  open(state, mark, parent, index) {
+    if (isPlainURL(mark, parent, index, 1)) {
+      return '<';
+    }
+
+    const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
+
+    if (linkType(sourceMarkdown) === LINK_MARKDOWN) {
+      return '[';
+    }
+
+    const attrs = { href: state.esc(href || canonicalSrc) };
+
+    if (title) {
+      attrs.title = title;
+    }
+
+    return openTag('a', attrs);
+  },
+  close(state, mark, parent, index) {
+    if (isPlainURL(mark, parent, index, -1)) {
+      return '>';
+    }
+
+    const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
+
+    if (linkType(sourceMarkdown) === LINK_HTML) {
+      return closeTag('a');
+    }
+
+    return `](${state.esc(canonicalSrc || href)}${title ? ` ${state.quote(title)}` : ''})`;
+  },
+};

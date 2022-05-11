@@ -79,7 +79,7 @@ In GitLab 13.0, [hashed storage](../repository_storage_types.md#hashed-storage)
 is enabled by default and the legacy storage is deprecated.
 GitLab 14.0 eliminates support for legacy storage. If you're on GitLab
 13.0 and later, switching new projects to legacy storage is not possible.
-The option to choose between hashed and legacy storage in the admin area has
+The option to choose between hashed and legacy storage in the Admin Area has
 been disabled.
 
 This task must be run on any machine that has Rails/Sidekiq configured, and the task
@@ -132,7 +132,7 @@ In GitLab 13.0, [hashed storage](../repository_storage_types.md#hashed-storage)
 is enabled by default and the legacy storage is deprecated.
 GitLab 14.0 eliminates support for legacy storage. If you're on GitLab
 13.0 and later, switching new projects to legacy storage is not possible.
-The option to choose between hashed and legacy storage in the admin area has
+The option to choose between hashed and legacy storage in the Admin Area has
 been disabled.
 
 This task schedules all your existing projects and associated attachments to be rolled back to the
@@ -213,7 +213,7 @@ they might fail to migrate.
 
 ### Projects pending deletion
 
-Check the project details in the admin area. If deleting the project failed
+Check the project details in the Admin Area. If deleting the project failed
 it will show as `Marked For Deletion At ..`, `Scheduled Deletion At ..` and
 `pending removal`, but the dates will not be recent.
 
@@ -229,7 +229,7 @@ Delete the project using the Rails console:
    puts "\nproject selected for deletion is:\nID: #{project.id}\nPATH: #{project.full_path}\nNAME: #{project.name}\n\n"
    ```
 
-   - Replace `janedoe/testproject` with your project path from the Rake take output or from the admin area.
+   - Replace `janedoe/testproject` with your project path from the Rake take output or from the Admin Area.
    - Replace `admin_handle` with the handle of an instance administrator or with `root`.
    - Verify the output before proceeding. **There are no other checks performed**.
 

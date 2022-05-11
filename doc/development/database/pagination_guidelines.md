@@ -172,7 +172,7 @@ From the user point of view, this might not be always noticeable. As the user pa
 
 When requesting a large page number, the database needs to read `PAGE * PAGE_SIZE` rows. This makes offset pagination **unsuitable for large database tables**.
 
-Example: listing users on the Admin page
+Example: listing users on the Admin Area
 
 Listing users with a very simple SQL query:
 

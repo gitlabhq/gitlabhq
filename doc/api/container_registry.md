@@ -420,7 +420,7 @@ These are different from project or personal access tokens in the GitLab applica
 GET /v2/_catalog
 ```
 
-To list all container repositories on your GitLab instance, admin credentials are required:
+To list all container repositories on your GitLab instance, administrator credentials are required:
 
 ```shell
 $ curl --request GET --user "<admin-username>:<admin-password>" "https://gitlab.example.com/jwt/auth?service=container_registry&scope=registry:catalog:*"

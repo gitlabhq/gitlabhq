@@ -270,15 +270,6 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe '.order_expired_desc' do
-    let_it_be(:first_artifact) { create(:ci_job_artifact, expire_at: 2.days.ago) }
-    let_it_be(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
-
-    it 'returns ordered artifacts' do
-      expect(described_class.order_expired_desc).to eq([second_artifact, first_artifact])
-    end
-  end
-
   describe '.order_expired_asc' do
     let_it_be(:first_artifact) { create(:ci_job_artifact, expire_at: 2.days.ago) }
     let_it_be(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }

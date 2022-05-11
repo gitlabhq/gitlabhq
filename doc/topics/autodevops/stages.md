@@ -240,7 +240,7 @@ To learn more about
 [License Compliance](../../user/compliance/license_compliance/index.md), see the
 documentation.
 
-## Auto Container Scanning **(ULTIMATE)**
+## Auto Container Scanning
 
 Vulnerability static analysis for containers uses [Trivy](https://aquasecurity.github.io/trivy/latest/)
 to check for potential security issues in Docker images. The Auto Container Scanning stage is

@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import $ from 'jquery';
 import Vue from 'vue';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -140,7 +140,10 @@ export default {
     }
 
     if (this.workItemId) {
-      this.$refs.detailsModal.show();
+      const taskLink = this.$el.querySelector(
+        `.gfm-issue[data-issue="${getIdFromGraphQLId(this.workItemId)}"]`,
+      );
+      this.openWorkItemDetailModal(taskLink);
     }
   },
   methods: {
@@ -216,7 +219,7 @@ export default {
           this.addHoverListeners(taskLink, workItemId);
           taskLink.addEventListener('click', (e) => {
             e.preventDefault();
-            this.$refs.detailsModal.show();
+            this.openWorkItemDetailModal(taskLink);
             this.workItemId = workItemId;
             this.updateWorkItemIdUrlQuery(issue);
             this.track('viewed_work_item_from_modal', {
@@ -248,7 +251,7 @@ export default {
           </svg>
         `;
         button.setAttribute('aria-label', s__('WorkItem|Convert to work item'));
-        button.addEventListener('click', () => this.openCreateTaskModal(button.id));
+        button.addEventListener('click', () => this.openCreateTaskModal(button));
         item.prepend(button);
       });
     },
@@ -265,19 +268,28 @@ export default {
         }
       });
     },
-    openCreateTaskModal(id) {
-      const { parentElement } = this.$el.querySelector(`#${id}`);
+    setActiveTask(el) {
+      const { parentElement } = el;
       const lineNumbers = parentElement.getAttribute('data-sourcepos').match(/\b\d+(?=:)/g);
       this.activeTask = {
-        id,
         title: parentElement.innerText,
         lineNumberStart: lineNumbers[0],
         lineNumberEnd: lineNumbers[1],
       };
+    },
+    openCreateTaskModal(el) {
+      this.setActiveTask(el);
       this.$refs.modal.show();
     },
     closeCreateTaskModal() {
       this.$refs.modal.hide();
+    },
+    openWorkItemDetailModal(el) {
+      if (!el) {
+        return;
+      }
+      this.setActiveTask(el);
+      this.$refs.detailsModal.show();
     },
     closeWorkItemDetailModal() {
       this.workItemId = undefined;
@@ -287,7 +299,8 @@ export default {
       this.$emit('updateDescription', description);
       this.closeCreateTaskModal();
     },
-    handleDeleteTask() {
+    handleDeleteTask(description) {
+      this.$emit('updateDescription', description);
       this.$toast.show(s__('WorkItem|Work item deleted'));
     },
     updateWorkItemIdUrlQuery(workItemId) {
@@ -353,6 +366,10 @@ export default {
       ref="detailsModal"
       :can-update="canUpdate"
       :work-item-id="workItemId"
+      :issue-gid="issueGid"
+      :lock-version="lockVersion"
+      :line-number-start="activeTask.lineNumberStart"
+      :line-number-end="activeTask.lineNumberEnd"
       @workItemDeleted="handleDeleteTask"
       @close="closeWorkItemDetailModal"
     />

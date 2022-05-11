@@ -381,7 +381,7 @@ these variables if the source branch is a protected branch.
 
 To mark a variable as protected:
 
-1. Go to **Settings > CI/CD** in the project, group or instance admin area.
+1. Go to **Settings > CI/CD** in the project, group or instance Admin Area.
 1. Expand the **Variables** section.
 1. Next to the variable you want to protect, select **Edit**.
 1. Select the **Protect variable** checkbox.

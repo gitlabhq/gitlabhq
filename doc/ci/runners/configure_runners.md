@@ -148,7 +148,7 @@ different places.
 
 ### Determine the IP address of a shared runner
 
-To view the IP address of a shared runner you must have admin access to
+To view the IP address of a shared runner you must have administrator access to
 the GitLab instance. To determine this:
 
 1. On the top bar, select **Menu > Admin**.

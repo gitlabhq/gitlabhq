@@ -52,6 +52,7 @@ export default {
           },
         });
         this.track('updated_title');
+        this.$emit('updated');
       } catch {
         this.$emit('error', i18n.updateError);
       }

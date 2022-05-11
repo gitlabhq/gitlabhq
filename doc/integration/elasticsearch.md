@@ -872,7 +872,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the admin area under **Settings > Advanced Search** check that the
+- From the Admin Area under **Settings > Advanced Search** check that the
   Advanced Search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:
