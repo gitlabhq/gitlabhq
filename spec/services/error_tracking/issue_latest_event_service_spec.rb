@@ -42,6 +42,18 @@ RSpec.describe ErrorTracking::IssueLatestEventService do
           expect(result[:status]).to eq(:success)
           expect(result[:latest_event].to_json).to eq(event.to_sentry_error_event.to_json)
         end
+
+        context 'when error does not exist' do
+          let(:params) { { issue_id: non_existing_record_id } }
+
+          it 'returns the error in detailed format' do
+            expect(result).to match(
+              status: :error,
+              message: /Couldn't find ErrorTracking::Error/,
+              http_status: :bad_request
+            )
+          end
+        end
       end
     end
 

@@ -814,7 +814,7 @@ export default class FilteredSearchManager {
   getUsernameParams() {
     const usernamesById = {};
     try {
-      const attribute = this.filteredSearchInput.getAttribute('data-username-params');
+      const attribute = this.filteredSearchInput.dataset.usernameParams;
       JSON.parse(attribute).forEach((user) => {
         usernamesById[user.id] = user.username;
       });

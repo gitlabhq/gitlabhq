@@ -345,7 +345,7 @@ We use the [`rules:`](../ci/yaml/index.md#rules) and [`needs:`](../ci/yaml/index
 to determine the jobs that need to be run in a pipeline. Note that an MR that includes multiple types of changes would
 have a pipelines that include jobs from multiple types (for example, a combination of docs-only and code-only pipelines).
 
-Following are graphs of the critical paths for each pipeline type. Jobs that aren't part of the critical path are ommitted.
+Following are graphs of the critical paths for each pipeline type. Jobs that aren't part of the critical path are omitted.
 
 ### Documentation pipeline
 

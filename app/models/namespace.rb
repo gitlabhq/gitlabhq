@@ -16,6 +16,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Linear
   include EachBatch
   include BlocksUnsafeSerialization
+  include Ci::NamespaceSettings
 
   # Temporary column used for back-filling project namespaces.
   # Remove it once the back-filling of all project namespaces is done.

@@ -33,7 +33,7 @@ export default {
     this.fetchFreshItems();
 
     const body = document.querySelector('body');
-    const namespaceId = body.getAttribute('data-namespace-id');
+    const { namespaceId } = body.dataset;
 
     this.track('click_whats_new_drawer', { label: 'namespace_id', value: namespaceId });
   },

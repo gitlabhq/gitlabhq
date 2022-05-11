@@ -838,7 +838,7 @@ RSpec.describe Ci::Runner do
       context 'with legacy_mode enabled' do
         let(:legacy_mode) { '14.5' }
 
-        it { is_expected.to eq(:not_connected) }
+        it { is_expected.to eq(:never_contacted) }
       end
 
       context 'with legacy_mode disabled' do
@@ -914,7 +914,7 @@ RSpec.describe Ci::Runner do
         runner.contacted_at = nil
       end
 
-      it { is_expected.to eq(:not_connected) }
+      it { is_expected.to eq(:never_contacted) }
     end
 
     context 'contacted 1s ago' do

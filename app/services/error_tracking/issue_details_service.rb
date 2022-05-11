@@ -49,13 +49,10 @@ module ErrorTracking
       # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/329596
       #
       if project_error_tracking_setting.integrated_client?
-        error = project.error_tracking_errors.find(issue_id)
-
-        # We use the same response format as project_error_tracking_setting
-        # method below for compatibility with existing code.
-        {
-          issue: error.to_sentry_detailed_error
-        }
+        handle_error_repository_exceptions do
+          error = error_repository.find_error(issue_id)
+          { issue: error }
+        end
       else
         project_error_tracking_setting.issue_details(issue_id: issue_id)
       end

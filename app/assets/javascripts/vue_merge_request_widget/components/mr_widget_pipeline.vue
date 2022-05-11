@@ -276,12 +276,11 @@ export default {
           </div>
         </div>
         <div>
-          <span class="mr-widget-pipeline-graph">
-            <span class="stage-cell">
+          <span class="gl-align-items-center gl-display-inline-flex mr-widget-pipeline-graph">
+            <span class="gl-align-items-center gl-display-inline-flex gl-flex-wrap stage-cell">
               <linked-pipelines-mini-list v-if="triggeredBy.length" :triggered-by="triggeredBy" />
               <pipeline-mini-graph
                 v-if="hasStages"
-                class="gl-display-inline-block"
                 stages-class="mr-widget-pipeline-stages"
                 :stages="pipeline.details.stages"
                 :is-merge-train="isMergeTrain"

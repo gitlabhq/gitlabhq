@@ -430,7 +430,7 @@ Please note that the polling rate is configurable in SDKs. Provided that all cli
 
 For applications looking for more scalable solution, we recommend to use [Unleash Proxy](#unleash-proxy-example).
 This proxy server sits between the server and clients. It requests to the server as a behalf of the client groups,
-so the nubmer of outbound requests can be greatly reduced.
+so the number of outbound requests can be greatly reduced.
 
 There is also an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more
 capacity to the current rate limit.

@@ -84,14 +84,12 @@ module ErrorTracking
       # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/329596
       #
       if project_error_tracking_setting.integrated_client?
-        error = project.error_tracking_errors.find(opts[:issue_id])
-        error.status = opts[:params][:status]
-        error.save!
+        updated = error_repository.update_error(opts[:issue_id], status: opts[:params][:status])
 
         # We use the same response format as project_error_tracking_setting
         # method below for compatibility with existing code.
         {
-          updated: true
+          updated: updated
         }
       else
         project_error_tracking_setting.update_issue(**opts)

@@ -10,7 +10,7 @@ function createComponent() {
 }
 
 async function setLoaded(loaded) {
-  document.querySelector('.blob-viewer').setAttribute('data-loaded', loaded);
+  document.querySelector('.blob-viewer').dataset.loaded = loaded;
 
   await nextTick();
 }
@@ -51,7 +51,7 @@ describe('Markdown table of contents component', () => {
     it('does not show dropdown when viewing non-rich content', async () => {
       createComponent();
 
-      document.querySelector('.blob-viewer').setAttribute('data-type', 'simple');
+      document.querySelector('.blob-viewer').dataset.type = 'simple';
 
       await setLoaded(true);
 

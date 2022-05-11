@@ -232,8 +232,8 @@ a developer will need to add an implementation for missing Redis commands before
 
 | metrics name                                    | type               | labels                 | description                                        |
 |-------------------------------------------------|--------------------|------------------------|----------------------------------------------------|
-| gitlab_redis_multi_store_read_fallback_total    | Prometheus Counter | command, instance_name | Client side Redis MultiStore reading fallback total|
-| gitlab_redis_multi_store_method_missing_total   | Prometheus Counter | command, instance_name | Client side Redis MultiStore method missing total  |
+| `gitlab_redis_multi_store_read_fallback_total`    | Prometheus Counter | command, instance_name | Client side Redis MultiStore reading fallback total|
+| `gitlab_redis_multi_store_method_missing_total`   | Prometheus Counter | command, instance_name | Client side Redis MultiStore method missing total  |
 
 ## Step 4: clean up after the migration
 

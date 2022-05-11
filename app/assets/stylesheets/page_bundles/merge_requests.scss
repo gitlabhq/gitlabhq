@@ -121,10 +121,6 @@ $tabs-holder-z-index: 250;
   @include media-breakpoint-down(sm) {
     flex-direction: column;
 
-    .stage-cell .stage-container {
-      margin-top: 16px;
-    }
-
     .dropdown .mini-pipeline-graph-dropdown-menu.dropdown-menu {
       transform: initial;
     }

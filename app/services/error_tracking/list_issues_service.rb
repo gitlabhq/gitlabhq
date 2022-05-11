@@ -73,24 +73,24 @@ module ErrorTracking
       if project_error_tracking_setting.integrated_client?
         # We are going to support more options in the future.
         # For now we implement the bare minimum for rendering the list in UI.
-        filter_opts = {
-          status: opts[:issue_status],
+        list_opts = {
+          filters: { status: opts[:issue_status] },
           sort: opts[:sort],
           limit: opts[:limit],
           cursor: opts[:cursor]
         }
 
-        errors = ErrorTracking::ErrorsFinder.new(current_user, project, filter_opts).execute
+        errors, pagination = error_repository.list_errors(**list_opts)
 
-        pagination = {}
-        pagination[:next] = { cursor: errors.cursor_for_next_page } if errors.has_next_page?
-        pagination[:previous] = { cursor: errors.cursor_for_previous_page } if errors.has_previous_page?
+        pagination_hash = {}
+        pagination_hash[:next] = { cursor: pagination.next } if pagination.next
+        pagination_hash[:previous] = { cursor: pagination.prev } if pagination.prev
 
         # We use the same response format as project_error_tracking_setting
         # method below for compatibility with existing code.
         {
-          issues: errors.map(&:to_sentry_error),
-          pagination: pagination
+          issues: errors,
+          pagination: pagination_hash
         }
       else
         project_error_tracking_setting.list_sentry_issues(**opts)

@@ -12,7 +12,7 @@ but if they are not available you can still quickly parse
 (the default in GitLab 12.0 and later) using [`jq`](https://stedolan.github.io/jq/).
 
 NOTE:
-Spefically for summarising error events and basic usage statistics,
+Specifically for summarizing error events and basic usage statistics,
 the GitLab Support Team provides the specialised
 [`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
 

@@ -29,7 +29,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js do
     it 'displays a mini pipeline graph' do
       expect(page).to have_selector('[data-testid="commit-box-mini-graph"]')
 
-      first('.mini-pipeline-graph-dropdown-toggle').click
+      first('[data-testid="mini-pipeline-graph-dropdown"]').click
 
       wait_for_requests
 

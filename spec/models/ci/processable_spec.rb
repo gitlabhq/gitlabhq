@@ -76,7 +76,7 @@ RSpec.describe Ci::Processable do
       end
 
       let(:ignore_accessors) do
-        %i[type lock_version target_url base_tags trace_sections
+        %i[type namespace lock_version target_url base_tags trace_sections
            commit_id deployment erased_by_id project_id
            runner_id tag_taggings taggings tags trigger_request_id
            user_id auto_canceled_by_id retried failure_reason

@@ -37,7 +37,7 @@ with all possible
 label-combinations](https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics). This
 avoid confusing results when using these counters in calculations.
 
-To initialize an SLI, use the `.inilialize_sli` class method, for
+To initialize an SLI, use the `.initialize_sli` class method, for
 example:
 
 ```ruby

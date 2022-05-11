@@ -55,8 +55,8 @@ export function renderKroki(krokiImages) {
 
     // A single Kroki image is processed multiple times for some reason,
     // so this condition ensures we only create one alert per Kroki image
-    if (!parent.hasAttribute('data-kroki-processed')) {
-      parent.setAttribute('data-kroki-processed', 'true');
+    if (!Object.hasOwn(parent.dataset, 'krokiProcessed')) {
+      parent.dataset.krokiProcessed = 'true';
       parent.after(createAlert(krokiImage));
     }
   });

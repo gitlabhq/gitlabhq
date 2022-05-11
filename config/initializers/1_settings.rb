@@ -772,6 +772,9 @@ Gitlab.ee do
   Settings.cron_jobs['arkose_blocked_users_report_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['arkose_blocked_users_report_worker']['cron'] ||= '0 6 * * *'
   Settings.cron_jobs['arkose_blocked_users_report_worker']['job_class'] = 'Arkose::BlockedUsersReportWorker'
+  Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron'] ||= Settingslogic.new({})
+  Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron']['cron'] ||= '30 * * * *'
+  Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron']['job_class'] = 'Ci::Runners::StaleGroupRunnersPruneCronWorker'
 end
 
 #

@@ -35,9 +35,6 @@
   }
 
   .mr-widget-pipeline-graph {
-    display: inline-block;
-    vertical-align: middle;
-
     .dropdown-menu {
       margin-top: 11px;
     }
@@ -45,8 +42,6 @@
 }
 
 .branch-info .commit-icon {
-  margin-right: 8px;
-
   svg {
     top: 3px;
   }

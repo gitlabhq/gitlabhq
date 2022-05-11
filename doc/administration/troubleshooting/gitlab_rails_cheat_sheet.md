@@ -753,7 +753,7 @@ group.members_with_parents.count
 parent.members_with_descendants.count
 ```
 
-### Find gropus that are pending deletion
+### Find groups that are pending deletion
 
 ```ruby
 #

@@ -314,7 +314,7 @@ related to the project by selecting the **Disable email notifications** checkbox
 
 Set up your project's merge request settings:
 
-- Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.md)).
+- Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
 - Add merge request [description templates](../description_templates.md#description-templates).
 - Enable [merge request approvals](../merge_requests/approvals/index.md).
 - Enable [status checks](../merge_requests/status_checks.md).

@@ -19,6 +19,7 @@ module RuboCop
 
         ALLOWED_METHODS = %i[
           no_touching
+          configurations
         ].freeze
 
         def_node_matcher :active_record_base_method_is_used?, <<~PATTERN

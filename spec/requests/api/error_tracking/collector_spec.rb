@@ -152,7 +152,17 @@ RSpec.describe API::ErrorTracking::Collector do
     context 'collector fails with validation error' do
       before do
         allow(::ErrorTracking::CollectErrorService)
-          .to receive(:new).and_raise(ActiveRecord::RecordInvalid)
+          .to receive(:new).and_raise(Gitlab::ErrorTracking::ErrorRepository::DatabaseError)
+      end
+
+      it_behaves_like 'bad request'
+    end
+
+    context 'with platform field too long' do
+      let(:params) do
+        event = Gitlab::Json.parse(raw_event)
+        event['platform'] = 'a' * 256
+        Gitlab::Json.dump(event)
       end
 
       it_behaves_like 'bad request'

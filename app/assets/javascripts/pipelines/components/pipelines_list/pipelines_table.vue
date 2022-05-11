@@ -169,7 +169,7 @@ export default {
       </template>
 
       <template #cell(stages)="{ item }">
-        <div class="stage-cell">
+        <div class="gl-align-items-center gl-display-inline-flex gl-flex-wrap stage-cell">
           <!-- This empty div should be removed, see https://gitlab.com/gitlab-org/gitlab/-/issues/323488 -->
           <div></div>
           <linked-pipelines-mini-list
@@ -181,7 +181,6 @@ export default {
           />
           <pipeline-mini-graph
             v-if="item.details && item.details.stages && item.details.stages.length > 0"
-            class="gl-display-inline"
             :stages="item.details.stages"
             :update-dropdown="updateGraphDropdown"
             @pipelineActionRequestComplete="onPipelineActionRequestComplete"

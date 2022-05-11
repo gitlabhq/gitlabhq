@@ -87,12 +87,14 @@ workflow:
     - if: $CI_COMMIT_BRANCH
 ```
 
-If the pipeline is triggered by:
+If GitLab attempts to trigger:
 
-- A merge request, run a merge request pipeline. For example, a merge request pipeline
+- A merge request pipeline, start the pipeline. For example, a merge request pipeline
   can be triggered by a push to a branch with an associated open merge request.
-- A change to a branch, but a merge request is open for that branch, do not run a branch pipeline.
-- A change to a branch, but without any open merge requests, run a branch pipeline.
+- A branch pipeline, but a merge request is open for that branch, do not run the branch pipeline.
+  For example, a branch pipeline can be triggered by a change to a branch, an API call,
+  a scheduled pipeline, and so on.
+- A branch pipeline, but there is no merge request open for the branch, run the branch pipeline.
 
 You can also add a rule to an existing `workflow` section to switch from branch pipelines
 to merge request pipelines when a merge request is created.

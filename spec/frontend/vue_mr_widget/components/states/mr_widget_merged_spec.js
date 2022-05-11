@@ -193,9 +193,7 @@ describe('MRWidgetMerged', () => {
 
   it('shows button to copy commit SHA to clipboard', () => {
     expect(selectors.copyMergeShaButton).not.toBe(null);
-    expect(selectors.copyMergeShaButton.getAttribute('data-clipboard-text')).toBe(
-      vm.mr.mergeCommitSha,
-    );
+    expect(selectors.copyMergeShaButton.dataset.clipboardText).toBe(vm.mr.mergeCommitSha);
   });
 
   it('hides button to copy commit SHA if SHA does not exist', async () => {

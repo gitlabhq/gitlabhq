@@ -12,7 +12,7 @@ module API
     content_type :txt, 'text/plain'
     default_format :envelope
 
-    rescue_from ActiveRecord::RecordInvalid do |e|
+    rescue_from Gitlab::ErrorTracking::ErrorRepository::DatabaseError do |e|
       render_api_error!(e.message, 400)
     end
 

@@ -186,8 +186,6 @@ class Issue < ApplicationRecord
   after_save :ensure_metrics, unless: :importing?
   after_create_commit :record_create_action, unless: :importing?
 
-  before_validation :ensure_work_item_type
-
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
 
@@ -611,19 +609,11 @@ class Issue < ApplicationRecord
   end
 
   # Necessary until all issues are backfilled and we add a NOT NULL constraint on the DB
-  def work_item_type_with_fallback
-    work_item_type || WorkItems::Type.default_by_type(issue_type)
+  def work_item_type
+    super || WorkItems::Type.default_by_type(issue_type)
   end
 
   private
-
-  # Issue create/update service provide a work item type
-  # adding this callback as there might be other mechanisms to create/update issues we are not handling
-  def ensure_work_item_type
-    return if work_item_type
-
-    self.work_item_type = WorkItems::Type.default_by_type(issue_type)
-  end
 
   override :persist_pg_full_text_search_vector
   def persist_pg_full_text_search_vector(search_vector)

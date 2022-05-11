@@ -120,7 +120,7 @@ follow these steps to avoid unnecessary data loss:
    1. On the **primary** site:
       1. On the top bar, select **Menu > Admin**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
-      1. On the Sidekiq dhasboard, select **Cron**.
+      1. On the Sidekiq dashboard, select **Cron**.
       1. Select `Disable All` to disable any non-Geo periodic background jobs.
       1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
          This job re-enables several other cron jobs that are essential for planned

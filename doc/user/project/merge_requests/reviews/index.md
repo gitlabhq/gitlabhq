@@ -131,17 +131,6 @@ the author of the merge request can request a new review from the reviewer:
 GitLab creates a new [to-do item](../../../todos.md) for the reviewer, and sends
 them a notification email.
 
-## Semi-linear history merge requests
-
-A merge commit is created for every merge, but the branch is only merged if
-a fast-forward merge is possible. This ensures that if the merge request build
-succeeded, the target branch build also succeeds after the merge.
-
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge requests**.
-1. In the **Merge method** section, select **Merge commit with semi-linear history**.
-1. Select **Save changes**.
-
 ## Comment on multiple lines
 
 > - [Introduced](https://gitlab.com/gitlab-org/ux-research/-/issues/870) in GitLab 13.2.
@@ -211,7 +200,7 @@ These features are associated with merge requests:
 
 - [Cherry-pick changes](../cherry_pick_changes.md):
   Cherry-pick any commit in the UI by selecting the **Cherry-pick** button in a merged merge requests or a commit.
-- [Fast-forward merge requests](../fast_forward_merge.md):
+- [Fast-forward merge requests](../methods/index.md#fast-forward-merge):
   For a linear Git history and a way to accept merge requests without creating merge commits
 - [Find the merge request that introduced a change](../versions.md):
   When viewing the commit details page, GitLab links to the merge request(s) containing that commit.
@@ -365,3 +354,7 @@ All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) 
 
 In a group, the sidebar displays the total count of open merge requests. This value is cached if it's greater than
 than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
+
+## Related topics
+
+- [Merge methods](../methods/index.md)

@@ -22,7 +22,7 @@ describe('User Popovers', () => {
     const link = document.createElement('a');
 
     link.classList.add('js-user-link');
-    link.setAttribute('data-user', '1');
+    link.dataset.user = '1';
 
     return link;
   };

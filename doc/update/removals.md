@@ -226,6 +226,20 @@ It also depends on a few third-party gems that are not actively maintained anymo
 
 For more information, check the [summary section of the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352488#deprecation-summary).
 
+### Runner status `not_connected` API value
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GitLab Runner REST and GraphQL [API](https://docs.gitlab.com/ee/api/runners.html#runners-api) endpoints
+deprecated the `not_connected` status value in GitLab 14.6 and will start returning `never_contacted` in its place
+starting in GitLab 15.0.
+
+Runners that have never contacted the GitLab instance will also return `stale` if created more than 3 months ago.
+
 ### Sidekiq configuration for metrics and health checks
 
 WARNING:

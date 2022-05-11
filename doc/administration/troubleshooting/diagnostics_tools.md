@@ -26,4 +26,4 @@ and summarize raw `strace` data.
 
 ## kubesos
 
-The [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) utiltity retrieves GitLab cluster configuration and logs from GitLab Cloud Native chart deployments.
+The [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) utility retrieves GitLab cluster configuration and logs from GitLab Cloud Native chart deployments.

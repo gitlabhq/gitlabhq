@@ -119,7 +119,7 @@ when more changes are added to it:
 1. Select the **Remove all approvals when commits are added to the source branch** checkbox.
 1. Select **Save changes**.
 
-Approvals aren't reset when a merge request is [rebased from the UI](../fast_forward_merge.md)
+Approvals aren't reset when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)
 However, approvals are reset if the target branch is changed.
 
 ## Code coverage check approvals

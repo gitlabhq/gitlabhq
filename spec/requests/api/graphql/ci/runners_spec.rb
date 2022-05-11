@@ -56,9 +56,9 @@ RSpec.describe 'Query.runners' do
       it_behaves_like 'a working graphql query returning expected runner'
     end
 
-    context 'runner_type is PROJECT_TYPE and status is NOT_CONNECTED' do
+    context 'runner_type is PROJECT_TYPE and status is NEVER_CONTACTED' do
       let(:runner_type) { 'PROJECT_TYPE' }
-      let(:status) { 'NOT_CONNECTED' }
+      let(:status) { 'NEVER_CONTACTED' }
 
       let!(:expected_runner) { project_runner }
 

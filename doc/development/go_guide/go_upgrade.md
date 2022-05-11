@@ -158,7 +158,7 @@ if you need help finding the correct person or labels:
 | GitLab Quality Images         | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues) |
 | GitLab Shell                  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-shell/-/issues) |
 | GitLab Workhorse              | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| Labkit                        | [Issue Tracker](https://gitlab.com/gitlab-org/labkit/-/issues) |
+| LabKit                        | [Issue Tracker](https://gitlab.com/gitlab-org/labkit/-/issues) |
 | [Node Exporter](https://github.com/prometheus/node_exporter) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
 | [PgBouncer Exporter](https://github.com/prometheus-community/pgbouncer_exporter) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
 | [Postgres Exporter](https://github.com/prometheus-community/postgres_exporter) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |

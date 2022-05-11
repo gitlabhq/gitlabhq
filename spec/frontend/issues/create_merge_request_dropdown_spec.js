@@ -84,7 +84,7 @@ describe('CreateMergeRequestDropdown', () => {
     });
 
     it('enables when can create confidential issue', () => {
-      document.querySelector('.js-create-mr').setAttribute('data-is-confidential', 'true');
+      document.querySelector('.js-create-mr').dataset.isConfidential = 'true';
       confidentialState.selectedProject = { name: 'test' };
 
       dropdown.enable();
@@ -93,7 +93,7 @@ describe('CreateMergeRequestDropdown', () => {
     });
 
     it('does not enable when can not create confidential issue', () => {
-      document.querySelector('.js-create-mr').setAttribute('data-is-confidential', 'true');
+      document.querySelector('.js-create-mr').dataset.isConfidential = 'true';
 
       dropdown.enable();
 

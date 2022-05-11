@@ -1,6 +1,7 @@
 import { GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import axios from '~/lib/utils/axios_utils';
 import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
 import eventHub from '~/pipelines/event_hub';
@@ -48,11 +49,12 @@ describe('Pipelines stage component', () => {
     mock.restore();
   });
 
+  const findCiActionBtn = () => wrapper.find('.js-ci-action');
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownToggle = () => wrapper.find('button.dropdown-toggle');
   const findDropdownMenu = () =>
     wrapper.find('[data-testid="mini-pipeline-graph-dropdown-menu-list"]');
-  const findCiActionBtn = () => wrapper.find('.js-ci-action');
   const findMergeTrainWarning = () => wrapper.find('[data-testid="warning-message-merge-trains"]');
 
   const openStageDropdown = () => {
@@ -74,7 +76,7 @@ describe('Pipelines stage component', () => {
     it('should render a dropdown with the status icon', () => {
       expect(findDropdown().exists()).toBe(true);
       expect(findDropdownToggle().exists()).toBe(true);
-      expect(wrapper.find('[data-testid="status_success_borderless-icon"]').exists()).toBe(true);
+      expect(findCiIcon().exists()).toBe(true);
     });
   });
 

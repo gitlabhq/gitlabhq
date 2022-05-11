@@ -39,7 +39,7 @@ export default () => {
         props: {
           emptyStateImage,
           projectPath,
-          terraformAdmin: el.hasAttribute('data-terraform-admin'),
+          terraformAdmin: Object.hasOwn(el.dataset, 'terraformAdmin'),
         },
       });
     },

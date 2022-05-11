@@ -5,29 +5,23 @@ module ErrorTracking
     include Gitlab::Utils::StrongMemoize
 
     def execute
-      # Error is a way to group events based on common data like name or cause
-      # of exception. We need to keep a sane balance here between taking too little
-      # and too much data into group logic.
-      error = project.error_tracking_errors.report_error(
-        name: exception['type'], # Example: ActionView::MissingTemplate
-        description: exception['value'], # Example: Missing template posts/show in...
-        actor: actor, # Example: PostsController#show
-        platform: event['platform'], # Example: ruby
-        timestamp: timestamp
-      )
-
-      # The payload field contains all the data on error including stacktrace in jsonb.
-      # Together with occurred_at these are 2 main attributes that we need to save here.
-      error.events.create!(
-        environment: event['environment'],
+      error_repository.report_error(
+        name: exception['type'],
         description: exception['value'],
-        level: event['level'],
+        actor: actor,
+        platform: event['platform'],
         occurred_at: timestamp,
+        environment: event['environment'],
+        level: event['level'],
         payload: event
       )
     end
 
     private
+
+    def error_repository
+      Gitlab::ErrorTracking::ErrorRepository.build(project)
+    end
 
     def event
       @event ||= format_event(params[:event])

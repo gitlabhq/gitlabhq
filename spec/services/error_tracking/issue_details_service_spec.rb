@@ -53,6 +53,18 @@ RSpec.describe ErrorTracking::IssueDetailsService do
           expect(result[:status]).to eq(:success)
           expect(result[:issue].to_json).to eq(error.to_sentry_detailed_error.to_json)
         end
+
+        context 'when error does not exist' do
+          let(:params) { { issue_id: non_existing_record_id } }
+
+          it 'returns the error in detailed format' do
+            expect(result).to match(
+              status: :error,
+              message: /Couldn't find ErrorTracking::Error/,
+              http_status: :bad_request
+            )
+          end
+        end
       end
     end
 

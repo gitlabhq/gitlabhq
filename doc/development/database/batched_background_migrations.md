@@ -80,7 +80,7 @@ end
 ```
 
 Similarly the usage of `ActiveRecord::Base.connection` is disallowed and needs to be
-replaced preferrably with the usage of model connection.
+replaced preferably with the usage of model connection.
 
 ```ruby
 # good

@@ -607,6 +607,10 @@ production: &base
     elastic_index_initial_bulk_cron_worker:
       cron: "*/10 * * * *"
 
+    # Periodically prune stale runners from namespaces having opted-in.
+    ci_runners_stale_group_runners_prune_worker_cron:
+      cron: "30 * * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com

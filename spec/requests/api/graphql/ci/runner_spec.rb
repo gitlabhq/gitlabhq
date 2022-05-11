@@ -237,8 +237,8 @@ RSpec.describe 'Query.runner(id)' do
 
       stale_runner_data = graphql_data_at(:stale_runner)
       expect(stale_runner_data).to match a_hash_including(
-        'status' => 'NOT_CONNECTED',
-        'legacyStatusWithExplicitVersion' => 'NOT_CONNECTED',
+        'status' => 'NEVER_CONTACTED',
+        'legacyStatusWithExplicitVersion' => 'NEVER_CONTACTED',
         'newStatus' => 'STALE'
       )
 
@@ -251,8 +251,8 @@ RSpec.describe 'Query.runner(id)' do
 
       never_contacted_instance_runner_data = graphql_data_at(:never_contacted_instance_runner)
       expect(never_contacted_instance_runner_data).to match a_hash_including(
-        'status' => 'NOT_CONNECTED',
-        'legacyStatusWithExplicitVersion' => 'NOT_CONNECTED',
+        'status' => 'NEVER_CONTACTED',
+        'legacyStatusWithExplicitVersion' => 'NEVER_CONTACTED',
         'newStatus' => 'NEVER_CONTACTED'
       )
     end

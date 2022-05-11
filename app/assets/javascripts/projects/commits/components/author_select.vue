@@ -57,7 +57,7 @@ export default {
 
     if (authorParam) {
       commitsSearchInput.setAttribute('disabled', true);
-      commitsSearchInput.setAttribute('data-toggle', 'tooltip');
+      commitsSearchInput.dataset.toggle = 'tooltip';
       commitsSearchInput.setAttribute('title', tooltipMessage);
       this.currentAuthor = authorParam;
     }

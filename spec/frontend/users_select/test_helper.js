@@ -95,10 +95,10 @@ export const setAssignees = (...users) => {
       const input = document.createElement('input');
       input.name = 'merge_request[assignee_ids][]';
       input.value = user.id.toString();
-      input.setAttribute('data-avatar-url', user.avatar_url);
-      input.setAttribute('data-name', user.name);
-      input.setAttribute('data-username', user.username);
-      input.setAttribute('data-can-merge', user.can_merge);
+      input.dataset.avatarUrl = user.avatar_url;
+      input.dataset.name = user.name;
+      input.dataset.username = user.username;
+      input.dataset.canMerge = user.can_merge;
       return input;
     }),
   );

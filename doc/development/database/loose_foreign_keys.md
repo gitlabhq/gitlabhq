@@ -593,7 +593,7 @@ Partitions: gitlab_partitions_dynamic.loose_foreign_keys_deleted_records_84 FOR 
 The `partition` column controls the insert direction, the `partition` value determines which
 partition will get the deleted rows inserted via the trigger. Notice that the default value of
 the `partition` table matches with the value of the list partition (84). In `INSERT` query
-within the trigger thevalue of the `partition` is omitted, the trigger always relies on the
+within the trigger the value of the `partition` is omitted, the trigger always relies on the
 default value of the column.
 
 Example `INSERT` query for the trigger:
@@ -605,7 +605,7 @@ SELECT TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, old_table.id FROM old_table;
 ```
 
 The partition "sliding" process is controlled by two, regularly executed callbacks. These
-callbackes are defined within the `LooseForeignKeys::DeletedRecord` model.
+callbacks are defined within the `LooseForeignKeys::DeletedRecord` model.
 
 The `next_partition_if` callback controls when to create a new partition. A new partition will
 be created when the current partition has at least one record older than 24 hours. A new partition
@@ -805,7 +805,7 @@ Possible solutions:
 - Long-term: invoke the worker more frequently. Parallelize the worker
 
 For a one-time fix, we can run the cleanup worker several times from the rails console. The worker
-can run parallelly however, this can introduce lock contention and it could increase the worker
+can run in parallel however, this can introduce lock contention and it could increase the worker
 runtime.
 
 ```ruby

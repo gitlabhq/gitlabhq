@@ -695,7 +695,7 @@ There may be some errors not properly cached. Follow these steps to investigate 
    `200 OK`, the body might have the error `AccessDenied`. This indicates a permission problem from
    the S3 side.
 
-1. Ensure your S3 configuration has the `deleteObject` permisson scope. Here's an
+1. Ensure your S3 configuration has the `deleteObject` permission scope. Here's an
    [example role for an S3 bucket](../../../administration/object_storage.md#iam-permissions).
    Once adjusted, trigger another tag deletion. You should be able to successfully delete tags.
 

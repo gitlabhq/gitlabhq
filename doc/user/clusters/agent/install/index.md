@@ -49,8 +49,6 @@ The name must:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new agent record directly from the GitLab UI.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347240) in GitLab 14.9, the agent can be registered without creating an agent configuration file.
 
-You must register an agent with GitLab.
-
 FLAG:
 In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
@@ -59,9 +57,11 @@ Prerequisites:
 - For a [GitLab CI/CD workflow](../ci_cd_workflow.md), ensure that
   [GitLab CI/CD is enabled](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
 
-To register an agent with GitLab:
+You must register an agent before you can install the agent in your cluster. To register an agent:
 
 1. On the top bar, select **Menu > Projects** and find your project.
+   If you have an [agent configuration file](#create-an-agent-configuration-file),
+   it must be in this project. Your cluster manifest files should also be in this project.
 1. From the left sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.
    - If you want to create a configuration with CI/CD defaults, type a name that meets [the naming convention](#agent-naming-convention).
@@ -109,9 +109,9 @@ If you do not know which one to choose, we recommend starting with Helm.
 
 To install the agent on your cluster using Helm:
 
-1. [Install Helm](https://helm.sh/docs/intro/install/)
+1. [Install Helm](https://helm.sh/docs/intro/install/).
 1. In your computer, open a terminal and [connect to your cluster](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/).
-1. Run the command you copied when registering your agent with GitLab.
+1. Run the command you copied when you [registered your agent with GitLab](#register-the-agent-with-gitlab).
 
 Optionally, you can [customize the Helm installation](#customize-the-helm-installation).
 

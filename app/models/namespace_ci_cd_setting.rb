@@ -5,3 +5,5 @@ class NamespaceCiCdSetting < ApplicationRecord # rubocop:disable Gitlab/Namespac
 
   self.primary_key = :namespace_id
 end
+
+NamespaceCiCdSetting.prepend_mod

@@ -118,7 +118,14 @@ input[type='file'] {
   margin-bottom: 16px;
 
   .well-segment {
-    padding: 16px;
+    padding: 1rem;
+
+    &.pipeline-info {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
 
     &:not(:last-of-type) {
       border-bottom: 1px solid $well-inner-border;

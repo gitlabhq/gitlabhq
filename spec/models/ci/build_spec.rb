@@ -743,7 +743,7 @@ RSpec.describe Ci::Build do
       it { is_expected.to be_falsey }
     end
 
-    context 'when there are runners' do
+    context 'when there is a runner' do
       let(:runner) { create(:ci_runner, :project, projects: [build.project]) }
 
       before do
@@ -752,19 +752,28 @@ RSpec.describe Ci::Build do
 
       it { is_expected.to be_truthy }
 
-      it 'that is inactive' do
-        runner.update!(active: false)
-        is_expected.to be_falsey
+      context 'that is inactive' do
+        before do
+          runner.update!(active: false)
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it 'that is not online' do
-        runner.update!(contacted_at: nil)
-        is_expected.to be_falsey
+      context 'that is not online' do
+        before do
+          runner.update!(contacted_at: nil)
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it 'that cannot handle build' do
-        expect_any_instance_of(Ci::Runner).to receive(:matches_build?).with(build).and_return(false)
-        is_expected.to be_falsey
+      context 'that cannot handle build' do
+        before do
+          expect_any_instance_of(Gitlab::Ci::Matching::RunnerMatcher).to receive(:matches?).with(build.build_matcher).and_return(false)
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
 

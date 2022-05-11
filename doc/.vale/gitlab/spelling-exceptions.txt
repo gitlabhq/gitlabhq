@@ -64,6 +64,7 @@ Bamboo
 Bazel
 Bhyve
 Bitbucket
+Bitnami
 blockquote
 blockquoted
 blockquotes
@@ -93,8 +94,12 @@ Camo
 canonicalization
 canonicalized
 captcha
+Casdoor
 CentOS
+Ceph
 Certbot
+cgroup
+cgroups
 chai
 changeset
 changesets
@@ -109,6 +114,7 @@ Citus
 clonable
 Cloudwatch
 Cobertura
+Codeception
 Codepen
 Cognito
 colocated
@@ -174,6 +180,7 @@ disambiguates
 discoverability
 dismissable
 Disqus
+Distroless
 Divio
 Dockerfile
 Dockerfiles
@@ -206,6 +213,7 @@ failovers
 failsafe
 Falco
 falsy
+Fargate
 fastlane
 Fastzip
 favicon
@@ -254,7 +262,9 @@ Gradle
 Grafana
 Grafonnet
 gravatar
+Grype
 Gzip
+Hackathon
 Haml
 hardcode
 hardcoded
@@ -333,6 +343,7 @@ Leiningen
 libFuzzer
 Libravatar
 liveness
+lockfiles
 Lodash
 Lograge
 logrotate
@@ -352,6 +363,7 @@ Makefile
 Makefiles
 Markdown
 markdownlint
+Marketo
 matcher
 matchers
 Matomo
@@ -364,6 +376,7 @@ memoizing
 Memorystore
 mergeability
 mergeable
+metaprogramming
 Microsoft
 middleware
 middlewares
@@ -386,6 +399,7 @@ ModSecurity
 Monokai
 monorepo
 monorepos
+monospace
 multiline
 mutex
 nameserver
@@ -399,6 +413,7 @@ Nanoc
 negatable
 Netlify
 Nokogiri
+nosniff
 noteable
 noteables
 npm
@@ -472,6 +487,7 @@ proxies
 proxyable
 proxying
 pseudocode
+pseudonymization
 pseudonymized
 pseudonymizer
 Puma
@@ -484,6 +500,7 @@ Rackspace
 Raspbian
 rbenv
 rbtrace
+Rclone
 Rdoc
 reachability
 Realplayer
@@ -592,10 +609,12 @@ Slony
 smartcard
 smartcards
 snapshotting
+Snyk
 Sobelow
 Solargraph
 Solarized
 Sourcegraph
+Spamcheck
 spammable
 sparkline
 sparklines
@@ -660,6 +679,7 @@ Sysbench
 syscall
 syscalls
 syslog
+systemd
 tanuki
 tcpdump
 templated
@@ -700,6 +720,7 @@ Twilio
 Twitter
 TypeScript
 Ubuntu
+Udemy
 unapplied
 unapprove
 unapproved
@@ -828,6 +849,7 @@ wireframes
 wireframing
 Wireshark
 Wordpress
+Workato
 worktree
 worktrees
 Worldline
@@ -836,6 +858,7 @@ Xeon
 YouTrack
 ytt
 Yubico
+Zabbix
 Zeitwerk
 Zendesk
 ZenTao

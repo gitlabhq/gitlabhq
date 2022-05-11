@@ -21,7 +21,7 @@ While on CloudWatch dashboard set time range to last 4 weeks, to get better pict
 
 1. `ELB New Flow Count` and `Collector Auto Scaling Group Network In/Out` - they show in order: number of connections to collectors via load balancers and data volume (in bytes) processed by collectors. If there is drop visible there, it means less events were fired from the GitLab application. Proceed to [application layer guide](#troubleshooting-gitlab-application-layer) for more details
 1. `Firehose Records to S3` - it shows how many event records were saved to S3 bucket, if there was drop on this chart but not on the charts from 1. it means that problem is located at AWS infrastructure layer, please refer to [AWS layer guide](#troubleshooting-aws-layer)
-1. If drop wasn't visible on any of previous charts it means that probelm is at data warehouse layer, please refer to [data warehouse layer guide](#troubleshooting-data-warehouse-layer)
+1. If drop wasn't visible on any of previous charts it means that problem is at data warehouse layer, please refer to [data warehouse layer guide](#troubleshooting-data-warehouse-layer)
 
 ### Troubleshooting GitLab application layer
 
