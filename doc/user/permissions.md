@@ -400,8 +400,9 @@ The following table lists group permissions available for each role:
 | Create/edit/delete group milestones                                                     |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                                                           |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |
-| Enable/disable a dependency proxy                                                       |       |          | ✓         | ✓          | ✓     |
+| Enable/disable a dependency proxy                                                       |       |          |           | ✓          | ✓     |
 | Purge the dependency proxy for a group                                                  |       |          |           |            | ✓     |
+| Create/edit/delete dependency proxy [cleanup policies](packages/dependency_proxy/reduce_dependency_proxy_storage.md#cleanup-policies)                                                  |       |          |           | ✓          | ✓     |
 | Use [security dashboard](application_security/security_dashboard/index.md)              |       |          | ✓         | ✓          | ✓     |
 | View group Audit Events                                                                 |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Create subgroup                                                                         |       |          |           | ✓ (1)      | ✓     |

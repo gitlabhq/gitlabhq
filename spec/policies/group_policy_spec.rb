@@ -914,12 +914,21 @@ RSpec.describe GroupPolicy do
       context 'reporter' do
         let(:current_user) { reporter }
 
+        it { is_expected.to be_allowed(:read_dependency_proxy) }
         it { is_expected.to be_disallowed(:admin_dependency_proxy) }
       end
 
       context 'developer' do
         let(:current_user) { developer }
 
+        it { is_expected.to be_allowed(:read_dependency_proxy) }
+        it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:read_dependency_proxy) }
         it { is_expected.to be_allowed(:admin_dependency_proxy) }
       end
     end

@@ -73,6 +73,9 @@ export default {
     showCommitForm() {
       return this.currentTab === CREATE_TAB;
     },
+    includesFiles() {
+      return this.ciConfigData?.includes || [];
+    },
     isFileTreeVisible() {
       return this.showFileTree && this.glFeatures.pipelineEditorFileTree;
     },
@@ -136,7 +139,11 @@ export default {
       v-on="$listeners"
     />
     <div class="gl-display-flex gl-w-full gl-sm-flex-direction-column">
-      <pipeline-editor-file-tree v-if="isFileTreeVisible" class="gl-flex-shrink-0" />
+      <pipeline-editor-file-tree
+        v-if="isFileTreeVisible"
+        class="gl-flex-shrink-0"
+        :includes="includesFiles"
+      />
       <div class="gl-flex-grow-1 gl-min-w-0">
         <pipeline-editor-header
           :ci-config-data="ciConfigData"

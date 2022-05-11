@@ -6,7 +6,7 @@ module Types
 
     description 'Group-level Dependency Proxy settings'
 
-    authorize :read_dependency_proxy
+    authorize :admin_dependency_proxy
 
     field :enabled, GraphQL::Types::Boolean, null: false, description: 'Indicates whether the dependency proxy is enabled for the group.'
   end

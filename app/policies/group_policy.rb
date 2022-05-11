@@ -251,7 +251,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { dependency_proxy_access_allowed & dependency_proxy_available }
     .enable :read_dependency_proxy
 
-  rule { developer & dependency_proxy_available }.policy do
+  rule { maintainer & dependency_proxy_available }.policy do
     enable :admin_dependency_proxy
   end
 

@@ -434,15 +434,15 @@ variation of this file (for example, `requirements.pip` or `requires.txt`).
 
 #### Java and Scala
 
-We only execute one build in the directory where a build file has been detected, such as `build.sbt` or `build.gradle`.
-Please note, we support the following types of Java project structures:
+We only execute one build in the directory where a build file has been detected. For large projects that include
+multiple Gradle, Maven, or sbt builds, or any combination of these, `gemnasium-maven` only analyzes dependencies for the first build file
+that is detected. Build files are searched for in the following order:
 
-- [multi-project sbt builds](https://www.scala-sbt.org/1.x/docs/Multi-Project.html)
-- [multi-project Gradle builds](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html)
-- [multi-module maven projects](https://maven.apache.org/pom.html#Aggregation)
+1. `build.gradle` or `build.gradle.kts` for single or [multi-project](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html) Gradle builds.
+1. `pom.xml` for single or [multi-module](https://maven.apache.org/pom.html#Aggregation) Maven projects.
+1. `build.sbt` for single or [multi-project](https://www.scala-sbt.org/1.x/docs/Multi-Project.html) sbt builds.
 
-We do not support multiple lockfiles for Java and Scala. When multiple lockfiles exist, `gemnasium-maven`
-analyzes the first file in the list of package managers detected.
+The search begins with the root directory and then continues with subdirectories if no builds are found in the root directory. Consequently an sbt build file in the root directory would be detected before a Gradle build file in a subdirectory.
 
 #### JavaScript
 

@@ -47,14 +47,14 @@ RSpec.describe 'getting dependency proxy settings for a group' do
     context 'with different permissions' do
       where(:group_visibility, :role, :access_granted) do
         :private | :maintainer | true
-        :private | :developer  | true
-        :private | :reporter   | true
-        :private | :guest      | true
+        :private | :developer  | false
+        :private | :reporter   | false
+        :private | :guest      | false
         :private | :anonymous  | false
         :public  | :maintainer | true
-        :public  | :developer  | true
-        :public  | :reporter   | true
-        :public  | :guest      | true
+        :public  | :developer  | false
+        :public  | :reporter   | false
+        :public  | :guest      | false
         :public  | :anonymous  | false
       end
 

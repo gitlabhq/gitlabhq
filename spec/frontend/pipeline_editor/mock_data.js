@@ -82,12 +82,46 @@ const mockJobFields = {
   __typename: 'CiConfigJob',
 };
 
+export const mockIncludesWithBlob = {
+  location: 'test-include.yml',
+  type: 'local',
+  blob:
+    'http://gdk.test:3000/root/upstream/-/blob/dd54f00bb3645f8ddce7665d2ffb3864540399cb/test-include.yml',
+  raw:
+    'http://gdk.test:3000/root/upstream/-/raw/dd54f00bb3645f8ddce7665d2ffb3864540399cb/test-include.yml',
+  __typename: 'CiConfigInclude',
+};
+
+export const mockDefaultIncludes = {
+  location: 'npm.gitlab-ci.yml',
+  type: 'template',
+  blob: null,
+  raw:
+    'https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/npm.gitlab-ci.yml',
+  __typename: 'CiConfigInclude',
+};
+
+export const mockIncludes = [
+  mockDefaultIncludes,
+  mockIncludesWithBlob,
+  {
+    location: 'a_really_really_long_name_for_includes_file.yml',
+    type: 'local',
+    blob:
+      'http://gdk.test:3000/root/upstream/-/blob/dd54f00bb3645f8ddce7665d2ffb3864540399cb/a_really_really_long_name_for_includes_file.yml',
+    raw:
+      'http://gdk.test:3000/root/upstream/-/raw/dd54f00bb3645f8ddce7665d2ffb3864540399cb/a_really_really_long_name_for_includes_file.yml',
+    __typename: 'CiConfigInclude',
+  },
+];
+
 // Mock result of the graphql query at:
 // app/assets/javascripts/pipeline_editor/graphql/queries/ci_config.graphql
 export const mockCiConfigQueryResponse = {
   data: {
     ciConfig: {
       errors: [],
+      includes: mockIncludes,
       mergedYaml: mockCiYml,
       status: CI_CONFIG_STATUS_VALID,
       stages: {

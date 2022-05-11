@@ -2,7 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.query.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { EDITOR_APP_STATUS_EMPTY } from '../../constants';
+import { EDITOR_APP_STATUS_EMPTY, EDITOR_APP_STATUS_LOADING } from '../../constants';
 import FileTreePopover from '../popovers/file_tree_popover.vue';
 import BranchSwitcher from './branch_switcher.vue';
 
@@ -39,6 +39,9 @@ export default {
     },
   },
   computed: {
+    isAppLoading() {
+      return this.appStatus === EDITOR_APP_STATUS_LOADING;
+    },
     showFileTreeToggle() {
       return (
         this.glFeatures.pipelineEditorFileTree &&
@@ -62,6 +65,7 @@ export default {
       icon="file-tree"
       data-testid="file-tree-toggle"
       :aria-label="__('File Tree')"
+      :loading="isAppLoading"
       @click="onFileTreeBtnClick"
     />
     <file-tree-popover v-if="showFileTreeToggle" />

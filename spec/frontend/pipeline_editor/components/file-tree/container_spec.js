@@ -1,26 +1,39 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import PipelineEditorFileTreeContainer from '~/pipeline_editor/components/file_tree/container.vue';
 import PipelineEditorFileTreeItem from '~/pipeline_editor/components/file_tree/file_item.vue';
-import { MOCK_DEFAULT_CI_FILE } from './constants';
+import { FILE_TREE_TIP_DISMISSED_KEY } from '~/pipeline_editor/constants';
+import { mockCiConfigPath, mockIncludes } from '../../mock_data';
 
 describe('Pipeline editor file nav', () => {
   let wrapper;
 
-  const createComponent = ({ stubs } = {}) => {
-    wrapper = shallowMount(PipelineEditorFileTreeContainer, {
-      provide: {
-        ciConfigPath: MOCK_DEFAULT_CI_FILE,
-      },
-      stubs,
-    });
+  const createComponent = ({ includes = mockIncludes, stubs } = {}) => {
+    wrapper = extendedWrapper(
+      shallowMount(PipelineEditorFileTreeContainer, {
+        provide: {
+          ciConfigPath: mockCiConfigPath,
+        },
+        propsData: {
+          includes,
+        },
+        directives: {
+          GlTooltip: createMockDirective(),
+        },
+        stubs,
+      }),
+    );
   };
 
   const findTip = () => wrapper.findComponent(GlAlert);
-  const fileTreeItem = () => wrapper.findComponent(PipelineEditorFileTreeItem);
+  const findCurrentConfigFilename = () => wrapper.findByTestId('current-config-filename');
+  const fileTreeItems = () => wrapper.findAll(PipelineEditorFileTreeItem);
 
   afterEach(() => {
+    localStorage.clear();
     wrapper.destroy();
   });
 
@@ -30,27 +43,91 @@ describe('Pipeline editor file nav', () => {
     });
 
     it('renders config file as a file item', () => {
-      expect(fileTreeItem().exists()).toBe(true);
-      expect(fileTreeItem().props('fileName')).toBe(MOCK_DEFAULT_CI_FILE);
-    });
-
-    it('renders tip', () => {
-      expect(findTip().exists()).toBe(true);
+      expect(findCurrentConfigFilename().text()).toBe(mockCiConfigPath);
     });
   });
 
-  describe('alert tip', () => {
+  describe('when includes list is empty', () => {
+    describe('when dismiss state is not saved in local storage', () => {
+      beforeEach(() => {
+        createComponent({
+          includes: [],
+          stubs: { GlAlert },
+        });
+      });
+
+      it('does not render filenames', () => {
+        expect(fileTreeItems().exists()).toBe(false);
+      });
+
+      it('renders alert tip', async () => {
+        expect(findTip().exists()).toBe(true);
+      });
+
+      it('can dismiss the tip', async () => {
+        expect(findTip().exists()).toBe(true);
+
+        findTip().vm.$emit('dismiss');
+        await nextTick();
+
+        expect(findTip().exists()).toBe(false);
+      });
+    });
+
+    describe('when dismiss state is saved in local storage', () => {
+      beforeEach(() => {
+        localStorage.setItem(FILE_TREE_TIP_DISMISSED_KEY, 'true');
+        createComponent({
+          includes: [],
+          stubs: { GlAlert },
+        });
+      });
+
+      it('does not render alert tip', async () => {
+        expect(findTip().exists()).toBe(false);
+      });
+    });
+
+    describe('when component receives new props with includes files', () => {
+      beforeEach(() => {
+        createComponent({ includes: [] });
+      });
+
+      it('hides tip and renders list of files', async () => {
+        expect(findTip().exists()).toBe(true);
+        expect(fileTreeItems()).toHaveLength(0);
+
+        await wrapper.setProps({ includes: mockIncludes });
+
+        expect(findTip().exists()).toBe(false);
+        expect(fileTreeItems()).toHaveLength(mockIncludes.length);
+      });
+    });
+  });
+
+  describe('when there are includes files', () => {
     beforeEach(() => {
       createComponent({ stubs: { GlAlert } });
     });
 
-    it('can dismiss the tip', async () => {
-      expect(findTip().exists()).toBe(true);
-
-      findTip().vm.$emit('dismiss');
-      await nextTick();
-
+    it('does not render alert tip', () => {
       expect(findTip().exists()).toBe(false);
+    });
+
+    it('renders the list of files', () => {
+      expect(fileTreeItems()).toHaveLength(mockIncludes.length);
+    });
+
+    describe('when component receives new props with empty includes', () => {
+      it('shows tip and does not render list of files', async () => {
+        expect(findTip().exists()).toBe(false);
+        expect(fileTreeItems()).toHaveLength(mockIncludes.length);
+
+        await wrapper.setProps({ includes: [] });
+
+        expect(findTip().exists()).toBe(true);
+        expect(fileTreeItems()).toHaveLength(0);
+      });
     });
   });
 });

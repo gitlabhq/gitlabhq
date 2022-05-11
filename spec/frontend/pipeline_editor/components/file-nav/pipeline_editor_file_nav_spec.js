@@ -7,7 +7,11 @@ import BranchSwitcher from '~/pipeline_editor/components/file_nav/branch_switche
 import PipelineEditorFileNav from '~/pipeline_editor/components/file_nav/pipeline_editor_file_nav.vue';
 import FileTreePopover from '~/pipeline_editor/components/popovers/file_tree_popover.vue';
 import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.query.graphql';
-import { EDITOR_APP_STATUS_EMPTY, EDITOR_APP_STATUS_VALID } from '~/pipeline_editor/constants';
+import {
+  EDITOR_APP_STATUS_EMPTY,
+  EDITOR_APP_STATUS_LOADING,
+  EDITOR_APP_STATUS_VALID,
+} from '~/pipeline_editor/constants';
 
 Vue.use(VueApollo);
 
@@ -106,6 +110,19 @@ describe('Pipeline editor file nav', () => {
 
       it('does not render the file tree popover', () => {
         expect(findPopoverContainer().exists()).toBe(false);
+      });
+    });
+
+    describe('when app is in a global loading state', () => {
+      it('renders the file tree button with a loading icon', () => {
+        createComponent({
+          appStatus: EDITOR_APP_STATUS_LOADING,
+          isNewCiConfigFile: false,
+          pipelineEditorFileTree: true,
+        });
+
+        expect(findFileTreeBtn().exists()).toBe(true);
+        expect(findFileTreeBtn().attributes('loading')).toBe('true');
       });
     });
 

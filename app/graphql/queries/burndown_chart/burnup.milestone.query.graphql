@@ -1,0 +1,36 @@
+query BurnupTimesSeriesMilestoneData($milestoneId: MilestoneID!, $weight: Boolean = false) {
+  milestone(id: $milestoneId) {
+    __typename
+    id
+    title
+    report {
+      __typename
+      burnupTimeSeries {
+        __typename
+        date
+        completedCount @skip(if: $weight)
+        scopeCount @skip(if: $weight)
+        completedWeight @include(if: $weight)
+        scopeWeight @include(if: $weight)
+      }
+      stats {
+        __typename
+        total {
+          __typename
+          count @skip(if: $weight)
+          weight @include(if: $weight)
+        }
+        complete {
+          __typename
+          count @skip(if: $weight)
+          weight @include(if: $weight)
+        }
+        incomplete {
+          __typename
+          count @skip(if: $weight)
+          weight @include(if: $weight)
+        }
+      }
+    }
+  }
+}

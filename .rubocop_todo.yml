@@ -242,10 +242,3 @@ Style/SingleArgumentDig:
 # Cop supports --auto-correct.
 Style/StringConcatenation:
   Enabled: false
-
-# Offense count: 109
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiteralsInInterpolation:
-  Enabled: false
