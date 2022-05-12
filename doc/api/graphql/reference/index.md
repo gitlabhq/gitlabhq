@@ -17961,8 +17961,8 @@ Include type.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="ciconfigincludetypefile"></a>`file` | Project file include. |
 | <a id="ciconfigincludetypelocal"></a>`local` | Local include. |
-| <a id="ciconfigincludetypeproject"></a>`project` | Project include. |
 | <a id="ciconfigincludetyperemote"></a>`remote` | Remote include. |
 | <a id="ciconfigincludetypetemplate"></a>`template` | Template include. |
 

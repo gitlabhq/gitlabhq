@@ -2,7 +2,7 @@
 
 module TrackingHelper
   def tracking_attrs(label, action, property)
-    return {} unless tracking_enabled?
+    return {} unless ::Gitlab::Tracking.enabled?
 
     {
       data: {
@@ -15,12 +15,5 @@ module TrackingHelper
 
   def tracking_attrs_data(label, action, property)
     tracking_attrs(label, action, property).fetch(:data, {})
-  end
-
-  private
-
-  def tracking_enabled?
-    Rails.env.production? &&
-      ::Gitlab::Tracking.enabled?
   end
 end

@@ -139,7 +139,7 @@ export default {
       <div
         class="gl-p-2 flex-shrink-1 gl-display-flex gl-flex-direction-column align-items-center gl-w-70p"
       >
-        <user-avatar-image :img-src="user.avatarUrl" :size="64" css-classes="gl-mr-3!" />
+        <user-avatar-image :img-src="user.avatarUrl" :size="64" css-classes="gl-m-0!" />
         <div v-if="shouldRenderToggleFollowButton" class="gl-mt-3">
           <gl-button
             :variant="toggleFollowButtonVariant"
@@ -151,7 +151,7 @@ export default {
           >
         </div>
       </div>
-      <div class="gl-w-full gl-min-w-0">
+      <div class="gl-w-full gl-min-w-0 gl-word-break-word">
         <template v-if="userIsLoading">
           <gl-skeleton-loader
             :lines="$options.maxSkeletonLines"
@@ -174,7 +174,7 @@ export default {
           <div class="gl-text-gray-500">
             <div v-if="user.bio" class="gl-display-flex gl-mb-2">
               <gl-icon name="profile" class="gl-flex-shrink-0" />
-              <span ref="bio" class="gl-ml-2 gl-overflow-hidden">{{ user.bio }}</span>
+              <span ref="bio" class="gl-ml-2">{{ user.bio }}</span>
             </div>
             <div v-if="user.workInformation" class="gl-display-flex gl-mb-2">
               <gl-icon name="work" class="gl-flex-shrink-0" />

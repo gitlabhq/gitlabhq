@@ -1189,7 +1189,7 @@ We recommend committing the lock files, which prevents this warning.
 
 If you have manually set `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE` for specific reasons,
 and now must update your configuration to again get the latest patched versions of our
-analyzers, edit your `gitlab-ci.yml` file and either:
+analyzers, edit your `.gitlab-ci.yml` file and either:
 
 - Set your `DS_MAJOR_VERSION` to match the latest version as seen in
   [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml#L18).

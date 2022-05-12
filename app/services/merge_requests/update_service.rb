@@ -11,6 +11,10 @@ module MergeRequests
     end
 
     def execute(merge_request)
+      if Gitlab::Utils.to_boolean(params[:draft])
+        merge_request.title = merge_request.draft_title
+      end
+
       update_merge_request_with_specialized_service(merge_request) || general_fallback(merge_request)
     end
 

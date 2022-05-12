@@ -20,6 +20,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   let(:source_branch) { 'fix' }
   let(:target_branch) { 'feature' }
   let(:title) { 'my title' }
+  let(:draft_title) { 'Draft: my title' }
+  let(:draft) { true }
   let(:description) { 'my description' }
   let(:multiline_description) do
     <<~MD.chomp
@@ -79,6 +81,16 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       service.execute
 
       expect(last_mr.description).to eq(multiline_description)
+    end
+  end
+
+  shared_examples_for 'a service that can set the draft of a merge request' do
+    subject(:last_mr) { MergeRequest.last }
+
+    it 'sets the draft' do
+      service.execute
+
+      expect(last_mr.draft).to eq(draft)
     end
   end
 
@@ -442,6 +454,67 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
         it_behaves_like 'a service that does not create a merge request'
         it_behaves_like 'a service that can set the multiline description of a merge request'
       end
+    end
+
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
+  end
+
+  describe '`draft` push option' do
+    let(:push_options) { { draft: draft } }
+
+    context 'with a new branch' do
+      let(:changes) { new_branch_changes }
+
+      it_behaves_like 'a service that does not create a merge request'
+
+      it 'adds an error to the service' do
+        service.execute
+
+        expect(service.errors).to include(error_mr_required)
+      end
+
+      context 'when coupled with the `create` push option' do
+        let(:push_options) { { create: true, draft: draft } }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set the draft of a merge request'
+      end
+    end
+
+    context 'with an existing branch but no open MR' do
+      let(:changes) { existing_branch_changes }
+
+      it_behaves_like 'a service that does not create a merge request'
+
+      it 'adds an error to the service' do
+        service.execute
+
+        expect(service.errors).to include(error_mr_required)
+      end
+
+      context 'when coupled with the `create` push option' do
+        let(:push_options) { { create: true, draft: draft } }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set the draft of a merge request'
+      end
+    end
+
+    context 'with an existing branch that has a merge request open' do
+      let(:changes) { existing_branch_changes }
+      let!(:merge_request) { create(:merge_request, source_project: project, source_branch: source_branch)}
+
+      it_behaves_like 'a service that does not create a merge request'
+      it_behaves_like 'a service that can set the draft of a merge request'
+    end
+
+    context 'draft title provided while `draft` push option is set to false' do
+      let(:push_options) { { create: true, draft: false, title: draft_title } }
+      let(:changes) { new_branch_changes }
+
+      it_behaves_like 'a service that can create a merge request'
+      it_behaves_like 'a service that can set the draft of a merge request'
     end
 
     it_behaves_like 'with a deleted branch'

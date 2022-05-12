@@ -97,10 +97,12 @@ If click events stop propagating, you must implement listeners and [Vue componen
 
 #### Helper methods
 
-You can use the following Ruby helper:
+You can use the following Ruby helpers:
 
 ```ruby
 tracking_attrs(label, action, property) # { data: { track_label... } }
+
+tracking_attrs_data(label, action, property) # { track_label... }
 ```
 
 You can also use it on HAML templates:
@@ -108,8 +110,8 @@ You can also use it on HAML templates:
 ```haml
 %button{ **tracking_attrs('main_navigation', 'click_button', 'navigation') }
 
-// When adding additional data
-// %button{ data: { platform: "...", **tracking_attrs('main_navigation', 'click_button', 'navigation') } }
+// When merging with additional data
+// %button{ data: { platform: "...", **tracking_attrs_data('main_navigation', 'click_button', 'navigation') } }
 ```
 
 If you use the GitLab helper method [`nav_link`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/tab_helper.rb#L76), you must wrap `html_options` under the `html_options` keyword argument. If you

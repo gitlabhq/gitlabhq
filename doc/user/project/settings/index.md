@@ -88,11 +88,11 @@ read-only view to discourage this behavior.
 
 Compliance framework pipelines allow group owners to define
 a compliance pipeline in a separate repository that gets
-executed in place of the local project's `gitlab-ci.yml` file. As part of this pipeline, an
-`include` statement can reference the local project's `gitlab-ci.yml` file. This way, the compliance
+executed in place of the local project's `.gitlab-ci.yml` file. As part of this pipeline, an
+`include` statement can reference the local project's `.gitlab-ci.yml` file. This way, the compliance
 pipeline jobs can run alongside the project-specific jobs any time the pipeline runs.
 Jobs and variables defined in the compliance
-pipeline can't be changed by variables in the local project's `gitlab-ci.yml` file.
+pipeline can't be changed by variables in the local project's `.gitlab-ci.yml` file.
 
 When you set up the compliance framework, use the **Compliance pipeline configuration** box to link
 the compliance framework to specific CI/CD configuration. Use the

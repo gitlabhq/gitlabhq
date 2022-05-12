@@ -8,6 +8,7 @@ module Gitlab
           :assign,
           :create,
           :description,
+          :draft,
           :label,
           :merge_when_pipeline_succeeds,
           :milestone,

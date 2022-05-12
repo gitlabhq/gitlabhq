@@ -3,6 +3,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import BulkImportsHistoryApp from '~/pages/import/bulk_imports/history/components/bulk_imports_history_app.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
@@ -59,6 +60,8 @@ describe('BulkImportsHistoryApp', () => {
     const mountFn = shallow ? shallowMount : mount;
     wrapper = mountFn(BulkImportsHistoryApp);
   }
+
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   const originalApiVersion = gon.api_version;
   beforeAll(() => {
@@ -135,6 +138,20 @@ describe('BulkImportsHistoryApp', () => {
     expect(mock.history.get[0].params).toStrictEqual(
       expect.objectContaining({ per_page: NEW_PAGE_SIZE }),
     );
+  });
+
+  it('sets up the local storage sync correctly', async () => {
+    const NEW_PAGE_SIZE = 4;
+
+    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+    createComponent();
+    await axios.waitForAll();
+    mock.resetHistory();
+
+    wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', NEW_PAGE_SIZE);
+    await axios.waitForAll();
+
+    expect(findLocalStorageSync().props('value')).toBe(NEW_PAGE_SIZE);
   });
 
   it('renders correct url for destination group when relative_url is empty', async () => {

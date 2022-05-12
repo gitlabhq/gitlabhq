@@ -249,7 +249,7 @@ SPDY protocol.
 Tools like `kubectl`, Helm, `kpt`, and `kustomize` cache information about
 the cluster in `~/.kube/cache`. If this directory is not writable, the tool fetches information on each invocation,
 making interactions slower and creating unnecessary load on the cluster. For the best experience, in the
-image you use in your .`gitlab-ci.yml` file, ensure this directory is writable.
+image you use in your `.gitlab-ci.yml` file, ensure this directory is writable.
 
 ### Enable TLS
 

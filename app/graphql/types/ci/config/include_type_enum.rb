@@ -9,7 +9,7 @@ module Types
 
         value 'remote', description: 'Remote include.', value: :remote
         value 'local', description: 'Local include.', value: :local
-        value 'project', description: 'Project include.', value: :project
+        value 'file', description: 'Project file include.', value: :file
         value 'template', description: 'Template include.', value: :template
       end
     end

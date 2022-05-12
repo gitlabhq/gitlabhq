@@ -49,6 +49,7 @@ GET /projects
 | Attribute                                  | Type     | Required               | Description |
 |--------------------------------------------|----------|------------------------|-------------|
 | `archived`                                 | boolean  | **{dotted-circle}** No | Limit by archived status. |
+| `build_coverage_regex`                     | string   | **{dotted-circle}** No | Test coverage parsing. (`deprecated`, it is [scheduled to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357401)) |
 | `id_after`                                 | integer  | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                | integer  | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
 | `imported`                                 | boolean  | **{dotted-circle}** No | Limit results to projects which were imported from external systems by current user. |
@@ -2757,6 +2758,7 @@ Example response:
   "public_jobs": true,
   "build_timeout": 3600,
   "auto_cancel_pending_pipelines": "enabled",
+  "build_coverage_regex": null, // deprecated, it is scheduled to be removed https://gitlab.com/gitlab-org/gitlab/-/issues/357401
   "ci_config_path": null,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,

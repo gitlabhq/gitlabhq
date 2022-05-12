@@ -203,6 +203,12 @@ module MergeRequests
       target_branch.blank? || target_project.commit(target_branch)
     end
 
+    def set_draft_title_if_needed
+      return unless compare_commits.empty? || Gitlab::Utils.to_boolean(params[:draft])
+
+      merge_request.title = wip_title
+    end
+
     # When your branch name starts with an iid followed by a dash this pattern will be
     # interpreted as the user wants to close that issue on this project.
     #
@@ -220,7 +226,7 @@ module MergeRequests
       assign_title_and_description_from_commits
       merge_request.title ||= title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
       merge_request.title ||= source_branch.titleize.humanize
-      merge_request.title = wip_title if compare_commits.empty?
+      set_draft_title_if_needed
 
       append_closes_description
     end

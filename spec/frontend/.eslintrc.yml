@@ -21,8 +21,6 @@ rules:
         - 'expect*'
         - 'assert*'
         - 'testAction'
-  jest/no-test-callback:
-    - off
   "@gitlab/no-global-event-off":
     - off
   import/no-unresolved:

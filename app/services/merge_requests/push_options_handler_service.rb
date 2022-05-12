@@ -126,6 +126,7 @@ module MergeRequests
       params = {
         title: push_options[:title],
         description: push_options[:description],
+        draft: push_options[:draft],
         target_branch: push_options[:target],
         force_remove_source_branch: push_options[:remove_source_branch],
         label: push_options[:label],
