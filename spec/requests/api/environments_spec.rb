@@ -151,6 +151,13 @@ RSpec.describe API::Environments do
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(0)
         end
+
+        it 'returns a 400 status code with invalid states' do
+          get api("/projects/#{project.id}/environments?states=test", user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include('Requested states are invalid')
+        end
       end
     end
 

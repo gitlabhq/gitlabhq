@@ -5770,6 +5770,9 @@ msgstr ""
 msgid "BillingPlans|Portfolio management"
 msgstr ""
 
+msgid "BillingPlans|Premium"
+msgstr ""
+
 msgid "BillingPlans|Pricing page"
 msgstr ""
 
@@ -5810,6 +5813,9 @@ msgid "BillingPlans|This group uses the plan associated with its parent group."
 msgstr ""
 
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Ultimate"
 msgstr ""
 
 msgid "BillingPlans|Upgrade to Premium"

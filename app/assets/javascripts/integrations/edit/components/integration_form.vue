@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml, GlForm } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlButton,
+  GlModalDirective,
+  GlSafeHtmlDirective as SafeHtml,
+  GlForm,
+} from '@gitlab/ui';
 import axios from 'axios';
 import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
@@ -10,6 +16,7 @@ import {
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   integrationLevels,
   integrationFormSectionComponents,
+  billingPlanNames,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
@@ -42,6 +49,7 @@ export default {
       import(
         /* webpackChunkName: 'integrationSectionJiraTrigger' */ '~/integrations/edit/components/sections/jira_trigger.vue'
       ),
+    GlBadge,
     GlButton,
     GlForm,
   },
@@ -177,6 +185,7 @@ export default {
   },
   csrf,
   integrationFormSectionComponents,
+  billingPlanNames,
 };
 </script>
 
@@ -214,7 +223,20 @@ export default {
       >
         <div class="row">
           <div class="col-lg-4">
-            <h4 class="gl-mt-0">{{ section.title }}</h4>
+            <h4 class="gl-mt-0">
+              {{ section.title
+              }}<gl-badge
+                v-if="section.plan"
+                :href="propsSource.aboutPricingUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="tier"
+                icon="license"
+                class="gl-ml-3"
+              >
+                {{ $options.billingPlanNames[section.plan] }}
+              </gl-badge>
+            </h4>
             <p v-safe-html:[$options.descriptionHtmlConfig]="section.description"></p>
           </div>
 

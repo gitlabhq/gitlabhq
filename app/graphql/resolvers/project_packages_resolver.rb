@@ -5,14 +5,6 @@ module Resolvers
   class ProjectPackagesResolver < PackagesBaseResolver
     # The GraphQL type is defined in the extended class
 
-    # TODO remove when cleaning up packages_graphql_pipelines_resolver
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/358432
-    def ready?(**args)
-      context.scoped_set!(:packages_access_level, :project)
-
-      super
-    end
-
     def resolve(sort:, **filters)
       return unless packages_available?
 

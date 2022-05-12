@@ -122,6 +122,14 @@ module Gitlab
           migration.save!
           migration
         end
+
+        def finalize_batched_background_migration(job_class_name:, table_name:, column_name:, job_arguments:)
+          migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(job_class_name, table_name, column_name, job_arguments)
+
+          raise 'Could not find batched background migration' if migration.nil?
+
+          Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.finalize(job_class_name, table_name, column_name, job_arguments, connection: connection)
+        end
       end
     end
   end

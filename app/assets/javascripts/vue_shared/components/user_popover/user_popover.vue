@@ -78,17 +78,7 @@ export default {
       return !this.userIsLoading && this.user.username !== gon.current_username;
     },
     shouldRenderToggleFollowButton() {
-      return (
-        /*
-         * We're using `gon` to access feature flag because this component
-         * gets initialized dynamically multiple times from `user_popovers.js`
-         * for each user link present on the page, and using `glFeatureFlagMixin()`
-         * doesn't inject available feature flags into the component during init.
-         */
-        gon?.features?.followInUserPopover &&
-        this.isNotCurrentUser &&
-        typeof this.user?.isFollowed !== 'undefined'
-      );
+      return this.isNotCurrentUser && typeof this.user?.isFollowed !== 'undefined';
     },
     toggleFollowButtonText() {
       if (this.toggleFollowLoading) return null;

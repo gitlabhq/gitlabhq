@@ -54,12 +54,6 @@ describe('User Popovers', () => {
       .mockImplementation((userId) => userStatusCacheSpy(userId));
     jest.spyOn(UsersCache, 'updateById');
 
-    window.gon = {
-      features: {
-        followInUserPopover: true,
-      },
-    };
-
     popovers = initUserPopovers(document.querySelectorAll(selector));
   });
 

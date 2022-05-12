@@ -51,9 +51,7 @@ describe('User Popover Component', () => {
   const findUserLocalTime = () => wrapper.findByTestId('user-popover-local-time');
   const findToggleFollowButton = () => wrapper.findByTestId('toggle-follow-button');
 
-  const createWrapper = (props = {}, { followInUserPopover = true } = {}) => {
-    gon.features.followInUserPopover = followInUserPopover;
-
+  const createWrapper = (props = {}) => {
     wrapper = mountExtended(UserPopover, {
       propsData: {
         ...DEFAULT_PROPS,
@@ -304,132 +302,122 @@ describe('User Popover Component', () => {
     });
   });
 
-  describe('follow actions with `followInUserPopover` flag enabled', () => {
-    describe("when current user doesn't follow the user", () => {
-      beforeEach(() => createWrapper());
+  describe("when current user doesn't follow the user", () => {
+    beforeEach(() => createWrapper());
 
-      it('renders the Follow button with the correct variant', () => {
-        expect(findToggleFollowButton().text()).toBe('Follow');
-        expect(findToggleFollowButton().props('variant')).toBe('confirm');
-      });
-
-      describe('when clicking', () => {
-        it('follows the user', async () => {
-          followUser.mockResolvedValue({});
-
-          await findToggleFollowButton().trigger('click');
-
-          expect(findToggleFollowButton().props('loading')).toBe(true);
-
-          await axios.waitForAll();
-
-          expect(wrapper.emitted().follow.length).toBe(1);
-          expect(wrapper.emitted().unfollow).toBeFalsy();
-        });
-
-        describe('when an error occurs', () => {
-          beforeEach(() => {
-            followUser.mockRejectedValue({});
-
-            findToggleFollowButton().trigger('click');
-          });
-
-          it('shows an error message', async () => {
-            await axios.waitForAll();
-
-            expect(createFlash).toHaveBeenCalledWith({
-              message: 'An error occurred while trying to follow this user, please try again.',
-              error: {},
-              captureError: true,
-            });
-          });
-
-          it('emits no events', async () => {
-            await axios.waitForAll();
-
-            expect(wrapper.emitted().follow).toBe(undefined);
-            expect(wrapper.emitted().unfollow).toBe(undefined);
-          });
-        });
-      });
+    it('renders the Follow button with the correct variant', () => {
+      expect(findToggleFollowButton().text()).toBe('Follow');
+      expect(findToggleFollowButton().props('variant')).toBe('confirm');
     });
 
-    describe('when current user follows the user', () => {
-      beforeEach(() => createWrapper({ user: { ...DEFAULT_PROPS.user, isFollowed: true } }));
+    describe('when clicking', () => {
+      it('follows the user', async () => {
+        followUser.mockResolvedValue({});
 
-      it('renders the Unfollow button with the correct variant', () => {
-        expect(findToggleFollowButton().text()).toBe('Unfollow');
-        expect(findToggleFollowButton().props('variant')).toBe('default');
+        await findToggleFollowButton().trigger('click');
+
+        expect(findToggleFollowButton().props('loading')).toBe(true);
+
+        await axios.waitForAll();
+
+        expect(wrapper.emitted().follow.length).toBe(1);
+        expect(wrapper.emitted().unfollow).toBeFalsy();
       });
 
-      describe('when clicking', () => {
-        it('unfollows the user', async () => {
-          unfollowUser.mockResolvedValue({});
+      describe('when an error occurs', () => {
+        beforeEach(() => {
+          followUser.mockRejectedValue({});
 
           findToggleFollowButton().trigger('click');
+        });
 
+        it('shows an error message', async () => {
+          await axios.waitForAll();
+
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'An error occurred while trying to follow this user, please try again.',
+            error: {},
+            captureError: true,
+          });
+        });
+
+        it('emits no events', async () => {
           await axios.waitForAll();
 
           expect(wrapper.emitted().follow).toBe(undefined);
-          expect(wrapper.emitted().unfollow.length).toBe(1);
+          expect(wrapper.emitted().unfollow).toBe(undefined);
         });
-
-        describe('when an error occurs', () => {
-          beforeEach(async () => {
-            unfollowUser.mockRejectedValue({});
-
-            findToggleFollowButton().trigger('click');
-
-            await axios.waitForAll();
-          });
-
-          it('shows an error message', () => {
-            expect(createFlash).toHaveBeenCalledWith({
-              message: 'An error occurred while trying to unfollow this user, please try again.',
-              error: {},
-              captureError: true,
-            });
-          });
-
-          it('emits no events', () => {
-            expect(wrapper.emitted().follow).toBe(undefined);
-            expect(wrapper.emitted().unfollow).toBe(undefined);
-          });
-        });
-      });
-    });
-
-    describe('when the current user is the user', () => {
-      beforeEach(() => {
-        gon.current_username = DEFAULT_PROPS.user.username;
-        createWrapper();
-      });
-
-      it("doesn't render the toggle follow button", () => {
-        expect(findToggleFollowButton().exists()).toBe(false);
-      });
-    });
-
-    describe('when API does not support `isFollowed`', () => {
-      beforeEach(() => {
-        const user = {
-          ...DEFAULT_PROPS.user,
-          isFollowed: undefined,
-        };
-
-        createWrapper({ user });
-      });
-
-      it('does not render the toggle follow button', () => {
-        expect(findToggleFollowButton().exists()).toBe(false);
       });
     });
   });
 
-  describe('follow actions with `followInUserPopover` flag disabled', () => {
-    beforeEach(() => createWrapper({}, { followInUserPopover: false }));
+  describe('when current user follows the user', () => {
+    beforeEach(() => createWrapper({ user: { ...DEFAULT_PROPS.user, isFollowed: true } }));
 
-    it('doesn’t render the toggle follow button', () => {
+    it('renders the Unfollow button with the correct variant', () => {
+      expect(findToggleFollowButton().text()).toBe('Unfollow');
+      expect(findToggleFollowButton().props('variant')).toBe('default');
+    });
+
+    describe('when clicking', () => {
+      it('unfollows the user', async () => {
+        unfollowUser.mockResolvedValue({});
+
+        findToggleFollowButton().trigger('click');
+
+        await axios.waitForAll();
+
+        expect(wrapper.emitted().follow).toBe(undefined);
+        expect(wrapper.emitted().unfollow.length).toBe(1);
+      });
+
+      describe('when an error occurs', () => {
+        beforeEach(async () => {
+          unfollowUser.mockRejectedValue({});
+
+          findToggleFollowButton().trigger('click');
+
+          await axios.waitForAll();
+        });
+
+        it('shows an error message', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'An error occurred while trying to unfollow this user, please try again.',
+            error: {},
+            captureError: true,
+          });
+        });
+
+        it('emits no events', () => {
+          expect(wrapper.emitted().follow).toBe(undefined);
+          expect(wrapper.emitted().unfollow).toBe(undefined);
+        });
+      });
+    });
+  });
+
+  describe('when the current user is the user', () => {
+    beforeEach(() => {
+      gon.current_username = DEFAULT_PROPS.user.username;
+      createWrapper();
+    });
+
+    it("doesn't render the toggle follow button", () => {
+      expect(findToggleFollowButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when API does not support `isFollowed`', () => {
+    beforeEach(() => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        isFollowed: undefined,
+      };
+
+      createWrapper({ user });
+    });
+
+    it('does not render the toggle follow button', () => {
       expect(findToggleFollowButton().exists()).toBe(false);
     });
   });

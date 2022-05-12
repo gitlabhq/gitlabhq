@@ -9,9 +9,11 @@ RSpec.describe FinalizeProjectNamespacesBackfill, :migration do
   let_it_be(:migration) { described_class::MIGRATION }
 
   describe '#up' do
-    shared_examples 'raises migration not finished exception' do
-      it 'raises exception' do
-        expect { migrate! }.to raise_error(/Expected batched background migration for the given configuration to be marked as 'finished'/)
+    shared_examples 'finalizes the migration' do
+      it 'finalizes the migration' do
+        allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+          expect(runner).to receive(:finalize).with('"ProjectNamespaces::BackfillProjectNamespaces"', :projects, :id, [nil, "up"])
+        end
       end
     end
 
@@ -61,7 +63,7 @@ RSpec.describe FinalizeProjectNamespacesBackfill, :migration do
             project_namespace_backfill.update!(status: status)
           end
 
-          it_behaves_like 'raises migration not finished exception'
+          it_behaves_like 'finalizes the migration'
         end
       end
     end

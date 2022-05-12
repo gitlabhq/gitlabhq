@@ -1,8 +1,0 @@
----
-name: follow_in_user_popover
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355070
-milestone: '14.9'
-type: development
-group: group::workspace
-default_enabled: false

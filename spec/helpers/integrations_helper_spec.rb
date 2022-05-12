@@ -62,6 +62,7 @@ RSpec.describe IntegrationsHelper do
         :enable_comments,
         :comment_detail,
         :learn_more_path,
+        :about_pricing_url,
         :trigger_events,
         :fields,
         :inherit_from_id,

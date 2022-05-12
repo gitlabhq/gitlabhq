@@ -30,6 +30,8 @@ module API
         environments = ::Environments::EnvironmentsFinder.new(user_project, current_user, params).execute
 
         present paginate(environments), with: Entities::Environment, current_user: current_user
+      rescue ::Environments::EnvironmentsFinder::InvalidStatesError => exception
+        bad_request!(exception.message)
       end
 
       desc 'Creates a new environment' do

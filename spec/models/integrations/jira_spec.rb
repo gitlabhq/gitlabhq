@@ -126,6 +126,11 @@ RSpec.describe Integrations::Jira do
       it 'includes SECTION_TYPE_JIRA_ISSUES' do
         expect(sections).to include(described_class::SECTION_TYPE_JIRA_ISSUES)
       end
+
+      it 'section SECTION_TYPE_JIRA_ISSUES has `plan` attribute' do
+        jira_issues_section = integration.sections.find { |s| s[:type] == described_class::SECTION_TYPE_JIRA_ISSUES }
+        expect(jira_issues_section[:plan]).to eq('premium')
+      end
     end
 
     context 'when project_level? is false' do

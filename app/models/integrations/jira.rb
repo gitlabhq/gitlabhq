@@ -168,7 +168,8 @@ module Integrations
         sections.push({
           type: SECTION_TYPE_JIRA_ISSUES,
           title: _('Issues'),
-          description: jira_issues_section_description
+          description: jira_issues_section_description,
+          plan: 'premium'
         })
       end
 

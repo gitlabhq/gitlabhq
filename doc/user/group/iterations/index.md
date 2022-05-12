@@ -174,6 +174,7 @@ To group issues by label:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1.
 > - Deployed behind a [feature flag](../../feature_flags.md), named `iteration_cadences`, disabled by default.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/354977) in GitLab 15.0: All scheduled iterations must start on the same day of the week as the cadence start day. Start date of cadence cannot be edited after the first iteration starts.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an
@@ -200,7 +201,8 @@ To create an iteration cadence:
 1. Select **New iteration cadence**.
 1. Complete the fields.
    - Enter the title and description of the iteration cadence.
-   - Enter the start date of the iteration cadence.
+   - Enter the start date of the iteration cadence. Iterations will be scheduled to
+     begin on the same day of the week as the day of the week of the start date.
    - From the **Duration** dropdown list, select how many weeks each iteration should last.
    - From the **Future iterations** dropdown list, select how many future iterations should be
      created and maintained by GitLab.
@@ -277,6 +279,35 @@ If you attempt to set a new start date, the conversion fails with an error messa
 If your manual cadence is empty, converting it to use automatic scheduling is effectively
 the same as creating a new automated cadence.
 
+GitLab will start scheduling new iterations on the same day of the week as the start date,
+starting from the nearest such day from the current date.
+
 During the conversion process GitLab does not delete or modify existing **ongoing** or
 **closed** iterations. If you have iterations with start dates in the future,
 they are updated to fit your cadence settings.
+
+#### Converted cadences example
+
+For example, suppose it's Friday, April 15, and you have three iterations in a manual cadence:
+
+- Monday, April 4 - Friday, April 8 (closed)
+- Tuesday, April 12 - Friday, April 15 (ongoing)
+- Tuesday, May 3 - Friday, May 6 (upcoming)
+
+On Friday, April 15, you convert the manual cadence
+to automate scheduling iterations every week, up to two upcoming iterations.
+
+The first iteration is closed, and the second iteration is ongoing,
+so they aren't deleted or modified in the conversion process.
+
+To observe the weekly duration, the third iteration is updated so that it:
+
+- Starts on Monday, April 18 - which is the nearest date that is Monday.
+- Ends on Sunday, April 24.
+
+Finally, to always have two upcoming iterations, an additional iteration is scheduled:
+
+- Monday, April 4 - Friday, April 8 (closed)
+- Tuesday, April 12 - Friday, April 15 (ongoing)
+- Monday, April 18 - Sunday, April 24 (upcoming)
+- Monday, April 25 - Sunday, May 1 (upcoming)

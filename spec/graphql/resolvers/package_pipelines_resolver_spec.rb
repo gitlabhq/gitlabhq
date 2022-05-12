@@ -33,138 +33,115 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
       end
     end
 
-    shared_examples 'returning the expected pipelines' do
+    it 'contains the expected pipelines' do
+      expect_to_contain_exactly(*pipelines)
+    end
+
+    context 'with valid after' do
+      let(:pagination_args) { { first: 1, after: encode_cursor(id: pipelines[1].id) } }
+
       it 'contains the expected pipelines' do
-        expect_to_contain_exactly(*pipelines)
+        expect_to_contain_exactly(pipelines[0])
+      end
+    end
+
+    context 'with valid before' do
+      let(:pagination_args) { { last: 1, before: encode_cursor(id: pipelines[1].id) } }
+
+      it 'contains the expected pipelines' do
+        expect_to_contain_exactly(pipelines[2])
+      end
+    end
+
+    context 'with invalid after' do
+      let(:pagination_args) { { first: 1, after: 'not_json_string' } }
+
+      it 'generates an argument error' do
+        expect(returned_errors).to include('Please provide a valid cursor')
+      end
+    end
+
+    context 'with invalid after key' do
+      let(:pagination_args) { { first: 1, after: encode_cursor(foo: 3) } }
+
+      it 'generates an argument error' do
+        expect(returned_errors).to include('Please provide a valid cursor')
+      end
+    end
+
+    context 'with invalid before' do
+      let(:pagination_args) { { last: 1, before: 'not_json_string' } }
+
+      it 'generates an argument error' do
+        expect(returned_errors).to include('Please provide a valid cursor')
+      end
+    end
+
+    context 'with invalid before key' do
+      let(:pagination_args) { { last: 1, before: encode_cursor(foo: 3) } }
+
+      it 'generates an argument error' do
+        expect(returned_errors).to include('Please provide a valid cursor')
+      end
+    end
+
+    context 'with unauthorized user' do
+      let_it_be(:user) { create(:user) }
+
+      it 'returns nothing' do
+        expect(returned_pipelines).to be_nil
+      end
+    end
+
+    context 'with many packages' do
+      let_it_be_with_reload(:other_package) { create(:package, project: package.project) }
+      let_it_be(:other_pipelines) { create_list(:ci_pipeline, 3, project: package.project) }
+
+      let(:returned_pipelines) do
+        graphql_dig_at(subject, 'data', 'project', 'packages', 'nodes', 'pipelines', 'nodes')
       end
 
-      context 'with valid after' do
-        let(:pagination_args) { { first: 1, after: encode_cursor(id: pipelines[1].id) } }
-
-        it 'contains the expected pipelines' do
-          expect_to_contain_exactly(pipelines[0])
-        end
-      end
-
-      context 'with valid before' do
-        let(:pagination_args) { { last: 1, before: encode_cursor(id: pipelines[1].id) } }
-
-        it 'contains the expected pipelines' do
-          expect_to_contain_exactly(pipelines[2])
-        end
-      end
-
-      context 'with invalid after' do
-        let(:pagination_args) { { first: 1, after: 'not_json_string' } }
-
-        it 'generates an argument error' do
-          expect(returned_errors).to include('Please provide a valid cursor')
-        end
-      end
-
-      context 'with invalid after key' do
-        let(:pagination_args) { { first: 1, after: encode_cursor(foo: 3) } }
-
-        it 'generates an argument error' do
-          expect(returned_errors).to include('Please provide a valid cursor')
-        end
-      end
-
-      context 'with invalid before' do
-        let(:pagination_args) { { last: 1, before: 'not_json_string' } }
-
-        it 'generates an argument error' do
-          expect(returned_errors).to include('Please provide a valid cursor')
-        end
-      end
-
-      context 'with invalid before key' do
-        let(:pagination_args) { { last: 1, before: encode_cursor(foo: 3) } }
-
-        it 'generates an argument error' do
-          expect(returned_errors).to include('Please provide a valid cursor')
-        end
-      end
-
-      context 'with unauthorized user' do
-        let_it_be(:user) { create(:user) }
-
-        it 'returns nothing' do
-          expect(returned_pipelines).to be_nil
-        end
-      end
-
-      context 'with many packages' do
-        let_it_be_with_reload(:other_package) { create(:package, project: package.project) }
-        let_it_be(:other_pipelines) { create_list(:ci_pipeline, 3, project: package.project) }
-
-        let(:returned_pipelines) do
-          graphql_dig_at(subject, 'data', 'project', 'packages', 'nodes', 'pipelines', 'nodes')
-        end
-
-        let(:query) do
-          pipelines_query = query_graphql_field('pipelines', pagination_args, 'nodes { id }')
-          <<~QUERY
-          {
-            project(fullPath: "#{package.project.full_path}") {
-              packages {
-                nodes { #{pipelines_query} }
-              }
+      let(:query) do
+        pipelines_query = query_graphql_field('pipelines', pagination_args, 'nodes { id }')
+        <<~QUERY
+        {
+          project(fullPath: "#{package.project.full_path}") {
+            packages {
+              nodes { #{pipelines_query} }
             }
           }
-          QUERY
-        end
-
-        before do
-          other_pipelines.each do |pipeline|
-            create(:package_build_info, package: other_package, pipeline: pipeline)
-          end
-        end
-
-        it 'contains the expected pipelines' do
-          expect_to_contain_exactly(*(pipelines + other_pipelines))
-        end
-
-        it 'handles n+1 situations' do
-          control = ActiveRecord::QueryRecorder.new do
-            GitlabSchema.execute(query, context: { current_user: user })
-          end
-
-          create_package_with_pipelines(package.project)
-
-          expectation = expect { GitlabSchema.execute(query, context: { current_user: user }) }
-
-          if Feature.enabled?(:packages_graphql_pipelines_resolver)
-            expectation.not_to exceed_query_limit(control)
-          else
-            expectation.to exceed_query_limit(control)
-          end
-        end
-
-        def create_package_with_pipelines(project)
-          extra_package = create(:package, project: project)
-          create_list(:ci_pipeline, 3, project: project).each do |pipeline|
-            create(:package_build_info, package: extra_package, pipeline: pipeline)
-          end
-        end
+        }
+        QUERY
       end
-    end
 
-    context 'with packages_graphql_pipelines_resolver enabled' do
       before do
-        expect_detect_mode([:new_finder])
+        other_pipelines.each do |pipeline|
+          create(:package_build_info, package: other_package, pipeline: pipeline)
+        end
       end
 
-      it_behaves_like 'returning the expected pipelines'
-    end
-
-    context 'with packages_graphql_pipelines_resolver disabled' do
-      before do
-        stub_feature_flags(packages_graphql_pipelines_resolver: false)
-        expect_detect_mode([:old_finder, :object_field])
+      it 'contains the expected pipelines' do
+        expect_to_contain_exactly(*(pipelines + other_pipelines))
       end
 
-      it_behaves_like 'returning the expected pipelines'
+      it 'handles n+1 situations' do
+        control = ActiveRecord::QueryRecorder.new do
+          GitlabSchema.execute(query, context: { current_user: user })
+        end
+
+        create_package_with_pipelines(package.project)
+
+        expectation = expect { GitlabSchema.execute(query, context: { current_user: user }) }
+
+        expectation.not_to exceed_query_limit(control)
+      end
+
+      def create_package_with_pipelines(project)
+        extra_package = create(:package, project: project)
+        create_list(:ci_pipeline, 3, project: project).each do |pipeline|
+          create(:package_build_info, package: extra_package, pipeline: pipeline)
+        end
+      end
     end
 
     def encode_cursor(json)
@@ -177,18 +154,6 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
     def expect_to_contain_exactly(*pipelines)
       entities = pipelines.map { |pipeline| a_graphql_entity_for(pipeline) }
       expect(returned_pipelines).to match_array(entities)
-    end
-
-    def expect_detect_mode(modes)
-      allow_next_instance_of(described_class) do |resolver|
-        detect_mode_method = resolver.method(:detect_mode)
-        allow(resolver).to receive(:detect_mode) do
-          result = detect_mode_method.call
-
-          expect(modes).to include(result)
-          result
-        end
-      end
     end
   end
 

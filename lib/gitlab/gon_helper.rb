@@ -59,7 +59,6 @@ module Gitlab
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:gl_avatar_for_all_user_avatars)
       push_frontend_feature_flag(:mr_attention_requests, current_user)
-      push_frontend_feature_flag(:follow_in_user_popover, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.
