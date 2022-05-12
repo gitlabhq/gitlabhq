@@ -14,7 +14,7 @@ variables:
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
   DS_EXCLUDED_ANALYZERS: ""
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
-  DS_MAJOR_VERSION: 2
+  DS_MAJOR_VERSION: 3
 
 dependency_scanning:
   stage: test
@@ -82,9 +82,6 @@ gemnasium-maven-dependency_scanning:
     - .cyclone-dx-reports
   variables:
     DS_ANALYZER_NAME: "gemnasium-maven"
-    # Stop reporting Gradle as "maven".
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/338252
-    DS_REPORT_PACKAGE_MANAGER_MAVEN_WHEN_JAVA: "false"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
@@ -104,9 +101,6 @@ gemnasium-python-dependency_scanning:
     - .cyclone-dx-reports
   variables:
     DS_ANALYZER_NAME: "gemnasium-python"
-    # Stop reporting Pipenv and Setuptools as "pip".
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/338252
-    DS_REPORT_PACKAGE_MANAGER_PIP_WHEN_PYTHON: "false"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never

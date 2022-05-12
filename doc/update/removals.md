@@ -116,6 +116,20 @@ The following `geo:db:*` tasks have been removed from GitLab 15.0 and have been 
 - `geo:db:test:load` -> `db:test:load:geo`
 - `geo:db:test:purge` -> `db:test:purge:geo`
 
+### Elasticsearch 6.8.x in GitLab 15.0
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Elasticsearch 6.8 support has been removed in GitLab 15.0. Elasticsearch 6.8 has reached [end of life](https://www.elastic.co/support/eol).
+If you use Elasticsearch 6.8, **you must upgrade your Elasticsearch version to 7.x** prior to upgrading to GitLab 15.0.
+You should not upgrade to Elasticsearch 8 until you have completed the GitLab 15.0 upgrade.
+
+View the [version requirements](https://docs.gitlab.com/ee/integration/elasticsearch.html#version-requirements) for details.
+
 ### GitLab Serverless
 
 WARNING:

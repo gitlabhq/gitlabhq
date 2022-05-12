@@ -3258,6 +3258,9 @@ msgstr ""
 msgid "Advanced export options"
 msgstr ""
 
+msgid "AdvancedSearch|Elasticsearch version not compatible"
+msgstr ""
+
 msgid "AdvancedSearch|Reindex required"
 msgstr ""
 
@@ -27187,6 +27190,9 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
+msgid "Pause indexing and upgrade Elasticsearch to a supported version."
+msgstr ""
+
 msgid "Pause time (ms)"
 msgstr ""
 
@@ -39755,6 +39761,9 @@ msgid "Trigger cluster reindexing"
 msgstr ""
 
 msgid "Trigger cluster reindexing. Only use this with an index that was created in GitLab 13.0 or later."
+msgstr ""
+
+msgid "Trigger job"
 msgstr ""
 
 msgid "Trigger manual job"

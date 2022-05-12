@@ -63,10 +63,7 @@ module Users
       # destroying: https://github.com/rails/rails/issues/22510
       # This ensures we delete records in batches.
       user.destroy_dependent_associations_in_batches(exclude: [:snippets])
-
-      if Feature.enabled?(:nullify_in_batches_on_user_deletion)
-        user.nullify_dependent_associations_in_batches
-      end
+      user.nullify_dependent_associations_in_batches
 
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
       user_data = user.destroy

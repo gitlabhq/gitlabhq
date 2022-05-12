@@ -1,4 +1,5 @@
 import { unwrapPipelineData } from '~/pipelines/components/graph/utils';
+import { BUILD_KIND, BRIDGE_KIND } from '~/pipelines/components/graph/constants';
 
 export const mockPipelineResponse = {
   data: {
@@ -50,6 +51,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '6',
+                          kind: BUILD_KIND,
                           name: 'build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl',
                           scheduledAt: null,
                           status: {
@@ -101,6 +103,7 @@ export const mockPipelineResponse = {
                           __typename: 'CiJob',
                           id: '11',
                           name: 'build_b',
+                          kind: BUILD_KIND,
                           scheduledAt: null,
                           status: {
                             __typename: 'DetailedStatus',
@@ -151,6 +154,7 @@ export const mockPipelineResponse = {
                           __typename: 'CiJob',
                           id: '16',
                           name: 'build_c',
+                          kind: BUILD_KIND,
                           scheduledAt: null,
                           status: {
                             __typename: 'DetailedStatus',
@@ -200,6 +204,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '21',
+                          kind: BUILD_KIND,
                           name: 'build_d 1/3',
                           scheduledAt: null,
                           status: {
@@ -232,6 +237,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '24',
+                          kind: BUILD_KIND,
                           name: 'build_d 2/3',
                           scheduledAt: null,
                           status: {
@@ -264,6 +270,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '27',
+                          kind: BUILD_KIND,
                           name: 'build_d 3/3',
                           scheduledAt: null,
                           status: {
@@ -329,6 +336,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '34',
+                          kind: BUILD_KIND,
                           name: 'test_a',
                           scheduledAt: null,
                           status: {
@@ -413,6 +421,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '42',
+                          kind: BUILD_KIND,
                           name: 'test_b 1/2',
                           scheduledAt: null,
                           status: {
@@ -499,6 +508,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '67',
+                          kind: BUILD_KIND,
                           name: 'test_b 2/2',
                           scheduledAt: null,
                           status: {
@@ -603,6 +613,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '59',
+                          kind: BUILD_KIND,
                           name: 'test_c',
                           scheduledAt: null,
                           status: {
@@ -646,6 +657,7 @@ export const mockPipelineResponse = {
                         {
                           __typename: 'CiJob',
                           id: '53',
+                          kind: BUILD_KIND,
                           name: 'test_d',
                           scheduledAt: null,
                           status: {
@@ -871,6 +883,7 @@ export const wrappedPipelineReturn = {
                         {
                           __typename: 'CiJob',
                           id: '83',
+                          kind: BUILD_KIND,
                           name: 'build_n',
                           scheduledAt: null,
                           needs: {
@@ -941,3 +954,87 @@ export const mockCalloutsResponse = (mappedCallouts) => ({
     },
   },
 });
+
+export const delayedJob = {
+  __typename: 'CiJob',
+  kind: BUILD_KIND,
+  name: 'delayed job',
+  scheduledAt: '2015-07-03T10:01:00.000Z',
+  needs: [],
+  status: {
+    __typename: 'DetailedStatus',
+    icon: 'status_scheduled',
+    tooltip: 'delayed manual action (%{remainingTime})',
+    hasDetails: true,
+    detailsPath: '/root/kinder-pipe/-/jobs/5339',
+    group: 'scheduled',
+    action: {
+      __typename: 'StatusAction',
+      icon: 'time-out',
+      title: 'Unschedule',
+      path: '/frontend-fixtures/builds-project/-/jobs/142/unschedule',
+      buttonTitle: 'Unschedule job',
+    },
+  },
+};
+
+export const mockJob = {
+  id: 4256,
+  name: 'test',
+  kind: BUILD_KIND,
+  status: {
+    icon: 'status_success',
+    text: 'passed',
+    label: 'passed',
+    tooltip: 'passed',
+    group: 'success',
+    detailsPath: '/root/ci-mock/builds/4256',
+    hasDetails: true,
+    action: {
+      icon: 'retry',
+      title: 'Retry',
+      path: '/root/ci-mock/builds/4256/retry',
+      method: 'post',
+    },
+  },
+};
+
+export const mockJobWithoutDetails = {
+  id: 4257,
+  name: 'job_without_details',
+  status: {
+    icon: 'status_success',
+    text: 'passed',
+    label: 'passed',
+    group: 'success',
+    detailsPath: '/root/ci-mock/builds/4257',
+    hasDetails: false,
+  },
+};
+
+export const mockJobWithUnauthorizedAction = {
+  id: 4258,
+  name: 'stop-environment',
+  status: {
+    icon: 'status_manual',
+    label: 'manual stop action (not allowed)',
+    tooltip: 'manual action',
+    group: 'manual',
+    detailsPath: '/root/ci-mock/builds/4258',
+    hasDetails: true,
+    action: null,
+  },
+};
+
+export const triggerJob = {
+  id: 4259,
+  name: 'trigger',
+  kind: BRIDGE_KIND,
+  status: {
+    icon: 'status_success',
+    text: 'passed',
+    label: 'passed',
+    group: 'success',
+    action: null,
+  },
+};

@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -179,7 +179,10 @@ export default {
       if (shouldConfirm && isDirty) {
         const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
 
-        const confirmed = await confirmAction(msg);
+        const confirmed = await confirmAction(msg, {
+          primaryBtnText: __('Discard changes'),
+          cancelBtnText: __('Continue editing'),
+        });
 
         if (!confirmed) {
           return;

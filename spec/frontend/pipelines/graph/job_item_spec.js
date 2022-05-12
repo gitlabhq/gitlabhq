@@ -1,88 +1,33 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { GlBadge } from '@gitlab/ui';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import {
+  delayedJob,
+  mockJob,
+  mockJobWithoutDetails,
+  mockJobWithUnauthorizedAction,
+  triggerJob,
+} from './mock_data';
 
 describe('pipeline graph job item', () => {
   let wrapper;
 
-  const findJobWithoutLink = () => wrapper.find('[data-testid="job-without-link"]');
-  const findJobWithLink = () => wrapper.find('[data-testid="job-with-link"]');
-  const findActionComponent = () => wrapper.find('[data-testid="ci-action-component"]');
+  const findJobWithoutLink = () => wrapper.findByTestId('job-without-link');
+  const findJobWithLink = () => wrapper.findByTestId('job-with-link');
+  const findActionComponent = () => wrapper.findByTestId('ci-action-component');
+  const findBadge = () => wrapper.findComponent(GlBadge);
 
   const createWrapper = (propsData) => {
-    wrapper = mount(JobItem, {
-      propsData,
-    });
+    wrapper = extendedWrapper(
+      mount(JobItem, {
+        propsData,
+      }),
+    );
   };
 
   const triggerActiveClass = 'gl-shadow-x0-y0-b3-s1-blue-500';
-
-  const delayedJob = {
-    __typename: 'CiJob',
-    name: 'delayed job',
-    scheduledAt: '2015-07-03T10:01:00.000Z',
-    needs: [],
-    status: {
-      __typename: 'DetailedStatus',
-      icon: 'status_scheduled',
-      tooltip: 'delayed manual action (%{remainingTime})',
-      hasDetails: true,
-      detailsPath: '/root/kinder-pipe/-/jobs/5339',
-      group: 'scheduled',
-      action: {
-        __typename: 'StatusAction',
-        icon: 'time-out',
-        title: 'Unschedule',
-        path: '/frontend-fixtures/builds-project/-/jobs/142/unschedule',
-        buttonTitle: 'Unschedule job',
-      },
-    },
-  };
-
-  const mockJob = {
-    id: 4256,
-    name: 'test',
-    status: {
-      icon: 'status_success',
-      text: 'passed',
-      label: 'passed',
-      tooltip: 'passed',
-      group: 'success',
-      detailsPath: '/root/ci-mock/builds/4256',
-      hasDetails: true,
-      action: {
-        icon: 'retry',
-        title: 'Retry',
-        path: '/root/ci-mock/builds/4256/retry',
-        method: 'post',
-      },
-    },
-  };
-  const mockJobWithoutDetails = {
-    id: 4257,
-    name: 'job_without_details',
-    status: {
-      icon: 'status_success',
-      text: 'passed',
-      label: 'passed',
-      group: 'success',
-      detailsPath: '/root/ci-mock/builds/4257',
-      hasDetails: false,
-    },
-  };
-  const mockJobWithUnauthorizedAction = {
-    id: 4258,
-    name: 'stop-environment',
-    status: {
-      icon: 'status_manual',
-      label: 'manual stop action (not allowed)',
-      tooltip: 'manual action',
-      group: 'manual',
-      detailsPath: '/root/ci-mock/builds/4258',
-      hasDetails: true,
-      action: null,
-    },
-  };
 
   afterEach(() => {
     wrapper.destroy();
@@ -148,13 +93,25 @@ describe('pipeline graph job item', () => {
     });
   });
 
-  it('should render provided class name', () => {
-    createWrapper({
-      job: mockJob,
-      cssClassJobName: 'css-class-job-name',
+  describe('job style', () => {
+    beforeEach(() => {
+      createWrapper({
+        job: mockJob,
+        cssClassJobName: 'css-class-job-name',
+      });
     });
 
-    expect(wrapper.find('a').classes()).toContain('css-class-job-name');
+    it('should render provided class name', () => {
+      expect(wrapper.find('a').classes()).toContain('css-class-job-name');
+    });
+
+    it('does not show a badge on the job item', () => {
+      expect(findBadge().exists()).toBe(false);
+    });
+
+    it('does not apply the trigger job class', () => {
+      expect(findJobWithLink().classes()).not.toContain('gl-rounded-lg');
+    });
   });
 
   describe('status label', () => {
@@ -201,34 +158,51 @@ describe('pipeline graph job item', () => {
     });
   });
 
-  describe('trigger job highlighting', () => {
-    it.each`
-      job                      | jobName                       | expanded | link
-      ${mockJob}               | ${mockJob.name}               | ${true}  | ${true}
-      ${mockJobWithoutDetails} | ${mockJobWithoutDetails.name} | ${true}  | ${false}
-    `(
-      `trigger job should stay highlighted when downstream is expanded`,
-      ({ job, jobName, expanded, link }) => {
-        createWrapper({ job, pipelineExpanded: { jobName, expanded } });
-        const findJobEl = link ? findJobWithLink : findJobWithoutLink;
+  describe('trigger job', () => {
+    describe('card', () => {
+      beforeEach(() => {
+        createWrapper({ job: triggerJob });
+      });
 
-        expect(findJobEl().classes()).toContain(triggerActiveClass);
-      },
-    );
+      it('shows a badge on the job item', () => {
+        expect(findBadge().exists()).toBe(true);
+        expect(findBadge().text()).toBe('Trigger job');
+      });
 
-    it.each`
-      job                      | jobName                       | expanded | link
-      ${mockJob}               | ${mockJob.name}               | ${false} | ${true}
-      ${mockJobWithoutDetails} | ${mockJobWithoutDetails.name} | ${false} | ${false}
-    `(
-      `trigger job should not be highlighted when downstream is not expanded`,
-      ({ job, jobName, expanded, link }) => {
-        createWrapper({ job, pipelineExpanded: { jobName, expanded } });
-        const findJobEl = link ? findJobWithLink : findJobWithoutLink;
+      it('applies a rounded corner style instead of the usual pill shape', () => {
+        expect(findJobWithoutLink().classes()).toContain('gl-rounded-lg');
+      });
+    });
 
-        expect(findJobEl().classes()).not.toContain(triggerActiveClass);
-      },
-    );
+    describe('highlighting', () => {
+      it.each`
+        job                      | jobName                       | expanded | link
+        ${mockJob}               | ${mockJob.name}               | ${true}  | ${true}
+        ${mockJobWithoutDetails} | ${mockJobWithoutDetails.name} | ${true}  | ${false}
+      `(
+        `trigger job should stay highlighted when downstream is expanded`,
+        ({ job, jobName, expanded, link }) => {
+          createWrapper({ job, pipelineExpanded: { jobName, expanded } });
+          const findJobEl = link ? findJobWithLink : findJobWithoutLink;
+
+          expect(findJobEl().classes()).toContain(triggerActiveClass);
+        },
+      );
+
+      it.each`
+        job                      | jobName                       | expanded | link
+        ${mockJob}               | ${mockJob.name}               | ${false} | ${true}
+        ${mockJobWithoutDetails} | ${mockJobWithoutDetails.name} | ${false} | ${false}
+      `(
+        `trigger job should not be highlighted when downstream is not expanded`,
+        ({ job, jobName, expanded, link }) => {
+          createWrapper({ job, pipelineExpanded: { jobName, expanded } });
+          const findJobEl = link ? findJobWithLink : findJobWithoutLink;
+
+          expect(findJobEl().classes()).not.toContain(triggerActiveClass);
+        },
+      );
+    });
   });
 
   describe('job classes', () => {

@@ -11,7 +11,7 @@ When you are using the GitLab agent for Kubernetes, you might experience issues 
 You can start by viewing the service logs:
 
 ```shell
-kubectl logs -f -l=app=gitlab-agent -n gitlab-kubernetes-agent
+kubectl logs -f -l=app=gitlab-agent -n gitlab-agent
 ```
 
 If you are a GitLab administrator, you can also view the [GitLab agent server logs](../../../administration/clusters/kas.md#troubleshooting).
@@ -113,14 +113,14 @@ will be picked up automatically.
 For example, if your internal CA certificate is `myCA.pem`:
 
 ```plaintext
-kubectl -n gitlab-kubernetes-agent create configmap ca-pemstore --from-file=myCA.pem
+kubectl -n gitlab-agent create configmap ca-pemstore --from-file=myCA.pem
 ```
 
 Then in `resources.yml`:
 
 ```yaml
     spec:
-      serviceAccountName: gitlab-kubernetes-agent
+      serviceAccountName: gitlab-agent
       containers:
       - name: agent
         image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:<version>"
@@ -140,7 +140,7 @@ Then in `resources.yml`:
       volumes:
       - name: token-volume
         secret:
-          secretName: gitlab-kubernetes-agent-token
+          secretName: gitlab-agent-token
       - name: ca-pemstore-volume
         configMap:
           name: ca-pemstore

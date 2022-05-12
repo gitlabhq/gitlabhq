@@ -87,6 +87,13 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `clusters` | `object` | | The cluster where the given policy enforces running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. |
 
+GitLab supports the following types of CRON syntax for the `cadence` field:
+
+- A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
+- A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
+
+It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
+
 ### `cluster` schema
 
 Use this schema to define `clusters` objects in the [`schedule` rule type](#schedule-rule-type).

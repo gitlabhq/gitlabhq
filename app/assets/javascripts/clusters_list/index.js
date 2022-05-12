@@ -30,6 +30,7 @@ export default () => {
     canAddCluster,
     canAdminCluster,
     gitlabVersion,
+    kasVersion,
     displayClusterAgents,
     certificateBasedClustersEnabled,
   } = el.dataset;
@@ -48,6 +49,7 @@ export default () => {
       canAddCluster: parseBoolean(canAddCluster),
       canAdminCluster: parseBoolean(canAdminCluster),
       gitlabVersion,
+      kasVersion,
       displayClusterAgents: parseBoolean(displayClusterAgents),
       certificateBasedClustersEnabled: parseBoolean(certificateBasedClustersEnabled),
     },

@@ -102,6 +102,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                   __typename
                   id
                   name
+                  kind
                   scheduledAt
                   needs {
                     __typename

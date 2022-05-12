@@ -291,12 +291,6 @@ That's all of the required database changes.
         model_record.file
       end
 
-      # The feature flag follows the format `geo_#{replicable_name}_replication`,
-      # so here it would be `geo_cool_widget_replication`
-      def self.replication_enabled_by_default?
-        false
-      end
-
       override :verification_feature_flag_enabled?
       def self.verification_feature_flag_enabled?
         # We are adding verification at the same time as replication, so we
@@ -680,28 +674,6 @@ As illustrated by the above two examples, batch destroy logic cannot be handled 
   - [ ] Add a step to `Test replication and verification of Cool Widgets on a non-GDK-deployment. For example, using GitLab Environment Toolkit`.
   - [ ] Add a step to `Ping the Geo PM and EM to coordinate testing`. For example, you might add steps to generate Cool Widgets, and then a Geo engineer may take it from there.
 - [ ] In `ee/config/feature_flags/development/geo_cool_widget_replication.yml`, set `default_enabled: true`
-
-- [ ] In `ee/app/replicators/geo/cool_widget_replicator.rb`, delete the `self.replication_enabled_by_default?` method:
-
-  ```ruby
-  module Geo
-    class CoolWidgetReplicator < Gitlab::Geo::Replicator
-      ...
-      # REMOVE THIS LINE IF IT IS NO LONGER NEEDED
-      extend ::Gitlab::Utils::Override
-
-      ...
-      # REMOVE THIS METHOD
-      def self.replication_enabled_by_default?
-        false
-      end
-      # REMOVE THIS METHOD
-
-      ...
-    end
-  end
-  ```
-
 - [ ] In `ee/app/graphql/types/geo/geo_node_type.rb`, remove the `feature_flag` option for the released type:
 
   ```ruby

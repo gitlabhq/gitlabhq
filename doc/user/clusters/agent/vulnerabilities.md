@@ -34,80 +34,34 @@ You can use [cluster image scanning](../../application_security/cluster_image_sc
 to scan container images in your cluster for security vulnerabilities.
 
 To begin scanning all resources in your cluster, add a `starboard`
-configuration block to your agent configuration file with no `filters`:
+configuration block to your agent configuration with a `cadence` field
+containing a CRON expression for when the scans will be run.
 
 ```yaml
 starboard:
   vulnerability_report:
-    filters: []
+    cadence: '0 0 * * *' # Daily at 00:00 (Kubernetes cluster time)
 ```
 
-The namespaces that are able to be scanned depend on the [Starboard Operator install mode](https://aquasecurity.github.io/starboard/latest/operator/configuration/#install-modes).
-By default, the Starboard Operator only scans resources in the `default` namespace. To change this
-behavior, edit the `STARBOARD_OPERATOR` environment variable in the `starboard-operator` deployment
-definition.
+The `cadence` field is required. GitLab supports the following types of CRON syntax for the cadence field:
 
-By adding filters, you can limit scans by:
+- A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
+- A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
-- Resource name
-- Kind
-- Container name
-- Namespace
+It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
 
-```yaml
-starboard:
-  vulnerability_report:
-    filters:
-      - namespaces:
-        - staging
-        - production
-        kinds:
-        - Deployment
-        - DaemonSet
-        containers:
-        - ruby
-        - postgres
-        - nginx
-        resources:
-        - my-app-name
-        - postgres
-        - ingress-nginx
-```
-
-A resource is scanned if the resource matches any of the given names and all of the given filter
-types (`namespaces`, `kinds`, `containers`, `resources`). If a filter type is omitted, then all
-names are scanned. In this example, a resource isn't scanned unless it has a container named `ruby`,
-`postgres`, or `nginx`, and it's a `Deployment`:
+By default, cluster image scanning will attempt to scan the workloads in all
+namespaces for vulnerabilities. The `vulnerability_report` block has a `namespaces`
+field which can be used to restrict which namespaces are scanned. For example,
+if you would like to scan only the `development`, `staging`, and `production`
+namespaces, you can use this configuration:
 
 ```yaml
 starboard:
   vulnerability_report:
-    filters:
-      - kinds:
-        - Deployment
-        containers:
-        - ruby
-        - postgres
-        - nginx
-```
-
-There is also a global `namespaces` field that applies to all filters:
-
-```yaml
-starboard:
-  vulnerability_report:
+    cadence: '0 0 * * *'
     namespaces:
-    - production
-    filters:
-    - kinds:
-      - Deployment
-    - kinds:
-      - DaemonSet
-      resources:
-      - log-collector
+      - development
+      - staging
+      - production
 ```
-
-In this example, the following resources are scanned:
-
-- All deployments (`Deployment`) in the `production` namespace.
-- All daemon sets (`DaemonSet`) named `log-collector` in the `production` namespace.

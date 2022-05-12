@@ -90,6 +90,10 @@ RSpec.describe ClustersHelper do
       expect(subject[:gitlab_version]).to eq(Gitlab.version_info)
     end
 
+    it 'displays KAS version' do
+      expect(subject[:kas_version]).to eq(Gitlab::Kas.version_info)
+    end
+
     context 'user has no permissions to create a cluster' do
       it 'displays that user can\'t add cluster' do
         expect(subject[:can_add_cluster]).to eq("false")

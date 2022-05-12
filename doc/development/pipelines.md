@@ -247,12 +247,18 @@ The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `j
 
 The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to [GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
 
+### When to consider applying `pipeline:run-as-if-jh` label
+
+If a Ruby file is renamed and there's a corresponding [`prepend_mod` line](jh_features_review.md#jh-features-based-on-ce-or-ee-features),
+it's likely that GitLab JH is relying on it and requires a corresponding
+change to rename the module or class it's prepending.
+
 ### Corresponding JH branch
 
 You can create a corresponding JH branch on [GitLab JH](https://jihulab.com/gitlab-cn/gitlab) by
 appending `-jh` to the branch name. If a corresponding JH branch is found,
 `* as-if-jh` jobs grab the `jh` folder from the respective branch,
-rather than from the default branch.
+rather than from the default branch `main-jh`.
 
 NOTE:
 For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.

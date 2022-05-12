@@ -292,14 +292,12 @@ scan images from within your Kubernetes cluster and record the vulnerabilities i
 
 ### Prerequisites
 
-- [Starboard Operator](https://aquasecurity.github.io/starboard/v0.10.3/operator/installation/kubectl/)
-  installed and configured in your cluster.
 - [GitLab agent](../../clusters/agent/install/index.md)
   set up in GitLab, installed in your cluster, and configured using a configuration repository.
 
 ### Configuration
 
-The agent runs the cluster image scanning once the `cluster_image_scanning`
+The agent runs the cluster image scanning once the `starboard`
 directive is added to your [agent's configuration repository](../../clusters/agent/vulnerabilities.md).
 
 ## Security Dashboard

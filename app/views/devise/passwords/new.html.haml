@@ -3,17 +3,17 @@
     = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'gl-show-field-errors' }) do |f|
       .devise-errors
         = render "devise/shared/error_messages", resource: resource
-      .form-group
+      .form-group.gl-px-5.gl-pt-5
         = f.label :email
         = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
         .form-text.text-muted
           = _('Requires your primary GitLab email address.')
 
-      %div
       - if recaptcha_enabled?
-        = recaptcha_tags nonce: content_security_policy_nonce
+        .gl-px-5
+          = recaptcha_tags nonce: content_security_policy_nonce
 
-      .gl-mt-5
+      .gl-p-5
         = f.submit _("Reset password"), class: "gl-button btn-confirm btn"
 
 .clearfix.prepend-top-20

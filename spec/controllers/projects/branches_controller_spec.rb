@@ -307,16 +307,35 @@ RSpec.describe Projects::BranchesController do
       sign_in(developer)
     end
 
-    it 'returns 303' do
-      post :destroy,
-           format: :html,
-           params: {
-             id: 'foo/bar/baz',
-             namespace_id: project.namespace,
-             project_id: project
-           }
+    subject(:post_request) do
+      post :destroy, format: :html, params: {
+        id: 'foo/bar/baz',
+        namespace_id: project.namespace,
+        project_id: project
+      }
+    end
 
+    it "returns response code 303" do
+      post_request
       expect(response).to have_gitlab_http_status(:see_other)
+    end
+
+    context 'with http referer' do
+      before do
+        request.env['HTTP_REFERER'] = '/'
+      end
+
+      it "redirects to the referer path" do
+        post_request
+        expect(response).to redirect_to('/')
+      end
+    end
+
+    context 'without http referer' do
+      it "redirects to the project branches path" do
+        post_request
+        expect(response).to redirect_to(project_branches_path(project))
+      end
     end
   end
 

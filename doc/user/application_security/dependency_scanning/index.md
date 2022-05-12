@@ -244,7 +244,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td rowspan="3">Python</td>
-      <td rowspan="3">3.6</td>
+      <td rowspan="3">3.9</td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
       <td><code>setup.py</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -915,9 +915,9 @@ import the following default dependency scanning analyzer images from `registry.
 your [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/gemnasium:2
-registry.gitlab.com/security-products/gemnasium-maven:2
-registry.gitlab.com/security-products/gemnasium-python:2
+registry.gitlab.com/security-products/gemnasium:3
+registry.gitlab.com/security-products/gemnasium-maven:3
+registry.gitlab.com/security-products/gemnasium-python:3
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
@@ -1219,5 +1219,4 @@ To work around this error, downgrade the analyzer's version of `setuptools` (e.g
 gemnasium-python-dependency_scanning:
   before_script:
     - pip install setuptools==57.5.0
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python:2-python-3.9
 ```

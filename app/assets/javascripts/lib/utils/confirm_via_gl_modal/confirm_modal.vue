@@ -3,7 +3,6 @@ import { GlModal, GlSafeHtmlDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
-  cancelAction: { text: __('Cancel') },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
@@ -35,6 +34,16 @@ export default {
       type: String,
       required: false,
       default: 'confirm',
+    },
+    cancelText: {
+      type: String,
+      required: false,
+      default: __('Cancel'),
+    },
+    cancelVariant: {
+      type: String,
+      required: false,
+      default: 'default',
     },
     modalHtmlMessage: {
       type: String,
@@ -71,7 +80,14 @@ export default {
       };
     },
     cancelAction() {
-      return this.hideCancel ? null : this.$options.cancelAction;
+      return this.hideCancel
+        ? null
+        : {
+            text: this.cancelText,
+            attributes: {
+              variant: this.cancelVariant,
+            },
+          };
     },
     shouldShowHeader() {
       return Boolean(this.title?.length);
