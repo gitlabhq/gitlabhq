@@ -64,7 +64,17 @@ module ContainerRegistry
       end
 
       def long_running_migration?(repository)
-        migration_start_timestamp(repository).before?(long_running_migration_threshold)
+        timeout = long_running_migration_threshold
+
+        if Feature.enabled?(:registry_migration_guard_thresholds)
+          timeout = if repository.migration_state == 'pre_importing'
+                      migration.pre_import_timeout
+                    else
+                      migration.import_timeout
+                    end
+        end
+
+        migration_start_timestamp(repository).before?(timeout.ago)
       end
 
       def external_state_matches_migration_state?(repository)
@@ -83,17 +93,21 @@ module ContainerRegistry
       end
 
       def step_before_timestamp
-        ::ContainerRegistry::Migration.max_step_duration.seconds.ago
+        migration.max_step_duration.seconds.ago
       end
 
       def max_capacity
         # doubling the actual capacity to prevent issues in case the capacity
         # is not properly applied
-        ::ContainerRegistry::Migration.capacity * 2
+        migration.capacity * 2
+      end
+
+      def migration
+        ::ContainerRegistry::Migration
       end
 
       def long_running_migration_threshold
-        @threshold ||= 10.minutes.ago
+        @threshold ||= 10.minutes
       end
 
       def cancel_long_running_migration(repository)

@@ -407,6 +407,8 @@ module ApplicationSettingsHelper
       :container_registry_import_max_retries,
       :container_registry_import_start_max_retries,
       :container_registry_import_max_step_duration,
+      :container_registry_pre_import_timeout,
+      :container_registry_import_timeout,
       :container_registry_import_target_plan,
       :container_registry_import_created_before,
       :keep_latest_artifact,

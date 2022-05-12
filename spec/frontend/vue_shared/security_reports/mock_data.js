@@ -62,7 +62,7 @@ export const mockFindings = [
     report_type: 'dependency_scanning',
     name: '3rd party CORS request may execute in jquery',
     severity: 'high',
-    scanner: { external_id: 'retire.js', name: 'Retire.js' },
+    scanner: { external_id: 'gemnasium', name: 'gemnasium' },
     identifiers: [
       {
         external_type: 'cve',
@@ -145,7 +145,7 @@ export const mockFindings = [
     name:
       'jQuery before 3.4.0, as used in Drupal, Backdrop CMS, and other products, mishandles jQuery.extend(true, {}, ...) because of Object.prototype pollution in jquery',
     severity: 'low',
-    scanner: { external_id: 'retire.js', name: 'Retire.js' },
+    scanner: { external_id: 'gemnasium', name: 'gemnasium' },
     identifiers: [
       {
         external_type: 'cve',
@@ -227,7 +227,7 @@ export const mockFindings = [
     name:
       'jQuery before 3.4.0, as used in Drupal, Backdrop CMS, and other products, mishandles jQuery.extend(true, {}, ...) because of Object.prototype pollution in jquery',
     severity: 'low',
-    scanner: { external_id: 'retire.js', name: 'Retire.js' },
+    scanner: { external_id: 'gemnasium', name: 'gemnasium' },
     identifiers: [
       {
         external_type: 'cve',

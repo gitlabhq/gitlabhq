@@ -158,6 +158,30 @@ RSpec.describe ContainerRegistry::Migration do
     end
   end
 
+  describe '.pre_import_timeout' do
+    let(:value) { 10.minutes }
+
+    before do
+      stub_application_setting(container_registry_pre_import_timeout: value)
+    end
+
+    it 'returns the matching application_setting' do
+      expect(described_class.pre_import_timeout).to eq(value)
+    end
+  end
+
+  describe '.import_timeout' do
+    let(:value) { 10.minutes }
+
+    before do
+      stub_application_setting(container_registry_import_timeout: value)
+    end
+
+    it 'returns the matching application_setting' do
+      expect(described_class.import_timeout).to eq(value)
+    end
+  end
+
   describe '.target_plans' do
     subject { described_class.target_plans }
 

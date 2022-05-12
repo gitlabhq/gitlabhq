@@ -479,7 +479,6 @@ The following table lists variables used to disable jobs.
 | `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
 | `bandit-sast`                          | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `brakeman-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `bundler-audit-dependency_scanning`    | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
 | `canary`                               | `CANARY_ENABLED`                |                       | This manual job is created if the variable is present. |
 | `cluster_image_scanning`               | `CLUSTER_IMAGE_SCANNING_DISABLED` |                     | If the variable is present, the job isn't created. |
 | `code_intelligence`                    | `CODE_INTELLIGENCE_DISABLED`    | From GitLab 13.6      | If the variable is present, the job isn't created. |
@@ -503,7 +502,6 @@ The following table lists variables used to disable jobs.
 | `browser_performance`                  | `BROWSER_PERFORMANCE_DISABLED`  | From GitLab 14.0      | Browser performance. If the variable is present, the job isn't created. Replaces `performance`. |
 | `phpcs-security-audit-sast`            | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `pmd-apex-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `retire-js-dependency_scanning`        | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
 | `review`                               | `REVIEW_DISABLED`               |                       | If the variable is present, the job isn't created. |
 | `review:stop`                          | `REVIEW_DISABLED`               |                       | Manual job. If the variable is present, the job isn't created. |
 | `sast`                                 | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |

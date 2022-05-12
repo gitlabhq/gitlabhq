@@ -2595,6 +2595,9 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSettings|%{strongStart}WARNING:%{strongEnd} Environment variable %{environment_variable} does not exist or is not pointing to a valid directory. %{icon_link}"
+msgstr ""
+
 msgid "AdminSettings|A Let's Encrypt account will be configured for this GitLab instance using this email address. You will receive emails to warn of expiring certificates. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -2638,6 +2641,9 @@ msgid "AdminSettings|Enable Registration Features"
 msgstr ""
 
 msgid "AdminSettings|Enable Service Ping"
+msgstr ""
+
+msgid "AdminSettings|Enable a Prometheus endpoint that exposes health and performance statistics. The Health Check menu item appears in the Monitoring section of the Admin Area. Restart required. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|Enable kuromoji custom analyzer: Indexing"
@@ -13822,9 +13828,6 @@ msgstr ""
 msgid "Enable automatic repository housekeeping"
 msgstr ""
 
-msgid "Enable collection of application metrics. Restart required."
-msgstr ""
-
 msgid "Enable container expiration and retention policies for projects created earlier than GitLab 12.7."
 msgstr ""
 
@@ -14081,9 +14084,6 @@ msgid "Environment is required for Stages::VariableEndpointInserter"
 msgstr ""
 
 msgid "Environment scope"
-msgstr ""
-
-msgid "Environment variable %{environment_variable} does not exist or is not pointing to a valid directory."
 msgstr ""
 
 msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default."
@@ -18767,9 +18767,6 @@ msgid "How many seconds an IP counts toward the IP address limit."
 msgstr ""
 
 msgid "How the job limiter handles jobs exceeding the thresholds specified below. The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and raises an exception if the compressed size exceeds the limit."
-msgstr ""
-
-msgid "How to export these metrics to Prometheus?"
 msgstr ""
 
 msgid "I accept the %{terms_link}"
@@ -41948,9 +41945,6 @@ msgid "Vulnerability|Unmodified Response"
 msgstr ""
 
 msgid "Vulnerability|View training"
-msgstr ""
-
-msgid "WARNING:"
 msgstr ""
 
 msgid "WARNING: This snippet contains hidden files which might be used to mask malicious behavior. Exercise caution if cloning and executing code from this snippet."

@@ -20,6 +20,8 @@ module ContainerRegistry
       delegate :container_registry_import_max_step_duration, to: ::Gitlab::CurrentSettings
       delegate :container_registry_import_target_plan, to: ::Gitlab::CurrentSettings
       delegate :container_registry_import_created_before, to: ::Gitlab::CurrentSettings
+      delegate :container_registry_pre_import_timeout, to: ::Gitlab::CurrentSettings
+      delegate :container_registry_import_timeout, to: ::Gitlab::CurrentSettings
 
       alias_method :max_tags_count, :container_registry_import_max_tags_count
       alias_method :max_retries, :container_registry_import_max_retries
@@ -27,6 +29,8 @@ module ContainerRegistry
       alias_method :max_step_duration, :container_registry_import_max_step_duration
       alias_method :target_plan_name, :container_registry_import_target_plan
       alias_method :created_before, :container_registry_import_created_before
+      alias_method :pre_import_timeout, :container_registry_pre_import_timeout
+      alias_method :import_timeout, :container_registry_import_timeout
     end
 
     def self.enabled?

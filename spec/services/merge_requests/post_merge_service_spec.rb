@@ -59,21 +59,6 @@ RSpec.describe MergeRequests::PostMergeService do
       expect(diff_removal_service).to have_received(:execute)
     end
 
-    it 'marks MR as merged regardless of errors when closing issues' do
-      merge_request.update!(target_branch: 'foo')
-      allow(project).to receive(:default_branch).and_return('foo')
-
-      issue = create(:issue, project: project)
-      allow(merge_request).to receive(:visible_closing_issues_for).and_return([issue])
-      expect_next_instance_of(Issues::CloseService) do |close_service|
-        allow(close_service).to receive(:execute).with(issue, commit: merge_request).and_raise(RuntimeError)
-      end
-
-      expect { subject }.to raise_error(RuntimeError)
-
-      expect(merge_request.reload).to be_merged
-    end
-
     it 'clean up environments for the merge request' do
       expect_next_instance_of(::Environments::StopService) do |stop_environment_service|
         expect(stop_environment_service).to receive(:execute_for_merge_request_pipeline).with(merge_request)
@@ -86,6 +71,67 @@ RSpec.describe MergeRequests::PostMergeService do
       expect(MergeRequests::CleanupRefsService).to receive(:schedule).with(merge_request)
 
       subject
+    end
+
+    context 'when there are issues to be closed' do
+      let_it_be(:issue) { create(:issue, project: project) }
+
+      before do
+        merge_request.update!(target_branch: 'foo')
+
+        allow(project).to receive(:default_branch).and_return('foo')
+        allow(merge_request).to receive(:visible_closing_issues_for).and_return([issue])
+      end
+
+      it 'performs MergeRequests::CloseIssueWorker asynchronously' do
+        expect(MergeRequests::CloseIssueWorker)
+          .to receive(:perform_async)
+          .with(project.id, user.id, issue.id, merge_request.id)
+
+        subject
+
+        expect(merge_request.reload).to be_merged
+      end
+
+      context 'when issue is an external issue' do
+        let_it_be(:issue) { ExternalIssue.new('JIRA-123', project) }
+
+        it 'executes Issues::CloseService' do
+          expect_next_instance_of(Issues::CloseService) do |close_service|
+            expect(close_service).to receive(:execute).with(issue, commit: merge_request)
+          end
+
+          subject
+
+          expect(merge_request.reload).to be_merged
+        end
+      end
+
+      context 'when async_mr_close_issue feature flag is disabled' do
+        before do
+          stub_feature_flags(async_mr_close_issue: false)
+        end
+
+        it 'executes Issues::CloseService' do
+          expect_next_instance_of(Issues::CloseService) do |close_service|
+            expect(close_service).to receive(:execute).with(issue, commit: merge_request)
+          end
+
+          subject
+
+          expect(merge_request.reload).to be_merged
+        end
+
+        it 'marks MR as merged regardless of errors when closing issues' do
+          expect_next_instance_of(Issues::CloseService) do |close_service|
+            allow(close_service).to receive(:execute).with(issue, commit: merge_request).and_raise(RuntimeError)
+          end
+
+          expect { subject }.to raise_error(RuntimeError)
+
+          expect(merge_request.reload).to be_merged
+        end
+      end
     end
 
     context 'when the merge request has review apps' do

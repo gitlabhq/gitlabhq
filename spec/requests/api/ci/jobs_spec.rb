@@ -471,7 +471,7 @@ RSpec.describe API::Ci::Jobs do
     end
 
     context 'authorized user' do
-      context 'when trace is in ObjectStorage' do
+      context 'when log is in ObjectStorage' do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
         let(:url) { 'http://object-storage/trace' }
         let(:file_path) { expand_fixture_path('trace/sample_trace') }
@@ -485,49 +485,49 @@ RSpec.describe API::Ci::Jobs do
           end
         end
 
-        it 'returns specific job trace' do
+        it 'returns specific job logs' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
         end
       end
 
-      context 'when trace is artifact' do
+      context 'when log is artifact' do
         let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
-        it 'returns specific job trace' do
+        it 'returns specific job log' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
         end
       end
 
-      context 'when live trace and uploadless trace artifact' do
+      context 'when incremental logging and uploadless log artifact' do
         let(:job) { create(:ci_build, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
 
-        it 'returns specific job trace' do
+        it 'returns specific job log' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
         end
       end
 
-      context 'when trace is live' do
+      context 'when log is incremental' do
         let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
-        it 'returns specific job trace' do
+        it 'returns specific job log' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
         end
       end
 
-      context 'when no trace' do
+      context 'when no log' do
         let(:job) { create(:ci_build, pipeline: pipeline) }
 
-        it 'returns empty trace' do
+        it 'returns empty log' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to be_empty
         end
       end
 
-      context 'when trace artifact record exists with no stored file' do
+      context 'when log artifact record exists with no stored file' do
         let(:job) { create(:ci_build, pipeline: pipeline) }
 
         before do
@@ -544,7 +544,7 @@ RSpec.describe API::Ci::Jobs do
     context 'unauthorized user' do
       let(:api_user) { nil }
 
-      it 'does not return specific job trace' do
+      it 'does not return specific job log' do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end

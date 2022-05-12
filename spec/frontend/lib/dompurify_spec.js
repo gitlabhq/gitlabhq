@@ -73,6 +73,16 @@ describe('~/lib/dompurify', () => {
     expect(sanitize('<p><gl-emoji>💯</gl-emoji></p>')).toBe('<p><gl-emoji>💯</gl-emoji></p>');
   });
 
+  it("doesn't allow style tags", () => {
+    // removes style tags
+    expect(sanitize('<style>p {width:50%;}</style>')).toBe('');
+    expect(sanitize('<style type="text/css">p {width:50%;}</style>')).toBe('');
+    // removes mstyle tag (this can removed later by disallowing math tags)
+    expect(sanitize('<math><mstyle displaystyle="true"></mstyle></math>')).toBe('<math></math>');
+    // removes link tag (this is DOMPurify's default behavior)
+    expect(sanitize('<link rel="stylesheet" href="styles.css">')).toBe('');
+  });
+
   describe.each`
     type          | gon
     ${'root'}     | ${rootGon}

@@ -377,6 +377,8 @@ class ApplicationSetting < ApplicationRecord
             :container_registry_import_max_retries,
             :container_registry_import_start_max_retries,
             :container_registry_import_max_step_duration,
+            :container_registry_pre_import_timeout,
+            :container_registry_import_timeout,
             allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 

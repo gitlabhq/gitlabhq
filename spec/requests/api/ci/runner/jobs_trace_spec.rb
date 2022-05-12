@@ -272,7 +272,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
         it { expect(response).to have_gitlab_http_status(:forbidden) }
       end
 
-      context 'when the job trace is too big' do
+      context 'when the job log is too big' do
         before do
           project.actual_limits.update!(ci_jobs_trace_size_limit: 1)
         end

@@ -63,8 +63,11 @@ export default {
         v-gl-tooltip
         :data-testid="meta.dataTestId"
         :title="meta.tooltip || null"
-        :class="{ 'gl-mr-3 gl-mt-2': isMergeRequest }"
-        class="issuable-warning-icon gl-display-flex gl-justify-content-center gl-align-items-center"
+        :class="{
+          'gl-mr-3 gl-mt-2 gl-display-flex gl-justify-content-center gl-align-items-center': isMergeRequest,
+          'gl-display-inline-block': !isMergeRequest,
+        }"
+        class="issuable-warning-icon"
       >
         <gl-icon :name="meta.iconName" class="icon" />
       </div>

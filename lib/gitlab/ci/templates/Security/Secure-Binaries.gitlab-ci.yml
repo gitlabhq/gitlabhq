@@ -18,8 +18,7 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep,
-    bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
+    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python,
     license-finder,
     dast, dast-runner-validation, api-fuzzing
 
@@ -173,20 +172,6 @@ kubesec:
 #
 # Dependency Scanning jobs
 #
-
-bundler-audit:
-  extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bbundler-audit\b/
-
-retire.js:
-  extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bretire\.js\b/
 
 gemnasium:
   extends: .download_images

@@ -25,7 +25,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
         allow(::Gitlab).to receive(:com?).and_return(true)
       end
 
-      shared_examples 'handling long running migrations' do
+      shared_examples 'handling long running migrations' do |timeout:|
         before do
           allow_next_found_instance_of(ContainerRepository) do |repository|
             allow(repository).to receive(:migration_cancel).and_return(migration_cancel_response)
@@ -37,11 +37,25 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
             expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_migrations_count, 1)
             expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
             expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_ids, [stale_migration.id])
+            expect(ContainerRegistry::Migration).to receive(timeout).and_call_original
 
             expect { subject }
                 .to change(import_aborted_migrations, :count).by(1)
                 .and change { stale_migration.reload.migration_state }.to('import_aborted')
                 .and not_change { ongoing_migration.migration_state }
+          end
+
+          context 'registry_migration_guard_thresholds feature flag disabled' do
+            before do
+              stub_feature_flags(registry_migration_guard_thresholds: false)
+            end
+
+            it 'falls back on the hardcoded value' do
+              expect(ContainerRegistry::Migration).not_to receive(:pre_import_timeout)
+
+              expect { subject }
+                .to change { stale_migration.reload.migration_state }.to('import_aborted')
+            end
           end
         end
 
@@ -61,12 +75,26 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
               expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_migrations_count, 1)
               expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
               expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_ids, [stale_migration.id])
+              expect(ContainerRegistry::Migration).to receive(timeout).and_call_original
 
               expect { subject }
                   .to change(import_skipped_migrations, :count)
 
               expect(stale_migration.reload.migration_state).to eq('import_skipped')
               expect(stale_migration.reload.migration_skipped_reason).to eq('migration_canceled')
+            end
+
+            context 'registry_migration_guard_thresholds feature flag disabled' do
+              before do
+                stub_feature_flags(registry_migration_guard_thresholds: false)
+              end
+
+              it 'falls back on the hardcoded value' do
+                expect(ContainerRegistry::Migration).not_to receive(timeout)
+
+                expect { subject }
+                  .to change { stale_migration.reload.migration_state }.to('import_skipped')
+              end
             end
           end
 
@@ -112,6 +140,8 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
           allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
             allow(client).to receive(:import_status).and_return(import_status)
           end
+
+          stub_application_setting(container_registry_pre_import_timeout: 10.minutes)
         end
 
         it 'will abort the migration' do
@@ -131,7 +161,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
         context 'the client returns pre_import_in_progress' do
           let(:import_status) { 'pre_import_in_progress' }
 
-          it_behaves_like 'handling long running migrations'
+          it_behaves_like 'handling long running migrations', timeout: :pre_import_timeout
         end
       end
 
@@ -167,6 +197,8 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
           allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
             allow(client).to receive(:import_status).and_return(import_status)
           end
+
+          stub_application_setting(container_registry_import_timeout: 10.minutes)
         end
 
         it 'will abort the migration' do
@@ -186,7 +218,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
         context 'the client returns import_in_progress' do
           let(:import_status) { 'import_in_progress' }
 
-          it_behaves_like 'handling long running migrations'
+          it_behaves_like 'handling long running migrations', timeout: :import_timeout
         end
       end
     end

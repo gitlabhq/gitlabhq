@@ -7,6 +7,7 @@ const defaultConfig = {
   // Prevent possible XSS attacks with data-* attributes used by @rails/ujs
   // See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1421
   FORBID_ATTR: ['data-remote', 'data-url', 'data-type', 'data-method'],
+  FORBID_TAGS: ['style', 'mstyle'],
 };
 
 // Only icons urls from `gon` are allowed

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
+import { sanitizeUrl } from '~/lib/utils/url_utility';
 import AccessorUtilities from './lib/utils/accessor';
 import { loadCSSFile } from './lib/utils/css_utils';
 
@@ -80,7 +81,7 @@ export default class ProjectSelectComboButton {
 
   setNewItemBtnAttributes(project) {
     if (project) {
-      this.newItemBtn.attr('href', project.url);
+      this.newItemBtn.attr('href', sanitizeUrl(project.url));
       this.newItemBtn.text(
         sprintf(__('New %{type} in %{project}'), {
           type: this.resourceLabel,

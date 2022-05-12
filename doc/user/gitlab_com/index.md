@@ -332,7 +332,7 @@ after the limits change in January, 2021:
 | **Authenticated** API traffic (for a given **user**)                      | **2,000** requests per minute | **2,000** requests per minute           |
 | **Authenticated** non-API HTTP traffic (for a given **user**)             | **1,000** requests per minute | **1,000** requests per minute           |
 | **All** traffic (from a given **IP address**)                             | **2,000** requests per minute | **2,000** requests per minute           |
-| **Issue creation**                                                        | **300** requests per minute   | **300** requests per minute             |
+| **Issue creation**                                                        | **300** requests per minute   | **200** requests per minute             |
 | **Note creation** (on issues and merge requests)                          | **60** requests per minute    | **60** requests per minute              |
 | **Advanced, project, and group search** API (for a given **IP address**)  | **10** requests per minute    | **10** requests per minute              |
 | **GitLab Pages** requests (for a given **IP address**)                    |                               | **1000** requests per **50 seconds**    |

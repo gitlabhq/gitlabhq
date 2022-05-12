@@ -45,7 +45,19 @@ module MergeRequests
       closed_issues = merge_request.visible_closing_issues_for(current_user)
 
       closed_issues.each do |issue|
-        Issues::CloseService.new(project: project, current_user: current_user).execute(issue, commit: merge_request)
+        # We are intentionally only closing Issues asynchronously (excluding ExternalIssues)
+        # as the worker only supports finding an Issue. We are also only experiencing
+        # SQL timeouts when closing an Issue.
+        if Feature.enabled?(:async_mr_close_issue, project) && issue.is_a?(Issue)
+          MergeRequests::CloseIssueWorker.perform_async(
+            project.id,
+            current_user.id,
+            issue.id,
+            merge_request.id
+          )
+        else
+          Issues::CloseService.new(project: project, current_user: current_user).execute(issue, commit: merge_request)
+        end
       end
     end
 
