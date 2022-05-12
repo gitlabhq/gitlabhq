@@ -280,7 +280,9 @@ coverage-frontend:
     paths:
       - coverage-frontend/
     reports:
-      cobertura: coverage-frontend/cobertura-coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage-frontend/cobertura-coverage.xml
 
 .qa-frontend-node:
   extends:
