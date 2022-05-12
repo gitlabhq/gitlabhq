@@ -25,7 +25,6 @@ RSpec.describe Ci::SecureFile do
     it { is_expected.to validate_presence_of(:checksum) }
     it { is_expected.to validate_presence_of(:file_store) }
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_presence_of(:permissions) }
     it { is_expected.to validate_presence_of(:project_id) }
     context 'unique filename' do
       let_it_be(:project1) { create(:project) }
@@ -46,12 +45,6 @@ RSpec.describe Ci::SecureFile do
           create(:ci_secure_file, project: create(:project))
         end.not_to raise_error
       end
-    end
-  end
-
-  describe '#permissions' do
-    it 'defaults to read_only file permssions' do
-      expect(subject.permissions).to eq('read_only')
     end
   end
 

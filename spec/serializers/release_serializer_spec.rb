@@ -19,6 +19,10 @@ RSpec.describe ReleaseSerializer do
       it 'serializes the label object' do
         expect(subject[:tag]).to eq resource.tag
       end
+
+      it 'does not expose git-sha as sensitive information' do
+        expect(subject[:sha]).to be_nil
+      end
     end
 
     context 'when multiple objects are being serialized' do

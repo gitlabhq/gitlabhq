@@ -223,18 +223,6 @@ RSpec.describe Environments::StopService do
 
           expect(prepare_staging_job.persisted_environment.state).to eq('available')
         end
-
-        context 'when fix_related_environments_for_merge_requests feature flag is disabled' do
-          before do
-            stub_feature_flags(fix_related_environments_for_merge_requests: false)
-          end
-
-          it 'stops unrelated environments too' do
-            subject
-
-            expect(prepare_staging_job.persisted_environment.state).to eq('stopped')
-          end
-        end
       end
     end
 

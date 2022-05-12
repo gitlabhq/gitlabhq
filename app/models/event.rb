@@ -369,6 +369,10 @@ class Event < ApplicationRecord
     Event._to_partial_path
   end
 
+  def has_no_project_and_group?
+    project_id.nil? && group_id.nil?
+  end
+
   protected
 
   def capability

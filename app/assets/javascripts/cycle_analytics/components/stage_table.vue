@@ -191,9 +191,7 @@ export default {
     />
     <gl-table
       v-else
-      head-variant="white"
       stacked="lg"
-      thead-class="border-bottom"
       show-empty
       :sort-by.sync="sort"
       :sort-direction.sync="direction"

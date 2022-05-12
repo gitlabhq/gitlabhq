@@ -6,7 +6,7 @@ module BulkImports
       class NamespaceSettingsPipeline
         include Pipeline
 
-        ndjson_pipeline!
+        file_extraction_pipeline!
 
         relation_name 'namespace_settings'
 

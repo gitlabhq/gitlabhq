@@ -235,8 +235,6 @@ export default {
       :fields="fields"
       fixed
       stacked="md"
-      head-variant="white"
-      thead-class="gl-border-b-solid gl-border-b-2 gl-border-b-gray-100"
       class="qa-clusters-table gl-mb-4!"
       data-testid="cluster_list_table"
     >

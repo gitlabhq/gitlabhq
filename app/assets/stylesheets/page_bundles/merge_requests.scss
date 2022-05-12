@@ -702,17 +702,20 @@ $tabs-holder-z-index: 250;
 
   .mr-version-dropdown,
   .mr-version-compare-dropdown {
-    margin: 0 0.5rem;
+    margin: 0 $gl-spacing-scale-1;
+
+    .dropdown-toggle.gl-button {
+      padding: $gl-spacing-scale-2 2px $gl-spacing-scale-2 $gl-spacing-scale-2;
+      font-weight: $gl-font-weight-bold;
+
+      .gl-button-icon {
+        margin-left: $gl-spacing-scale-1;
+      }
+    }
   }
 
   .dropdown-title {
     color: var(--gl-text-color, $gl-text-color);
-  }
-
-  // Shortening button height by 1px to make compare-versions
-  // header 56px and fit into our 8px design grid
-  .btn {
-    height: 34px;
   }
 }
 

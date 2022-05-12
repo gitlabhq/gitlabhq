@@ -26,7 +26,7 @@ func handleReceivePack(w *HttpResponseWriter, r *http.Request, a *api.Response) 
 	}
 
 	if err := smarthttp.ReceivePack(ctx, &a.Repository, a.GL_ID, a.GL_USERNAME, a.GL_REPOSITORY, a.GitConfigOptions, cr, cw, gitProtocol); err != nil {
-		return fmt.Errorf("smarthttp.ReceivePack: %v", err)
+		return fmt.Errorf("smarthttp.ReceivePack: %w", err)
 	}
 
 	return nil

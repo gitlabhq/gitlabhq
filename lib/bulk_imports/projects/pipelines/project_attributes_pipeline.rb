@@ -6,6 +6,8 @@ module BulkImports
       class ProjectAttributesPipeline
         include Pipeline
 
+        file_extraction_pipeline!
+
         transformer ::BulkImports::Common::Transformers::ProhibitedAttributesTransformer
 
         def extract(_context)

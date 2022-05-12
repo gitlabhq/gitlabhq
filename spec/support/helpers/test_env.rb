@@ -374,7 +374,7 @@ module TestEnv
   end
 
   def seed_db
-    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.import
+    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
   end
 
   private

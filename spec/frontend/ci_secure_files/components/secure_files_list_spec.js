@@ -57,7 +57,7 @@ describe('SecureFilesList', () => {
     });
 
     it('displays a table with expected headers', () => {
-      const headers = ['Filename', 'Permissions', 'Uploaded'];
+      const headers = ['Filename', 'Uploaded'];
       headers.forEach((header, i) => {
         expect(findHeaderAt(i).text()).toBe(header);
       });
@@ -69,8 +69,7 @@ describe('SecureFilesList', () => {
       const [secureFile] = secureFiles;
 
       expect(findCell(0, 0).text()).toBe(secureFile.name);
-      expect(findCell(0, 1).text()).toBe(secureFile.permissions);
-      expect(findCell(0, 2).find(TimeAgoTooltip).props('time')).toBe(secureFile.created_at);
+      expect(findCell(0, 1).find(TimeAgoTooltip).props('time')).toBe(secureFile.created_at);
     });
   });
 
@@ -84,7 +83,7 @@ describe('SecureFilesList', () => {
     });
 
     it('displays a table with expected headers', () => {
-      const headers = ['Filename', 'Permissions', 'Uploaded'];
+      const headers = ['Filename', 'Uploaded'];
       headers.forEach((header, i) => {
         expect(findHeaderAt(i).text()).toBe(header);
       });

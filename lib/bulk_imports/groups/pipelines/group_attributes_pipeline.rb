@@ -6,7 +6,7 @@ module BulkImports
       class GroupAttributesPipeline
         include Pipeline
 
-        ndjson_pipeline!
+        file_extraction_pipeline!
 
         relation_name 'self'
 

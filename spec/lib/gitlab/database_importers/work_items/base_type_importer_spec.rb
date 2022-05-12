@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter do
-  subject { described_class.import }
+  subject { described_class.upsert_types }
 
   it_behaves_like 'work item base types importer'
 end

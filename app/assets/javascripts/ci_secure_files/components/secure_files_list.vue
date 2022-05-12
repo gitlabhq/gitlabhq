@@ -41,10 +41,6 @@ export default {
       label: __('Filename'),
     },
     {
-      key: 'permissions',
-      label: __('Permissions'),
-    },
-    {
       key: 'created_at',
       label: __('Uploaded'),
     },
@@ -110,10 +106,6 @@ export default {
 
       <template #cell(name)="{ item }">
         {{ item.name }}
-      </template>
-
-      <template #cell(permissions)="{ item }">
-        {{ item.permissions }}
       </template>
 
       <template #cell(created_at)="{ item }">

@@ -325,7 +325,8 @@ python -m twine upload --repository <source_name> dist/<package_file>
 ### Publishing packages with the same name or version
 
 You cannot publish a package if a package of the same name and version already exists.
-You must delete the existing package first. If you attempt to publish the same package
+You must [delete the existing package](../../packages/package_registry/reduce_package_registry_storage.md#delete-a-package) first.
+If you attempt to publish the same package
 more than once, a `400 Bad Request` error occurs.
 
 ## Install a PyPI package

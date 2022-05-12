@@ -232,12 +232,10 @@ export default {
       v-bind="tableAttrs.table"
       class="members-table"
       data-testid="members-table"
-      head-variant="white"
       stacked="lg"
       :fields="filteredAndModifiedFields"
       :items="members"
       primary-key="id"
-      thead-class="border-bottom"
       :empty-text="__('No members found')"
       show-empty
       :tbody-tr-attr="tbodyTrAttr"

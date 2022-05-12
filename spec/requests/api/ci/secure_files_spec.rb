@@ -143,7 +143,6 @@ RSpec.describe API::Ci::SecureFiles do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(secure_file.name)
-        expect(json_response['permissions']).to eq(secure_file.permissions)
       end
 
       it 'responds with 404 Not Found if requesting non-existing secure file' do
@@ -159,7 +158,6 @@ RSpec.describe API::Ci::SecureFiles do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(secure_file.name)
-        expect(json_response['permissions']).to eq(secure_file.permissions)
       end
     end
 
@@ -250,12 +248,11 @@ RSpec.describe API::Ci::SecureFiles do
     context 'authenticated user with admin permissions' do
       it 'creates a secure file' do
         expect do
-          post api("/projects/#{project.id}/secure_files", maintainer), params: file_params.merge(permissions: 'execute')
+          post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
         end.to change {project.secure_files.count}.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('upload-keystore.jks')
-        expect(json_response['permissions']).to eq('execute')
         expect(json_response['checksum']).to eq(secure_file.checksum)
         expect(json_response['checksum_algorithm']).to eq('sha256')
 
@@ -265,14 +262,6 @@ RSpec.describe API::Ci::SecureFiles do
         )
         expect(json_response['id']).to eq(secure_file.id)
         expect(Time.parse(json_response['created_at'])).to be_like_time(secure_file.created_at)
-      end
-
-      it 'creates a secure file with read_only permissions by default' do
-        expect do
-          post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
-        end.to change {project.secure_files.count}.by(1)
-
-        expect(json_response['permissions']).to eq('read_only')
       end
 
       it 'uploads and downloads a secure file' do
@@ -325,15 +314,6 @@ RSpec.describe API::Ci::SecureFiles do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['name']).to include('has already been taken')
-      end
-
-      it 'returns an error when an unexpected permission is supplied' do
-        expect do
-          post api("/projects/#{project.id}/secure_files", maintainer), params: file_params.merge(permissions: 'foo')
-        end.not_to change { project.secure_files.count }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('permissions does not have a valid value')
       end
 
       it 'returns an error when an unexpected validation failure happens' do

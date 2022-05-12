@@ -74,6 +74,30 @@ setting the [`FOSS_ONLY` environment variable](https://gitlab.com/gitlab-org/git
 to something that evaluates as `true`. The same works for running tests
 (for example `FOSS_ONLY=1 yarn jest`).
 
+### Running feature specs as CE
+
+When running [feature specs](testing_guide/best_practices.md#system--feature-tests)
+as CE, you should ensure that the edition of backend and frontend match.
+To do so:
+
+1. Set the `FOSS_ONLY=1` environment variable:
+
+   ```shell
+   export FOSS_ONLY=1
+   ```
+
+1. Start GDK:
+
+   ```shell
+   gdk start
+   ```
+
+1. Run feature specs:
+
+   ```shell
+   bin/rspec spec/features/<path_to_your_spec>
+   ```
+
 ## CI pipelines in a FOSS context
 
 By default, merge request pipelines for development run in an EE-context only. If you are

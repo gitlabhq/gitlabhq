@@ -261,36 +261,26 @@ class Wiki
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
-    if Feature.enabled?(:gitaly_replace_wiki_update_page, container, type: :undefined)
-      with_valid_format(format) do |default_extension|
-        title = title.presence || Pathname(page.path).sub_ext('').to_s
+    with_valid_format(format) do |default_extension|
+      title = title.presence || Pathname(page.path).sub_ext('').to_s
 
-        # If the format is the same we keep the former extension. This check is for formats
-        # that can have more than one extension like Markdown (.md, .markdown)
-        # If we don't do this we will override the existing extension.
-        extension = page.format != format.to_sym ? default_extension : File.extname(page.path).downcase[1..]
+      # If the format is the same we keep the former extension. This check is for formats
+      # that can have more than one extension like Markdown (.md, .markdown)
+      # If we don't do this we will override the existing extension.
+      extension = page.format != format.to_sym ? default_extension : File.extname(page.path).downcase[1..]
 
-        capture_git_error(:updated) do
-          repository.update_file(
-            user,
-            sluggified_full_path(title, extension),
-            content,
-            previous_path: page.path,
-            **multi_commit_options(:updated, message, title))
+      capture_git_error(:updated) do
+        repository.update_file(
+          user,
+          sluggified_full_path(title, extension),
+          content,
+          previous_path: page.path,
+          **multi_commit_options(:updated, message, title))
 
-          after_wiki_activity
+        after_wiki_activity
 
-          true
-        end
+        true
       end
-    else
-      commit = commit_details(:updated, message, page.title)
-
-      wiki.update_page(page.path, title || page.name, format.to_sym, content, commit)
-
-      after_wiki_activity
-
-      true
     end
   end
 

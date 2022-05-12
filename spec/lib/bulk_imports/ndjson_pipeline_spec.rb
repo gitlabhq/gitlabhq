@@ -29,7 +29,7 @@ RSpec.describe BulkImports::NdjsonPipeline do
   subject { NdjsonPipelineClass.new(group, user) }
 
   it 'marks pipeline as ndjson' do
-    expect(NdjsonPipelineClass.ndjson_pipeline?).to eq(true)
+    expect(NdjsonPipelineClass.file_extraction_pipeline?).to eq(true)
   end
 
   describe '#deep_transform_relation!' do

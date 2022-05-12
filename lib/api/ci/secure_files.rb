@@ -62,13 +62,11 @@ module API
           params do
             requires :name, type: String, desc: 'The name of the file'
             requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The secure file to be uploaded'
-            optional :permissions, type: String, desc: 'The file permissions', default: 'read_only', values: %w[read_only read_write execute]
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
           post ':id/secure_files' do
             secure_file = user_project.secure_files.new(
-              name: params[:name],
-              permissions: params[:permissions] || :read_only
+              name: params[:name]
             )
 
             secure_file.file = params[:file]

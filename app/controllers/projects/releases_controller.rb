@@ -17,7 +17,13 @@ class Projects::ReleasesController < Projects::ApplicationController
       format.html do
         require_non_empty_project
       end
-      format.json { render json: releases }
+      format.json do
+        if Feature.enabled?(:remove_sha_from_releases_json, project)
+          render json: ReleaseSerializer.new.represent(releases)
+        else
+          render json: releases
+        end
+      end
     end
   end
 

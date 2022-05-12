@@ -170,12 +170,12 @@ module BulkImports
         class_attributes[:abort_on_failure]
       end
 
-      def ndjson_pipeline!
-        class_attributes[:ndjson_pipeline] = true
+      def file_extraction_pipeline!
+        class_attributes[:file_extraction_pipeline] = true
       end
 
-      def ndjson_pipeline?
-        class_attributes[:ndjson_pipeline]
+      def file_extraction_pipeline?
+        class_attributes[:file_extraction_pipeline]
       end
 
       def relation_name(name)

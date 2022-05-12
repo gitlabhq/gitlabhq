@@ -41,6 +41,10 @@ module WorkItems
     scope :by_type, ->(base_type) { where(base_type: base_type) }
 
     def self.default_by_type(type)
+      found_type = find_by(namespace_id: nil, base_type: type)
+      return found_type if found_type
+
+      Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
       find_by(namespace_id: nil, base_type: type)
     end
 

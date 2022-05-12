@@ -47,6 +47,14 @@ RSpec.describe Issues::CreateService do
           due_date: Date.tomorrow }
       end
 
+      it 'works if base work item types were not created yet' do
+        WorkItems::Type.delete_all
+
+        expect do
+          issue
+        end.to change(Issue, :count).by(1)
+      end
+
       it 'creates the issue with the given params' do
         expect(Issuable::CommonSystemNotesService).to receive_message_chain(:new, :execute)
 

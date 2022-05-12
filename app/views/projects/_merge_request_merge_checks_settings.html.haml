@@ -13,6 +13,6 @@
       help_text: s_('ProjectSettings|Introduces the risk of merging changes that do not pass the pipeline.'),
       checkbox_options: { class: 'gl-pl-6' }
   = form.gitlab_ui_checkbox_component :only_allow_merge_if_all_discussions_are_resolved,
-    s_('ProjectSettings|All discussions must be resolved'),
+    s_('ProjectSettings|All threads must be resolved'),
     checkbox_options: { data: { qa_selector: 'allow_merge_if_all_discussions_are_resolved_checkbox' } }
   = render_if_exists 'projects/merge_request_merge_checks_jira_enforcement', form: form, project: @project

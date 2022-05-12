@@ -676,16 +676,6 @@ RSpec.shared_examples 'wiki model' do
         end
       end
     end
-
-    context 'when feature flag :gitaly_replace_wiki_update_page is disabled' do
-      before do
-        stub_feature_flags(gitaly_replace_wiki_update_page: false)
-      end
-
-      it_behaves_like 'update_page tests' do
-        include_context 'common examples'
-      end
-    end
   end
 
   describe '#delete_page' do

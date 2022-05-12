@@ -21,7 +21,7 @@ For information on using GitLab to work on your own software projects, see the
 For information on working with the GitLab APIs, see the [API documentation](../api/index.md).
 
 For information about how to install, configure, update, and upgrade your own
-GitLab instance, see the [administration documentation](../administration/index.md).
+GitLab instance, see the [Administrator documentation](../administration/index.md).
 
 ## Get started
 

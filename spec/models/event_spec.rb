@@ -1040,6 +1040,36 @@ RSpec.describe Event do
     end
   end
 
+  describe '#has_no_project_and_group' do
+    context 'with project event' do
+      it 'returns false when the event has project' do
+        event = build(:event, project: create(:project))
+
+        expect(event.has_no_project_and_group?).to be false
+      end
+
+      it 'returns true when the event has no project' do
+        event = build(:event, project: nil)
+
+        expect(event.has_no_project_and_group?).to be true
+      end
+    end
+
+    context 'with group event' do
+      it 'returns false when the event has group' do
+        event = build(:event, group: create(:group))
+
+        expect(event.has_no_project_and_group?).to be false
+      end
+
+      it 'returns true when the event has no group' do
+        event = build(:event, group: nil)
+
+        expect(event.has_no_project_and_group?).to be true
+      end
+    end
+  end
+
   def create_push_event(project, user)
     event = create(:push_event, project: project, author: user)
 

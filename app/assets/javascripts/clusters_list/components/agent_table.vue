@@ -165,8 +165,6 @@ export default {
     :items="agentsList"
     :fields="fields"
     stacked="md"
-    head-variant="white"
-    thead-class="gl-border-b-solid gl-border-b-2 gl-border-b-gray-100"
     class="gl-mb-4!"
     data-testid="cluster-agent-list-table"
   >
