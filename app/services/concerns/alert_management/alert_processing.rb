@@ -104,7 +104,7 @@ module AlertManagement
     def find_existing_alert
       return unless incoming_payload.gitlab_fingerprint
 
-      AlertManagement::Alert.find_ongoing_alert(project, incoming_payload.gitlab_fingerprint)
+      AlertManagement::Alert.find_unresolved_alert(project, incoming_payload.gitlab_fingerprint)
     end
 
     def build_new_alert

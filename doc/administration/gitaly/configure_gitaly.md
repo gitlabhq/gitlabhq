@@ -833,7 +833,7 @@ especially for large repositories.
 
 Control groups (cgroups) in Linux allow limits to be imposed on how much memory and CPU can be consumed.
 See the [`cgroups` Linux man page](https://man7.org/linux/man-pages/man7/cgroups.7.html) for more information.
-cgroups can be useful for protecting the system against resource exhaustion because of overcomsumption of memory and CPU.
+cgroups can be useful for protecting the system against resource exhaustion because of overconsumption of memory and CPU.
 
 Gitaly has built-in cgroups control. When configured, Gitaly assigns Git
 processes to a cgroup based on the repository the Git command is operating in.
@@ -915,7 +915,7 @@ gitaly['cgroups_repositories_cpu_shares'] => 512
    when Gitaly starts.
 - `cgroups_memory_bytes` is the total memory limit that is imposed collectively on all
    Git processes that Gitaly spawns. 0 implies no limit.
-- `cgroups_cpu_shares` is the cpu limit that is imposed collectively on all Git
+- `cgroups_cpu_shares` is the CPU limit that is imposed collectively on all Git
    processes that Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
    which represents 100% of CPU.
 - `cgroups_repositories_count` is the number of cgroups in the cgroups pool. Each time a new Git

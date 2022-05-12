@@ -119,7 +119,7 @@ module AlertManagement
       end
     end
 
-    def self.find_ongoing_alert(project, fingerprint)
+    def self.find_unresolved_alert(project, fingerprint)
       for_fingerprint(project, fingerprint).not_resolved.take
     end
 

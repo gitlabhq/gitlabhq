@@ -1,6 +1,6 @@
 function onSidebarLinkClick() {
   const setDataTrackAction = (element, action) => {
-    element.dataset.trackAction = action;
+    element.setAttribute('data-track-action', action);
   };
 
   const setDataTrackExtra = (element, value) => {
@@ -12,10 +12,10 @@ function onSidebarLinkClick() {
       ? SIDEBAR_COLLAPSED
       : SIDEBAR_EXPANDED;
 
-    element.dataset.trackExtra = JSON.stringify({
-      sidebar_display: sidebarCollapsed,
-      menu_display: value,
-    });
+    element.setAttribute(
+      'data-track-extra',
+      JSON.stringify({ sidebar_display: sidebarCollapsed, menu_display: value }),
+    );
   };
 
   const EXPANDED = 'Expanded';

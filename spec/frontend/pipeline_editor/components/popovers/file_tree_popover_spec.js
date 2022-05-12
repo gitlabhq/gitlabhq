@@ -1,16 +1,23 @@
 import { nextTick } from 'vue';
-import { GlPopover } from '@gitlab/ui';
+import { GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import FileTreePopover from '~/pipeline_editor/components/popovers/file_tree_popover.vue';
 import { FILE_TREE_POPOVER_DISMISSED_KEY } from '~/pipeline_editor/constants';
+import { mockIncludesHelpPagePath } from '../../mock_data';
 
 describe('FileTreePopover component', () => {
   let wrapper;
 
   const findPopover = () => wrapper.findComponent(GlPopover);
+  const findLink = () => findPopover().findComponent(GlLink);
 
-  const createComponent = (mountFn = shallowMount) => {
-    wrapper = mountFn(FileTreePopover);
+  const createComponent = ({ stubs } = {}) => {
+    wrapper = shallowMount(FileTreePopover, {
+      provide: {
+        includesHelpPagePath: mockIncludesHelpPagePath,
+      },
+      stubs,
+    });
   };
 
   afterEach(() => {
@@ -20,7 +27,7 @@ describe('FileTreePopover component', () => {
 
   describe('default', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponent({ stubs: { GlSprintf } });
     });
 
     it('renders dismissable popover', async () => {
@@ -30,6 +37,11 @@ describe('FileTreePopover component', () => {
       await nextTick();
 
       expect(findPopover().exists()).toBe(false);
+    });
+
+    it('renders learn more link', () => {
+      expect(findLink().exists()).toBe(true);
+      expect(findLink().attributes('href')).toBe(mockIncludesHelpPagePath);
     });
   });
 

@@ -32,8 +32,8 @@ export const addInteractionClass = ({ path, d, wrapTextNodes }) => {
     });
 
     if (el && !isTextNode(el)) {
-      el.dataset.charIndex = d.start_char;
-      el.dataset.lineIndex = d.start_line;
+      el.setAttribute('data-char-index', d.start_char);
+      el.setAttribute('data-line-index', d.start_line);
       el.classList.add('cursor-pointer', 'code-navigation', 'js-code-navigation');
       el.closest('.line').classList.add('code-navigation-line');
     }

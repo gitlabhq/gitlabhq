@@ -14,7 +14,7 @@ These packages are produced by the GitLab CI process, as found in the  [Omnibus 
 
 ## GnuPG Public Keys
 
-All packages are signed with [GnuPG](https://www.gnupg.org/), in a method appropriate for their format. The key used to sign these packages can be found on [pgp.mit.edu](https://pgp.mit.edu) at [0x3cfcf9baf27eab47](https://pgp.mit.edu/pks/lookup?op=vindex&search=0x3CFCF9BAF27EAB47)
+All packages are signed with [GnuPG](https://www.gnupg.org/), in a method appropriate for their format. The key used to sign these packages can be found on [MIT PGP Public Key Server](https://pgp.mit.edu) at [0x3cfcf9baf27eab47](https://pgp.mit.edu/pks/lookup?op=vindex&search=0x3CFCF9BAF27EAB47)
 
 ## Verifying Signatures
 

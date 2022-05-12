@@ -68,7 +68,7 @@ GET /projects/:id/wikis/:slug
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
-| `slug` | string  | yes       | URLencoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`  |
+| `slug` | string  | yes       | URL encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`  |
 | `render_html`      | boolean    | no      | Return the rendered HTML of the wiki page  |
 | `version`      | string    | no      | Wiki page version sha  |
 

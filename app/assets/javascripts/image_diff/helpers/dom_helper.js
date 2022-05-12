@@ -6,7 +6,7 @@ export function setPositionDataAttribute(el, options) {
 
   const positionObject = { ...JSON.parse(position), x, y, width, height };
 
-  el.dataset.position = JSON.stringify(positionObject);
+  el.setAttribute('data-position', JSON.stringify(positionObject));
 }
 
 export function updateDiscussionAvatarBadgeNumber(discussionEl, newBadgeNumber) {

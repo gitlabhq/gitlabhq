@@ -44,7 +44,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     otp_validation_result =
-      ::Users::ValidateOtpService.new(current_user).execute(params[:pin_code])
+      ::Users::ValidateManualOtpService.new(current_user).execute(params[:pin_code])
 
     if otp_validation_result[:status] == :success
       ActiveSession.destroy_all_but_current(current_user, session)

@@ -11,4 +11,4 @@ level: warning
 scope: raw
 ignorecase: true
 raw:
-  - '\w*\(s\)(?<!http\(s\))'
+  - '\b\w+\(s\)(?<!http\(s\))'

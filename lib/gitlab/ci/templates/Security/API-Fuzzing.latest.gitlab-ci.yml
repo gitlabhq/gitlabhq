@@ -26,9 +26,9 @@ variables:
     # (SAST, Dependency Scanning, ...)
     SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
     #
-    FUZZAPI_VERSION: "1"
+    FUZZAPI_VERSION: "2"
     FUZZAPI_IMAGE_SUFFIX: ""
-    FUZZAPI_IMAGE: api-fuzzing
+    FUZZAPI_IMAGE: api-security
 
 apifuzzer_fuzz:
     stage: fuzz

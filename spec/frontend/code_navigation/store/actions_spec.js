@@ -190,8 +190,8 @@ describe('Code navigation actions', () => {
 
     it('commits SET_CURRENT_DEFINITION with LSIF data', () => {
       target.classList.add('js-code-navigation');
-      target.dataset.lineIndex = '0';
-      target.dataset.charIndex = '0';
+      target.setAttribute('data-line-index', '0');
+      target.setAttribute('data-char-index', '0');
 
       return testAction(
         actions.showDefinition,
@@ -213,8 +213,8 @@ describe('Code navigation actions', () => {
 
     it('adds hll class to target element', () => {
       target.classList.add('js-code-navigation');
-      target.dataset.lineIndex = '0';
-      target.dataset.charIndex = '0';
+      target.setAttribute('data-line-index', '0');
+      target.setAttribute('data-char-index', '0');
 
       return testAction(
         actions.showDefinition,
@@ -238,8 +238,8 @@ describe('Code navigation actions', () => {
 
     it('caches current target element', () => {
       target.classList.add('js-code-navigation');
-      target.dataset.lineIndex = '0';
-      target.dataset.charIndex = '0';
+      target.setAttribute('data-line-index', '0');
+      target.setAttribute('data-char-index', '0');
 
       return testAction(
         actions.showDefinition,

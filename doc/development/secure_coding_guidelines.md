@@ -660,7 +660,7 @@ cfg := &tls.Config{
 }
 ```
 
-For **Ruby**, you can use [HTTParty](https://github.com/jnunemaker/httparty) and specify TLS 1.3 version as well as ciphers:
+For **Ruby**, you can use [`HTTParty`](https://github.com/jnunemaker/httparty) and specify TLS 1.3 version as well as ciphers:
 
 Whenever possible this example should be **avoided** for security purposes:
 
@@ -705,7 +705,7 @@ tls.Config{
 
 This example was taken [here](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
 
-For **Ruby**, you can use again [HTTParty](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
+For **Ruby**, you can use again [`HTTParty`](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
 
 ```ruby
 response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_2, ciphers: ['ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-ECDSA-CHACHA20-POLY1305', 'ECDHE-RSA-CHACHA20-POLY1305'])
@@ -873,7 +873,7 @@ If a vulnerable application extracts an archive file with any of these file name
 
 #### Ruby
 
-For zip files, the [rubyzip](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against the Zip Slip vulnerability and will refuse to extract files that try to perform directory traversal, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
+For zip files, the [`rubyzip`](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against the Zip Slip vulnerability and will refuse to extract files that try to perform directory traversal, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
 
 ```ruby
 # Vulnerable tar.gz extraction example!
@@ -1072,7 +1072,7 @@ Symlink attacks makes it possible for an attacker to read the contents of arbitr
 
 #### Ruby
 
-For zip files, the [rubyzip](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against symlink attacks as it simply ignores symbolic links, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
+For zip files, the [`rubyzip`](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against symlink attacks as it simply ignores symbolic links, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
 
 ```ruby
 # Vulnerable tar.gz extraction example!

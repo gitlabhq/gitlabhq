@@ -83,4 +83,4 @@ You can check documentation for your specific OS to learn how to find and displa
 hidden files.
 
 If there is no `.gitmodules` file, it's possible the submodule settings are in a
-[gitconfig](https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config) file.
+[`git config`](https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config) file.

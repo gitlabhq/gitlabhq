@@ -6,7 +6,7 @@ import { createMockDirective } from 'helpers/vue_mock_directive';
 import PipelineEditorFileTreeContainer from '~/pipeline_editor/components/file_tree/container.vue';
 import PipelineEditorFileTreeItem from '~/pipeline_editor/components/file_tree/file_item.vue';
 import { FILE_TREE_TIP_DISMISSED_KEY } from '~/pipeline_editor/constants';
-import { mockCiConfigPath, mockIncludes } from '../../mock_data';
+import { mockCiConfigPath, mockIncludes, mockIncludesHelpPagePath } from '../../mock_data';
 
 describe('Pipeline editor file nav', () => {
   let wrapper;
@@ -16,6 +16,7 @@ describe('Pipeline editor file nav', () => {
       shallowMount(PipelineEditorFileTreeContainer, {
         provide: {
           ciConfigPath: mockCiConfigPath,
+          includesHelpPagePath: mockIncludesHelpPagePath,
         },
         propsData: {
           includes,
@@ -62,6 +63,10 @@ describe('Pipeline editor file nav', () => {
 
       it('renders alert tip', async () => {
         expect(findTip().exists()).toBe(true);
+      });
+
+      it('renders learn more link', async () => {
+        expect(findTip().props('secondaryButtonLink')).toBe(mockIncludesHelpPagePath);
       });
 
       it('can dismiss the tip', async () => {

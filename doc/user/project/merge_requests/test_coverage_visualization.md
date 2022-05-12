@@ -270,7 +270,7 @@ to collect test coverage data and generate the report.
 
 With a minimal [`phpunit.xml`](https://phpunit.readthedocs.io/en/9.5/configuration.html) file (you may reference
 [this example repository](https://gitlab.com/yookoala/code-coverage-visualization-with-php/)), you can run the test and
-generate the coverage xml:
+generate the `coverage.xml`:
 
 ```yaml
 run tests:

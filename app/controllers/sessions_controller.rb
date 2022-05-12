@@ -271,7 +271,7 @@ class SessionsController < Devise::SessionsController
 
   def valid_otp_attempt?(user)
     otp_validation_result =
-      ::Users::ValidateOtpService.new(user).execute(user_params[:otp_attempt])
+      ::Users::ValidateManualOtpService.new(user).execute(user_params[:otp_attempt])
     return true if otp_validation_result[:status] == :success
 
     user.invalidate_otp_backup_code!(user_params[:otp_attempt])

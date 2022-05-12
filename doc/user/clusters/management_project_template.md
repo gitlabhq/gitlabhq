@@ -78,7 +78,7 @@ This image contains a set of Bash utility scripts to support [Helm v3 releases](
 The template contains a [Helmfile](https://github.com/roboll/helmfile) you can use to manage
 cluster applications with [Helm v3](https://helm.sh/).
 
-This file has a list of paths to other Helmfiles for each app. They're all commented out by default, so you must uncomment
+This file has a list of paths to other Helm files for each app. They're all commented out by default, so you must uncomment
 the paths for the apps that you would like to use in your cluster.
 
 By default, each `helmfile.yaml` in these sub-paths has the attribute `installed: true`. This means that every time

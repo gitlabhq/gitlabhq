@@ -39,7 +39,7 @@ describe('access tokens', () => {
 
         const input = document.createElement('input');
         input.setAttribute('name', nameAttribute);
-        input.dataset.jsName = fieldName;
+        input.setAttribute('data-js-name', fieldName);
         input.setAttribute('id', idAttribute);
         input.setAttribute('placeholder', 'Foo bar');
         input.setAttribute('value', '1,2');

@@ -1,7 +1,7 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 # This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dast-API.gitlab-ci.yml
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dast-API.latest.gitlab-ci.yml
 
 # To use this template, add the following to your .gitlab-ci.yml file:
 #
@@ -26,9 +26,9 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
   #
-  DAST_API_VERSION: "1"
+  DAST_API_VERSION: "2"
   DAST_API_IMAGE_SUFFIX: ""
-  DAST_API_IMAGE: api-fuzzing
+  DAST_API_IMAGE: api-security
 
 dast_api:
   stage: dast

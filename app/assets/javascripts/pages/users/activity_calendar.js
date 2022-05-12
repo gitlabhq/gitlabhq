@@ -298,7 +298,7 @@ export default class ActivityCalendar {
             .querySelector(this.activitiesContainer)
             .querySelectorAll('.js-localtime')
             .forEach((el) => {
-              el.setAttribute('title', formatDate(el.dataset.datetime));
+              el.setAttribute('title', formatDate(el.getAttribute('data-datetime')));
             });
         })
         .catch(() =>

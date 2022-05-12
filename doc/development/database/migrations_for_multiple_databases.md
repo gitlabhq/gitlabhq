@@ -43,7 +43,7 @@ The DDL migrations are all migrations that:
 1. Add or remove a column with or without a default value (for example, `add_column`).
 1. Create or drop trigger functions (for example, `create_trigger_function`).
 1. Attach or detach triggers from tables (for example, `track_record_deletions`, `untrack_record_deletions`).
-1. Prepare or not async indexes (for example, `prepare_async_index`, `unprepare_async_index_by_name`).
+1. Prepare or not asynchronous indexes (for example, `prepare_async_index`, `unprepare_async_index_by_name`).
 
 As such DDL migrations **CANNOT**:
 
@@ -159,7 +159,7 @@ end
 
 ### The special purpose of `gitlab_shared`
 
-As described in [gitlab_schema](multiple_databases.md#the-special-purpose-of-gitlab_shared),
+As described in [`gitlab_schema`](multiple_databases.md#the-special-purpose-of-gitlab_shared),
 the `gitlab_shared` tables are allowed to contain data across all databases. This implies
 that such migrations should run across all databases to modify structure (DDL) or modify data (DML).
 

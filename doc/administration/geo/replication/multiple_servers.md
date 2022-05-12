@@ -119,7 +119,7 @@ NOTE:
 [NFS](../../nfs.md) can be used in place of Gitaly but is not
 recommended.
 
-### Step 2: Configure Postgres streaming replication
+### Step 2: Configure PostgreSQL streaming replication
 
 Follow the [Geo database replication instructions](../setup/database.md).
 
@@ -261,7 +261,7 @@ nodes connect to the databases.
 NOTE:
 Make sure that current node's IP is listed in
 `postgresql['md5_auth_cidr_addresses']` setting of the read-replica database to
-allow Rails on this node to connect to Postgres.
+allow Rails on this node to connect to PostgreSQL.
 
 After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 

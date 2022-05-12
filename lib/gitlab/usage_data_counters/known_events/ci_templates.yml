@@ -147,10 +147,6 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-- name: p_ci_templates_security_cluster_image_scanning
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
 - name: p_ci_templates_qualys_iac_security
   category: ci_templates
   redis_slot: ci_templates
@@ -628,10 +624,6 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_sast_iac_latest
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-- name: p_ci_templates_implicit_security_cluster_image_scanning
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly

@@ -24,7 +24,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['ciConfigPath'],
+  inject: ['ciConfigPath', 'includesHelpPagePath'],
   props: {
     includes: {
       type: Array,
@@ -61,7 +61,14 @@ export default {
         <span data-testid="current-config-filename">{{ ciConfigPath }}</span>
       </span>
     </div>
-    <gl-alert v-if="showTip" variant="tip" :title="$options.i18n.tipTitle" @dismiss="dismissTip">
+    <gl-alert
+      v-if="showTip"
+      variant="tip"
+      :title="$options.i18n.tipTitle"
+      :secondary-button-text="$options.i18n.tipBtn"
+      :secondary-button-link="includesHelpPagePath"
+      @dismiss="dismissTip"
+    >
       {{ $options.i18n.tipDescription }}
     </gl-alert>
     <div class="gl-overflow-y-auto">

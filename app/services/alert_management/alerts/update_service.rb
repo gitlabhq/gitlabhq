@@ -162,8 +162,9 @@ module AlertManagement
       end
 
       def filter_duplicate
-        # Only need to check if changing to an open status
-        return unless params[:status_event] && AlertManagement::Alert.open_status?(status)
+        # Only need to check if changing to a not-resolved status
+        return if params[:status_event].blank? || params[:status_event] == :resolve
+        return unless alert.resolved?
 
         param_errors << unresolved_alert_error if duplicate_alert?
       end
@@ -171,24 +172,23 @@ module AlertManagement
       def duplicate_alert?
         return if alert.fingerprint.blank?
 
-        open_alerts.any? && open_alerts.exclude?(alert)
+        unresolved_alert.present?
       end
 
-      def open_alerts
-        strong_memoize(:open_alerts) do
-          AlertManagement::Alert.for_fingerprint(project, alert.fingerprint).open
+      def unresolved_alert
+        strong_memoize(:unresolved_alert) do
+          AlertManagement::Alert.find_unresolved_alert(project, alert.fingerprint)
         end
       end
 
       def unresolved_alert_error
         _('An %{link_start}alert%{link_end} with the same fingerprint is already open. ' \
           'To change the status of this alert, resolve the linked alert.'
-         ) % open_alert_url_params
+         ) % unresolved_alert_url_params
       end
 
-      def open_alert_url_params
-        open_alert = open_alerts.first
-        alert_path = Gitlab::Routing.url_helpers.details_project_alert_management_path(project, open_alert)
+      def unresolved_alert_url_params
+        alert_path = Gitlab::Routing.url_helpers.details_project_alert_management_path(project, unresolved_alert)
 
         {
           link_start: '<a href="%{url}">'.html_safe % { url: alert_path },

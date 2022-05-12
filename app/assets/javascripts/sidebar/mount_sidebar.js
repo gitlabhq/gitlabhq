@@ -119,7 +119,7 @@ function mountAssigneesComponentDeprecated(mediator) {
           issuableIid: String(iid),
           projectPath: fullPath,
           field: el.dataset.field,
-          signedIn: Object.hasOwn(el.dataset, 'signedIn'),
+          signedIn: el.hasAttribute('data-signed-in'),
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? IssuableType.Issue
@@ -149,7 +149,7 @@ function mountAssigneesComponent() {
     },
     provide: {
       canUpdate: editable,
-      directlyInviteMembers: Object.hasOwn(el.dataset, 'directlyInviteMembers'),
+      directlyInviteMembers: el.hasAttribute('data-directly-invite-members'),
     },
     render: (createElement) =>
       createElement('sidebar-assignees-widget', {

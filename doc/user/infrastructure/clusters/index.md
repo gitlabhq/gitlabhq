@@ -18,7 +18,7 @@ as well as its related [features](#deprecated-features).
 The certificate-based Kubernetes integration with GitLab is deprecated.
 It had the following issues:
 
-- There were security issues as it required direct access to the Kube API by GitLab.
+- There were security issues as it required direct access to the Kubernetes API by GitLab.
 - The configuration options weren't flexible.
 - The integration was flaky.
 - Users were constantly reporting issues with features based on this model.

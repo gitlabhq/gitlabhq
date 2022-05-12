@@ -505,7 +505,7 @@ end
 ### When to use the helper method
 
 You can **only** use the `with_lock_retries` helper method when the execution is not already inside
-an open transaction (using Postgres subtransactions is discouraged). It can be used with
+an open transaction (using PostgreSQL subtransactions is discouraged). It can be used with
 standard Rails migration helper methods. Calling more than one migration
 helper is not a problem if they're executed on the same table.
 

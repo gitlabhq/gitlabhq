@@ -548,7 +548,7 @@ Several passthrouh types generate a configuration for the target analyzer:
 
 - Two `git` passthrough sections pull the head of branch
   `refs/remotes/origin/test` from the `myrules` Git repository, and revision
-  `97f7686` from the `sast-rules` Git repostory. From the `sast-rules` Git
+  `97f7686` from the `sast-rules` Git repository. From the `sast-rules` Git
   repository, only data from the `go` subdirectory is considered.
   - The `sast-rules` entry has a higher precedence because it appears later in
     the configuration.

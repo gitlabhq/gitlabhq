@@ -2,20 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator do
+RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator::PushOtp do
   let_it_be(:user) { create(:user) }
-
-  let(:otp_code) { 42 }
 
   let(:host) { 'forti_authenticator.example.com' }
   let(:port) { '444' }
   let(:api_username) { 'janedoe' }
   let(:api_token) { 's3cr3t' }
 
-  let(:forti_authenticator_auth_url) { "https://#{host}:#{port}/api/v1/auth/" }
+  let(:forti_authenticator_auth_url) { "https://#{host}:#{port}/api/v1/pushauth/" }
   let(:response_status) { 200 }
 
-  subject(:validate) { described_class.new(user).validate(otp_code) }
+  subject(:validate) { described_class.new(user).validate }
 
   before do
     stub_feature_flags(forti_authenticator: user)
@@ -28,8 +26,7 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator do
       access_token: api_token
     )
 
-    request_body = { username: user.username,
-                     token_code: otp_code }
+    request_body = { username: user.username }
 
     stub_request(:post, forti_authenticator_auth_url)
       .with(body: JSON(request_body),

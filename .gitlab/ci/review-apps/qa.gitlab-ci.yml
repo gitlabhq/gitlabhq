@@ -28,7 +28,7 @@ include:
     - .qa-cache
     - .test_variables
     - .bundler_variables
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-bullseye-ruby-2.7-bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
   stage: qa
   needs:
     - review-deploy
@@ -50,7 +50,6 @@ include:
         --tag ~orchestrated \
         --tag ~transient \
         --tag ~skip_signup_disabled \
-        --tag ~requires_git_protocol_v2 \
         --force-color \
         --order random \
         --format documentation \

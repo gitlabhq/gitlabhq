@@ -9,7 +9,7 @@ export const toHaveSpriteIcon = (element, iconName) => {
 
   const iconReferences = [].slice.apply(element.querySelectorAll('svg use'));
   const matchingIcon = iconReferences.find(
-    (reference) => reference.parentNode.dataset.testid === `${iconName}-icon`,
+    (reference) => reference.parentNode.getAttribute('data-testid') === `${iconName}-icon`,
   );
 
   const pass = Boolean(matchingIcon);

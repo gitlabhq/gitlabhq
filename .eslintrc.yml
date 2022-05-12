@@ -108,8 +108,6 @@ rules:
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
   vue/multi-word-component-names: off
-  unicorn/prefer-dom-node-dataset:
-    - error
 overrides:
   - files:
     - '{,ee/,jh/}spec/frontend*/**/*'

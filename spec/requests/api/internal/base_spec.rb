@@ -1466,6 +1466,89 @@ RSpec.describe API::Internal::Base do
       subject
 
       expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq 'Feature is not available'
+    end
+  end
+
+  describe 'POST /internal/two_factor_manual_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    subject do
+      post api('/internal/two_factor_manual_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it 'is not available' do
+      subject
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq 'Feature is not available'
+    end
+  end
+
+  describe 'POST /internal/two_factor_push_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    subject do
+      post api('/internal/two_factor_push_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it 'is not available' do
+      subject
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq 'Feature is not available'
+    end
+  end
+
+  describe 'POST /internal/two_factor_manual_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    subject do
+      post api('/internal/two_factor_manual_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it 'is not available' do
+      subject
+
+      expect(json_response['success']).to be_falsey
+    end
+  end
+
+  describe 'POST /internal/two_factor_push_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    subject do
+      post api('/internal/two_factor_push_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it 'is not available' do
+      subject
+
+      expect(json_response['success']).to be_falsey
     end
   end
 

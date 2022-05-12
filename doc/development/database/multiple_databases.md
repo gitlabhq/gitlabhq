@@ -526,7 +526,7 @@ ci_build.update!(updated_at: Time.current) # CI DB
 ci_build.project.update!(updated_at: Time.current) # Main DB
 ```
 
-##### Async processing
+##### Asynchronous processing
 
 If we need more guarantee that an operation finishes the work consistently we can execute it
 within a background job. A background job is scheduled asynchronously and retried several times

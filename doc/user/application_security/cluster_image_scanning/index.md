@@ -28,10 +28,17 @@ To integrate GitLab with security scanners other than those listed here, see
 
 You can use cluster image scanning through the following methods:
 
-- [The cluster image scanning analyzer](#use-the-cluster-image-scanning-analyzer)
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
+- [The cluster image scanning analyzer](#use-the-cluster-image-scanning-analyzer-removed) ([Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in GitLab 15.0. Use [the GitLab agent](#cluster-image-scanning-with-the-gitlab-agent) instead.)
+<!--- end_remove -->
 - [The GitLab agent](#cluster-image-scanning-with-the-gitlab-agent)
 
-## Use the cluster image scanning analyzer
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
+
+## Use the cluster image scanning analyzer (removed)
+
+This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in GitLab 15.0.
+Use [the GitLab agent](#cluster-image-scanning-with-the-gitlab-agent) instead.
 
 You can use the cluster image scanning analyzer to run cluster image scanning with [GitLab CI/CD](../../../ci/index.md).
 To enable the cluster image scanning analyzer, [include the CI job](#configuration)
@@ -277,6 +284,7 @@ Here's an example cluster image scanning report:
 }
 ```
 
+<!--- end_remove -->
 ## Cluster image scanning with the GitLab agent
 
 You can use the [GitLab agent](../../clusters/agent/index.md) to
@@ -304,9 +312,12 @@ the security vulnerabilities in your groups, projects, and pipelines.
 After you find a vulnerability, you can address it in the [vulnerability report](../vulnerabilities/index.md)
 or the [GitLab agent's](../../clusters/agent/vulnerabilities.md)
 details section.
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
 
 ## Troubleshooting
 
 ### Getting warning message `gl-cluster-image-scanning-report.json: no matching files`
 
 For information on this error, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+
+<!--- end_remove -->

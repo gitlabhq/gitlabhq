@@ -8,7 +8,6 @@ module BulkImports
           import_entity = context.entity
 
           data
-            .then { |data| transform_name(import_entity, data) }
             .then { |data| transform_path(import_entity, data) }
             .then { |data| transform_full_path(data) }
             .then { |data| transform_parent(context, import_entity, data) }
@@ -18,11 +17,6 @@ module BulkImports
         end
 
         private
-
-        def transform_name(import_entity, data)
-          data['name'] = import_entity.destination_name
-          data
-        end
 
         def transform_path(import_entity, data)
           data['path'] = import_entity.destination_name.parameterize

@@ -107,10 +107,10 @@ function createLink(data, selected, options, index) {
   }
 
   if (options.trackSuggestionClickedLabel) {
-    link.dataset.trackAction = 'click_text';
-    link.dataset.trackLabel = options.trackSuggestionClickedLabel;
-    link.dataset.trackValue = index;
-    link.dataset.trackProperty = slugify(data.category || 'no-category');
+    link.setAttribute('data-track-action', 'click_text');
+    link.setAttribute('data-track-label', options.trackSuggestionClickedLabel);
+    link.setAttribute('data-track-value', index);
+    link.setAttribute('data-track-property', slugify(data.category || 'no-category'));
   }
 
   link.classList.toggle('is-active', selected);

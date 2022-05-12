@@ -24,7 +24,7 @@ describe('initMembersApp', () => {
 
   beforeEach(() => {
     el = document.createElement('div');
-    el.dataset.membersData = dataAttribute;
+    el.setAttribute('data-members-data', dataAttribute);
 
     window.gon = { current_user_id: 123 };
   });

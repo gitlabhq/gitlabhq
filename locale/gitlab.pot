@@ -16189,6 +16189,9 @@ msgstr ""
 msgid "From June 22, 2022 (GitLab 15.1), free personal namespaces and top-level groups will be limited to %{free_limit} members"
 msgstr ""
 
+msgid "From June 22, 2022 (GitLab 15.1), you can have a maximum of %{free_limit} unique members across all of your personal projects"
+msgstr ""
+
 msgid "From issue creation until deploy to production"
 msgstr ""
 
@@ -41389,6 +41392,9 @@ msgstr ""
 msgid "View all issues"
 msgstr ""
 
+msgid "View all personal projects"
+msgstr ""
+
 msgid "View blame"
 msgstr ""
 
@@ -43065,6 +43071,9 @@ msgid "You can’t edit files directly in this project. Fork this project and su
 msgstr ""
 
 msgid "You could not create a new trigger."
+msgstr ""
+
+msgid "You currently have more than %{free_limit} members across all your personal projects. From June 22, 2022, the %{free_limit} most recently active members will remain active, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access. To view and manage members, check the members page for each project in your namespace. We recommend you %{move_link_start}move your project to a group%{move_link_end} so you can easily manage users and features."
 msgstr ""
 
 msgid "You do not have any Google Cloud projects. Please create a Google Cloud project and then reload this page."
@@ -45289,7 +45298,7 @@ msgstr ""
 msgid "pipelineEditorWalkthrough|Use the %{boldStart}commit changes%{boldEnd} button at the bottom of the page to run the pipeline."
 msgstr ""
 
-msgid "pipelineEditorWalkthrough|You can use the file tree to view your pipeline configuration files."
+msgid "pipelineEditorWalkthrough|You can use the file tree to view your pipeline configuration files. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "pod_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"

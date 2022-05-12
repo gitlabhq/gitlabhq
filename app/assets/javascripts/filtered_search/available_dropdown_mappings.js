@@ -197,10 +197,10 @@ export default class AvailableDropdownMappings {
   }
 
   getGroupId() {
-    return this.filteredSearchInput.dataset.groupId || '';
+    return this.filteredSearchInput.getAttribute('data-group-id') || '';
   }
 
   getProjectId() {
-    return this.filteredSearchInput.dataset.projectId || '';
+    return this.filteredSearchInput.getAttribute('data-project-id') || '';
   }
 }

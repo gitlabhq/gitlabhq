@@ -256,7 +256,7 @@ describe('Members Utils', () => {
 
     beforeEach(() => {
       el = document.createElement('div');
-      el.dataset.membersData = dataAttribute;
+      el.setAttribute('data-members-data', dataAttribute);
     });
 
     afterEach(() => {

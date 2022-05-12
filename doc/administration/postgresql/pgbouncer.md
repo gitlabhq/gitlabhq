@@ -219,12 +219,12 @@ the database. Each of the listed services below use the following formula to def
 
 - `puma` : `max_threads + headroom` (default `14`)
   - `max_threads` is configured via: `gitlab['puma']['max_threads']` (default: `4`)
-  - `headroom` can be configured via `DB_POOL_HEADROOM` env variable (default to `10`)
+  - `headroom` can be configured via `DB_POOL_HEADROOM` environment variable (default to `10`)
 - `sidekiq` : `max_concurrency + 1 + headroom` (default: `61`)
   - `max_concurrency` is configured via: `sidekiq['max_concurrency']` (default: `50`)
-  - `headroom` can be configured via `DB_POOL_HEADROOM` env variable (default to `10`)
+  - `headroom` can be configured via `DB_POOL_HEADROOM` environment variable (default to `10`)
 - `geo-logcursor`: `1+headroom` (default: `11`)
-  - `headroom` can be configured via `DB_POOL_HEADROOM` env variable (default to `10`)
+  - `headroom` can be configured via `DB_POOL_HEADROOM` environment variable (default to `10`)
 
 To calculate the `default_pool_size`, multiply the number of instances of `puma`, `sidekiq` and `geo-logcursor` by the
 number of connections each can consume as per listed above. The total will be the suggested `default_pool_size`.

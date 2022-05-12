@@ -27,7 +27,7 @@ describe('LazyLoader', () => {
   const createLazyLoadImage = () => {
     const newImg = document.createElement('img');
     newImg.className = 'lazy';
-    newImg.dataset.src = TEST_PATH;
+    newImg.setAttribute('data-src', TEST_PATH);
 
     document.body.appendChild(newImg);
     triggerChildMutation();
@@ -108,7 +108,7 @@ describe('LazyLoader', () => {
 
         expect(LazyLoader.loadImage).toHaveBeenCalledWith(img);
         expect(img.getAttribute('src')).toBe(TEST_PATH);
-        expect(img.dataset.src).toBeUndefined();
+        expect(img.getAttribute('data-src')).toBe(null);
         expect(img).toHaveClass('js-lazy-loaded');
       });
 

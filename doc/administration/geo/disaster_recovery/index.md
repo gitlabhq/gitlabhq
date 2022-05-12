@@ -643,7 +643,7 @@ avoid a split-brain situation where writes can occur in two different GitLab
 instances, complicating recovery efforts. So to prepare for the failover, you
 must disable the **primary** site:
 
-- If you have access to the **primary** Kubernetes cluster, connect to it and disable the GitLab webservice and Sidekiq pods:
+- If you have access to the **primary** Kubernetes cluster, connect to it and disable the GitLab `webservice` and `Sidekiq` pods:
 
   ```shell
   kubectl --namespace gitlab scale deploy gitlab-geo-webservice-default --replicas=0

@@ -87,7 +87,6 @@ export default class DropdownUtils {
   }
 
   static setDataValueIfSelected(filter, operator, selected) {
-    // eslint-disable-next-line unicorn/prefer-dom-node-dataset
     const dataValue = selected.getAttribute('data-value');
 
     if (dataValue) {
@@ -97,7 +96,6 @@ export default class DropdownUtils {
         tokenValue: dataValue,
         clicked: true,
         options: {
-          // eslint-disable-next-line unicorn/prefer-dom-node-dataset
           capitalizeTokenValue: selected.hasAttribute('data-capitalize'),
         },
       });
