@@ -11,6 +11,9 @@ class GitalyTestSpawn
   def run
     install_gitaly_gems
 
+    # Run Praefect migrations
+    setup_praefect
+
     # Optionally specify the path to the gitaly config toml as first argument.
     # Used by workhorse in test.
     spawn_gitaly(ARGV[0])

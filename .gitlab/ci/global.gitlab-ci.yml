@@ -53,6 +53,7 @@
     - ${TMP_TEST_FOLDER}/gitaly/run2/
     - ${TMP_TEST_FOLDER}/gitaly/Makefile
     - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
+    - ${TMP_TEST_FOLDER}/gitaly/praefect-db.config.toml
     - ${TMP_TEST_FOLDER}/gitaly/ruby/
   policy: pull
 

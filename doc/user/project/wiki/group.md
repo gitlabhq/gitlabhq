@@ -69,17 +69,14 @@ can enable or disable a group wiki through the group settings.
 
 To open group settings:
 
-```markdown
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
-```
-
-In the wiki section, select one of these options:
-
-- Enabled: Everyone who can access the group can access the wiki.
-- Private: Only group members can access the wiki.
-- Disabled: The wiki isn't accessible, and cannot be downloaded.
+1. Scroll to **Wiki** and select one of these options:
+   - **Enabled**: Everyone who can access the group can access the wiki.
+   - **Private**: Only group members can access the wiki.
+   - **Disabled**: The wiki isn't accessible, and cannot be downloaded.
+1. Select **Save changes**.
 
 ## Related topics
 

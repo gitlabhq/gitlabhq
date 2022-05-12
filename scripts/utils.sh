@@ -61,9 +61,14 @@ function setup_db_user_only() {
   source scripts/create_postgres_user.sh
 }
 
+function setup_db_praefect() {
+  createdb -h postgres -U postgres --encoding=UTF8 --echo praefect_test
+}
+
 function setup_db() {
   run_timed_command "setup_db_user_only"
   run_timed_command_with_metric "bundle exec rake db:drop db:create db:structure:load db:migrate gitlab:db:setup_ee" "setup_db"
+  run_timed_command "setup_db_praefect"
 }
 
 function install_api_client_dependencies_with_apk() {

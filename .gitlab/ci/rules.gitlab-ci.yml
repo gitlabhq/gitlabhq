@@ -961,6 +961,11 @@
       changes: *db-patterns
     - <<: *if-default-branch-schedule-nightly
 
+.rails:rules:praefect-with-db:
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
+      allow_failure: true
+
 .rails:rules:ee-and-foss-migration:
   rules:
     - <<: *if-fork-merge-request

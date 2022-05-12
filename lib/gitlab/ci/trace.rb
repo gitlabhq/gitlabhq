@@ -219,9 +219,7 @@ module Gitlab
       end
 
       def archived?
-        # TODO check checksum to ensure archive completed successfully
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/259619
-        trace_artifact&.archived_trace_exists?
+        trace_artifact&.stored?
       end
 
       def destroy_any_orphan_trace_data!

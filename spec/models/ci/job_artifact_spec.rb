@@ -206,8 +206,8 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe '#archived_trace_exists?' do
-    subject { artifact.archived_trace_exists? }
+  describe '#stored?' do
+    subject { artifact.stored? }
 
     context 'when the file exists' do
       it { is_expected.to be_truthy }

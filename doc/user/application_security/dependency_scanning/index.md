@@ -17,9 +17,11 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
+## Dependency Scanning compared to Container Scanning
+
 GitLab offers both Dependency Scanning and Container Scanning
 to ensure coverage for all of these dependency types. To cover as much of your risk area as
-possible, we encourage you to use all of our security scanners:
+possible, we encourage you to use all of our security scanning tools:
 
 - Dependency Scanning analyzes your project and tells you which software dependencies,
   including upstream dependencies, have been included in your project, and what known
@@ -40,6 +42,21 @@ possible, we encourage you to use all of our security scanners:
   de-duplicate results between Container Scanning and Dependency Scanning. For more details,
   efforts to de-duplicate these findings can be tracked in
   [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348655).
+
+The following diagram summarizes which types of dependencies each scanning tool can detect:
+
+| Feature                                                     | Dependency Scanning | Container Scanning |
+| ----------------------------------------------------------- | ------------------- | ------------------ |
+| Identify the manifest, lock file, or static file that introduced the dependency              | :white_check_mark: | :x: |
+| Development dependencies                                                                     | :white_check_mark: | :x: |
+| Dependencies in a lock file committed to your repository                                     | :white_check_mark: | :white_check_mark: <sup>1</sup> |
+| Binaries built by Go                                                                         | :x: | :white_check_mark: <sup>2</sup> |
+| Dynamically-linked language-specific dependencies installed by the Operating System          | :x: | :white_check_mark: |
+| Operating system dependencies                                                                | :x: | :white_check_mark: |
+| Language-specific dependencies installed on the operating system (not built by your project) | :x: | :white_check_mark: |
+
+1. Lock file must be present in the image to be detected.
+1. Binary file must be present in the image to be detected.
 
 ## Overview
 

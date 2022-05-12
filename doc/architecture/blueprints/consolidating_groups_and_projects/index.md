@@ -105,7 +105,7 @@ essentially makes it available on all levels:
 - projects
 
 Various traversal queries are already available on `Namespaces` to query the
-group hierarchy. `Projects` represents the leaf nodes in the hierarchy, but with
+group hierarchy. `Projects` represent the leaf nodes in the hierarchy, but with
 the introduction of `ProjectNamespace`, these traversal queries can be used to
 retrieve projects as well.
 

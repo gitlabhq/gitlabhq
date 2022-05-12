@@ -132,13 +132,11 @@ Delete an event streaming destination by specifying an ID. Get the required ID b
 streaming destinations.
 
 ```graphql
-
-mutation{ 
+mutation { 
   externalAuditEventDestinationDestroy(input: { id: destination }) {
     errors
   }
 }
-
 ```
 
 Destination is deleted if:

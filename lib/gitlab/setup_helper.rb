@@ -149,28 +149,47 @@ module Gitlab
     module Praefect
       extend Gitlab::SetupHelper
       class << self
-        def configuration_toml(gitaly_dir, _, _)
+        def configuration_toml(gitaly_dir, _storage_paths, options)
+          raise 'This configuration is only intended for test' unless Rails.env.test?
+
           nodes = [{ storage: 'default', address: "unix:#{gitaly_dir}/gitaly.socket", primary: true, token: 'secret' }]
           second_storage_nodes = [{ storage: 'test_second_storage', address: "unix:#{gitaly_dir}/gitaly2.socket", primary: true, token: 'secret' }]
 
           storages = [{ name: 'default', node: nodes }, { name: 'test_second_storage', node: second_storage_nodes }]
-          failover = { enabled: false, election_strategy: 'local' }
+
           config = {
-            i_understand_my_election_strategy_is_unsupported_and_will_be_removed_without_warning: true,
             socket_path: "#{gitaly_dir}/praefect.socket",
-            memory_queue_enabled: true,
             virtual_storage: storages,
-            failover: failover
+            token: 'secret'
           }
-          config[:token] = 'secret' if Rails.env.test?
+
+          if options[:per_repository]
+            failover = { enabled: true, election_strategy: 'per_repository' }
+            database = { host: options.fetch(:pghost),
+                         port: options.fetch(:pgport).to_i,
+                         user: options.fetch(:pguser),
+                         dbname: options.fetch(:dbname, 'praefect_test') }
+
+            config.merge!(database: database,
+                          failover: failover)
+          else
+            failover = { enabled: false, election_strategy: 'local' }
+
+            config.merge!(
+              i_understand_my_election_strategy_is_unsupported_and_will_be_removed_without_warning: true,
+              memory_queue_enabled: true,
+              failover: failover
+            )
+          end
 
           TomlRB.dump(config)
         end
 
         private
 
-        def get_config_path(dir, _)
-          File.join(dir, 'praefect.config.toml')
+        def get_config_path(dir, options)
+          config_filename = options[:config_filename] || 'praefect.config.toml'
+          File.join(dir, config_filename)
         end
       end
     end

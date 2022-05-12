@@ -322,12 +322,12 @@ module Ci
         end
     end
 
-    def archived_trace_exists?
+    def stored?
       file&.file&.exists?
     end
 
     def self.archived_trace_exists_for?(job_id)
-      where(job_id: job_id).trace.take&.archived_trace_exists?
+      where(job_id: job_id).trace.take&.stored?
     end
 
     def self.max_artifact_size(type:, project:)

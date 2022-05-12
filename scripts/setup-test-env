@@ -53,6 +53,7 @@ require 'omniauth'
 require 'omniauth-github'
 require 'etc'
 require_dependency File.expand_path('../lib/gitlab/access', __dir__)
+require_dependency File.expand_path('../lib/gitlab/utils', __dir__)
 
 require_dependency File.expand_path('../config/initializers/1_settings', __dir__)
 

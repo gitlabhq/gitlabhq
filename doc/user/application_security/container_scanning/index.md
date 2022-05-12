@@ -225,8 +225,9 @@ container_scanning:
 When you enable this feature, you may see [duplicate findings](../terminology/#duplicate-finding)
 in the [Vulnerability Report](../vulnerability_report/)
 if [Dependency Scanning](../dependency_scanning/)
-is enabled for your project. This happens because GitLab can't automatically deduplicate the
-findings reported by the two different analyzers.
+is enabled for your project. This happens because GitLab can't automatically deduplicate findings
+across different types of scanning tools. Please reference [this comparison](../dependency_scanning/#dependency-scanning-compared-to-container-scanning)
+between GitLab Dependency Scanning and Container Scanning for more details on which types of dependencies are likely to be duplicated.
 
 #### Available CI/CD variables
 

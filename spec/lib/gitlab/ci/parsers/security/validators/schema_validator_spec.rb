@@ -413,7 +413,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
           let(:expected_errors) do
             [
-              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1"
+              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1, 14.1.2"
             ]
           end
 
@@ -429,7 +429,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
           let(:expected_errors) do
             [
-              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1",
+              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1, 14.1.2",
               "root is missing required keys: vulnerabilities"
             ]
           end
@@ -513,7 +513,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
       let(:report_version) { described_class::DEPRECATED_VERSIONS[report_type].last }
       let(:expected_deprecation_warnings) do
         [
-          "Version V2.7.0 for report type dast has been deprecated, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1"
+          "Version V2.7.0 for report type dast has been deprecated, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1, 14.1.2"
         ]
       end
 
@@ -721,7 +721,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
           let(:expected_warnings) do
             [
-              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1"
+              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1, 14.1.2"
             ]
           end
 
@@ -737,7 +737,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
           let(:expected_warnings) do
             [
-              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1",
+              "Version 12.37.0 for report type dast is unsupported, supported versions for this report type are: 14.0.0, 14.0.1, 14.0.2, 14.0.3, 14.0.4, 14.0.5, 14.0.6, 14.1.0, 14.1.1, 14.1.2",
               "root is missing required keys: vulnerabilities"
             ]
           end

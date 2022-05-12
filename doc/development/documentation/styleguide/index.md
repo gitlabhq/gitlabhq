@@ -1436,10 +1436,15 @@ functionality is described.
 | Only GitLab Premium SaaS and higher tiers (no self-managed instances)   | `**(PREMIUM SAAS)**`  |
 | Only GitLab Ultimate SaaS (no self-managed instances)                   | `**(ULTIMATE SAAS)**` |
 
-Topics that mention the `gitlab.rb` file are referring to
-self-managed instances of GitLab. To prevent confusion, include the relevant `TIER SELF`
-tier badge on the highest applicable heading level on
-the page.
+Topics that are only for instance administrators should be badged `<TIER> SELF`. Instance
+administrator documentation often includes sections that mention:
+
+- Changing the `gitlab.rb` or `gitlab.yml` files.
+- Accessing the rails console or running Rake tasks.
+- Doing things in the Admin Area.
+
+These pages should also mention if the tasks can only be accomplished by an
+instance administrator.
 
 ## Specific sections
 

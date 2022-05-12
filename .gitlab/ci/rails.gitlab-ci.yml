@@ -25,6 +25,10 @@
 .single-db-rspec:
   extends: .single-db
 
+.praefect-with-db:
+  variables:
+    GITALY_PRAEFECT_WITH_DB: '1'
+
 .rspec-base:
   extends:
     - .rails-job-base
@@ -192,6 +196,7 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/gitaly/run2/
       - ${TMP_TEST_FOLDER}/gitaly/Makefile
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
+      - ${TMP_TEST_FOLDER}/gitaly/praefect-db.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/ruby/
       - ${TMP_TEST_FOLDER}/gitlab-elasticsearch-indexer/bin/gitlab-elasticsearch-indexer
       - ${TMP_TEST_FOLDER}/gitlab-shell/
@@ -262,6 +267,12 @@ rspec migration pg12 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec migration pg12 praefect:
+  extends:
+    - rspec migration pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
+
 rspec unit pg12:
   extends:
     - .rspec-base-pg12
@@ -280,6 +291,12 @@ rspec unit pg12 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec unit pg12 praefect:
+  extends:
+    - rspec unit pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
+
 rspec integration pg12:
   extends:
     - .rspec-base-pg12
@@ -297,6 +314,12 @@ rspec integration pg12 single-db:
     - rspec integration pg12
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec integration pg12 praefect:
+  extends:
+    - rspec integration pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
 
 rspec system pg12:
   extends:
@@ -317,6 +340,12 @@ rspec system pg12 single-db:
     - rspec system pg12
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec system pg12 praefect:
+  extends:
+    - rspec system pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
 
 # Dedicated job to test DB library code against PG11.
 # Note that these are already tested against PG12 in the `rspec unit pg12` / `rspec-ee unit pg12` jobs.
