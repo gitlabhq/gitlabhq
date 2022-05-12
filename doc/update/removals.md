@@ -30,6 +30,21 @@ For removal reviewers (Technical Writers only):
 
 ## 15.0
 
+### API: `stale` status returned instead of `offline` or `not_connected`
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+A breaking change was made to the Runner [API](https://docs.gitlab.com/ee/api/runners.html#runners-api) endpoints
+in 15.0.
+
+Instead of the GitLab Runner API endpoints returning `offline` and `not_connected` for runners that have not
+contacted the GitLab instance in the past three months, the API endpoints now return the `stale` value,
+which was introduced in 14.6.
+
 ### Background upload for object storage
 
 WARNING:

@@ -42,7 +42,7 @@ A vulnerability's status can be one of the following:
 | Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise not to be resolved. |
 | Resolved  | The vulnerability has been fixed or is no longer present. |
 
-Dismissed vulnerabilities are ignored if detected in subsequent scans. Resolved vulnerabilities that are reintroduced and detected by subsequent scans have a _new_ vulnerability record created. When an existing vulnerability is no longer detected in a project's `default` branch, you should change its status to Resolved. This ensures that if it is accidentally reintroduced in a future merge, it will be visible again as a new record. You can use the [Activity filter](../vulnerability_report/#activity-filter) to select all vulnerabilities that are no longer detected, and [change their status](../vulnerability_report#change-status-of-multiple-vulnerabilities).
+Dismissed vulnerabilities are ignored if detected in subsequent scans. Resolved vulnerabilities that are reintroduced and detected by subsequent scans have a _new_ vulnerability record created. When an existing vulnerability is no longer detected in a project's `default` branch, you should change its status to Resolved. This ensures that if it is accidentally reintroduced in a future merge, it will be visible again as a new record. You can use the [Activity filter](../vulnerability_report/#activity-filter) to select all vulnerabilities that are no longer detected, and [change their status](../vulnerability_report#change-status-of-vulnerabilities).
 
 ## Change vulnerability status
 

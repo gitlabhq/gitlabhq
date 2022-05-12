@@ -410,6 +410,22 @@ RSpec.describe ProjectTeam do
     end
   end
 
+  describe '#purge_member_access_cache_for_user_id', :request_store do
+    let(:project) { create(:project) }
+    let(:user_id) { 1 }
+    let(:resource_data) { { user_id => 50, 42 => 50 } }
+
+    before do
+      Gitlab::SafeRequestStore[project.max_member_access_for_resource_key(User)] = resource_data
+    end
+
+    it 'removes cached max access for user from store' do
+      project.team.purge_member_access_cache_for_user_id(user_id)
+
+      expect(Gitlab::SafeRequestStore[project.max_member_access_for_resource_key(User)]).to eq({ 42 => 50 })
+    end
+  end
+
   describe '#member?' do
     let(:group) { create(:group) }
     let(:developer) { create(:user) }

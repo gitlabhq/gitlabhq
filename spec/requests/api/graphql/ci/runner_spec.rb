@@ -237,8 +237,8 @@ RSpec.describe 'Query.runner(id)' do
 
       stale_runner_data = graphql_data_at(:stale_runner)
       expect(stale_runner_data).to match a_hash_including(
-        'status' => 'NEVER_CONTACTED',
-        'legacyStatusWithExplicitVersion' => 'NEVER_CONTACTED',
+        'status' => 'STALE',
+        'legacyStatusWithExplicitVersion' => 'STALE',
         'newStatus' => 'STALE'
       )
 

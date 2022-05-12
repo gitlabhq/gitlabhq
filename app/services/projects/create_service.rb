@@ -161,6 +161,13 @@ module Projects
         )
       else
         @project.add_owner(@project.namespace.owner, current_user: current_user)
+        # During the process of adding a project owner, a check on permissions is made on the user which caches
+        # the max member access for that user on this project.
+        # Since that is `0` before the member is created - and we are still inside the request
+        # cycle when we need to do other operations that might check those permissions (e.g. write a commit)
+        # we need to purge that cache so that the updated permissions is fetched instead of using the outdated cached value of 0
+        # from before member creation
+        @project.team.purge_member_access_cache_for_user_id(@project.namespace.owner.id)
       end
     end
 

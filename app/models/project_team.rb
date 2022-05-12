@@ -193,6 +193,10 @@ class ProjectTeam
     project.merge_value_to_request_store(User, user_id, project_access_level)
   end
 
+  def purge_member_access_cache_for_user_id(user_id)
+    project.purge_resource_id_from_request_store(User, user_id)
+  end
+
   def max_member_access(user_id)
     max_member_access_for_user_ids([user_id])[user_id]
   end

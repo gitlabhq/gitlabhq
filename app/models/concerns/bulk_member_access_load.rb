@@ -12,6 +12,11 @@ module BulkMemberAccessLoad
       end
     end
 
+    def purge_resource_id_from_request_store(resource_klass, resource_id)
+      Gitlab::SafeRequestPurger.execute(resource_key: max_member_access_for_resource_key(resource_klass),
+                                        resource_ids: [resource_id])
+    end
+
     def max_member_access_for_resource_key(klass)
       "max_member_access_for_#{klass.name.underscore.pluralize}:#{self.class}:#{self.id}"
     end

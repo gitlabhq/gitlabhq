@@ -1245,12 +1245,14 @@ workers from verifying the same replica concurrently. The worker releases the le
 Praefect contains a background goroutine that releases stale leases every 10 seconds when workers are terminated for
 some reason without releasing the lease.
 
-The worker logs each of the metadata removals prior to executing them. For example:
+The worker logs each of the metadata removals prior to executing them. The `perform_deletions` key
+indicates whether the invalid metadata records are actually deleted or not. For example:
 
 ```json
 {
   "level": "info",
   "msg": "removing metadata records of non-existent replicas",
+  "perform_deletions": false,
   "replicas": {
     "default": {
       "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b.git": [
@@ -1261,21 +1263,38 @@ The worker logs each of the metadata removals prior to executing them. For examp
 }
 ```
 
-### Enable verification worker
+### Configure the verification worker
 
-The worker is disabled by default. It can be enabled by configuring the verification interval. The interval
-accepts any valid [Go duration string](https://pkg.go.dev/time#ParseDuration).
+The worker is enabled by default and verifies the metadata records every seven days. The verification
+interval is configurable with any valid [Go duration string](https://pkg.go.dev/time#ParseDuration).
 
-To enable the worker and verify replicas every 7 days:
+To verify the metadata every three days:
 
 ```ruby
-praefect['background_verification_verification_interval'] = '168h'
+praefect['background_verification_verification_interval'] = '72h'
 ```
 
 Values of 0 and below disable the background verifier.
 
 ```ruby
 praefect['background_verification_verification_interval'] = '0'
+```
+
+#### Enable deletions
+
+WARNING:
+Deletions are disabled by default due to a race condition with repository renames that can cause incorrect
+deletions. This is especially prominent in Geo instances as Geo performs more renames than instances without Geo.
+See [Handle repository creations, deletions and renames atomically](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4101)
+for progress on a fix. We do not recommend enabling the deletions until this is fixed.
+
+By default, the worker does not delete invalid metadata records but simply logs them and outputs Prometheus
+metrics for them.
+
+You can enable deleting invalid metadata records with:
+
+```ruby
+praefect['background_verification_delete_invalid_records'] = true
 ```
 
 ### Prioritize verification manually

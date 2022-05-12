@@ -270,18 +270,16 @@ export default {
           </template>
         </gl-form-group>
 
-        <div class="gl-display-flex gl-justify-content-end">
-          <gl-button
-            variant="success"
-            class="gl-mt-5"
-            data-testid="save_service_desk_settings_button"
-            data-qa-selector="save_service_desk_settings_button"
-            :disabled="isTemplateSaving"
-            @click="onSaveTemplate"
-          >
-            {{ __('Save changes') }}
-          </gl-button>
-        </div>
+        <gl-button
+          variant="confirm"
+          class="gl-mt-5"
+          data-testid="save_service_desk_settings_button"
+          data-qa-selector="save_service_desk_settings_button"
+          :disabled="isTemplateSaving"
+          @click="onSaveTemplate"
+        >
+          {{ __('Save changes') }}
+        </gl-button>
       </div>
     </div>
   </div>

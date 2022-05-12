@@ -824,7 +824,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
     it 'saves the project when the user has access to the label' do
       expect(::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(user, 'new-label', any_args) { true }
+        .to receive(:access_allowed?).with(user, 'new-label', any_args) { true }.at_least(1).time
 
       project = create_project(user, opts.merge({ external_authorization_classification_label: 'new-label' }))
 

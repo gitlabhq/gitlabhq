@@ -838,7 +838,7 @@ RSpec.describe Ci::Runner do
       context 'with legacy_mode enabled' do
         let(:legacy_mode) { '14.5' }
 
-        it { is_expected.to eq(:never_contacted) }
+        it { is_expected.to eq(:stale) }
       end
 
       context 'with legacy_mode disabled' do
@@ -895,7 +895,7 @@ RSpec.describe Ci::Runner do
       context 'with legacy_mode enabled' do
         let(:legacy_mode) { '14.5' }
 
-        it { is_expected.to eq(:offline) }
+        it { is_expected.to eq(:stale) }
       end
 
       context 'with legacy_mode disabled' do
@@ -905,7 +905,7 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#deprecated_rest_status' do
-    let(:runner) { build(:ci_runner, :instance, contacted_at: 1.second.ago) }
+    let(:runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
 
     subject { runner.deprecated_rest_status }
 
@@ -927,10 +927,11 @@ RSpec.describe Ci::Runner do
 
     context 'contacted long time ago' do
       before do
+        runner.created_at = 1.year.ago
         runner.contacted_at = 1.year.ago
       end
 
-      it { is_expected.to eq(:offline) }
+      it { is_expected.to eq(:stale) }
     end
 
     context 'inactive' do

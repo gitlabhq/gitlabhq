@@ -165,8 +165,12 @@ describe('ServiceDeskSetting', () => {
   describe('save button', () => {
     it('renders a save button to save a template', () => {
       wrapper = createComponent();
+      const saveButton = findButton();
 
-      expect(findButton().text()).toContain('Save changes');
+      expect(saveButton.text()).toContain('Save changes');
+      expect(saveButton.props()).toMatchObject({
+        variant: 'confirm',
+      });
     });
 
     it('emits a save event with the chosen template when the save button is clicked', async () => {

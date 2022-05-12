@@ -1433,23 +1433,6 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 
 <div class="deprecation removal-150 breaking-change">
 
-### API: `stale` status returned instead of `offline` or `not_connected`
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-A breaking change will occur for the Runner [API](https://docs.gitlab.com/ee/api/runners.html#runners-api) endpoints in 15.0.
-
-Instead of the GitLab Runner API endpoints returning `offline` and `not_connected` for runners that have not contacted the GitLab instance in the past three months, the API endpoints will return the `stale` value, which was introduced in 14.6.
-
-**Planned removal milestone: <span class="removal-milestone">15.0</span> (2022-05-22)**
-</div>
-
-<div class="deprecation removal-150 breaking-change">
-
 ### CI/CD job name length limit
 
 WARNING:
