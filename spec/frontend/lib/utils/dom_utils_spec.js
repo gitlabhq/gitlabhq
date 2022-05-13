@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import {
   addClassIfElementExists,
   canScrollUp,
@@ -24,8 +25,12 @@ describe('DOM Utils', () => {
     let parentElement;
 
     beforeEach(() => {
-      setFixtures(fixture);
+      setHTMLFixture(fixture);
       parentElement = document.querySelector('.parent');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('adds class if element exists', () => {
@@ -127,8 +132,12 @@ describe('DOM Utils', () => {
     let element;
 
     beforeEach(() => {
-      setFixtures('<div data-foo-bar data-baz data-qux="">');
+      setHTMLFixture('<div data-foo-bar data-baz data-qux="">');
       element = document.querySelector('[data-foo-bar]');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('throws if not given an element', () => {

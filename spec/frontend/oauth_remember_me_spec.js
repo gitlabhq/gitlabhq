@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
@@ -7,9 +8,13 @@ describe('OAuthRememberMe', () => {
   };
 
   beforeEach(() => {
-    loadFixtures('static/oauth_remember_me.html');
+    loadHTMLFixture('static/oauth_remember_me.html');
 
     new OAuthRememberMe({ container: $('#oauth-container') }).bindEvents();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('adds the "remember_me" query parameter to all OAuth login buttons', () => {

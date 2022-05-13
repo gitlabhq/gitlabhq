@@ -1,10 +1,11 @@
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import renderMermaid from '~/behaviors/markdown/render_sandboxed_mermaid';
 
 describe('Render mermaid diagrams for Gitlab Flavoured Markdown', () => {
   it('Does something', () => {
     document.body.dataset.page = '';
-    setFixtures(`
+    setHTMLFixture(`
       <div class="gl-relative markdown-code-block js-markdown-code">
         <pre data-sourcepos="1:1-7:3" class="code highlight js-syntax-highlight language-mermaid white" lang="mermaid" id="code-4">
           <code class="js-render-mermaid">
@@ -27,5 +28,7 @@ describe('Render mermaid diagrams for Gitlab Flavoured Markdown', () => {
 
     jest.runAllTimers();
     expect(document.querySelector('pre.js-syntax-highlight').classList).toContain('gl-sr-only');
+
+    resetHTMLFixture();
   });
 });

@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import AccessDropdown from '~/projects/settings/access_dropdown';
 import { LEVEL_TYPES } from '~/projects/settings/constants';
 
@@ -7,7 +8,7 @@ describe('AccessDropdown', () => {
   let dropdown;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div id="dummy-dropdown">
         <span class="dropdown-toggle-text"></span>
       </div>
@@ -26,6 +27,10 @@ describe('AccessDropdown', () => {
       },
     };
     dropdown = new AccessDropdown(options);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('toggleLabel', () => {

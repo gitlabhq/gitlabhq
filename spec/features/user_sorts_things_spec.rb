@@ -6,7 +6,7 @@ require "spec_helper"
 # to check if the sorting option set by user is being kept persisted while going through pages.
 # The `it`s are named here by convention `starting point -> some pages -> final point`.
 # All those specs are moved out to this spec intentionally to keep them all in one place.
-RSpec.describe "User sorts things" do
+RSpec.describe "User sorts things", :js do
   include Spec::Support::Helpers::Features::SortingHelpers
   include DashboardHelper
 
@@ -22,12 +22,12 @@ RSpec.describe "User sorts things" do
     sign_in(current_user)
   end
 
-  it "issues -> project home page -> issues", :js do
-    sort_option = 'Updated date'
+  it "issues -> project home page -> issues" do
+    sort_option = s_('SortOptions|Updated date')
 
     visit(project_issues_path(project))
 
-    click_button 'Created date'
+    click_button s_('SortOptions|Created date')
     click_button sort_option
 
     visit(project_path(project))
@@ -37,11 +37,11 @@ RSpec.describe "User sorts things" do
   end
 
   it "merge requests -> dashboard merge requests" do
-    sort_option = 'Updated date'
+    sort_option = s_('SortOptions|Updated date')
 
     visit(project_merge_requests_path(project))
 
-    sort_by(sort_option)
+    pajamas_sort_by(sort_option)
 
     visit(assigned_mrs_dashboard_path)
 

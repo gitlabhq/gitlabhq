@@ -781,6 +781,9 @@ msgstr ""
 msgid "%{message} showing first %{warnings_displayed}"
 msgstr ""
 
+msgid "%{message}. Your attention request was removed."
+msgstr ""
+
 msgid "%{milestone} (expired)"
 msgstr ""
 
@@ -4729,6 +4732,9 @@ msgstr ""
 msgid "Approved-By"
 msgstr ""
 
+msgid "Approved. Your attention request was removed."
+msgstr ""
+
 msgid "Approver"
 msgstr ""
 
@@ -5056,6 +5062,9 @@ msgid "Assigned to me"
 msgstr ""
 
 msgid "Assigned to you"
+msgstr ""
+
+msgid "Assigned user(s). Your attention request was removed."
 msgstr ""
 
 msgid "Assignee"
@@ -5636,6 +5645,78 @@ msgid "Based on"
 msgstr ""
 
 msgid "Batch size"
+msgstr ""
+
+msgid "Batched Job|Background Migrations"
+msgstr ""
+
+msgid "Batched Job|Batched Job (Id: %{id})"
+msgstr ""
+
+msgid "BatchedJob|Attempts"
+msgstr ""
+
+msgid "BatchedJob|Batch size"
+msgstr ""
+
+msgid "BatchedJob|Batched Jobs"
+msgstr ""
+
+msgid "BatchedJob|Created At"
+msgstr ""
+
+msgid "BatchedJob|Created at"
+msgstr ""
+
+msgid "BatchedJob|Exception Class"
+msgstr ""
+
+msgid "BatchedJob|Exception Message"
+msgstr ""
+
+msgid "BatchedJob|Exception class"
+msgstr ""
+
+msgid "BatchedJob|Exception message"
+msgstr ""
+
+msgid "BatchedJob|Finished at"
+msgstr ""
+
+msgid "BatchedJob|Max Value"
+msgstr ""
+
+msgid "BatchedJob|Max value"
+msgstr ""
+
+msgid "BatchedJob|Min Value"
+msgstr ""
+
+msgid "BatchedJob|Min value"
+msgstr ""
+
+msgid "BatchedJob|Next Status"
+msgstr ""
+
+msgid "BatchedJob|Next status"
+msgstr ""
+
+msgid "BatchedJob|Pause ms"
+msgstr ""
+
+msgid "BatchedJob|Pause time (ms)"
+msgstr ""
+
+msgid "BatchedJob|Previous Status"
+msgstr ""
+
+msgid "BatchedJob|Previous status"
+msgstr ""
+
+msgid "BatchedJob|Started at"
+msgstr ""
+
+msgid "BatchedJob|Transition logs:"
 msgstr ""
 
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
@@ -21891,6 +21972,9 @@ msgstr ""
 msgid "Jump to next unresolved thread"
 msgstr ""
 
+msgid "Jump to previous unresolved thread"
+msgstr ""
+
 msgid "Jun"
 msgstr ""
 
@@ -31947,10 +32031,16 @@ msgstr ""
 msgid "Requested attention from @%{username}"
 msgstr ""
 
+msgid "Requested attention from @%{username}. Your own attention request was removed."
+msgstr ""
+
 msgid "Requested design version does not exist."
 msgstr ""
 
 msgid "Requested review"
+msgstr ""
+
+msgid "Requested review. Your attention request was removed."
 msgstr ""
 
 msgid "Requested states are invalid"
@@ -40456,6 +40546,9 @@ msgstr ""
 msgid "UsageQuota|Buy additional minutes"
 msgstr ""
 
+msgid "UsageQuota|Buy storage"
+msgstr ""
+
 msgid "UsageQuota|CI minutes usage by month"
 msgstr ""
 
@@ -40501,7 +40594,13 @@ msgstr ""
 msgid "UsageQuota|Learn more about usage quotas"
 msgstr ""
 
+msgid "UsageQuota|Learn more about usage quotas."
+msgstr ""
+
 msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
+msgid "UsageQuota|Namespace storage used"
 msgstr ""
 
 msgid "UsageQuota|No CI minutes usage data available."
@@ -40522,7 +40621,13 @@ msgstr ""
 msgid "UsageQuota|Purchase more storage"
 msgstr ""
 
+msgid "UsageQuota|Purchased storage"
+msgstr ""
+
 msgid "UsageQuota|Purchased storage available"
+msgstr ""
+
+msgid "UsageQuota|Purchased storage used"
 msgstr ""
 
 msgid "UsageQuota|Repository"

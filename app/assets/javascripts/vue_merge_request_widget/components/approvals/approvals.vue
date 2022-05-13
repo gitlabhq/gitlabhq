@@ -2,8 +2,11 @@
 import { GlButton } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
-import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { s__, __ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
+import showToast from '~/vue_shared/plugins/global_toast';
+import SidebarMediator from '~/sidebar/sidebar_mediator';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
 import MrWidgetContainer from '../mr_widget_container.vue';
@@ -21,7 +24,7 @@ export default {
     ApprovalsSummaryOptional,
     GlButton,
   },
-  mixins: [approvalsMixin],
+  mixins: [approvalsMixin, glFeatureFlagsMixin()],
   props: {
     mr: {
       type: Object,
@@ -171,6 +174,14 @@ export default {
       return serviceFn()
         .then((data) => {
           this.mr.setApprovals(data);
+
+          if (
+            this.glFeatures.mrAttentionRequests &&
+            SidebarMediator.singleton?.store.currentUserHasAttention
+          ) {
+            showToast(__('Approved. Your attention request was removed.'));
+          }
+
           eventHub.$emit('MRWidgetUpdateRequested');
           eventHub.$emit('ApprovalUpdated');
           sidebarEventHub.$emit('removeCurrentUserAttentionRequested');

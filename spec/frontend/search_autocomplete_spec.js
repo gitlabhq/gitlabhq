@@ -1,5 +1,6 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import axios from '~/lib/utils/axios_utils';
 import initSearchAutocomplete from '~/search_autocomplete';
@@ -104,7 +105,7 @@ describe('Search autocomplete dropdown', () => {
   };
 
   beforeEach(() => {
-    loadFixtures('static/search_autocomplete.html');
+    loadHTMLFixture('static/search_autocomplete.html');
 
     window.gon = {};
     window.gon.current_user_id = userId;
@@ -118,6 +119,8 @@ describe('Search autocomplete dropdown', () => {
     // Undo what we did to the shared <body>
     removeBodyAttributes();
     window.gon = {};
+
+    resetHTMLFixture();
   });
 
   it('should show Dashboard specific dropdown menu', () => {

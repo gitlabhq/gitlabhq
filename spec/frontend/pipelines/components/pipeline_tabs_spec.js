@@ -33,9 +33,7 @@ describe('The Pipeline Tabs', () => {
           ...defaultProvide,
         },
         stubs: {
-          Dag: { template: '<div id="dag"/>' },
           JobsApp: { template: '<div class="jobs" />' },
-          PipelineGraph: { template: '<div id="graph" />' },
           TestReports: { template: '<div id="tests" />' },
         },
       }),

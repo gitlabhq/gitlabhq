@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { Range, Position } from 'monaco-editor';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
 import SourceEditor from '~/editor/source_editor';
 import axios from '~/lib/utils/axios_utils';
@@ -27,7 +28,7 @@ describe('Markdown Extension for Source Editor', () => {
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    setFixtures('<div id="editor" data-editor-loading></div>');
+    setHTMLFixture('<div id="editor" data-editor-loading></div>');
     editorEl = document.getElementById('editor');
     editor = new SourceEditor();
     instance = editor.createInstance({
@@ -42,6 +43,8 @@ describe('Markdown Extension for Source Editor', () => {
     instance.dispose();
     editorEl.remove();
     mockAxios.restore();
+
+    resetHTMLFixture();
   });
 
   describe('getSelectedText', () => {

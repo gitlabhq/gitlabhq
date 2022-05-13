@@ -294,8 +294,7 @@ $tabs-holder-z-index: 250;
   justify-content: space-between;
 
   @include media-breakpoint-down(xs) {
-    .discussion-filter-container,
-    .line-resolve-all-container {
+    .discussion-filter-container {
       margin-bottom: $gl-padding-4;
     }
   }

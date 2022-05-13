@@ -5,12 +5,14 @@ require 'spec_helper'
 RSpec.describe 'Merge requests > User mass updates', :js do
   let(:project) { create(:project, :repository) }
   let(:user)    { project.creator }
+  let(:user2) { create(:user) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
   before do
     stub_feature_flags(mr_attention_requests: false)
 
     project.add_maintainer(user)
+    project.add_maintainer(user2)
     sign_in(user)
   end
 
@@ -68,9 +70,9 @@ RSpec.describe 'Merge requests > User mass updates', :js do
         end
 
         it 'updates merge request with assignee' do
-          change_assignee(user.name)
+          change_assignee(user2.name)
 
-          expect(find('.issuable-meta a.author-link')[:title]).to eq "Attention requested from assignee #{user.name}"
+          expect(find('.issuable-meta a.author-link')[:title]).to eq "Attention requested from assignee #{user2.name}"
         end
       end
     end

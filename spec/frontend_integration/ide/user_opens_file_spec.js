@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/dom';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import * as ideHelper from './helpers/ide_helper';
 import startWebIDE from './helpers/start';
@@ -10,7 +11,7 @@ describe('IDE: User opens a file in the Web IDE', () => {
   let container;
 
   beforeEach(async () => {
-    setFixtures('<div class="webide-container"></div>');
+    setHTMLFixture('<div class="webide-container"></div>');
     container = document.querySelector('.webide-container');
 
     vm = startWebIDE(container);
@@ -21,6 +22,7 @@ describe('IDE: User opens a file in the Web IDE', () => {
   afterEach(() => {
     vm.$destroy();
     vm = null;
+    resetHTMLFixture();
   });
 
   describe('user opens a directory', () => {

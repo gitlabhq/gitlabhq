@@ -157,7 +157,7 @@ export const contentTop = () => {
     () => getOuterHeight('#js-peek'),
     () => getOuterHeight('.navbar-gitlab'),
     ({ desktop }) => {
-      const container = document.querySelector('.line-resolve-all-container');
+      const container = document.querySelector('.discussions-counter');
       let size = 0;
 
       if (!desktop && container) {

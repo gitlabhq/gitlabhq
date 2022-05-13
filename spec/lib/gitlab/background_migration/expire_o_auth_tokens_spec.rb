@@ -16,7 +16,7 @@ RSpec.describe Gitlab::BackgroundMigration::ExpireOAuthTokens, :migration, schem
                         sub_batch_size: 2,
                         pause_ms: 0,
                         connection: ActiveRecord::Base.connection)
-                   .perform(1000)
+                   .perform
   end
 
   before do

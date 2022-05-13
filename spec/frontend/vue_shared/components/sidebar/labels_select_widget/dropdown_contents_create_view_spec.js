@@ -153,7 +153,11 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('enables a Create button', () => {
-      expect(findCreateButton().props('disabled')).toBe(false);
+      expect(findCreateButton().props()).toMatchObject({
+        disabled: false,
+        category: 'primary',
+        variant: 'confirm',
+      });
     });
 
     it('renders a loader spinner after Create button click', async () => {

@@ -10,6 +10,8 @@ module Projects
     feature_category :logging
 
     def index
+      return render_404 unless Feature.enabled?(:monitor_logging, project)
+
       if environment || cluster
         render :index
       else

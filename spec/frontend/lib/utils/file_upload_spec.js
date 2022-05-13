@@ -1,14 +1,19 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import fileUpload, { getFilename, validateImageName } from '~/lib/utils/file_upload';
 
 describe('File upload', () => {
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <form>
         <button class="js-button" type="button">Click me!</button>
         <input type="text" class="js-input" />
         <span class="js-filename"></span>
       </form>
     `);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('when there is a matching button and input', () => {

@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import TimezoneDropdown, {
   formatUtcOffset,
   formatTimezone,
@@ -25,11 +26,15 @@ describe('Timezone Dropdown', () => {
   describe('Initialize', () => {
     describe('with dropdown already loaded', () => {
       beforeEach(() => {
-        loadFixtures('pipeline_schedules/edit.html');
+        loadHTMLFixture('pipeline_schedules/edit.html');
         $wrapper = $('.dropdown');
         $inputEl = $('#schedule_cron_timezone');
         $inputEl.val('');
         $dropdownEl = $('.js-timezone-dropdown');
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('can take an $inputEl in the constructor', () => {
@@ -86,7 +91,7 @@ describe('Timezone Dropdown', () => {
 
     describe('without dropdown loaded', () => {
       beforeEach(() => {
-        loadFixtures('pipeline_schedules/edit.html');
+        loadHTMLFixture('pipeline_schedules/edit.html');
         $wrapper = $('.dropdown');
         $inputEl = $('#schedule_cron_timezone');
         $dropdownEl = $('.js-timezone-dropdown');

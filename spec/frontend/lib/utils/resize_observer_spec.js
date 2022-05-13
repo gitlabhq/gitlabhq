@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { contentTop } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 
@@ -19,7 +20,7 @@ describe('ResizeObserver Utility', () => {
 
     jest.spyOn(document.documentElement, 'scrollTo');
 
-    setFixtures(`<div id="content-body"><div id="note_1234">note to scroll to</div></div>`);
+    setHTMLFixture(`<div id="content-body"><div id="note_1234">note to scroll to</div></div>`);
 
     const target = document.querySelector('#note_1234');
 
@@ -28,6 +29,7 @@ describe('ResizeObserver Utility', () => {
 
   afterEach(() => {
     contentTop.mockReset();
+    resetHTMLFixture();
   });
 
   describe('Observer behavior', () => {

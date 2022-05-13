@@ -265,7 +265,11 @@ module MergeRequests
       return if new_assignees.empty?
 
       assignees_map = merge_request.merge_request_assignees_with(new_assignees).to_h do |assignee|
-        state = merge_request.find_reviewer(assignee.assignee)&.state || :attention_requested
+        state = if assignee.user_id == current_user&.id
+                  :unreviewed
+                else
+                  merge_request.find_reviewer(assignee.assignee)&.state || :attention_requested
+                end
 
         [
           assignee,
@@ -281,7 +285,11 @@ module MergeRequests
       return if new_reviewers.empty?
 
       reviewers_map = merge_request.merge_request_reviewers_with(new_reviewers).to_h do |reviewer|
-        state = merge_request.find_assignee(reviewer.reviewer)&.state || :attention_requested
+        state = if reviewer.user_id == current_user&.id
+                  :unreviewed
+                else
+                  merge_request.find_assignee(reviewer.reviewer)&.state || :attention_requested
+                end
 
         [
           reviewer,

@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 
 describe('highlightCurrentUser', () => {
@@ -5,7 +6,7 @@ describe('highlightCurrentUser', () => {
   let elements;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div id="dummy-root-element">
         <div data-user="1">@first</div>
         <div data-user="2">@second</div>
@@ -13,6 +14,10 @@ describe('highlightCurrentUser', () => {
     `);
     rootElement = document.getElementById('dummy-root-element');
     elements = rootElement.querySelectorAll('[data-user]');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('without current user', () => {

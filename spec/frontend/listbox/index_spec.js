@@ -3,7 +3,7 @@ import { getAllByRole, getByRole } from '@testing-library/dom';
 import { GlDropdown } from '@gitlab/ui';
 import { createWrapper } from '@vue/test-utils';
 import { initListbox, parseAttributes } from '~/listbox';
-import { getFixture, setHTMLFixture } from 'helpers/fixtures';
+import { getFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -61,6 +61,10 @@ describe('initListbox', () => {
       setup(document.querySelector('.js-redirect-listbox'), { onChange: onChangeSpy });
 
       await nextTick();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('returns an instance', () => {

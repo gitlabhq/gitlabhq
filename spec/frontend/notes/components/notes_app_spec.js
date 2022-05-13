@@ -2,6 +2,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { setTestTimeout } from 'helpers/timeout';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -92,11 +93,15 @@ describe('note_app', () => {
 
   describe('set data', () => {
     beforeEach(() => {
-      setFixtures('<div class="js-discussions-count"></div>');
+      setHTMLFixture('<div class="js-discussions-count"></div>');
 
       axiosMock.onAny().reply(200, []);
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('should set notes data', () => {
@@ -122,11 +127,15 @@ describe('note_app', () => {
 
   describe('render', () => {
     beforeEach(() => {
-      setFixtures('<div class="js-discussions-count"></div>');
+      setHTMLFixture('<div class="js-discussions-count"></div>');
 
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('should render list of notes', () => {
@@ -160,12 +169,16 @@ describe('note_app', () => {
 
   describe('render with comments disabled', () => {
     beforeEach(() => {
-      setFixtures('<div class="js-discussions-count"></div>');
+      setHTMLFixture('<div class="js-discussions-count"></div>');
 
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       store.state.commentsDisabled = true;
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('should not render form when commenting is disabled', () => {
@@ -179,7 +192,7 @@ describe('note_app', () => {
 
   describe('timeline view', () => {
     beforeEach(() => {
-      setFixtures('<div class="js-discussions-count"></div>');
+      setHTMLFixture('<div class="js-discussions-count"></div>');
 
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       store.state.commentsDisabled = false;
@@ -189,6 +202,10 @@ describe('note_app', () => {
       return waitForDiscussionsRequest();
     });
 
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
     it('should not render comments form', () => {
       expect(wrapper.find('.js-main-target-form').exists()).toBe(false);
     });
@@ -196,12 +213,15 @@ describe('note_app', () => {
 
   describe('while fetching data', () => {
     beforeEach(() => {
-      setFixtures('<div class="js-discussions-count"></div>');
+      setHTMLFixture('<div class="js-discussions-count"></div>');
       axiosMock.onAny().reply(200, []);
       wrapper = mountComponent();
     });
 
-    afterEach(() => waitForDiscussionsRequest());
+    afterEach(() => {
+      waitForDiscussionsRequest();
+      resetHTMLFixture();
+    });
 
     it('renders skeleton notes', () => {
       expect(wrapper.find('.animation-container').exists()).toBe(true);

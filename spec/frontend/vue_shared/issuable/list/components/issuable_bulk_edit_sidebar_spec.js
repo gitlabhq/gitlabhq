@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 
 import { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 
 const createComponent = ({ expanded = true } = {}) =>
@@ -22,12 +23,13 @@ describe('IssuableBulkEditSidebar', () => {
   let wrapper;
 
   beforeEach(() => {
-    setFixtures('<div class="layout-page right-sidebar-collapsed"></div>');
+    setHTMLFixture('<div class="layout-page right-sidebar-collapsed"></div>');
     wrapper = createComponent();
   });
 
   afterEach(() => {
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   describe('watch', () => {

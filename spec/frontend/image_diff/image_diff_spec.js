@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import ImageDiff from '~/image_diff/image_diff';
@@ -9,7 +10,7 @@ describe('ImageDiff', () => {
   let imageDiff;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div id="element">
         <div class="diff-file">
           <div class="js-image-frame">
@@ -33,6 +34,10 @@ describe('ImageDiff', () => {
       </div>
     `);
     element = document.getElementById('element');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('constructor', () => {

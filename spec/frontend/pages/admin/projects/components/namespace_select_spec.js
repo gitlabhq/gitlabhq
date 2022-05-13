@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Api from '~/api';
 import NamespaceSelect from '~/pages/admin/projects/components/namespace_select.vue';
 
@@ -26,7 +27,7 @@ describe('Dropdown select component', () => {
   };
 
   beforeEach(() => {
-    setFixtures('<div class="test-container"></div>');
+    setHTMLFixture('<div class="test-container"></div>');
 
     jest.spyOn(Api, 'namespaces').mockImplementation((_, callback) =>
       callback([
@@ -34,6 +35,10 @@ describe('Dropdown select component', () => {
         { id: 20, kind: 'group', full_path: 'GitLab Org' },
       ]),
     );
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('creates a hidden input if fieldName is provided', () => {

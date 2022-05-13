@@ -1,6 +1,7 @@
 import { GlIntersectionObserver } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import '~/behaviors/markdown/render_gfm';
@@ -70,7 +71,7 @@ describe('Issuable output', () => {
   };
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div>
         <title>Title</title>
         <div class="detail-page-description content-block">
@@ -105,6 +106,7 @@ describe('Issuable output', () => {
     realtimeRequestCount = 0;
     wrapper.vm.poll.stop();
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   it('should render a title/description/edited and update title/description/edited on update', () => {

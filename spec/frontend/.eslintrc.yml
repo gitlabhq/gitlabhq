@@ -11,9 +11,6 @@ settings:
   import/resolver:
     jest:
       jestConfigFile: 'jest.config.js'
-globals:
-  loadFixtures: false
-  setFixtures: false
 rules:
   jest/expect-expect:
     - off

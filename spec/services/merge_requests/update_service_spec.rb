@@ -346,7 +346,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
             end
 
             it 'sets state as attention_requested' do
-              update_merge_request(reviewer_ids: [user.id])
+              update_merge_request(reviewer_ids: [user2.id])
 
               expect(merge_request.merge_request_reviewers[0].state).to eq('attention_requested')
               expect(merge_request.merge_request_reviewers[0].updated_state_by).to eq(user)

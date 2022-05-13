@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import blobBundle from '~/blob_edit/blob_bundle';
@@ -14,21 +15,27 @@ describe('BlobBundle', () => {
   });
 
   it('loads SourceEditor for the edit screen', async () => {
-    setFixtures(`<div class="js-edit-blob-form"></div>`);
+    setHTMLFixture(`<div class="js-edit-blob-form"></div>`);
     blobBundle();
     await waitForPromises();
     expect(SourceEditor).toHaveBeenCalled();
+
+    resetHTMLFixture();
   });
 
   describe('No Suggest Popover', () => {
     beforeEach(() => {
-      setFixtures(`
+      setHTMLFixture(`
       <div class="js-edit-blob-form" data-blob-filename="blah">
         <button class="js-commit-button"></button>
         <button id='cancel-changes'></button>
       </div>`);
 
       blobBundle();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('sets the window beforeunload listener to a function returning a string', () => {
@@ -52,7 +59,7 @@ describe('BlobBundle', () => {
     let trackingSpy;
 
     beforeEach(() => {
-      setFixtures(`
+      setHTMLFixture(`
       <div class="js-edit-blob-form" data-blob-filename="blah" id="target">
         <div class="js-suggest-gitlab-ci-yml"
           data-target="#target"
@@ -73,6 +80,7 @@ describe('BlobBundle', () => {
 
     afterEach(() => {
       unmockTracking();
+      resetHTMLFixture();
     });
 
     it('sends a tracking event when the commit button is clicked', () => {

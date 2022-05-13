@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
@@ -19,11 +20,15 @@ describe('Todos', () => {
   let mock;
 
   beforeEach(() => {
-    loadFixtures('todos/todos.html');
+    loadHTMLFixture('todos/todos.html');
     todoItem = document.querySelector('.todos-list .todo');
     mock = new MockAdapter(axios);
 
     return new Todos();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   afterEach(() => {

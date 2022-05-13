@@ -1,4 +1,4 @@
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initAlertHandler from '~/alert_handler';
 
 describe('Alert Handler', () => {
@@ -25,6 +25,10 @@ describe('Alert Handler', () => {
         initAlertHandler();
       });
 
+      afterEach(() => {
+        resetHTMLFixture();
+      });
+
       it('should render the alert', () => {
         expect(findFirstAlert()).not.toBe(null);
       });
@@ -41,6 +45,10 @@ describe('Alert Handler', () => {
         initAlertHandler();
       });
 
+      afterEach(() => {
+        resetHTMLFixture();
+      });
+
       it('should render two alerts', () => {
         expect(findAllAlerts()).toHaveLength(2);
       });
@@ -55,6 +63,10 @@ describe('Alert Handler', () => {
       beforeEach(() => {
         setHTMLFixture(generateHtml(BANNER_CLASS));
         initAlertHandler();
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('should render the banner', () => {
@@ -76,6 +88,10 @@ describe('Alert Handler', () => {
           <button class="${DISMISS_CLASS}">Dismiss</button>
         </div>`);
         initAlertHandler();
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('should render the banner', () => {

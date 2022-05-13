@@ -1,3 +1,4 @@
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { setNotification, getVersionDigest } from '~/whats_new/utils/notification';
 
@@ -11,12 +12,13 @@ describe('~/whats_new/utils/notification', () => {
   const getAppEl = () => wrapper.querySelector('.app');
 
   beforeEach(() => {
-    loadFixtures('static/whats_new_notification.html');
+    loadHTMLFixture('static/whats_new_notification.html');
     wrapper = document.querySelector('.whats-new-notification-fixture-root');
   });
 
   afterEach(() => {
     wrapper.remove();
+    resetHTMLFixture();
   });
 
   describe('setNotification', () => {

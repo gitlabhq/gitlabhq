@@ -1,4 +1,4 @@
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { loadStartupCSS } from '~/behaviors/load_startup_css';
 
 describe('behaviors/load_startup_css', () => {
@@ -23,6 +23,10 @@ describe('behaviors/load_startup_css', () => {
     setupListeners();
 
     loadStartupCSS();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('does nothing at first', () => {

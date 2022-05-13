@@ -150,10 +150,11 @@ Notes are added to the page details.
 
 If an issue or merge request is locked and closed, you cannot reopen it.
 
-## Mark a comment as confidential **(FREE SELF)**
+## Add an internal note **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/351143) in GitLab 14.10: you can only mark comments in issues and epics as confidential. Previously, it was also possible for comments in merge requests and snippets.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -161,31 +162,33 @@ ask an administrator to [enable the feature flag](../../administration/feature_f
 On GitLab.com, this feature is not available.
 You should not use this feature for production environments.
 
-You can make a comment **in an issue or an epic** confidential. It's then visible only to you (the commenting user) and
-the project members who have at least the Reporter role.
+You can add an internal note **to an issue or an epic**. It's then visible only to the following people:
+
+- Project members who have at least the Reporter role
+- Issue or epic author
+- Users assigned to the issue or epic
 
 Keep in mind:
 
-- You can only mark comments as confidential when you create them.
-- You can't change the confidentiality of existing comments.
-- Replies to comments use same confidentiality as the original comment.
+- Replies to internal notes are also internal.
+- You can not turn an internal note into a regular comment.
 
 Prerequisites:
 
 - You must either:
   - Have at least the Reporter role for the project.
-  - Be the issue assignee.
-  - Be the issue author.
+  - Be the issue or epic assignee.
+  - Be the issue or epic author.
 
-To mark a comment as confidential:
+To add an internal note:
 
 1. Start adding a new comment.
-1. Below the comment, select the **Make this comment confidential** checkbox.
-1. Select **Comment**.
+1. Below the comment, select the **Make this an internal note** checkbox.
+1. Select **Add internal note**.
 
-![Confidential comments](img/confidential_comments_v15_0.png)
+![Internal notes](img/add_internal_note_v15_0.png)
 
-You can also make an [entire issue confidential](../project/issues/confidential_issues.md).
+You can also mark an [issue as confidential](../project/issues/confidential_issues.md).
 
 ## Show only comments
 

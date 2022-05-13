@@ -140,6 +140,16 @@ You should not upgrade to Elasticsearch 8 until you have completed the GitLab 15
 
 View the [version requirements](https://docs.gitlab.com/ee/integration/elasticsearch.html#version-requirements) for details.
 
+### End of support for Python 3.6 in Dependency Scanning
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+For those using Dependency Scanning for Python projects, we are removing support for the default `gemnasium-python:2` image which uses Python 3.6, as well as the custom `gemnasium-python:2-python-3.9` image which uses Python 3.9. The new default image as of GitLab 15.0 will be for Python 3.9 as it is a [supported version](https://endoflife.date/python) and 3.6 [is no longer supported](https://endoflife.date/python).
+
 ### External status check API breaking changes
 
 WARNING:

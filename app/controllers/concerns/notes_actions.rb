@@ -65,7 +65,7 @@ module NotesActions
           json.merge!(note_json(@note))
         end
 
-        if @note.errors.present? && @note.errors.attribute_names != [:commands_only]
+        if @note.errors.present? && @note.errors.attribute_names != [:commands_only, :command_names]
           render json: json, status: :unprocessable_entity
         else
           render json: json

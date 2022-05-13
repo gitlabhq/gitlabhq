@@ -1,5 +1,5 @@
 import { within } from '@testing-library/dom';
-
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import UsersCache from '~/lib/utils/users_cache';
 import initUserPopovers from '~/user_popovers';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -43,7 +43,7 @@ describe('User Popovers', () => {
   };
 
   beforeEach(() => {
-    loadFixtures(fixtureTemplate);
+    loadHTMLFixture(fixtureTemplate);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
     jest.spyOn(UsersCache, 'retrieveById').mockImplementation((userId) => usersCacheSpy(userId));
@@ -55,6 +55,10 @@ describe('User Popovers', () => {
     jest.spyOn(UsersCache, 'updateById');
 
     popovers = initUserPopovers(document.querySelectorAll(selector));
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('initializes a popover for each user link with a user id', () => {

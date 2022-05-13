@@ -1,5 +1,6 @@
 import { getByText } from '@testing-library/dom';
 import MockAdapter from 'axios-mock-adapter';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import Issue from '~/issues/issue';
 import axios from '~/lib/utils/axios_utils';
@@ -38,9 +39,9 @@ describe('Issue', () => {
   `('$desc', ({ isIssueInitiallyOpen, expectedCounterText }) => {
     beforeEach(() => {
       if (isIssueInitiallyOpen) {
-        loadFixtures('issues/open-issue.html');
+        loadHTMLFixture('issues/open-issue.html');
       } else {
-        loadFixtures('issues/closed-issue.html');
+        loadHTMLFixture('issues/closed-issue.html');
       }
 
       testContext.issueCounter = getIssueCounter();
@@ -48,6 +49,10 @@ describe('Issue', () => {
       testContext.statusBoxOpen = getOpenStatusBox();
 
       testContext.issueCounter.textContent = '1,001';
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it(`has the proper visible status box when ${isIssueInitiallyOpen ? 'open' : 'closed'}`, () => {

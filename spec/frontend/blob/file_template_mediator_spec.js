@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import TemplateSelectorMediator from '~/blob/file_template_mediator';
 
 describe('Template Selector Mediator', () => {
@@ -11,13 +12,17 @@ describe('Template Selector Mediator', () => {
     }))();
 
     beforeEach(() => {
-      setFixtures('<div class="file-editor"><input class="js-file-path-name-input" /></div>');
+      setHTMLFixture('<div class="file-editor"><input class="js-file-path-name-input" /></div>');
       input = document.querySelector('.js-file-path-name-input');
       mediator = new TemplateSelectorMediator({
         editor,
         currentAction: jest.fn(),
         projectId: jest.fn(),
       });
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('fills out the input field', () => {

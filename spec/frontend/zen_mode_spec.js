@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Dropzone from 'dropzone';
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GLForm from '~/gl_form';
 import * as utils from '~/lib/utils/common_utils';
 import ZenMode from '~/zen_mode';
@@ -33,7 +34,7 @@ describe('ZenMode', () => {
     mock = new MockAdapter(axios);
     mock.onGet().reply(200);
 
-    loadFixtures(fixtureName);
+    loadHTMLFixture(fixtureName);
 
     const form = $('.js-new-note-form');
     new GLForm(form); // eslint-disable-line no-new
@@ -45,6 +46,10 @@ describe('ZenMode', () => {
 
     // Set this manually because we can't actually scroll the window
     zen.scroll_position = 456;
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('enabling dropzone', () => {

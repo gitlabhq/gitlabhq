@@ -94,7 +94,7 @@ module API
 
           note = create_note(noteable, opts)
 
-          if note.errors.attribute_names == [:commands_only]
+          if note.errors.attribute_names == [:commands_only, :command_names]
             status 202
             present note, with: Entities::NoteCommands
           elsif note.valid?

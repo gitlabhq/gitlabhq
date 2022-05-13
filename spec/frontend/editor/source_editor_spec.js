@@ -1,4 +1,5 @@
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import {
   SOURCE_EDITOR_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,
@@ -33,7 +34,7 @@ describe('Base editor', () => {
   const blobGlobalId = 'snippet_777';
 
   beforeEach(() => {
-    setFixtures('<div id="editor" data-editor-loading></div>');
+    setHTMLFixture('<div id="editor" data-editor-loading></div>');
     editorEl = document.getElementById('editor');
     defaultArguments = { el: editorEl, blobPath, blobContent, blobGlobalId };
     editor = new SourceEditor();
@@ -45,6 +46,8 @@ describe('Base editor', () => {
     monacoEditor.getModels().forEach((model) => {
       model.dispose();
     });
+
+    resetHTMLFixture();
   });
 
   const uriFilePath = joinPaths('/', URI_PREFIX, blobGlobalId, blobPath);
@@ -244,7 +247,7 @@ describe('Base editor', () => {
     const readOnlyIndex = '78'; // readOnly option has the internal index of 78 in the editor's options
 
     beforeEach(() => {
-      setFixtures('<div id="editor1"></div><div id="editor2"></div>');
+      setHTMLFixture('<div id="editor1"></div><div id="editor2"></div>');
       editorEl1 = document.getElementById('editor1');
       editorEl2 = document.getElementById('editor2');
       inst1Args = {
@@ -262,6 +265,7 @@ describe('Base editor', () => {
 
     afterEach(() => {
       editor.dispose();
+      resetHTMLFixture();
     });
 
     it('can initialize several instances of the same editor', () => {

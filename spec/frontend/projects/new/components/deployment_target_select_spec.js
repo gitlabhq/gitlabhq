@@ -1,6 +1,7 @@
 import { GlFormGroup, GlFormSelect, GlFormText, GlLink, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking } from 'helpers/tracking_helper';
 import DeploymentTargetSelect from '~/projects/new/components/deployment_target_select.vue';
 import {
@@ -32,7 +33,7 @@ describe('Deployment target select', () => {
   };
 
   const createForm = () => {
-    setFixtures(`
+    setHTMLFixture(`
       <form id="${NEW_PROJECT_FORM}">
       </form>
     `);
@@ -47,6 +48,7 @@ describe('Deployment target select', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   it('renders the correct label', () => {

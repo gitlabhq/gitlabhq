@@ -74,7 +74,12 @@ class UserRecentEventsFinder
     return Event.none if users.empty?
 
     if Feature.enabled?(:optimized_followed_users_queries, current_user)
-      query_builder_params = event_filter.in_operator_query_builder_params(users)
+      array_data = {
+        scope_ids: users,
+        scope_model: User,
+        mapping_column: :author_id
+      }
+      query_builder_params = event_filter.in_operator_query_builder_params(array_data)
 
       Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder
         .new(**query_builder_params)

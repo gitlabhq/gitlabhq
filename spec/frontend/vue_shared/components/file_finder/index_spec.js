@@ -1,5 +1,6 @@
 import Mousetrap from 'mousetrap';
 import Vue, { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { file } from 'jest/ide/helpers';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import FindFileComponent from '~/vue_shared/components/file_finder/index.vue';
@@ -22,7 +23,11 @@ describe('File finder item spec', () => {
   }
 
   beforeEach(() => {
-    setFixtures('<div id="app"></div>');
+    setHTMLFixture('<div id="app"></div>');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   afterEach(() => {
@@ -293,7 +298,7 @@ describe('File finder item spec', () => {
     });
 
     it('stops callback in monaco editor', () => {
-      setFixtures('<div class="inputarea"></div>');
+      setHTMLFixture('<div class="inputarea"></div>');
 
       expect(
         Mousetrap.prototype.stopCallback(null, document.querySelector('.inputarea'), 't'),

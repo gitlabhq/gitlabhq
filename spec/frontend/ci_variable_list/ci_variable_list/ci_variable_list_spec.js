@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import VariableList from '~/ci_variable_list/ci_variable_list';
 
 const HIDE_CLASS = 'hide';
@@ -10,7 +11,7 @@ describe('VariableList', () => {
   describe('with only key/value inputs', () => {
     describe('with no variables', () => {
       beforeEach(() => {
-        loadFixtures('pipeline_schedules/edit.html');
+        loadHTMLFixture('pipeline_schedules/edit.html');
         $wrapper = $('.js-ci-variable-list-section');
 
         variableList = new VariableList({
@@ -18,6 +19,10 @@ describe('VariableList', () => {
           formField: 'schedule',
         });
         variableList.init();
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('should remove the row when clicking the remove button', () => {
@@ -64,7 +69,7 @@ describe('VariableList', () => {
 
     describe('with persisted variables', () => {
       beforeEach(() => {
-        loadFixtures('pipeline_schedules/edit_with_variables.html');
+        loadHTMLFixture('pipeline_schedules/edit_with_variables.html');
         $wrapper = $('.js-ci-variable-list-section');
 
         variableList = new VariableList({
@@ -72,6 +77,10 @@ describe('VariableList', () => {
           formField: 'schedule',
         });
         variableList.init();
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('should have "Reveal values" button initially when there are already variables', () => {
@@ -97,7 +106,7 @@ describe('VariableList', () => {
 
   describe('toggleEnableRow method', () => {
     beforeEach(() => {
-      loadFixtures('pipeline_schedules/edit_with_variables.html');
+      loadHTMLFixture('pipeline_schedules/edit_with_variables.html');
       $wrapper = $('.js-ci-variable-list-section');
 
       variableList = new VariableList({
@@ -105,6 +114,10 @@ describe('VariableList', () => {
         formField: 'variables',
       });
       variableList.init();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('should disable all key inputs', () => {

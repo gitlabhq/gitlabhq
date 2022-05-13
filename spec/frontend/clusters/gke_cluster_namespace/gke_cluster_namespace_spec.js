@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initGkeNamespace from '~/clusters/gke_cluster_namespace';
 
 describe('GKE cluster namespace', () => {
@@ -10,7 +11,7 @@ describe('GKE cluster namespace', () => {
   let glManaged;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <input class="js-gl-managed" type="checkbox" value="1" checked />
       <div class="js-namespace">
         <input type="text" />
@@ -25,6 +26,10 @@ describe('GKE cluster namespace', () => {
     glManaged = document.querySelector('.js-namespace-prefixed');
 
     initGkeNamespace();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('GKE cluster namespace toggles', () => {

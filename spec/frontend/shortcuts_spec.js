@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { flatten } from 'lodash';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 
 const mockMousetrap = {
@@ -21,13 +22,17 @@ describe('Shortcuts', () => {
     });
 
   beforeEach(() => {
-    loadFixtures(fixtureName);
+    loadHTMLFixture(fixtureName);
 
     jest.spyOn(document.querySelector('.js-new-note-form .js-md-preview-button'), 'focus');
     jest.spyOn(document.querySelector('.edit-note .js-md-preview-button'), 'focus');
     jest.spyOn(document.querySelector('#search'), 'focus');
 
     new Shortcuts(); // eslint-disable-line no-new
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('toggleMarkdownPreview', () => {

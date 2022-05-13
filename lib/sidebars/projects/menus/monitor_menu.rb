@@ -58,7 +58,8 @@ module Sidebars
         end
 
         def logs_menu_item
-          if !can?(context.current_user, :read_environment, context.project) ||
+          if !Feature.enabled?(:monitor_logging, context.project) ||
+            !can?(context.current_user, :read_environment, context.project) ||
             !can?(context.current_user, :read_pod_logs, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :logs)
           end

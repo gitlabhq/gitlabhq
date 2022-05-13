@@ -1,6 +1,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import TableContents from '~/blob/components/table_contents.vue';
 
 let wrapper;
@@ -17,7 +18,7 @@ async function setLoaded(loaded) {
 
 describe('Markdown table of contents component', () => {
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div class="blob-viewer" data-type="rich" data-loaded="false">
         <h1><a href="#1"></a>Hello</h1>
         <h2><a href="#2"></a>World</h2>
@@ -29,6 +30,7 @@ describe('Markdown table of contents component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   describe('not loaded', () => {

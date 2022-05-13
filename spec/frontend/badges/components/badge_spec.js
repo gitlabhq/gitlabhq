@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'spec/test_constants';
 import Badge from '~/badges/components/badge.vue';
@@ -90,8 +91,12 @@ describe('Badge component', () => {
 
   describe('behavior', () => {
     beforeEach(() => {
-      setFixtures('<div id="dummy-element"></div>');
+      setHTMLFixture('<div id="dummy-element"></div>');
       return createComponent({ ...dummyProps }, '#dummy-element');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('shows a badge image after loading', () => {

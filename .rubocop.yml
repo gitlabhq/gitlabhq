@@ -266,6 +266,11 @@ Rails/IndexBy:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
+Rails/HelperInstanceVariable:
+  Include:
+    - app/helpers/**/*.rb
+    - ee/app/helpers/**/*.rb
+
 # GitLab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:

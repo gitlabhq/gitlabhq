@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import loadAwardsHandler from '~/awards_handler';
@@ -75,7 +76,7 @@ describe('AwardsHandler', () => {
   beforeEach(async () => {
     await initEmojiMock(emojiData);
 
-    loadFixtures('snippets/show.html');
+    loadHTMLFixture('snippets/show.html');
 
     awardsHandler = await loadAwardsHandler(true);
     jest.spyOn(awardsHandler, 'postEmoji').mockImplementation((button, url, emoji, cb) => cb());
@@ -91,6 +92,8 @@ describe('AwardsHandler', () => {
     $('body').removeAttr('data-page');
 
     awardsHandler.destroy();
+
+    resetHTMLFixture();
   });
 
   describe('::showEmojiMenu', () => {

@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { editor as monacoEditor } from 'monaco-editor';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   EXTENSION_MARKDOWN_PREVIEW_PANEL_CLASS,
@@ -41,7 +42,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    setFixtures('<div id="editor" data-editor-loading></div>');
+    setHTMLFixture('<div id="editor" data-editor-loading></div>');
     editorEl = document.getElementById('editor');
     editor = new SourceEditor();
     instance = editor.createInstance({
@@ -60,6 +61,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     instance.dispose();
     editorEl.remove();
     mockAxios.restore();
+    resetHTMLFixture();
   });
 
   it('sets up the preview on the instance', () => {

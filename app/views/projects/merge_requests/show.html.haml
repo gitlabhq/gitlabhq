@@ -41,7 +41,7 @@
               = _("Changes")
               = gl_badge_tag @diffs_count, { size: :sm }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
-          #js-vue-discussion-counter
+          #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
 
     .tab-content#diff-notes-app
       #js-diff-file-finder

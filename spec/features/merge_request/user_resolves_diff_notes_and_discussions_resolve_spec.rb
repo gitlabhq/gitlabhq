@@ -38,7 +38,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
     context 'single thread' do
       it 'shows text with how many threads' do
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
         end
       end
@@ -55,9 +55,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(page).to have_selector('.btn', text: 'Unresolve thread')
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -72,9 +71,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -84,7 +82,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           click_button 'Unresolve thread'
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
         end
       end
@@ -155,7 +153,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
               wait_for_requests
             end
 
-            page.within '.line-resolve-all-container' do
+            page.within '.discussions-counter' do
               expect(page).to have_content('All threads resolved')
             end
           end
@@ -167,9 +165,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
               wait_for_requests
             end
 
-            page.within '.line-resolve-all-container' do
+            page.within '.discussions-counter' do
               expect(page).to have_content('1 unresolved thread')
-              expect(page).not_to have_selector('.line-resolve-btn.is-active')
             end
           end
 
@@ -184,7 +181,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
               wait_for_requests
             end
 
-            page.within '.line-resolve-all-container' do
+            page.within '.discussions-counter' do
               expect(page).to have_content('1 unresolved thread')
             end
           end
@@ -196,9 +193,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -213,14 +209,13 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           click_button 'Add comment now'
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
       it 'allows user to quickly scroll to next unresolved thread' do
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           page.find('.discussion-next-btn').click
         end
 
@@ -269,7 +264,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(first('.line-resolve-btn')['aria-label']).to eq("Resolved by #{user.name}")
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
         end
       end
@@ -286,7 +281,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(button['aria-label']).to eq("Resolved by #{user.name}")
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
         end
       end
@@ -299,7 +294,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
       end
 
       it 'shows text with how many threads' do
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('2 unresolved threads')
         end
       end
@@ -307,7 +302,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
       it 'allows user to mark a single note as resolved' do
         click_button('Resolve thread', match: :first)
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
         end
       end
@@ -317,9 +312,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           btn.click
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -330,9 +324,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           end
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -341,7 +334,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           find('button[data-qa-selector="resolve_discussion_button"]').click # rubocop:disable QA/SelectorUsage
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           page.find('.discussion-next-btn').click
         end
 
@@ -370,7 +363,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(page).not_to have_selector('.btn', text: 'Resolve thread')
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           page.find('.discussion-next-btn').click
         end
 
@@ -386,7 +379,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
     context 'changes tab' do
       it 'shows text with how many threads' do
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
         end
       end
@@ -402,9 +395,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(page).to have_selector('.btn', text: 'Unresolve thread')
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -417,9 +409,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(page).to have_selector('.line-resolve-btn.is-active')
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -429,7 +420,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           click_button 'Unresolve thread'
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
         end
       end
@@ -445,9 +436,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           click_button 'Add comment now'
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -462,7 +452,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           click_button 'Add comment now'
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
         end
       end
@@ -485,7 +475,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(page).not_to have_selector('.line-resolve-btn')
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
         end
       end
@@ -515,9 +505,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(page).to have_selector('.btn', text: 'Unresolve thread')
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
     end
@@ -534,30 +523,9 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           expect(page).not_to have_selector('.line-resolve-btn')
         end
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
         end
-      end
-    end
-
-    context 'resolved comment' do
-      before do
-        note.resolve!(user)
-        visit_merge_request
-      end
-
-      it 'shows resolved icon' do
-        expect(page).to have_content 'All threads resolved'
-
-        click_button _('Show thread')
-        expect(page).to have_selector('.line-resolve-btn.is-active')
-      end
-
-      it 'does not allow user to click resolve button' do
-        expect(page).to have_selector('.line-resolve-btn.is-active')
-        click_button _('Show thread')
-
-        expect(page).to have_selector('.line-resolve-btn.is-active')
       end
     end
   end

@@ -72,10 +72,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Revoke a personal access token
 
+### Revoke a personal access token by ID
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216004) in GitLab 13.3.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/270200) from GitLab Ultimate to GitLab Free in 13.6.
 
-Revoke a personal access token.
+Revoke a personal access token by ID.
 
 ```plaintext
 DELETE /personal_access_tokens/:id
@@ -92,10 +94,29 @@ Non-administrators can revoke their own tokens. Administrators can revoke tokens
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/<personal_access_token_id>"
 ```
 
-### Responses
+#### Responses
 
 - `204: No Content` if successfully revoked.
-- `400 Bad Request` if not revoked successfully.
+- `400: Bad Request` if not revoked successfully.
+
+### Revoke a personal access token using a header
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350240) in GitLab 15.0.
+
+Revokes a personal access token that is passed in using a request header.
+
+```plaintext
+DELETE /personal_access_tokens/self
+```
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/self"
+```
+
+#### Responses
+
+- `204: No Content` if successfully revoked.
+- `400: Bad Request` if not revoked successfully.
 
 ## Create a personal access token (administrator only)
 

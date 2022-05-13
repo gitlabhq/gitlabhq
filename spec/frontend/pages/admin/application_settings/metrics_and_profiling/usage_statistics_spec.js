@@ -2,6 +2,7 @@ import initSetHelperText, {
   HELPER_TEXT_SERVICE_PING_DISABLED,
   HELPER_TEXT_SERVICE_PING_ENABLED,
 } from '~/pages/admin/application_settings/metrics_and_profiling/usage_statistics';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 describe('UsageStatistics', () => {
   const FIXTURE = 'application_settings/usage.html';
@@ -11,7 +12,7 @@ describe('UsageStatistics', () => {
   let servicePingFeaturesHelperText;
 
   beforeEach(() => {
-    loadFixtures(FIXTURE);
+    loadHTMLFixture(FIXTURE);
     initSetHelperText();
     servicePingCheckBox = document.getElementById('application_setting_usage_ping_enabled');
     servicePingFeaturesCheckBox = document.getElementById(
@@ -19,6 +20,10 @@ describe('UsageStatistics', () => {
     );
     servicePingFeaturesLabel = document.getElementById('service_ping_features_label');
     servicePingFeaturesHelperText = document.getElementById('service_ping_features_helper_text');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   const expectEnabledservicePingFeaturesCheckBox = () => {

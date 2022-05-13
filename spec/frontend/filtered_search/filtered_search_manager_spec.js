@@ -1,5 +1,5 @@
 import FilteredSearchManager from 'ee_else_ce/filtered_search/filtered_search_manager';
-
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
@@ -64,7 +64,7 @@ describe('Filtered Search Manager', () => {
   }
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div class="filtered-search-box">
         <form>
           <ul class="tokens-container list-unstyled">
@@ -78,6 +78,10 @@ describe('Filtered Search Manager', () => {
     `);
 
     jest.spyOn(FilteredSearchDropdownManager.prototype, 'setDropdown').mockImplementation();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   const initializeManager = ({ useDefaultState } = {}) => {

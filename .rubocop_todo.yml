@@ -11,11 +11,6 @@ Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
 
-# Offense count: 29
-# Configuration parameters: MinSize.
-Performance/CollectionLiteralInLoop:
-  Enabled: false
-
 # Offense count: 41
 # Cop supports --auto-correct.
 Performance/ConstantRegexp:
@@ -37,13 +32,6 @@ RSpec/PredicateMatcher:
 
 # Offense count: 118
 RSpec/RepeatedExampleGroupBody:
-  Enabled: false
-
-# Offense count: 667
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: and_return, block
-RSpec/ReturnFromStub:
   Enabled: false
 
 # Offense count: 610
@@ -90,12 +78,6 @@ Rails/CreateTableWithTimestamps:
 Rails/HasManyOrHasOneDependent:
   Enabled: false
 
-# Offense count: 537
-# Configuration parameters: Include.
-# Include: app/helpers/**/*.rb
-Rails/HelperInstanceVariable:
-  Enabled: false
-
 # Offense count: 47
 # Cop supports --auto-correct.
 Rails/IndexWith:
@@ -118,13 +100,6 @@ Rails/MailerName:
 # Offense count: 51
 # Cop supports --auto-correct.
 Rails/NegateInclude:
-  Enabled: false
-
-# Offense count: 39
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: **/Rakefile, **/*.rake
-Rails/RakeEnvironment:
   Enabled: false
 
 # Offense count: 44
@@ -160,13 +135,6 @@ Style/CaseLikeIf:
 Style/EmptyMethod:
   Enabled: false
 
-# Offense count: 581
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: format, sprintf, percent
-Style/FormatString:
-  Enabled: false
-
 # Offense count: 59
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -194,9 +162,4 @@ Style/RedundantRegexpEscape:
 # Offense count: 53
 # Cop supports --auto-correct.
 Style/RescueModifier:
-  Enabled: false
-
-# Offense count: 123
-# Cop supports --auto-correct.
-Style/SingleArgumentDig:
   Enabled: false

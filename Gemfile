@@ -46,7 +46,6 @@ gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.4'
 gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.6.0'
-gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.3.0'
@@ -61,6 +60,7 @@ gem 'jwt', '~> 2.1.0'
 
 # Kerberos authentication. EE-only
 gem 'gssapi', group: :kerberos
+gem 'timfel-krb5-auth', '~> 0.8', group: :kerberos
 
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 4.11', require: 'recaptcha/rails'

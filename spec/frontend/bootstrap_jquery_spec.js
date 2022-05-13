@@ -1,10 +1,15 @@
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import '~/commons/bootstrap';
 
 describe('Bootstrap jQuery extensions', () => {
   describe('disable', () => {
     beforeEach(() => {
-      setFixtures('<input type="text" />');
+      setHTMLFixture('<input type="text" />');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('adds the disabled attribute', () => {
@@ -24,7 +29,11 @@ describe('Bootstrap jQuery extensions', () => {
 
   describe('enable', () => {
     beforeEach(() => {
-      setFixtures('<input type="text" disabled="disabled" class="disabled" />');
+      setHTMLFixture('<input type="text" disabled="disabled" class="disabled" />');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('removes the disabled attribute', () => {

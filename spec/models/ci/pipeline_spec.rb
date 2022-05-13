@@ -1433,32 +1433,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
-    context 'when ci_reduce_persistent_ref_writes feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_reduce_persistent_ref_writes: false)
-      end
-
-      %w[succeed! drop! cancel! skip!].each do |action|
-        context "when the pipeline recieved #{action} event" do
-          it 'deletes a persistent ref' do
-            expect(pipeline.persistent_ref).to receive(:delete).once
-
-            pipeline.public_send(action)
-          end
-        end
-      end
-
-      %w[block! delay!].each do |action|
-        context "when the pipeline recieved #{action} event" do
-          it 'does not delete a persistent ref' do
-            expect(pipeline.persistent_ref).not_to receive(:delete)
-
-            pipeline.public_send(action)
-          end
-        end
-      end
-    end
-
     describe 'synching status to Jira' do
       let(:worker) { ::JiraConnect::SyncBuildsWorker }
 

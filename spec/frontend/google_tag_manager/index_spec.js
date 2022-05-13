@@ -14,7 +14,7 @@ import {
   trackTransaction,
   trackAddToCartUsageTab,
 } from '~/google_tag_manager';
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { logError } from '~/lib/logger';
 
 jest.mock('~/lib/logger');
@@ -214,6 +214,10 @@ describe('~/google_tag_manager/index', () => {
       setHTMLFixture(createHTML({ links, forms }));
 
       subject();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it.each(expectedEvents)('when %p', ({ selector, trigger, expectation }) => {
@@ -443,6 +447,8 @@ describe('~/google_tag_manager/index', () => {
 
       expect(spy).not.toHaveBeenCalled();
       expect(logError).not.toHaveBeenCalled();
+
+      resetHTMLFixture();
     });
   });
 
@@ -468,6 +474,8 @@ describe('~/google_tag_manager/index', () => {
         'Unexpected error while pushing to dataLayer',
         pushError,
       );
+
+      resetHTMLFixture();
     });
   });
 });

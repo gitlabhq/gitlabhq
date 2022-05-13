@@ -287,7 +287,8 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           'job_status' => 'done',
           'duration_s' => 0.0,
           'completed_at' => timestamp.to_f,
-          'cpu_s' => 1.111112
+          'cpu_s' => 1.111112,
+          'rate_limiting_gates' => []
         )
       end
 

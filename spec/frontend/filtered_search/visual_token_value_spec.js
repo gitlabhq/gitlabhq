@@ -1,5 +1,6 @@
 import { escape } from 'lodash';
 import labelData from 'test_fixtures/labels/project_labels.json';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
@@ -28,7 +29,7 @@ describe('Filtered Search Visual Tokens', () => {
   let bugLabelToken;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <ul class="tokens-container">
         ${FilteredSearchSpecHelper.createInputHTML()}
       </ul>
@@ -37,6 +38,10 @@ describe('Filtered Search Visual Tokens', () => {
 
     authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '=', '@user');
     bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '=', '~bug');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('updateUserTokenAppearance', () => {

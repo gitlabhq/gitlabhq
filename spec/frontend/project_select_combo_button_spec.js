@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import ProjectSelectComboButton from '~/project_select_combo_button';
 
 const fixturePath = 'static/project_select_combo_button.html';
@@ -31,10 +32,14 @@ describe('Project Select Combo Button', () => {
       relativePath: 'issues/new',
     };
 
-    loadFixtures(fixturePath);
+    loadHTMLFixture(fixturePath);
 
     testContext.newItemBtn = document.querySelector('.js-new-project-item-link');
     testContext.projectSelectInput = document.querySelector('.project-item-select');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('on page load when localStorage is empty', () => {

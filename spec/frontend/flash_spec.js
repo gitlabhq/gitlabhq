@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import createFlash, {
   hideFlash,
   addDismissFlashClickListener,
@@ -93,7 +93,7 @@ describe('Flash', () => {
         if (alert) {
           alert.$destroy();
         }
-        document.querySelector('.flash-container')?.remove();
+        resetHTMLFixture();
       });
 
       it('adds alert element into the document by default', () => {
@@ -330,7 +330,7 @@ describe('Flash', () => {
       });
 
       afterEach(() => {
-        document.querySelector('.js-content-wrapper').remove();
+        resetHTMLFixture();
       });
 
       it('adds flash alert element into the document by default', () => {

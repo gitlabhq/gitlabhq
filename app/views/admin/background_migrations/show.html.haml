@@ -1,6 +1,7 @@
-- add_to_breadcrumbs _('Background Migrations'), admin_background_migrations_path
-- breadcrumb_title @migration.job_class_name + ': ' + @migration.table_name
-- page_title @migration.job_class_name , _('Background Migrations')
+- add_to_breadcrumbs s_('BackgroundMigrations|Background Migrations'), admin_background_migrations_path(database: params[:database])
+- breadcrumb_title @migration.id
+- page_title @migration.job_class_name , s_('BackgroundMigrations|Background Migrations')
+- @breadcrumb_link = admin_background_migration_path(@migration, database: params[:database])
 
 %h3= @migration.job_class_name + ': ' + @migration.table_name
 

@@ -1,0 +1,13 @@
+%tr{ role: 'row' }
+  %td{ role: 'cell', data: { label: _('Id') } }
+    = transition_log.id
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Created at') } }
+    = transition_log.created_at
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Previous status') } }
+    = transition_log.previous_status
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Next status') } }
+    = transition_log.next_status
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Exception class') } }
+    = transition_log.exception_class
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Exception message') } }
+    = transition_log.exception_message

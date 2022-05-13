@@ -1,4 +1,4 @@
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilterableList from '~/filterable_list';
 
 describe('FilterableList', () => {
@@ -18,6 +18,10 @@ describe('FilterableList', () => {
     filter = document.querySelector('.js-projects-list-filter');
     holder = document.querySelector('.js-projects-list-holder');
     List = new FilterableList(form, filter, holder);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('processes input parameters', () => {

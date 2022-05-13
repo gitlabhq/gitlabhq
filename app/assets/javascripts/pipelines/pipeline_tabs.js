@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import PipelineTabs from 'ee_else_ce/pipelines/components/pipeline_tabs.vue';
 import { removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { TAB_QUERY_PARAM } from '~/pipelines/constants';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { getPipelineDefaultTab, reportToSentry } from './utils';
 
 Vue.use(VueApollo);
@@ -19,6 +20,9 @@ const createPipelineTabs = (selector, apolloProvider) => {
     downloadablePathForReportType,
     exposeSecurityDashboard,
     exposeLicenseScanningData,
+    graphqlResourceEtag,
+    pipelineIid,
+    pipelineProjectPath,
   } = dataset;
 
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
@@ -37,12 +41,15 @@ const createPipelineTabs = (selector, apolloProvider) => {
     },
     apolloProvider,
     provide: {
-      canGenerateCodequalityReports: JSON.parse(canGenerateCodequalityReports),
+      canGenerateCodequalityReports: parseBoolean(canGenerateCodequalityReports),
       codequalityReportDownloadPath,
       defaultTabValue,
       downloadablePathForReportType,
-      exposeSecurityDashboard: JSON.parse(exposeSecurityDashboard),
-      exposeLicenseScanningData: JSON.parse(exposeLicenseScanningData),
+      exposeSecurityDashboard: parseBoolean(exposeSecurityDashboard),
+      exposeLicenseScanningData: parseBoolean(exposeLicenseScanningData),
+      graphqlResourceEtag,
+      pipelineIid,
+      pipelineProjectPath,
     },
     errorCaptured(err, _vm, info) {
       reportToSentry('pipeline_tabs', `error: ${err}, info: ${info}`);

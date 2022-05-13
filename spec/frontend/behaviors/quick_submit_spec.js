@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import '~/behaviors/quick_submit';
 
 describe('Quick Submit behavior', () => {
@@ -7,7 +8,7 @@ describe('Quick Submit behavior', () => {
   const keydownEvent = (options = { keyCode: 13, metaKey: true }) => $.Event('keydown', options);
 
   beforeEach(() => {
-    loadFixtures('snippets/show.html');
+    loadHTMLFixture('snippets/show.html');
 
     testContext = {};
 
@@ -22,6 +23,10 @@ describe('Quick Submit behavior', () => {
       testContext.spies.submit();
     });
     testContext.textarea = $('.js-quick-submit textarea').first();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('does not respond to other keyCodes', () => {

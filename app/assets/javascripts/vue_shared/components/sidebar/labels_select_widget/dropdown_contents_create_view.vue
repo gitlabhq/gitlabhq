@@ -179,7 +179,7 @@ export default {
       <gl-button
         :disabled="disableCreate"
         category="primary"
-        variant="success"
+        variant="confirm"
         class="gl-display-flex gl-align-items-center"
         data-testid="create-button"
         @click="createLabel"

@@ -1,0 +1,17 @@
+%tr{ role: 'row' }
+  %td{ role: 'cell', data: { label: _('Id') } }
+    = @job.id
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Min value') } }
+    = @job.min_value
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Max value') } }
+    = @job.max_value
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Batch size') } }
+    = @job.batch_size
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Started at') } }
+    = @job.started_at
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Finished at') } }
+    = @job.finished_at
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Attempts') } }
+    = @job.attempts
+  %td{ role: 'cell', data: { label: s_('BatchedJob|Pause ms') } }
+    = @job.pause_ms

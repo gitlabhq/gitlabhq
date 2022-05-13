@@ -1,5 +1,5 @@
-- if lookup_context.template_exists?('top', "projects/services/#{integration.to_param}", true)
-  = render "projects/services/#{integration.to_param}/top", integration: integration
+- if lookup_context.template_exists?('top', "shared/integrations/#{integration.to_param}", true)
+  = render "shared/integrations/#{integration.to_param}/top", integration: integration
 
 - if integration.activate_disabled_reason.present? && integration.activate_disabled_reason[:trackers].any?
   -# When using integration.activate_disabled_reason[:trackers], it's potentially insecure to use the raw records
@@ -17,6 +17,6 @@
     = sprite_icon('check', css_class: 'gl-text-green-500')
 
 = render 'shared/integration_settings', integration: integration
-- if lookup_context.template_exists?('show', "projects/services/#{integration.to_param}", true)
+- if lookup_context.template_exists?('show', "shared/integrations/#{integration.to_param}", true)
   %hr
-  = render "projects/services/#{integration.to_param}/show", integration: integration
+  = render "shared/integrations/#{integration.to_param}/show", integration: integration

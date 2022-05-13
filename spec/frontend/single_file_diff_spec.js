@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import SingleFileDiff from '~/single_file_diff';
 
@@ -15,6 +15,7 @@ describe('SingleFileDiff', () => {
 
   afterEach(() => {
     mock.restore();
+    resetHTMLFixture();
   });
 
   it('loads diff via axios exactly once for collapsed diffs', async () => {

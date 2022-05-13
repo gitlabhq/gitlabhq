@@ -8,6 +8,8 @@
 class EventCollection
   include Gitlab::Utils::StrongMemoize
 
+  attr_reader :filter
+
   # To prevent users from putting too much pressure on the database by cycling
   # through thousands of events we put a limit on the number of pages.
   MAX_PAGE = 10
@@ -19,7 +21,7 @@ class EventCollection
     @projects = projects
     @limit = limit
     @offset = offset
-    @filter = filter
+    @filter = filter || EventFilter.new(EventFilter::ALL)
     @groups = groups
   end
 
@@ -44,35 +46,46 @@ class EventCollection
   private
 
   def project_events
-    in_operator_optimized_relation('project_id', projects)
+    in_operator_optimized_relation('project_id', projects, Project)
   end
 
   def group_events
-    in_operator_optimized_relation('group_id', groups)
+    in_operator_optimized_relation('group_id', groups, Namespace)
   end
 
   def project_and_group_events
-    Event.from_union([project_events, group_events]).recent
+    if EventFilter::PROJECT_ONLY_EVENT_TYPES.include?(filter.filter)
+      project_events
+    else
+      Event.from_union([project_events, group_events]).recent
+    end
   end
 
-  def in_operator_optimized_relation(parent_column, parents)
-    scope = filtered_events
-    array_scope = parents.select(:id)
-    array_mapping_scope = -> (parent_id_expression) { Event.where(Event.arel_table[parent_column].eq(parent_id_expression)).reorder(id: :desc) }
-    finder_query = -> (id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
+  def in_operator_optimized_relation(parent_column, parents, parent_model)
+    query_builder_params = if Feature.enabled?(:optimized_project_and_group_activity_queries)
+                             array_data = {
+                               scope_ids: parents.pluck(:id),
+                               scope_model: parent_model,
+                               mapping_column: parent_column
+                             }
+                             filter.in_operator_query_builder_params(array_data)
+                           else
+                             {
+                               scope: filtered_events,
+                               array_scope: parents.select(:id),
+                               array_mapping_scope: -> (parent_id_expression) { Event.where(Event.arel_table[parent_column].eq(parent_id_expression)).reorder(id: :desc) },
+                               finder_query: -> (id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
+                             }
+                           end
 
     Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder
-      .new(
-        scope: scope,
-        array_scope: array_scope,
-        array_mapping_scope: array_mapping_scope,
-        finder_query: finder_query
-      )
+      .new(**query_builder_params)
       .execute
+      .limit(@limit + @offset)
   end
 
   def filtered_events
-    @filter ? @filter.apply_filter(base_relation) : base_relation
+    filter.apply_filter(base_relation)
   end
 
   def paginate_events(events)
@@ -99,3 +112,5 @@ class EventCollection
     end
   end
 end
+
+EventCollection.prepend_mod

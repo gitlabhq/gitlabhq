@@ -134,7 +134,7 @@ By default, the integration form provides:
 - Checkboxes for each of the trigger events returned from `Integration#configurable_events`.
 
 You can also add help text at the top of the form by either overriding `Integration#help`,
-or providing a template in `app/views/projects/services/$INTEGRATION_NAME/_help.html.haml`.
+or providing a template in `app/views/shared/integrations/$INTEGRATION_NAME/_help.html.haml`.
 
 To add your custom properties to the form, you can define the metadata for them in `Integration#fields`.
 

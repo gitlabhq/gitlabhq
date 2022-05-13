@@ -14,6 +14,7 @@
  */
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -22,7 +23,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-
+  mixins: [glFeatureFlagsMixin()],
   props: {
     /**
      * Represents the status of the pod. Each state is represented with a different
@@ -75,7 +76,9 @@ export default {
     },
 
     computedLogPath() {
-      return this.isLink ? mergeUrlParams({ pod_name: this.podName }, this.logsPath) : null;
+      return this.isLink && this.glFeatures.monitorLogging
+        ? mergeUrlParams({ pod_name: this.podName }, this.logsPath)
+        : null;
     },
   },
 };

@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlPopover, GlButton, GlSprintf, GlIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import NavigationPopover from '~/attention_requests/components/navigation_popover.vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 
 let wrapper;
@@ -29,13 +30,14 @@ function createComponent(provideData = {}, shouldShowCallout = true) {
 
 describe('Attention requests navigation popover', () => {
   beforeEach(() => {
-    setFixtures('<div><div class="js-test-popover"></div><div class="js-test"></div></div>');
+    setHTMLFixture('<div><div class="js-test-popover"></div><div class="js-test"></div></div>');
     dismiss = jest.fn();
   });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+    resetHTMLFixture();
   });
 
   it('hides popover if callout is disabled', () => {

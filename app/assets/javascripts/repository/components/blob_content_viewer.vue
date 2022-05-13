@@ -8,7 +8,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo, getLocationHash } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
@@ -197,10 +197,19 @@ export default {
             this.legacyRichViewer = html;
           }
 
+          this.scrollToHash();
           this.isBinary = binary;
           this.isLoadingLegacyViewer = false;
         })
         .catch(() => this.displayError());
+    },
+    scrollToHash() {
+      const hash = getLocationHash();
+      if (hash) {
+        // Ensures the browser's native scroll to hash is triggered for async content
+        window.location.hash = '';
+        window.location.hash = hash;
+      }
     },
     displayError() {
       createFlash({ message: __('An error occurred while loading the file. Please try again.') });

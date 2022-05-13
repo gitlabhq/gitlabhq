@@ -636,7 +636,8 @@ If the limit value is set to zero, the limit is disabled.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276192) in GitLab 14.1, disabled by default.
 > - Enabled by default and [feature flag `ci_jobs_trace_size_limit` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/335259) in GitLab 14.2.
 
-The job log file size limit is 100 megabytes by default. Any job that exceeds this value is dropped.
+The job log file size limit in GitLab is 100 megabytes by default. Any job that exceeds the
+limit is marked as failed, and dropped by the runner.
 
 You can change the limit in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
 Update `ci_jobs_trace_size_limit` with the new value in megabytes:
@@ -644,6 +645,11 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 ```ruby
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
+
+GitLab Runner also has an 
+[`output_limit` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+that configures the maximum log size in a runner. Jobs that exceed the runner limit
+continue to run, but the log is truncated when it hits the limit.
 
 ### Maximum number of active DAST profile schedules per project
 

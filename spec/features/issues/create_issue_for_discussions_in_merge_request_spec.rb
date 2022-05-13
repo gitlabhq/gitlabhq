@@ -26,7 +26,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
     end
 
     it 'shows a button to resolve all threads by creating a new issue' do
-      within('.line-resolve-all-container') do
+      within('.discussions-counter') do
         expect(page).to have_selector resolve_all_discussions_link_selector( title: "Create issue to resolve all threads" )
       end
     end

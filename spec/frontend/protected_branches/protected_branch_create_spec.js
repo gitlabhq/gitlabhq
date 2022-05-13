@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import ProtectedBranchCreate from '~/protected_branches/protected_branch_create';
 
 const FORCE_PUSH_TOGGLE_TESTID = 'force-push-toggle';
@@ -21,7 +22,7 @@ describe('ProtectedBranchCreate', () => {
     codeOwnerToggleChecked = false,
     hasLicense = true,
   } = {}) => {
-    setFixtures(`
+    setHTMLFixture(`
       <form class="js-new-protected-branch">
         <span
           class="js-force-push-toggle"
@@ -39,6 +40,10 @@ describe('ProtectedBranchCreate', () => {
 
     return new ProtectedBranchCreate({ hasLicense });
   };
+
+  afterEach(() => {
+    resetHTMLFixture();
+  });
 
   describe('when license supports code owner approvals', () => {
     it('instantiates the code owner toggle', () => {

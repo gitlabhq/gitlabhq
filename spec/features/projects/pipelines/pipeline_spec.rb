@@ -15,7 +15,6 @@ RSpec.describe 'Pipeline', :js do
   before do
     sign_in(user)
     project.add_role(user, role)
-    stub_feature_flags(pipeline_tabs_vue: false)
   end
 
   shared_context 'pipeline builds' do
@@ -78,12 +77,6 @@ RSpec.describe 'Pipeline', :js do
       expect(page).to have_content('Deploy')
       expect(page).to have_content('Retry')
       expect(page).to have_content('Cancel running')
-    end
-
-    it 'shows Pipeline tab pane as active' do
-      visit_pipeline
-
-      expect(page).to have_css('#js-tab-pipeline.active')
     end
 
     it 'shows link to the pipeline ref' do
@@ -504,7 +497,6 @@ RSpec.describe 'Pipeline', :js do
 
     context 'page tabs' do
       before do
-        stub_feature_flags(pipeline_tabs_vue: false)
         visit_pipeline
       end
 
@@ -516,11 +508,8 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
+        skip('Enable in jobs `pipeline_tabs_vue` MR')
         expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
-      end
-
-      it 'shows Pipeline tab as active' do
-        expect(page).to have_css('.js-pipeline-tab-link .active')
       end
 
       context 'without permission to access builds' do
@@ -900,6 +889,7 @@ RSpec.describe 'Pipeline', :js do
 
     describe 'GET /:project/-/pipelines/:id/builds' do
       before do
+        stub_feature_flags(pipeline_tabs_vue: false)
         visit builds_project_pipeline_path(project, pipeline)
       end
 
@@ -1068,15 +1058,7 @@ RSpec.describe 'Pipeline', :js do
       expect(page).to have_button('Play')
     end
 
-    it 'shows jobs tab pane as active' do
-      expect(page).to have_css('#js-tab-builds.active')
-    end
-
     context 'page tabs' do
-      before do
-        stub_feature_flags(pipeline_tabs_vue: false)
-      end
-
       it 'shows Pipeline, Jobs and DAG tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
@@ -1084,11 +1066,8 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
+        skip('unskip when jobs tab is implemented with ff `pipeline_tabs_vue`')
         expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
-      end
-
-      it 'shows Jobs tab as active' do
-        expect(page).to have_css('li.js-builds-tab-link .active')
       end
     end
 
@@ -1147,26 +1126,19 @@ RSpec.describe 'Pipeline', :js do
   end
 
   describe 'GET /:project/-/pipelines/:id/failures' do
-    before do
-      stub_feature_flags(pipeline_tabs_vue: false)
-    end
-
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: '1234') }
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
+
+    before do
+      stub_feature_flags(pipeline_tabs_vue: false)
+    end
 
     subject { visit pipeline_failures_page }
 
     context 'with failed build' do
       before do
         failed_build.trace.set('4 examples, 1 failure')
-      end
-
-      it 'shows jobs tab pane as active' do
-        subject
-
-        expect(page).to have_content('Failed Jobs')
-        expect(page).to have_css('#js-tab-failures.active')
       end
 
       it 'lists failed builds' do
@@ -1246,13 +1218,6 @@ RSpec.describe 'Pipeline', :js do
     end
 
     context 'when missing build logs' do
-      it 'shows jobs tab pane as active' do
-        subject
-
-        expect(page).to have_content('Failed Jobs')
-        expect(page).to have_css('#js-tab-failures.active')
-      end
-
       it 'lists failed builds' do
         subject
 
@@ -1289,11 +1254,17 @@ RSpec.describe 'Pipeline', :js do
         failed_build.update!(status: :success)
       end
 
+      it 'does not show the failure tab' do
+        skip('unskip when the failure tab has been implemented in ff `pipeline_tabs_vue`')
+        subject
+
+        expect(page).not_to have_content('Failed Jobs')
+      end
+
       it 'displays the pipeline graph' do
         subject
 
         expect(page).to have_current_path(pipeline_path(pipeline), ignore_query: true)
-        expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.js-pipeline-graph')
       end
     end
@@ -1307,27 +1278,14 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
-      stub_feature_flags(pipeline_tabs_vue: false)
       visit dag_project_pipeline_path(project, pipeline)
-    end
-
-    it 'shows DAG tab pane as active' do
-      expect(page).to have_css('#js-tab-dag.active', visible: false)
     end
 
     context 'page tabs' do
       it 'shows Pipeline, Jobs and DAG tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
-        expect(page).to have_link('DAG')
-      end
-
-      it 'shows counter in Jobs tab' do
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
-      end
-
-      it 'shows DAG tab as active' do
-        expect(page).to have_css('li.js-dag-tab-link .active')
+        expect(page).to have_link('Needs')
       end
     end
   end

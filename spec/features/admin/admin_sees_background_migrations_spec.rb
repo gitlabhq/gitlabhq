@@ -54,6 +54,19 @@ RSpec.describe "Admin > Admin sees background migrations" do
     end
   end
 
+  it 'can click on a specific job' do
+    job = create(:batched_background_migration_job, :failed, batched_migration: failed_migration)
+
+    visit admin_background_migration_path(failed_migration)
+
+    within '#content-body' do
+      tab = find_link job.id
+      tab.click
+
+      expect(page).to have_current_path admin_background_migration_batched_job_path(id: job.id, background_migration_id: failed_migration.id)
+    end
+  end
+
   context 'when there are no failed jobs' do
     it 'dos not display failed jobs' do
       visit admin_background_migration_path(active_migration)

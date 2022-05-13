@@ -21,6 +21,14 @@ module Spec
               click_link(value)
             end
           end
+
+          # pajamas_sort_by is used to sort new pajamas dropdowns. When
+          # all of the dropdowns are converted, pajamas_sort_by can be renamed to sort_by
+          # https://gitlab.com/groups/gitlab-org/-/epics/7551
+          def pajamas_sort_by(value)
+            find('.filter-dropdown-container .dropdown').click
+            find('.dropdown-item', text: value).click
+          end
         end
       end
     end

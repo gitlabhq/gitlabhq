@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleExpireOAuthTokens do
+RSpec.describe RescheduleExpireOAuthTokens do
   let_it_be(:migration) { described_class::MIGRATION }
 
   describe '#up' do

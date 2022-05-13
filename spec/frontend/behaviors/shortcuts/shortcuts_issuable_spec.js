@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
@@ -25,7 +26,7 @@ describe('ShortcutsIssuable', () => {
     const FORM_SELECTOR = '.js-main-target-form .js-vue-comment-form';
 
     beforeEach(() => {
-      loadFixtures(snippetShowFixtureName);
+      loadHTMLFixture(snippetShowFixtureName);
       $('body').append(
         `<div class="js-main-target-form">
           <textarea class="js-vue-comment-form"></textarea>
@@ -40,6 +41,7 @@ describe('ShortcutsIssuable', () => {
       $(FORM_SELECTOR).remove();
 
       delete window.shortcut;
+      resetHTMLFixture();
     });
 
     // Stub getSelectedFragment to return a node with the provided HTML.
@@ -286,7 +288,7 @@ describe('ShortcutsIssuable', () => {
     let sidebarExpandedBtn;
 
     beforeEach(() => {
-      loadFixtures(mrShowFixtureName);
+      loadHTMLFixture(mrShowFixtureName);
 
       window.shortcut = new ShortcutsIssuable();
 
@@ -299,6 +301,7 @@ describe('ShortcutsIssuable', () => {
 
     afterEach(() => {
       delete window.shortcut;
+      resetHTMLFixture();
     });
 
     describe('when the sidebar is expanded', () => {

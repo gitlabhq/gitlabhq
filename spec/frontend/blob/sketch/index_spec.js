@@ -1,4 +1,5 @@
 import SketchLoader from '~/blob/sketch';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('jszip', () => {
@@ -15,7 +16,11 @@ jest.mock('jszip', () => {
 
 describe('Sketch viewer', () => {
   beforeEach(() => {
-    loadFixtures('static/sketch_viewer.html');
+    loadHTMLFixture('static/sketch_viewer.html');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('with error message', () => {

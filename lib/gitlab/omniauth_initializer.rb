@@ -136,8 +136,6 @@ module Gitlab
 
     def setup_provider(provider)
       case provider
-      when :kerberos
-        require 'omniauth-kerberos'
       when *omniauth_customized_providers
         require_dependency "omni_auth/strategies/#{provider}"
       end

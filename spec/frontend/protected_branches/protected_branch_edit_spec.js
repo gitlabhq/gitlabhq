@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -33,7 +34,7 @@ describe('ProtectedBranchEdit', () => {
     codeOwnerToggleChecked = false,
     hasLicense = true,
   } = {}) => {
-    setFixtures(`<div id="wrap" data-url="${TEST_URL}">
+    setHTMLFixture(`<div id="wrap" data-url="${TEST_URL}">
       <span
         class="js-force-push-toggle"
         data-label="Toggle allowed to force push"
@@ -51,6 +52,7 @@ describe('ProtectedBranchEdit', () => {
 
   afterEach(() => {
     mock.restore();
+    resetHTMLFixture();
   });
 
   describe('when license supports code owner approvals', () => {
@@ -76,7 +78,11 @@ describe('ProtectedBranchEdit', () => {
   describe('when toggles are not available in the DOM on page load', () => {
     beforeEach(() => {
       create({ hasLicense: true });
-      setFixtures('');
+      setHTMLFixture('');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('does not instantiate the force push toggle', () => {

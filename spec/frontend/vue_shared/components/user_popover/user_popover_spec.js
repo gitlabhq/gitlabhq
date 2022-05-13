@@ -1,4 +1,5 @@
 import { GlSkeletonLoader, GlIcon } from '@gitlab/ui';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
@@ -36,12 +37,13 @@ describe('User Popover Component', () => {
   let wrapper;
 
   beforeEach(() => {
-    loadFixtures(fixtureTemplate);
+    loadHTMLFixture(fixtureTemplate);
     gon.features = {};
   });
 
   afterEach(() => {
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   const findUserStatus = () => wrapper.findByTestId('user-popover-status');

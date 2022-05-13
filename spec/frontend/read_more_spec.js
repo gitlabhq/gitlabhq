@@ -1,10 +1,15 @@
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initReadMore from '~/read_more';
 
 describe('Read more click-to-expand functionality', () => {
   const fixtureName = 'projects/overview.html';
 
   beforeEach(() => {
-    loadFixtures(fixtureName);
+    loadHTMLFixture(fixtureName);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('expands target element', () => {

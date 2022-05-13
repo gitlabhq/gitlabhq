@@ -1,5 +1,6 @@
 import { GlPopover, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import NewProjectPushTipPopover from '~/projects/new/components/new_project_push_tip_popover.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
@@ -31,12 +32,13 @@ describe('New project push tip popover', () => {
   };
 
   beforeEach(() => {
-    setFixtures(`<a id="${targetId}"></a>`);
+    setHTMLFixture(`<a id="${targetId}"></a>`);
     buildWrapper();
   });
 
   afterEach(() => {
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   it('renders popover that targets the specified target', () => {

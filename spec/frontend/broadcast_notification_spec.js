@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initBroadcastNotifications from '~/broadcast_notification';
 
 describe('broadcast message on dismiss', () => {
@@ -9,13 +10,17 @@ describe('broadcast message on dismiss', () => {
   const endsAt = '2020-01-01T00:00:00Z';
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
     <div class="js-broadcast-notification-1">
       <button class="js-dismiss-current-broadcast-notification" data-id="1" data-expire-date="${endsAt}"></button>
     </div>
     `);
 
     initBroadcastNotifications();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('removes broadcast message', () => {

@@ -255,10 +255,23 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 
 ### Supported distributions
 
-Support depends on the scanner:
+Support depends on which scanner is used:
 
-- [Grype](https://github.com/anchore/grype#grype)
-- [Trivy](https://aquasecurity.github.io/trivy/latest/docs/vulnerability/detection/os/) (Default).
+| Distribution   | Grype | Trivy |
+| -------------- | ----- | ----- |
+| Alma Linux     |       |  ✅   |
+| Amazon Linux   |  ✅   |  ✅   |
+| BusyBox        |  ✅   |       |
+| CentOS         |  ✅   |  ✅   |
+| CBL-Mariner    |       |  ✅   |
+| Debian         |  ✅   |  ✅   |
+| Distroless     |  ✅   |  ✅   |
+| Oracle Linux   |  ✅   |  ✅   |
+| Photon OS      |       |  ✅   |
+| Red Hat (RHEL) |  ✅   |  ✅   |
+| Rocky Linux    |       |  ✅   |
+| SUSE           |       |  ✅   |
+| Ubuntu         |  ✅   |  ✅   |
 
 #### FIPS-enabled images
 
@@ -774,15 +787,38 @@ Here's an example container scanning report:
 The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all
 the security vulnerabilities in your groups, projects and pipelines.
 
-## Vulnerabilities database update
+## Vulnerabilities database
 
 All analyzer images are [updated daily](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/README.md#image-updates).
 
-The images include the latest advisory database available for their respective scanner. Each
-scanner includes data from multiple sources:
+The images use data from upstream advisory databases depending on which scanner is used:
 
-- [Grype](https://github.com/anchore/grype#grypes-database).
-- [Trivy](https://aquasecurity.github.io/trivy/latest/docs/vulnerability/detection/data-source/).
+| Data Source                    | Trivy | Grype |
+| ------------------------------ | ----- | ----- |
+| AlmaLinux Security Advisory    |  ✅   | ✅    |
+| Amazon Linux Security Center   |  ✅   | ✅    |
+| Arch Linux Security Tracker    |  ✅   |       |
+| SUSE CVRF                      |  ✅   | ✅    |
+| CWE Advisories                 |  ✅   |       |
+| Debian Security Bug Tracker    |  ✅   | ✅    |
+| GitHub Security Advisory       |  ✅   | ✅    |
+| Go Vulnerability Database      |  ✅   |       |
+| CBL-Mariner Vulnerability Data |  ✅   |       |
+| NVD                            |  ✅   | ✅    |
+| OSV                            |  ✅   |       |
+| Red Hat OVAL v2                |  ✅   | ✅    |
+| Red Hat Security Data API      |  ✅   | ✅    |
+| Photon Security Advisories     |  ✅   |       |
+| Rocky Linux UpdateInfo         |  ✅   |       |
+| Ubuntu CVE Tracker (only data sources from mid 2021 and later) |  ✅   | ✅    |
+
+In addition to the sources provided by these scanners, GitLab maintains the following vulnerability databases:
+
+- The proprietary
+[GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db).
+- The open source [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community).
+
+In the GitLab Ultimate tier, the data from the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is merged in to augment the data from the external sources. In the GitLab Premium and Free tiers, the data from the [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community) is merged in to augment the data from the external sources. This augmentation currently only applies to the analyzer images for the Trivy scanner.
 
 Database update information for other analyzers is available in the
 [maintenance table](../index.md#vulnerability-scanner-maintenance).

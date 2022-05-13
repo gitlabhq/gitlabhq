@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import U2FAuthenticate from '~/authentication/u2f/authenticate';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
@@ -9,7 +10,7 @@ describe('U2FAuthenticate', () => {
   let component;
 
   beforeEach(() => {
-    loadFixtures('u2f/authenticate.html');
+    loadHTMLFixture('u2f/authenticate.html');
     u2fDevice = new MockU2FDevice();
     container = $('#js-authenticate-token-2fa');
     component = new U2FAuthenticate(
@@ -21,6 +22,10 @@ describe('U2FAuthenticate', () => {
       document.querySelector('#js-login-2fa-device'),
       document.querySelector('.js-2fa-form'),
     );
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('with u2f unavailable', () => {

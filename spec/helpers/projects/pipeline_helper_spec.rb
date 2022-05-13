@@ -16,6 +16,7 @@ RSpec.describe Projects::PipelineHelper do
         can_generate_codequality_reports: pipeline.can_generate_codequality_reports?.to_json,
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: project.namespace, project_id: project, format: :json),
+        pipeline_iid: pipeline.iid,
         pipeline_project_path: project.full_path
       })
     end

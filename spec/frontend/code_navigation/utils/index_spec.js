@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import {
   cachedData,
   getCurrentHoverElement,
@@ -35,9 +36,13 @@ describe('setCurrentHoverElement', () => {
 
 describe('addInteractionClass', () => {
   beforeEach(() => {
-    setFixtures(
+    setHTMLFixture(
       '<div data-path="index.js"><div class="blob-content"><div id="LC1" class="line"><span>console</span><span>.</span><span>log</span></div><div id="LC2" class="line"><span>function</span></div></div></div>',
     );
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it.each`
@@ -59,7 +64,7 @@ describe('addInteractionClass', () => {
 
   describe('wrapTextNodes', () => {
     beforeEach(() => {
-      setFixtures(
+      setHTMLFixture(
         '<div data-path="index.js"><div class="blob-content"><div id="LC1" class="line"> Text </div></div></div>',
       );
     });

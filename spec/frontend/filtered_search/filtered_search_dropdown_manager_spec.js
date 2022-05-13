@@ -1,5 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
 
 describe('Filtered Search Dropdown Manager', () => {
@@ -20,13 +21,17 @@ describe('Filtered Search Dropdown Manager', () => {
     }
 
     beforeEach(() => {
-      setFixtures(`
+      setHTMLFixture(`
         <ul class="tokens-container">
           <li class="input-token">
             <input class="filtered-search">
           </li>
         </ul>
       `);
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     describe('input has no existing value', () => {

@@ -809,11 +809,14 @@ The following are examples of tests that work for Jest:
 
 ```javascript
 it('uses some HTML element', () => {
-  loadFixtures('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
+  loadHTMLFixture('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
 
   const element = document.getElementById('#my-id');
 
   // ...
+
+  // Jest does not clean up the DOM automatically
+  resetHTMLFixture();
 });
 ```
 

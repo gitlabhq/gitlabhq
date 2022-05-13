@@ -327,11 +327,7 @@ module Ci
 
       after_transition pending: :running do |build|
         build.run_after_commit do
-          if ::Feature.enabled?(:ci_reduce_persistent_ref_writes, build.project)
-            build.ensure_persistent_ref
-          else
-            build.pipeline.persistent_ref.create
-          end
+          build.ensure_persistent_ref
 
           BuildHooksWorker.perform_async(id)
         end

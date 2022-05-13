@@ -1,3 +1,4 @@
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
@@ -19,9 +20,13 @@ describe('SigninTabsMemoizer', () => {
   }
 
   beforeEach(() => {
-    loadFixtures(fixtureTemplate);
+    loadHTMLFixture(fixtureTemplate);
 
     jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('does nothing if no tab was previously selected', () => {

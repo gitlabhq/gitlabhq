@@ -3,6 +3,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createSpyObj } from 'helpers/jest_helpers';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -33,7 +34,7 @@ gl.utils.disableButtonIfEmptyField = () => {};
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('Old Notes (~/deprecated_notes.js)', () => {
   beforeEach(() => {
-    loadFixtures(fixture);
+    loadHTMLFixture(fixture);
 
     // Re-declare this here so that test_setup.js#beforeEach() doesn't
     // overwrite it.
@@ -50,12 +51,14 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     setTestTimeoutOnce(4000);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     // The Notes component sets a polling interval. Clear it after every run.
     // Make sure to use jest.runOnlyPendingTimers() instead of runAllTimers().
     jest.clearAllTimers();
 
-    return axios.waitForAll().finally(() => mockAxios.restore());
+    await axios.waitForAll().finally(() => mockAxios.restore());
+
+    resetHTMLFixture();
   });
 
   it('loads the Notes class into the DOM', () => {
@@ -629,7 +632,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     let $notesContainer;
 
     beforeEach(() => {
-      loadFixtures('commit/show.html');
+      loadHTMLFixture('commit/show.html');
       mockAxios.onPost(NOTES_POST_PATH).reply(200, note);
 
       new Notes('', []);

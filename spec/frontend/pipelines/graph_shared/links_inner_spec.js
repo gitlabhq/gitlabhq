@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
 import { parseData } from '~/pipelines/components/parsing_utils';
 import { createJobsHash } from '~/pipelines/utils';
@@ -42,7 +42,7 @@ describe('Links Inner component', () => {
   // We create fixture so that each job has an empty div that represent
   // the JobPill in the DOM. Each `JobPill` would have different coordinates,
   // so we increment their coordinates on each iteration to simulate different positions.
-  const setFixtures = ({ stages }) => {
+  const setHTMLFixtureLocal = ({ stages }) => {
     const jobs = createJobsHash(stages);
     const arrayOfJobs = Object.keys(jobs);
 
@@ -82,6 +82,7 @@ describe('Links Inner component', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   describe('basic SVG creation', () => {
@@ -124,7 +125,7 @@ describe('Links Inner component', () => {
 
   describe('with one need', () => {
     beforeEach(() => {
-      setFixtures(pipelineData);
+      setHTMLFixtureLocal(pipelineData);
       createComponent({ pipelineData: pipelineData.stages });
     });
 
@@ -143,7 +144,7 @@ describe('Links Inner component', () => {
 
   describe('with a parallel need', () => {
     beforeEach(() => {
-      setFixtures(parallelNeedData);
+      setHTMLFixtureLocal(parallelNeedData);
       createComponent({ pipelineData: parallelNeedData.stages });
     });
 
@@ -162,7 +163,7 @@ describe('Links Inner component', () => {
 
   describe('with same stage needs', () => {
     beforeEach(() => {
-      setFixtures(sameStageNeeds);
+      setHTMLFixtureLocal(sameStageNeeds);
       createComponent({ pipelineData: sameStageNeeds.stages });
     });
 
@@ -181,7 +182,7 @@ describe('Links Inner component', () => {
 
   describe('with a large number of needs', () => {
     beforeEach(() => {
-      setFixtures(largePipelineData);
+      setHTMLFixtureLocal(largePipelineData);
       createComponent({ pipelineData: largePipelineData.stages });
     });
 
@@ -200,7 +201,7 @@ describe('Links Inner component', () => {
 
   describe('interactions', () => {
     beforeEach(() => {
-      setFixtures(largePipelineData);
+      setHTMLFixtureLocal(largePipelineData);
       createComponent({ pipelineData: largePipelineData.stages });
     });
 

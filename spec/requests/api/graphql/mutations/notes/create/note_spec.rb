@@ -109,7 +109,7 @@ RSpec.describe 'Adding a Note' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response).to include(
-          'errors' => [/Merged this merge request/],
+          'errors' => include(/Merged this merge request/),
           'note' => nil
         )
       end

@@ -1,6 +1,6 @@
 /* eslint-disable no-return-assign */
-
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import syntaxHighlight from '~/syntax_highlight';
 
 describe('Syntax Highlighter', () => {
@@ -20,7 +20,11 @@ describe('Syntax Highlighter', () => {
   `('highlight using $desc syntax', ({ fn }) => {
     describe('on a js-syntax-highlight element', () => {
       beforeEach(() => {
-        setFixtures('<div class="js-syntax-highlight"></div>');
+        setHTMLFixture('<div class="js-syntax-highlight"></div>');
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('applies syntax highlighting', () => {
@@ -33,9 +37,13 @@ describe('Syntax Highlighter', () => {
 
     describe('on a parent element', () => {
       beforeEach(() => {
-        setFixtures(
+        setHTMLFixture(
           '<div class="parent">\n  <div class="js-syntax-highlight"></div>\n  <div class="foo"></div>\n  <div class="js-syntax-highlight"></div>\n</div>',
         );
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('applies highlighting to all applicable children', () => {
@@ -49,7 +57,7 @@ describe('Syntax Highlighter', () => {
       });
 
       it('prevents an infinite loop when no matches exist', () => {
-        setFixtures('<div></div>');
+        setHTMLFixture('<div></div>');
         const highlight = () => syntaxHighlight(fn('div'));
 
         expect(highlight).not.toThrow();

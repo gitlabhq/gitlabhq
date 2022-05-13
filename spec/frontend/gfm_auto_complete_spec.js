@@ -2,6 +2,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import labelsFixture from 'test_fixtures/autocomplete_sources/labels.json';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GfmAutoComplete, { membersBeforeSave, highlighter } from 'ee_else_ce/gfm_auto_complete';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import '~/lib/utils/jquery_at_who';
@@ -722,7 +723,7 @@ describe('GfmAutoComplete', () => {
     let $textarea;
 
     beforeEach(() => {
-      setFixtures('<textarea></textarea>');
+      setHTMLFixture('<textarea></textarea>');
       autocomplete = new GfmAutoComplete(dataSources);
       $textarea = $('textarea');
       autocomplete.setup($textarea, { labels: true });
@@ -730,6 +731,7 @@ describe('GfmAutoComplete', () => {
 
     afterEach(() => {
       autocomplete.destroy();
+      resetHTMLFixture();
     });
 
     const triggerDropdown = (text) => {

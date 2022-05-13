@@ -253,10 +253,6 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
-          if ::Feature.disabled?(:ci_reduce_persistent_ref_writes, pipeline.project)
-            pipeline.persistent_ref.delete
-          end
-
           pipeline.all_merge_requests.each do |merge_request|
             next unless merge_request.auto_merge_enabled?
 
@@ -292,9 +288,7 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
         pipeline.run_after_commit do
-          if ::Feature.enabled?(:ci_reduce_persistent_ref_writes, pipeline.project)
-            pipeline.persistent_ref.delete
-          end
+          pipeline.persistent_ref.delete
         end
       end
 

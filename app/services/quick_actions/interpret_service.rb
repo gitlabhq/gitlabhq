@@ -44,7 +44,7 @@ module QuickActions
       content, commands = extractor.extract_commands(content, only: only)
       extract_updates(commands)
 
-      [content, @updates, execution_messages_for(commands)]
+      [content, @updates, execution_messages_for(commands), command_names(commands)]
     end
 
     # Takes a text and interprets the commands that are extracted from it.
@@ -164,6 +164,15 @@ module QuickActions
         when :execute_message
           @execution_message[name.to_sym] || definition.execute_message(self, arg)
         end
+      end.compact
+    end
+
+    def command_names(commands)
+      commands.flatten.map do |name|
+        definition = self.class.definition_by_name(name)
+        next unless definition
+
+        name
       end.compact
     end
 

@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initForm from '~/pages/projects/pages_domains/form';
 
 const ENABLED_UNLESS_AUTO_SSL_CLASS = 'js-enabled-unless-auto-ssl';
@@ -17,7 +18,7 @@ describe('Page domains form', () => {
   const findUnlessAutoSsl = () => document.querySelector(`.${SHOW_UNLESS_AUTO_SSL_CLASS}`);
 
   const create = () => {
-    setFixtures(`
+    setHTMLFixture(`
       <form>
         <span
           class="${SSL_TOGGLE_CLASS}"
@@ -30,6 +31,10 @@ describe('Page domains form', () => {
       </form>
     `);
   };
+
+  afterEach(() => {
+    resetHTMLFixture();
+  });
 
   it('instantiates the toggle', () => {
     create();

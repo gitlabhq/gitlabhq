@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import EditBlob from '~/blob_edit/edit_blob';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
@@ -34,7 +35,7 @@ describe('Blob Editing', () => {
     focus: jest.fn(),
   };
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <form class="js-edit-blob-form">
         <div id="file_path"></div>
         <div id="editor"></div>
@@ -48,6 +49,7 @@ describe('Blob Editing', () => {
     EditorMarkdownExtension.mockClear();
     EditorMarkdownPreviewExtension.mockClear();
     FileTemplateExtension.mockClear();
+    resetHTMLFixture();
   });
 
   const editorInst = (isMarkdown) => {

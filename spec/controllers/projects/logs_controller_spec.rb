@@ -47,6 +47,20 @@ RSpec.describe Projects::LogsController do
       expect(response).to be_ok
       expect(response).to render_template 'index'
     end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(monitor_logging: false)
+      end
+
+      it 'returns 404 with reporter access' do
+        project.add_developer(user)
+
+        get :index, params: environment_params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   shared_examples 'pod logs service' do |endpoint, service|
