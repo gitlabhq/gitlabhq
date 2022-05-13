@@ -6727,6 +6727,9 @@ msgstr ""
 msgid "CI/CD configuration file"
 msgstr ""
 
+msgid "CI/CD limits"
+msgstr ""
+
 msgid "CI/CD minutes"
 msgstr ""
 
@@ -6813,6 +6816,9 @@ msgstr ""
 msgid "CICD|Jobs"
 msgstr ""
 
+msgid "CICD|Limit"
+msgstr ""
+
 msgid "CICD|Limit CI_JOB_TOKEN access"
 msgstr ""
 
@@ -6823,6 +6829,9 @@ msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
+msgstr ""
+
+msgid "CICD|There are several CI/CD limits in place."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -16326,9 +16335,6 @@ msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
 msgstr ""
 
 msgid "Geo|%{title} checksum progress"
-msgstr ""
-
-msgid "Geo|(%{timeAgo})"
 msgstr ""
 
 msgid "Geo|Add New Site"

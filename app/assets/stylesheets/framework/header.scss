@@ -22,14 +22,6 @@
     min-height: $header-height;
     padding-left: 0;
 
-    .title-container {
-      display: flex;
-      align-items: stretch;
-      flex: 1 1 auto;
-      padding-top: 0;
-      overflow: visible;
-    }
-
     .title {
       padding-right: 0;
       color: currentColor;

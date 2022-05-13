@@ -392,5 +392,5 @@ deploy me:
 
 The behavior of deployment jobs can be controlled with
 [deployment safety](../environments/deployment_safety.md) settings like
-[skipping outdated deployment jobs](../environments/deployment_safety.md#prevent-deployments-during-deploy-freeze-windows)
+[skipping outdated deployment jobs](../environments/deployment_safety.md#skip-outdated-deployment-jobs)
 and [ensuring only one deployment job runs at a time](../environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).

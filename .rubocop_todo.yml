@@ -27,12 +27,6 @@ Performance/CollectionLiteralInLoop:
 Performance/ConstantRegexp:
   Enabled: false
 
-# Offense count: 15209
-# Configuration parameters: Prefixes.
-# Prefixes: when, with, without
-RSpec/ContextWording:
-  Enabled: false
-
 # Offense count: 1428
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -96,12 +90,6 @@ Rails/ContentTag:
 Rails/CreateTableWithTimestamps:
   Enabled: false
 
-# Offense count: 361
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: slashes, arguments
-Rails/FilePath:
-  Enabled: false
-
 # Offense count: 354
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
@@ -124,13 +112,6 @@ Rails/IndexWith:
 # Include: app/models/**/*.rb
 Rails/InverseOf:
   Enabled: false
-
-# Offense count: 62
-# Configuration parameters: Include.
-# Include: app/controllers/**/*.rb
-Rails/LexicallyScopedActionFilter:
-  Enabled: false
-
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -211,13 +192,6 @@ Style/KeywordParametersOrder:
 Style/Lambda:
   Enabled: false
 
-# Offense count: 101
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedOctalStyle.
-# SupportedOctalStyles: zero_with_o, zero_only
-Style/NumericLiteralPrefix:
-  Enabled: false
-
 # Offense count: 279
 # Cop supports --auto-correct.
 Style/RedundantRegexpEscape:
@@ -231,9 +205,4 @@ Style/RescueModifier:
 # Offense count: 123
 # Cop supports --auto-correct.
 Style/SingleArgumentDig:
-  Enabled: false
-
-# Offense count: 562
-# Cop supports --auto-correct.
-Style/StringConcatenation:
   Enabled: false

@@ -29,6 +29,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
       environment boards jira_import_status jira_imports services releases release
       alert_management_alerts alert_management_alert alert_management_alert_status_counts
+      incident_management_timeline_event incident_management_timeline_events
       container_expiration_policy service_desk_enabled service_desk_address
       issue_status_counts terraform_states alert_management_integrations
       container_repositories container_repositories_count

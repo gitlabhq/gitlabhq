@@ -116,6 +116,16 @@ The following `geo:db:*` tasks have been removed from GitLab 15.0 and have been 
 - `geo:db:test:load` -> `db:test:load:geo`
 - `geo:db:test:purge` -> `db:test:purge:geo`
 
+### DS_DEFAULT_ANALYZERS environment variable
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+We are removing the `DS_DEFAULT_ANALYZERS` environment variable from Dependency Scanning on May 22, 2022 in 15.0. After this removal, this variable's value will be ignored. To configure which analyzers to run with the default configuration, you should use the `DS_EXCLUDED_ANALYZERS` variable instead.
+
 ### Elasticsearch 6.8.x in GitLab 15.0
 
 WARNING:
@@ -129,6 +139,30 @@ If you use Elasticsearch 6.8, **you must upgrade your Elasticsearch version to 7
 You should not upgrade to Elasticsearch 8 until you have completed the GitLab 15.0 upgrade.
 
 View the [version requirements](https://docs.gitlab.com/ee/integration/elasticsearch.html#version-requirements) for details.
+
+### External status check API breaking changes
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The [external status check API](https://docs.gitlab.com/ee/api/status_checks.html) was originally implemented to
+support pass-by-default requests to mark a status check as passing. Pass-by-default requests are now removed.
+Specifically, the following are removed:
+
+- Requests that do not contain the `status` field.
+- Requests that have the `status` field set to `approved`.
+
+From GitLab 15.0, status checks are only set to a passing state if the `status` field is both present
+and set to `passed`. Requests that:
+
+- Do not contain the `status` field will be rejected with a `400` error. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338827).
+- Contain any value other than `passed`, such as `approved`, cause the status check to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/339039).
+
+To align with this change, API calls to list external status checks also return the value of `passed` rather than
+`approved` for status checks that have passed.
 
 ### GitLab Serverless
 
@@ -168,6 +202,10 @@ The issue for this removal is [GitLab-#350682](https://gitlab.com/gitlab-org/git
 
 In GitLab 13.0, we introduced new project and design replication details routes in the Geo Admin UI. These routes are `/admin/geo/replication/projects` and `/admin/geo/replication/designs`. We kept the legacy routes and redirected them to the new routes. These legacy routes `/admin/geo/projects` and `/admin/geo/designs` have been removed in GitLab 15.0. Please update any bookmarks or scripts that may use the legacy routes.
 
+### Legacy approval status names in License Compliance API
+
+We have now removed the deprecated legacy names for approval status of license policy (`blacklisted`, `approved`) in the API queries and responses. If you are using our License Compliance API you should stop using the `approved` and `blacklisted` query parameters, they are now `allowed` and `denied`. In 15.0 the responses will also stop using `approved` and `blacklisted` so you may need to adjust any of your custom tools.
+
 ### OAuth implicit grant
 
 WARNING:
@@ -189,6 +227,29 @@ changes to your code, settings, or workflow.
 GitLab no longer supports OAuth tokens [without an expiration](https://docs.gitlab.com/ee/integration/oauth_provider.html#expiring-access-tokens).
 
 Any existing token without an expiration has one automatically generated and applied.
+
+### Optional enforcement of SSH expiration
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Disabling SSH expiration enforcement is unusual from a security perspective and could create unusual situations where an expired
+key is unintentionally able to be used. Unexpected behavior in a security feature is inherently dangerous and so now we enforce
+expiration on all SSH keys.
+
+### Optional enforcement of personal access token expiration
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Allowing expired personal access tokens to be used is unusual from a security perspective and could create unusual situations where an
+expired key is unintentionally able to be used. Unexpected behavior in a security feature is inherently dangerous and so we now do not let expired personal access tokens be used.
 
 ### Remove Versions from PackageType
 
@@ -275,6 +336,35 @@ It also depends on a few third-party gems that are not actively maintained anymo
 
 For more information, check the [summary section of the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352488#deprecation-summary).
 
+### Required pipeline configurations in Premium tier
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+[Required pipeline configuration](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#required-pipeline-configuration) helps to define and mandate organization-wide pipeline configurations and is a requirement at an executive and organizational level. To align better with our [pricing philosophy](https://about.gitlab.com/company/pricing/#three-tiers), this feature is removed from the Premium tier in GitLab 15.0. This feature continues to be available in the GitLab Ultimate tier.
+
+We recommend customers use [Compliance Pipelines](https://docs.gitlab.com/ee/user/project/settings/index.html#compliance-pipeline-configuration), also in GitLab Ultimate, as an alternative as it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
+
+This change also helps GitLab remain consistent in our tiering strategy with the other related Ultimate-tier features:
+
+- [Security policies](https://docs.gitlab.com/ee/user/application_security/policies/).
+- [Compliance framework pipelines](https://docs.gitlab.com/ee/user/project/settings/index.html#compliance-pipeline-configuration).
+
+### Retire-JS Dependency Scanning tool
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+We have removed support for retire.js from Dependency Scanning as of May 22, 2022 in GitLab 15.0. JavaScript scanning functionality will not be affected as it is still being covered by Gemnasium.
+
+If you have explicitly excluded retire.js using the `DS_EXCLUDED_ANALYZERS` variable, then you will be able to remove the reference to retire.js. If you have customized your pipeline’s Dependency Scanning configuration related to the `retire-js-dependency_scanning` job, then you will want to switch to `gemnasium-dependency_scanning`. If you have not used the `DS_EXCLUDED_ANALYZERS` to reference retire.js, or customized your template specifically for retire.js, you will not need to take any action.
+
 ### Runner status `not_connected` API value
 
 WARNING:
@@ -288,6 +378,27 @@ deprecated the `not_connected` status value in GitLab 14.6 and will start return
 starting in GitLab 15.0.
 
 Runners that have never contacted the GitLab instance will also return `stale` if created more than 3 months ago.
+
+### SAST support for .NET 2.1
+
+The [GitLab SAST Security Code Scan analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) scans .NET code for security vulnerabilities.
+For technical reasons, the analyzer must first build the code to scan it.
+
+In GitLab versions prior to 15.0, the default analyzer image (version 2) included support for:
+
+- .NET 2.1
+- .NET Core 3.1
+- .NET 5.0
+
+In GitLab 15.0, we've changed the default major version for this analyzer from version 2 to version 3. This change:
+
+- Adds [severity values for vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/issues/350408) along with [other new features and improvements](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/blob/master/CHANGELOG.md).
+- Removes .NET 2.1 support.
+- Adds support for .NET 6.0, Visual Studio 2019, and Visual Studio 2022.
+
+Version 3 was [announced in GitLab 14.6](https://about.gitlab.com/releases/2021/12/22/gitlab-14-6-released/#sast-support-for-net-6) and made available as an optional upgrade.
+
+If you rely on .NET 2.1 support being present in the analyzer image by default, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352553#breaking-change).
 
 ### Sidekiq configuration for metrics and health checks
 
@@ -415,6 +526,18 @@ follow the [upgrade instructions](https://docs.gitlab.com/ee/integration/kerbero
 to upgrade from the removed integration to the new supported one.
 
 We are not removing Kerberos SPNEGO integration. We are removing the old password-based Kerberos.
+
+### bundler-audit Dependency Scanning tool
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+We are removing bundler-audit from Dependency Scanning on May 22, 2022 in 15.0. After this removal, Ruby scanning functionality will not be affected as it is still being covered by Gemnasium.
+
+If you have explicitly excluded bundler-audit using the `DS_EXCLUDED_ANALYZERS` variable, then you will be able to remove the reference to bundler-audit. If you have customized your pipeline’s Dependency Scanning configuration related to the `bundler-audit-dependency_scanning` job, then you will want to switch to `gemnasium-dependency_scanning`. If you have not used the `DS_EXCLUDED_ANALYZERS` to reference bundler-audit or customized your template specifically for bundler-audit, you will not need to take any action.
 
 ## 14.10
 

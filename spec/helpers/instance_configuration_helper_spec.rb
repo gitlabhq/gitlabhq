@@ -50,4 +50,14 @@ RSpec.describe InstanceConfigurationHelper do
       expect(helper.instance_configuration_human_size_cell(1048576)).to eq('1 MB')
     end
   end
+
+  describe '#instance_configuration_disabled_cell_html' do
+    it 'returns "-" if parameter is 0' do
+      expect(helper.instance_configuration_disabled_cell_html(0)).to eq('-')
+    end
+
+    it 'return parameter if not 0' do
+      expect(helper.instance_configuration_disabled_cell_html(1)).to eq(1)
+    end
+  end
 end

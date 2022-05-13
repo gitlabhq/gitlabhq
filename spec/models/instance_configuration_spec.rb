@@ -180,6 +180,61 @@ RSpec.describe InstanceConfiguration do
         end
       end
 
+      describe '#ci_cd_limits' do
+        let_it_be(:plan1) { create(:plan, name: 'plan1', title: 'Plan 1') }
+        let_it_be(:plan2) { create(:plan, name: 'plan2', title: 'Plan 2') }
+
+        before do
+          create(:plan_limits,
+            plan: plan1,
+            ci_pipeline_size: 1001,
+            ci_active_jobs: 1002,
+            ci_active_pipelines: 1003,
+            ci_project_subscriptions: 1004,
+            ci_pipeline_schedules: 1005,
+            ci_needs_size_limit: 1006,
+            ci_registered_group_runners: 1007,
+            ci_registered_project_runners: 1008
+          )
+          create(:plan_limits,
+            plan: plan2,
+            ci_pipeline_size: 1101,
+            ci_active_jobs: 1102,
+            ci_active_pipelines: 1103,
+            ci_project_subscriptions: 1104,
+            ci_pipeline_schedules: 1105,
+            ci_needs_size_limit: 1106,
+            ci_registered_group_runners: 1107,
+            ci_registered_project_runners: 1108
+          )
+        end
+
+        it 'returns CI/CD limits' do
+          ci_cd_size_limits = subject.settings[:ci_cd_limits]
+
+          expect(ci_cd_size_limits[:Plan1]).to eq({
+            ci_active_jobs: 1002,
+            ci_active_pipelines: 1003,
+            ci_needs_size_limit: 1006,
+            ci_pipeline_schedules: 1005,
+            ci_pipeline_size: 1001,
+            ci_project_subscriptions: 1004,
+            ci_registered_group_runners: 1007,
+            ci_registered_project_runners: 1008
+          })
+          expect(ci_cd_size_limits[:Plan2]).to eq({
+            ci_active_jobs: 1102,
+            ci_active_pipelines: 1103,
+            ci_needs_size_limit: 1106,
+            ci_pipeline_schedules: 1105,
+            ci_pipeline_size: 1101,
+            ci_project_subscriptions: 1104,
+            ci_registered_group_runners: 1107,
+            ci_registered_project_runners: 1108
+          })
+        end
+      end
+
       describe '#rate_limits' do
         before do
           Gitlab::CurrentSettings.current_application_settings.update!(

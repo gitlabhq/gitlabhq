@@ -3,7 +3,7 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', only: { subdomain: %i[staging pre] } do
+  RSpec.describe 'Package', only: { subdomain: %i[staging pre] }, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/360466', type: :investigating } do
     include Support::API
 
     describe 'Container Registry' do

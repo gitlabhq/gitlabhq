@@ -51,6 +51,24 @@ Most of the deprecations are **planned for removal in 15.0**, and many of them a
 
 <div class="deprecation removal-160 breaking-change">
 
+### CiCdSettingsUpdate mutation renamed to ProjectCiCdSettingsUpdate
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `CiCdSettingsUpdate` mutation was renamed to `ProjectCiCdSettingsUpdate` in GitLab 15.0.
+The `CiCdSettingsUpdate` mutation will be removed in GitLab 16.0.
+Any user scripts that use the `CiCdSettingsUpdate` mutation must be updated to use `ProjectCiCdSettingsUpdate`
+instead.
+
+**Planned removal milestone: <span class="removal-milestone">16.0</span> (2023-05-22)**
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### GraphQL API legacyMode argument for Runner status
 
 WARNING:

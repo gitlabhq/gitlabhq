@@ -850,6 +850,11 @@ Input type: `BulkEnableDevopsAdoptionNamespacesInput`
 
 ### `Mutation.ciCdSettingsUpdate`
 
+WARNING:
+**Deprecated** in 15.0.
+This was renamed.
+Use: `ProjectCiCdSettingsUpdate`.
+
 Input type: `CiCdSettingsUpdateInput`
 
 #### Arguments
@@ -3907,6 +3912,29 @@ Input type: `PipelineRetryInput`
 | <a id="mutationpipelineretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelineretryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationpipelineretrypipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline after mutation. |
+
+### `Mutation.projectCiCdSettingsUpdate`
+
+Input type: `ProjectCiCdSettingsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
+| <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI job tokens generated in this project have restricted access to resources. |
+| <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for this project. |
+| <a id="mutationprojectcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merge pipelines are enabled for the project. |
+| <a id="mutationprojectcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectcicdsettingsupdatecicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting!`](#projectcicdsetting) | CI/CD settings after mutation. |
+| <a id="mutationprojectcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectcicdsettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.projectSetComplianceFramework`
 
@@ -7417,6 +7445,30 @@ The edge type for [`OncallParticipantType`](#oncallparticipanttype).
 | ---- | ---- | ----------- |
 | <a id="oncallparticipanttypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="oncallparticipanttypeedgenode"></a>`node` | [`OncallParticipantType`](#oncallparticipanttype) | The item at the end of the edge. |
+
+#### `PackageBaseConnection`
+
+The connection type for [`PackageBase`](#packagebase).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagebaseconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="packagebaseconnectionedges"></a>`edges` | [`[PackageBaseEdge]`](#packagebaseedge) | A list of edges. |
+| <a id="packagebaseconnectionnodes"></a>`nodes` | [`[PackageBase]`](#packagebase) | A list of nodes. |
+| <a id="packagebaseconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PackageBaseEdge`
+
+The edge type for [`PackageBase`](#packagebase).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagebaseedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="packagebaseedgenode"></a>`node` | [`PackageBase`](#packagebase) | The item at the end of the edge. |
 
 #### `PackageConnection`
 
@@ -13992,7 +14044,7 @@ Active period time range for on-call rotation.
 
 ### `Package`
 
-Represents a package in the Package Registry. Note that this type is in beta and susceptible to changes.
+Represents a package with pipelines in the Package Registry.
 
 #### Fields
 
@@ -14010,6 +14062,26 @@ Represents a package in the Package Registry. Note that this type is in beta and
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packageupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 | <a id="packageversion"></a>`version` | [`String`](#string) | Version string. |
+
+### `PackageBase`
+
+Represents a package in the Package Registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagebasecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
+| <a id="packagebasecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
+| <a id="packagebasemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
+| <a id="packagebasename"></a>`name` | [`String!`](#string) | Name of the package. |
+| <a id="packagebasepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
+| <a id="packagebaseproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
+| <a id="packagebasestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
+| <a id="packagebasetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
+| <a id="packagebaseupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+| <a id="packagebaseversion"></a>`version` | [`String`](#string) | Version string. |
 
 ### `PackageComposerJsonType`
 
@@ -14051,7 +14123,7 @@ Represents a package dependency link.
 
 ### `PackageDetailsType`
 
-Represents a package details in the Package Registry. Note that this type is in beta and susceptible to changes.
+Represents a package details in the Package Registry.
 
 #### Fields
 
@@ -14079,7 +14151,7 @@ Represents a package details in the Package Registry. Note that this type is in 
 | <a id="packagedetailstypetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packagedetailstypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 | <a id="packagedetailstypeversion"></a>`version` | [`String`](#string) | Version string. |
-| <a id="packagedetailstypeversions"></a>`versions` | [`PackageConnection`](#packageconnection) | Other versions of the package. (see [Connections](#connections)) |
+| <a id="packagedetailstypeversions"></a>`versions` | [`PackageBaseConnection`](#packagebaseconnection) | Other versions of the package. (see [Connections](#connections)) |
 
 ### `PackageFile`
 

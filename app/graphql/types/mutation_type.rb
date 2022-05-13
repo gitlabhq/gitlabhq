@@ -47,6 +47,10 @@ module Types
     mount_mutation Mutations::DependencyProxy::ImageTtlGroupPolicy::Update
     mount_mutation Mutations::DependencyProxy::GroupSettings::Update
     mount_mutation Mutations::Environments::CanaryIngress::Update
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::Create
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::Update
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::Destroy
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
     mount_mutation Mutations::Issues::SetCrmContacts
@@ -111,7 +115,12 @@ module Types
     mount_mutation Mutations::Ci::Pipeline::Cancel
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry
-    mount_mutation Mutations::Ci::CiCdSettingsUpdate
+    mount_mutation Mutations::Ci::CiCdSettingsUpdate, deprecated: {
+      reason: :renamed,
+      replacement: 'ProjectCiCdSettingsUpdate',
+      milestone: '15.0'
+    }
+    mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
     mount_mutation Mutations::Ci::Job::Play
     mount_mutation Mutations::Ci::Job::Retry
     mount_mutation Mutations::Ci::Job::Cancel

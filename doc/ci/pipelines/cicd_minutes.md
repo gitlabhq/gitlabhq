@@ -90,6 +90,8 @@ To view CI/CD minutes being used for your group:
 
 ## View CI/CD minutes used by a personal namespace
 
+> Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+
 You can view the number of CI/CD minutes being used by a personal namespace:
 
 1. On the top bar, in the top right corner, select your avatar.

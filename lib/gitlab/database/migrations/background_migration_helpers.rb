@@ -41,6 +41,12 @@ module Gitlab
         #       end
         #     end
         def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BATCH_SIZE, other_job_arguments: [], initial_delay: 0, track_jobs: false, primary_column_name: :id)
+          if transaction_open?
+            raise 'The `#queue_background_migration_jobs_by_range_at_intervals` can not be run inside a transaction, ' \
+              'you can disable transactions by calling disable_ddl_transaction! ' \
+              'in the body of your migration class'
+          end
+
           raise "#{model_class} does not have an ID column of #{primary_column_name} to use for batch ranges" unless model_class.column_names.include?(primary_column_name.to_s)
           raise "#{primary_column_name} is not an integer or string column" unless [:integer, :string].include?(model_class.columns_hash[primary_column_name.to_s].type)
 
@@ -92,6 +98,12 @@ module Gitlab
         def requeue_background_migration_jobs_by_range_at_intervals(job_class_name, delay_interval, batch_size: BATCH_SIZE, initial_delay: 0)
           job_coordinator = coordinator_for_tracking_database
 
+          if transaction_open?
+            raise 'The `#requeue_background_migration_jobs_by_range_at_intervals` can not be run inside a transaction, ' \
+              'you can disable transactions by calling disable_ddl_transaction! ' \
+              'in the body of your migration class'
+          end
+
           # To not overload the worker too much we enforce a minimum interval both
           # when scheduling and performing jobs.
           delay_interval = [delay_interval, job_coordinator.minimum_interval].max
@@ -136,6 +148,12 @@ module Gitlab
           if self.is_a?(::Gitlab::Database::MigrationHelpers::RestrictGitlabSchema)
             raise 'The `#finalize_background_migration` is currently not supported with `Migration[2.0]`. Use `Migration[1.0]`. ' \
               'For more information visit: https://docs.gitlab.com/ee/development/database/migrations_for_multiple_databases.html'
+          end
+
+          if transaction_open?
+            raise 'The `#finalize_background_migration` can not be run inside a transaction, ' \
+              'you can disable transactions by calling disable_ddl_transaction! ' \
+              'in the body of your migration class'
           end
 
           job_coordinator = coordinator_for_tracking_database

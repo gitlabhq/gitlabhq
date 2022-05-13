@@ -38,33 +38,37 @@ To workaround this issue, make sure to apply one of the following conditions:
 1. Grant Maintainer or Owner role to the `terraform-user` user on `subgroup-B`.
 1. The `terraform-user` inherited access to `subgroup-B` and `subgroup-B` contains at least one project.
 
-### Invalid CI/CD syntax error when using the `latest` base template
+### Invalid CI/CD syntax error when using the base template
 
-On GitLab 14.2 and later, you might get a CI/CD syntax error when using the
-`latest` Base Terraform template:
+You might encounter a CI/CD syntax error when using the Terraform templates:
+
+- On GitLab 14.2 and later, using the `latest` template.
+- On GitLab 15.0 and later, using any version of the template.
+
+For example:
 
 ```yaml
 include:
+  # On 14.2 and later, when using either of the following:
   - template: Terraform/Base.latest.gitlab-ci.yml
+  - template: Terraform.latest.gitlab-ci.yml
+  # On 15.0 and later, the following templates have also been updated:
+  - template: Terraform/Base.gitlab-ci.yml
+  - template: Terraform.gitlab-ci.yml
 
-my-Terraform-job:
-  extends: .init
+my-terraform-job:
+  extends: .apply
 ```
 
-The base template's [jobs were renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67719/)
-with better Terraform-specific names. To resolve the syntax error, you can:
+There are two different causes for the error:
 
-- Use the stable `Terraform/Base.gitlab-ci.yml` template, which has not changed.
-- Update your pipeline configuration to use the new job names in
-  `https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml`.
-  For example:
+- In the case of `.init`, the error occurs because the init stage and jobs [were removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71188) from the templates, since they are no longer required. To resolve the syntax error, you can safely remove any jobs extending `.init`.
+- For all other jobs, the reason for the failure is that the base jobs have been [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67719): A `.terraform:` prefix has been added to every job name. For example, `.apply` became `.terraform:apply`. To fix this error, you can update the base job names. For example:
 
-  ```yaml
-  include:
-    - template: Terraform/Base.latest.gitlab-ci.yml
-
-  my-Terraform-job:
-    extends: .terraform:init  # The updated name.
+  ```diff
+    my-terraform-job:
+  -   extends: .apply
+  +   extends: .terraform:apply
   ```
 
 ## Troubleshooting Terraform state

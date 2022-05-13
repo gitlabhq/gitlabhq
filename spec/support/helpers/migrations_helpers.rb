@@ -156,6 +156,13 @@ module MigrationsHelpers
   end
 
   def migrate!
+    open_transactions = ActiveRecord::Base.connection.open_transactions
+    allow_next_instance_of(described_class) do |migration|
+      allow(migration).to receive(:transaction_open?) do
+        ActiveRecord::Base.connection.open_transactions > open_transactions
+      end
+    end
+
     migration_context.up do |migration|
       migration.name == described_class.name
     end

@@ -15,6 +15,10 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
     end
 
     describe '#queue_background_migration_jobs_by_range_at_intervals' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
       context 'when the model has an ID column' do
         let!(:id1) { create(:user).id }
         let!(:id2) { create(:user).id }
@@ -198,6 +202,18 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
           end.to raise_error(StandardError, /does not have an ID/)
         end
       end
+
+      context 'when within transaction' do
+        before do
+          allow(model).to receive(:transaction_open?).and_return(true)
+        end
+
+        it 'does raise an exception' do
+          expect do
+            model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)
+          end.to raise_error /The `#queue_background_migration_jobs_by_range_at_intervals` can not be run inside a transaction./
+        end
+      end
     end
 
     describe '#requeue_background_migration_jobs_by_range_at_intervals' do
@@ -206,6 +222,10 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       let!(:pending_job_2) { create(:background_migration_job, class_name: job_class_name, status: :pending, arguments: [3, 4]) }
       let!(:successful_job_1) { create(:background_migration_job, class_name: job_class_name, status: :succeeded, arguments: [5, 6]) }
       let!(:successful_job_2) { create(:background_migration_job, class_name: job_class_name, status: :succeeded, arguments: [7, 8]) }
+
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
 
       around do |example|
         freeze_time do
@@ -219,6 +239,17 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
 
       it 'returns the expected duration' do
         expect(subject).to eq(20.minutes)
+      end
+
+      context 'when within transaction' do
+        before do
+          allow(model).to receive(:transaction_open?).and_return(true)
+        end
+
+        it 'does raise an exception' do
+          expect { subject }
+            .to raise_error /The `#requeue_background_migration_jobs_by_range_at_intervals` can not be run inside a transaction./
+        end
       end
 
       context 'when nothing is queued' do
@@ -320,11 +351,24 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
           worker_class.perform_in(10, job_class_name, [5, 6])
           worker_class.perform_in(20, job_class_name, [7, 8])
         end
+
+        allow(model).to receive(:transaction_open?).and_return(false)
       end
 
       it_behaves_like 'finalized tracked background migration', worker_class do
         before do
           model.finalize_background_migration(job_class_name)
+        end
+      end
+
+      context 'when within transaction' do
+        before do
+          allow(model).to receive(:transaction_open?).and_return(true)
+        end
+
+        it 'does raise an exception' do
+          expect { model.finalize_background_migration(job_class_name, delete_tracking_jobs: %w[pending succeeded]) }
+            .to raise_error /The `#finalize_background_migration` can not be run inside a transaction./
         end
       end
 

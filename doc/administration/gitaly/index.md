@@ -232,6 +232,137 @@ variable replication factor is tracked in [this issue](https://gitlab.com/groups
 
 As with normal Gitaly storages, virtual storages can be sharded.
 
+### Storage layout
+
+WARNING:
+The storage layout is an internal detail of Gitaly Cluster and is not guaranteed to remain stable between releases.
+The information here is only for informational purposes and to help with debugging. Performing changes in the
+repositories directly on the disk is not supported and may lead to breakage or the changes being overwritten.
+
+Gitaly Cluster's virtual storages provide an abstraction that looks like a single storage but actually consists of
+multiple physical storages. Gitaly Cluster has to replicate each operation to each physical storage. Operations
+may succeed on some of the physical storages but fail on others.
+
+Partially applied operations can cause problems with other operations and leave the system in a state it can't recover from.
+To avoid these types of problems, each operation should either fully apply or not apply at all. This property of operations is called
+[atomicity](https://en.wikipedia.org/wiki/Atomicity_(database_systems)).
+
+GitLab controls the storage layout on the repository storages. GitLab instructs the repository storage where to create,
+delete, and move repositories. These operations create atomicity issues when they are being applied to multiple physical storages.
+For example:
+
+- GitLab deletes a repository while one of its replicas is unavailable.
+- GitLab later recreates the repository.
+
+As a result, the stale replica that was unavailable at the time of deletion may cause conflicts and prevent
+recreation of the repository.
+
+These atomicity issues have caused multiple problems in the past with:
+
+- Geo syncing to a secondary site with Gitaly Cluster.
+- Backup restoration.
+- Repository moves between repository storages.
+
+Gitaly Cluster provides atomicity for these operations by storing repositories on the disk in a special layout that prevents
+conflicts that could occur due to partially applied operations.
+
+#### Client-generated replica paths
+
+Repositories are stored in the storages at the relative path determined by the [Gitaly client](#gitaly-architecture). These paths can be
+identified by them not beginning with the `@cluster` prefix. The relative paths
+follow the [hashed storage](../repository_storage_types.md#hashed-storage) schema.
+
+#### Praefect-generated replica paths (GitLab 15.0 and later)
+
+> Introduced in GitLab 15.0 behind [a feature flag](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md)
+named `gitaly_praefect_generated_replica_paths`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is not ready for production use.
+
+When Gitaly Cluster creates a repository, it assigns the repository a unique and permanent ID called the _repository ID_. The repository ID is
+internal to Gitaly Cluster and doesn't relate to any IDs elsewhere in GitLab. If a repository is removed from Gitaly Cluster and later moved
+back, the repository is assigned a new repository ID and is a different repository from Gitaly Cluster's perspective. The sequence of repository IDs
+always increases, but there may be gaps in the sequence.
+
+The repository ID is used to derive a unique storage path called _replica path_ for each repository on the cluster. The replicas of
+a repository are all stored at the same replica path on the storages. The replica path is distinct from the _relative path_:
+
+- The relative path is a name the Gitaly client uses to identify a repository, together with its virtual storage, that is unique to them.
+- The replica path is the actual physical path in the physical storages.
+
+Praefect translates the repositories in the RPCs from the virtual `(virtual storage, relative path)` identifier into physical repository
+`(storage, replica_path)` identifier when handling the client requests.
+
+The format of the replica path for:
+
+- Object pools is `@cluster/pools/<xx>/<xx>/<repository ID>`. Object pools are stored in a different directory than other repositories.
+  They must be identifiable by Gitaly to avoid pruning them as part of housekeeping. Pruning object pools can cause data loss in the linked
+  repositories.
+- Other repositories is `@cluster/repositories/<xx>/<xx>/<repository ID>`
+
+For example, `@cluster/repositories/6f/96/54771`.
+
+The last component of the replica path, `54771`, is the repository ID. This can be used to identify the repository on the disk.
+
+`<xx>/<xx>` are the first four hex digits of the SHA256 hash of the string representation of the repository ID. This is used to balance
+the repositories evenly into subdirectories to avoid overly large directories that might cause problems on some file
+systems. In this case, `54771` hashes to `6f960ab01689464e768366d3315b3d3b2c28f38761a58a70110554eb04d582f7` so the
+first four digits are `6f` and `96`.
+
+#### Identify repositories on disk
+
+Use the [`praefect metadata`](troubleshooting.md#view-repository-metadata) subcommand to:
+
+- Retrieve a repository's virtual storage and relative path from the metadata store. After you have the hashed storage path, you can use the Rails
+  console to retrieve the project path.
+- Find where a repository is stored in the cluster with either:
+  - The virtual storage and relative path.
+  - The repository ID.
+
+The repository on disk also contains the project path in the Git configuration file. The configuration file can be used to determine
+the project's location even if the repository's metadata has been deleted. Follow the
+[instructions in hashed storage's documentation](../repository_storage_types.md#from-hashed-path-to-project-name).
+
+#### Atomicity of operations
+
+Gitaly Cluster uses the PostgreSQL metadata store with the storage layout to ensure atomicity of repository creation,
+deletion, and move operations. The disk operations can't be atomically applied across multiple storages. However, PostgreSQL guarantees
+the atomicity of the metadata operations. Gitaly Cluster models the operations in a manner that the failing operations always leave
+the metadata consistent. The disks may contain stale state even after successful operations. This is expected and the leftover state
+won't intefere with future operations but may use up disk space unnecessarily until a clean up is performed.
+
+There is on-going work on a [background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that cleans up the leftover
+repositories from the storages.
+
+##### Repository creations
+
+When creating repositories, Praefect:
+
+1. Reserves a repository ID from PostgreSQL. This is atomic and no two creations receive the same ID.
+1. Creates replicas on the Gitaly storages in the replica path derived from the repository ID.
+1. Creates metadata records after the repository is successfully created on disk.
+
+Even if two concurrent operations create the same repository, they'd be stored in different directories on the storages and not
+conflict. The first to complete creates the metadata record and the other operation fails with an "already exists" error.
+The failing creation leaves leftover repositories on the storages. There is on-going work on a
+[background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that clean up the leftover repositories from the storages.
+
+The repository IDs are generated from the `repositories_repository_id_seq` in PostgreSQL. In the above example, the failing operation took
+one repository ID without successfully creating a repository with it. Failed repository creations are expected lead to gaps in the repository IDs.
+
+##### Repository deletions
+
+A repository is deleted by removing its metadata record. The repository ceases to logically exist as soon as the metadata record is deleted.
+PostgreSQL guarantees the atomicity of the removal and a concurrent delete fails with a "not found" error. After successfully deleting
+the metadata record, Praefect attempts to remove the replicas from the storages. This may fail and leave leftover state in the storages.
+The leftover state is eventually cleaned up.
+
+##### Repository moves
+
+Unlike Gitaly, Gitaly Cluster doesn't move the repositories in the storages but only virtually moves the repository by updating the
+relative path of the repository in the metadata store.
+
 ### Moving beyond NFS
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting

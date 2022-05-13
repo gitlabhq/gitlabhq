@@ -13,6 +13,7 @@ class InstanceConfiguration
       { ssh_algorithms_hashes: ssh_algorithms_hashes,
         host: host,
         gitlab_pages: gitlab_pages,
+        ci_cd_limits: ci_cd_limits,
         size_limits: size_limits,
         package_file_size_limits: package_file_size_limits,
         rate_limits: rate_limits }.deep_symbolize_keys
@@ -127,6 +128,23 @@ class InstanceConfiguration
         period_in_seconds: 10.minutes
       }
     }
+  end
+
+  def ci_cd_limits
+    Plan.all.to_h { |plan| [plan.name.capitalize, plan_ci_cd_limits(plan)] }
+  end
+
+  def plan_ci_cd_limits(plan)
+    plan.actual_limits.slice(
+      :ci_pipeline_size,
+      :ci_active_jobs,
+      :ci_active_pipelines,
+      :ci_project_subscriptions,
+      :ci_pipeline_schedules,
+      :ci_needs_size_limit,
+      :ci_registered_group_runners,
+      :ci_registered_project_runners
+    )
   end
 
   def ssh_algorithm_file(algorithm)

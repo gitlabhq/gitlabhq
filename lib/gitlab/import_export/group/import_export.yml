@@ -41,6 +41,7 @@ excluded_attributes:
     - :shared_runners_minute_limit
     - :extra_shared_runners_minutes_limit
     - :repository_size_limit
+    - :max_pages_size
   epics:
     - :state_id
 

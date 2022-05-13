@@ -17,4 +17,8 @@ module InstanceConfigurationHelper
       number_to_human_size(v, strip_insignificant_zeros: true, significant: false)
     end
   end
+
+  def instance_configuration_disabled_cell_html(value)
+    instance_configuration_cell_html(value == 0 ? nil : value)
+  end
 end

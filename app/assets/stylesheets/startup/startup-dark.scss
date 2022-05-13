@@ -351,9 +351,6 @@ h1 {
   .d-lg-none {
     display: none !important;
   }
-  .d-lg-block {
-    display: block !important;
-  }
 }
 .sr-only {
   position: absolute;
@@ -776,13 +773,6 @@ input {
   position: relative;
   min-height: var(--header-height, 40px);
   padding-left: 0;
-}
-.navbar-gitlab .header-content .title-container {
-  display: flex;
-  align-items: stretch;
-  flex: 1 1 auto;
-  padding-top: 0;
-  overflow: visible;
 }
 .navbar-gitlab .header-content .title {
   padding-right: 0;
@@ -1513,8 +1503,16 @@ svg.s12 {
 svg.s16 {
   vertical-align: -3px;
 }
+.header-content .header-search-new {
+  max-width: 600px;
+}
 .header-search {
-  width: 320px;
+  min-width: 320px;
+}
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  .header-search {
+    min-width: 200px;
+  }
 }
 .header-search.is-not-active::after {
   content: "/";
@@ -1535,6 +1533,7 @@ svg.s16 {
   border-radius: 3px;
   box-shadow: none;
   white-space: pre-wrap;
+  box-sizing: border-box;
   word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: keep-all;
@@ -2063,11 +2062,28 @@ body.gl-dark {
     display: block;
   }
 }
+@media (min-width: 992px) {
+  .gl-lg-display-block {
+    display: block;
+  }
+}
+.gl-display-inline-block\! {
+  display: inline-block !important;
+}
+.gl-align-items-stretch {
+  align-items: stretch;
+}
+.gl-flex-grow-1 {
+  flex-grow: 1;
+}
 .gl-relative {
   position: relative;
 }
 .gl-absolute {
   position: absolute;
+}
+.gl-w-full {
+  width: 100%;
 }
 .gl-px-3 {
   padding-left: 0.5rem;
@@ -2075,6 +2091,9 @@ body.gl-dark {
 }
 .gl-pr-2 {
   padding-right: 0.25rem;
+}
+.gl-pt-0 {
+  padding-top: 0;
 }
 .gl-ml-n2 {
   margin-left: -0.25rem;
@@ -2085,6 +2104,12 @@ body.gl-dark {
 .gl-mx-0\! {
   margin-left: 0 !important;
   margin-right: 0 !important;
+}
+.gl-text-right {
+  text-align: right;
+}
+.gl-white-space-nowrap {
+  white-space: nowrap;
 }
 .gl-font-sm {
   font-size: 0.75rem;
