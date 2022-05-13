@@ -6,7 +6,7 @@ namespace :gitlab do
   namespace :db do
     desc 'Validates `config/database.yml` to ensure a correct behavior is configured'
     task validate_config: :environment do
-      original_db_config = ActiveRecord::Base.connection_db_config
+      original_db_config = ActiveRecord::Base.connection_db_config # rubocop:disable Database/MultipleDatabases
 
       # The include_replicas: is a legacy name to fetch all hidden entries (replica: true or database_tasks: false)
       # Once we upgrade to Rails 7.x this should be changed to `include_hidden: true`
@@ -15,6 +15,7 @@ namespace :gitlab do
       db_configs = db_configs.reject(&:replica?)
 
       # Map each database connection into unique identifier of system+database
+      # rubocop:disable Database/MultipleDatabases
       all_connections = db_configs.map do |db_config|
         identifier =
           begin
@@ -32,6 +33,7 @@ namespace :gitlab do
           identifier: identifier
         }
       end.compact
+      # rubocop:enable Database/MultipleDatabases
 
       unique_connections = all_connections.group_by { |connection| connection[:identifier] }
       primary_connection = all_connections.find { |connection| ActiveRecord::Base.configurations.primary?(connection[:name]) }

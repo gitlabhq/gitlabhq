@@ -61,6 +61,7 @@ class GroupsController < Groups::ApplicationController
 
   urgency :high, [:unfoldered_environment_names]
 
+  urgency :low, [:issues, :issues_calendar, :preview_markdown]
   # TODO: Set #show to higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/334795
   urgency :low, [:merge_requests, :show, :create, :new, :update, :projects, :destroy, :edit, :activity]
 

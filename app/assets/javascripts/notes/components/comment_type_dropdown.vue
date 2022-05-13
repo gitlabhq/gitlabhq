@@ -32,6 +32,11 @@ export default {
       required: false,
       default: false,
     },
+    isInternalNote: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     noteableDisplayName: {
       type: String,
       required: true,
@@ -48,18 +53,43 @@ export default {
     isNoteTypeDiscussion() {
       return this.noteType === constants.DISCUSSION;
     },
+    dropdownCommentButtonTitle() {
+      const { comment, internalComment } = this.$options.i18n.submitButton;
+
+      return this.isInternalNote ? internalComment : comment;
+    },
+    dropdownStartThreadButtonTitle() {
+      const { startThread, startInternalThread } = this.$options.i18n.submitButton;
+
+      return this.isInternalNote ? startInternalThread : startThread;
+    },
     commentButtonTitle() {
-      return this.noteType === constants.COMMENT
-        ? this.$options.i18n.comment
-        : this.$options.i18n.startThread;
+      const { comment, internalComment, startThread, startInternalThread } = this.$options.i18n;
+
+      if (this.isInternalNote) {
+        return this.noteType === constants.COMMENT ? internalComment : startInternalThread;
+      }
+      return this.noteType === constants.COMMENT ? comment : startThread;
     },
     startDiscussionDescription() {
-      return this.discussionsRequireResolution
-        ? this.$options.i18n.discussionThatNeedsResolution
-        : this.$options.i18n.discussion;
+      const {
+        discussionThatNeedsResolution,
+        internalDiscussionThatNeedsResolution,
+        discussion,
+        internalDiscussion,
+      } = this.$options.i18n;
+
+      if (this.isInternalNote) {
+        return this.discussionsRequireResolution
+          ? internalDiscussionThatNeedsResolution
+          : internalDiscussion;
+      }
+      return this.discussionsRequireResolution ? discussionThatNeedsResolution : discussion;
     },
     commentDescription() {
-      return sprintf(this.$options.i18n.submitButton.commentHelp, {
+      const { commentHelp, internalCommentHelp } = this.$options.i18n.submitButton;
+
+      return sprintf(this.isInternalNote ? internalCommentHelp : commentHelp, {
         noteableDisplayName: this.noteableDisplayName,
       });
     },
@@ -101,7 +131,7 @@ export default {
       :is-checked="isNoteTypeComment"
       @click.stop.prevent="setNoteTypeToComment"
     >
-      <strong>{{ $options.i18n.submitButton.comment }}</strong>
+      <strong>{{ dropdownCommentButtonTitle }}</strong>
       <p class="gl-m-0">{{ commentDescription }}</p>
     </gl-dropdown-item>
     <gl-dropdown-divider />
@@ -111,7 +141,7 @@ export default {
       data-qa-selector="discussion_menu_item"
       @click.stop.prevent="setNoteTypeToDiscussion"
     >
-      <strong>{{ $options.i18n.submitButton.startThread }}</strong>
+      <strong>{{ dropdownStartThreadButtonTitle }}</strong>
       <p class="gl-m-0">{{ startDiscussionDescription }}</p>
     </gl-dropdown-item>
   </gl-dropdown>

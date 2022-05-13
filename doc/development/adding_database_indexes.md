@@ -158,7 +158,7 @@ and should not be used. Some other points to consider:
 ### Why explicit names are required
 
 As Rails is database agnostic, it generates an index name only
-from the required options of all indexes: table name and column name(s).
+from the required options of all indexes: table name and column names.
 For example, imagine the following two indexes are created in a migration:
 
 ```ruby
@@ -173,7 +173,7 @@ Creation of the second index would fail, because Rails would generate
 the same name for both indexes.
 
 This is further complicated by the behavior of the `index_exists?` method.
-It considers only the table name, column name(s) and uniqueness specification
+It considers only the table name, column names, and uniqueness specification
 of the index when making a comparison. Consider:
 
 ```ruby
@@ -284,8 +284,9 @@ production clone.
 ### Add a migration to create the index synchronously
 
 After the index is verified to exist on the production database, create a second
-merge request that adds the index synchronously. The synchronous
-migration results in a no-op on GitLab.com, but you should still add the
+merge request that adds the index synchronously. The schema changes must be
+updated and committed to `structure.sql` in this second merge request. 
+The synchronous migration results in a no-op on GitLab.com, but you should still add the
 migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.

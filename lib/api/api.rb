@@ -228,6 +228,7 @@ module API
       mount ::API::ImportBitbucketServer
       mount ::API::ImportGithub
       mount ::API::Integrations
+      mount ::API::Integrations::JiraConnect::Subscriptions
       mount ::API::Invitations
       mount ::API::IssueLinks
       mount ::API::Issues

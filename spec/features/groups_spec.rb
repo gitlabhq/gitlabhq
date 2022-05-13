@@ -105,6 +105,24 @@ RSpec.describe 'Group' do
 
         expect(page).to have_content('Group path is available')
       end
+
+      context 'when filling in the `Group name` field' do
+        let_it_be(:group1) { create(:group, :public, path: 'foo-bar') }
+        let_it_be(:group2) { create(:group, :public, path: 'bar-baz') }
+
+        it 'automatically populates the `Group URL` field' do
+          fill_in 'Group name', with: 'Foo bar'
+          # Wait for debounce in app/assets/javascripts/group.js#18
+          sleep(1)
+          fill_in 'Group name', with: 'Bar baz'
+          # Wait for debounce in app/assets/javascripts/group.js#18
+          sleep(1)
+
+          wait_for_requests
+
+          expect(page).to have_field('Group URL', with: 'bar-baz1')
+        end
+      end
     end
 
     describe 'Mattermost team creation' do

@@ -199,11 +199,7 @@ sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press <kbd>Enter</kbd> to confirm the hostname.
 
-<!-- vale gitlab.Spelling = NO -->
-
-### Exiftool
-
-<!-- vale gitlab.Spelling = YES -->
+### ExifTool
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse#dependencies)
 requires `exiftool` to remove EXIF data from uploaded images.

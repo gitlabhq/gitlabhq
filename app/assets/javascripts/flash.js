@@ -207,7 +207,7 @@ const createAlert = function createAlert({
   });
 };
 
-/*
+/**
  *  Flash banner supports different types of Flash configurations
  *  along with ability to provide actionConfig which can be used to show
  *  additional action or link on banner next to message
@@ -223,6 +223,7 @@ const createAlert = function createAlert({
  *  @param {Boolean} options.fadeTransition   Boolean to determine whether to fade the alert out
  *  @param {Boolean} options.captureError     Boolean to determine whether to send error to Sentry
  *  @param {Object} options.error             Error to be captured in Sentry
+ *  @deprecated Use `createAlert` instead. See https://gitlab.com/gitlab-org/gitlab/-/issues/362334.
  */
 const createFlash = function createFlash({
   message,

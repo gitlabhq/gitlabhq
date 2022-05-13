@@ -9,6 +9,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   before_action :find_todos, only: [:index, :destroy_all]
 
   feature_category :team_planning
+  urgency :low
 
   def index
     @sort = params[:sort]

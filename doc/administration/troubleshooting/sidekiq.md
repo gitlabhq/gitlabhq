@@ -315,7 +315,7 @@ queue.each { |job| job.delete if <condition>}
 
 Have a look at the section below for cancelling running jobs.
 
-In the method above, `<queue-name>` is the name of the queue that contains the job(s) you want to delete and `<condition>` decides which jobs get deleted.
+In the method above, `<queue-name>` is the name of the queue that contains the jobs you want to delete and `<condition>` decides which jobs get deleted.
 
 Commonly, `<condition>` references the job arguments, which depend on the type of job in question. To find the arguments for a specific queue, you can have a look at the `perform` function of the related worker file, commonly found at `/app/workers/<queue-name>_worker.rb`.
 

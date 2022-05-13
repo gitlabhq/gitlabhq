@@ -7,6 +7,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   before_action :authorize_admin_milestones!, only: [:edit, :new, :create, :update, :destroy]
 
   feature_category :team_planning
+  urgency :low
 
   def index
     respond_to do |format|

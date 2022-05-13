@@ -91,7 +91,6 @@ RSpec.describe Gitlab::ApplicationContext do
     let_it_be(:project) { create(:project) }
     let_it_be(:namespace) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: namespace) }
-    let_it_be(:artifact) { create(:ci_job_artifact, size: 42) }
 
     def result(context)
       context.to_lazy_hash.transform_values { |v| v.respond_to?(:call) ? v.call : v }

@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       .to_hash
   end
 
-  subject do
+  subject(:statement) do
     described_class.new(text, variables)
   end
 
@@ -28,6 +28,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
 
   describe '#evaluate' do
     using RSpec::Parameterized::TableSyntax
+
+    subject(:evaluate) { statement.evaluate }
 
     where(:expression, :value) do
       '$PRESENT_VARIABLE == "my variable"'                          | true
@@ -125,13 +127,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       let(:text) { expression }
 
       it "evaluates to `#{params[:value].inspect}`" do
-        expect(subject.evaluate).to eq(value)
+        expect(evaluate).to eq(value)
       end
     end
   end
 
   describe '#truthful?' do
     using RSpec::Parameterized::TableSyntax
+
+    subject(:truthful?) { statement.truthful? }
 
     where(:expression, :value) do
       '$PRESENT_VARIABLE == "my variable"' | true
@@ -151,7 +155,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       let(:text) { expression }
 
       it "returns `#{params[:value].inspect}`" do
-        expect(subject.truthful?).to eq value
+        expect(truthful?).to eq value
       end
     end
 
@@ -159,10 +163,41 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       let(:text) { '$PRESENT_VARIABLE' }
 
       it 'returns false' do
-        allow(subject).to receive(:evaluate)
+        allow(statement).to receive(:evaluate)
           .and_raise(described_class::StatementError)
 
-        expect(subject.truthful?).to be_falsey
+        expect(truthful?).to be_falsey
+      end
+    end
+
+    context 'when variables have patterns' do
+      let(:variables) do
+        Gitlab::Ci::Variables::Collection.new
+          .append(key: 'teststring', value: 'abcde')
+          .append(key: 'pattern1', value: '/^ab.*/')
+          .append(key: 'pattern2', value: '/^at.*/')
+          .to_hash
+      end
+
+      where(:expression, :ff, :result) do
+        '$teststring =~ "abcde"'     | true  | true
+        '$teststring =~ "abcde"'     | false | true
+        '$teststring =~ $teststring' | true  | true
+        '$teststring =~ $teststring' | false | true
+        '$teststring =~ $pattern1'   | true  | true
+        '$teststring =~ $pattern1'   | false | false
+        '$teststring =~ $pattern2'   | true  | false
+        '$teststring =~ $pattern2'   | false | false
+      end
+
+      with_them do
+        let(:text) { expression }
+
+        before do
+          stub_feature_flags(ci_fix_rules_if_comparison_with_regexp_variable: ff)
+        end
+
+        it { is_expected.to eq(result) }
       end
     end
   end

@@ -22,6 +22,10 @@ module Gitlab
         @attributes[:queue]
       end
 
+      def queue
+        @attributes[:queue]
+      end
+
       def queue_namespace
         nil
       end

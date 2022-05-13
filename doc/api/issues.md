@@ -1166,7 +1166,7 @@ PUT /projects/:id/issues/:issue_iid
 | Attribute      | Type    | Required | Description                                                                                                |
 |----------------|---------|----------|------------------------------------------------------------------------------------------------------------|
 | `add_labels`   | string  | no       | Comma-separated label names to add to an issue.                                                            |
-| `assignee_ids` | integer array | no | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees. |
+| `assignee_ids` | integer array | no | The ID of the users to assign the issue to. Set to `0` or provide an empty value to unassign all assignees. |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
 | `description`  | string  | no       | The description of an issue. Limited to 1,048,576 characters.        |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |

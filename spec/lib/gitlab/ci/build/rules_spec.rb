@@ -188,6 +188,19 @@ RSpec.describe Gitlab::Ci::Build::Rules do
         it { is_expected.to eq(described_class::Result.new('on_success', nil, nil, { MY_VAR: 'my var' })) }
       end
     end
+
+    context 'with a regexp variable matching rule' do
+      let(:rule_list) { [{ if: '"abcde" =~ $pattern' }] }
+
+      before do
+        allow(ci_build).to receive(:scoped_variables).and_return(
+          Gitlab::Ci::Variables::Collection.new
+            .append(key: 'pattern', value: '/^ab.*/', public: true)
+        )
+      end
+
+      it { is_expected.to eq(described_class::Result.new('on_success')) }
+    end
   end
 
   describe 'Gitlab::Ci::Build::Rules::Result' do

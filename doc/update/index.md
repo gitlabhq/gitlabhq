@@ -427,6 +427,17 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   ```plaintext
   Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
   ```
+  
+  Or
+
+  ```plaintext
+  Error executing action `run` on resource 'bash[migrate gitlab-rails database]'
+  ================================================================================
+  
+  Mixlib::ShellOut::ShellCommandFailed
+  ------------------------------------
+  Command execution failed. STDOUT/STDERR suppressed for sensitive resource 
+  ```
 
 - GitLab 14.9.0 includes a
   [background migration `ResetDuplicateCiRunnersTokenValuesOnProjects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79140)

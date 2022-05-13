@@ -967,7 +967,7 @@ application. This is done by updating the `git_data_dirs`.
 Particular attention should be shown to:
 
 - the storage name added to `git_data_dirs` in this section must match the
-  storage name under `praefect['virtual_storages']` on the Praefect node(s). This
+  storage name under `praefect['virtual_storages']` on the Praefect nodes. This
   was set in the [Praefect](#praefect) section of this guide. This document uses
   `default` as the Praefect storage name.
 

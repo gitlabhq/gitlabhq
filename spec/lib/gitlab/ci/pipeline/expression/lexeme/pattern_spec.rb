@@ -1,8 +1,32 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
+  describe '#initialize' do
+    context 'when the value is a valid regular expression' do
+      it 'initializes the pattern' do
+        pattern = described_class.new('/foo/')
+
+        expect(pattern.value).to eq('/foo/')
+      end
+    end
+
+    context 'when the value is a valid regular expression with escaped slashes' do
+      it 'initializes the pattern' do
+        pattern = described_class.new('/foo\\/bar/')
+
+        expect(pattern.value).to eq('/foo/bar/')
+      end
+    end
+
+    context 'when the value is not a valid regular expression' do
+      it 'raises an error' do
+        expect { described_class.new('foo') }.to raise_error(Gitlab::Ci::Pipeline::Expression::Lexer::SyntaxError)
+      end
+    end
+  end
+
   describe '.build' do
     it 'creates a new instance of the token' do
       expect(described_class.build('/.*/'))
@@ -12,6 +36,29 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
     it 'raises an error if pattern is invalid' do
       expect { described_class.build('/ some ( thin/i') }
         .to raise_error(Gitlab::Ci::Pipeline::Expression::Lexer::SyntaxError)
+    end
+  end
+
+  describe '.build_and_evaluate' do
+    context 'when the value is a valid regular expression' do
+      it 'returns the value as a Gitlab::UntrustedRegexp' do
+        expect(described_class.build_and_evaluate('/foo/'))
+          .to eq(Gitlab::UntrustedRegexp.new('foo'))
+      end
+    end
+
+    context 'when the value is a Gitlab::UntrustedRegexp' do
+      it 'returns the value itself' do
+        expect(described_class.build_and_evaluate(Gitlab::UntrustedRegexp.new('foo')))
+          .to eq(Gitlab::UntrustedRegexp.new('foo'))
+      end
+    end
+
+    context 'when the value is not a valid regular expression' do
+      it 'returns the value itself' do
+        expect(described_class.build_and_evaluate('foo'))
+          .to eq('foo')
+      end
     end
   end
 

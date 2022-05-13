@@ -577,14 +577,21 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when artifact_type is archive' do
             context 'when artifact_format is zip' do
+              subject(:request) { upload_artifacts(file_upload, headers_with_token, params) }
+
               let(:params) { { artifact_type: :archive, artifact_format: :zip } }
+              let(:expected_params) { { artifact_size: job.reload.artifacts_size } }
+              let(:subject_proc) { proc { subject } }
 
               it 'stores junit test report' do
-                upload_artifacts(file_upload, headers_with_token, params)
+                subject
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(job.reload.job_artifacts_archive).not_to be_nil
               end
+
+              it_behaves_like 'storing arguments in the application context'
+              it_behaves_like 'not executing any extra queries for the application context'
             end
 
             context 'when artifact_format is gzip' do

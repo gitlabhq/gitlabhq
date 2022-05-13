@@ -7,6 +7,7 @@ module API
     before { authenticate! }
 
     feature_category :team_planning
+    urgency :low
 
     params do
       requires :id, type: String, desc: 'The ID of a project'

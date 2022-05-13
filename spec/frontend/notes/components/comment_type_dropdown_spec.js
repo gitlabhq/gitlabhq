@@ -28,18 +28,42 @@ describe('CommentTypeDropdown component', () => {
     wrapper.destroy();
   });
 
-  it('Should label action button "Comment" and correct dropdown item checked when selected', () => {
+  it.each`
+    isInternalNote | buttonText
+    ${false}       | ${COMMENT_FORM.comment}
+    ${true}        | ${COMMENT_FORM.internalComment}
+  `(
+    'Should label action button as "$buttonText" for comment when `isInternalNote` is $isInternalNote',
+    ({ isInternalNote, buttonText }) => {
+      mountComponent({ props: { noteType: constants.COMMENT, isInternalNote } });
+
+      expect(findCommentGlDropdown().props()).toMatchObject({ text: buttonText });
+    },
+  );
+
+  it('Should set correct dropdown item checked when comment is selected', () => {
     mountComponent({ props: { noteType: constants.COMMENT } });
 
-    expect(findCommentGlDropdown().props()).toMatchObject({ text: COMMENT_FORM.comment });
     expect(findCommentDropdownOption().props()).toMatchObject({ isChecked: true });
     expect(findDiscussionDropdownOption().props()).toMatchObject({ isChecked: false });
   });
 
-  it('Should label action button "Start Thread" and correct dropdown item option checked when selected', () => {
+  it.each`
+    isInternalNote | buttonText
+    ${false}       | ${COMMENT_FORM.startThread}
+    ${true}        | ${COMMENT_FORM.startInternalThread}
+  `(
+    'Should label action button as "$buttonText" for discussion when `isInternalNote` is $isInternalNote',
+    ({ isInternalNote, buttonText }) => {
+      mountComponent({ props: { noteType: constants.DISCUSSION, isInternalNote } });
+
+      expect(findCommentGlDropdown().props()).toMatchObject({ text: buttonText });
+    },
+  );
+
+  it('Should set correct dropdown item option checked when discussion is selected', () => {
     mountComponent({ props: { noteType: constants.DISCUSSION } });
 
-    expect(findCommentGlDropdown().props()).toMatchObject({ text: COMMENT_FORM.startThread });
     expect(findCommentDropdownOption().props()).toMatchObject({ isChecked: false });
     expect(findDiscussionDropdownOption().props()).toMatchObject({ isChecked: true });
   });

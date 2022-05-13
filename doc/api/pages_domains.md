@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Pages domains API **(FREE)**
 
-Endpoints for connecting custom domain(s) and TLS certificates in [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
+Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
 
 The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
 

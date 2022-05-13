@@ -334,7 +334,7 @@ Renaming a table is possible without downtime by following our multi-release
 Adding foreign keys usually works in 3 steps:
 
 1. Start a transaction
-1. Run `ALTER TABLE` to add the constraint(s)
+1. Run `ALTER TABLE` to add the constraints
 1. Check all existing data
 
 Because `ALTER TABLE` typically acquires an exclusive lock until the end of a

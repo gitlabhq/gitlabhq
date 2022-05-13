@@ -255,6 +255,7 @@ module Gitlab
         # ActiveRecord::ConnectionAdapters::ConnectionHandler handles fetching,
         # and caching for connections pools for each "connection", so we
         # leverage that.
+        # rubocop:disable Database/MultipleDatabases
         def pool
           ActiveRecord::Base.connection_handler.retrieve_connection_pool(
             @configuration.primary_connection_specification_name,
@@ -262,6 +263,7 @@ module Gitlab
             shard: ActiveRecord::Base.default_shard
           ) || raise(::ActiveRecord::ConnectionNotEstablished)
         end
+        # rubocop:enable Database/MultipleDatabases
 
         def wal_diff(location1, location2)
           read_write do |connection|

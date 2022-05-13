@@ -3,14 +3,17 @@ import { BLOB_PREVIEW_ERROR } from '~/blob_edit/constants';
 import createFlash from '~/flash';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
 import syntaxHighlight from '~/syntax_highlight';
 import {
   EXTENSION_MARKDOWN_PREVIEW_PANEL_CLASS,
   EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
+  EXTENSION_MARKDOWN_PREVIEW_HIDE_ACTION_ID,
   EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH,
   EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS,
   EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
+  EXTENSION_MARKDOWN_PREVIEW_LABEL,
+  EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
+  EDITOR_TOOLBAR_RIGHT_GROUP,
 } from '../constants';
 
 const fetchPreview = (text, previewMarkdownPath) => {
@@ -41,31 +44,58 @@ export class EditorMarkdownPreviewExtension {
   onSetup(instance, setupOptions) {
     this.preview = {
       el: undefined,
-      action: undefined,
+      actions: {
+        preview: undefined,
+        hide: undefined,
+      },
       shown: false,
       modelChangeListener: undefined,
       path: setupOptions.previewMarkdownPath,
+      actionShowPreviewCondition: instance.createContextKey('toggleLivePreview', true),
     };
+    this.toolbarButtons = [];
+
     this.setupPreviewAction(instance);
+    if (instance.toolbar) {
+      this.setupToolbar(instance);
+    }
+  }
 
-    instance.getModel().onDidChangeLanguage(({ newLanguage, oldLanguage } = {}) => {
-      if (newLanguage === 'markdown' && oldLanguage !== newLanguage) {
-        instance.setupPreviewAction();
-      } else {
-        instance.cleanup();
-      }
-    });
+  onBeforeUnuse(instance) {
+    this.cleanup(instance);
+    const ids = this.toolbarButtons.map((item) => item.id);
+    if (instance.toolbar) {
+      instance.toolbar.removeItems(ids);
+    }
+  }
 
-    instance.onDidChangeModel(() => {
-      const model = instance.getModel();
-      if (model) {
-        const { language } = model.getLanguageIdentifier();
-        instance.cleanup();
-        if (language === 'markdown') {
-          instance.setupPreviewAction();
-        }
-      }
-    });
+  cleanup(instance) {
+    if (this.preview.modelChangeListener) {
+      this.preview.modelChangeListener.dispose();
+    }
+    this.preview.actions.preview.dispose();
+    this.preview.actions.hide.dispose();
+    if (this.preview.shown) {
+      this.togglePreviewPanel(instance);
+      this.togglePreviewLayout(instance);
+    }
+    this.preview.shown = false;
+  }
+
+  setupToolbar(instance) {
+    this.toolbarButtons = [
+      {
+        id: EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
+        label: EXTENSION_MARKDOWN_PREVIEW_LABEL,
+        icon: 'live-preview',
+        selected: false,
+        group: EDITOR_TOOLBAR_RIGHT_GROUP,
+        category: 'primary',
+        selectedLabel: EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
+        onClick: () => instance.togglePreview(),
+      },
+    ];
+    instance.toolbar.addItems(this.toolbarButtons);
   }
 
   togglePreviewLayout(instance) {
@@ -103,40 +133,39 @@ export class EditorMarkdownPreviewExtension {
 
   setupPreviewAction(instance) {
     if (instance.getAction(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID)) return;
-
-    this.preview.action = instance.addAction({
-      id: EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
-      label: __('Preview Markdown'),
+    const actionBasis = {
       keybindings: [
         // eslint-disable-next-line no-bitwise,no-undef
         monaco.KeyMod.chord(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_P),
       ],
       contextMenuGroupId: 'navigation',
       contextMenuOrder: 1.5,
-
       // Method that will be executed when the action is triggered.
       // @param ed The editor instance is passed in as a convenience
       run(inst) {
         inst.togglePreview();
       },
+    };
+
+    this.preview.actions.preview = instance.addAction({
+      ...actionBasis,
+      id: EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
+      label: EXTENSION_MARKDOWN_PREVIEW_LABEL,
+
+      precondition: 'toggleLivePreview',
+    });
+    this.preview.actions.hide = instance.addAction({
+      ...actionBasis,
+      id: EXTENSION_MARKDOWN_PREVIEW_HIDE_ACTION_ID,
+      label: EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
+
+      precondition: '!toggleLivePreview',
     });
   }
 
   provides() {
     return {
       markdownPreview: this.preview,
-
-      cleanup: (instance) => {
-        if (this.preview.modelChangeListener) {
-          this.preview.modelChangeListener.dispose();
-        }
-        this.preview.action.dispose();
-        if (this.preview.shown) {
-          this.togglePreviewPanel(instance);
-          this.togglePreviewLayout(instance);
-        }
-        this.preview.shown = false;
-      },
 
       fetchPreview: (instance) => this.fetchPreview(instance),
 
@@ -148,6 +177,8 @@ export class EditorMarkdownPreviewExtension {
         }
         this.togglePreviewLayout(instance);
         this.togglePreviewPanel(instance);
+
+        this.preview.actionShowPreviewCondition.set(!this.preview.actionShowPreviewCondition.get());
 
         if (!this.preview?.shown) {
           this.preview.modelChangeListener = instance.onDidChangeModelContent(
@@ -161,6 +192,11 @@ export class EditorMarkdownPreviewExtension {
         }
 
         this.preview.shown = !this.preview?.shown;
+        if (instance.toolbar) {
+          instance.toolbar.updateItem(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID, {
+            selected: this.preview.shown,
+          });
+        }
       },
     };
   }

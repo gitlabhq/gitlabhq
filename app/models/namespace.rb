@@ -242,11 +242,11 @@ class Namespace < ApplicationRecord
       return unless host.ends_with?(gitlab_host)
 
       name = host.delete_suffix(gitlab_host)
-      Namespace.where(parent_id: nil).by_path(name)
+      Namespace.top_most.by_path(name)
     end
 
     def top_most
-      where(parent_id: nil)
+      by_parent(nil)
     end
   end
 

@@ -35,6 +35,18 @@ module Gitlab
             def self.build(string)
               new(string)
             end
+
+            def self.build_and_evaluate(data, variables = {})
+              return data if data.is_a?(Gitlab::UntrustedRegexp)
+
+              begin
+                new_pattern = build(data)
+              rescue Lexer::SyntaxError
+                return data
+              end
+
+              new_pattern.evaluate(variables)
+            end
           end
         end
       end

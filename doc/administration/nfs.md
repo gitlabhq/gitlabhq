@@ -377,7 +377,7 @@ Any `Operation not permitted` errors means you should investigate your NFS serve
 
 ## NFS in a Firewalled Environment
 
-If the traffic between your NFS server and NFS client(s) is subject to port filtering
+If the traffic between your NFS server and NFS clients is subject to port filtering
 by a firewall, then you need to reconfigure that firewall to allow NFS communication.
 
 [This guide from The Linux Documentation Project (TDLP)](https://tldp.org/HOWTO/NFS-HOWTO/security.html#FIREWALLS)

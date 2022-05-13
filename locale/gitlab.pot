@@ -902,7 +902,7 @@ msgstr ""
 msgid "%{reportType} detected %{totalStart}%{total}%{totalEnd} potential %{vulnMessage}"
 msgstr ""
 
-msgid "%{reportType} detected %{totalStart}no%{totalEnd} new vulnerabilities."
+msgid "%{reportType} detected no %{totalStart}new%{totalEnd} vulnerabilities."
 msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
@@ -2088,6 +2088,9 @@ msgstr ""
 msgid "Add a comment to this line or drag for multiple lines"
 msgstr ""
 
+msgid "Add a confidential internal note to this %{noteableDisplayName}."
+msgstr ""
+
 msgid "Add a custom message with details about the instance's shared runners. The message is visible in group and project CI/CD settings, in the Runners section. Markdown is supported."
 msgstr ""
 
@@ -2209,6 +2212,9 @@ msgid "Add header and footer to emails. Please note that color settings will onl
 msgstr ""
 
 msgid "Add image comment"
+msgstr ""
+
+msgid "Add internal note"
 msgstr ""
 
 msgid "Add italic text"
@@ -4807,7 +4813,7 @@ msgstr ""
 msgid "Are you sure you want to attempt to merge?"
 msgstr ""
 
-msgid "Are you sure you want to cancel editing this comment?"
+msgid "Are you sure you want to cancel editing this %{commentType}?"
 msgstr ""
 
 msgid "Are you sure you want to close this blocked issue?"
@@ -4819,7 +4825,7 @@ msgstr ""
 msgid "Are you sure you want to delete these artifacts?"
 msgstr ""
 
-msgid "Are you sure you want to delete this %{typeOfComment}?"
+msgid "Are you sure you want to delete this %{commentType}?"
 msgstr ""
 
 msgid "Are you sure you want to delete this SSH key?"
@@ -11920,6 +11926,9 @@ msgstr ""
 msgid "Delete Comment"
 msgstr ""
 
+msgid "Delete Internal Note"
+msgstr ""
+
 msgid "Delete Key"
 msgstr ""
 
@@ -13212,6 +13221,12 @@ msgid "Discover|Start a free trial"
 msgstr ""
 
 msgid "Discover|Upgrade now"
+msgstr ""
+
+msgid "Discuss a specific suggestion or question internally that needs to be resolved."
+msgstr ""
+
+msgid "Discuss a specific suggestion or question internally."
 msgstr ""
 
 msgid "Discuss a specific suggestion or question that needs to be resolved."
@@ -18693,6 +18708,9 @@ msgstr ""
 msgid "Hide"
 msgstr ""
 
+msgid "Hide Live Preview"
+msgstr ""
+
 msgid "Hide archived projects"
 msgstr ""
 
@@ -20614,6 +20632,9 @@ msgid "Internal - The project can be accessed by any logged in user except exter
 msgstr ""
 
 msgid "Internal error occurred while delivering this webhook."
+msgstr ""
+
+msgid "Internal note"
 msgstr ""
 
 msgid "Internal users"
@@ -25732,16 +25753,19 @@ msgstr ""
 msgid "Notes rate limit"
 msgstr ""
 
+msgid "Notes|Are you sure you want to cancel creating this %{commentType}?"
+msgstr ""
+
 msgid "Notes|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
 msgid "Notes|Collapse replies"
 msgstr ""
 
-msgid "Notes|Confidential comments are only visible to members with the role of Reporter or higher"
+msgid "Notes|Internal notes are only visible to the author, assignees, and members with the role of Reporter or higher"
 msgstr ""
 
-msgid "Notes|Make this comment confidential"
+msgid "Notes|Make this an internal note"
 msgstr ""
 
 msgid "Notes|Show all activity"
@@ -25756,10 +25780,7 @@ msgstr ""
 msgid "Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost"
 msgstr ""
 
-msgid "Notes|This comment is confidential and only visible to group members"
-msgstr ""
-
-msgid "Notes|This comment is confidential and only visible to project members"
+msgid "Notes|This internal note will always remain confidential"
 msgstr ""
 
 msgid "Notes|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
@@ -31664,6 +31685,9 @@ msgstr ""
 msgid "Reply by email"
 msgstr ""
 
+msgid "Reply internally"
+msgstr ""
+
 msgid "Reply to comment"
 msgstr ""
 
@@ -32978,6 +33002,9 @@ msgid "Save comment"
 msgstr ""
 
 msgid "Save deploy freeze"
+msgstr ""
+
+msgid "Save internal note"
 msgstr ""
 
 msgid "Save password"
@@ -35929,6 +35956,9 @@ msgid "Start free trial"
 msgstr ""
 
 msgid "Start inputting changes and we will generate a YAML-file for you to add to your repository"
+msgstr ""
+
+msgid "Start internal thread"
 msgstr ""
 
 msgid "Start merge train"
@@ -42840,6 +42870,9 @@ msgstr ""
 msgid "Write a description…"
 msgstr ""
 
+msgid "Write an internal note or drag your files here…"
+msgstr ""
+
 msgid "Write milestone description..."
 msgstr ""
 
@@ -44730,6 +44763,9 @@ msgid "instance completed"
 msgid_plural "instances completed"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "internal note"
+msgstr ""
 
 msgid "invalid milestone state `%{state}`"
 msgstr ""

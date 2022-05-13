@@ -133,7 +133,7 @@ module Ci
           job.update_column(:artifacts_expire_at, artifact.expire_at)
         end
 
-        success
+        success(artifact: artifact)
       rescue ActiveRecord::RecordNotUnique => error
         track_exception(error, params)
         error('another artifact of the same type already exists', :bad_request)

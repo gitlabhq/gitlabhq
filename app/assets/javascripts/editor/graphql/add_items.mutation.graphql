@@ -1,0 +1,3 @@
+mutation addItems($items: [Item]) {
+  addToolbarItems(items: $items) @client
+}

@@ -1,0 +1,23 @@
+type Item {
+  id: ID!
+  label: String!
+  icon: String
+  selected: Boolean
+  group: Int!
+  category: String
+  selectedLabel: String
+}
+
+type Items {
+  nodes: [Item]!
+}
+
+extend type Query {
+  items: Items
+}
+
+extend type Mutation {
+  updateToolbarItem(id: ID!, propsToUpdate: Item!): LocalErrors
+  removeToolbarItems(ids: [ID!]): LocalErrors
+  addToolbarItems(items: [Item]): LocalErrors
+}

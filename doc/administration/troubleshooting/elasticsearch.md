@@ -289,7 +289,7 @@ If the issue is:
   Go indexer was a beta indexer which can be optionally turned on/off, but in 12.3 it reached stable status and is now the default.
 - Not concerning the Go indexer, it is almost always an
   Elasticsearch-side issue. This means you should reach out to your Elasticsearch administrator
-  regarding the error(s) you are seeing. If you are unsure here, it never hurts to reach
+  regarding the errors you are seeing. If you are unsure here, it never hurts to reach
   out to GitLab support.
 
 Beyond that, review the error. If it is:

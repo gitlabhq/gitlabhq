@@ -2,6 +2,7 @@
 
 class Profiles::NotificationsController < Profiles::ApplicationController
   feature_category :team_planning
+  urgency :low
 
   def show
     @user = current_user

@@ -49,7 +49,7 @@ module Gitlab
     # It does not include the default public schema
     EXTRA_SCHEMAS = [DYNAMIC_PARTITIONS_SCHEMA, STATIC_PARTITIONS_SCHEMA].freeze
 
-    PRIMARY_DATABASE_NAME = ActiveRecord::Base.connection_db_config.name.to_sym
+    PRIMARY_DATABASE_NAME = ActiveRecord::Base.connection_db_config.name.to_sym # rubocop:disable Database/MultipleDatabases
 
     def self.database_base_models
       @database_base_models ||= {
@@ -92,21 +92,6 @@ module Gitlab
 
     def self.has_config?(database_name)
       Gitlab::Application.config.database_configuration[Rails.env].include?(database_name.to_s)
-    end
-
-    def self.main_database?(name)
-      # The database is `main` if it is a first entry in `database.yml`
-      # Rails internally names them `primary` to avoid confusion
-      # with broad `primary` usage we use `main` instead
-      #
-      # TODO: The explicit `== 'main'` is needed in a transition period till
-      # the `database.yml` is not migrated into `main:` syntax
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65243
-      ActiveRecord::Base.configurations.primary?(name.to_s) || name.to_s == 'main'
-    end
-
-    def self.ci_database?(name)
-      name.to_s == CI_DATABASE_NAME
     end
 
     class PgUser < ApplicationRecord

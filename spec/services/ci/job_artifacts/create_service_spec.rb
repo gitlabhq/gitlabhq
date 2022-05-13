@@ -42,6 +42,13 @@ RSpec.describe Ci::JobArtifacts::CreateService do
     subject { service.execute(artifacts_file, params, metadata_file: metadata_file) }
 
     context 'when artifacts file is uploaded' do
+      it 'returns artifact in the response' do
+        response = subject
+        new_artifact = job.job_artifacts.last
+
+        expect(response[:artifact]).to eq(new_artifact)
+      end
+
       it 'saves artifact for the given type' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(1)
 
@@ -84,7 +91,7 @@ RSpec.describe Ci::JobArtifacts::CreateService do
         it 'sets expiration date according to application settings' do
           expected_expire_at = 1.day.from_now
 
-          expect(subject).to match(a_hash_including(status: :success))
+          expect(subject).to match(a_hash_including(status: :success, artifact: anything))
           archive_artifact, metadata_artifact = job.job_artifacts.last(2)
 
           expect(job.artifacts_expire_at).to be_within(1.minute).of(expected_expire_at)
@@ -100,7 +107,7 @@ RSpec.describe Ci::JobArtifacts::CreateService do
           it 'sets expiration date according to the parameter' do
             expected_expire_at = 2.hours.from_now
 
-            expect(subject).to match(a_hash_including(status: :success))
+            expect(subject).to match(a_hash_including(status: :success, artifact: anything))
             archive_artifact, metadata_artifact = job.job_artifacts.last(2)
 
             expect(job.artifacts_expire_at).to be_within(1.minute).of(expected_expire_at)

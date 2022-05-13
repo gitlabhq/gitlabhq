@@ -1,5 +1,5 @@
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 export const URI_PREFIX = 'gitlab';
 export const CONTENT_UPDATE_DEBOUNCE = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
@@ -57,5 +57,8 @@ export const EXTENSION_CI_SCHEMA_FILE_NAME_MATCH = '.gitlab-ci.yml';
 export const EXTENSION_MARKDOWN_PREVIEW_PANEL_CLASS = 'md';
 export const EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS = 'source-editor-preview';
 export const EXTENSION_MARKDOWN_PREVIEW_ACTION_ID = 'markdown-preview';
+export const EXTENSION_MARKDOWN_PREVIEW_HIDE_ACTION_ID = 'markdown-preview-hide';
 export const EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH = 0.5; // 50% of the width
 export const EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY = 250; // ms
+export const EXTENSION_MARKDOWN_PREVIEW_LABEL = __('Preview Markdown');
+export const EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL = __('Hide Live Preview');

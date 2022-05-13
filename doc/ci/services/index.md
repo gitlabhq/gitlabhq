@@ -80,7 +80,7 @@ As mentioned before, this feature is designed to provide **network accessible**
 services. A database is the simplest example of such a service.
 
 The services feature is not designed to, and does not, add any software from the
-defined `services` image(s) to the job's container.
+defined `services` images to the job's container.
 
 For example, if you have the following `services` defined in your job, the `php`,
 `node` or `go` commands are **not** available for your script, and the job fails:

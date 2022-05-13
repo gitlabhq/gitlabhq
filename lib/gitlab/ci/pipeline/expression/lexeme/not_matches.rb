@@ -11,7 +11,14 @@ module Gitlab
             def evaluate(variables = {})
               text = @left.evaluate(variables)
               regexp = @right.evaluate(variables)
+
               return true unless regexp
+
+              if ::Feature.enabled?(:ci_fix_rules_if_comparison_with_regexp_variable)
+                # All variables are evaluated as strings, even if they are regexp strings.
+                # So, we need to convert them to regexp objects.
+                regexp = Lexeme::Pattern.build_and_evaluate(regexp, variables)
+              end
 
               regexp.scan(text.to_s).empty?
             end

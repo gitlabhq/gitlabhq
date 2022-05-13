@@ -257,7 +257,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
 
    ```ruby
    external_url 'https://my.domain.com/'
-   gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password')
+   gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password').gsub("\n", "")
    ```
 
 1. Create a `root_password.txt` file:

@@ -43,7 +43,7 @@ problem.
 First, a table is partitioned on a partition key, which is a column or
 set of columns which determine how the data will be split across the
 partitions. The partition key is used by the database when reading or
-writing data, to decide which partition(s) need to be accessed. The
+writing data, to decide which partitions need to be accessed. The
 partition key should be a column that would be included in a `WHERE`
 clause on almost all queries accessing that table.
 

@@ -4,6 +4,7 @@ import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
+import { __ } from '~/locale';
 import '~/behaviors/markdown/render_gfm';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import autosave from '../mixins/autosave';
@@ -68,6 +69,9 @@ export default {
     },
     noteBody() {
       return this.note.note;
+    },
+    saveButtonTitle() {
+      return this.note.confidential ? __('Save internal note') : __('Save comment');
     },
     hasSuggestion() {
       return this.note.suggestions && this.note.suggestions.length;
@@ -180,6 +184,7 @@ export default {
       :note-id="note.id"
       :line="line"
       :note="note"
+      :save-button-title="saveButtonTitle"
       :help-page-path="helpPagePath"
       :discussion="discussion"
       :resolve-discussion="note.resolve_discussion"

@@ -992,7 +992,7 @@ On the **primary** node:
 1. On the left sidebar, select **Geo > Nodes**.
 1. Find the affected **secondary** site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
-   in `external_url "https://gitlab.example.com"` on the frontend server(s) of
+   in `external_url "https://gitlab.example.com"` on the frontend servers of
    the **secondary** node.
 
 ## Fixing common errors
@@ -1133,7 +1133,7 @@ This happens because GitLab is attempting to display registries from the [Geo tr
 
 ## Fixing client errors
 
-### Authorization errors from LFS HTTP(s) client requests
+### Authorization errors from LFS HTTP(S) client requests
 
 You may have problems if you're running a version of [Git LFS](https://git-lfs.github.com/) before 2.4.2.
 As noted in [this authentication issue](https://github.com/git-lfs/git-lfs/issues/3025),

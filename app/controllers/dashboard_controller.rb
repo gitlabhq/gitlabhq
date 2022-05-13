@@ -19,6 +19,7 @@ class DashboardController < Dashboard::ApplicationController
   feature_category :code_review, [:merge_requests]
 
   urgency :low, [:merge_requests, :activity]
+  urgency :low, [:issues, :issues_calendar]
 
   def activity
     respond_to do |format|

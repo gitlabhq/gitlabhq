@@ -6,7 +6,7 @@ module Gitlab
       module Observers
         class QueryLog < MigrationObserver
           def before
-            @logger_was = ActiveRecord::Base.logger
+            @logger_was = ActiveRecord::Base.logger # rubocop:disable Database/MultipleDatabases
             file_path = File.join(output_dir, "migration.log")
             @logger = Logger.new(file_path)
             ActiveRecord::Base.logger = @logger

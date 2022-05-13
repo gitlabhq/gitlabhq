@@ -16,6 +16,7 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   feature_category :team_planning
+  urgency :low
 
   private
 

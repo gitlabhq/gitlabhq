@@ -10,6 +10,7 @@ class Groups::LabelsController < Groups::ApplicationController
   respond_to :html
 
   feature_category :team_planning
+  urgency :low
 
   def index
     respond_to do |format|

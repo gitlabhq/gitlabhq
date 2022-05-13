@@ -248,13 +248,21 @@ describe('issue_comment_form component', () => {
 
     describe('textarea', () => {
       describe('general', () => {
-        it('should render textarea with placeholder', () => {
-          mountComponent({ mountFunction: mount });
+        it.each`
+          noteType           | confidential | placeholder
+          ${'comment'}       | ${false}     | ${'Write a comment or drag your files here…'}
+          ${'internal note'} | ${true}      | ${'Write an internal note or drag your files here…'}
+        `(
+          'should render textarea with placeholder for $noteType',
+          ({ confidential, placeholder }) => {
+            mountComponent({
+              mountFunction: mount,
+              noteableData: createNotableDataMock({ confidential }),
+            });
 
-          expect(findTextArea().attributes('placeholder')).toBe(
-            'Write a comment or drag your files here…',
-          );
-        });
+            expect(findTextArea().attributes('placeholder')).toBe(placeholder);
+          },
+        );
 
         it('should make textarea disabled while requesting', async () => {
           mountComponent({ mountFunction: mount });
@@ -378,6 +386,20 @@ describe('issue_comment_form component', () => {
         mountComponent();
 
         expect(findCloseReopenButton().text()).toBe('Close issue');
+      });
+
+      it.each`
+        confidential | buttonText
+        ${false}     | ${'Comment'}
+        ${true}      | ${'Add internal note'}
+      `('renders comment button with text "$buttonText"', ({ confidential, buttonText }) => {
+        mountComponent({
+          mountFunction: mount,
+          noteableData: createNotableDataMock({ confidential }),
+          initialData: { noteIsConfidential: confidential },
+        });
+
+        expect(findCommentButton().text()).toBe(buttonText);
       });
 
       it('should render comment button as disabled', () => {

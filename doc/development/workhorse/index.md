@@ -44,7 +44,7 @@ On some operating systems, such as FreeBSD, you may have to use
 
 ### Run time dependencies
 
-Workhorse uses [Exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/) for
+Workhorse uses [ExifTool](https://www.sno.phy.queensu.ca/~phil/exiftool/) for
 removing EXIF data (which may contain sensitive information) from uploaded
 images. If you installed GitLab:
 

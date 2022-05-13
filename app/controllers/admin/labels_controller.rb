@@ -4,6 +4,7 @@ class Admin::LabelsController < Admin::ApplicationController
   before_action :set_label, only: [:show, :edit, :update, :destroy]
 
   feature_category :team_planning
+  urgency :low
 
   def index
     @labels = Label.templates.page(params[:page])

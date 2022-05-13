@@ -3090,6 +3090,8 @@ job:
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
+- In [GitLab 15.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/35438),
+  variables on the right side of `=~` and `!~` expressions are evaluated as regular expressions.
 
 **Related topics**:
 

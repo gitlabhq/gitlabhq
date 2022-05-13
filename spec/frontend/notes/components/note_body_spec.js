@@ -1,9 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import { suggestionCommitMessage } from '~/diffs/store/getters';
-import noteBody from '~/notes/components/note_body.vue';
+import NoteBody from '~/notes/components/note_body.vue';
+import NoteAwardsList from '~/notes/components/note_awards_list.vue';
+import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import notes from '~/notes/stores/modules/index';
 
@@ -11,68 +12,89 @@ import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
+const createComponent = ({
+  props = {},
+  noteableData = noteableDataMock,
+  notesData = notesDataMock,
+  store = null,
+} = {}) => {
+  let mockStore;
+
+  if (!store) {
+    mockStore = createStore();
+
+    mockStore.dispatch('setNoteableData', noteableData);
+    mockStore.dispatch('setNotesData', notesData);
+  }
+
+  return shallowMount(NoteBody, {
+    store: mockStore || store,
+    propsData: {
+      note,
+      canEdit: true,
+      canAwardEmoji: true,
+      isEditing: false,
+      ...props,
+    },
+  });
+};
+
 describe('issue_note_body component', () => {
-  let store;
-  let vm;
+  let wrapper;
 
   beforeEach(() => {
-    const Component = Vue.extend(noteBody);
-
-    store = createStore();
-    store.dispatch('setNoteableData', noteableDataMock);
-    store.dispatch('setNotesData', notesDataMock);
-
-    vm = new Component({
-      store,
-      propsData: {
-        note,
-        canEdit: true,
-        canAwardEmoji: true,
-      },
-    }).$mount();
+    wrapper = createComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('should render the note', () => {
-    expect(vm.$el.querySelector('.note-text').innerHTML).toEqual(note.note_html);
+    expect(wrapper.find('.note-text').html()).toContain(note.note_html);
   });
 
   it('should render awards list', () => {
-    expect(vm.$el.querySelector('.js-awards-block button [data-name="baseball"]')).not.toBeNull();
-    expect(vm.$el.querySelector('.js-awards-block button [data-name="bath_tone3"]')).not.toBeNull();
+    expect(wrapper.findComponent(NoteAwardsList).exists()).toBe(true);
   });
 
   describe('isEditing', () => {
-    beforeEach(async () => {
-      vm.isEditing = true;
-      await nextTick();
+    beforeEach(() => {
+      wrapper = createComponent({ props: { isEditing: true } });
     });
 
     it('renders edit form', () => {
-      expect(vm.$el.querySelector('textarea.js-task-list-field')).not.toBeNull();
+      expect(wrapper.findComponent(NoteForm).exists()).toBe(true);
+    });
+
+    it.each`
+      confidential | buttonText
+      ${false}     | ${'Save comment'}
+      ${true}      | ${'Save internal note'}
+    `('renders save button with text "$buttonText"', ({ confidential, buttonText }) => {
+      wrapper = createComponent({ props: { note: { ...note, confidential }, isEditing: true } });
+
+      expect(wrapper.findComponent(NoteForm).props('saveButtonTitle')).toBe(buttonText);
     });
 
     it('adds autosave', () => {
       const autosaveKey = `autosave/Note/${note.noteable_type}/${note.id}`;
 
-      expect(vm.autosave.key).toEqual(autosaveKey);
+      // While we discourage testing wrapper props
+      // here we aren't testing a component prop
+      // but instead an instance object property
+      // which is defined in `app/assets/javascripts/notes/mixins/autosave.js`
+      expect(wrapper.vm.autosave.key).toEqual(autosaveKey);
     });
   });
 
   describe('commitMessage', () => {
-    let wrapper;
-
-    Vue.use(Vuex);
-
     beforeEach(() => {
       const notesStore = notes();
 
       notesStore.state.notes = {};
 
-      store = new Vuex.Store({
+      const store = new Vuex.Store({
         modules: {
           notes: notesStore,
           diffs: {
@@ -98,9 +120,9 @@ describe('issue_note_body component', () => {
         },
       });
 
-      wrapper = shallowMount(noteBody, {
+      wrapper = createComponent({
         store,
-        propsData: {
+        props: {
           note: { ...note, suggestions: [12345] },
           canEdit: true,
           file: { file_path: 'abc' },

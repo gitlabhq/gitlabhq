@@ -141,6 +141,20 @@ module Gitlab
           .to_h
       end
 
+      # Get the list of queues from all available workers following queue
+      # routing rules. Sidekiq::Queue.all fetches the list of queues from Redis.
+      # It may contain some redundant, obsolete queues from previous iterations
+      # of GitLab.
+      def routing_queues
+        @routing_queues ||= workers.map do |worker|
+          if worker.klass.is_a?(Gitlab::SidekiqConfig::DummyWorker)
+            worker.queue
+          else
+            ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker.klass)
+          end
+        end.uniq.sort
+      end
+
       private
 
       def find_workers(root, ee:, jh:)

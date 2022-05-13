@@ -8,9 +8,11 @@ import markdownField from '~/vue_shared/components/markdown/field.vue';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
+import { COMMENT_FORM } from '../i18n';
 import CommentFieldLayout from './comment_field_layout.vue';
 
 export default {
+  i18n: COMMENT_FORM,
   name: 'NoteForm',
   components: {
     markdownField,
@@ -132,6 +134,11 @@ export default {
           .filter((n) => n.resolvable)
           .some((n) => n.current_user?.can_resolve_discussion) || this.isDraft
       );
+    },
+    textareaPlaceholder() {
+      return this.discussionNote?.confidential
+        ? this.$options.i18n.bodyPlaceholderInternal
+        : this.$options.i18n.bodyPlaceholder;
     },
     noteHash() {
       if (this.noteId) {
@@ -350,7 +357,7 @@ export default {
               data-qa-selector="reply_field"
               dir="auto"
               :aria-label="__('Reply to comment')"
-              :placeholder="__('Write a comment or drag your files here…')"
+              :placeholder="textareaPlaceholder"
               @keydown.meta.enter="handleKeySubmit()"
               @keydown.ctrl.enter="handleKeySubmit()"
               @keydown.exact.up="editMyLastNote()"

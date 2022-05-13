@@ -17419,6 +17419,7 @@ CREATE TABLE namespace_settings (
     runner_token_expiration_interval integer,
     subgroup_runner_token_expiration_interval integer,
     project_runner_token_expiration_interval integer,
+    exclude_from_free_user_cap boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 

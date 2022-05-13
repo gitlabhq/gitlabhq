@@ -90,9 +90,16 @@ export default {
       return this.getUserData.id;
     },
     commentButtonTitle() {
-      return this.noteType === constants.COMMENT
-        ? this.$options.i18n.comment
-        : this.$options.i18n.startThread;
+      const { comment, internalComment, startThread, startInternalThread } = this.$options.i18n;
+      if (this.getNoteableData.confidential || this.noteIsConfidential) {
+        return this.noteType === constants.COMMENT ? internalComment : startInternalThread;
+      }
+      return this.noteType === constants.COMMENT ? comment : startThread;
+    },
+    textareaPlaceholder() {
+      return this.getNoteableData.confidential || this.noteIsConfidential
+        ? this.$options.i18n.bodyPlaceholderInternal
+        : this.$options.i18n.bodyPlaceholder;
     },
     discussionsRequireResolution() {
       return this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE;
@@ -371,7 +378,7 @@ export default {
                     data-testid="comment-field"
                     data-supports-quick-actions="true"
                     :aria-label="$options.i18n.comment"
-                    :placeholder="$options.i18n.bodyPlaceholder"
+                    :placeholder="textareaPlaceholder"
                     @keydown.up="editCurrentUserLastNote()"
                     @keydown.meta.enter="handleEnter()"
                     @keydown.ctrl.enter="handleEnter()"
@@ -419,6 +426,7 @@ export default {
                   class="gl-mr-3"
                   :disabled="disableSubmitButton"
                   :tracking-label="trackingLabel"
+                  :is-internal-note="noteIsConfidential"
                   :noteable-display-name="noteableDisplayName"
                   :discussions-require-resolution="discussionsRequireResolution"
                   @click="handleSave"

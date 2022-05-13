@@ -21,7 +21,7 @@ describe('NoteHeader component', () => {
   const findActionText = () => wrapper.find({ ref: 'actionText' });
   const findTimestampLink = () => wrapper.find({ ref: 'noteTimestampLink' });
   const findTimestamp = () => wrapper.find({ ref: 'noteTimestamp' });
-  const findConfidentialIndicator = () => wrapper.findByTestId('confidentialIndicator');
+  const findConfidentialIndicator = () => wrapper.findByTestId('internalNoteIndicator');
   const findSpinner = () => wrapper.find({ ref: 'spinner' });
   const findAuthorStatus = () => wrapper.find({ ref: 'authorStatus' });
 
@@ -297,7 +297,7 @@ describe('NoteHeader component', () => {
       createComponent({ isConfidential: true, noteableType: 'issue' });
 
       expect(findConfidentialIndicator().attributes('title')).toBe(
-        'This comment is confidential and only visible to project members',
+        'This internal note will always remain confidential',
       );
     });
   });

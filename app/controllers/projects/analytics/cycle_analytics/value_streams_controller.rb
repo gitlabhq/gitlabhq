@@ -4,6 +4,7 @@ class Projects::Analytics::CycleAnalytics::ValueStreamsController < Projects::Ap
   respond_to :json
 
   feature_category :planning_analytics
+  urgency :low
 
   before_action :authorize_read_cycle_analytics!
 

@@ -1,5 +1,4 @@
 import MockAdapter from 'axios-mock-adapter';
-import { editor as monacoEditor } from 'monaco-editor';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
@@ -31,7 +30,6 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
   const secondLine = 'multiline';
   const thirdLine = 'string with some **markup**';
   const text = `${firstLine}\n${secondLine}\n${thirdLine}`;
-  const plaintextPath = 'foo.txt';
   const markdownPath = 'foo.md';
   const responseData = '<div>FooBar</div>';
 
@@ -50,6 +48,13 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       blobPath: markdownPath,
       blobContent: text,
     });
+
+    instance.toolbar = {
+      addItems: jest.fn(),
+      updateItem: jest.fn(),
+      removeItems: jest.fn(),
+    };
+
     extension = instance.use({
       definition: EditorMarkdownPreviewExtension,
       setupOptions: { previewMarkdownPath },
@@ -67,57 +72,12 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
   it('sets up the preview on the instance', () => {
     expect(instance.markdownPreview).toEqual({
       el: undefined,
-      action: expect.any(Object),
+      actions: expect.any(Object),
       shown: false,
       modelChangeListener: undefined,
       path: previewMarkdownPath,
+      actionShowPreviewCondition: expect.any(Object),
     });
-  });
-
-  describe('model language changes listener', () => {
-    let cleanupSpy;
-    let actionSpy;
-
-    beforeEach(async () => {
-      cleanupSpy = jest.fn();
-      actionSpy = jest.fn();
-      spyOnApi(extension, {
-        cleanup: cleanupSpy,
-        setupPreviewAction: actionSpy,
-      });
-      await togglePreview();
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('cleans up when switching away from markdown', () => {
-      expect(cleanupSpy).not.toHaveBeenCalled();
-      expect(actionSpy).not.toHaveBeenCalled();
-
-      instance.updateModelLanguage(plaintextPath);
-
-      expect(cleanupSpy).toHaveBeenCalled();
-      expect(actionSpy).not.toHaveBeenCalled();
-    });
-
-    it.each`
-      oldLanguage    | newLanguage    | setupCalledTimes
-      ${'plaintext'} | ${'markdown'}  | ${1}
-      ${'markdown'}  | ${'markdown'}  | ${0}
-      ${'markdown'}  | ${'plaintext'} | ${0}
-      ${'markdown'}  | ${undefined}   | ${0}
-      ${undefined}   | ${'markdown'}  | ${1}
-    `(
-      'correctly handles re-enabling of the action when switching from $oldLanguage to $newLanguage',
-      ({ oldLanguage, newLanguage, setupCalledTimes } = {}) => {
-        expect(actionSpy).not.toHaveBeenCalled();
-        instance.updateModelLanguage(oldLanguage);
-        instance.updateModelLanguage(newLanguage);
-        expect(actionSpy).toHaveBeenCalledTimes(setupCalledTimes);
-      },
-    );
   });
 
   describe('model change listener', () => {
@@ -144,31 +104,20 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       expect(cleanupSpy).not.toHaveBeenCalled();
       expect(actionSpy).not.toHaveBeenCalled();
     });
-
-    it('cleans up the preview when the model changes', () => {
-      instance.setModel(monacoEditor.createModel('foo'));
-      expect(cleanupSpy).toHaveBeenCalled();
-    });
-
-    it.each`
-      language       | setupCalledTimes
-      ${'markdown'}  | ${1}
-      ${'plaintext'} | ${0}
-      ${undefined}   | ${0}
-    `(
-      'correctly handles actions when the new model is $language',
-      ({ language, setupCalledTimes } = {}) => {
-        instance.setModel(monacoEditor.createModel('foo', language));
-
-        expect(actionSpy).toHaveBeenCalledTimes(setupCalledTimes);
-      },
-    );
   });
 
-  describe('cleanup', () => {
+  describe('onBeforeUnuse', () => {
     beforeEach(async () => {
       mockAxios.onPost().reply(200, { body: responseData });
       await togglePreview();
+    });
+
+    it('removes the registered buttons from the toolbar', () => {
+      expect(instance.toolbar.removeItems).not.toHaveBeenCalled();
+      instance.unuse(extension);
+      expect(instance.toolbar.removeItems).toHaveBeenCalledWith([
+        EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
+      ]);
     });
 
     it('disposes the modelChange listener and does not fetch preview on content changes', () => {
@@ -178,7 +127,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
         fetchPreview: fetchPreviewSpy,
       });
 
-      instance.cleanup();
+      instance.unuse(extension);
       instance.setValue('Foo Bar');
       jest.advanceTimersByTime(EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY);
 
@@ -188,15 +137,9 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     it('removes the contextual menu action', () => {
       expect(instance.getAction(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID)).toBeDefined();
 
-      instance.cleanup();
+      instance.unuse(extension);
 
       expect(instance.getAction(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID)).toBe(null);
-    });
-
-    it('toggles the `shown` flag', () => {
-      expect(instance.markdownPreview.shown).toBe(true);
-      instance.cleanup();
-      expect(instance.markdownPreview.shown).toBe(false);
     });
 
     it('toggles the panel only if the preview is visible', () => {
@@ -206,13 +149,13 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       expect(previewEl).toBeVisible();
       expect(parentEl.classList.contains(EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS)).toBe(true);
 
-      instance.cleanup();
+      instance.unuse(extension);
       expect(previewEl).toBeHidden();
       expect(parentEl.classList.contains(EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS)).toBe(
         false,
       );
 
-      instance.cleanup();
+      instance.unuse(extension);
       expect(previewEl).toBeHidden();
       expect(parentEl.classList.contains(EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS)).toBe(
         false,
@@ -224,12 +167,12 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
       expect(instance.markdownPreview.shown).toBe(true);
 
-      instance.cleanup();
+      instance.unuse(extension);
 
       const { width: newWidth } = instance.getLayoutInfo();
       expect(newWidth === width / EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH).toBe(true);
 
-      instance.cleanup();
+      instance.unuse(extension);
       expect(newWidth === width / EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH).toBe(true);
     });
   });
@@ -305,6 +248,12 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
   describe('togglePreview', () => {
     beforeEach(() => {
       mockAxios.onPost().reply(200, { body: responseData });
+    });
+
+    it('toggles the condition to toggle preview/hide actions in the context menu', () => {
+      expect(instance.markdownPreview.actionShowPreviewCondition.get()).toBe(true);
+      instance.togglePreview();
+      expect(instance.markdownPreview.actionShowPreviewCondition.get()).toBe(false);
     });
 
     it('toggles preview flag on instance', () => {

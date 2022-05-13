@@ -25,6 +25,7 @@ arity
 Artifactory
 Asana
 Asciidoctor
+asdf
 Assembla
 Atlassian
 auditability
@@ -98,6 +99,7 @@ Casdoor
 CentOS
 Ceph
 Certbot
+cgo
 cgroup
 cgroups
 chai
@@ -109,6 +111,7 @@ chatbots
 ChatOps
 checksummed
 checksumming
+Chemlab
 Citrix
 Citus
 clonable
@@ -206,6 +209,7 @@ enums
 ETag
 Excon
 exfiltration
+ExifTool
 expirable
 Facebook
 failover
@@ -592,6 +596,7 @@ serializer
 serializers
 serializing
 serverless
+setuptools
 severities
 sharded
 sharding
@@ -825,6 +830,7 @@ Vagrantfile
 validator
 validators
 vendored
+vendoring
 versionless
 viewport
 viewports

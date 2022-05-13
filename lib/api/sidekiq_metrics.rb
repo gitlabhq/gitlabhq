@@ -10,7 +10,8 @@ module API
 
     helpers do
       def queue_metrics
-        Sidekiq::Queue.all.each_with_object({}) do |queue, hash|
+        ::Gitlab::SidekiqConfig.routing_queues.each_with_object({}) do |queue_name, hash|
+          queue = Sidekiq::Queue.new(queue_name)
           hash[queue.name] = {
             backlog: queue.size,
             latency: queue.latency.to_i

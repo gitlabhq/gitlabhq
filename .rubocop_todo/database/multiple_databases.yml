@@ -2,7 +2,6 @@
 Database/MultipleDatabases:
   Exclude:
     - 'config/initializers/active_record_data_types.rb'
-    - 'config/initializers/sidekiq.rb'
     - 'db/post_migrate/20210317104032_set_iteration_cadence_automatic_to_false.rb'
     - 'db/post_migrate/20210811122206_update_external_project_bots.rb'
     - 'db/post_migrate/20210812013042_remove_duplicate_project_authorizations.rb'
@@ -10,10 +9,6 @@ Database/MultipleDatabases:
     - 'lib/backup/manager.rb'
     - 'lib/gitlab/background_migration/backfill_projects_with_coverage.rb'
     - 'lib/gitlab/background_migration/copy_ci_builds_columns_to_security_scans.rb'
-    - 'lib/gitlab/database.rb'
-    - 'lib/gitlab/database/load_balancing/load_balancer.rb'
-    - 'lib/gitlab/database/migrations/observers/query_log.rb'
-    - 'lib/tasks/gitlab/db/validate_config.rake'
     - 'spec/db/schema_spec.rb'
     - 'spec/initializers/database_config_spec.rb'
     - 'spec/lib/backup/manager_spec.rb'

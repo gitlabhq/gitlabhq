@@ -26,7 +26,7 @@ This is only a recommendation and the reviewer may be from a different team.
 However, it is recommended to pick someone who is a [domain expert](#domain-experts).
 If your merge request touches more than one domain (for example, Dynamic Analysis and GraphQL), ask for reviews from an expert from each domain.
 
-You can read more about the importance of involving reviewer(s) in the section on the responsibility of the author below.
+You can read more about the importance of involving reviewers in the section on the responsibility of the author below.
 
 If you need some guidance (for example, it's your first merge request), feel free to ask
 one of the [Merge request coaches](https://about.gitlab.com/company/team/).
@@ -107,7 +107,7 @@ For more information, review [the roulette README](https://gitlab.com/gitlab-org
 ### Approval guidelines
 
 As described in the section on the responsibility of the maintainer below, you
-are recommended to get your merge request approved and merged by maintainer(s)
+are recommended to get your merge request approved and merged by maintainers
 with [domain expertise](#domain-experts).
 
 1. If your merge request includes backend changes (*1*), it must be
@@ -444,7 +444,7 @@ experience, refactors the existing code). Then:
   - For non-mandatory suggestions, decorate with (non-blocking) so the author knows they can
     optionally resolve within the merge request or follow-up at a later stage.
   - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
-- Ensure there are no open dependencies. Check [linked issues](../user/project/issues/related_issues.md) for blockers. Clarify with the author(s)
+- Ensure there are no open dependencies. Check [linked issues](../user/project/issues/related_issues.md) for blockers. Clarify with the authors
 if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/merge_request_dependencies.md).
 - After a round of line notes, it can be helpful to post a summary note such as
   "Looks good to me", or "Just a couple things to address."
@@ -697,7 +697,7 @@ Properties of customer critical merge requests:
 
 - The [VP of Development](https://about.gitlab.com/job-families/engineering/development/management/vp/) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request qualifies as customer critical.
 - The DRI applies the `customer-critical-merge-request` label to the merge request.
-- It is required that the reviewer(s) and maintainer(s) involved with a customer critical merge request are engaged as soon as this decision is made.
+- It is required that the reviewers and maintainers involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
 - It is required to adhere to GitLab [values](https://about.gitlab.com/handbook/values/) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.
 - Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://about.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).

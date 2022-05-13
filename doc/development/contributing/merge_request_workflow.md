@@ -53,7 +53,7 @@ request is as follows:
 1. If you have multiple commits, combine them into a few logically organized
    commits by [squashing them](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#_squashing),
    but do not change the commit history if you're working on shared branches though.
-1. Push the commit(s) to your working branch in your fork.
+1. Push the commits to your working branch in your fork.
 1. Submit a merge request (MR) to the `main` branch in the main GitLab project.
    1. Your merge request needs at least 1 approval, but depending on your changes
       you might need additional approvals. Refer to the [Approval guidelines](../code_review.md#approval-guidelines).
@@ -65,7 +65,7 @@ request is as follows:
       template already provided in the "Description" field.
    1. If you are contributing documentation, choose `Documentation` from the
       "Choose a template" menu and fill in the description according to the template.
-   1. Use the syntax `Solves #XXX`, `Closes #XXX`, or `Refs #XXX` to mention the issue(s) your merge
+   1. Use the syntax `Solves #XXX`, `Closes #XXX`, or `Refs #XXX` to mention the issues your merge
       request addresses. Referenced issues do not [close automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically).
       You must close them manually once the merge request is merged.
    1. The MR must include *Before* and *After* screenshots if UI changes are made.

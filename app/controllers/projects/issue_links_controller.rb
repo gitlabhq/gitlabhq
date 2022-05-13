@@ -8,6 +8,7 @@ module Projects
     before_action :authorize_issue_link_association!, only: :destroy
 
     feature_category :team_planning
+    urgency :low
 
     private
 
