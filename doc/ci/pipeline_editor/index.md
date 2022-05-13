@@ -19,6 +19,7 @@ From the pipeline editor page you can:
 - [Validate](#validate-ci-configuration) your configuration syntax while editing the file.
 - Do a deeper [lint](#lint-ci-configuration) of your configuration, that verifies it with any configuration
   added with the [`include`](../yaml/index.md#include) keyword.
+- View a [list of the CI/CD configuration added with the `include` keyword](#view-included-cicd-configuration).
 - See a [visualization](#visualize-ci-configuration) of the current configuration.
 - View an [expanded](#view-expanded-configuration) version of your configuration.
 - [Commit](#commit-changes-to-ci-configuration) the changes to a specific branch.
@@ -49,6 +50,20 @@ The results are updated in real-time. Any changes you make to the configuration 
 reflected in the CI lint. It displays the same results as the existing [CI Lint tool](../lint.md).
 
 ![Linting errors in a CI configuration](img/pipeline_editor_lint_v13_8.png)
+
+## View included CI/CD configuration
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `pipeline_editor_file_tree`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+named `pipeline_editor_file_tree`.
+
+You can review configuration added with the [`include`](../yaml/index.md#include)
+keyword in the pipeline editor. In the top right, select the file tree (**{file-tree}**)
+to see a list of all included configuration files. Selected files open in a new tab
+for review.
 
 ## Visualize CI configuration
 
