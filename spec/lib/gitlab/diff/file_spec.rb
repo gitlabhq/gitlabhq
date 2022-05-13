@@ -99,6 +99,22 @@ RSpec.describe Gitlab::Diff::File do
     end
   end
 
+  describe '#ipynb?' do
+    context 'is ipynb' do
+      let(:commit) { project.commit("532c837") }
+
+      it 'is true' do
+        expect(diff_file.ipynb?).to be_truthy
+      end
+    end
+
+    context 'is not ipynb' do
+      it 'is false' do
+        expect(diff_file.ipynb?).to be_falsey
+      end
+    end
+  end
+
   describe '#has_renderable?' do
     context 'file is ipynb' do
       let(:commit) { project.commit("532c837") }

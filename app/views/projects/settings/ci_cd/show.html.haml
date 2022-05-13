@@ -109,3 +109,15 @@
       = link_to _('Learn more'), help_page_path('ci/jobs/ci_job_token'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'ci/token_access/index'
+
+- if show_secure_files_setting(@project, current_user)
+  %section.settings
+    .settings-header
+      %h4.settings-title
+        = _("Secure Files")
+      = button_to project_ci_secure_files_path(@project), method: :get, class: 'btn gl-button btn-default' do
+        = _('Manage')
+      %p
+        = _("Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
+        = link_to _('Learn more'), help_page_path('ci/secure_files/index'), target: '_blank', rel: 'noopener noreferrer'
+

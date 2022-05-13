@@ -15,6 +15,7 @@ module Projects
     feature_category :tracing
 
     def show
+      render_404 unless Feature.enabled?(:monitor_tracing, @project)
     end
 
     private

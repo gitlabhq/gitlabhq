@@ -24,4 +24,20 @@ module ProjectHelpers
 
     project.update!(params)
   end
+
+  def create_project_with_statistics(namespace = nil, with_data: false, size_multiplier: 1)
+    project = namespace.present? ? create(:project, namespace: namespace) : create(:project)
+    project.tap do |p|
+      create(:project_statistics, project: p, with_data: with_data, size_multiplier: size_multiplier)
+    end
+  end
+
+  def grace_months_after_deletion_notification
+    (::Gitlab::CurrentSettings.inactive_projects_delete_after_months -
+      ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months).months
+  end
+
+  def deletion_date
+    Date.parse(grace_months_after_deletion_notification.from_now.to_s).to_s
+  end
 end

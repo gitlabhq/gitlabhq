@@ -386,6 +386,10 @@ module Gitlab
         strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
       end
 
+      def ipynb?
+        file_path.ends_with?('.ipynb')
+      end
+
       private
 
       def diffable_by_attribute?
@@ -413,10 +417,6 @@ module Gitlab
 
       def modified_file?
         new_file? || deleted_file? || content_changed?
-      end
-
-      def ipynb?
-        file_path.ends_with?('.ipynb')
       end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but

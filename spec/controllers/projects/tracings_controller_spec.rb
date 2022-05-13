@@ -51,6 +51,16 @@ RSpec.describe Projects::TracingsController do
       it_behaves_like 'user with read access', :public
       it_behaves_like 'user with read access', :internal
       it_behaves_like 'user with read access', :private
+
+      context 'feature flag disabled' do
+        before do
+          stub_feature_flags(monitor_tracing: false)
+        end
+
+        it_behaves_like 'user without read access', :public
+        it_behaves_like 'user without read access', :internal
+        it_behaves_like 'user without read access', :private
+      end
     end
 
     context 'without maintainer role' do

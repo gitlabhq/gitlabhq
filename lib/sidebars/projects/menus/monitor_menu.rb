@@ -73,7 +73,8 @@ module Sidebars
         end
 
         def tracing_menu_item
-          if !can?(context.current_user, :read_environment, context.project) ||
+          if !Feature.enabled?(:monitor_tracing, context.project) ||
+            !can?(context.current_user, :read_environment, context.project) ||
             !can?(context.current_user, :admin_project, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :tracing)
           end

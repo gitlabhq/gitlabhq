@@ -1,0 +1,8 @@
+---
+name: ipynbdiff_notes_tracker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85398
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362232
+milestone: '15.0'
+type: development
+group: group::incubation
+default_enabled: false

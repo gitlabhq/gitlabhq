@@ -579,6 +579,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:projects_inactive_projects_deletion_cron
+  :worker_name: Projects::InactiveProjectsDeletionCronWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:projects_schedule_refresh_build_artifacts_size_statistics
   :worker_name: Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker
   :feature_category: :build_artifacts
@@ -2802,6 +2811,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: projects_inactive_projects_deletion_notification
+  :worker_name: Projects::InactiveProjectsDeletionNotificationWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: projects_post_creation
   :worker_name: Projects::PostCreationWorker

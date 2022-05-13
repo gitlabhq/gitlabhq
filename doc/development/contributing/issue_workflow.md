@@ -108,7 +108,7 @@ Group labels specify which [groups](https://about.gitlab.com/company/team/struct
 
 It's highly recommended to add a group label, as it's used by our triage
 automation to
-[infer the correct stage label](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-labelling-of-issues).
+[infer the correct stage label](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-labelling-of-issues-and-merge-requests).
 
 #### Naming and color convention
 

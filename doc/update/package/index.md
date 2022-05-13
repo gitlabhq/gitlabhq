@@ -127,7 +127,9 @@ or upgrade command:
    ```
 
 1. Install the specific `gitlab-ee` package by using one of the following commands
-   and replacing `<version>` with the version you found in the previous step:
+   and replacing `<version>` with the next supported version you would like to install
+   (make sure to review the [upgrade path](../index.md#upgrade-paths) to confirm the 
+   version you're installing is part of a supported path):
 
    ```shell
    # Ubuntu/Debian

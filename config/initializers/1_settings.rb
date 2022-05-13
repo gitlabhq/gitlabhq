@@ -626,6 +626,9 @@ Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker']['job_
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['cron'] ||= '2/17 * * * *'
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['job_class'] = 'Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker'
+Settings.cron_jobs['inactive_projects_deletion_cron_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['inactive_projects_deletion_cron_worker']['cron'] ||= '0 1 * * *'
+Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Projects::InactiveProjectsDeletionCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
