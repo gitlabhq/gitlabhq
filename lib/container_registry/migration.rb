@@ -74,5 +74,9 @@ module ContainerRegistry
     def self.enqueue_twice?
       Feature.enabled?(:container_registry_migration_phase2_enqueue_twice)
     end
+
+    def self.enqueuer_loop?
+      Feature.enabled?(:container_registry_migration_phase2_enqueuer_loop)
+    end
   end
 end

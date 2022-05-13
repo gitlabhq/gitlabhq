@@ -309,7 +309,7 @@ describe('datefix', () => {
 
   describe('parsePikadayDate', () => {
     it('should return a UTC date', () => {
-      expect(datetimeUtility.parsePikadayDate('2020-01-29')).toEqual(new Date('2020-01-29'));
+      expect(datetimeUtility.parsePikadayDate('2020-01-29')).toEqual(new Date(2020, 0, 29));
     });
   });
 

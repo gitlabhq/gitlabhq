@@ -391,7 +391,7 @@ The requirements are the same as the previous settings:
 
 - The IdP must pass Group information to GitLab.
 - GitLab should know where to look for the groups in the SAML response, as well as which
-  group(s) entail that a given user is an [auditor user](../user/permissions.md#auditor-users).
+  groups include users with the [Auditor role](../user/permissions.md#auditor-users).
 
 ```yaml
 { name: 'saml',

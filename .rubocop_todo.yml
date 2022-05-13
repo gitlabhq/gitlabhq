@@ -11,13 +11,6 @@ Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
 
-# Offense count: 1428
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: method_call, block
-RSpec/ExpectChange:
-  Enabled: false
-
 # Offense count: 2352
 # Cop supports --auto-correct.
 # Configuration parameters: Strict, EnforcedStyle, AllowedExplicitMatchers.
@@ -34,26 +27,6 @@ RSpec/RepeatedExampleGroupBody:
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
 Rails/ActiveRecordCallbacksOrder:
-  Enabled: false
-
-# Offense count: 10
-# Cop supports --auto-correct.
-Rails/ApplicationController:
-  Exclude:
-    - 'app/controllers/acme_challenges_controller.rb'
-    - 'app/controllers/chaos_controller.rb'
-    - 'app/controllers/health_controller.rb'
-    - 'app/controllers/metrics_controller.rb'
-    - 'ee/app/controllers/oauth/geo_auth_controller.rb'
-    - 'ee/spec/helpers/ee/integrations_helper_spec.rb'
-    - 'lib/gitlab/base_doorkeeper_controller.rb'
-    - 'lib/gitlab/request_forgery_protection.rb'
-    - 'spec/controllers/concerns/continue_params_spec.rb'
-    - 'spec/lib/marginalia_spec.rb'
-
-# Offense count: 155
-# Cop supports --auto-correct.
-Rails/ContentTag:
   Enabled: false
 
 # Offense count: 313
@@ -94,13 +67,6 @@ Rails/NegateInclude:
 Rails/WhereExists:
   Enabled: false
 
-# Offense count: 240
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: separated, grouped
-Style/AccessorGrouping:
-  Enabled: false
-
 # Offense count: 42
 # Cop supports --auto-correct.
 Style/CaseLikeIf:
@@ -123,16 +89,4 @@ Style/HashAsLastArrayItem:
 # Offense count: 64
 # Cop supports --auto-correct.
 Style/KeywordParametersOrder:
-  Enabled: false
-
-# Offense count: 458
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: line_count_dependent, lambda, literal
-Style/Lambda:
-  Enabled: false
-
-# Offense count: 279
-# Cop supports --auto-correct.
-Style/RedundantRegexpEscape:
   Enabled: false

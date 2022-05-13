@@ -48,8 +48,7 @@
     }
   }
 
-  &-header,
-  &-footer {
+  &-header {
     &-failed {
       background-color: $red-100;
     }

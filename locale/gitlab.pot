@@ -17039,6 +17039,9 @@ msgstr ""
 msgid "GitLab"
 msgstr ""
 
+msgid "GitLab (self-managed)"
+msgstr ""
+
 msgid "GitLab / Unsubscribe"
 msgstr ""
 
@@ -17151,6 +17154,9 @@ msgid "GitLab will create a branch in your fork and start a merge request."
 msgstr ""
 
 msgid "GitLab.com"
+msgstr ""
+
+msgid "GitLab.com (SaaS)"
 msgstr ""
 
 msgid "GitLab.com import"
@@ -21600,6 +21606,9 @@ msgstr ""
 msgid "JiraService|Base URL of the Jira instance."
 msgstr ""
 
+msgid "JiraService|Change GitLab version"
+msgstr ""
+
 msgid "JiraService|Define the type of Jira issue to create from a vulnerability."
 msgstr ""
 
@@ -21633,7 +21642,13 @@ msgstr ""
 msgid "JiraService|For example, AB"
 msgstr ""
 
+msgid "JiraService|For example: https://gitlab.example.com"
+msgstr ""
+
 msgid "JiraService|GitLab for Jira Configuration"
+msgstr ""
+
+msgid "JiraService|GitLab instance URL"
 msgstr ""
 
 msgid "JiraService|IDs must be a list of numbers that can be split with , or ;"
@@ -21684,6 +21699,9 @@ msgstr ""
 msgid "JiraService|Set a custom final state by using transition IDs. %{linkStart}Learn about transition IDs%{linkEnd}"
 msgstr ""
 
+msgid "JiraService|Sign in to GitLab to link namespaces."
+msgstr ""
+
 msgid "JiraService|Sign in to GitLab.com to get started."
 msgstr ""
 
@@ -21724,6 +21742,12 @@ msgid "JiraService|Warning: All GitLab users with access to this GitLab project 
 msgstr ""
 
 msgid "JiraService|Web URL"
+msgstr ""
+
+msgid "JiraService|Welcome to GitLab for Jira"
+msgstr ""
+
+msgid "JiraService|What version of GitLab are you using?"
 msgstr ""
 
 msgid "JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created."
@@ -24773,6 +24797,9 @@ msgid "More than %{number_commits_distance} commits different with %{default_bra
 msgstr ""
 
 msgid "More topics"
+msgstr ""
+
+msgid "Most common"
 msgstr ""
 
 msgid "Most relevant"

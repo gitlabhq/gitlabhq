@@ -88,7 +88,7 @@ To efficiently and quickly find which Rails change caused the spec failure you c
     For example, `git bisect start v6.1.4.1 v6.1.3.2` if we're upgrading from version 6.1.3.2 to 6.1.4.1.
     Replace `<NEW_VERSION_TAG>` with the tag where the spec is red and `<OLD_VERSION_TAG>` with the one with the green spec. For example, `git bisect start v6.1.4.1 v6.1.3.2` if we're upgrading from version 6.1.3.2 to 6.1.4.1.
     In the output, you can see how many steps approximately it takes to find the commit.
-1. Start the `git bisect` process and pass spec's file name(s) to `scripts/rails-update-bisect` as an argument or arguments. It can be faster to pick only one example instead of an entire spec file.
+1. Start the `git bisect` process and pass spec's filenames to `scripts/rails-update-bisect` as arguments. It can be faster to pick only one example instead of an entire spec file.
 
     ```shell
     git bisect run <GDK_FOLDER>/gitlab/scripts/rails-update-bisect spec/models/ability_spec.rb

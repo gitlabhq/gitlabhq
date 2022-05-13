@@ -165,11 +165,9 @@ export default {
       return this.mr?.codequalityReportsPath;
     },
     shouldRenderRelatedLinks() {
-      const showDivergedCounts =
-        this.mr.divergedCommitsCount > 0 && this.mr.state !== 'readyToMerge';
-
       return (
-        (Boolean(this.mr.relatedLinks) || showDivergedCounts) && !this.mr.isNothingToMergeState
+        (Boolean(this.mr.relatedLinks) || this.mr.divergedCommitsCount > 0) &&
+        !this.mr.isNothingToMergeState
       );
     },
     shouldRenderSourceBranchRemovalStatus() {

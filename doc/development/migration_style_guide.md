@@ -625,7 +625,7 @@ end
 ```
 
 You must explicitly name indexes that are created with more complex
-definitions beyond table name, column name(s) and uniqueness constraint.
+definitions beyond table name, column names, and uniqueness constraint.
 Consult the [Adding Database Indexes](adding_database_indexes.md#requirements-for-naming-indexes)
 guide for more details.
 

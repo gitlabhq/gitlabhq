@@ -17,13 +17,7 @@ module ContainerRegistry
       idempotent!
 
       def perform
-        re_enqueue = false
-        try_obtain_lease do
-          break unless runnable?
-
-          re_enqueue = handle_aborted_migration || handle_next_migration
-        end
-        re_enqueue_if_capacity if re_enqueue
+        migration.enqueuer_loop? ? perform_with_loop : perform_without_loop
       end
 
       def self.enqueue_a_job
@@ -33,10 +27,36 @@ module ContainerRegistry
 
       private
 
+      def perform_with_loop
+        try_obtain_lease do
+          while runnable? && Time.zone.now < loop_deadline && migration.enqueuer_loop?
+            repository_handled = handle_aborted_migration || handle_next_migration
+
+            # no repository was found: stop the loop
+            break unless repository_handled
+
+            # we're going for another iteration so we need to clear memoization
+            clear_memoization(:next_repository)
+            clear_memoization(:next_aborted_repository)
+            clear_memoization(:last_step_completed_repository)
+          end
+        end
+      end
+
+      def perform_without_loop
+        re_enqueue = false
+        try_obtain_lease do
+          break unless runnable?
+
+          re_enqueue = handle_aborted_migration || handle_next_migration
+        end
+        re_enqueue_if_capacity if re_enqueue
+      end
+
       def handle_aborted_migration
         return unless next_aborted_repository
 
-        log_extra_metadata_on_done(:import_type, 'retry')
+        log_on_done(:import_type, 'retry')
         log_repository(next_aborted_repository)
 
         next_aborted_repository.retry_aborted_migration
@@ -45,15 +65,16 @@ module ContainerRegistry
       rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, next_aborted_repository_id: next_aborted_repository&.id)
 
-        true
+        migration.enqueuer_loop? ? false : true
       ensure
         log_repository_migration_state(next_aborted_repository)
+        log_repository_info(next_aborted_repository, import_type: 'retry')
       end
 
       def handle_next_migration
         return unless next_repository
 
-        log_extra_metadata_on_done(:import_type, 'next')
+        log_on_done(:import_type, 'next')
         log_repository(next_repository)
 
         # We return true because the repository was successfully processed (migration_state is changed)
@@ -68,6 +89,7 @@ module ContainerRegistry
         false
       ensure
         log_repository_migration_state(next_repository)
+        log_repository_info(next_repository, import_type: 'next')
       end
 
       def tag_count_too_high?
@@ -75,8 +97,8 @@ module ContainerRegistry
         return false unless next_repository.tags_count > migration.max_tags_count
 
         next_repository.skip_import(reason: :too_many_tags)
-        log_extra_metadata_on_done(:tags_count_too_high, true)
-        log_extra_metadata_on_done(:max_tags_count_setting, migration.max_tags_count)
+        log_on_done(:tags_count_too_high, true)
+        log_on_done(:max_tags_count_setting, migration.max_tags_count)
 
         true
       end
@@ -155,14 +177,47 @@ module ContainerRegistry
       end
 
       def log_repository(repository)
-        log_extra_metadata_on_done(:container_repository_id, repository&.id)
-        log_extra_metadata_on_done(:container_repository_path, repository&.path)
+        log_on_done(:container_repository_id, repository&.id)
+        log_on_done(:container_repository_path, repository&.path)
       end
 
       def log_repository_migration_state(repository)
         return unless repository
 
-        log_extra_metadata_on_done(:container_repository_migration_state, repository.migration_state)
+        log_on_done(:container_repository_migration_state, repository.migration_state)
+      end
+
+      def log_on_done(key, value)
+        return if migration.enqueuer_loop?
+
+        log_extra_metadata_on_done(key, value)
+      end
+
+      def log_info(extras)
+        logger.info(structured_payload(extras))
+      end
+
+      def log_repository_info(repository, extras = {})
+        return unless migration.enqueuer_loop?
+        return unless repository
+
+        repository_info = {
+          container_repository_id: repository.id,
+          container_repository_path: repository.path,
+          container_repository_migration_state: repository.migration_state
+        }
+
+        if repository.import_skipped?
+          repository_info[:container_repository_migration_skipped_reason] = repository.migration_skipped_reason
+        end
+
+        log_info(extras.merge(repository_info))
+      end
+
+      def loop_deadline
+        strong_memoize(:loop_deadline) do
+          250.seconds.from_now
+        end
       end
 
       # used by ExclusiveLeaseGuard

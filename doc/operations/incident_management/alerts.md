@@ -202,7 +202,7 @@ To assign an alert:
 
 1. Select your desired alert to display its details.
 
-   ![Alert Details View Assignee(s)](img/alert_details_assignees_v13_1.png)
+   ![Alert Details View Assignees](img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, select
    **Expand sidebar** (**{angle-double-right}**) to expand it.

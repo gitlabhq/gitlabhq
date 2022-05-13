@@ -1083,7 +1083,7 @@ If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error duri
 
 ### Indexing is very slow or fails with `rejected execution of coordinating operation` messages
 
-Bulk requests are getting rejected by the Elasticsearch node(s) likely due to load and lack of available memory.
+Bulk requests getting rejected by the Elasticsearch nodes are likely due to load and lack of available memory.
 Ensure that your Elasticsearch cluster meets the [system requirements](#system-requirements) and has enough resources
 to perform bulk operations. See also the error ["429 (Too Many Requests)"](#indexing-fails-with-error-elastic-error-429-too-many-requests).
 

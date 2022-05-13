@@ -38,7 +38,7 @@ a single email notification for new alerts.
 
 ## Paging **(PREMIUM)**
 
-In projects that have an [escalation policy](escalation_policies.md) configured, on-call responder(s)
+In projects that have an [escalation policy](escalation_policies.md) configured, on-call responders
 can be automatically paged about critical problems through email.
 
 ### Escalating an alert

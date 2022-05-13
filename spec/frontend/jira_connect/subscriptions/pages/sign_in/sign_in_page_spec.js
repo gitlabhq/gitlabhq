@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 
 import SignInPage from '~/jira_connect/subscriptions/pages/sign_in/sign_in_page.vue';
 import SignInGitlabCom from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_com.vue';
-import SignInGitlabMultiversion from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion.vue';
+import SignInGitlabMultiversion from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/index.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 
 describe('SignInPage', () => {

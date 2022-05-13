@@ -739,6 +739,32 @@ RSpec.describe API::Projects do
       end
     end
 
+    context 'with default created_at desc order' do
+      let_it_be(:group_with_projects) { create(:group) }
+      let_it_be(:project_1) { create(:project, name: 'Project 1', created_at: 3.days.ago, path: 'project1', group: group_with_projects) }
+      let_it_be(:project_2) { create(:project, name: 'Project 2', created_at: 2.days.ago, path: 'project2', group: group_with_projects) }
+      let_it_be(:project_3) { create(:project, name: 'Project 3', created_at: 1.day.ago, path: 'project3', group: group_with_projects) }
+
+      let(:current_user) { user }
+      let(:params) { {} }
+
+      subject { get api('/projects', current_user), params: params }
+
+      before do
+        group_with_projects.add_owner(current_user) if current_user
+      end
+
+      it 'orders by id desc instead' do
+        projects_ordered_by_id_desc = /SELECT "projects".+ORDER BY "projects"."id" DESC/i
+        expect { subject }.to make_queries_matching projects_ordered_by_id_desc
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['id']).to eq(project_3.id)
+      end
+    end
+
     context 'sorting' do
       context 'by project statistics' do
         %w(repository_size storage_size wiki_size packages_size).each do |order_by|

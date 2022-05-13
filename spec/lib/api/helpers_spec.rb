@@ -588,7 +588,7 @@ RSpec.describe API::Helpers do
     end
   end
 
-  describe '#order_options_with_tie_breaker' do
+  shared_examples '#order_options_with_tie_breaker' do
     subject { Class.new.include(described_class).new.order_options_with_tie_breaker }
 
     before do
@@ -626,6 +626,30 @@ RSpec.describe API::Helpers do
 
       it 'does not add an additional order' do
         is_expected.to eq({ 'id' => 'asc' })
+      end
+    end
+  end
+
+  describe '#order_options_with_tie_breaker' do
+    include_examples '#order_options_with_tie_breaker'
+
+    context 'with created_at order given' do
+      let(:params) { { order_by: 'created_at', sort: 'asc' } }
+
+      it 'converts to id' do
+        is_expected.to eq({ 'id' => 'asc' })
+      end
+
+      context 'when replace_order_by_created_at_with_id feature flag is disabled' do
+        before do
+          stub_feature_flags(replace_order_by_created_at_with_id: false)
+        end
+
+        include_examples '#order_options_with_tie_breaker'
+
+        it 'maintains created_at order' do
+          is_expected.to eq({ 'created_at' => 'asc', 'id' => 'asc' })
+        end
       end
     end
   end

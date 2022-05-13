@@ -785,22 +785,6 @@ export default {
           >
             {{ __('The latest pipeline for this merge request did not complete successfully.') }}
           </div>
-          <div
-            v-if="
-              mr.divergedCommitsCount > 0 &&
-              glFeatures.updatedMrHeader &&
-              !glFeatures.restructuredMrWidget
-            "
-            class="diverged-commits-count gl-mt-4"
-          >
-            <gl-sprintf :message="s__('mrWidget|The source branch is %{link} the target branch')">
-              <template #link>
-                <gl-link :href="mr.targetBranchPath">{{
-                  n__('%d commit behind', '%d commits behind', mr.divergedCommitsCount)
-                }}</gl-link>
-              </template>
-            </gl-sprintf>
-          </div>
         </div>
       </div>
       <template v-if="shouldShowMergeControls && !glFeatures.restructuredMrWidget">

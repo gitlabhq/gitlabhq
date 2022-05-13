@@ -1467,7 +1467,7 @@ reported.
 Faults detected by API Fuzzing occur in the live web application, and require manual investigation
 to determine if they are vulnerabilities. Fuzzing faults are included as vulnerabilities with a
 severity of Unknown. To facilitate investigation of the fuzzing faults, detailed information is
-provided about the HTTP messages sent and received along with a description of the modification(s)
+provided about the HTTP messages sent and received along with a description of the modifications
 made.
 
 Follow these steps to view details of a fuzzing fault:

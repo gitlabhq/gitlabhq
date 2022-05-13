@@ -49,7 +49,7 @@ For information about the distribution of tests per level in GitLab, see
 - Review how often the feature changes. Stable features that don't change very often
   might not be worth covering with end-to-end tests if they are already covered
   in lower level tests.
-- Finally, discuss the proposed test with the developer(s) involved in implementing
+- Finally, discuss the proposed test with the developers involved in implementing
   the feature and the lower-level tests.
 
 WARNING:

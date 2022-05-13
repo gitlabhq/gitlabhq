@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
-import DEFAULT_PROJECT_TEMPLATES from 'ee_else_ce/projects/default_project_templates';
+import DEFAULT_PROJECT_TEMPLATES from 'any_else_ce/projects/default_project_templates';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '../lib/utils/constants';
 import { ENTER_KEY } from '../lib/utils/keys';

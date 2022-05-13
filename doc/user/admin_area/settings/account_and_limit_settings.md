@@ -78,7 +78,7 @@ To modify the maximum file size for exports in GitLab:
 
 ## Max import size
 
-> [Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
 
 To modify the maximum file size for imports in GitLab:
 
