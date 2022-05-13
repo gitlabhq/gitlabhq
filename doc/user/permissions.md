@@ -446,7 +446,7 @@ The following table lists group permissions available for each role:
 ### Subgroup permissions
 
 When you add a member to a subgroup, they inherit the membership and
-permission level from the parent group(s). This model allows access to
+permission level from the parent groups. This model allows access to
 nested groups if you have membership in one of its parents.
 
 To learn more, read through the documentation on

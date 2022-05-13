@@ -24,8 +24,8 @@ The following list illustrates the main differences between CVS and Git:
   whole, or they fail without any changes. In CVS, commits (and other operations)
   are not atomic. If an operation on the repository is interrupted in the middle,
   the repository can be left in an inconsistent state.
-- **Storage method.** Changes in CVS are per file (changeset), while in Git
-  a committed file(s) is stored in its entirety (snapshot). That means it's
+- **Storage method.** Changes in CVS are per file (changeset), while in Git,
+  committed files are stored in their entirety (snapshot). This means it is
   very easy in Git to revert or undo a whole change.
 - **Revision IDs.** The fact that in CVS changes are per files, the revision ID
   is depicted by version numbers, for example `1.4` reflects how many times a

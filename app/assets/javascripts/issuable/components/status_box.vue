@@ -1,37 +1,48 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlBadge, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
+import { IssuableType } from '~/issues/constants';
+import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 
-export const statusBoxState = Vue.observable({
+export const badgeState = Vue.observable({
   state: '',
   updateStatus: null,
 });
 
 const CLASSES = {
-  opened: 'status-box-open',
-  merge_request_opened: 'badge-success',
-  locked: 'status-box-open',
-  merge_request_locked: 'badge-success',
-  closed: 'status-box-mr-closed',
-  merge_request_closed: 'badge-danger',
-  merged: 'badge-info',
+  opened: 'issuable-status-badge-open',
+  locked: 'issuable-status-badge-open',
+  closed: 'issuable-status-badge-closed',
+  merged: 'issuable-status-badge-merged',
+};
+
+const ISSUE_ICONS = {
+  opened: 'issues',
+  locked: 'issues',
+  closed: 'issue-closed',
+};
+
+const MERGE_REQUEST_ICONS = {
+  opened: 'merge-request-open',
+  locked: 'merge-request-open',
+  closed: 'merge-request-close',
+  merged: 'merge',
 };
 
 const STATUS = {
-  opened: [__('Open'), 'issue-open-m'],
-  locked: [__('Open'), 'issue-open-m'],
-  closed: [__('Closed'), 'issue-close'],
-  merged: [__('Merged'), 'git-merge'],
+  opened: __('Open'),
+  locked: __('Open'),
+  closed: __('Closed'),
+  merged: __('Merged'),
 };
 
 export default {
   components: {
+    GlBadge,
     GlIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     query: { default: null },
     projectPath: { default: null },
@@ -51,39 +62,41 @@ export default {
   },
   data() {
     if (this.initialState) {
-      statusBoxState.state = this.initialState;
+      badgeState.state = this.initialState;
     }
 
-    return statusBoxState;
+    return badgeState;
   },
   computed: {
-    isMergeRequest() {
-      return this.issuableType === 'merge_request' && this.glFeatures.updatedMrHeader;
+    badgeClass() {
+      return CLASSES[this.state];
     },
-    statusBoxClass() {
-      return [
-        CLASSES[`${this.issuableType}_${this.state}`] || CLASSES[this.state],
-        {
-          'badge badge-pill gl-badge gl-mr-3': this.isMergeRequest,
-          'issuable-status-box status-box': !this.isMergeRequest,
-        },
-      ];
+    badgeVariant() {
+      if (this.state === IssuableStates.Opened) {
+        return 'success';
+      } else if (this.state === IssuableStates.Closed) {
+        return this.issuableType === IssuableType.MergeRequest ? 'danger' : 'info';
+      }
+      return 'info';
     },
-    statusHumanName() {
-      return (STATUS[`${this.issuableType}_${this.state}`] || STATUS[this.state])[0];
+    badgeText() {
+      return STATUS[this.state];
     },
-    statusIconName() {
-      return (STATUS[`${this.issuableType}_${this.state}`] || STATUS[this.state])[1];
+    badgeIcon() {
+      if (this.issuableType === IssuableType.Issue) {
+        return ISSUE_ICONS[this.state];
+      }
+      return MERGE_REQUEST_ICONS[this.state];
     },
   },
   created() {
-    if (!statusBoxState.updateStatus) {
-      statusBoxState.updateStatus = this.fetchState;
+    if (!badgeState.updateStatus) {
+      badgeState.updateStatus = this.fetchState;
     }
   },
   beforeDestroy() {
-    if (statusBoxState.updateStatus && this.query) {
-      statusBoxState.updateStatus = null;
+    if (badgeState.updateStatus && this.query) {
+      badgeState.updateStatus = null;
     }
   },
   methods: {
@@ -97,21 +110,15 @@ export default {
         fetchPolicy: fetchPolicies.NO_CACHE,
       });
 
-      statusBoxState.state = data?.workspace?.issuable?.state;
+      badgeState.state = data?.workspace?.issuable?.state;
     },
   },
 };
 </script>
 
 <template>
-  <div :class="statusBoxClass">
-    <gl-icon
-      v-if="!isMergeRequest"
-      :name="statusIconName"
-      class="gl-display-block gl-sm-display-none!"
-    />
-    <span :class="{ 'gl-display-none gl-sm-display-block': !isMergeRequest }">
-      {{ statusHumanName }}
-    </span>
-  </div>
+  <gl-badge class="issuable-status-badge gl-mr-3" :class="badgeClass" :variant="badgeVariant">
+    <gl-icon :name="badgeIcon" />
+    <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ badgeText }}</span>
+  </gl-badge>
 </template>

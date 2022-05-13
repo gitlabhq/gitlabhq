@@ -6,12 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Customer relations management (CRM) **(FREE)**
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `customer_relations`.
-On GitLab.com, this feature is not available.
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
 > - In GitLab 14.8 and later, you can [create contacts and organizations only in root groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.0.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `customer_relations`.
+On GitLab.com, this feature is available.
 
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
@@ -118,7 +119,7 @@ organizations using the GraphQL API.
 
 ### View issues linked to a contact
 
-To view a contact's issues:
+To view a contact's issues, select a contact from the issue sidebar, or:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Customer relations > Contacts**.
@@ -166,11 +167,12 @@ API.
 
 ## Autocomplete contacts **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `contacts_autocomplete`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `contacts_autocomplete`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `contacts_autocomplete`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `contacts_autocomplete`.
+On GitLab.com, this feature is available.
 This feature is not ready for production use.
 
 When you use the `/add_contacts` or `/remove_contacts` quick actions, follow them with `[contact:` and an autocomplete list appears:

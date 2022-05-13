@@ -148,7 +148,7 @@ These shortcuts are available when editing a file with the [Web IDE](project/web
 | <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>↓</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>↓</kbd> | Copy line down |
 | <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>↑</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>↑</kbd> | Copy line up [(Linux note)](#linux-shortcuts) |
 | <kbd>Command</kbd> + <kbd>U</kbd> | <kbd>Control</kbd> + <kbd>U</kbd> | Cursor undo |
-| <kbd>Command</kbd> + <kbd>Backspace<kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Backspace</kbd> | Delete all left |
+| <kbd>Command</kbd> + <kbd>Backspace</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Backspace</kbd> | Delete all left |
 | <kbd>Control</kbd> + <kbd>K</kbd> |  | Delete all right |
 | <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>K</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> | Delete line |
 | | <kbd>Control</kbd> + <kbd>Backspace</kbd> | Delete word |

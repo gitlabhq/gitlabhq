@@ -55,7 +55,7 @@ export default {
       return organizations.slice().sort((a, b) => a.name.localeCompare(b.name));
     },
     getIssuesPath(path, value) {
-      return `${path}?scope=all&state=opened&crm_organization_id=${value}`;
+      return `${path}?crm_organization_id=${value}`;
     },
     getEditRoute(id) {
       return { name: this.$options.EDIT_ROUTE_NAME, params: { id } };

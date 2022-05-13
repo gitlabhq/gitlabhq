@@ -45,7 +45,7 @@
 
       - if issuable_sidebar[:show_crm_contacts]
         .block.contact
-          #js-issue-crm-contacts{ data: { issue_id: issuable_sidebar[:id] } }
+          #js-issue-crm-contacts{ data: { issue_id: issuable_sidebar[:id], group_issues_path: issues_group_path(@project.group) } }
 
       = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar, can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid]
 

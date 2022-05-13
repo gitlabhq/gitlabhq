@@ -341,14 +341,20 @@ module IssuablesHelper
   end
 
   def state_name_with_icon(issuable)
-    if issuable.is_a?(MergeRequest) && issuable.merged?
-      [_("Merged"), "git-merge"]
-    elsif issuable.is_a?(MergeRequest) && issuable.closed?
-      [_("Closed"), "close"]
-    elsif issuable.closed?
-      [_("Closed"), "mobile-issue-close"]
+    if issuable.is_a?(MergeRequest)
+      if issuable.open?
+        [_("Open"), "merge-request-open"]
+      elsif issuable.merged?
+        [_("Merged"), "merge"]
+      else
+        [_("Closed"), "merge-request-close"]
+      end
     else
-      [_("Open"), "issue-open-m"]
+      if issuable.open?
+        [_("Open"), "issues"]
+      else
+        [_("Closed"), "issue-closed"]
+      end
     end
   end
 

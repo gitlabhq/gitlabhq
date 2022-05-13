@@ -35,7 +35,15 @@ module Routing
     end
 
     def issue_url(entity, *args)
-      project_issue_url(entity.project, entity, *args)
+      if use_work_items_path?(entity)
+        work_item_url(entity, *args)
+      else
+        project_issue_url(entity.project, entity, *args)
+      end
+    end
+
+    def work_item_url(entity, *args)
+      project_work_items_url(entity.project, entity.id, *args)
     end
 
     def merge_request_url(entity, *args)
@@ -76,6 +84,12 @@ module Routing
       else
         toggle_subscription_project_merge_request_path(entity.project, entity)
       end
+    end
+
+    private
+
+    def use_work_items_path?(issue)
+      issue.issue_type == 'task' && issue.project.work_items_feature_flag_enabled?
     end
   end
 end

@@ -18,7 +18,7 @@ class LinkedIssueEntity < Grape::Entity
   end
 
   expose :path do |link|
-    project_issue_path(link.project, link.iid)
+    Gitlab::UrlBuilder.build(link, only_path: true)
   end
 
   expose :relation_path

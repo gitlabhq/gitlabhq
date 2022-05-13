@@ -200,9 +200,30 @@ Conversely, a shared runner that executes jobs for public projects could have a 
 ### Monthly reset of CI/CD minutes
 
 On the first day of each calendar month, the accumulated usage of CI/CD minutes is reset to `0`
-for all namespaces that use shared runners.
+for all namespaces that use shared runners. This means your full quota is available, and
+calculations start again from `0`.
+
+For example, if you have a monthly quota of `10,000` CI/CD minutes:
+
+- On **1st April**, you have `10,000` minutes.
+- During April, you use only `6,000` of the `10,000` minutes.
+- On **1st May**, the accumulated usage of minutes resets to `0`, and you have `10,000` minutes to use again
+  during May.
 
 Usage data for the previous month is kept to show historical view of the consumption over time.
+
+### Monthly rollover of purchased CI/CD minutes
+
+If you purchase additional CI/CD minutes and don't use the full amount, the remaining amount rolls over to
+the next month.
+
+For example:
+
+- On **1st April**, you purchase `5,000` CI/CD minutes.
+- During April, you use only `3,000` of the `5,000` minutes.
+- On **1st May**, the remaining `2,000` minutes roll over and are added to your monthly quota.
+
+Additional CI/CD minutes are a one-time purchase and do not renew or refresh each month.
 
 ## What happens when you exceed the quota
 

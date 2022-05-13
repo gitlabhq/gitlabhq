@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe IssueBoardEntity do
+  include Gitlab::Routing.url_helpers
+
   let_it_be(:project)   { create(:project) }
   let_it_be(:resource)  { create(:issue, project: project) }
   let_it_be(:user)      { create(:user) }
@@ -39,5 +41,19 @@ RSpec.describe IssueBoardEntity do
     resource.labels = [label]
 
     expect(subject).to include(labels: array_including(hash_including(:id, :title, :color, :description, :text_color, :priority)))
+  end
+
+  describe 'real_path' do
+    it 'has an issue path' do
+      expect(subject[:real_path]).to eq(project_issue_path(project, resource.iid))
+    end
+
+    context 'when issue is of type task' do
+      let(:resource) { create(:issue, :task, project: project) }
+
+      it 'has a work item path' do
+        expect(subject[:real_path]).to eq(project_work_items_path(project, resource.id))
+      end
+    end
   end
 end

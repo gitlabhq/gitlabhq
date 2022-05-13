@@ -1220,3 +1220,21 @@ gemnasium-python-dependency_scanning:
   before_script:
     - pip install setuptools==57.5.0
 ```
+
+### Dependency Scanning of projects using psycopg2 fails with `pg_config executable not found` error
+
+Scanning a Python project that depends on `psycopg2` can fail with this message:
+
+```plaintext
+Error: pg_config executable not found.
+```
+
+[psycopg2](https://pypi.org/project/psycopg2/) depends on the `libpq-dev` Debian package,
+which is not installed in the `gemnasium-python` Docker image. To work around this error,
+install the `libpq-dev` package in a `before_script`:
+
+```yaml
+gemnasium-python-dependency_scanning:
+  before_script:
+    - apt-get update && apt-get install -y libpq-dev
+```

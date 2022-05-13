@@ -105,7 +105,7 @@ describe('Customer relations contacts root app', () => {
 
       const issueLink = findIssuesLinks().at(0);
       expect(issueLink.exists()).toBe(true);
-      expect(issueLink.attributes('href')).toBe('/issues?scope=all&state=opened&crm_contact_id=16');
+      expect(issueLink.attributes('href')).toBe('/issues?crm_contact_id=16');
     });
   });
 });

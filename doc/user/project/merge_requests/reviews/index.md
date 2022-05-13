@@ -203,7 +203,7 @@ These features are associated with merge requests:
 - [Fast-forward merge requests](../methods/index.md#fast-forward-merge):
   For a linear Git history and a way to accept merge requests without creating merge commits
 - [Find the merge request that introduced a change](../versions.md):
-  When viewing the commit details page, GitLab links to the merge request(s) containing that commit.
+  When viewing the commit details page, GitLab links to the merge requests containing that commit.
 - [Merge requests versions](../versions.md):
   Select and compare the different versions of merge request diffs
 - [Resolve conflicts](../conflicts.md):

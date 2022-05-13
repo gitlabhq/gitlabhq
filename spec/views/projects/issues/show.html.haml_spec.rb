@@ -26,14 +26,14 @@ RSpec.describe 'projects/issues/show' do
         it 'shows "Closed (moved)" if an issue has been moved and closed' do
           render
 
-          expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
+          expect(rendered).to have_selector('.issuable-status-badge-closed:not(.hidden)', text: 'Closed (moved)')
         end
 
         it 'shows "Closed (moved)" if an issue has been moved and discussion is locked' do
           allow(issue).to receive(:discussion_locked).and_return(true)
           render
 
-          expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
+          expect(rendered).to have_selector('.issuable-status-badge-closed:not(.hidden)', text: 'Closed (moved)')
         end
 
         it 'links "moved" to the new issue the original issue was moved to' do
@@ -47,7 +47,7 @@ RSpec.describe 'projects/issues/show' do
 
           render
 
-          expect(rendered).not_to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
+          expect(rendered).not_to have_selector('.issuable-status-badge-closed:not(.hidden)', text: 'Closed (moved)')
         end
       end
 
@@ -75,7 +75,7 @@ RSpec.describe 'projects/issues/show' do
         it 'shows "Closed (duplicated)" if an issue has been duplicated' do
           render
 
-          expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (duplicated)')
+          expect(rendered).to have_selector('.issuable-status-badge-closed:not(.hidden)', text: 'Closed (duplicated)')
         end
 
         it 'links "duplicated" to the new issue the original issue was duplicated to' do
@@ -97,14 +97,14 @@ RSpec.describe 'projects/issues/show' do
     it 'shows "Closed" if an issue has not been moved or duplicated' do
       render
 
-      expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed')
+      expect(rendered).to have_selector('.issuable-status-badge-closed:not(.hidden)', text: 'Closed')
     end
 
     it 'shows "Closed" if discussion is locked' do
       allow(issue).to receive(:discussion_locked).and_return(true)
       render
 
-      expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed')
+      expect(rendered).to have_selector('.issuable-status-badge-closed:not(.hidden)', text: 'Closed')
     end
   end
 
@@ -117,14 +117,14 @@ RSpec.describe 'projects/issues/show' do
     it 'shows "Open" if an issue has been moved' do
       render
 
-      expect(rendered).to have_selector('.status-box-open:not(.hidden)', text: 'Open')
+      expect(rendered).to have_selector('.issuable-status-badge-open:not(.hidden)', text: 'Open')
     end
 
     it 'shows "Open" if discussion is locked' do
       allow(issue).to receive(:discussion_locked).and_return(true)
       render
 
-      expect(rendered).to have_selector('.status-box-open:not(.hidden)', text: 'Open')
+      expect(rendered).to have_selector('.issuable-status-badge-open:not(.hidden)', text: 'Open')
     end
   end
 

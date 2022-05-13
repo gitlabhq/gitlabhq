@@ -1,9 +1,8 @@
 .detail-page-description.py-2
   - if Feature.enabled?(:updated_mr_header, @project)
-    - state_human_name, _ = state_name_with_icon(@merge_request)
-    .badge.badge-pill.gl-badge.gl-mr-3.js-mr-status-box{ class: status_box_class(@merge_request), data: { project_path: @merge_request.project.path_with_namespace, iid: @merge_request.iid, state: @merge_request.state } }>
-      = state_human_name
-    = merge_request_header(@project, @merge_request)
+    = render 'shared/issuable/status_box', issuable: @merge_request
+    .gl-display-inline.gl-vertical-align-top
+      = merge_request_header(@project, @merge_request)
   - else
     %h2.title.mb-0{ data: { qa_selector: 'title_content' } }
       = markdown_field(@merge_request, :title)

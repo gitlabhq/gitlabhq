@@ -37,7 +37,7 @@ class IssueBoardEntity < Grape::Entity
   end
 
   expose :real_path, if: -> (issue) { issue.project } do |issue|
-    project_issue_path(issue.project, issue)
+    Gitlab::UrlBuilder.build(issue, only_path: true)
   end
 
   expose :issue_sidebar_endpoint, if: -> (issue) { issue.project } do |issue|

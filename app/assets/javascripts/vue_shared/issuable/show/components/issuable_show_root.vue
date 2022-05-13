@@ -27,6 +27,11 @@ export default {
       required: false,
       default: '',
     },
+    statusIconClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
     enableEdit: {
       type: Boolean,
       required: false,
@@ -102,8 +107,10 @@ export default {
 <template>
   <div class="issuable-show-container" data-qa-selector="issuable_show_container">
     <issuable-header
+      :issuable-state="issuable.state"
       :status-badge-class="statusBadgeClass"
       :status-icon="statusIcon"
+      :status-icon-class="statusIconClass"
       :blocked="issuable.blocked"
       :confidential="issuable.confidential"
       :created-at="issuable.createdAt"
@@ -122,6 +129,7 @@ export default {
       :issuable="issuable"
       :status-badge-class="statusBadgeClass"
       :status-icon="statusIcon"
+      :status-icon-class="statusIconClass"
       :enable-edit="enableEdit"
       :enable-autocomplete="enableAutocomplete"
       :enable-autosave="enableAutosave"

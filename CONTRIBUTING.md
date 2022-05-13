@@ -1,9 +1,12 @@
-## Contributor license agreement
+## Contributor License Agreement and Developer Certificate of Origin
 
-By submitting code as an individual you agree to the
-[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
-By submitting code as an entity you agree to the
-[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+Contributions to this repository are subject to the [Developer Certificate of Origin](https://docs.gitlab.com/ee/legal/developer_certificate_of_origin.html#developer-certificate-of-origin-version-11), or the [Individual](https://docs.gitlab.com/ee/legal/individual_contributor_license_agreement.html) or [Corporate](https://docs.gitlab.com/ee/legal/corporate_contributor_license_agreement.html) Contributor License Agreement, depending on where the contribution is made and on whose behalf:
+
+- By submitting code contributions as an individual to the [`/ee` subdirectory](/ee) of this repository, you agree to the [Individual Contributor License Agreement](https://docs.gitlab.com/ee/legal/individual_contributor_license_agreement.html).
+
+- By submitting code contributions on behalf of a corporation to the [`/ee` subdirectory](/ee) of this repository, you agree to the [Corporate Contributor License Agreement](https://docs.gitlab.com/ee/legal/corporate_contributor_license_agreement.html).
+
+- By submitting code contributions as an individual or on behalf of a corporation to any directory in this repository outside of the [`/ee` subdirectory](/ee), you agree to the [Developer Certificate of Origin](https://docs.gitlab.com/ee/legal/developer_certificate_of_origin.html#developer-certificate-of-origin-version-11).
 
 All Documentation content that resides under the [`doc/` directory](/doc) of this
 repository is licensed under Creative Commons:

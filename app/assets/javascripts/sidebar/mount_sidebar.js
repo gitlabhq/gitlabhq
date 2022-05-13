@@ -218,7 +218,7 @@ function mountCrmContactsComponent() {
 
   if (!el) return;
 
-  const { issueId } = el.dataset;
+  const { issueId, groupIssuesPath } = el.dataset;
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -231,6 +231,7 @@ function mountCrmContactsComponent() {
       createElement('crm-contacts', {
         props: {
           issueId,
+          groupIssuesPath,
         },
       }),
   });

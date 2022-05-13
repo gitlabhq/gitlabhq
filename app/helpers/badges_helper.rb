@@ -69,6 +69,7 @@ module BadgesHelper
     icon_only = options[:icon_only]
     variant_class = VARIANT_CLASSES[options.fetch(:variant, :muted)]
     size_class = SIZE_CLASSES[options.fetch(:size, :md)]
+    icon_classes = GL_ICON_CLASSES.dup << options.fetch(:icon_classes, nil)
 
     html_options = html_options.merge(
       class: [
@@ -85,7 +86,6 @@ module BadgesHelper
     end
 
     if options[:icon]
-      icon_classes = GL_ICON_CLASSES.dup
       icon_classes << "gl-mr-2" unless icon_only
       icon = sprite_icon(options[:icon], css_class: icon_classes.join(' '))
 

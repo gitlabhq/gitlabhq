@@ -6,7 +6,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import createFlash from '~/flash';
-import { statusBoxState } from '~/issuable/components/status_box.vue';
+import { badgeState } from '~/issuable/components/status_box.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
 import {
   capitalizeFirstCharacter,
@@ -266,7 +266,7 @@ export default {
       const toggleState = this.isOpen ? this.closeIssuable : this.reopenIssuable;
 
       toggleState()
-        .then(() => statusBoxState.updateStatus && statusBoxState.updateStatus())
+        .then(() => badgeState.updateStatus && badgeState.updateStatus())
         .then(refreshUserMergeRequestCounts)
         .catch(() =>
           createFlash({

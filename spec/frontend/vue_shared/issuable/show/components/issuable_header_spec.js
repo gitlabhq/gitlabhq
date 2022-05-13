@@ -69,9 +69,11 @@ describe('IssuableHeader', () => {
     it('renders issuable status icon and text', () => {
       createComponent();
       const statusBoxEl = wrapper.findByTestId('status');
+      const statusIconEl = statusBoxEl.findComponent(GlIcon);
 
       expect(statusBoxEl.exists()).toBe(true);
-      expect(statusBoxEl.find(GlIcon).props('name')).toBe(mockIssuableShowProps.statusIcon);
+      expect(statusIconEl.props('name')).toBe(mockIssuableShowProps.statusIcon);
+      expect(statusIconEl.attributes('class')).toBe(mockIssuableShowProps.statusIconClass);
       expect(statusBoxEl.text()).toContain('Open');
     });
 

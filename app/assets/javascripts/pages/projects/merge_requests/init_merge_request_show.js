@@ -20,23 +20,25 @@ export default function initMergeRequestShow() {
   initAwardsApp(document.getElementById('js-vue-awards-block'));
 
   const el = document.querySelector('.js-mr-status-box');
+  const { iid, issuableType, projectPath } = el.dataset;
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'IssuableStatusBoxRoot',
     apolloProvider,
     provide: {
       query: getStateQuery,
-      projectPath: el.dataset.projectPath,
-      iid: el.dataset.iid,
+      iid,
+      projectPath,
     },
     render(h) {
       return h(StatusBox, {
         props: {
           initialState: el.dataset.state,
-          issuableType: 'merge_request',
+          issuableType,
         },
       });
     },

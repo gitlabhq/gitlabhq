@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import {
@@ -27,6 +27,7 @@ export default {
   WorkspaceType,
   components: {
     GlIcon,
+    GlBadge,
     GlIntersectionObserver,
     titleComponent,
     editedComponent,
@@ -267,7 +268,10 @@ export default {
         : '';
     },
     statusIcon() {
-      return this.isClosed ? 'issue-close' : 'issue-open-m';
+      return this.isClosed ? 'issue-closed' : 'issues';
+    },
+    statusVariant() {
+      return this.isClosed ? 'info' : 'success';
     },
     statusText() {
       return IssuableStatusText[this.issuableStatus];
@@ -517,13 +521,9 @@ export default {
             <div
               class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
             >
-              <p
-                class="issuable-status-box status-box gl-white-space-nowrap gl-my-0"
-                :class="[isClosed ? 'status-box-issue-closed' : 'status-box-open']"
+              <gl-badge :icon="statusIcon" :variant="statusVariant" class="gl-mr-2"
+                ><span class="gl-display-none gl-sm-display-block">{{ statusText }}</span></gl-badge
               >
-                <gl-icon :name="statusIcon" class="gl-display-block d-sm-none gl-h-6!" />
-                <span class="gl-display-none d-sm-block">{{ statusText }}</span>
-              </p>
               <span v-if="isLocked" data-testid="locked" class="issuable-warning-icon">
                 <gl-icon name="lock" :aria-label="__('Locked')" />
               </span>

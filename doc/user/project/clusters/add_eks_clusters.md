@@ -226,7 +226,7 @@ on the running pod.
 If you are using a self-managed GitLab instance, you need to configure
 Amazon credentials. GitLab uses these credentials to assume an Amazon IAM role to create your cluster.
 
-Create an IAM user and ensure it has permissions to assume the role(s) that
+Create an IAM user and ensure it has permissions to assume the roles that
 your users need to create EKS clusters.
 
 For example, the following policy document allows assuming a role whose name starts with

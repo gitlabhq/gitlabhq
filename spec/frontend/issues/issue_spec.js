@@ -24,11 +24,11 @@ describe('Issue', () => {
   const getIssueCounter = () => document.querySelector('.issue_counter');
   const getOpenStatusBox = () =>
     getByText(document, (_, el) => el.textContent.match(/Open/), {
-      selector: '.status-box-open',
+      selector: '.issuable-status-badge-open',
     });
   const getClosedStatusBox = () =>
     getByText(document, (_, el) => el.textContent.match(/Closed/), {
-      selector: '.status-box-issue-closed',
+      selector: '.issuable-status-badge-closed',
     });
 
   describe.each`

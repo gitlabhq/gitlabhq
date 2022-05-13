@@ -1,6 +1,6 @@
 import { flattenDeep, clone } from 'lodash';
 import { match } from '~/diffs/utils/diff_file';
-import { statusBoxState } from '~/issuable/components/status_box.vue';
+import { badgeState } from '~/issuable/components/status_box.vue';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import * as constants from '../constants';
 import { collapseSystemNotes } from './collapse_utils';
@@ -85,8 +85,7 @@ export const getBlockedByIssues = (state) => state.noteableData.blocked_by_issue
 
 export const userCanReply = (state) => Boolean(state.noteableData.current_user.can_create_note);
 
-export const openState = (state) =>
-  isInMRPage() ? statusBoxState.state : state.noteableData.state;
+export const openState = (state) => (isInMRPage() ? badgeState.state : state.noteableData.state);
 
 export const getUserData = (state) => state.userData || {};
 

@@ -82,7 +82,13 @@ module Members
       if member.request?
         approve_request
       else
-        member.save
+        # Calling #save triggers callbacks even if there is no change on object.
+        # This previously caused an incident due to the hard to predict
+        # behaviour caused by the large number of callbacks.
+        # See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6351
+        # and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80920#note_911569038
+        # for details.
+        member.save if member.changed?
       end
     end
 
