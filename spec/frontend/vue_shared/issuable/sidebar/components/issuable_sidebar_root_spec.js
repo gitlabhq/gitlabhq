@@ -1,6 +1,6 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import Cookies from 'js-cookie';
 import { nextTick } from 'vue';
+import Cookies from '~/lib/utils/cookies';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 

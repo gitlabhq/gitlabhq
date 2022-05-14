@@ -1,7 +1,7 @@
 import { GlCollapse, GlPopover } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Cookies from 'js-cookie';
 import { nextTick } from 'vue';
+import Cookies from '~/lib/utils/cookies';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';

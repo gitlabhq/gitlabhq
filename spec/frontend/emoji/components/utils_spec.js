@@ -1,7 +1,7 @@
-import Cookies from 'js-cookie';
+import Cookies from '~/lib/utils/cookies';
 import { getFrequentlyUsedEmojis, addToFrequentlyUsed } from '~/emoji/components/utils';
 
-jest.mock('js-cookie');
+jest.mock('~/lib/utils/cookies');
 
 describe('getFrequentlyUsedEmojis', () => {
   it('it returns null when no saved emojis set', () => {

@@ -4,8 +4,8 @@
 
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import Cookies from 'js-cookie';
 import { isFunction, defer } from 'lodash';
+import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';

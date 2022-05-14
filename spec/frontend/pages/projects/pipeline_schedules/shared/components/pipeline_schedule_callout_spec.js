@@ -1,7 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Cookies from 'js-cookie';
 import { nextTick } from 'vue';
+import Cookies from '~/lib/utils/cookies';
 import PipelineSchedulesCallout from '~/pages/projects/pipeline_schedules/shared/components/pipeline_schedules_callout.vue';
 
 const cookieKey = 'pipeline_schedules_callout_dismissed';

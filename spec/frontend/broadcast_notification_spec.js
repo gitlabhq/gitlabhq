@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+import Cookies from '~/lib/utils/cookies';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initBroadcastNotifications from '~/broadcast_notification';
 

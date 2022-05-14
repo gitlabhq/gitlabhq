@@ -1,7 +1,6 @@
 /* global $ */
 
 import jQuery from 'jquery';
-import Cookies from 'js-cookie';
 
 // bootstrap webpack, common libs, polyfills, and behaviors
 import './webpack';
@@ -177,9 +176,6 @@ const bootstrapBreakpoint = bp.getBreakpointSize();
 initUserTracking();
 initLayoutNav();
 initAlertHandler();
-
-// Set the default path for all cookies to GitLab's root directory
-Cookies.defaults.path = gon.relative_url_root || '/';
 
 // `hashchange` is not triggered when link target is already in window.location
 $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {

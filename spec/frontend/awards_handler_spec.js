@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Cookies from 'js-cookie';
+import Cookies from '~/lib/utils/cookies';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
