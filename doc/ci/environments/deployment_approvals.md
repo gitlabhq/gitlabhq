@@ -34,7 +34,7 @@ To configure deployment approvals for a project:
 
 ### Create a deployment job
 
-Create a deployment job in the `.gitlab-ci.yaml` file of the desired project. The job does **not** need to be manual (`when: manual`).
+Create a deployment job in the `.gitlab-ci.yml` file of the desired project. The job does **not** need to be manual (`when: manual`).
 
 Example:
 

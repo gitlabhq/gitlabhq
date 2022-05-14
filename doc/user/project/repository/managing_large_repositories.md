@@ -1,0 +1,51 @@
+---
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+description: "Documentation on large repositories."
+---
+
+# Managing large repositories **(FREE SELF)**
+
+GitLab, like any Git based system, is subject to similar performance restraints when it comes to large
+repositories that size into the gigabytes.
+
+On this page we detail several best practices to improve performance with these large repositories on GitLab.
+
+## Large File System (LFS)
+
+It's *strongly* recommended in any Git system that binary or blob files (for example, packages, audio, video, graphics, etc.) are stored as Large File Storage (LFS) objects. In such setup, the Objects are stored elsewhere, such as in Object Storage, and this can reduce the repository size significantly, thus improving performance.
+
+Refer to the [Git LFS docs for more info](../../../topics/git/lfs/index.md).
+
+## Gitaly Pack Objects Cache
+
+Gitaly, the service that provides storage for Git repositories, can be configured to cache a short rolling window of Git fetch responses. This is recommended for large repositories as it can notably reduce server load when your server receives lots of fetch traffic.
+
+Refer to the [Gitaly Pack Objects Cache for more info](../../../administration/gitaly/configure_gitaly.md#pack-objects-cache).
+
+## Reference Architectures
+
+Large repositories tend to be found in larger organisations with many users. The GitLab Quality and Support teams provide several [Reference Architectures](../../../administration/reference_architectures/index.md) that are the recommended way to deploy GitLab at scale.
+
+In these types of setups it's recommended that the GitLab environment used matches a Reference Architecture to improve performance.
+
+## Gitaly Cluster
+
+Gitaly Cluster can notably improve large repository performance as it holds multiple replicas of the repository across several nodes. As a result, Gitaly Cluster can load balance read requests against those repositories and is also fault tolerant.
+
+It's recommended for large repositories, however, Gitaly Cluster is a large solution with additional complexity of setup and management. Refer to the [Gitaly Cluster docs for more info](../../../administration/gitaly/index.md), specifically the [Before deploying Gitaly Cluster](../../../administration/gitaly/index.md#before-deploying-gitaly-cluster) section.
+
+## Keep GitLab up to date
+
+Performance improvements and fixes are added continuously in GitLab. As such, it's recommended you keep GitLab updated to the latest version where possible to benefit from these.
+
+## Reduce concurrent clones in CI/CD
+
+Large repositories tend to be monorepos. This in turn typically means that these repositories get a lot of traffic not only from users, but from CI/CD.
+
+CI/CD loads tend to be concurrent as pipelines are scheduled during set times. As a result, the Git requests against the repositories can spike notably during these times and lead to reduced performance for both CI and users alike.
+
+When designing CI/CD pipelines, it's advisable to reduce their concurrency by staggering them to run at different times, for example, a set running at one time and then another set running several minutes later.
+
+There's several other actions that can be explored to improve CI/CD performance with large repositories. Refer to the [Runner docs for more info](../../../ci/large_repositories/index.md).

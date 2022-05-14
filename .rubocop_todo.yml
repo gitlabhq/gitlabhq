@@ -11,18 +11,6 @@ Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
 
-# Offense count: 118
-RSpec/RepeatedExampleGroupBody:
-  Enabled: false
-
-# Offense count: 26
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/ActiveRecordCallbacksOrder:
-  Enabled: false
-
-# Offense count: 313
 # Configuration parameters: Include.
 # Include: db/migrate/*.rb
 Rails/CreateTableWithTimestamps:
@@ -32,32 +20,6 @@ Rails/CreateTableWithTimestamps:
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
 Rails/HasManyOrHasOneDependent:
-  Enabled: false
-
-# Offense count: 118
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/InverseOf:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/mailers/**/*.rb
-Rails/MailerName:
-  Exclude:
-    - 'app/mailers/notify.rb'
-
-# Offense count: 51
-# Cop supports --auto-correct.
-Rails/NegateInclude:
-  Enabled: false
-
-# Offense count: 44
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: exists, where
-Rails/WhereExists:
   Enabled: false
 
 # Offense count: 42
@@ -70,16 +32,4 @@ Style/CaseLikeIf:
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: compact, expanded
 Style/EmptyMethod:
-  Enabled: false
-
-# Offense count: 59
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: braces, no_braces
-Style/HashAsLastArrayItem:
-  Enabled: false
-
-# Offense count: 64
-# Cop supports --auto-correct.
-Style/KeywordParametersOrder:
   Enabled: false

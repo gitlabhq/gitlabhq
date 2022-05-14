@@ -18,7 +18,8 @@ RSpec.describe ServicePing::ServicePingSettings do
 
     with_them do
       before do
-        allow(User).to receive(:single_user).and_return(double(:user, requires_usage_stats_consent?: requires_usage_stats_consent))
+        allow(User).to receive(:single_user)
+          .and_return(instance_double(User, :user, requires_usage_stats_consent?: requires_usage_stats_consent))
         stub_config_setting(usage_ping_enabled: usage_ping_enabled)
       end
 

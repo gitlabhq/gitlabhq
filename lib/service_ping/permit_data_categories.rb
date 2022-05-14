@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ServicePing
-  class PermitDataCategoriesService
+  class PermitDataCategories
     STANDARD_CATEGORY = 'standard'
     SUBSCRIPTION_CATEGORY = 'subscription'
     OPERATIONAL_CATEGORY = 'operational'
@@ -21,4 +21,4 @@ module ServicePing
   end
 end
 
-ServicePing::PermitDataCategoriesService.prepend_mod_with('ServicePing::PermitDataCategoriesService')
+ServicePing::PermitDataCategories.prepend_mod_with('ServicePing::PermitDataCategories')

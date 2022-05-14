@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ServicePing
-  class DevopsReportService
+  class DevopsReport
     def initialize(data)
       @data = data
     end
@@ -20,7 +20,11 @@ module ServicePing
         metrics.slice(*DevOpsReport::Metric::METRICS)
       )
 
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ActiveRecord::RecordInvalid.new(report)) unless report.persisted?
+      unless report.persisted?
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+          ActiveRecord::RecordInvalid.new(report)
+        )
+      end
     end
   end
 end

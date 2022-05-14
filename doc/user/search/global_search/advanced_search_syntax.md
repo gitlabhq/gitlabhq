@@ -23,7 +23,7 @@ Advanced Search searches default project branches only.
 | Use | Description  | Example                                                                                                                                        |
 |-----|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | `"` | Exact search | [`"gem sidekiq"`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=%22gem+sidekiq%22)                   |
-| `|` | Or           | [`display | banner`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+%7C+banner)          |
+| <code>&#124;</code> | Or | [<code>display &#124; banner</code>](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+%7C+banner)          |
 | `+` | And          | [`display +banner`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=display+%2Bbanner&snippets=) |
 | `-` | Exclude      | [`display -banner`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+-banner)                              |
 | `*` | Partial      | [`bug error 50*`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=bug+error+50%2A&snippets=)       |
@@ -46,6 +46,6 @@ Advanced Search searches default project branches only.
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
 | [`rails -filename:gemfile.lock`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=rails+-filename%3Agemfile.lock&snippets=)              | Show _rails_ in all files except the _`gemfile.lock`_ file.          |
 | [`RSpec.describe Resolvers -*builder`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=RSpec.describe+Resolvers+-*builder)                              | Show all _RSpec.describe Resolvers_ that don't start with _builder_. |
-| [`bug | (display +banner)`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+%7C+%28display+%2Bbanner%29&group_id=9970&project_id=278964) | Show _bug_ **or** _display_ **and** _banner_.                        |
+| [<code>bug &#124; (display +banner)</code>](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+%7C+%28display+%2Bbanner%29&group_id=9970&project_id=278964)  | Show _bug_ **or** _display_ **and** _banner_.                        |
 
 <!-- markdownlint-enable -->

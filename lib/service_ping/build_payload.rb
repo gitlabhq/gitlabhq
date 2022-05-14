@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ServicePing
-  class BuildPayloadService
+  class BuildPayload
     def execute
       return {} unless ServicePingSettings.product_intelligence_enabled?
 
@@ -37,7 +37,7 @@ module ServicePing
     end
 
     def permitted_categories
-      @permitted_categories ||= ::ServicePing::PermitDataCategoriesService.new.execute
+      @permitted_categories ||= ::ServicePing::PermitDataCategories.new.execute
     end
 
     def permitted_metric?(key_path)
@@ -51,7 +51,7 @@ module ServicePing
     def metric_category(key_path)
       metric_definitions[key_path]
         &.attributes
-        &.fetch(:data_category, ::ServicePing::PermitDataCategoriesService::OPTIONAL_CATEGORY)
+        &.fetch(:data_category, ::ServicePing::PermitDataCategories::OPTIONAL_CATEGORY)
     end
 
     def metric_definitions
@@ -60,4 +60,4 @@ module ServicePing
   end
 end
 
-ServicePing::BuildPayloadService.prepend_mod_with('ServicePing::BuildPayloadService')
+ServicePing::BuildPayload.prepend_mod_with('ServicePing::BuildPayload')

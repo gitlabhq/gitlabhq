@@ -132,7 +132,7 @@ permission model that isolates the CD permissions from the original project and 
 original users with the Maintainer role for the project from accessing the production secret and CD configuration. You can
 connect the CD project to your development projects by using [multi-project pipelines](../pipelines/multi_project_pipelines.md).
 
-## Protect `gitlab-ci.yml` from change
+## Protect `.gitlab-ci.yml` from change
 
 A `.gitlab-ci.yml` may contain rules to deploy an application to the production server. This
 deployment usually runs automatically after pushing a merge request. To prevent developers from

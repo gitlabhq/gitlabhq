@@ -21,7 +21,7 @@ For advanced CI/CD teams, [custom project templates](../../user/admin_area/custo
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.
 
-## `config.yml` vs `gitlab-ci.yml`
+## `config.yml` vs `.gitlab-ci.yml`
 
 CircleCI's `config.yml` configuration file defines scripts, jobs, and workflows (known as "stages" in GitLab). In GitLab, a similar approach is used with a `.gitlab-ci.yml` file in the root directory of your repository.
 

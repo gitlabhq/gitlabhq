@@ -139,7 +139,8 @@ RSpec.describe ServicePing::SubmitService do
 
     context 'and user requires usage stats consent' do
       before do
-        allow(User).to receive(:single_user).and_return(double(:user, requires_usage_stats_consent?: true))
+        allow(User).to receive(:single_user)
+          .and_return(instance_double(User, :user, requires_usage_stats_consent?: true))
       end
 
       it_behaves_like 'does not run'
@@ -173,7 +174,8 @@ RSpec.describe ServicePing::SubmitService do
         recorded_at = Time.current
         usage_data = { uuid: 'uuid', recorded_at: recorded_at }
 
-        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values)
+          .and_return(usage_data)
 
         subject.execute
 
@@ -196,7 +198,8 @@ RSpec.describe ServicePing::SubmitService do
         recorded_at = Time.current
         usage_data = { uuid: 'uuid', recorded_at: recorded_at }
 
-        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values)
+          .and_return(usage_data)
 
         subject.execute
 
@@ -241,7 +244,8 @@ RSpec.describe ServicePing::SubmitService do
         recorded_at = Time.current
         usage_data = { uuid: 'uuid', recorded_at: recorded_at }
 
-        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values)
+          .and_return(usage_data)
 
         subject.execute
 
@@ -274,7 +278,7 @@ RSpec.describe ServicePing::SubmitService do
 
     context 'and usage data is nil' do
       before do
-        allow(ServicePing::BuildPayloadService).to receive(:execute).and_return(nil)
+        allow(ServicePing::BuildPayload).to receive(:execute).and_return(nil)
         allow(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values).and_return(nil)
       end
 
@@ -285,14 +289,15 @@ RSpec.describe ServicePing::SubmitService do
       before do
         stub_response(body: with_dev_ops_score_params)
 
-        allow(ServicePing::BuildPayloadService).to receive_message_chain(:new, :execute)
+        allow(ServicePing::BuildPayload).to receive_message_chain(:new, :execute)
                                                      .and_raise(described_class::SubmissionError, 'SubmissionError')
       end
 
       it 'calls Gitlab::Usage::ServicePingReport .for method' do
         usage_data = build_usage_data
 
-        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values)
+          .and_return(usage_data)
 
         subject.execute
       end
@@ -309,7 +314,7 @@ RSpec.describe ServicePing::SubmitService do
       end
     end
 
-    context 'calls BuildPayloadService first' do
+    context 'calls BuildPayload first' do
       before do
         stub_response(body: with_dev_ops_score_params)
       end
@@ -317,7 +322,7 @@ RSpec.describe ServicePing::SubmitService do
       it 'returns usage data' do
         usage_data = build_usage_data
 
-        expect_next_instance_of(ServicePing::BuildPayloadService) do |service|
+        expect_next_instance_of(ServicePing::BuildPayload) do |service|
           expect(service).to receive(:execute).and_return(usage_data)
         end
 
@@ -330,7 +335,7 @@ RSpec.describe ServicePing::SubmitService do
         stub_response(body: with_dev_ops_score_params, status: 404)
 
         usage_data = build_usage_data
-        allow_next_instance_of(ServicePing::BuildPayloadService) do |service|
+        allow_next_instance_of(ServicePing::BuildPayload) do |service|
           allow(service).to receive(:execute).and_return(usage_data)
         end
       end
@@ -338,7 +343,8 @@ RSpec.describe ServicePing::SubmitService do
       it 'calls Gitlab::Usage::ServicePingReport .for method' do
         usage_data = build_usage_data
 
-        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values).and_return(usage_data)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :all_metrics_values)
+          .and_return(usage_data)
 
         # SubmissionError is raised as a result of 404 in response from HTTP Request
         expect { subject.execute }.to raise_error(described_class::SubmissionError)
@@ -358,7 +364,7 @@ RSpec.describe ServicePing::SubmitService do
       end
 
       it 'does not call DevOpsReport service' do
-        expect(ServicePing::DevopsReportService).not_to receive(:new)
+        expect(ServicePing::DevopsReport).not_to receive(:new)
 
         subject.execute
       end
@@ -400,7 +406,7 @@ RSpec.describe ServicePing::SubmitService do
       before do
         stub_feature_flags(measure_service_ping_metric_collection: true)
 
-        allow_next_instance_of(ServicePing::BuildPayloadService) do |service|
+        allow_next_instance_of(ServicePing::BuildPayload) do |service|
           allow(service).to receive(:execute).and_return(payload)
         end
       end

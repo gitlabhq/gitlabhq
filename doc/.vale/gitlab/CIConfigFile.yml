@@ -1,0 +1,17 @@
+---
+# Error: gitlab.CIConfigFile
+#
+# Checks that the `.gitlab-ci.yml` file is referenced properly.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'The CI/CD configuration file should be exactly: `.gitlab-ci.yml`'
+link: https://docs.gitlab.com/ee/development/documentation/versions.html
+level: error
+scope: raw
+raw:
+  - '(`gitlab-ci.yml`|'
+  - '`gitlabci.yml`|'
+  - '`gitlab.ci.yml`|'
+  - '`.gitlab.ci-yml`|'
+  - '`.gitlab-ci.yaml`)'

@@ -126,6 +126,16 @@ changes to your code, settings, or workflow.
 
 We are removing the `DS_DEFAULT_ANALYZERS` environment variable from Dependency Scanning on May 22, 2022 in 15.0. After this removal, this variable's value will be ignored. To configure which analyzers to run with the default configuration, you should use the `DS_EXCLUDED_ANALYZERS` variable instead.
 
+### ELK stack logging removed in GitLab 15.0
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The logging features in GitLab allow users to install the ELK stack (Elasticsearch, Logstash, and Kibana) to aggregate and manage application logs. Users could search for relevant logs in GitLab directly. However, since deprecating certificate-based integration with Kubernetes clusters and GitLab Managed Apps, this feature is no longer available. For more information on the future of logging and observability, you can follow the issue for [integrating Opstrace with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
+
 ### Elasticsearch 6.8.x in GitLab 15.0
 
 WARNING:

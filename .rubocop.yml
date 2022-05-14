@@ -243,6 +243,11 @@ Rails/ApplicationRecord:
     - ee/db/**/*.rb
     - ee/spec/**/*.rb
 
+Rails/ActiveRecordCallbacksOrder:
+  Include:
+    - app/models/**/*.rb
+    - ee/app/models/**/*.rb
+
 Cop/DefaultScope:
   Enabled: true
 
@@ -257,6 +262,11 @@ Rails/FindBy:
 Rails/IndexBy:
   Exclude:
     - 'tooling/danger/**/*.rb'
+
+Rails/InverseOf:
+  Include:
+    - app/models/**/*.rb
+    - ee/app/models/**/*.rb
 
 # This is currently exiting with a rubocop exception error and should be
 # resolved hopefully a future update

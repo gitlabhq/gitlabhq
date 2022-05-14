@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ServicePing::BuildPayloadService do
+RSpec.describe ServicePing::BuildPayload do
   describe '#execute', :without_license do
     subject(:service_ping_payload) { described_class.new.execute }
 
@@ -35,7 +35,8 @@ RSpec.describe ServicePing::BuildPayloadService do
 
       context 'with require stats consent enabled' do
         before do
-          allow(User).to receive(:single_user).and_return(double(:user, requires_usage_stats_consent?: true))
+          allow(User).to receive(:single_user)
+            .and_return(instance_double(User, :user, requires_usage_stats_consent?: true))
         end
 
         it 'returns empty service ping payload' do

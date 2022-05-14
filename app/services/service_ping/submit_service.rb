@@ -19,7 +19,7 @@ module ServicePing
 
       start = Time.current
       begin
-        usage_data = BuildPayloadService.new.execute
+        usage_data = ServicePing::BuildPayload.new.execute
         response = submit_usage_data_payload(usage_data)
       rescue StandardError => e
         return unless Gitlab::CurrentSettings.usage_ping_enabled?
@@ -38,7 +38,8 @@ module ServicePing
         response = submit_usage_data_payload(usage_data)
       end
 
-      version_usage_data_id = response.dig('conv_index', 'usage_data_id') || response.dig('dev_ops_score', 'usage_data_id')
+      version_usage_data_id =
+        response.dig('conv_index', 'usage_data_id') || response.dig('dev_ops_score', 'usage_data_id')
 
       unless version_usage_data_id.is_a?(Integer) && version_usage_data_id > 0
         raise SubmissionError, "Invalid usage_data_id in response: #{version_usage_data_id}"
@@ -47,7 +48,7 @@ module ServicePing
       unless @skip_db_write
         raw_usage_data = save_raw_usage_data(usage_data)
         raw_usage_data.update_version_metadata!(usage_data_id: version_usage_data_id)
-        DevopsReportService.new(response).execute
+        ServicePing::DevopsReport.new(response).execute
       end
 
       return unless Feature.enabled?(:measure_service_ping_metric_collection)
@@ -90,9 +91,13 @@ module ServicePing
     end
 
     def save_raw_usage_data(usage_data)
-      RawUsageData.safe_find_or_create_by(recorded_at: usage_data[:recorded_at]) do |record|
+      # safe_find_or_create_by! was originally called here.
+      # We merely switched to `find_or_create_by!`
+      # rubocop: disable CodeReuse/ActiveRecord
+      RawUsageData.find_or_create_by(recorded_at: usage_data[:recorded_at]) do |record|
         record.payload = usage_data
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/233615 for details

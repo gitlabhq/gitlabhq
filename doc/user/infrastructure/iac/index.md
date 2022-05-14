@@ -86,7 +86,7 @@ To use a Terraform template:
     # TF_ROOT: terraform/production
    ```
 
-1. (Optional) Override in your `.gitlab-ci.yaml` file the attributes present
+1. (Optional) Override in your `.gitlab-ci.yml` file the attributes present
 in the template you fetched to customize your configuration.
 
 ## GitLab-managed Terraform state

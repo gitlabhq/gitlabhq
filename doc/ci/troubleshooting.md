@@ -16,7 +16,7 @@ This guide also lists common issues and possible solutions.
 An early source of problems can be incorrect syntax. The pipeline shows a `yaml invalid`
 badge and does not start running if any syntax or formatting problems are found.
 
-### Edit `gitlab-ci.yml` with the pipeline editor
+### Edit `.gitlab-ci.yml` with the pipeline editor
 
 The [pipeline editor](pipeline_editor/index.md) is the recommended editing
 experience (rather than the single file editor or the Web IDE). It includes:
