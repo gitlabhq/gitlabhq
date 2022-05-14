@@ -10,6 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26383) from GitLab Ultimate to GitLab Free 12.9.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/360182) behind a [feature flag](../../../administration/feature_flags.md) named `monitor_logging` in GitLab 15.0. Disabled by default.
+> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
 WARNING:
 This feature is in its end-of-life process.
@@ -17,7 +18,7 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 It will be [removed completely](https://gitlab.com/gitlab-org/gitlab/-/issues/346485) in GitLab 15.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `monitor_logging`.
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `monitor_logging` and the one named `certificate_based_clusters`.
 On GitLab.com, this feature is not available.
 This feature is not recommended for production use.
 

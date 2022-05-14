@@ -24,7 +24,7 @@ requests, each waiting to be merged into the target branch.
 
 Many merge requests can be added to the train. Each merge request runs its own merged results pipeline,
 which includes the changes from all of the other merge requests in *front* of it on the train.
-All the pipelines run in parallel, to save time.
+All the pipelines run in parallel, to save time. The author of the internal merged result commit is always the user that initiated the merge.
 
 If the pipeline for a merge request fails, the breaking changes are not merged, and the target
 branch is unaffected. The merge request is removed from the train, and all pipelines behind it restart.

@@ -6927,6 +6927,12 @@ msgstr ""
 msgid "CICD|There are several CI/CD limits in place."
 msgstr ""
 
+msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
+msgstr ""
+
+msgid "CICD|Use separate caches for protected branches"
+msgstr ""
+
 msgid "CICD|group enabled"
 msgstr ""
 

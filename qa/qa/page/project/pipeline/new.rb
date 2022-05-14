@@ -16,9 +16,9 @@ module QA
             click_element(:run_pipeline_button, Page::Project::Pipeline::Show)
           end
 
-          def add_variable(key, value, row_index: 0)
+          def configure_variable(key: nil, value: 'foo', row_index: 0)
             within_element_by_index(:ci_variable_row_container, row_index) do
-              fill_element(:ci_variable_key_field, key)
+              fill_element(:ci_variable_key_field, key) unless key.nil?
               fill_element(:ci_variable_value_field, value)
             end
           end

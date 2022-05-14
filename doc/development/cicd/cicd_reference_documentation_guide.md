@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CI/CD YAML reference style guide **(FREE)**
+# Documenting the `.gitlab-ci.yml` keywords **(FREE)**
 
 The [CI/CD YAML reference](../../ci/yaml/index.md) uses a standard style to make it easier to use and update.
 

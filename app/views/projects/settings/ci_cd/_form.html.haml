@@ -1,6 +1,7 @@
 - help_link_public_pipelines = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'change-which-users-can-view-your-pipelines'), target: '_blank', rel: 'noopener noreferrer'
 - help_link_auto_canceling = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank', rel: 'noopener noreferrer'
-- help_link_skip_outdated =link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_skip_outdated = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_separated_caches = link_to sprite_icon('question-o'), help_page_path('ci/caching/index', anchor: 'cache-key-names'), target: '_blank', rel: 'noopener noreferrer'
 
 .row.gl-mt-3
   .col-lg-12
@@ -23,6 +24,11 @@
           = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
             = form.gitlab_ui_checkbox_component :forward_deployment_enabled, _("Skip outdated deployment jobs"),
               help_text: (_('When a deployment job is successful, skip older deployment jobs that are still pending.') + ' ' + help_link_skip_outdated).html_safe
+
+        .form-group
+          = f.gitlab_ui_checkbox_component :ci_separated_caches,
+            s_("CICD|Use separate caches for protected branches"),
+            help_text: (s_('CICD|Unprotected branches will not have access to the cache from protected branches.') + ' ' + help_link_separated_caches).html_safe
 
         .form-group
           = f.label :ci_config_path, _('CI/CD configuration file'), class: 'label-bold'

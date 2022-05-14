@@ -59,7 +59,7 @@ module QA
       Flow::Pipeline.wait_for_latest_pipeline
       Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
       Page::Project::Pipeline::New.perform do |new|
-        new.add_variable(key, value)
+        new.configure_variable(key: key, value: value)
         new.click_run_pipeline_button
       end
     end

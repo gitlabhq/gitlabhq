@@ -12,7 +12,8 @@ A *merged results pipeline* is a type of [merge request pipeline](merge_request_
 
 GitLab creates an internal commit with the merged results, so the pipeline can run
 against it. This commit does not exist in either branch,
-but you can view it in the pipeline details.
+but you can view it in the pipeline details. The author of the internal commit is
+always the user that created the merge request.
 
 The pipeline runs against the target branch as it exists at the moment you run the pipeline.
 Over time, while you're working in the source branch, the target branch might change.
