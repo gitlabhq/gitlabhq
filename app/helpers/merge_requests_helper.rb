@@ -256,6 +256,10 @@ module MergeRequestsHelper
 
     _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-display-inline-block').html_safe }
   end
+
+  def moved_mr_sidebar_enabled?
+    Feature.enabled?(:moved_mr_sidebar, @project) && defined?(@merge_request)
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

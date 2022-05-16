@@ -274,6 +274,10 @@ module FilteredSearchHelpers
     expect(page).to have_css '.gl-filtered-search-token', text: "Milestone != %#{value}"
   end
 
+  def expect_epic_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: "Epic = #{value}"
+  end
+
   def expect_search_term(value)
     value.split(' ').each do |term|
       expect(page).to have_css '.gl-filtered-search-term', text: term

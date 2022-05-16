@@ -114,7 +114,7 @@
   }
 }
 
-.right-sidebar {
+@mixin right-sidebar {
   position: fixed;
   top: $header-height;
   // Default value for CSS var must contain a unit
@@ -125,6 +125,18 @@
   background-color: $white;
   z-index: 200;
   overflow: hidden;
+}
+
+.right-sidebar {
+  &:not(.right-sidebar-merge-requests) {
+    @include right-sidebar;
+  }
+
+  &.right-sidebar-merge-requests {
+    @include media-breakpoint-down(sm) {
+      @include right-sidebar;
+    }
+  }
 
   @include media-breakpoint-down(sm) {
     z-index: 251;
@@ -135,10 +147,6 @@
 
     &:hover {
       color: $blue-800;
-
-      .avatar {
-        border-color: rgba($gray-normal, 0.2);
-      }
     }
   }
 
@@ -165,6 +173,21 @@
     &:hover,
     &:focus {
       text-decoration: none;
+    }
+  }
+
+  &.right-sidebar-merge-requests {
+    .block,
+    .sidebar-contained-width,
+    .issuable-sidebar-header {
+      width: 100%;
+      border-bottom: 0;
+    }
+
+    .block {
+      @include media-breakpoint-up(md) {
+        padding: $gl-spacing-scale-5 0;
+      }
     }
   }
 
@@ -224,9 +247,20 @@
 
   .issuable-sidebar {
     height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+
+    &:not(.is-merge-request) {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    &.is-merge-request {
+      @include media-breakpoint-down(sm) {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
   }
 
   &.affix-top .issuable-sidebar {
@@ -234,7 +268,9 @@
   }
 
   &.right-sidebar-expanded {
-    width: $gutter-width;
+    &:not(.right-sidebar-merge-requests) {
+      width: $gutter-width;
+    }
 
     .value {
       line-height: 1;
@@ -242,6 +278,12 @@
 
     .issuable-sidebar {
       padding: 0 20px;
+
+      &.is-merge-request {
+        @include media-breakpoint-up(md) {
+          padding: 0;
+        }
+      }
     }
 
     &:not(.boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
@@ -284,8 +326,17 @@
     /* Extra small devices (phones, less than 768px) */
     display: none;
     /* Small devices (tablets, 768px and up) */
-    @include media-breakpoint-up(sm) {
-      display: block;
+
+    &:not(.right-sidebar-merge-requests) {
+      @include media-breakpoint-up(sm) {
+        display: block;
+      }
+    }
+
+    &.right-sidebar-merge-requests {
+      @include media-breakpoint-up(md) {
+        display: block;
+      }
     }
 
     width: $gutter-collapsed-width;

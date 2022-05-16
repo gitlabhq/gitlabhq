@@ -5,6 +5,7 @@ import { IssuableType } from '~/issues/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { subscribedQueries, Tracking } from '~/sidebar/constants';
 
 const ICON_ON = 'notifications';
@@ -25,6 +26,7 @@ export default {
     GlToggle,
     SidebarEditableItem,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     iid: {
       type: String,
@@ -82,6 +84,9 @@ export default {
     },
   },
   computed: {
+    isMergeRequest() {
+      return this.issuableType === IssuableType.MergeRequest && this.glFeatures.movedMrSidebar;
+    },
     isLoading() {
       return this.$apollo.queries?.subscribed?.loading || this.loading;
     },
@@ -171,7 +176,20 @@ export default {
 </script>
 
 <template>
+  <li v-if="isMergeRequest" class="gl-new-dropdown-item">
+    <button type="button" class="dropdown-item" @click="toggleSubscribed">
+      <span class="gl-new-dropdown-item-text-wrapper">
+        <template v-if="subscribed">
+          {{ __('Turn off notifications') }}
+        </template>
+        <template v-else>
+          {{ __('Turn on notifications') }}
+        </template>
+      </span>
+    </button>
+  </li>
   <sidebar-editable-item
+    v-else
     ref="editable"
     :title="$options.i18n.notifications"
     :tracking="$options.tracking"

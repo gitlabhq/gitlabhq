@@ -119,6 +119,8 @@ RSpec.describe 'User views an open merge request' do
     let(:source_branch) { "&#39;&gt;&lt;iframe/srcdoc=&#39;&#39;&gt;&lt;/iframe&gt;" }
 
     before do
+      stub_feature_flags(moved_mr_sidebar: false)
+
       project.repository.create_branch(source_branch, "master")
 
       mr = create(:merge_request, source_project: project, target_project: project, source_branch: source_branch)

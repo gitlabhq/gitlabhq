@@ -22,10 +22,8 @@ module Gitlab::Ci
         }.freeze
 
         def initialize(badge)
-          @entity = badge.entity
           @status = badge.status
-          @key_text = badge.customization.dig(:key_text)
-          @key_width = badge.customization.dig(:key_width)
+          super
         end
 
         def value_text

@@ -85,6 +85,12 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
       expect do
         transaction.increment(described_class::GEO_NODES_LOAD)
         transaction.increment(described_class::LICENSES_LOAD)
+        transaction.increment('SELECT a.attname, a.other_column FROM pg_attribute a')
+        transaction.increment('SELECT x.foo, a.attname FROM some_table x JOIN pg_attribute a')
+        transaction.increment(<<-SQL)
+        SELECT a.attname, a.other_column
+          FROM pg_attribute a
+        SQL
       end.not_to change(transaction, :count)
     end
   end

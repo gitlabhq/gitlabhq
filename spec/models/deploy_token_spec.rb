@@ -73,10 +73,10 @@ RSpec.describe DeployToken do
 
   describe '#ensure_token' do
     it 'ensures a token' do
-      deploy_token.token = nil
+      deploy_token.token_encrypted = nil
       deploy_token.save!
 
-      expect(deploy_token.token).not_to be_empty
+      expect(deploy_token.token_encrypted).not_to be_empty
     end
   end
 

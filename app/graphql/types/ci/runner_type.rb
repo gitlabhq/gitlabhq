@@ -41,6 +41,8 @@ module Types
       field :architecture_name, GraphQL::Types::String, null: true,
             description: 'Architecture provided by the the runner.',
             method: :architecture
+      field :maintenance_note, GraphQL::Types::String, null: true,
+            description: 'Runner\'s maintenance notes.'
       field :groups, ::Types::GroupType.connection_type, null: true,
             description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,

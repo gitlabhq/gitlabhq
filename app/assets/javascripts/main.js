@@ -195,7 +195,11 @@ $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
  * Quick fix: Get rid of jQuery for this implementation
  */
 const isBoardsPage = /(projects|groups):boards:show/.test(document.body.dataset.page);
-if (!isBoardsPage && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
+if (
+  !isBoardsPage &&
+  !window.gon?.features?.movedMrSidebar &&
+  (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')
+) {
   const $rightSidebar = $('aside.right-sidebar');
   const $layoutPage = $('.layout-page');
 

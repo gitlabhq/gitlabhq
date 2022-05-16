@@ -13,6 +13,8 @@ module IssuablesHelper
   end
 
   def sidebar_gutter_collapsed_class
+    return "right-sidebar-expanded" if moved_mr_sidebar_enabled?
+
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 

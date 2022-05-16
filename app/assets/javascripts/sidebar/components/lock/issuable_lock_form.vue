@@ -111,12 +111,6 @@ export default {
       />
 
       <div data-testid="lock-status" class="sidebar-item-value" :class="lockStatus.class">
-        <gl-icon
-          :size="16"
-          :name="lockStatus.icon"
-          class="sidebar-item-icon"
-          :class="lockStatus.iconClass"
-        />
         {{ lockStatus.displayText }}
       </div>
     </div>

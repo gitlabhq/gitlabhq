@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import Mousetrap from 'mousetrap';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
@@ -13,7 +12,6 @@ jest.mock('~/lib/utils/common_utils', () => ({
 
 describe('ShortcutsIssuable', () => {
   const snippetShowFixtureName = 'snippets/show.html';
-  const mrShowFixtureName = 'merge_requests/merge_request_of_current_user.html';
 
   beforeAll(() => {
     initCopyAsGFM();
@@ -279,42 +277,6 @@ describe('ShortcutsIssuable', () => {
 
         await waitForPromises();
         expect($(FORM_SELECTOR).val()).toBe('> ![logo](https://gitlab.com/logo.png)\n\n');
-      });
-    });
-  });
-
-  describe('copyBranchName', () => {
-    let sidebarCollapsedBtn;
-    let sidebarExpandedBtn;
-
-    beforeEach(() => {
-      loadHTMLFixture(mrShowFixtureName);
-
-      window.shortcut = new ShortcutsIssuable();
-
-      [sidebarCollapsedBtn, sidebarExpandedBtn] = document.querySelectorAll(
-        '.js-source-branch-copy',
-      );
-
-      [sidebarCollapsedBtn, sidebarExpandedBtn].forEach((btn) => jest.spyOn(btn, 'click'));
-    });
-
-    afterEach(() => {
-      delete window.shortcut;
-      resetHTMLFixture();
-    });
-
-    describe('when the sidebar is expanded', () => {
-      beforeEach(() => {
-        // simulate the applied CSS styles when the
-        // sidebar is expanded
-        sidebarCollapsedBtn.style.display = 'none';
-
-        Mousetrap.trigger('b');
-      });
-
-      it('clicks the "expanded" version of the copy source branch button', () => {
-        expect(sidebarExpandedBtn.click).toHaveBeenCalled();
       });
     });
   });

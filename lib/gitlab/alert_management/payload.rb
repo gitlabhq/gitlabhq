@@ -4,8 +4,7 @@ module Gitlab
   module AlertManagement
     module Payload
       MONITORING_TOOLS = {
-        prometheus: 'Prometheus',
-        cilium: 'Cilium'
+        prometheus: 'Prometheus'
       }.freeze
 
       class << self
@@ -48,5 +47,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::AlertManagement::Payload.prepend_mod_with('Gitlab::AlertManagement::Payload')

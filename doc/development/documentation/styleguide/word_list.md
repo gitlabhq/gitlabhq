@@ -625,6 +625,11 @@ Use lowercase for **merge requests**. If you use **MR** as the acronym, spell it
 
 Use lowercase for **milestones**.
 
+## n/a, N/A, not applicable
+
+When possible, use **not applicable**. Spelling out the phrase helps non-English speaking users and avoids
+capitalization inconsistencies.
+
 ## navigate
 
 Do not use **navigate**. Use **go** instead. For example:

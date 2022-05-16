@@ -26,7 +26,7 @@ used for the build.
 
 Specify either:
 
-- The CI/CD variable `BUILDPACK_URL` according to [`pack`'s specifications](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
+- The CI/CD variable `BUILDPACK_URL` with any of [`pack`'s URI specification formats](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
 - A [`project.toml` project descriptor](https://buildpacks.io/docs/app-developer-guide/using-project-descriptor/) with the buildpacks you would like to include.
 
 ### Custom buildpacks with Herokuish

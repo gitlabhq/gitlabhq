@@ -735,3 +735,11 @@ $tabs-holder-z-index: 250;
 .attention-request-sidebar-popover {
   z-index: 999;
 }
+
+.merge-request-overview {
+  @include media-breakpoint-up(md) {
+    display: grid;
+    grid-template-columns: 1fr 270px;
+    grid-gap: 5%;
+  }
+}

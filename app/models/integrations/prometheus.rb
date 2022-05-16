@@ -30,7 +30,6 @@ module Integrations
     after_create_commit :create_default_alerts
 
     scope :preload_project, -> { preload(:project) }
-    scope :with_clusters_with_cilium, -> { joins(project: [:clusters]).merge(Clusters::Cluster.with_available_cilium) }
 
     def show_active_box?
       false

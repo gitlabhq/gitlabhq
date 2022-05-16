@@ -40027,7 +40027,13 @@ msgstr ""
 msgid "Turn off"
 msgstr ""
 
+msgid "Turn off notifications"
+msgstr ""
+
 msgid "Turn on"
+msgstr ""
+
+msgid "Turn on notifications"
 msgstr ""
 
 msgid "Twitter"
