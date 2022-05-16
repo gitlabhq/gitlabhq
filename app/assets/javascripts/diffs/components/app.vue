@@ -371,7 +371,7 @@ export default {
       events.push(TRACKING_MULTIPLE_FILES_MODE);
     }
 
-    queueRedisHllEvents(events);
+    queueRedisHllEvents(events, { verifyCap: true });
 
     this.subscribeToVirtualScrollingEvents();
   },

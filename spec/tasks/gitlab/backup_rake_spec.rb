@@ -377,21 +377,6 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
             expect(tar_lines).to include(a_string_matching(repo_name))
           end
         end
-
-        def move_repository_to_secondary(record)
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            default_shard_legacy_path = Gitlab.config.repositories.storages.default.legacy_disk_path
-            secondary_legacy_path = Gitlab.config.repositories.storages[second_storage_name].legacy_disk_path
-            dst_dir = File.join(secondary_legacy_path, File.dirname(record.disk_path))
-
-            FileUtils.mkdir_p(dst_dir) unless Dir.exist?(dst_dir)
-
-            FileUtils.mv(
-              File.join(default_shard_legacy_path, record.disk_path + '.git'),
-              File.join(secondary_legacy_path, record.disk_path + '.git')
-            )
-          end
-        end
       end
 
       context 'no concurrency' do
@@ -404,6 +389,66 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         end
 
         it_behaves_like 'includes repositories in all repository storages'
+      end
+
+      context 'REPOSITORIES_STORAGES set' do
+        before do
+          stub_env('REPOSITORIES_STORAGES', default_storage_name)
+        end
+
+        it 'includes repositories in default repository storage', :aggregate_failures do
+          project_a = create(:project, :repository)
+          project_snippet_a = create(:project_snippet, :repository, project: project_a, author: project_a.first_owner)
+          project_b = create(:project, :repository, repository_storage: second_storage_name)
+          project_snippet_b = create(:project_snippet, :repository, project: project_b, author: project_b.first_owner)
+          project_snippet_b.snippet_repository.update!(shard: project_b.project_repository.shard)
+          create(:wiki_page, container: project_a)
+          create(:design, :with_file, issue: create(:issue, project: project_a))
+
+          move_repository_to_secondary(project_b)
+          move_repository_to_secondary(project_snippet_b)
+
+          expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
+
+          tar_contents, exit_status = Gitlab::Popen.popen(
+            %W{tar -tvf #{backup_tar} repositories}
+          )
+
+          tar_lines = tar_contents.lines.grep(/\.bundle/)
+
+          expect(exit_status).to eq(0)
+
+          [
+            "#{project_a.disk_path}/.+/001.bundle",
+            "#{project_a.disk_path}.wiki/.+/001.bundle",
+            "#{project_a.disk_path}.design/.+/001.bundle",
+            "#{project_snippet_a.disk_path}/.+/001.bundle"
+          ].each do |repo_name|
+            expect(tar_lines).to include(a_string_matching(repo_name))
+          end
+
+          [
+            "#{project_b.disk_path}/.+/001.bundle",
+            "#{project_snippet_b.disk_path}/.+/001.bundle"
+          ].each do |repo_name|
+            expect(tar_lines).not_to include(a_string_matching(repo_name))
+          end
+        end
+      end
+
+      def move_repository_to_secondary(record)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          default_shard_legacy_path = Gitlab.config.repositories.storages.default.legacy_disk_path
+          secondary_legacy_path = Gitlab.config.repositories.storages[second_storage_name].legacy_disk_path
+          dst_dir = File.join(secondary_legacy_path, File.dirname(record.disk_path))
+
+          FileUtils.mkdir_p(dst_dir) unless Dir.exist?(dst_dir)
+
+          FileUtils.mv(
+            File.join(default_shard_legacy_path, record.disk_path + '.git'),
+            File.join(secondary_legacy_path, record.disk_path + '.git')
+          )
+        end
       end
     end
 
@@ -420,7 +465,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
         expect(::Backup::Repositories).to receive(:new)
-          .with(anything, strategy: anything)
+          .with(anything, strategy: anything, storages: [])
           .and_call_original
         expect(::Backup::GitalyBackup).to receive(:new).with(anything, max_parallelism: 5, storage_parallelism: 2, incremental: false).and_call_original
 

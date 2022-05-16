@@ -102,6 +102,8 @@ export const CONFLICT_MARKER_THEIR = 'conflict_marker_their';
 
 // Tracking events
 export const DEFER_DURATION = 750;
+export const TRACKING_CAP_KEY = 'code_review_events_dispatched';
+export const TRACKING_CAP_LENGTH = 86400000; // 24 hours
 
 export const TRACKING_CLICK_DIFF_VIEW_SETTING = 'i_code_review_click_diff_view_setting';
 export const TRACKING_DIFF_VIEW_INLINE = 'i_code_review_diff_view_inline';

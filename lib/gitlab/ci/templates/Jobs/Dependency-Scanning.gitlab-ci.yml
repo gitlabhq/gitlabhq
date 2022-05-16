@@ -120,6 +120,7 @@ gemnasium-maven-dependency_scanning:
     - '{Pipfile,*/Pipfile,*/*/Pipfile}'
     - '{requires.txt,*/requires.txt,*/*/requires.txt}'
     - '{setup.py,*/setup.py,*/*/setup.py}'
+    - '{poetry.lock,*/poetry.lock,*/*/poetry.lock}'
 
 gemnasium-python-dependency_scanning:
   extends:

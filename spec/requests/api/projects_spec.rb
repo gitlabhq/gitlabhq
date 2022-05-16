@@ -4510,6 +4510,43 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe 'POST /projects/:id/repository_size' do
+    let(:update_statistics_service) { Projects::UpdateStatisticsService.new(project, nil, statistics: [:repository_size, :lfs_objects_size]) }
+
+    before do
+      allow(Projects::UpdateStatisticsService).to receive(:new).with(project, nil, statistics: [:repository_size, :lfs_objects_size]).and_return(update_statistics_service)
+    end
+
+    context 'when authenticated as owner' do
+      it 'starts the housekeeping process' do
+        expect(update_statistics_service).to receive(:execute).once
+
+        post api("/projects/#{project.id}/repository_size", user)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'when authenticated as developer' do
+      before do
+        project_member
+      end
+
+      it 'returns forbidden error' do
+        post api("/projects/#{project.id}/repository_size", user3)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        post api("/projects/#{project.id}/repository_size")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
   describe 'PUT /projects/:id/transfer' do
     context 'when authenticated as owner' do
       let(:group) { create :group }

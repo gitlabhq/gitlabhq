@@ -3705,7 +3705,7 @@ msgstr ""
 msgid "All protected branches"
 msgstr ""
 
-msgid "All threads resolved"
+msgid "All threads resolved!"
 msgstr ""
 
 msgid "All users must accept the Terms of Service and Privacy Policy to access GitLab"
@@ -11318,6 +11318,12 @@ msgstr ""
 msgid "DastProfiles|Branch missing"
 msgstr ""
 
+msgid "DastProfiles|Change scanner profile"
+msgstr ""
+
+msgid "DastProfiles|Change site profile"
+msgstr ""
+
 msgid "DastProfiles|Choose a scan method"
 msgstr ""
 
@@ -11432,9 +11438,6 @@ msgstr ""
 msgid "DastProfiles|No scanner profile selected"
 msgstr ""
 
-msgid "DastProfiles|No scanner profile selected."
-msgstr ""
-
 msgid "DastProfiles|No scanner profiles created yet"
 msgstr ""
 
@@ -11487,9 +11490,6 @@ msgid "DastProfiles|Scanner Profiles"
 msgstr ""
 
 msgid "DastProfiles|Scanner name"
-msgstr ""
-
-msgid "DastProfiles|Scanner profile"
 msgstr ""
 
 msgid "DastProfiles|Scanner profiles define the configuration details of a security scanner. %{linkStart}Learn more%{linkEnd}."
@@ -39027,16 +39027,10 @@ msgstr ""
 msgid "ThreatMonitoring|Alerts"
 msgstr ""
 
-msgid "ThreatMonitoring|All Environments"
-msgstr ""
-
 msgid "ThreatMonitoring|Date and time"
 msgstr ""
 
 msgid "ThreatMonitoring|Dismissed"
-msgstr ""
-
-msgid "ThreatMonitoring|Environment"
 msgstr ""
 
 msgid "ThreatMonitoring|Events"
@@ -39064,9 +39058,6 @@ msgid "ThreatMonitoring|No alerts to display."
 msgstr ""
 
 msgid "ThreatMonitoring|Resolved"
-msgstr ""
-
-msgid "ThreatMonitoring|Something went wrong, unable to fetch environments"
 msgstr ""
 
 msgid "ThreatMonitoring|Status"

@@ -34,12 +34,8 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-      user: null,
-    };
-  },
   computed: {
+    ...mapState(['currentUser']),
     ...mapState(['alert', 'subscriptions']),
     shouldShowAlert() {
       return Boolean(this.alert?.message);
@@ -48,7 +44,11 @@ export default {
       return !isEmpty(this.subscriptions);
     },
     userSignedIn() {
-      return Boolean(!this.usersPath || this.user);
+      if (this.isOauthEnabled) {
+        return Boolean(this.currentUser);
+      }
+
+      return Boolean(!this.usersPath);
     },
     isOauthEnabled() {
       return this.glFeatures.jiraConnectOauth;
@@ -85,8 +85,7 @@ export default {
       const { linkUrl, title, message, variant } = retrieveAlert() || {};
       this.setAlert({ linkUrl, title, message, variant });
     },
-    onSignInOauth(user) {
-      this.user = user;
+    onSignInOauth() {
       this.fetchSubscriptionsOauth();
     },
     onSignInError() {
@@ -123,7 +122,11 @@ export default {
       </template>
     </gl-alert>
 
-    <user-link :user-signed-in="userSignedIn" :has-subscriptions="hasSubscriptions" :user="user" />
+    <user-link
+      :user-signed-in="userSignedIn"
+      :has-subscriptions="hasSubscriptions"
+      :user="currentUser"
+    />
 
     <div class="gl-layout-w-limited gl-mx-auto gl-px-5 gl-mb-7">
       <sign-in-page

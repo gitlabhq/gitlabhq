@@ -383,7 +383,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'ProjectDailyStatisticsWorker' => 3,
         'ProjectDestroyWorker' => 3,
         'ProjectExportWorker' => false,
-        'ProjectImportScheduleWorker' => false,
+        'ProjectImportScheduleWorker' => 1,
         'ProjectScheduleBulkRepositoryShardMovesWorker' => 3,
         'ProjectServiceWorker' => 3,
         'ProjectTemplateExportWorker' => false,

@@ -765,3 +765,6 @@ Performance/ActiveRecordSubtransactionMethods:
 
 Migration/BackgroundMigrationBaseClass:
   Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: true

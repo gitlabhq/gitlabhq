@@ -714,6 +714,17 @@ module API
         end
       end
 
+      desc 'Start a task to recalculate repository size for a project' do
+        detail 'This feature was introduced in GitLab 15.0.'
+      end
+      post ':id/repository_size', feature_category: :source_code_management do
+        authorize_admin_project
+
+        user_project.repository.expire_statistics_caches
+
+        ::Projects::UpdateStatisticsService.new(user_project, nil, statistics: [:repository_size, :lfs_objects_size]).execute
+      end
+
       desc 'Transfer a project to a new namespace'
       params do
         requires :namespace, type: String, desc: 'The ID or path of the new namespace'

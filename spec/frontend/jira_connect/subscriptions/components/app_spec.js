@@ -161,32 +161,6 @@ describe('JiraConnectApp', () => {
   });
 
   describe('when user signed out', () => {
-    describe('when sign in page emits `sign-in-oauth` event', () => {
-      const mockUser = { name: 'test' };
-      beforeEach(async () => {
-        createComponent({
-          provide: {
-            usersPath: '/mock',
-          },
-        });
-        findSignInPage().vm.$emit('sign-in-oauth', mockUser);
-
-        await nextTick();
-      });
-
-      it('hides sign in page and renders subscriptions page', () => {
-        expect(findSignInPage().exists()).toBe(false);
-        expect(findSubscriptionsPage().exists()).toBe(true);
-      });
-
-      it('sets correct UserLink props', () => {
-        expect(findUserLink().props()).toMatchObject({
-          user: mockUser,
-          userSignedIn: true,
-        });
-      });
-    });
-
     describe('when sign in page emits `error` event', () => {
       beforeEach(async () => {
         createComponent({

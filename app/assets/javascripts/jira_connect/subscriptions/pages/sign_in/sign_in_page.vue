@@ -29,7 +29,7 @@ export default {
   <sign-in-gitlab-com
     v-else
     :has-subscriptions="hasSubscriptions"
-    @sign-in-oauth="$emit('sign-in-oauth', $event)"
+    @sign-in-oauth="$emit('sign-in-oauth')"
     @error="$emit('error', $event)"
   />
 </template>

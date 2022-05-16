@@ -405,6 +405,27 @@ Incremental backups can also be created from [an untarred backup](#skipping-tar-
 sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
 ```
 
+#### Back up specific repository storages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+
+When using [multiple repository storages](../administration/repository_storage_paths.md),
+repositories from specific repository storages can be backed up separately
+using the `REPOSITORIES_STORAGES` option. The option accepts a comma-separated list of
+storage names.
+
+For example, for Omnibus GitLab installations:
+
+```shell
+sudo gitlab-backup create REPOSITORIES_STORAGES=storage1,storage2
+```
+
+For example, for installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_STORAGES=storage1,storage2
+```
+
 #### Uploading backups to a remote (cloud) storage
 
 You can let the backup script upload (using the [Fog library](http://fog.io/))
@@ -1215,6 +1236,27 @@ For installations from source:
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup SKIP=db,uploads RAILS_ENV=production
+```
+
+#### Restore specific repository storages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+
+When using [multiple repository storages](../administration/repository_storage_paths.md),
+repositories from specific repository storages can be restored separately
+using the `REPOSITORIES_STORAGES` option. The option accepts a comma-separated list of
+storage names.
+
+For example, for Omnibus GitLab installations:
+
+```shell
+sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
+```
+
+For example, for installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
 ```
 
 ## Alternative backup strategies

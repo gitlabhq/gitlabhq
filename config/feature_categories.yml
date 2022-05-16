@@ -33,6 +33,7 @@
 - credential_management
 - database
 - dataops
+- dedicated
 - delivery
 - dependency_firewall
 - dependency_proxy
@@ -52,7 +53,6 @@
 - experimentation_conversion
 - experimentation_expansion
 - feature_flags
-- free_user_caps_conversion
 - five_minute_production_app
 - fulfillment_platform
 - fuzz_testing
@@ -62,7 +62,6 @@
 - gitlab_docs
 - global_search
 - helm_chart_registry
-- horse
 - importers
 - incident_management
 - infrastructure_as_code
@@ -101,6 +100,7 @@
 - redis
 - release_evidence
 - release_orchestration
+- remote_development
 - requirements_management
 - review_apps
 - runbooks

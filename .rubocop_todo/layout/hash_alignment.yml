@@ -337,7 +337,7 @@ Layout/HashAlignment:
     - 'ee/app/helpers/ee/feature_flags_helper.rb'
     - 'ee/app/helpers/ee/sorting_helper.rb'
     - 'ee/app/models/allowed_email_domain.rb'
-    - 'ee/app/models/ci/minutes/quota.rb'
+    - 'ee/app/models/ci/minutes/usage.rb'
     - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/elastic/reindexing_task.rb'
     - 'ee/app/models/gitlab_subscriptions/features.rb'

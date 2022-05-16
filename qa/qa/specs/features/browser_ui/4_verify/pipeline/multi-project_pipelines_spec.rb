@@ -44,7 +44,7 @@ module QA
       end
 
       it(
-        'creates a multi-project pipeline',
+        'creates a multi-project pipeline with artifact download',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358064'
       ) do
         Page::Project::Pipeline::Show.perform do |show|
@@ -78,7 +78,10 @@ module QA
             job1:
               stage: test
               tags: ["#{executor}"]
-              script: echo 'done'
+              script: echo 'done' > output.txt
+              artifacts:
+                paths:
+                  - output.txt
 
             staging:
               stage: deploy
@@ -96,7 +99,12 @@ module QA
             "#{downstream_job_name}":
               stage: test
               tags: ["#{executor}"]
-              script: echo 'done'
+              needs:
+                - project: #{upstream_project.path_with_namespace}
+                  job: job1
+                  ref: main
+                  artifacts: true
+              script: cat output.txt
           YAML
         }
       end

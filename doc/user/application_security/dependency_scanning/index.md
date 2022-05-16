@@ -243,8 +243,8 @@ table.supported-languages ul {
       <td>C#</td>
     </tr>
     <tr>
-      <td rowspan="3">Python</td>
-      <td rowspan="3">3.9</td>
+      <td rowspan="4">Python</td>
+      <td rowspan="4">3.9</td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
       <td><code>setup.py</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -270,6 +270,12 @@ table.supported-languages ul {
             <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile.lock</code></a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup></li>
         </ul>
       </td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></td>
+      <td><code>poetry.lock</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>N</td>
     </tr>
@@ -312,6 +318,14 @@ table.supported-languages ul {
       Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.
     </p>
   </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
+    <p>
+      Support for <a href="https://python-poetry.org/">Poetry</a> projects with a <code>poetry.lock</code> file was [added in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/7006).
+      Support for projects without a <code>poetry.lock</code> file is tracked in issue:
+      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/32774">Poetry's pyproject.toml support for dependency scanning.</a>
+    </p>
+  </li>
 </ol>
 <!-- markdownlint-enable MD044 -->
 
@@ -328,13 +342,13 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 
 | Package Manager | Supported File Format Versions | Tested Versions                                                                                                                                                                                                                    |
 | ------          | ------                         | ------                                                                                                                                                                                                                             |
-| Bundler         | N/A                            | [1.17.3](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/ruby-bundler/main/Gemfile.lock#L118), [2.1.4](https://gitlab.com/gitlab-org/security-products/tests/ruby-bundler/-/blob/bundler2-FREEZE/Gemfile.lock#L118) |
-| Composer        | N/A                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/php-composer/main/composer.lock)                                                                                                                              |
-| Conan           | 0.4                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/c-conan/main/conan.lock)                                                                                                                                      |
-| Go              | N/A                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/main/go.sum)                                                                                                                                       |
-| NuGet           | v1                             | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/main/src/web.api/packages.lock.json#L2)                                                                                               |
-| npm             | v1, v2                         | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/main/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4)         |
-| yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/main/yarn.lock#L2)                                                                                                                                       |
+| Bundler         | N/A                            | [1.17.3](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/ruby-bundler/default/Gemfile.lock#L118), [2.1.4](https://gitlab.com/gitlab-org/security-products/tests/ruby-bundler/-/blob/bundler2-FREEZE/Gemfile.lock#L118) |
+| Composer        | N/A                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/php-composer/default/composer.lock)                                                                                                                              |
+| Conan           | 0.4                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/c-conan/default/conan.lock)                                                                                                                                      |
+| Go              | N/A                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/default/go.sum)                                                                                                                                       |
+| NuGet           | v1                             | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                               |j
+| npm             | v1, v2                         | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4)         |
+| yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/default/yarn.lock#L2)                                                                                                                                       |
 
 #### Obtaining dependency information by running a package manager to generate a parsable file
 
@@ -413,8 +427,14 @@ If you've run into problems while scanning multiple files, please contribute a c
 
 #### Python
 
-We only execute one installation in the directory where a requirements file has been detected, such as `requirements.txt` or any
-variation of this file (for example, `requirements.pip` or `requires.txt`).
+We only execute one installation in the directory where either a requirements file or a lock file has been detected. Dependencies are only analyzed by `gemnasium-python` for the first file that is detected. Files are searched for in the following order:
+
+1. `requirements.txt`, `requirements.pip`, or `requires.txt` for projects using Pip.
+1. `Pipfile` or `Pipfile.lock` for projects using Pipenv.
+1. `poetry.lock` for projects using Poetry.
+1. `setup.py` for project using Setuptools.
+
+The search begins with the root directory and then continues with subdirectories if no builds are found in the root directory. Consequently a Poetry lock file in the root directory would be detected before a Pipenv file in a subdirectory.
 
 #### Java and Scala
 
@@ -448,15 +468,13 @@ From GitLab 14.8 the `gemnasium` analyzer scans supported JavaScript projects fo
 
 The analyzer for these languages supports multiple lockfiles.
 
-### Support for additional languages
+#### Support for additional languages
 
 Support for additional languages, dependency managers, and dependency files are tracked in the following issues:
 
 | Package Managers    | Languages | Supported files | Scan tools | Issue |
 | ------------------- | --------- | --------------- | ---------- | ----- |
-| [Poetry](https://python-poetry.org/) | Python | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
-
-For workarounds, see the [Troubleshooting section](#troubleshooting).
+| [Poetry](https://python-poetry.org/) | Python | `pyproject.toml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) | [GitLab#32774](https://gitlab.com/gitlab-org/gitlab/-/issues/32774) |
 
 ## Contribute your scanner
 
@@ -1088,9 +1106,8 @@ Generally, the approach is the following:
 1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/index.md#dependencies)
    to your `dependency_scanning` job to make use of the converted definitions files.
 
-For example, the unsupported `poetry.lock` file can be
-[converted](https://python-poetry.org/docs/cli/#export)
-to the supported `requirements.txt` as follows.
+For example, Poetry projects that _only_ have a `pyproject.toml`
+file can generate the `poetry.lock` file as follows.
 
 ```yaml
 include:
@@ -1099,15 +1116,11 @@ include:
 stages:
   - test
 
-variables:
-  PIP_REQUIREMENTS_FILE: "requirements-converted.txt"
-
 gemnasium-python-dependency_scanning:
-  # Work around https://gitlab.com/gitlab-org/gitlab/-/issues/7006
+  # Work around https://gitlab.com/gitlab-org/gitlab/-/issues/32774
   before_script:
-    - pip install poetry  # Or via another method: https://python-poetry.org/docs/#installation
-    - poetry export --output="$PIP_REQUIREMENTS_FILE"
-    - rm poetry.lock pyproject.toml
+    - pip install "poetry>=1,<2"  # Or via another method: https://python-poetry.org/docs/#installation
+    - poetry update --lock # Generates the lock file to be analyzed.
 ```
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`

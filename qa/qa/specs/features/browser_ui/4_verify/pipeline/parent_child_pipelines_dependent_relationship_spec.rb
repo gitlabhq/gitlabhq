@@ -60,7 +60,14 @@ module QA
             child_job:
               stage: test
               tags: ["#{project.name}"]
-              script: echo "Child job done!"
+              needs:
+                - project: #{project.path_with_namespace}
+                  job: job1
+                  ref: main
+                  artifacts: true
+              script:
+                - cat output.txt
+                - echo "Child job done!"
 
           YAML
         }
@@ -84,18 +91,28 @@ module QA
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             stages:
+              - build
               - test
               - deploy
 
+            default:
+              tags: ["#{project.name}"]
+
             job1:
+              stage: build
+              script: echo "build success" > output.txt
+              artifacts:
+                paths:
+                  - output.txt
+
+            job2:
               stage: test
               trigger:
                 include: ".child-ci.yml"
                 strategy: depend
 
-            job2:
+            job3:
               stage: deploy
-              tags: ["#{project.name}"]
               script: echo "parent deploy done"
 
           YAML

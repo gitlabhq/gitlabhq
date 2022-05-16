@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Concern for handling deprecation arguments.
-# https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-fields-and-enum-values
+# https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-schema-items
 module GitlabStyleDeprecations
   extend ActiveSupport::Concern
 
@@ -11,7 +11,7 @@ module GitlabStyleDeprecations
   def gitlab_deprecation(kwargs)
     if kwargs[:deprecation_reason].present?
       raise ArgumentError, 'Use `deprecated` property instead of `deprecation_reason`. ' \
-                           'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-fields-arguments-and-enum-values'
+                           'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-schema-items'
     end
 
     deprecation = ::Gitlab::Graphql::Deprecation.parse(kwargs.delete(:deprecated))

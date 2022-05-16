@@ -88,6 +88,7 @@ describe('DiscussionCounter component', () => {
       'changes background color to $color if blocksMerge is $blocksMerge',
       ({ blocksMerge, color }) => {
         updateStore();
+        store.state.unresolvedDiscussionsCount = 1;
         wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge } });
 
         expect(wrapper.find('[data-testid="discussions-counter-text"]').classes()).toContain(color);

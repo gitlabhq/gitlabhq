@@ -74,8 +74,8 @@ describe('SignInPage', () => {
 
     describe('when sign-in-oauth event is emitted', () => {
       it('emits another sign-in-oauth event', () => {
-        findSignInGitlabCom().vm.$emit('sign-in-oauth', 'test');
-        expect(wrapper.emitted('sign-in-oauth')[0][0]).toBe('test');
+        findSignInGitlabCom().vm.$emit('sign-in-oauth');
+        expect(wrapper.emitted('sign-in-oauth')[0]).toEqual([]);
       });
     });
   });

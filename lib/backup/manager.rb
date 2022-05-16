@@ -9,6 +9,11 @@ module Backup
     # if some of these files are still there, we don't need them in the backup
     LEGACY_PAGES_TMP_PATH = '@pages.tmp'
 
+    LIST_ENVS = {
+      skipped: 'SKIP',
+      repositories_storages: 'REPOSITORIES_STORAGES'
+    }.freeze
+
     TaskDefinition = Struct.new(
       :enabled, # `true` if the task can be used. Treated as `true` when not specified.
       :human_name, # Name of the task used for logging.
@@ -32,7 +37,7 @@ module Backup
         Feature.enabled?(:incremental_repository_backup) &&
         Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
 
-      @definitions = definitions || build_definitions
+      @definitions = definitions
     end
 
     def create
@@ -43,7 +48,9 @@ module Backup
         update_backup_information
       end
 
-      @definitions.keys.each do |task_name|
+      build_backup_information
+
+      definitions.keys.each do |task_name|
         run_create_task(task_name)
       end
 
@@ -65,9 +72,9 @@ module Backup
     end
 
     def run_create_task(task_name)
-      definition = @definitions[task_name]
-
       build_backup_information
+
+      definition = definitions[task_name]
 
       unless definition.enabled?
         puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
@@ -92,7 +99,7 @@ module Backup
       read_backup_information
       verify_backup_version
 
-      @definitions.keys.each do |task_name|
+      definitions.keys.each do |task_name|
         run_restore_task(task_name) if !skipped?(task_name) && enabled_task?(task_name)
       end
 
@@ -111,7 +118,9 @@ module Backup
     end
 
     def run_restore_task(task_name)
-      definition = @definitions[task_name]
+      read_backup_information
+
+      definition = definitions[task_name]
 
       unless definition.enabled?
         puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
@@ -142,6 +151,10 @@ module Backup
     end
 
     private
+
+    def definitions
+      @definitions ||= build_definitions
+    end
 
     def build_definitions
       {
@@ -212,7 +225,7 @@ module Backup
       max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
       strategy = Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
 
-      Repositories.new(progress, strategy: strategy)
+      Repositories.new(progress, strategy: strategy, storages: repositories_storages)
     end
 
     def build_files_task(app_files_dir, excludes: [])
@@ -245,7 +258,8 @@ module Backup
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
-        skipped: ENV["SKIP"]
+        skipped: ENV['SKIP'],
+        repositories_storages: ENV['REPOSITORIES_STORAGES']
       }
     end
 
@@ -256,7 +270,9 @@ module Backup
         backup_created_at: Time.zone.now,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
-        installation_type: Gitlab::INSTALLATION_TYPE
+        installation_type: Gitlab::INSTALLATION_TYPE,
+        skipped: list_env(:skipped).join(','),
+        repositories_storages: list_env(:repositories_storages).join(',')
       )
     end
 
@@ -309,7 +325,7 @@ module Backup
       puts_time "Deleting tar staging files ... ".color(:blue)
 
       remove_backup_path(MANIFEST_NAME)
-      @definitions.each do |_, definition|
+      definitions.each do |_, definition|
         remove_backup_path(definition.cleanup_path || definition.destination_path)
       end
 
@@ -443,12 +459,26 @@ module Backup
     end
 
     def skipped?(item)
-      ENV.fetch('SKIP', '').include?(item) ||
-        backup_information[:skipped] && backup_information[:skipped].include?(item)
+      skipped.include?(item)
+    end
+
+    def skipped
+      @skipped ||= list_env(:skipped)
+    end
+
+    def repositories_storages
+      @repositories_storages ||= list_env(:repositories_storages)
+    end
+
+    def list_env(name)
+      list = ENV.fetch(LIST_ENVS[name], '').split(',')
+      list += backup_information[name].split(',') if backup_information[name]
+      list.uniq!
+      list
     end
 
     def enabled_task?(task_name)
-      @definitions[task_name].enabled?
+      definitions[task_name].enabled?
     end
 
     def backup_file?(file)
@@ -503,7 +533,7 @@ module Backup
     end
 
     def backup_contents
-      [MANIFEST_NAME] + @definitions.reject do |name, definition|
+      [MANIFEST_NAME] + definitions.reject do |name, definition|
         skipped?(name) || !enabled_task?(name) ||
           (definition.destination_optional && !File.exist?(File.join(backup_path, definition.destination_path)))
       end.values.map(&:destination_path)

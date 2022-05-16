@@ -561,7 +561,7 @@ This same warning is displayed when:
 The default value for `allow_failure` is:
 
 - `true` for [manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
-- `false` for manual jobs that also use [`rules`](#rules).
+- `false` for jobs that use `when: manual` inside [`rules`](#rules).
 - `false` in all other cases.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.

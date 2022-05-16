@@ -97,7 +97,7 @@ discussed in [Nullable fields](#nullable-fields).
 Fields that use the [`feature_flag` property](#feature_flag-property) and the flag is disabled by default are exempt
 from the deprecation process, and can be removed at any time without notice.
 
-See the [deprecating fields, arguments, and enum values](#deprecating-fields-arguments-and-enum-values) section for how to deprecate items.
+See the [deprecating schema items](#deprecating-schema-items) section for how to deprecate items.
 
 ## Global IDs
 
@@ -540,18 +540,18 @@ def foo
 end
 ```
 
-## Deprecating fields, arguments, and enum values
+## Deprecating schema items
 
 The GitLab GraphQL API is versionless, which means we maintain backwards
 compatibility with older versions of the API with every change.
 
-Rather than removing fields, arguments, or [enum values](#enums), they
-must be _deprecated_ instead.
+Rather than removing fields, arguments, [enum values](#enums), or [mutations](#mutations),
+they must be _deprecated_ instead.
 
 The deprecated parts of the schema can then be removed in a future release
 in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-and-removal-process).
 
-Fields, arguments, and enum values are deprecated using the `deprecated` property.
+Fields, arguments, enum values, and mutations are deprecated using the `deprecated` property.
 The value of the property is a `Hash` of:
 
 - `reason` - Reason for the deprecation.
@@ -748,7 +748,7 @@ end
 ```
 
 Enum values can be deprecated using the
-[`deprecated` keyword](#deprecating-fields-arguments-and-enum-values).
+[`deprecated` keyword](#deprecating-schema-items).
 
 ### Defining GraphQL enums dynamically from Rails enums
 
@@ -1713,7 +1713,7 @@ mount_aliased_mutation 'BarMutation', Mutations::FooMutation
 ```
 
 This allows us to rename a mutation and continue to support the old name,
-when coupled with the [`deprecated`](#deprecating-fields-arguments-and-enum-values)
+when coupled with the [`deprecated`](#deprecating-schema-items)
 argument.
 
 Example:

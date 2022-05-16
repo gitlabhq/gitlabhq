@@ -6,17 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
-Gitlab/PolicyRuleBoolean:
-  Exclude:
-    - 'ee/app/policies/ee/identity_provider_policy.rb'
-
-# Configuration parameters: Include.
-# Include: db/migrate/*.rb
-Rails/CreateTableWithTimestamps:
-  Enabled: false
-
-# Offense count: 354
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
 Rails/HasManyOrHasOneDependent:
@@ -25,11 +14,4 @@ Rails/HasManyOrHasOneDependent:
 # Offense count: 42
 # Cop supports --auto-correct.
 Style/CaseLikeIf:
-  Enabled: false
-
-# Offense count: 205
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: compact, expanded
-Style/EmptyMethod:
   Enabled: false

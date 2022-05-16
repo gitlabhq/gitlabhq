@@ -31,11 +31,11 @@
           = sprite_icon('chevron-double-lg-left')
 
     .detail-page-header-actions.js-issuable-actions{ class: "#{'gl-align-self-start is-merge-request' if updated_mr_header_enabled}" }
-      - if @merge_request.source_project
-        = render 'projects/merge_requests/code_dropdown'
-
       - if can_update_merge_request
         = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
+
+      - if @merge_request.source_project
+        = render 'projects/merge_requests/code_dropdown'
 
       - if current_user
         = render 'projects/merge_requests/close_reopen_draft_report_toggle'

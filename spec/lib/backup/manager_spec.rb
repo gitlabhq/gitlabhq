@@ -853,6 +853,7 @@ RSpec.describe Backup::Manager do
             ]
           )
           allow(File).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'backup_information.yml')).and_return(true)
+          stub_env('SKIP', 'something')
         end
 
         after do
@@ -872,7 +873,7 @@ RSpec.describe Backup::Manager do
             backup_created_at: backup_time,
             full_backup_id: full_backup_id,
             gitlab_version: Gitlab::VERSION,
-            skipped: 'tar'
+            skipped: 'something,tar'
           )
         end
 

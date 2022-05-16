@@ -85,7 +85,7 @@ voters to agree.
 When features are deprecated and removed, update the related documentation.
 
 API documentation follows these guidelines, but the GraphQL docs use
-a [separate process](../api_graphql_styleguide.md#deprecating-fields-arguments-and-enum-values).
+a [separate process](../api_graphql_styleguide.md#deprecating-schema-items).
 
 ### Deprecate a page or topic
 

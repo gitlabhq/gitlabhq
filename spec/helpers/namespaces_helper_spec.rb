@@ -269,9 +269,9 @@ RSpec.describe NamespacesHelper do
     end
   end
 
-  describe '#pipeline_usage_quota_app_data' do
+  describe '#pipeline_usage_app_data' do
     it 'returns a hash with necessary data for the frontend' do
-      expect(helper.pipeline_usage_quota_app_data(user_group)).to eql({
+      expect(helper.pipeline_usage_app_data(user_group)).to eql({
         namespace_actual_plan_name: user_group.actual_plan_name,
         namespace_path: user_group.full_path,
         namespace_id: user_group.id,

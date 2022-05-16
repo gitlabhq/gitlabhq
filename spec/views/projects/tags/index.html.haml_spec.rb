@@ -27,7 +27,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
   it 'renders links to the Releases page for tags associated with a release' do
     render
-    expect(rendered).to have_link(release.name, href: project_release_path(project, release.tag))
+    expect(rendered).to have_link(release.name, href: project_releases_path(project, anchor: release.tag))
   end
 
   context 'when the most recent build for a tag has artifacts' do
