@@ -291,6 +291,22 @@ changes to your code, settings, or workflow.
 Allowing expired personal access tokens to be used is unusual from a security perspective and could create unusual situations where an
 expired key is unintentionally able to be used. Unexpected behavior in a security feature is inherently dangerous and so we now do not let expired personal access tokens be used.
 
+### Out-of-the-box SAST (SpotBugs) support for Java 8
+
+The [GitLab SAST SpotBugs analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) scans [Java, Scala, Groovy, and Kotlin code](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks) for security vulnerabilities.
+For technical reasons, the analyzer must first compile the code before scanning.
+Unless you use the [pre-compilation strategy](https://docs.gitlab.com/ee/user/application_security/sast/#pre-compilation), the analyzer attempts to automatically compile your project's code.
+
+In GitLab versions prior to 15.0, the analyzer image included Java 8 and Java 11 runtimes to facilitate compilation.
+
+As of GitLab 15.0, we've:
+
+- Removed Java 8 from the analyzer image to reduce the size of the image.
+- Added Java 17 to the analyzer image to make it easier to compile with Java 17.
+- Changed the default Java version from Java 8 to Java 17.
+
+If you rely on Java 8 being present in the analyzer environment, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352549#breaking-change).
+
 ### Pseudonymizer
 
 WARNING:
