@@ -56,7 +56,7 @@ export default {
       });
     },
     runnerId() {
-      const { id, short_sha: token, description } = this.job?.runner;
+      const { id, short_sha: token, description } = this.job.runner;
 
       return `#${id} (${token}) ${description}`;
     },

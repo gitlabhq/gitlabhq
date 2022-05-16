@@ -30,7 +30,7 @@ export const getMarkdownSource = (element) => {
 
   for (let i = range.start.row; i <= range.end.row; i += 1) {
     if (i === range.start.row) {
-      elSource += source[i]?.substring(range.start.col);
+      elSource += source[i].substring(range.start.col);
     } else if (i === range.end.row) {
       elSource += `\n${source[i]?.substring(0, range.start.col)}`;
     } else {

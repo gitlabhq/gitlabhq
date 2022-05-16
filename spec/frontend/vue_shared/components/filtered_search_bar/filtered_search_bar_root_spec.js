@@ -232,9 +232,7 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('initializes `recentSearchesPromise` prop with a promise by using `recentSearchesService.fetch()`', () => {
-        jest
-          .spyOn(wrapper.vm.recentSearchesService, 'fetch')
-          .mockReturnValue(new Promise(() => []));
+        jest.spyOn(wrapper.vm.recentSearchesService, 'fetch').mockResolvedValue([]);
 
         wrapper.vm.setupRecentSearch();
 

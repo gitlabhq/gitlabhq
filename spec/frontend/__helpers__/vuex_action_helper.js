@@ -93,8 +93,13 @@ export default (
     payload,
   );
 
-  // eslint-disable-next-line no-restricted-syntax
-  return (result || new Promise((resolve) => setImmediate(resolve)))
+  return (
+    result ||
+    new Promise((resolve) => {
+      // eslint-disable-next-line no-restricted-syntax
+      setImmediate(resolve);
+    })
+  )
     .catch((error) => {
       validateResults();
       throw error;

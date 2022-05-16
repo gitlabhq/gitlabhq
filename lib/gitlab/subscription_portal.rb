@@ -79,7 +79,7 @@ module Gitlab
     end
 
     def self.renewal_service_email
-      'renewals-support@gitlab.com'
+      'renewals-service@customers.gitlab.com'
     end
   end
 end

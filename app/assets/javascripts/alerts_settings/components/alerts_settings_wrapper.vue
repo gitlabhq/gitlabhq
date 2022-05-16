@@ -196,7 +196,7 @@ export default {
         .then(
           ({ data: { httpIntegrationResetToken, prometheusIntegrationResetToken } = {} } = {}) => {
             const [error] =
-              httpIntegrationResetToken?.errors || prometheusIntegrationResetToken?.errors;
+              httpIntegrationResetToken?.errors || prometheusIntegrationResetToken.errors;
             if (error) {
               return createFlash({ message: error });
             }

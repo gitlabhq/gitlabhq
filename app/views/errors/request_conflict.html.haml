@@ -1,0 +1,18 @@
+- message = local_assigns.fetch(:message, nil)
+- content_for(:title, 'Request Conflict')
+
+%img{ :alt => "", :src => image_path('logo.svg') }
+%h1
+  409
+.container
+  %h2
+    = s_("409|There was a conflict with your request.")
+  - if message
+    %p
+      = message
+  %p
+    = s_('409|Please contact your GitLab administrator if you think this is a mistake.')
+  .action-container.js-go-back{ hidden: true }
+    %button{ type: 'button', class: 'gl-button btn btn-primary' }
+      = _('Go Back')
+= render "errors/footer"

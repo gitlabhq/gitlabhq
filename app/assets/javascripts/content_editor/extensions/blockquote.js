@@ -26,7 +26,7 @@ export default Blockquote.extend({
     const multilineInputRegex = /^\s*>>>\s$/gm;
 
     return [
-      ...this.parent?.(),
+      ...this.parent(),
       wrappingInputRule({
         find: multilineInputRegex,
         type: this.type,

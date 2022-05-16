@@ -170,7 +170,6 @@ export default class CreateMergeRequestDropdown {
   createMergeRequest() {
     return new Promise(() => {
       this.isCreatingMergeRequest = true;
-
       return this.createBranch().then(() => {
         let path = canCreateConfidentialMergeRequest()
           ? this.createMrPath.replace(

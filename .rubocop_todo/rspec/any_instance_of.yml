@@ -107,7 +107,6 @@ RSpec/AnyInstanceOf:
   - ee/spec/services/groups/destroy_service_spec.rb
   - ee/spec/services/groups/update_service_spec.rb
   - ee/spec/services/merge_trains/check_status_service_spec.rb
-  - ee/spec/services/network_policies/resources_service_spec.rb
   - ee/spec/services/projects/destroy_service_spec.rb
   - ee/spec/services/projects/group_links/destroy_service_spec.rb
   - ee/spec/services/projects/update_service_spec.rb

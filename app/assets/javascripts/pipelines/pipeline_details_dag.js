@@ -17,7 +17,7 @@ const createDagApp = (apolloProvider) => {
     emptySvgPath,
     pipelineProjectPath,
     pipelineIid,
-  } = el?.dataset;
+  } = el.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({

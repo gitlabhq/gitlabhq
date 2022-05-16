@@ -12,7 +12,7 @@ import { isObject } from './type_utility';
 import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => {
-  const { page = '' } = document?.body?.dataset;
+  const { page = '' } = document.body.dataset;
   return page.split(':')[index];
 };
 
@@ -105,7 +105,7 @@ export const handleLocationHash = () => {
   }
 
   if (isInIssuePage()) {
-    adjustment -= fixedIssuableTitle?.offsetHeight;
+    adjustment -= fixedIssuableTitle.offsetHeight;
   }
 
   if (isInMRPage()) {

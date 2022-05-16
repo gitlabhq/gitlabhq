@@ -254,7 +254,9 @@ describe('Actions Notes Store', () => {
         jest.advanceTimersByTime(time);
       }
 
-      return new Promise((resolve) => requestAnimationFrame(resolve));
+      return new Promise((resolve) => {
+        requestAnimationFrame(resolve);
+      });
     };
     const advanceXMoreIntervals = async (number) => {
       const timeoutLength = pollInterval * number;

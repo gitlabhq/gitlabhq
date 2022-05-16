@@ -853,7 +853,7 @@ A full list of variables can be found in [CI/CD variables](#available-cicd-varia
 To find out what tools are pre-installed in the `license_scanning` Docker image use the following command:
 
 ```shell
-$ docker run --entrypoint='' registry.gitlab.com/security-products/license-finder:3 /bin/bash -lc 'asdf list'
+$ docker run --entrypoint='' registry.gitlab.com/security-products/license-finder:4 /bin/bash -lc 'asdf list'
 golang
   1.14
 gradle
@@ -880,7 +880,7 @@ sbt
 To interact with the `license_scanning` runtime environment use the following command:
 
 ```shell
-$ docker run -it --entrypoint='' registry.gitlab.com/security-products/license-finder:3 /bin/bash -l
+$ docker run -it --entrypoint='' registry.gitlab.com/security-products/license-finder:4 /bin/bash -l
 root@6abb70e9f193:~#
 ```
 

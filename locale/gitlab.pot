@@ -1473,7 +1473,7 @@ msgstr ""
 msgid "1st contribution!"
 msgstr ""
 
-msgid "2. Before July 1, 2022, all free tier public open source projects will need to %{enrollment_link} to continue to receive GitLab Ultimate benefits."
+msgid "2. Before July 1, 2022, all free tier public open source projects must %{enrollment_link} to continue to receive GitLab Ultimate benefits."
 msgstr ""
 
 msgid "20-29 contributions"
@@ -1513,6 +1513,12 @@ msgid "404|Page Not Found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "409|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "409|There was a conflict with your request."
 msgstr ""
 
 msgid "7 days"
@@ -16180,6 +16186,9 @@ msgstr ""
 msgid "For more information, go to the "
 msgstr ""
 
+msgid "For more information, see the %{faq_link}."
+msgstr ""
+
 msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
@@ -16565,6 +16574,9 @@ msgstr ""
 msgid "Geo|Filter by status"
 msgstr ""
 
+msgid "Geo|Full details"
+msgstr ""
+
 msgid "Geo|Geo Settings"
 msgstr ""
 
@@ -16680,9 +16692,6 @@ msgid "Geo|Object Storage replication"
 msgstr ""
 
 msgid "Geo|Offline"
-msgstr ""
-
-msgid "Geo|Open replications"
 msgstr ""
 
 msgid "Geo|Pending synchronization"
@@ -25110,18 +25119,6 @@ msgstr ""
 msgid "Network:"
 msgstr ""
 
-msgid "NetworkPolicies|Environment does not have deployment platform"
-msgstr ""
-
-msgid "NetworkPolicies|Invalid or empty policy"
-msgstr ""
-
-msgid "NetworkPolicies|Invalid or unsupported policy kind"
-msgstr ""
-
-msgid "NetworkPolicies|Kubernetes error: %{error}"
-msgstr ""
-
 msgid "NetworkPolicy|Policy"
 msgstr ""
 
@@ -28490,9 +28487,6 @@ msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
 msgstr ""
 
 msgid "Please use this form to report to the admin users who create spam issues, comments or behave inappropriately."
-msgstr ""
-
-msgid "Please visit the %{faq_link} for more information."
 msgstr ""
 
 msgid "Please wait a moment, this page will automatically refresh when ready."
@@ -43160,6 +43154,9 @@ msgstr ""
 msgid "You can group test cases using labels. To learn about the future direction of this feature, visit %{linkStart}Quality Management direction page%{linkEnd}."
 msgstr ""
 
+msgid "You can have a maximum of %{free_limit} unique members across all of your personal projects. To view and manage members, check the members page for each project in your namespace. We recommend you %{move_link_start}move your projects to a group%{move_link_end} so you can easily manage users and features."
+msgstr ""
+
 msgid "You can invite a new member to %{project_name} or invite another group."
 msgstr ""
 
@@ -43589,6 +43586,9 @@ msgid "You're receiving this email because you have been mentioned on %{host}."
 msgstr ""
 
 msgid "You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication."
+msgstr ""
+
+msgid "You've reached your %{free_limit} member limit across all your personal projects"
 msgstr ""
 
 msgid "You've rejected %{user}"
