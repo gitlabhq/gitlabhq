@@ -105,18 +105,21 @@ Prerequisites:
 
 - The custom Docker registry must provide images for all the official analyzers.
 
+NOTE:
+This variable affects all Secure analyzers, not just the analyzers for SAST.
+
 To have GitLab download the analyzers' images from a custom Docker registry, define the prefix with
 the `SECURE_ANALYZERS_PREFIX` CI/CD variable.
 
-For example, the following instructs SAST to pull `my-docker-registry/gl-images/sast/bandit` instead
-of `registry.gitlab.com/security-products/sast/bandit`:
+For example, the following instructs SAST to pull `my-docker-registry/gitlab-images/bandit` instead
+of `registry.gitlab.com/security-products/bandit`:
 
 ```yaml
 include:
   - template: Security/SAST.gitlab-ci.yml
 
 variables:
-  SECURE_ANALYZERS_PREFIX: my-docker-registry/gl-images
+  SECURE_ANALYZERS_PREFIX: my-docker-registry/gitlab-images
 ```
 
 ### Disable all default analyzers

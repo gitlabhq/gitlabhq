@@ -900,9 +900,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
-      changes: *feature-flag-development-config-patterns
-      when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request

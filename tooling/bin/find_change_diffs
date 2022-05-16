@@ -33,6 +33,8 @@ end
 Gitlab.merge_request_changes(mr_project_path, mr_iid).changes.each do |change|
   next if change['diff'].empty?
 
-  output_diffs_dir.join(File.dirname(change['new_path'])).mkpath
-  output_diffs_dir.join("#{change['new_path']}.diff").write(change['diff'])
+  ext = change['deleted_file'] ? ".deleted.diff" : ".diff"
+  new_path = output_diffs_dir.join("#{change['new_path']}#{ext}")
+  new_path.dirname.mkpath
+  new_path.write(change['diff'])
 end

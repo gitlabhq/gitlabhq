@@ -42,6 +42,8 @@ module QA
               enable(flag, **scopes)
             when 'disabled', 'disable', 'false', 0, false
               disable(flag, **scopes)
+            when 'deleted'
+              QA::Runtime::Logger.info("Feature flag definition for '#{flag}' was deleted. The state of the feature flag has not been changed.")
             else
               raise UnknownStateError, "Unknown feature flag state: #{state}"
             end

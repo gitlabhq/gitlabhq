@@ -982,19 +982,19 @@ import the following default SAST analyzer images from `registry.gitlab.com` int
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/sast/bandit:2
-registry.gitlab.com/security-products/sast/brakeman:2
-registry.gitlab.com/security-products/sast/eslint:2
-registry.gitlab.com/security-products/sast/flawfinder:2
-registry.gitlab.com/security-products/sast/gosec:3
-registry.gitlab.com/security-products/sast/kubesec:2
-registry.gitlab.com/security-products/sast/nodejs-scan:2
-registry.gitlab.com/security-products/sast/phpcs-security-audit:2
-registry.gitlab.com/security-products/sast/pmd-apex:2
-registry.gitlab.com/security-products/sast/security-code-scan:2
-registry.gitlab.com/security-products/sast/semgrep:2
-registry.gitlab.com/security-products/sast/sobelow:2
-registry.gitlab.com/security-products/sast/spotbugs:2
+registry.gitlab.com/security-products/bandit:2
+registry.gitlab.com/security-products/brakeman:2
+registry.gitlab.com/security-products/eslint:2
+registry.gitlab.com/security-products/flawfinder:2
+registry.gitlab.com/security-products/gosec:3
+registry.gitlab.com/security-products/kubesec:2
+registry.gitlab.com/security-products/nodejs-scan:2
+registry.gitlab.com/security-products/phpcs-security-audit:2
+registry.gitlab.com/security-products/pmd-apex:2
+registry.gitlab.com/security-products/security-code-scan:2
+registry.gitlab.com/security-products/semgrep:2
+registry.gitlab.com/security-products/sobelow:2
+registry.gitlab.com/security-products/spotbugs:2
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
