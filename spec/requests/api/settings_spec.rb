@@ -55,6 +55,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
       expect(json_response['max_export_size']).to eq(0)
+      expect(json_response['pipeline_limit_per_project_user_sha']).to eq(0)
     end
   end
 
@@ -737,6 +738,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
           'group_runner_token_expiration_interval' => nil,
           'project_runner_token_expiration_interval' => nil
         )
+      end
+    end
+
+    context 'with pipeline_limit_per_project_user_sha' do
+      it 'updates the settings' do
+        put api("/application/settings", admin), params: {
+          pipeline_limit_per_project_user_sha: 25
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'pipeline_limit_per_project_user_sha' => 25
+        )
+      end
+
+      it 'updates the settings with zero value' do
+        put api("/application/settings", admin), params: {
+          pipeline_limit_per_project_user_sha: 0
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'pipeline_limit_per_project_user_sha' => 0
+        )
+      end
+
+      it 'does not allow null values' do
+        put api("/application/settings", admin), params: {
+          pipeline_limit_per_project_user_sha: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['pipeline_limit_per_project_user_sha'])
+          .to include(a_string_matching('is not a number'))
       end
     end
   end

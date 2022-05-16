@@ -268,7 +268,10 @@ export default {
         : '';
     },
     statusIcon() {
-      return this.isClosed ? 'issue-closed' : 'issues';
+      if (this.issuableType === IssuableType.Issue) {
+        return this.isClosed ? 'issue-closed' : 'issues';
+      }
+      return this.isClosed ? 'epic-closed' : 'epic';
     },
     statusVariant() {
       return this.isClosed ? 'info' : 'success';

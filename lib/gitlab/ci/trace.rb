@@ -74,11 +74,11 @@ module Gitlab
       end
 
       def exist?
-        archived_trace_exist? || live_trace_exist?
+        archived? || live_trace_exist?
       end
 
-      def archived_trace_exist?
-        archived?
+      def archived?
+        trace_artifact&.stored?
       end
 
       def live_trace_exist?
@@ -216,10 +216,6 @@ module Gitlab
             job.erase_old_trace!
           end
         end
-      end
-
-      def archived?
-        trace_artifact&.stored?
       end
 
       def destroy_any_orphan_trace_data!

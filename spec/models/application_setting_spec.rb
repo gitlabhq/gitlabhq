@@ -136,6 +136,12 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value(10.5).for(:raw_blob_request_limit) }
     it { is_expected.not_to allow_value(-1).for(:raw_blob_request_limit) }
 
+    it { is_expected.to allow_value(0).for(:pipeline_limit_per_project_user_sha) }
+    it { is_expected.not_to allow_value('abc').for(:pipeline_limit_per_project_user_sha) }
+    it { is_expected.not_to allow_value(nil).for(:pipeline_limit_per_project_user_sha) }
+    it { is_expected.not_to allow_value(10.5).for(:pipeline_limit_per_project_user_sha) }
+    it { is_expected.not_to allow_value(-1).for(:pipeline_limit_per_project_user_sha) }
+
     it { is_expected.not_to allow_value(false).for(:hashed_storage_enabled) }
 
     it { is_expected.to allow_value('default' => 0).for(:repository_storages_weighted) }

@@ -302,6 +302,7 @@ export default {
         @click="handleFileNameClick"
       >
         <file-icon
+          v-if="!glFeatures.removeDiffHeaderIcons"
           :file-name="filePath"
           :size="16"
           aria-hidden="true"

@@ -376,14 +376,12 @@ span.idiff {
   a {
     color: $gl-text-color;
   }
+}
 
-  @include media-breakpoint-down(md) {
-    .file-actions {
-      margin-top: $gl-padding-8;
-
-      .btn {
-        margin-bottom: $gl-padding-8;
-      }
+.blob-content-holder .file-actions {
+  @include media-breakpoint-down(sm) {
+    .btn {
+      margin-bottom: $gl-padding-8;
     }
   }
 }

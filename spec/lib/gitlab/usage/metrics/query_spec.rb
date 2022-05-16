@@ -11,6 +11,22 @@ RSpec.describe Gitlab::Usage::Metrics::Query do
     it 'does not mix a nil column with keyword arguments' do
       expect(described_class.for(:count, User, nil)).to eq('SELECT COUNT("users"."id") FROM "users"')
     end
+
+    it 'removes order from passed relation' do
+      expect(described_class.for(:count, User.order(:email), nil)).to eq('SELECT COUNT("users"."id") FROM "users"')
+    end
+
+    it 'returns valid raw SQL for join relations' do
+      expect(described_class.for(:count, User.joins(:issues), :email)).to eq(
+        'SELECT COUNT("users"."email") FROM "users" INNER JOIN "issues" ON "issues"."author_id" = "users"."id"'
+      )
+    end
+
+    it 'returns valid raw SQL for join relations with joined columns' do
+      expect(described_class.for(:count, User.joins(:issues), 'issue.weight')).to eq(
+        'SELECT COUNT("issue"."weight") FROM "users" INNER JOIN "issues" ON "issues"."author_id" = "users"."id"'
+      )
+    end
   end
 
   describe '.distinct_count' do
@@ -20,6 +36,22 @@ RSpec.describe Gitlab::Usage::Metrics::Query do
 
     it 'does not mix a nil column with keyword arguments' do
       expect(described_class.for(:distinct_count, Issue, nil)).to eq('SELECT COUNT(DISTINCT "issues"."id") FROM "issues"')
+    end
+
+    it 'removes order from passed relation' do
+      expect(described_class.for(:distinct_count, User.order(:email), nil)).to eq('SELECT COUNT(DISTINCT "users"."id") FROM "users"')
+    end
+
+    it 'returns valid raw SQL for join relations' do
+      expect(described_class.for(:distinct_count, User.joins(:issues), :email)).to eq(
+        'SELECT COUNT(DISTINCT "users"."email") FROM "users" INNER JOIN "issues" ON "issues"."author_id" = "users"."id"'
+      )
+    end
+
+    it 'returns valid raw SQL for join relations with joined columns' do
+      expect(described_class.for(:distinct_count, User.joins(:issues), 'issue.weight')).to eq(
+        'SELECT COUNT(DISTINCT "issue"."weight") FROM "users" INNER JOIN "issues" ON "issues"."author_id" = "users"."id"'
+      )
     end
   end
 

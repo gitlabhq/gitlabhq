@@ -256,6 +256,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :raw_blob_request_limit,
       :issues_create_limit,
       :notes_create_limit,
+      :pipeline_limit_per_project_user_sha,
       :default_branch_name,
       disabled_oauth_sign_in_sources: [],
       import_sources: [],

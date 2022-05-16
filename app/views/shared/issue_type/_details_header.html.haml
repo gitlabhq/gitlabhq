@@ -1,4 +1,4 @@
-- link = issue_closed_link(@issue, current_user, css_class: 'text-white text-underline')
+- link = issue_closed_link(@issue, current_user, css_class: 'text-underline gl-reset-color!')
 - badge_classes = 'issuable-status-badge gl-mr-3'
 
 .detail-page-header
@@ -7,7 +7,7 @@
       .gl-display-none.gl-sm-display-block.gl-ml-2
         = issue_closed_text(issuable, current_user)
         - if link
-          %span.text-white.gl-pl-2.gl-sm-display-none
+          %span.gl-pl-2.gl-sm-display-none
             = "(#{link})"
     = gl_badge_tag({ variant: :success, icon: 'issues', icon_classes: 'gl-mr-0!' }, { class: "#{issue_status_visibility(issuable, status_box: :open)} #{badge_classes} issuable-status-badge-open" }) do
       %span.gl-display-none.gl-sm-display-block.gl-ml-2

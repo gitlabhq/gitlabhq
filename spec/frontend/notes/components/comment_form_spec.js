@@ -257,7 +257,7 @@ describe('issue_comment_form component', () => {
           ({ confidential, placeholder }) => {
             mountComponent({
               mountFunction: mount,
-              noteableData: createNotableDataMock({ confidential }),
+              initialData: { noteIsConfidential: confidential },
             });
 
             expect(findTextArea().attributes('placeholder')).toBe(placeholder);

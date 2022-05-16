@@ -15,7 +15,7 @@ To can change its value:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Issues Rate Limits**.
-1. Under **Max requests per minute per user**, enter the new value.
+1. Under **Max requests per minute**, enter the new value.
 1. Select **Save changes**.
 
 For example, if you set a limit of 300, requests using the

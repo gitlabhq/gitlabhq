@@ -1140,7 +1140,7 @@ Rate limits are enforced using the following:
 - `rate_limit_source_ip`: Set the maximum threshold in number of requests per client IP per second. Set to 0 to disable this feature.
 - `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per client IP.
   For example, when you load a web page that loads a number of resources at the same time.
-- `rate_limit_domain_ip`: Set the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
+- `rate_limit_domain`: Set the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
 - `rate_limit_domain_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per hosted pages domain.
 
 #### Enable source-IP rate limits

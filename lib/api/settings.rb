@@ -181,6 +181,7 @@ module API
       optional :runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for shared runners, in seconds'
       optional :group_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for group runners, in seconds'
       optional :project_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for project runners, in seconds'
+      optional :pipeline_limit_per_project_user_sha, type: Integer, desc: "Maximum number of pipeline creation requests allowed per minute per user and commit. Set to 0 for unlimited requests per minute."
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

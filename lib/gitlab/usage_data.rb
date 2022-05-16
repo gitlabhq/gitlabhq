@@ -866,16 +866,17 @@ module Gitlab
       end
 
       def project_imports(time_period)
+        time_frame = metric_time_period(time_period)
         counters = {
-          gitlab_project: projects_imported_count('gitlab_project', time_period),
-          gitlab: projects_imported_count('gitlab', time_period),
-          github: projects_imported_count('github', time_period),
-          bitbucket: projects_imported_count('bitbucket', time_period),
-          bitbucket_server: projects_imported_count('bitbucket_server', time_period),
-          gitea: projects_imported_count('gitea', time_period),
-          git: projects_imported_count('git', time_period),
-          manifest: projects_imported_count('manifest', time_period),
-          gitlab_migration: count(::BulkImports::Entity.where(time_period).project_entity) # rubocop: disable CodeReuse/ActiveRecord
+          gitlab_project: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'gitlab_project' }),
+          gitlab: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'gitlab' }),
+          github: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'github' }),
+          bitbucket: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'bitbucket' }),
+          bitbucket_server: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'bitbucket_server' }),
+          gitea: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'gitea' }),
+          git: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'git' }),
+          manifest: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'manifest' }),
+          gitlab_migration: add_metric('CountBulkImportsEntitiesMetric', time_frame: time_frame, options: { source_type: :project_entity })
         }
 
         counters[:total] = add(*counters.values)
@@ -883,46 +884,21 @@ module Gitlab
         counters
       end
 
-      def projects_imported_count(from, time_period)
-        # rubocop:disable CodeReuse/ActiveRecord
-        relation = ::Project.imported_from(from).where.not(import_type: nil) # rubocop:disable UsageData/LargeTable
-        if time_period.empty?
-          count(relation)
-        else
-          @project_import_id ||= {}
-          start = time_period[:created_at].first
-          finish = time_period[:created_at].last
-
-          # can be nil values here if no records are in our range and it is possible the same instance
-          # is called with different time periods since it is passed in as a variable
-          unless @project_import_id.key?(start)
-            @project_import_id[start] = ::Project.select(:id).where(Project.arel_table[:created_at].gteq(start)) # rubocop:disable UsageData/LargeTable
-                                                 .order(created_at: :asc).limit(1).first&.id
-          end
-
-          unless @project_import_id.key?(finish)
-            @project_import_id[finish] = ::Project.select(:id).where(Project.arel_table[:created_at].lteq(finish)) # rubocop:disable UsageData/LargeTable
-                                                  .order(created_at: :desc).limit(1).first&.id
-          end
-
-          count(relation, start: @project_import_id[start], finish: @project_import_id[finish])
-        end
-        # rubocop:enable CodeReuse/ActiveRecord
-      end
-
       def issue_imports(time_period)
+        time_frame = metric_time_period(time_period)
         {
           jira: count(::JiraImportState.where(time_period)), # rubocop: disable CodeReuse/ActiveRecord
-          fogbugz: projects_imported_count('fogbugz', time_period),
-          phabricator: projects_imported_count('phabricator', time_period),
+          fogbugz: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'fogbugz' }),
+          phabricator: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'phabricator' }),
           csv: count(::Issues::CsvImport.where(time_period)) # rubocop: disable CodeReuse/ActiveRecord
         }
       end
 
       def group_imports(time_period)
+        time_frame = metric_time_period(time_period)
         {
           group_import: count(::GroupImportState.where(time_period)), # rubocop: disable CodeReuse/ActiveRecord
-          gitlab_migration: count(::BulkImports::Entity.where(time_period).group_entity) # rubocop: disable CodeReuse/ActiveRecord
+          gitlab_migration: add_metric('CountBulkImportsEntitiesMetric', time_frame: time_frame, options: { source_type: :group_entity })
         }
       end
 

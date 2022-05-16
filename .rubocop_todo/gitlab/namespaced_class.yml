@@ -773,7 +773,6 @@ Gitlab/NamespacedClass:
     - 'app/workers/emails_on_push_worker.rb'
     - 'app/workers/error_tracking_issue_link_worker.rb'
     - 'app/workers/expire_build_artifacts_worker.rb'
-    - 'app/workers/expire_build_instance_artifacts_worker.rb'
     - 'app/workers/expire_job_cache_worker.rb'
     - 'app/workers/expire_pipeline_cache_worker.rb'
     - 'app/workers/export_csv_worker.rb'

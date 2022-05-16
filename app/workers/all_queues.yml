@@ -2272,15 +2272,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: expire_build_instance_artifacts
-  :worker_name: ExpireBuildInstanceArtifactsWorker
-  :feature_category: :build_artifacts
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: export_csv
   :worker_name: ExportCsvWorker
   :feature_category: :team_planning

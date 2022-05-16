@@ -141,7 +141,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw
-    if @build.trace.archived_trace_exist?
+    if @build.trace.archived?
       workhorse_set_content_type!
       send_upload(@build.job_artifacts_trace.file,
                   send_params: raw_send_params,

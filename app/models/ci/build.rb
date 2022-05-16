@@ -677,7 +677,7 @@ module Ci
     end
 
     def has_archived_trace?
-      trace.archived_trace_exist?
+      trace.archived?
     end
 
     def artifacts_file
@@ -825,7 +825,6 @@ module Ci
       end
     end
 
-    # and use that for `ExpireBuildInstanceArtifactsWorker`?
     def erase_erasable_artifacts!
       job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
     end

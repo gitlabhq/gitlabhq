@@ -91,13 +91,13 @@ export default {
     },
     commentButtonTitle() {
       const { comment, internalComment, startThread, startInternalThread } = this.$options.i18n;
-      if (this.getNoteableData.confidential || this.noteIsConfidential) {
+      if (this.noteIsConfidential) {
         return this.noteType === constants.COMMENT ? internalComment : startInternalThread;
       }
       return this.noteType === constants.COMMENT ? comment : startThread;
     },
     textareaPlaceholder() {
-      return this.getNoteableData.confidential || this.noteIsConfidential
+      return this.noteIsConfidential
         ? this.$options.i18n.bodyPlaceholderInternal
         : this.$options.i18n.bodyPlaceholder;
     },

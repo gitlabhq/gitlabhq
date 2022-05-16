@@ -13,7 +13,7 @@ module ContainerRegistry
       feature_category :container_registry
       urgency :low
       worker_resource_boundary :unknown
-      deduplicate :until_executed
+      deduplicate :until_executed, ttl: 5.minutes
       idempotent!
 
       def perform
@@ -68,9 +68,9 @@ module ContainerRegistry
 
         if Feature.enabled?(:registry_migration_guard_thresholds)
           timeout = if repository.migration_state == 'pre_importing'
-                      migration.pre_import_timeout
+                      migration.pre_import_timeout.seconds
                     else
-                      migration.import_timeout
+                      migration.import_timeout.seconds
                     end
         end
 

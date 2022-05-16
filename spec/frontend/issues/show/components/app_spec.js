@@ -1,11 +1,11 @@
-import { GlIntersectionObserver } from '@gitlab/ui';
+import { GlBadge, GlIntersectionObserver } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import '~/behaviors/markdown/render_gfm';
-import { IssuableStatus, IssuableStatusText } from '~/issues/constants';
+import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
 import DescriptionComponent from '~/issues/show/components/description.vue';
 import EditedComponent from '~/issues/show/components/edited.vue';
@@ -474,6 +474,23 @@ describe('Issuable output', () => {
 
         expect(findStickyHeader().text()).toContain('Sticky header title');
       });
+
+      it.each`
+        issuableType          | issuableStatus           | statusIcon
+        ${IssuableType.Issue} | ${IssuableStatus.Open}   | ${'issues'}
+        ${IssuableType.Issue} | ${IssuableStatus.Closed} | ${'issue-closed'}
+        ${IssuableType.Epic}  | ${IssuableStatus.Open}   | ${'epic'}
+        ${IssuableType.Epic}  | ${IssuableStatus.Closed} | ${'epic-closed'}
+      `(
+        'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
+        async ({ issuableType, issuableStatus, statusIcon }) => {
+          wrapper.setProps({ issuableType, issuableStatus });
+
+          await nextTick();
+
+          expect(findStickyHeader().findComponent(GlBadge).props('icon')).toBe(statusIcon);
+        },
+      );
 
       it.each`
         title                                        | state

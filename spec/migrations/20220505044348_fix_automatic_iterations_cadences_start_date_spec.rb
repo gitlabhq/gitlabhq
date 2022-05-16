@@ -4,7 +4,8 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe FixAutomaticIterationsCadencesStartDate do
+RSpec.describe FixAutomaticIterationsCadencesStartDate,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/362446' do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:sprints) { table(:sprints) }

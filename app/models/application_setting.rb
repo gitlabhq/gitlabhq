@@ -489,6 +489,9 @@ class ApplicationSetting < ApplicationRecord
   validates :raw_blob_request_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :pipeline_limit_per_project_user_sha,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :ci_jwt_signing_key,
             rsa_key: true, allow_nil: true
 

@@ -170,22 +170,6 @@ wiki, packages, or snippets. The repository size limit applies to both private a
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
-## Troubleshooting
-
-### 413 Request Entity Too Large
-
-When attaching a file to a comment or reply in GitLab displays a `413 Request Entity Too Large`
-error, the [max attachment size](#max-attachment-size)
-is probably larger than the web server's allowed value.
-
-To increase the max attachment size to 200 MB in a
-[Omnibus GitLab](https://docs.gitlab.com/omnibus/) install, you may need to
-add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachment size:
-
-```ruby
-nginx['client_max_body_size'] = "200m"
-```
-
 ## Customize session duration for Git Operations when 2FA is enabled **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9.
@@ -258,7 +242,7 @@ This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963)
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 
 Users can optionally specify a lifetime for
-access tokens, this includes [personal](../../profile/personal_access_tokens.md), 
+access tokens, this includes [personal](../../profile/personal_access_tokens.md),
 [group](../../group/settings/group_access_tokens.md), and [project](../../project/settings/project_access_tokens.md) access tokens.
 This lifetime is not a requirement, and can be set to any arbitrary number of days.
 
@@ -315,3 +299,33 @@ NOTE:
 When this ability is disabled, GitLab administrators can still use the
 [Admin Area](../index.md#administering-users) or the
 [API](../../../api/users.md#user-modification) to update usernames.
+
+## Troubleshooting
+
+### 413 Request Entity Too Large
+
+When attaching a file to a comment or reply in GitLab displays a `413 Request Entity Too Large`
+error, the [max attachment size](#max-attachment-size)
+is probably larger than the web server's allowed value.
+
+To increase the max attachment size to 200 MB in a
+[Omnibus GitLab](https://docs.gitlab.com/omnibus/) install, you may need to
+add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachment size:
+
+```ruby
+nginx['client_max_body_size'] = "200m"
+```
+
+### This repository has exceeded its size limit
+
+If you receive intermittent push errors in your [Rails exceptions log](../../../administration/logs.md#exceptions_jsonlog), like this:
+
+```plaintext
+Your push has been rejected, because this repository has exceeded its size limit.
+```
+
+[Housekeeping](../../../administration/housekeeping.md) tasks may be causing your repository size to grow.
+To resolve this problem, either of these options helps in the short- to middle-term:
+
+- Increase the [repository size limit](#repository-size-limit).
+- [Reduce the repo size](../../project/repository/reducing_the_repo_size_using_git.md).

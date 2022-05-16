@@ -351,6 +351,17 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
         end
       end
     end
+
+    context 'pipeline creation rate limiting' do
+      let(:application_settings) { ApplicationSetting.current }
+
+      it 'updates pipeline_limit_per_project_user_sha setting' do
+        put :update, params: { application_setting: { pipeline_limit_per_project_user_sha: 25 } }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(application_settings.reload.pipeline_limit_per_project_user_sha).to eq(25)
+      end
+    end
   end
 
   describe 'PUT #reset_registration_token' do

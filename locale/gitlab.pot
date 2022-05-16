@@ -22844,6 +22844,9 @@ msgstr ""
 msgid "Limit the number of issues and epics per minute a user can create through web and API requests."
 msgstr ""
 
+msgid "Limit the number of pipeline creation requests per minute. This limit includes pipelines created through the UI, the API, and by background processing."
+msgstr ""
+
 msgid "Limit the size of Sidekiq jobs stored in Redis."
 msgstr ""
 
@@ -23553,6 +23556,9 @@ msgid "Maximum number of mirrors that can be synchronizing at the same time."
 msgstr ""
 
 msgid "Maximum number of projects."
+msgstr ""
+
+msgid "Maximum number of requests per minute"
 msgstr ""
 
 msgid "Maximum number of requests per minute for an authenticated user"
@@ -27551,6 +27557,9 @@ msgid "Pipeline Schedules"
 msgstr ""
 
 msgid "Pipeline URL"
+msgstr ""
+
+msgid "Pipeline creation rate limits"
 msgstr ""
 
 msgid "Pipeline durations for the last 30 commits"

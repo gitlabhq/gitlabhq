@@ -154,7 +154,7 @@ module IssuesHelper
   end
 
   def issue_closed_text(issue, current_user)
-    link = issue_closed_link(issue, current_user, css_class: 'text-white text-underline')
+    link = issue_closed_link(issue, current_user, css_class: 'text-underline gl-reset-color!')
 
     if link
       s_('IssuableStatus|Closed (%{link})').html_safe % { link: link }

@@ -653,12 +653,24 @@ RSpec.describe 'Admin updates settings' do
         visit network_admin_application_settings_path
 
         page.within('.as-issue-limits') do
-          fill_in 'Max requests per minute per user', with: 0
+          fill_in 'Maximum number of requests per minute', with: 0
           click_button 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.issues_create_limit).to eq(0)
+      end
+
+      it 'changes Pipelines rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-pipeline-limits') do
+          fill_in 'Maximum number of requests per minute', with: 10
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.pipeline_limit_per_project_user_sha).to eq(10)
       end
 
       it 'changes Users API rate limits settings' do

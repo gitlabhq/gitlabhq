@@ -5,7 +5,7 @@ product_section: growth
 product_stage: growth
 product_group: group::product intelligence
 product_category: collection
-value_type: string
+value_type: number
 status: active
 milestone: "<13.9"
 data_category: subscription

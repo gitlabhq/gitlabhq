@@ -91,6 +91,14 @@ module Gitlab
 
           private
 
+          def start
+            self.class.metric_start&.call(time_constraints)
+          end
+
+          def finish
+            self.class.metric_finish&.call(time_constraints)
+          end
+
           def relation
             self.class.metric_relation.call.where(time_constraints)
           end
@@ -109,19 +117,19 @@ module Gitlab
           end
 
           def get_or_cache_batch_ids
-            return [self.class.start, self.class.finish] unless self.class.cache_key.present?
+            return [start, finish] unless self.class.cache_key.present?
 
             key_name = "metric_instrumentation/#{self.class.cache_key}"
 
-            start = Gitlab::Cache.fetch_once("#{key_name}_minimum_id", expires_in: 1.day) do
-              self.class.start
+            cached_start = Gitlab::Cache.fetch_once("#{key_name}_minimum_id", expires_in: 1.day) do
+              start
             end
 
-            finish = Gitlab::Cache.fetch_once("#{key_name}_maximum_id", expires_in: 1.day) do
-              self.class.finish
+            cached_finish = Gitlab::Cache.fetch_once("#{key_name}_maximum_id", expires_in: 1.day) do
+              finish
             end
 
-            [start, finish]
+            [cached_start, cached_finish]
           end
         end
       end
