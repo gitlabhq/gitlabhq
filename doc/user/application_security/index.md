@@ -10,7 +10,7 @@ GitLab can check your application for security vulnerabilities including:
 
 - Unauthorized access.
 - Data leaks.
-- Denial of service attacks.
+- Denial of Service (DoS) attacks.
 
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.

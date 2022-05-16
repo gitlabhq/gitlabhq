@@ -45,6 +45,21 @@ Instead of the GitLab Runner API endpoints returning `offline` and `not_connecte
 contacted the GitLab instance in the past three months, the API endpoints now return the `stale` value,
 which was introduced in 14.6.
 
+### Audit events for repository push events
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#removed-events) are removed as of GitLab 15.0.
+
+Audit events for repository events were always disabled by default and had to be manually enabled with a feature flag.
+Enabling them could slow down GitLab instances by generating too many events. Therefore, they are removed.
+
+Please note that we will add high-volume audit events in the future as part of [streaming audit events](https://docs.gitlab.com/ee/administration/audit_event_streaming.html). An example of this is how we will send [Git fetch actions](https://gitlab.com/gitlab-org/gitlab/-/issues/343984) as a streaming audit event. If you would be interested in seeing repository push events or some other action as a streaming audit event, please reach out to us!
+
 ### Background upload for object storage
 
 WARNING:

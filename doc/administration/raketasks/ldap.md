@@ -175,7 +175,7 @@ bundle exec rake gitlab:ldap:secret:show RAILS_ENV=production
 ```plaintext
 main:
   password: '123'
-  user_bn: 'gitlab-adm'
+  bind_dn: 'gitlab-adm'
 ```
 
 ### Edit secret
