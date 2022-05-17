@@ -11300,6 +11300,8 @@ CREATE TABLE application_settings (
     delayed_group_deletion boolean DEFAULT true NOT NULL,
     arkose_labs_namespace text DEFAULT 'client'::text NOT NULL,
     max_export_size integer DEFAULT 0,
+    encrypted_slack_app_signing_secret bytea,
+    encrypted_slack_app_signing_secret_iv bytea,
     container_registry_pre_import_timeout integer DEFAULT 1800 NOT NULL,
     container_registry_import_timeout integer DEFAULT 600 NOT NULL,
     pipeline_limit_per_project_user_sha integer DEFAULT 0 NOT NULL,

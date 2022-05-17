@@ -99,6 +99,10 @@ If you are on:
 - Premium tier and above, you can disable this by changing the [group setting](../group/index.md#enable-delayed-project-deletion).
 - Free tier, you cannot disable this setting or restore projects.
 
+## Inactive project deletion
+
+[Inactive project deletion](../../administration/inactive_project_deletion.md) is disabled on GitLab.com.
+
 ## Alternative SSH port
 
 GitLab.com can be reached by using a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.

@@ -35283,6 +35283,9 @@ msgstr ""
 msgid "SlackIntegration|Sends notifications about project events to Slack channels."
 msgstr ""
 
+msgid "SlackIntegration|Signing Secret"
+msgstr ""
+
 msgid "SlackIntegration|Team name"
 msgstr ""
 

@@ -429,6 +429,7 @@ listed in the descriptions of the relevant settings.
 | `slack_app_enabled` **(PREMIUM)**        | boolean          | no                                   | (**If enabled, requires:** `slack_app_id`, `slack_app_secret` and `slack_app_secret`) Enable Slack app. |
 | `slack_app_id` **(PREMIUM)**             | string           | required by: `slack_app_enabled`     | The app ID of the Slack-app. |
 | `slack_app_secret` **(PREMIUM)**         | string           | required by: `slack_app_enabled`     | The app secret of the Slack-app. |
+| `slack_app_signing_secret` **(PREMIUM)** | string           | no                                   | The signing secret of the Slack-app. |
 | `slack_app_verification_token` **(PREMIUM)** | string       | required by: `slack_app_enabled`     | The verification token of the Slack-app. |
 | `snippet_size_limit`                     | integer          | no                                   | Max snippet content size in **bytes**. Default: 52428800 Bytes (50MB).|
 | `snowplow_app_id`                        | string           | no                                   | The Snowplow site name / application ID. (for example, `gitlab`) |

@@ -177,8 +177,10 @@ The **Repository** settings contain:
 - Repository maintenance:
   - [Repository checks](../../../administration/repository_checks.md) - Configure
     automatic Git checks on repositories.
-  - [Housekeeping](../../../administration/housekeeping.md)). Configure automatic
+  - [Housekeeping](../../../administration/housekeeping.md). Configure automatic
     Git housekeeping on repositories.
+  - [Inactive project deletion](../../../administration/inactive_project_deletion.md). Configure inactive
+    project deletion.
 - [Repository static objects](../../../administration/static_objects_external_storage.md) -
   Serve repository static objects (for example, archives and blobs) from an external storage (for example, a CDN).
 

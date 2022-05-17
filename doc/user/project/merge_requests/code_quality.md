@@ -72,7 +72,7 @@ This example shows how to run Code Quality on your code by using GitLab CI/CD an
 
 In either configuration, the runner must have enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
 
-Once you set up GitLab Runner, include the Code Quality template in your CI configuration:
+Once you set up GitLab Runner, include the [Code Quality template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) in your CI configuration:
 
 ```yaml
 include:
