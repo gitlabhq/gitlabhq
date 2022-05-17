@@ -32,7 +32,7 @@ describe('Stuck Block Job component', () => {
   describe('with no runners for project', () => {
     beforeEach(() => {
       createWrapper({
-        hasNoRunnersForProject: true,
+        hasOfflineRunnersForProject: true,
         runnersPath: '/root/project/runners#js-runners-settings',
       });
     });
@@ -53,7 +53,7 @@ describe('Stuck Block Job component', () => {
   describe('with tags', () => {
     beforeEach(() => {
       createWrapper({
-        hasNoRunnersForProject: false,
+        hasOfflineRunnersForProject: false,
         tags,
         runnersPath: '/root/project/runners#js-runners-settings',
       });
@@ -81,7 +81,7 @@ describe('Stuck Block Job component', () => {
   describe('without active runners', () => {
     beforeEach(() => {
       createWrapper({
-        hasNoRunnersForProject: false,
+        hasOfflineRunnersForProject: false,
         runnersPath: '/root/project/runners#js-runners-settings',
       });
     });

@@ -118,3 +118,11 @@ a {
     }
   }
 }
+
+.tanuki-logo {
+  width: 210px;
+  height: 210px;
+  max-width: 40vw;
+  display: block;
+  margin: map-get($spacing-scale, 4) auto;
+}

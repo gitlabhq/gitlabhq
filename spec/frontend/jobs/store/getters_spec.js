@@ -208,7 +208,7 @@ describe('Job Store Getters', () => {
     });
   });
 
-  describe('hasRunnersForProject', () => {
+  describe('hasOfflineRunnersForProject', () => {
     describe('with available and offline runners', () => {
       it('returns true', () => {
         localState.job.runners = {
@@ -216,7 +216,7 @@ describe('Job Store Getters', () => {
           online: false,
         };
 
-        expect(getters.hasRunnersForProject(localState)).toEqual(true);
+        expect(getters.hasOfflineRunnersForProject(localState)).toEqual(true);
       });
     });
 
@@ -227,7 +227,7 @@ describe('Job Store Getters', () => {
           online: false,
         };
 
-        expect(getters.hasRunnersForProject(localState)).toEqual(false);
+        expect(getters.hasOfflineRunnersForProject(localState)).toEqual(false);
       });
     });
 
@@ -238,7 +238,7 @@ describe('Job Store Getters', () => {
           online: true,
         };
 
-        expect(getters.hasRunnersForProject(localState)).toEqual(false);
+        expect(getters.hasOfflineRunnersForProject(localState)).toEqual(false);
       });
     });
   });

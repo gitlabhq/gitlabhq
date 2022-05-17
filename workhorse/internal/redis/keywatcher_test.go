@@ -1,10 +1,12 @@
 package redis
 
 import (
+	"errors"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/gomodule/redigo/redis"
 	"github.com/rafaeljusto/redigomock"
 	"github.com/stretchr/testify/require"
 )
@@ -65,100 +67,191 @@ func processMessages(numWatchers int, value string) {
 	processInner(psc)
 }
 
-func TestWatchKeySeenChange(t *testing.T) {
-	conn, td := setupMockPool()
-	defer td()
-
-	conn.Command("GET", runnerKey).Expect("something")
-
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-
-	go func() {
-		val, err := WatchKey(runnerKey, "something", time.Second)
-		require.NoError(t, err, "Expected no error")
-		require.Equal(t, WatchKeyStatusSeenChange, val, "Expected value to change")
-		wg.Done()
-	}()
-
-	processMessages(1, "somethingelse")
-	wg.Wait()
+type keyChangeTestCase struct {
+	desc           string
+	returnValue    string
+	isKeyMissing   bool
+	watchValue     string
+	processedValue string
+	expectedStatus WatchKeyStatus
+	timeout        time.Duration
 }
 
-func TestWatchKeyNoChange(t *testing.T) {
+func TestKeyChangesBubblesUpError(t *testing.T) {
 	conn, td := setupMockPool()
 	defer td()
 
-	conn.Command("GET", runnerKey).Expect("something")
+	conn.Command("GET", runnerKey).ExpectError(errors.New("test error"))
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	_, err := WatchKey(runnerKey, "something", time.Second)
+	require.Error(t, err, "Expected error")
 
-	go func() {
-		val, err := WatchKey(runnerKey, "something", time.Second)
-		require.NoError(t, err, "Expected no error")
-		require.Equal(t, WatchKeyStatusNoChange, val, "Expected notification without change to value")
-		wg.Done()
-	}()
-
-	processMessages(1, "something")
-	wg.Wait()
-}
-
-func TestWatchKeyTimeout(t *testing.T) {
-	conn, td := setupMockPool()
-	defer td()
-
-	conn.Command("GET", runnerKey).Expect("something")
-
-	val, err := WatchKey(runnerKey, "something", time.Millisecond)
-	require.NoError(t, err, "Expected no error")
-	require.Equal(t, WatchKeyStatusTimeout, val, "Expected value to not change")
-
-	// Clean up watchers since Process isn't doing that for us (not running)
 	deleteWatchers(runnerKey)
 }
 
-func TestWatchKeyAlreadyChanged(t *testing.T) {
-	conn, td := setupMockPool()
-	defer td()
-
-	conn.Command("GET", runnerKey).Expect("somethingelse")
-
-	val, err := WatchKey(runnerKey, "something", time.Second)
-	require.NoError(t, err, "Expected no error")
-	require.Equal(t, WatchKeyStatusAlreadyChanged, val, "Expected value to have already changed")
-
-	// Clean up watchers since Process isn't doing that for us (not running)
-	deleteWatchers(runnerKey)
-}
-
-func TestWatchKeyMassivelyParallel(t *testing.T) {
-	runTimes := 100 // 100 parallel watchers
-
-	conn, td := setupMockPool()
-	defer td()
-
-	wg := &sync.WaitGroup{}
-	wg.Add(runTimes)
-
-	getCmd := conn.Command("GET", runnerKey)
-
-	for i := 0; i < runTimes; i++ {
-		getCmd = getCmd.Expect("something")
+func TestKeyChangesInstantReturn(t *testing.T) {
+	testCases := []keyChangeTestCase{
+		// WatchKeyStatusAlreadyChanged
+		{
+			desc:           "sees change with key existing and changed",
+			returnValue:    "somethingelse",
+			watchValue:     "something",
+			expectedStatus: WatchKeyStatusAlreadyChanged,
+			timeout:        time.Second,
+		},
+		{
+			desc:           "sees change with key non-existing",
+			isKeyMissing:   true,
+			watchValue:     "something",
+			processedValue: "somethingelse",
+			expectedStatus: WatchKeyStatusAlreadyChanged,
+			timeout:        time.Second,
+		},
+		// WatchKeyStatusTimeout
+		{
+			desc:           "sees timeout with key existing and unchanged",
+			returnValue:    "something",
+			watchValue:     "something",
+			expectedStatus: WatchKeyStatusTimeout,
+			timeout:        time.Millisecond,
+		},
+		{
+			desc:           "sees timeout with key non-existing and unchanged",
+			isKeyMissing:   true,
+			watchValue:     "",
+			expectedStatus: WatchKeyStatusTimeout,
+			timeout:        time.Millisecond,
+		},
 	}
 
-	for i := 0; i < runTimes; i++ {
-		go func() {
-			val, err := WatchKey(runnerKey, "something", time.Second)
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			conn, td := setupMockPool()
+			defer td()
+
+			if tc.isKeyMissing {
+				conn.Command("GET", runnerKey).ExpectError(redis.ErrNil)
+			} else {
+				conn.Command("GET", runnerKey).Expect(tc.returnValue)
+			}
+
+			val, err := WatchKey(runnerKey, tc.watchValue, tc.timeout)
+
 			require.NoError(t, err, "Expected no error")
-			require.Equal(t, WatchKeyStatusSeenChange, val, "Expected value to change")
-			wg.Done()
-		}()
+			require.Equal(t, tc.expectedStatus, val, "Expected value")
+
+			deleteWatchers(runnerKey)
+		})
+	}
+}
+
+func TestKeyChangesWhenWatching(t *testing.T) {
+	testCases := []keyChangeTestCase{
+		// WatchKeyStatusSeenChange
+		{
+			desc:           "sees change with key existing",
+			returnValue:    "something",
+			watchValue:     "something",
+			processedValue: "somethingelse",
+			expectedStatus: WatchKeyStatusSeenChange,
+		},
+		{
+			desc:           "sees change with key non-existing, when watching empty value",
+			isKeyMissing:   true,
+			watchValue:     "",
+			processedValue: "something",
+			expectedStatus: WatchKeyStatusSeenChange,
+		},
+		// WatchKeyStatusNoChange
+		{
+			desc:           "sees no change with key existing",
+			returnValue:    "something",
+			watchValue:     "something",
+			processedValue: "something",
+			expectedStatus: WatchKeyStatusNoChange,
+		},
 	}
 
-	processMessages(runTimes, "somethingelse")
-	wg.Wait()
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			conn, td := setupMockPool()
+			defer td()
+
+			if tc.isKeyMissing {
+				conn.Command("GET", runnerKey).ExpectError(redis.ErrNil)
+			} else {
+				conn.Command("GET", runnerKey).Expect(tc.returnValue)
+			}
+
+			wg := &sync.WaitGroup{}
+			wg.Add(1)
+
+			go func() {
+				defer wg.Done()
+				val, err := WatchKey(runnerKey, tc.watchValue, time.Second)
+
+				require.NoError(t, err, "Expected no error")
+				require.Equal(t, tc.expectedStatus, val, "Expected value")
+			}()
+
+			processMessages(1, tc.processedValue)
+			wg.Wait()
+		})
+	}
+}
+
+func TestKeyChangesParallel(t *testing.T) {
+	testCases := []keyChangeTestCase{
+		{
+			desc:           "massively parallel, sees change with key existing",
+			returnValue:    "something",
+			watchValue:     "something",
+			processedValue: "somethingelse",
+			expectedStatus: WatchKeyStatusSeenChange,
+		},
+		{
+			desc:           "massively parallel, sees change with key existing, watching missing keys",
+			isKeyMissing:   true,
+			watchValue:     "",
+			processedValue: "somethingelse",
+			expectedStatus: WatchKeyStatusSeenChange,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			runTimes := 100
+
+			conn, td := setupMockPool()
+			defer td()
+
+			getCmd := conn.Command("GET", runnerKey)
+
+			for i := 0; i < runTimes; i++ {
+				if tc.isKeyMissing {
+					getCmd = getCmd.ExpectError(redis.ErrNil)
+				} else {
+					getCmd = getCmd.Expect(tc.returnValue)
+				}
+			}
+
+			wg := &sync.WaitGroup{}
+			wg.Add(runTimes)
+
+			for i := 0; i < runTimes; i++ {
+				go func() {
+					defer wg.Done()
+					val, err := WatchKey(runnerKey, tc.watchValue, time.Second)
+
+					require.NoError(t, err, "Expected no error")
+					require.Equal(t, tc.expectedStatus, val, "Expected value")
+				}()
+			}
+
+			processMessages(runTimes, tc.processedValue)
+			wg.Wait()
+		})
+	}
 }
 
 func TestShutdown(t *testing.T) {

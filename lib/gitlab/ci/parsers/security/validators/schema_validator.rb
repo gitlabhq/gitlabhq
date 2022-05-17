@@ -154,7 +154,6 @@ module Gitlab
             def handle_unsupported_report_version(treat_as:)
               if report_version.nil?
                 message = "Report version not provided, #{report_type} report type supports versions: #{supported_schema_versions}"
-                add_message_as(level: treat_as, message: message)
               else
                 message = "Version #{report_version} for report type #{report_type} is unsupported, supported versions for this report type are: #{supported_schema_versions}"
               end

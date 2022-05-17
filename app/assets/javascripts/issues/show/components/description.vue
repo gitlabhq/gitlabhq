@@ -7,6 +7,7 @@ import {
   GlModalDirective,
 } from '@gitlab/ui';
 import $ from 'jquery';
+import Sortable from 'sortablejs';
 import Vue from 'vue';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
@@ -14,6 +15,7 @@ import createFlash from '~/flash';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
+import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import TaskList from '~/task_list';
 import Tracking from '~/tracking';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -22,8 +24,13 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import animateMixin from '../mixins/animate';
+import { convertDescriptionWithNewSort } from '../utils';
 
 Vue.use(GlToast);
+
+const workItemTypes = {
+  TASK: 'task',
+};
 
 export default {
   directives: {
@@ -75,6 +82,11 @@ export default {
       type: Number,
       required: false,
       default: null,
+    },
+    isUpdating: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -146,6 +158,9 @@ export default {
       this.openWorkItemDetailModal(taskLink);
     }
   },
+  beforeDestroy() {
+    this.removeAllPointerEventListeners();
+  },
   methods: {
     renderGFM() {
       $(this.$refs['gfm-content']).renderGFM();
@@ -161,9 +176,67 @@ export default {
           onSuccess: this.taskListUpdateSuccess.bind(this),
           onError: this.taskListUpdateError.bind(this),
         });
+
+        this.renderSortableLists();
       }
     },
+    renderSortableLists() {
+      this.removeAllPointerEventListeners();
 
+      const lists = document.querySelectorAll('.description ul, .description ol');
+      lists.forEach((list) => {
+        Array.from(list.children).forEach((listItem) => {
+          listItem.prepend(this.createDragIconElement());
+          this.addPointerEventListeners(listItem);
+        });
+
+        Sortable.create(
+          list,
+          getSortableDefaultOptions({
+            handle: '.drag-icon',
+            onUpdate: (event) => {
+              const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
+              this.$emit('listItemReorder', description);
+            },
+          }),
+        );
+      });
+    },
+    createDragIconElement() {
+      const container = document.createElement('div');
+      container.innerHTML = `<svg class="drag-icon s14 gl-icon gl-cursor-grab gl-visibility-hidden" role="img" aria-hidden="true">
+        <use href="${gon.sprite_icons}#drag-vertical"></use>
+      </svg>`;
+      return container.firstChild;
+    },
+    addPointerEventListeners(listItem) {
+      const pointeroverListener = (event) => {
+        if (isDragging() || this.isUpdating) {
+          return;
+        }
+        event.target.closest('li').querySelector('.drag-icon').style.visibility = 'visible'; // eslint-disable-line no-param-reassign
+      };
+      const pointeroutListener = (event) => {
+        event.target.closest('li').querySelector('.drag-icon').style.visibility = 'hidden'; // eslint-disable-line no-param-reassign
+      };
+
+      // We use pointerover/pointerout instead of CSS so that when we hover over a
+      // list item with children, the drag icons of its children do not become visible.
+      listItem.addEventListener('pointerover', pointeroverListener);
+      listItem.addEventListener('pointerout', pointeroutListener);
+
+      this.pointerEventListeners = this.pointerEventListeners || new Map();
+      this.pointerEventListeners.set(listItem, [
+        { type: 'pointerover', listener: pointeroverListener },
+        { type: 'pointerout', listener: pointeroutListener },
+      ]);
+    },
+    removeAllPointerEventListeners() {
+      this.pointerEventListeners?.forEach((events, listItem) => {
+        events.forEach((event) => listItem.removeEventListener(event.type, event.listener));
+        this.pointerEventListeners.delete(listItem);
+      });
+    },
     taskListUpdateStarted() {
       this.$emit('taskListUpdateStarted');
     },
@@ -214,7 +287,10 @@ export default {
       taskListFields.forEach((item, index) => {
         const taskLink = item.querySelector('.gfm-issue');
         if (taskLink) {
-          const { issue, referenceType } = taskLink.dataset;
+          const { issue, referenceType, issueType } = taskLink.dataset;
+          if (issueType !== workItemTypes.TASK) {
+            return;
+          }
           const workItemId = convertToGraphQLId(TYPE_WORK_ITEM, issue);
           this.addHoverListeners(taskLink, workItemId);
           taskLink.addEventListener('click', (e) => {
@@ -237,10 +313,9 @@ export default {
           'btn-md',
           'gl-button',
           'btn-default-tertiary',
-          'gl-left-0',
           'gl-p-0!',
-          'gl-top-2',
-          'gl-absolute',
+          'gl-mt-n1',
+          'gl-ml-3',
           'js-add-task',
         );
         button.id = `js-task-button-${index}`;
@@ -252,7 +327,7 @@ export default {
         `;
         button.setAttribute('aria-label', s__('WorkItem|Convert to work item'));
         button.addEventListener('click', () => this.openCreateTaskModal(button));
-        item.prepend(button);
+        item.append(button);
       });
     },
     addHoverListeners(taskLink, id) {

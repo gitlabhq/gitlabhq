@@ -48,3 +48,27 @@ Already conducted investigations:
 ### Troubleshooting data warehouse layer
 
 Reach out to [Data team](https://about.gitlab.com/handbook/business-technology/data-team/) to ask about current state of data warehouse. On their handbook page there is a [section with contact details](https://about.gitlab.com/handbook/business-technology/data-team/#how-to-connect-with-us)
+
+## Delay in Snowplow Enrichers
+
+If there is an alert for **Snowplow Raw Good Stream Backing Up**, we receive an email notification. This sometimes happens because Snowplow Enrichers don't scale well enough for the amount of Snowplow events.
+
+If the delay goes over 48 hours, we lose data.
+
+### Contact SRE on-call
+
+Send a message in the [#infrastructure_lounge](https://gitlab.slack.com/archives/CB3LSMEJV) Slack channel using the following template:
+
+```markdown
+Hello team!
+
+We received an alert for [Snowplow Raw Good Stream Backing Up](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#alarmsV2:alarm/SnowPlow+Raw+Good+Stream+Backing+Up?).
+
+Enrichers are not scalling well for the amount of events we receive.
+
+See the [dashboard](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=SnowPlow).
+
+Could we get assistance in order to fix the delay?
+
+Thank you!
+```

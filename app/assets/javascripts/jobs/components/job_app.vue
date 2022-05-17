@@ -94,7 +94,7 @@ export default {
       'emptyStateIllustration',
       'isScrollingDown',
       'emptyStateAction',
-      'hasRunnersForProject',
+      'hasOfflineRunnersForProject',
     ]),
 
     shouldRenderContent() {
@@ -220,7 +220,7 @@ export default {
         <!-- Body Section -->
         <stuck-block
           v-if="job.stuck"
-          :has-no-runners-for-project="hasRunnersForProject"
+          :has-offline-runners-for-project="hasOfflineRunnersForProject"
           :tags="job.tags"
           :runners-path="runnerSettingsUrl"
         />

@@ -46,5 +46,5 @@ export const shouldRenderSharedRunnerLimitWarning = (state) =>
 
 export const isScrollingDown = (state) => isScrolledToBottom() && !state.isJobLogComplete;
 
-export const hasRunnersForProject = (state) =>
+export const hasOfflineRunnersForProject = (state) =>
   state?.job?.runners?.available && !state?.job?.runners?.online;

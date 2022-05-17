@@ -772,9 +772,6 @@ msgstr ""
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
-msgid "%{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd} and %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd} are supported"
-msgstr ""
-
 msgid "%{mergeLength}/%{usersLength} can merge"
 msgstr ""
 
@@ -19357,6 +19354,9 @@ msgstr ""
 msgid "In progress"
 msgstr ""
 
+msgid "In the background, we're attempting to connect you again."
+msgstr ""
+
 msgid "In this page you will find information about the settings that are used in your current instance."
 msgstr ""
 
@@ -23282,16 +23282,10 @@ msgstr ""
 msgid "Mark to do as done"
 msgstr ""
 
-msgid "Markdown"
-msgstr ""
-
 msgid "Markdown Help"
 msgstr ""
 
 msgid "Markdown enabled."
-msgstr ""
-
-msgid "Markdown is supported"
 msgstr ""
 
 msgid "Markdown supported."
@@ -23319,6 +23313,9 @@ msgid "MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)"
 msgstr ""
 
 msgid "MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)"
+msgstr ""
+
+msgid "MarkdownToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}"
 msgstr ""
 
 msgid "Marked For Deletion At - %{deletion_time}"
@@ -25789,6 +25786,9 @@ msgstr ""
 msgid "NoteForm|Note"
 msgstr ""
 
+msgid "NoteToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}. For %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd}, type %{keyboardStart}/%{keyboardEnd}."
+msgstr ""
+
 msgid "Notes"
 msgstr ""
 
@@ -26056,6 +26056,9 @@ msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
 msgid "Off"
+msgstr ""
+
+msgid "Offline"
 msgstr ""
 
 msgid "Oh no!"
@@ -42992,6 +42995,9 @@ msgstr ""
 msgid "You are connected to the Prometheus server, but there is currently no data to display."
 msgstr ""
 
+msgid "You are currently offline, or the GitLab instance is not reachable."
+msgstr ""
+
 msgid "You are going to delete %{project_full_name}. Deleted projects CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
@@ -45564,9 +45570,6 @@ msgid "project namespace cannot be the parent of another namespace"
 msgstr ""
 
 msgid "projects"
-msgstr ""
-
-msgid "quick actions"
 msgstr ""
 
 msgid "reCAPTCHA"

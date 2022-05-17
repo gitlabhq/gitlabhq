@@ -342,20 +342,24 @@ export default {
         });
     },
 
-    updateFormState(state) {
+    setFormState(state) {
       this.store.setFormState(state);
     },
 
-    updateAndShowForm(templates = {}) {
+    updateFormState(templates = {}) {
+      this.setFormState({
+        title: this.state.titleText,
+        description: this.state.descriptionText,
+        lock_version: this.state.lock_version,
+        lockedWarningVisible: false,
+        updateLoading: false,
+        issuableTemplates: templates,
+      });
+    },
+
+    updateAndShowForm(templates) {
       if (!this.showForm) {
-        this.store.setFormState({
-          title: this.state.titleText,
-          description: this.state.descriptionText,
-          lock_version: this.state.lock_version,
-          lockedWarningVisible: false,
-          updateLoading: false,
-          issuableTemplates: templates,
-        });
+        this.updateFormState(templates);
         this.showForm = true;
       }
     },
@@ -388,9 +392,7 @@ export default {
     },
 
     updateIssuable() {
-      this.store.setFormState({
-        updateLoading: true,
-      });
+      this.setFormState({ updateLoading: true });
 
       const {
         store: { formState },
@@ -428,10 +430,6 @@ export default {
         .catch((error = {}) => {
           const { message, response = {} } = error;
 
-          this.store.setFormState({
-            updateLoading: false,
-          });
-
           let errMsg = this.defaultErrorMessage;
 
           if (response.data && response.data.errors) {
@@ -443,6 +441,9 @@ export default {
           this.flashContainer = createFlash({
             message: errMsg,
           });
+        })
+        .finally(() => {
+          this.setFormState({ updateLoading: false });
         });
     },
 
@@ -459,6 +460,12 @@ export default {
         this.flashContainer.close();
         this.flashContainer = null;
       }
+    },
+
+    handleListItemReorder(description) {
+      this.updateFormState();
+      this.setFormState({ description });
+      this.updateIssuable();
     },
 
     taskListUpdateStarted() {
@@ -498,7 +505,7 @@ export default {
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"
-        @updateForm="updateFormState"
+        @updateForm="setFormState"
       />
     </div>
     <div v-else>
@@ -573,6 +580,8 @@ export default {
         :issuable-type="issuableType"
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
+        :is-updating="formState.updateLoading"
+        @listItemReorder="handleListItemReorder"
         @taskListUpdateStarted="taskListUpdateStarted"
         @taskListUpdateSucceeded="taskListUpdateSucceeded"
         @taskListUpdateFailed="taskListUpdateFailed"

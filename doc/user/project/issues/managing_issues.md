@@ -225,6 +225,8 @@ When you're creating a new issue, you can complete the following fields:
 
 ## Edit an issue
 
+> Reordering list items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
+
 You can edit an issue's title and description.
 
 Prerequisites:
@@ -236,6 +238,14 @@ To edit an issue:
 1. To the right of the title, select **Edit title and description** (**{pencil}**).
 1. Edit the available fields.
 1. Select **Save changes**.
+
+You can also reorder list items, which include bullet, numerical, and task list items.
+To reorder list items:
+
+1. Hover over the list item row to make the drag icon visible.
+1. Click and hold the drag icon.
+1. Drag the row to the new position in the list.
+1. Release the drag icon.
 
 ### Bulk edit issues from a project
 

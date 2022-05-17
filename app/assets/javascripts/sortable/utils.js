@@ -1,13 +1,17 @@
 /* global DocumentTouch */
 
-import { defaultSortableOptions } from './constants';
+import { defaultSortableOptions, DRAG_CLASS } from './constants';
 
 export function sortableStart() {
-  document.body.classList.add('is-dragging');
+  document.body.classList.add(DRAG_CLASS);
 }
 
 export function sortableEnd() {
-  document.body.classList.remove('is-dragging');
+  document.body.classList.remove(DRAG_CLASS);
+}
+
+export function isDragging() {
+  return document.body.classList.contains(DRAG_CLASS);
 }
 
 export function getSortableDefaultOptions(options) {

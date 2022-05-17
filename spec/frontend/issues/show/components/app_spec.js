@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import '~/behaviors/markdown/render_gfm';
 import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
@@ -645,6 +646,16 @@ describe('Issuable output', () => {
       expect(wrapper.vm.poll.enable).toHaveBeenCalled();
       expect(wrapper.vm.poll.makeDelayedRequest).toHaveBeenCalledWith(POLLING_DELAY);
       expect(wrapper.vm.updateStoreState).toHaveBeenCalled();
+    });
+  });
+
+  describe('listItemReorder event', () => {
+    it('makes request to update issue', async () => {
+      const description = 'I have been updated!';
+      findDescription().vm.$emit('listItemReorder', description);
+      await waitForPromises();
+
+      expect(mock.history.put[0].data).toContain(description);
     });
   });
 });

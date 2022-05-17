@@ -1,0 +1,31 @@
+= link_to root_path do
+  = render 'shared/logo.svg'
+%h1= _('Offline')
+.container
+  %h3= _('You are currently offline, or the GitLab instance is not reachable.')
+  %p= _("In the background, we're attempting to connect you again.")
+  -# haml-lint:disable InlineJavaScript
+  :javascript
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+
+    async function checkNetworkAndReload() {
+      try {
+        const response = await fetch('.');
+        // Verify we get a valid response from the server
+        if (response.status >= 200 && response.status < 500) {
+          window.location.reload();
+          return;
+        }
+      } catch {
+        // Unable to connect to the server, ignore.
+      }
+      window.setTimeout(checkNetworkAndReload, 2500);
+    }
+
+    if (window.location.pathname.endsWith('/-/offline')) {
+      return;
+    }
+
+    checkNetworkAndReload();

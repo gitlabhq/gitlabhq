@@ -512,6 +512,24 @@ changes to your code, settings, or workflow.
 
 Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 12 SP2 [ended on March 31, 2021](https://www.suse.com/lifecycle/). The CA certificates on SP2 include the expired DST root certificate, and it's not getting new CA certificate package updates. We have implemented some [workarounds](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/191), but we will not be able to continue to keep the build running properly.
 
+### Secret Detection configuration variables
+
+To make it simpler and more reliable to [customize GitLab Secret Detection](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings), we've removed some of the variables that you could previously set in your CI/CD configuration.
+
+The following variables previously allowed you to customize the options for historical scanning, but interacted poorly with the [GitLab-managed CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml) and are now removed:
+
+- `SECRET_DETECTION_COMMIT_FROM`
+- `SECRET_DETECTION_COMMIT_TO`
+- `SECRET_DETECTION_COMMITS`
+- `SECRET_DETECTION_COMMITS_FILE`
+
+The `SECRET_DETECTION_ENTROPY_LEVEL` previously allowed you to configure rules that only considered the entropy level of strings in your codebase, and is now removed.
+This type of entropy-only rule created an unacceptable number of incorrect results (false positives).
+
+You can still customize the behavior of the Secret Detection analyzer using the [available CI/CD variables](https://docs.gitlab.com/ee/user/application_security/secret_detection/#available-cicd-variables).
+
+For further details, see [the deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352565).
+
 ### Sidekiq configuration for metrics and health checks
 
 WARNING:

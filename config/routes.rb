@@ -116,6 +116,8 @@ Rails.application.routes.draw do
 
     get '/whats_new' => 'whats_new#index'
 
+    get 'offline' => "pwa#offline"
+
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'

@@ -23,7 +23,7 @@ RSpec.describe 'shared/notes/_form' do
       let(:note) { build(:"note_on_#{noteable}", project: project) }
 
       it 'says that markdown and quick actions are supported' do
-        expect(rendered).to have_content('Markdown and quick actions are supported')
+        expect(rendered).to have_content('Supports Markdown. For quick actions, type /.')
       end
     end
   end

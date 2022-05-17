@@ -1,3 +1,5 @@
+export const DRAG_CLASS = 'is-dragging';
+
 /**
  * Default config options for sortablejs.
  * @type {object}
@@ -12,7 +14,7 @@
 export const defaultSortableOptions = {
   animation: 200,
   forceFallback: true,
-  fallbackClass: 'is-dragging',
+  fallbackClass: DRAG_CLASS,
   fallbackOnBody: true,
   ghostClass: 'is-ghost',
   fallbackTolerance: 1,
