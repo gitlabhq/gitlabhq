@@ -15,6 +15,7 @@ Migration/BackgroundMigrationBaseClass:
     - 'lib/gitlab/background_migration/backfill_namespace_id_for_project_route.rb'
     - 'lib/gitlab/background_migration/backfill_namespace_traversal_ids_children.rb'
     - 'lib/gitlab/background_migration/backfill_namespace_traversal_ids_roots.rb'
+    - 'lib/gitlab/background_migration/backfill_note_discussion_id.rb'
     - 'lib/gitlab/background_migration/backfill_projects_with_coverage.rb'
     - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
     - 'lib/gitlab/background_migration/backfill_project_settings.rb'

@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="pipeline-mini-graph" class="gl-display-inline-flex gl-flex-wrap gl-my-1">
+  <div data-testid="pipeline-mini-graph" class="gl-display-inline gl-vertical-align-middle gl-my-1">
     <div
       v-for="stage in stages"
       :key="stage.name"

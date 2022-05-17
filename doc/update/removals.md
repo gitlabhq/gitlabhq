@@ -630,9 +630,10 @@ The `Managed-Cluster-Applications.gitlab-ci.yml` CI/CD template is being removed
 
 ### `artifacts:report:cobertura` keyword
 
-As of GitLab 15.0, the `artifacts:report:cobertura` keyword has been replaced by
-[`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura is the only
-supported report file, but this is the first step towards GitLab supporting other report types.
+As of GitLab 15.0, the [`artifacts:report:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
+keyword has been [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) by
+[`artifacts:reports:coverage_report`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscoverage_report).
+Cobertura is the only supported report file, but this is the first step towards GitLab supporting other report types.
 
 ### `omniauth-kerberos` gem
 

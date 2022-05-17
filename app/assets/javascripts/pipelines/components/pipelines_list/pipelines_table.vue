@@ -169,7 +169,7 @@ export default {
       </template>
 
       <template #cell(stages)="{ item }">
-        <div class="gl-align-items-center gl-display-inline-flex gl-flex-wrap stage-cell">
+        <div class="stage-cell">
           <!-- This empty div should be removed, see https://gitlab.com/gitlab-org/gitlab/-/issues/323488 -->
           <div></div>
           <linked-pipelines-mini-list

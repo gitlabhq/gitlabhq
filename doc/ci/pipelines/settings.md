@@ -232,8 +232,8 @@ using the [`coverage`](../yaml/index.md#coverage) keyword.
 This feature is in its end-of-life process. It was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
 in GitLab 14.8. The feature is [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
-To migrate from project settings to `coverage` keyword settings, add the former project setting to a CI/CD job with the `coverage` keyword. For
-example:
+To migrate from a project setting to the `coverage` keyword, add the [former project setting](#locate-former-project-setting)
+to a CI/CD job. For example:
 
 - A Go test coverage project setting:  `coverage: \d+.\d+% of statements`.
 - A CI/CD job with `coverage` keyword setting:
@@ -246,12 +246,23 @@ example:
       - go test -cover
   ```
 
-The `.gitlab-ci.yml` job [`coverage`](../yaml/index.md#coverage) keyword must:
+The `.gitlab-ci.yml` job [`coverage`](../yaml/index.md#coverage) keyword must be:
 
-- Be a regular expression starts and ends with the `/` character.
-- Be defined as single-quoted string.
+- A regular expression starts and ends with the `/` character.
+- Defined as single-quoted string.
 
 You can verify correct syntax using the [pipeline editor](../pipeline_editor/index.md).
+
+#### Locate former project setting
+
+To migrate from the project coverage setting to the `coverage` keyword, use the
+regular expression displayed in the settings. Available in GitLab 14.10 and earlier:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+
+The regular expression you need is in the **Test coverage parsing** field.
 
 <!-- end_remove -->
 

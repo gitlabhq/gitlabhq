@@ -72,12 +72,17 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Revoke a personal access token
 
-### Revoke a personal access token by ID
+Revoke a personal access token by either:
+
+- Using the ID of the personal access token.
+- Passing it to the API in a header.
+
+### Using a personal access token ID
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216004) in GitLab 13.3.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/270200) from GitLab Ultimate to GitLab Free in 13.6.
 
-Revoke a personal access token by ID.
+Revoke a personal access token using its ID.
 
 ```plaintext
 DELETE /personal_access_tokens/:id
@@ -99,7 +104,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 - `204: No Content` if successfully revoked.
 - `400: Bad Request` if not revoked successfully.
 
-### Revoke a personal access token using a header
+### Using a request header
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350240) in GitLab 15.0.
 

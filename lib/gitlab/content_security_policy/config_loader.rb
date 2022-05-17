@@ -61,7 +61,9 @@ module Gitlab
       end
 
       def initialize(csp_directives)
-        @csp_directives = HashWithIndifferentAccess.new(csp_directives)
+        @merged_csp_directives =
+          HashWithIndifferentAccess.new(csp_directives)
+                                   .reverse_merge(::Gitlab::ContentSecurityPolicy::ConfigLoader.default_directives)
       end
 
       def load(policy)
@@ -77,8 +79,9 @@ module Gitlab
       private
 
       def arguments_for(directive)
-        arguments = @csp_directives[directive.to_s]
-
+        # In order to disable a directive, the user can explicitly
+        # set a falsy value like nil, false or empty string
+        arguments = @merged_csp_directives[directive]
         return unless arguments.present? && arguments.is_a?(String)
 
         arguments.strip.split(' ').map(&:strip)

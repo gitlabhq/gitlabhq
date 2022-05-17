@@ -36,7 +36,7 @@ The second way is to locate the Confidentiality section in the sidebar and click
 
 | Turn off confidentiality | Turn on confidentiality |
 | :-----------: | :----------: |
-| ![Turn off confidentiality](img/turn_off_confidentiality.png) | ![Turn on confidentiality](img/turn_on_confidentiality.png) |
+| ![Turn off confidentiality](img/turn_off_confidentiality_v15_0.png) | ![Turn on confidentiality](img/turn_on_confidentiality_v15_0.png) |
 
 Every change from regular to confidential and vice versa, is indicated by a
 system note in the issue's comments.

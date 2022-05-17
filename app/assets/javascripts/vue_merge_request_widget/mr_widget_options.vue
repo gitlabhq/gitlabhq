@@ -533,7 +533,7 @@ export default {
     <header
       v-if="shouldRenderCollaborationStatus || !isUpdatedHeaderEnabled"
       :class="{ 'mr-widget-workflow gl-mt-0!': isUpdatedHeaderEnabled }"
-      class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100"
+      class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100 gl-overflow-hidden"
     >
       <mr-widget-alert-message v-if="shouldRenderCollaborationStatus" type="info">
         {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}

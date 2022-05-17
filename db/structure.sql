@@ -29768,6 +29768,8 @@ CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (st
 
 CREATE INDEX tmp_index_merge_requests_draft_and_status ON merge_requests USING btree (id) WHERE ((draft = false) AND (state_id = 1) AND ((title)::text ~* '^(\[draft\]|\(draft\)|draft:|draft|\[WIP\]|WIP:|WIP)'::text));
 
+CREATE INDEX tmp_index_notes_on_id_where_discussion_id_is_null ON notes USING btree (id) WHERE (discussion_id IS NULL);
+
 CREATE UNIQUE INDEX tmp_index_on_tmp_project_id_on_namespaces ON namespaces USING btree (tmp_project_id);
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);

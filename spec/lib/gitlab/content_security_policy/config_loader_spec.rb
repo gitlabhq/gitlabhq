@@ -183,6 +183,8 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
   end
 
   describe '#load' do
+    let(:default_directives) { described_class.default_directives }
+
     subject { described_class.new(csp_config[:directives]) }
 
     def expected_config(directive)
@@ -206,6 +208,24 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       subject.load(policy)
 
       expect(policy.directives['base-uri']).to be_nil
+    end
+
+    it 'returns default values for directives not defined by the user' do
+      # Explicitly disabling script_src and setting report_uri
+      csp_config[:directives] = {
+        script_src: false,
+        report_uri: 'https://example.org'
+      }
+
+      subject.load(policy)
+
+      expected_policy = ActionDispatch::ContentSecurityPolicy.new
+      # Creating a policy from default settings and manually overriding the custom values
+      described_class.new(default_directives).load(expected_policy)
+      expected_policy.script_src(nil)
+      expected_policy.report_uri('https://example.org')
+
+      expect(policy.directives).to eq(expected_policy.directives)
     end
   end
 end

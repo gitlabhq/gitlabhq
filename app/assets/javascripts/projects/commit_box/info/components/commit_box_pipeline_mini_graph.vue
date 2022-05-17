@@ -121,7 +121,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-pt-2">
     <gl-loading-icon v-if="$apollo.queries.pipeline.loading" />
     <div v-else class="gl-align-items-center gl-display-flex">
       <linked-pipelines-mini-list
