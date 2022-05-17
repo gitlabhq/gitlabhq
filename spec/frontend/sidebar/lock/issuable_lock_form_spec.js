@@ -37,6 +37,9 @@ describe('IssuableLockForm', () => {
   const createComponent = ({ props = {} }) => {
     wrapper = shallowMount(IssuableLockForm, {
       store,
+      provide: {
+        fullPath: '',
+      },
       propsData: {
         isEditable: true,
         ...props,

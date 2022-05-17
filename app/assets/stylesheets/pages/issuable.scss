@@ -125,6 +125,7 @@
   background-color: $white;
   z-index: 200;
   overflow: hidden;
+
 }
 
 .right-sidebar {
@@ -196,7 +197,6 @@
   .issuable-sidebar-header {
     @include clearfix;
     padding: $gl-padding 0;
-    border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $gutter-inner-width;

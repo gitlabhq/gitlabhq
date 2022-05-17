@@ -365,17 +365,17 @@ describe('Linked pipeline', () => {
 
   describe('expand button', () => {
     it.each`
-      pipelineType       | anglePosition    | borderClass         | expanded
-      ${downstreamProps} | ${'angle-right'} | ${'gl-border-l-1!'} | ${false}
-      ${downstreamProps} | ${'angle-left'}  | ${'gl-border-l-1!'} | ${true}
-      ${upstreamProps}   | ${'angle-left'}  | ${'gl-border-r-1!'} | ${false}
-      ${upstreamProps}   | ${'angle-right'} | ${'gl-border-r-1!'} | ${true}
+      pipelineType       | anglePosition    | buttonBorderClasses | expanded
+      ${downstreamProps} | ${'angle-right'} | ${'gl-border-l-0!'} | ${false}
+      ${downstreamProps} | ${'angle-left'}  | ${'gl-border-l-0!'} | ${true}
+      ${upstreamProps}   | ${'angle-left'}  | ${'gl-border-r-0!'} | ${false}
+      ${upstreamProps}   | ${'angle-right'} | ${'gl-border-r-0!'} | ${true}
     `(
-      '$pipelineType.columnTitle pipeline button icon should be $anglePosition with $borderClass if expanded state is $expanded',
-      ({ pipelineType, anglePosition, borderClass, expanded }) => {
+      '$pipelineType.columnTitle pipeline button icon should be $anglePosition with $buttonBorderClasses if expanded state is $expanded',
+      ({ pipelineType, anglePosition, buttonBorderClasses, expanded }) => {
         createWrapper({ propsData: { ...pipelineType, expanded } });
         expect(findExpandButton().props('icon')).toBe(anglePosition);
-        expect(findExpandButton().classes()).toContain(borderClass);
+        expect(findExpandButton().classes()).toContain(buttonBorderClasses);
       },
     );
   });

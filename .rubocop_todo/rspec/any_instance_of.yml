@@ -122,7 +122,6 @@ RSpec/AnyInstanceOf:
   - ee/spec/workers/concerns/elastic/indexing_control_spec.rb
   - ee/spec/workers/elastic_commit_indexer_worker_spec.rb
   - ee/spec/workers/geo/design_repository_shard_sync_worker_spec.rb
-  - ee/spec/workers/geo/file_download_dispatch_worker_spec.rb
   - ee/spec/workers/geo/registry_sync_worker_spec.rb
   - ee/spec/workers/geo/repository_cleanup_worker_spec.rb
   - ee/spec/workers/geo/repository_shard_sync_worker_spec.rb

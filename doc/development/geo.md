@@ -118,17 +118,6 @@ CI Job Artifacts and LFS objects are synced in a similar way as uploads,
 but they are tracked by `Geo::JobArtifactRegistry`, and `Geo::LfsObjectRegistry`
 models respectively.
 
-#### File Download Dispatch worker
-
-Also similar to the [Repository Sync worker](#repository-sync-worker),
-there is a `Geo::FileDownloadDispatchWorker` class that is run
-periodically to sync all uploads that aren't synced to the Geo
-**secondary** site yet.
-
-Files are copied via HTTP(s) and initiated via the
-`/api/v4/geo/transfers/:type/:id` endpoint,
-for example, `/api/v4/geo/transfers/lfs/123`.
-
 ## Authentication
 
 To authenticate file transfers, each `GeoNode` record has two fields:

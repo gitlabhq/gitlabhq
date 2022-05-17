@@ -664,9 +664,6 @@ Gitlab.ee do
   Settings.cron_jobs['geo_secondary_usage_data_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_secondary_usage_data_cron_worker']['cron'] ||= '0 0 * * 0'
   Settings.cron_jobs['geo_secondary_usage_data_cron_worker']['job_class'] ||= 'Geo::SecondaryUsageDataCronWorker'
-  Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
   Settings.cron_jobs['geo_registry_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_registry_sync_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_registry_sync_worker']['job_class'] ||= 'Geo::RegistrySyncWorker'

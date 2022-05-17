@@ -959,7 +959,7 @@ module Gitlab
 
         return if migration.finished?
 
-        Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.finalize(job_class_name, table_name, column_name, job_arguments, connection: connection) if finalize
+        finalize_batched_background_migration(job_class_name: job_class_name, table_name: table_name, column_name: column_name, job_arguments: job_arguments) if finalize
 
         unless migration.reload.finished? # rubocop:disable Cop/ActiveRecordAssociationReload
           raise "Expected batched background migration for the given configuration to be marked as 'finished', " \

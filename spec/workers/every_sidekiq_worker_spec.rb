@@ -240,7 +240,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'Geo::DesignRepositorySyncWorker' => 1,
         'Geo::DestroyWorker' => 3,
         'Geo::EventWorker' => 3,
-        'Geo::FileDownloadWorker' => 3,
         'Geo::FileRegistryRemovalWorker' => 3,
         'Geo::FileRemovalWorker' => 3,
         'Geo::ProjectSyncWorker' => 1,

@@ -91,7 +91,9 @@ module AuthHelper
   end
 
   def saml_providers
-    auth_providers.select { |provider| auth_strategy_class(provider) == 'OmniAuth::Strategies::SAML' }
+    auth_providers.select do |provider|
+      provider == :saml || auth_strategy_class(provider) == 'OmniAuth::Strategies::SAML'
+    end
   end
 
   def auth_strategy_class(provider)

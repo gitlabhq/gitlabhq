@@ -500,6 +500,16 @@ RSpec.describe AuthHelper do
       )
     end
 
+    context 'when SAML is enabled without specifying a strategy class' do
+      before do
+        allow(Gitlab::Auth::OAuth::Provider).to receive(:providers).and_return([:saml])
+      end
+
+      it 'returns the saml provider' do
+        expect(saml_providers).to match_array([:saml])
+      end
+    end
+
     context 'when configuration specifies no provider' do
       before do
         allow(Devise).to receive(:omniauth_providers).and_return([])

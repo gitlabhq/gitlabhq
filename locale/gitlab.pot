@@ -787,6 +787,9 @@ msgstr ""
 msgid "%{milliseconds}ms"
 msgstr ""
 
+msgid "%{minutesUsed} minutes"
+msgstr ""
+
 msgid "%{model_name} not found"
 msgstr ""
 
@@ -853,6 +856,9 @@ msgid "%{openedEpics} open, %{closedEpics} closed"
 msgstr ""
 
 msgid "%{openedIssues} open, %{closedIssues} closed"
+msgstr ""
+
+msgid "%{percentageUsed}%% used"
 msgstr ""
 
 msgid "%{percentage}%% issues closed"
@@ -21807,12 +21813,6 @@ msgstr ""
 msgid "Job Failed #%{build_id}"
 msgstr ""
 
-msgid "Job artifact"
-msgstr ""
-
-msgid "Job artifacts"
-msgstr ""
-
 msgid "Job has been erased"
 msgstr ""
 
@@ -23028,6 +23028,9 @@ msgid "Lock File?"
 msgstr ""
 
 msgid "Lock memberships to LDAP synchronization"
+msgstr ""
+
+msgid "Lock merge request"
 msgstr ""
 
 msgid "Lock not found"
@@ -39583,6 +39586,9 @@ msgstr ""
 msgid "To widen your search, change or remove filters above."
 msgstr ""
 
+msgid "To-Do"
+msgstr ""
+
 msgid "To-Do List"
 msgstr ""
 
@@ -40369,6 +40375,9 @@ msgstr ""
 msgid "Unlock account"
 msgstr ""
 
+msgid "Unlock merge request"
+msgstr ""
+
 msgid "Unlock more features with GitLab Ultimate"
 msgstr ""
 
@@ -40811,6 +40820,9 @@ msgid "UsageQuota|Usage of resources across your projects"
 msgstr ""
 
 msgid "UsageQuota|Usage quotas help link"
+msgstr ""
+
+msgid "UsageQuota|Usage since %{usageSince}"
 msgstr ""
 
 msgid "UsageQuota|When you purchase additional storage, we automatically unlock projects that were locked when you reached the %{actualRepositorySizeLimit} limit."
@@ -44405,6 +44417,9 @@ msgstr ""
 msgid "ciReport|Found %{issuesWithCount}"
 msgstr ""
 
+msgid "ciReport|Full Report"
+msgstr ""
+
 msgid "ciReport|IaC Scanning"
 msgstr ""
 
@@ -44441,6 +44456,9 @@ msgid "ciReport|Loading %{reportName} report"
 msgstr ""
 
 msgid "ciReport|Loading Code Quality report"
+msgstr ""
+
+msgid "ciReport|Manage Licenses"
 msgstr ""
 
 msgid "ciReport|Manage licenses"

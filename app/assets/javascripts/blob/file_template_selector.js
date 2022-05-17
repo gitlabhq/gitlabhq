@@ -1,10 +1,14 @@
 import $ from 'jquery';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 
 export default class FileTemplateSelector {
   constructor(mediator) {
     this.mediator = mediator;
     this.$dropdown = null;
     this.$wrapper = null;
+
+    this.dropdown = null;
+    this.wrapper = null;
   }
 
   init() {
@@ -12,18 +16,21 @@ export default class FileTemplateSelector {
 
     this.$dropdown = $(cfg.dropdown);
     this.$wrapper = $(cfg.wrapper);
-    this.$dropdownIcon = this.$wrapper.find('.dropdown-menu-toggle-icon');
-    this.$loadingIcon = $(
-      '<div class="gl-spinner gl-spinner-orange gl-spinner-sm gl-absolute gl-top-3 gl-right-3 gl-display-none"></div>',
-    ).insertAfter(this.$dropdownIcon);
-    this.$dropdownToggleText = this.$wrapper.find('.dropdown-toggle-text');
+
+    this.dropdown = document.querySelector(cfg.dropdown);
+    this.wrapper = document.querySelector(cfg.wrapper);
+
+    this.dropdownIcon = this.wrapper.querySelector('.dropdown-menu-toggle-icon');
+    this.loadingIcon = loadingIconForLegacyJS({ classes: ['gl-display-none'] });
+    this.dropdown.appendChild(this.loadingIcon);
+    this.dropdownToggleText = this.wrapper.querySelector('.dropdown-toggle-text');
 
     this.initDropdown();
     this.selectInitialTemplate();
   }
 
   selectInitialTemplate() {
-    const template = this.$dropdown.data('selected');
+    const template = this.dropdown.dataset.selected;
 
     if (!template) {
       return;
@@ -33,11 +40,11 @@ export default class FileTemplateSelector {
   }
 
   show() {
-    if (this.$dropdown === null) {
+    if (this.dropdown === null) {
       this.init();
     }
 
-    this.$wrapper.removeClass('hidden');
+    this.wrapper.classList.remove('hidden');
 
     /**
      * We set the focus on the dropdown that was just shown. This is done so that, after selecting
@@ -49,36 +56,36 @@ export default class FileTemplateSelector {
      * closed anymore.
      */
     setTimeout(() => {
-      this.$dropdown.focus();
+      this.dropdown.focus();
     }, 0);
   }
 
   hide() {
-    if (this.$dropdown !== null) {
-      this.$wrapper.addClass('hidden');
+    if (this.dropdown !== null) {
+      this.wrapper.classList.add('hidden');
     }
   }
 
   isHidden() {
-    return !this.$wrapper || this.$wrapper.hasClass('hidden');
+    return !this.wrapper || this.wrapper.classList.contains('hidden');
   }
 
   getToggleText() {
-    return this.$dropdownToggleText.text();
+    return this.dropdownToggleText.textContent;
   }
 
   setToggleText(text) {
-    this.$dropdownToggleText.text(text);
+    this.dropdownToggleText.textContent = text;
   }
 
   renderLoading() {
-    this.$loadingIcon.removeClass('gl-display-none');
-    this.$dropdownIcon.addClass('gl-display-none');
+    this.loadingIcon.classList.remove('gl-display-none');
+    this.dropdownIcon.classList.add('gl-display-none');
   }
 
   renderLoaded() {
-    this.$loadingIcon.addClass('gl-display-none');
-    this.$dropdownIcon.removeClass('gl-display-none');
+    this.loadingIcon.classList.add('gl-display-none');
+    this.dropdownIcon.classList.remove('gl-display-none');
   }
 
   reportSelection(options) {

@@ -68,7 +68,9 @@ module Gitlab
 
               Timeout.timeout(timeout_time) do
                 IpynbDiff.diff(source_diff.old_blob&.data, source_diff.new_blob&.data,
-                               raise_if_invalid_nb: true, diffy_opts: { include_diff_info: true })&.tap do
+                               raise_if_invalid_nb: true,
+                               hide_images: true,
+                               diffy_opts: { include_diff_info: true })&.tap do
                   log_event(LOG_IPYNBDIFF_GENERATED)
                 end
               end

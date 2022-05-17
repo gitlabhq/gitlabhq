@@ -178,7 +178,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/services/ee/service_ping/permit_data_categories_service_spec.rb
     - ee/spec/services/ee/service_ping/service_ping_settings_spec.rb
     - ee/spec/services/geo/blob_download_service_spec.rb
-    - ee/spec/services/geo/file_download_service_spec.rb
     - ee/spec/services/geo/graphql_request_service_spec.rb
     - ee/spec/services/geo/node_status_request_service_spec.rb
     - ee/spec/services/geo/replication_toggle_request_service_spec.rb
@@ -225,8 +224,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/workers/geo/design_repository_sync_worker_spec.rb
     - ee/spec/workers/geo/destroy_worker_spec.rb
     - ee/spec/workers/geo/event_worker_spec.rb
-    - ee/spec/workers/geo/file_download_dispatch_worker_spec.rb
-    - ee/spec/workers/geo/file_download_worker_spec.rb
     - ee/spec/workers/geo/metrics_update_worker_spec.rb
     - ee/spec/workers/geo/prune_event_log_worker_spec.rb
     - ee/spec/workers/geo/registry_sync_worker_spec.rb

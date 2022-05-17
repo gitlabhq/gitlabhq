@@ -1,7 +1,9 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { mapGetters } from 'vuex';
-import { __ } from '~/locale';
+import { mapGetters, mapActions } from 'vuex';
+import { __, sprintf } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import createFlash from '~/flash';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
 
@@ -23,11 +25,11 @@ export default {
     editForm,
     GlIcon,
   },
-
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-
+  mixins: [glFeatureFlagMixin()],
+  inject: ['fullPath'],
   props: {
     isEditable: {
       required: true,
@@ -41,6 +43,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getNoteableData']),
+    isMergeRequest() {
+      return this.getNoteableData.targetType === 'merge_request' && this.glFeatures.movedMrSidebar;
+    },
     issuableDisplayName() {
       const isInIssuePage = this.getNoteableData.targetType === this.$options.issue;
       return isInIssuePage ? __('issue') : __('merge request');
@@ -66,17 +71,49 @@ export default {
   },
 
   methods: {
+    ...mapActions(['updateLockedAttribute']),
     toggleForm() {
       if (this.isEditable) {
         this.isLockDialogOpen = !this.isLockDialogOpen;
       }
+    },
+    toggleLocked() {
+      this.isLoading = true;
+
+      this.updateLockedAttribute({
+        locked: !this.isLocked,
+        fullPath: this.fullPath,
+      })
+        .catch(() => {
+          const flashMessage = __(
+            'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
+          );
+          createFlash({
+            message: sprintf(flashMessage, { issuableDisplayName: this.issuableDisplayName }),
+          });
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   },
 };
 </script>
 
 <template>
-  <div class="block issuable-sidebar-item lock">
+  <li v-if="isMergeRequest" class="gl-new-dropdown-item">
+    <button type="button" class="dropdown-item" @click="toggleLocked">
+      <span class="gl-new-dropdown-item-text-wrapper">
+        <template v-if="isLocked">
+          {{ __('Unlock merge request') }}
+        </template>
+        <template v-else>
+          {{ __('Lock merge request') }}
+        </template>
+      </span>
+    </button>
+  </li>
+  <div v-else class="block issuable-sidebar-item lock">
     <div
       v-gl-tooltip.left.viewport="{ title: tooltipLabel }"
       class="sidebar-collapsed-icon"

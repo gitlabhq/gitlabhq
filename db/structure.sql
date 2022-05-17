@@ -15181,7 +15181,6 @@ CREATE TABLE geo_event_log (
     hashed_storage_migrated_event_id bigint,
     lfs_object_deleted_event_id bigint,
     hashed_storage_attachments_event_id bigint,
-    job_artifact_deleted_event_id bigint,
     reset_checksum_event_id bigint,
     cache_invalidation_event_id bigint,
     container_repository_updated_event_id bigint,
@@ -15252,21 +15251,6 @@ CREATE SEQUENCE geo_hashed_storage_migrated_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE geo_hashed_storage_migrated_events_id_seq OWNED BY geo_hashed_storage_migrated_events.id;
-
-CREATE TABLE geo_job_artifact_deleted_events (
-    id bigint NOT NULL,
-    file_path character varying NOT NULL,
-    job_artifact_id bigint NOT NULL
-);
-
-CREATE SEQUENCE geo_job_artifact_deleted_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_job_artifact_deleted_events_id_seq OWNED BY geo_job_artifact_deleted_events.id;
 
 CREATE TABLE geo_lfs_object_deleted_events (
     id bigint NOT NULL,
@@ -22742,8 +22726,6 @@ ALTER TABLE ONLY geo_hashed_storage_attachments_events ALTER COLUMN id SET DEFAU
 
 ALTER TABLE ONLY geo_hashed_storage_migrated_events ALTER COLUMN id SET DEFAULT nextval('geo_hashed_storage_migrated_events_id_seq'::regclass);
 
-ALTER TABLE ONLY geo_job_artifact_deleted_events ALTER COLUMN id SET DEFAULT nextval('geo_job_artifact_deleted_events_id_seq'::regclass);
-
 ALTER TABLE ONLY geo_lfs_object_deleted_events ALTER COLUMN id SET DEFAULT nextval('geo_lfs_object_deleted_events_id_seq'::regclass);
 
 ALTER TABLE ONLY geo_node_namespace_links ALTER COLUMN id SET DEFAULT nextval('geo_node_namespace_links_id_seq'::regclass);
@@ -24582,9 +24564,6 @@ ALTER TABLE ONLY geo_hashed_storage_attachments_events
 
 ALTER TABLE ONLY geo_hashed_storage_migrated_events
     ADD CONSTRAINT geo_hashed_storage_migrated_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_job_artifact_deleted_events
-    ADD CONSTRAINT geo_job_artifact_deleted_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY geo_lfs_object_deleted_events
     ADD CONSTRAINT geo_lfs_object_deleted_events_pkey PRIMARY KEY (id);
@@ -27792,8 +27771,6 @@ CREATE INDEX index_geo_event_log_on_hashed_storage_attachments_event_id ON geo_e
 
 CREATE INDEX index_geo_event_log_on_hashed_storage_migrated_event_id ON geo_event_log USING btree (hashed_storage_migrated_event_id) WHERE (hashed_storage_migrated_event_id IS NOT NULL);
 
-CREATE INDEX index_geo_event_log_on_job_artifact_deleted_event_id ON geo_event_log USING btree (job_artifact_deleted_event_id) WHERE (job_artifact_deleted_event_id IS NOT NULL);
-
 CREATE INDEX index_geo_event_log_on_lfs_object_deleted_event_id ON geo_event_log USING btree (lfs_object_deleted_event_id) WHERE (lfs_object_deleted_event_id IS NOT NULL);
 
 CREATE INDEX index_geo_event_log_on_repositories_changed_event_id ON geo_event_log USING btree (repositories_changed_event_id) WHERE (repositories_changed_event_id IS NOT NULL);
@@ -27811,8 +27788,6 @@ CREATE INDEX index_geo_event_log_on_reset_checksum_event_id ON geo_event_log USI
 CREATE INDEX index_geo_hashed_storage_attachments_events_on_project_id ON geo_hashed_storage_attachments_events USING btree (project_id);
 
 CREATE INDEX index_geo_hashed_storage_migrated_events_on_project_id ON geo_hashed_storage_migrated_events USING btree (project_id);
-
-CREATE INDEX index_geo_job_artifact_deleted_events_on_job_artifact_id ON geo_job_artifact_deleted_events USING btree (job_artifact_id);
 
 CREATE INDEX index_geo_lfs_object_deleted_events_on_lfs_object_id ON geo_lfs_object_deleted_events USING btree (lfs_object_id);
 
@@ -31213,9 +31188,6 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 
 ALTER TABLE ONLY internal_ids
     ADD CONSTRAINT fk_162941d509 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_176d3fbb5d FOREIGN KEY (job_artifact_deleted_event_id) REFERENCES geo_job_artifact_deleted_events(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_17a5fafbd4 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

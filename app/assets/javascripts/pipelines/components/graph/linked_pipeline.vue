@@ -30,7 +30,11 @@ export default {
     GlLoadingIcon,
     GlTooltip,
   },
-  actionSizeClasses: ['gl-h-7 gl-w-7'],
+  styles: {
+    actionSizeClasses: ['gl-h-7 gl-w-7'],
+    flatLeftBorder: ['gl-rounded-bottom-left-none!', 'gl-rounded-top-left-none!'],
+    flatRightBorder: ['gl-rounded-bottom-right-none!', 'gl-rounded-top-right-none!'],
+  },
   mixins: [glFeatureFlagMixin()],
   props: {
     columnTitle: {
@@ -80,14 +84,18 @@ export default {
 
       return {};
     },
-    buttonBorderClass() {
-      return this.isUpstream ? 'gl-border-r-1!' : 'gl-border-l-1!';
+    buttonBorderClasses() {
+      return this.isUpstream
+        ? ['gl-border-r-0!', ...this.$options.styles.flatRightBorder]
+        : ['gl-border-l-0!', ...this.$options.styles.flatLeftBorder];
     },
     buttonId() {
       return `js-linked-pipeline-${this.pipeline.id}`;
     },
-    cardSpacingClass() {
-      return this.isDownstream ? 'gl-pr-0' : '';
+    cardClasses() {
+      return this.isDownstream
+        ? this.$options.styles.flatRightBorder
+        : this.$options.styles.flatLeftBorder;
     },
     expandedIcon() {
       if (this.isUpstream) {
@@ -213,7 +221,7 @@ export default {
 <template>
   <div
     ref="linkedPipeline"
-    class="gl-h-full gl-display-flex! gl-border-solid gl-border-gray-100 gl-border-1"
+    class="gl-h-full gl-display-flex!"
     :class="flexDirection"
     data-qa-selector="linked_pipeline_container"
     @mouseover="onDownstreamHovered"
@@ -222,21 +230,21 @@ export default {
     <gl-tooltip v-if="showCardTooltip" :target="() => $refs.linkedPipeline">
       {{ cardTooltipText }}
     </gl-tooltip>
-    <div class="gl-w-full gl-bg-white gl-p-3" :class="cardSpacingClass">
-      <div class="gl-display-flex gl-pr-3">
-        <ci-status
-          v-if="!pipelineIsLoading"
-          :status="pipelineStatus"
-          :size="24"
-          css-classes="gl-top-0 gl-pr-2"
-        />
+    <div class="gl-bg-white gl-border gl-p-3 gl-rounded-lg gl-w-full" :class="cardClasses">
+      <div class="gl-display-flex gl-gap-x-3">
+        <ci-status v-if="!pipelineIsLoading" :status="pipelineStatus" :size="24" css-classes="" />
         <div v-else class="gl-pr-3"><gl-loading-icon size="sm" inline /></div>
-        <div class="gl-display-flex gl-flex-direction-column gl-downstream-pipeline-job-width">
+        <div
+          class="gl-display-flex gl-downstream-pipeline-job-width gl-flex-direction-column gl-line-height-normal"
+        >
           <span class="gl-text-truncate" data-testid="downstream-title">
             {{ downstreamTitle }}
           </span>
           <div class="gl-text-truncate">
-            <gl-link class="gl-text-blue-500!" :href="pipeline.path" data-testid="pipelineLink"
+            <gl-link
+              class="gl-text-blue-500! gl-font-sm"
+              :href="pipeline.path"
+              data-testid="pipelineLink"
               >#{{ pipeline.id }}</gl-link
             >
           </div>
@@ -248,13 +256,13 @@ export default {
           :loading="isActionLoading"
           :icon="action.icon"
           class="gl-rounded-full!"
-          :class="$options.actionSizeClasses"
+          :class="$options.styles.actionSizeClasses"
           :aria-label="action.ariaLabel"
           @click="action.method"
           @mouseover="setActionTooltip(true)"
           @mouseout="setActionTooltip(false)"
         />
-        <div v-else :class="$options.actionSizeClasses"></div>
+        <div v-else :class="$options.styles.actionSizeClasses"></div>
       </div>
       <div class="gl-pt-2">
         <gl-badge size="sm" variant="info" data-testid="downstream-pipeline-label">
@@ -265,8 +273,8 @@ export default {
     <div class="gl-display-flex">
       <gl-button
         :id="buttonId"
-        class="gl-shadow-none! gl-rounded-0!"
-        :class="`js-pipeline-expand-${pipeline.id} ${buttonBorderClass}`"
+        class="gl-border! gl-shadow-none! gl-rounded-lg!"
+        :class="[`js-pipeline-expand-${pipeline.id}`, buttonBorderClasses]"
         :icon="expandedIcon"
         :aria-label="__('Expand pipeline')"
         data-testid="expand-pipeline-button"

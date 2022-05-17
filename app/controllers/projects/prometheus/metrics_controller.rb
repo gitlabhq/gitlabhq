@@ -74,9 +74,9 @@ module Projects
       end
 
       def update
-        @metric = update_metrics_service(prometheus_metric).execute
+        @metric = prometheus_metric
 
-        if @metric.persisted?
+        if @metric.update(metrics_params)
           redirect_to edit_project_integration_path(project, ::Integrations::Prometheus),
                       notice: _('Metric was successfully updated.')
         else

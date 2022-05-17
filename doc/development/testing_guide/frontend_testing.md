@@ -466,18 +466,22 @@ it('waits for an Ajax call', () => {
 
 #### Vue rendering
 
-To wait until a Vue component is re-rendered, use either of the equivalent
-[`Vue.nextTick()`](https://vuejs.org/v2/api/#Vue-nextTick) or `vm.$nextTick()`.
+Use [`nextTick()`](https://vuejs.org/v2/api/#Vue-nextTick) to wait until a Vue component is
+re-rendered.
 
 **in Jest:**
 
 ```javascript
-it('renders something', () => {
+import { nextTick } from 'vue';
+
+// ...
+
+it('renders something', async () => {
   wrapper.setProps({ value: 'new value' });
 
-  return wrapper.vm.$nextTick().then(() => {
-    expect(wrapper.text()).toBe('new value');
-  });
+  await nextTick();
+
+  expect(wrapper.text()).toBe('new value');
 });
 ```
 

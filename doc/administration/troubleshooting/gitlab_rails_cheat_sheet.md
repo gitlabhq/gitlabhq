@@ -1239,12 +1239,6 @@ This content has been converted to a Rake task, see [verify database values can 
 Geo::JobArtifactRegistry.failed
 ```
 
-#### Download artifact
-
-```ruby
-Gitlab::Geo::JobArtifactDownloader.new(:job_artifact, <artifact_id>).execute
-```
-
 #### Get a count of the synced artifacts
 
 ```ruby

@@ -41,6 +41,8 @@ module Reenqueuer
   end
 
   def perform(*args)
+    set_custom_lease_key(*args) if self.respond_to?(:set_custom_lease_key)
+
     try_obtain_lease do
       reenqueue(*args) do
         ensure_minimum_duration(minimum_duration) do

@@ -27,6 +27,8 @@ If you are migrating from another CI/CD tool, view this documentation:
 To use GitLab CI/CD:
 
 1. [Ensure you have runners available](#ensure-you-have-runners-available) to run your jobs.
+   GitLab SaaS provides runners, so if you're using GitLab.com, you can skip this step.
+
    If you don't have a runner, [install GitLab Runner](https://docs.gitlab.com/runner/install/)
    and [register a runner](https://docs.gitlab.com/runner/register/) for your instance, project, or group.
 1. [Create a `.gitlab-ci.yml` file](#create-a-gitlab-ciyml-file)

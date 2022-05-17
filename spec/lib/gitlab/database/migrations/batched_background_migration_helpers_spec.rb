@@ -182,5 +182,26 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
         end.to raise_error(RuntimeError, 'Could not find batched background migration')
       end
     end
+
+    context 'when uses a CI connection', :reestablished_active_record_base do
+      before do
+        skip_if_multiple_databases_not_setup
+
+        ActiveRecord::Base.establish_connection(:ci) # rubocop:disable Database/EstablishConnection
+      end
+
+      it 'raises an exception' do
+        ci_migration = create(:batched_background_migration, :active)
+
+        expect do
+          migration.finalize_batched_background_migration(
+            job_class_name: ci_migration.job_class_name,
+            table_name: ci_migration.table_name,
+            column_name: ci_migration.column_name,
+            job_arguments: ci_migration.job_arguments
+          )
+        end.to raise_error /is currently not supported when running in decomposed/
+      end
+    end
   end
 end

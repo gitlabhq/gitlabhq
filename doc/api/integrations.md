@@ -92,7 +92,6 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `api_key` | string | true | User API token. User must have access to task. All comments are attributed to this user. |
 | `restrict_to_branch` | string | false | Comma-separated list of branches to be are automatically inspected. Leave blank to include all branches. |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Asana integration
 
@@ -128,7 +127,6 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | The authentication token
 | `subdomain` | string | false | The subdomain setting |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Assembla integration
 
@@ -169,7 +167,6 @@ Parameters:
 | `build_key` | string | true | Bamboo build plan key like KEY |
 | `username` | string | true | A user with API access, if applicable |
 | `password` | string | true | Password of the user |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Atlassian Bamboo CI integration
 
@@ -206,7 +203,6 @@ Parameters:
 | `new_issue_url` | string | true |  New Issue URL |
 | `issues_url` | string | true | Issue URL |
 | `project_url` | string | true | Project URL |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Bugzilla integration
 
@@ -244,6 +240,8 @@ Parameters:
 | `project_url` | string | true | Pipeline URL. For example, `https://buildkite.com/example/pipeline` |
 | `enable_ssl_verification` | boolean | false | DEPRECATED: This parameter has no effect since SSL verification is always enabled |
 | `push_events` | boolean | false | Enable notifications for push events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
 
 ### Disable Buildkite integration
 
@@ -281,7 +279,6 @@ Parameters:
 | `token`       | string  | true     | Campfire API token. To find it, log into Campfire and select **My info**.                   |
 | `subdomain`   | string  | false    | Campfire subdomain. Text between `https://` and `.campfirenow.com` when you're logged in. |
 | `room`        | string  | false    | Campfire room. The last part of the URL when you're in a room.                              |
-| `push_events` | boolean | false    | Enable notifications for push events.                                                       |
 
 ### Disable Campfire integration
 
@@ -450,7 +447,6 @@ Parameters:
 | `new_issue_url` | string | true |  New Issue URL |
 | `issues_url` | string | true | Issue URL |
 | `project_url` | string | true | Project URL |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Custom Issue Tracker integration
 
@@ -705,7 +701,6 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | Flowdock Git source token |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Flowdock integration
 
@@ -828,7 +823,6 @@ Parameters:
 | `server_host` | string | false | localhost |
 | `server_port` | integer | false | 6659 |
 | `colorize_messages` | boolean | false | Colorize messages |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Irker (IRC gateway) integration
 
@@ -1081,7 +1075,6 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | The Pivotal Tracker token |
 | `restrict_to_branch` | boolean | false | Comma-separated list of branches to automatically inspect. Leave blank to include all branches. |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Pivotal Tracker integration
 
@@ -1156,7 +1149,6 @@ Parameters:
 | `priority` | string | true | The priority |
 | `device` | string | false | Leave blank for all active devices |
 | `sound` | string | false | The sound of the notification |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Pushover integration
 
@@ -1193,7 +1185,6 @@ Parameters:
 | `new_issue_url` | string | true | New Issue URL |
 | `project_url` | string | true | Project URL |
 | `issues_url` | string | true | Issue URL |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable Redmine integration
 
@@ -1399,6 +1390,7 @@ Parameters:
 | `username` | string | true | A user with permissions to trigger a manual build |
 | `password` | string | true | The password of the user |
 | `push_events` | boolean | false | Enable notifications for push events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 
 ### Disable JetBrains TeamCity CI integration
 
@@ -1549,7 +1541,6 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `issues_url` | string | true | Issue URL |
 | `project_url` | string | true | Project URL |
-| `push_events` | boolean | false | Enable notifications for push events |
 
 ### Disable YouTrack integration
 

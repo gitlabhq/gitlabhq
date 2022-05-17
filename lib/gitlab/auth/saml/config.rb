@@ -5,6 +5,10 @@ module Gitlab
     module Saml
       class Config
         class << self
+          def enabled?
+            ::AuthHelper.saml_providers.any?
+          end
+
           def options
             Gitlab::Auth::OAuth::Provider.config_for('saml')
           end

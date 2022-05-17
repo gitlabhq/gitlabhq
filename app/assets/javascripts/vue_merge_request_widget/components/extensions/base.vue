@@ -254,7 +254,7 @@ export default {
         class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
         data-testid="widget-extension-top-level"
       >
-        <div class="gl-flex-grow-1">
+        <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
           <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
           <template v-else-if="hasFetchError">{{ widgetErrorText }}</template>
           <div v-else>

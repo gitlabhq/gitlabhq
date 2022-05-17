@@ -49,4 +49,3 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 
 /label ~"feature flag" ~"type::feature" ~"feature::addition"
-/assign DRI

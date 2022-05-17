@@ -1,8 +1,7 @@
 .detail-page-description.py-2
   - if Feature.enabled?(:updated_mr_header, @project)
     = render 'shared/issuable/status_box', issuable: @merge_request
-    .gl-display-inline.gl-vertical-align-top
-      = merge_request_header(@project, @merge_request)
+    = merge_request_header(@project, @merge_request)
   - else
     %h2.title.mb-0{ data: { qa_selector: 'title_content' } }
       = markdown_field(@merge_request, :title)

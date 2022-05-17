@@ -197,6 +197,8 @@ GitLab 14.2 introduced an issue where a background migration named `BackfillDraf
 
 GitLab 14.4 introduced an issue where a background migration named `PopulateTopicsTotalProjectsCountCache` can be permanently stuck in a **pending** state across upgrades when the instance lacks records that match the migration's target. To clean up this stuck migration, see the [14.4.0 version-specific instructions](#1440).
 
+GitLab 14.5 introduced an issue where a background migration named `UpdateVulnerabilityOccurrencesLocation` can be permanently stuck in a **pending** state across upgrades when the instance lacks records that match the migration's target. To clean up this stuck migration, see the [14.5.0 version-specific instructions](#1450).
+
 GitLab 14.8 introduced an issue where a background migration named `PopulateTopicsNonPrivateProjectsCount` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [14.8.0 version-specific instructions](#1480).
 
 GitLab 14.9 introduced an issue where a background migration named `ResetDuplicateCiRunnersTokenValuesOnProjects` can be permanently stuck in a **pending** state across upgrades when the instance lacks records that match the migration's target. To clean up this stuck migration, see the [14.9.0 version-specific instructions](#1490).
@@ -544,6 +546,18 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   The time it takes to complete depends on the size of the table, which can be obtained by using `select pg_size_pretty(pg_total_relation_size('merge_request_diff_commits'));`.
 
   For more information, refer to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331823).
+
+- GitLab 14.5.0 includes a
+  [background migration `UpdateVulnerabilityOccurrencesLocation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72788)
+  that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
+
+  To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+    ```ruby
+        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "UpdateVulnerabilityOccurrencesLocation").find_each do |job|
+          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("UpdateVulnerabilityOccurrencesLocation", job.arguments)
+        end
+    ```
 
 ### 14.4.4
 

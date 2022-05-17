@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
 import { IssuableType } from '~/issues/constants';
@@ -43,6 +44,7 @@ export default {
     GlBadge,
     GlIcon,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     query: { default: null },
     projectPath: { default: null },
@@ -69,7 +71,13 @@ export default {
   },
   computed: {
     badgeClass() {
-      return CLASSES[this.state];
+      return [
+        CLASSES[this.state],
+        {
+          'gl-vertical-align-bottom':
+            this.issuableType === IssuableType.MergeRequest && this.glFeatures.updatedMrHeader,
+        },
+      ];
     },
     badgeVariant() {
       if (this.state === IssuableStates.Opened) {

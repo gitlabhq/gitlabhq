@@ -33,7 +33,6 @@ module Gitlab
           def import
             delete_stale_metrics
             create_or_update_metrics
-            update_prometheus_environments
           end
 
           # rubocop: disable CodeReuse/ActiveRecord
@@ -47,8 +46,6 @@ module Gitlab
 
               affected_metric_ids << prometheus_metric.id
             end
-
-            @affected_environment_ids += find_alerts(affected_metric_ids).get_environment_id
           end
           # rubocop: enable CodeReuse/ActiveRecord
 
@@ -62,22 +59,7 @@ module Gitlab
 
             return unless stale_metrics.exists?
 
-            delete_stale_alerts(stale_metrics)
             stale_metrics.each_batch { |batch| batch.delete_all }
-          end
-
-          def delete_stale_alerts(stale_metrics)
-            stale_alerts = find_alerts(stale_metrics)
-
-            affected_environment_ids = stale_alerts.get_environment_id
-            return unless affected_environment_ids.present?
-
-            @affected_environment_ids += affected_environment_ids
-            stale_alerts.each_batch { |batch| batch.delete_all }
-          end
-
-          def find_alerts(metrics)
-            Projects::Prometheus::AlertsFinder.new(project: project, metric: metrics).execute
           end
 
           def prometheus_metrics_attributes
@@ -86,19 +68,6 @@ module Gitlab
                 dashboard_hash,
                 project: project,
                 dashboard_path: dashboard_path
-              ).execute
-            end
-          end
-
-          def update_prometheus_environments
-            affected_environments = ::Environment.for_id(@affected_environment_ids.flatten.uniq).for_project(project)
-
-            return unless affected_environments.exists?
-
-            affected_environments.each do |affected_environment|
-              ::Clusters::Applications::ScheduleUpdateService.new(
-                affected_environment.cluster_prometheus_adapter,
-                project
               ).execute
             end
           end

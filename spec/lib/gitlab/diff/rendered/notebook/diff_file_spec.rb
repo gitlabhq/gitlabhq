@@ -141,5 +141,9 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
         expect(nb_file.highlighted_diff_lines[12].old_pos).to eq(18)
       end
     end
+
+    it 'computes de first line where the remove would appear' do
+      expect(nb_file.highlighted_diff_lines.map(&:text).join('')).to include('[Hidden Image Output]')
+    end
   end
 end
