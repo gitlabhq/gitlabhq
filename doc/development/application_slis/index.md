@@ -30,7 +30,22 @@ to be emitted from the rails application:
 
 ## Defining a new SLI
 
-An SLI can be defined using the `Gitlab::Metrics::Sli` class.
+An SLI can be defined using the `Gitlab::Metrics::Sli::Apdex` or
+`Gitlab::Metrics::Sli::ErrorRate` class. These work in broadly the same way, but
+for clarity, they define different metric names:
+
+1. `Gitlab::Metrics::Sli::Apdex.new('foo')` defines:
+    1. `gitlab_sli:foo_apdex:total` for the total number of measurements.
+    1. `gitlab_sli:foo_apdex:success_total` for the number of successful
+       measurements.
+1. `Gitlab::Metrics::Sli::ErrorRate.new('foo')` defines:
+    1. `gitlab_sli:foo_error_rate:total` for the total number of measurements.
+    1. `gitlab_sli:foo_error_rate:error_total` for the number of error
+       measurements - as this is an error rate, it's more natural to talk about
+       errors divided by the total.
+
+As shown in this example, they can share a base name (`foo` in this example). We
+recommend this when they refer to the same operation.
 
 Before the first scrape, it is important to have [initialized the SLI
 with all possible
@@ -41,7 +56,7 @@ To initialize an SLI, use the `.initialize_sli` class method, for
 example:
 
 ```ruby
-Gitlab::Metrics::Sli.initialize_sli(:received_email, [
+Gitlab::Metrics::Sli::Apdex.initialize_sli(:received_email, [
   {
     feature_category: :team_planning,
     email_type: :create_issue
@@ -67,7 +82,7 @@ this adds is understood and acceptable.
 Tracking an operation in the newly defined SLI can be done like this:
 
 ```ruby
-Gitlab::Metrics::Sli[:received_email].increment(
+Gitlab::Metrics::Sli::Apdex[:received_email].increment(
   labels: {
     feature_category: :service_desk,
     email_type: :service_desk
@@ -79,20 +94,26 @@ Gitlab::Metrics::Sli[:received_email].increment(
 Calling `#increment` on this SLI will increment the total Prometheus counter
 
 ```prometheus
-gitlab_sli:received_email:total{ feature_category='service_desk', email_type='service_desk' }
+gitlab_sli:received_email_apdex:total{ feature_category='service_desk', email_type='service_desk' }
 ```
 
-If the `success:` argument passed is truthy, then the success counter
-will also be incremented:
+If the `success:` argument passed is truthy, then the success counter will also
+be incremented:
 
 ```prometheus
-gitlab_sli:received_email:success_total{ feature_category='service_desk', email_type='service_desk' }
+gitlab_sli:received_email_apdex:success_total{ feature_category='service_desk', email_type='service_desk' }
 ```
 
-So far, only tracking `apdex` using a success rate is supported. If you
-need to track errors this way, please upvote
-[this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1395)
-and leave a comment so we can prioritize this.
+For error rate SLIs, the equivalent argument is called `error:`:
+
+```ruby
+Gitlab::Metrics::Sli::ErrorRate[:merge].increment(
+  labels: {
+    merge_type: :fast_forward
+  },
+  error: !merge_success?
+)
+```
 
 ## Using the SLI in service monitoring and alerts
 

@@ -24,7 +24,7 @@ module Resolvers
       end
 
       def resolve(ids: nil, filenames: nil, at_version: nil)
-        context.scoped_set!(:at_version_argument, VersionID.coerce_isolated_input(at_version)) if at_version
+        context.scoped_set!(:at_version_argument, at_version) if at_version
 
         ::Gitlab::Graphql::Lazy.with_value(version(at_version)) do |visible_at|
           ::DesignManagement::DesignsFinder.new(

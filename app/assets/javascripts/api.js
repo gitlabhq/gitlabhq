@@ -93,6 +93,7 @@ const Api = {
   groupNotificationSettingsPath: '/api/:version/groups/:id/notification_settings',
   notificationSettingsPath: '/api/:version/notification_settings',
   deployKeysPath: '/api/:version/deploy_keys',
+  secureFilePath: '/api/:version/projects/:project_id/secure_files/:secure_file_id',
   secureFilesPath: '/api/:version/projects/:project_id/secure_files',
   dependencyProxyPath: '/api/:version/groups/:id/dependency_proxy/cache',
 
@@ -976,6 +977,22 @@ const Api = {
     const url = Api.buildUrl(this.secureFilesPath).replace(':project_id', projectId);
 
     return axios.get(url, { params: { per_page: DEFAULT_PER_PAGE, ...options } });
+  },
+
+  uploadProjectSecureFile(projectId, fileData) {
+    const url = Api.buildUrl(this.secureFilesPath).replace(':project_id', projectId);
+
+    const headers = { 'Content-Type': 'multipart/form-data' };
+
+    return axios.post(url, fileData, { headers });
+  },
+
+  deleteProjectSecureFile(projectId, secureFileId) {
+    const url = Api.buildUrl(this.secureFilePath)
+      .replace(':project_id', projectId)
+      .replace(':secure_file_id', secureFileId);
+
+    return axios.delete(url);
   },
 
   async updateNotificationSettings(projectId, groupId, data = {}) {

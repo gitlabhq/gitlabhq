@@ -10,7 +10,7 @@ type: reference, api
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.7.
 
 WARNING:
-These endpoints are deprecated and will be removed in GitLab 14.0. Use the [DORA metrics API](dora/metrics.md) instead.
+These endpoints have been removed in GitLab 14.0. Use the [DORA metrics API](dora/metrics.md) instead.
 
 All methods require reporter authorization.
 

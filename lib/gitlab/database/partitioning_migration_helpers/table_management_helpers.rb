@@ -6,7 +6,6 @@ module Gitlab
       module TableManagementHelpers
         include ::Gitlab::Database::SchemaHelpers
         include ::Gitlab::Database::MigrationHelpers
-        include ::Gitlab::Database::Migrations::BackgroundMigrationHelpers
 
         ALLOWED_TABLES = %w[audit_events web_hook_logs].freeze
         ERROR_SCOPE = 'table partitioning'

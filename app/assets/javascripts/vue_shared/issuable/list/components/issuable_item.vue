@@ -55,7 +55,7 @@ export default {
       return createdSecondsAgo < SECONDS_IN_DAY;
     },
     author() {
-      return this.issuable.author;
+      return this.issuable.author || {};
     },
     webUrl() {
       return this.issuable.gitlabWebUrl || this.issuable.webUrl;
@@ -215,7 +215,7 @@ export default {
         <span class="gl-display-none gl-sm-display-inline">
           <span aria-hidden="true">&middot;</span>
           <span class="issuable-authored gl-mr-3">
-            <gl-sprintf :message="__('created %{timeAgo} by %{author}')">
+            <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
               <template #timeAgo>
                 <span
                   v-gl-tooltip.bottom
@@ -239,6 +239,17 @@ export default {
                 >
                   <span class="author">{{ author.name }}</span>
                 </gl-link>
+              </template>
+            </gl-sprintf>
+            <gl-sprintf v-else :message="__('created %{timeAgo}')">
+              <template #timeAgo>
+                <span
+                  v-gl-tooltip.bottom
+                  :title="tooltipTitle(issuable.createdAt)"
+                  data-testid="issuable-created-at"
+                >
+                  {{ createdAt }}
+                </span>
               </template>
             </gl-sprintf>
           </span>

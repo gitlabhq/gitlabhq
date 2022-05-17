@@ -1581,6 +1581,9 @@ msgstr ""
 msgid "A file with '%{file_name}' already exists in %{branch} branch"
 msgstr ""
 
+msgid "A file with this name already exists."
+msgstr ""
+
 msgid "A group is a collection of several projects"
 msgstr ""
 
@@ -11462,6 +11465,9 @@ msgstr ""
 msgid "DastProfiles|Password form field"
 msgstr ""
 
+msgid "DastProfiles|Profile is being used by this on-demand scan"
+msgstr ""
+
 msgid "DastProfiles|Profile name"
 msgstr ""
 
@@ -11933,6 +11939,9 @@ msgid "Delete %{name}"
 msgstr ""
 
 msgid "Delete Comment"
+msgstr ""
+
+msgid "Delete File"
 msgstr ""
 
 msgid "Delete Internal Note"
@@ -15943,6 +15952,9 @@ msgstr ""
 msgid "File templates"
 msgstr ""
 
+msgid "File too large. Secure Files must be less than %{limit} MB."
+msgstr ""
+
 msgid "File upload error."
 msgstr ""
 
@@ -19358,6 +19370,9 @@ msgid "In the background, we're attempting to connect you again."
 msgstr ""
 
 msgid "In this page you will find information about the settings that are used in your current instance."
+msgstr ""
+
+msgid "In use"
 msgstr ""
 
 msgid "InProductMarketing|%{organization_name} logo"
@@ -33422,6 +33437,15 @@ msgstr ""
 msgid "Secure token that identifies an external storage request."
 msgstr ""
 
+msgid "SecureFiles|Delete %{name}?"
+msgstr ""
+
+msgid "SecureFiles|Delete secure file"
+msgstr ""
+
+msgid "SecureFiles|Secure File %{name} will be permanently deleted. Are you sure?"
+msgstr ""
+
 msgid "Security"
 msgstr ""
 
@@ -40577,6 +40601,9 @@ msgid "Uploaded"
 msgstr ""
 
 msgid "Uploading changes to terminal"
+msgstr ""
+
+msgid "Uploading..."
 msgstr ""
 
 msgid "Upstream"

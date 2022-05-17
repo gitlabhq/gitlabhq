@@ -101,6 +101,15 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'Rakefile'       | [:backend]
       'FOO_VERSION'    | [:backend]
 
+      'lib/scripts/bar.rb'                                    | [:backend, :tooling]
+      'lib/scripts/bar.js'                                    | [:frontend, :tooling]
+      'scripts/bar.rb'                                        | [:backend, :tooling]
+      'scripts/bar.js'                                        | [:frontend, :tooling]
+      'lib/scripts/subdir/bar.rb'                             | [:backend, :tooling]
+      'lib/scripts/subdir/bar.js'                             | [:frontend, :tooling]
+      'scripts/subdir/bar.rb'                                 | [:backend, :tooling]
+      'scripts/subdir/bar.js'                                 | [:frontend, :tooling]
+
       'Dangerfile'                                            | [:tooling]
       'danger/bundle_size/Dangerfile'                         | [:tooling]
       'ee/danger/bundle_size/Dangerfile'                      | [:tooling]

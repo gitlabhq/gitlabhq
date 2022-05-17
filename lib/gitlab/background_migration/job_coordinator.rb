@@ -14,7 +14,7 @@ module Gitlab
           worker_class = worker_for_tracking_database[tracking_database]
 
           if worker_class.nil?
-            raise ArgumentError, "tracking_database must be one of [#{worker_for_tracking_database.keys.join(', ')}]"
+            raise ArgumentError, "The '#{tracking_database}' must be one of #{worker_for_tracking_database.keys.to_a}"
           end
 
           new(worker_class)

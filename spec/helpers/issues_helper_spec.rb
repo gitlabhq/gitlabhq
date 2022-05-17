@@ -302,6 +302,7 @@ RSpec.describe IssuesHelper do
         is_anonymous_search_disabled: 'true',
         is_issue_repositioning_disabled: 'true',
         is_project: 'true',
+        is_public_visibility_restricted: 'false',
         is_signed_in: current_user.present?.to_s,
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
         markdown_help_path: help_page_path('user/markdown'),

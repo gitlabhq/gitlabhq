@@ -157,10 +157,6 @@ module Types
     end
 
     def milestone(id:)
-      # This field coerces its ID, and thus allows the use of ID typed values.
-      # This should be removed when app/graphql/queries/burndown_chart/burnup.query.graphql
-      # has been fixed/removed and as part of !83457
-      id = ::Types::GlobalIDType[Milestone].coerce_input(id, context)
       GitlabSchema.find_by_gid(id)
     end
 

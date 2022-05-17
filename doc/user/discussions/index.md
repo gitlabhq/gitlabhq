@@ -303,7 +303,7 @@ To resolve a thread:
 
 At the top of the page, the number of unresolved threads is updated:
 
-![Count of unresolved threads](img/unresolved_threads_v14_1.png)
+![Count of unresolved threads](img/unresolved_threads_v15.png)
 
 ### Move all unresolved threads in a merge request to an issue
 
@@ -311,7 +311,7 @@ If you have multiple unresolved threads in a merge request, you can
 create an issue to resolve them separately. In the merge request, at the top of the page,
 select **Create issue to resolve all threads** (**{issue-new}**):
 
-![Open new issue for all unresolved threads](img/create-new-issue_v14_3.png)
+![Open new issue for all unresolved threads](img/create-new-issue_v15.png)
 
 All threads are marked as resolved, and a link is added from the merge request to
 the newly created issue.
@@ -330,7 +330,8 @@ the newly created issue.
 ### Prevent merge unless all threads are resolved
 
 You can prevent merge requests from being merged until all threads are
-resolved.
+resolved. When this setting is enabled, the **Unresolved threads** counter in a merge request
+is shown in orange when at least one thread remains unresolved.
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.

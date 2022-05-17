@@ -146,7 +146,7 @@ To remove a page:
    Use [feature X](<link-to-issue>) instead.
    ```
 
-1. Remove the page from the left nav.
+1. Remove the page's entry from the global navigation by editing [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`.
 
 This content is removed from the documentation as part of the Technical Writing team's
 [regularly scheduled tasks](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#regularly-scheduled-tasks).
@@ -163,7 +163,7 @@ To remove a topic:
 
    ```markdown
    <!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-   
+
    ## Title (removed) **(ULTIMATE SELF)**
 
    This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8

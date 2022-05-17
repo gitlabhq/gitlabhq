@@ -82,6 +82,7 @@ describe('CE IssuesListApp component', () => {
     isAnonymousSearchDisabled: false,
     isIssueRepositioningDisabled: false,
     isProject: true,
+    isPublicVisibilityRestricted: false,
     isSignedIn: true,
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
@@ -930,6 +931,25 @@ describe('CE IssuesListApp component', () => {
           });
         });
       });
+    });
+  });
+
+  describe('public visibility', () => {
+    it.each`
+      description                                                                    | isPublicVisibilityRestricted | isSignedIn | hideUsers
+      ${'shows users when public visibility is not restricted and is not signed in'} | ${false}                     | ${false}   | ${false}
+      ${'shows users when public visibility is not restricted and is signed in'}     | ${false}                     | ${true}    | ${false}
+      ${'hides users when public visibility is restricted and is not signed in'}     | ${true}                      | ${false}   | ${true}
+      ${'shows users when public visibility is restricted and is signed in'}         | ${true}                      | ${true}    | ${false}
+    `('$description', ({ isPublicVisibilityRestricted, isSignedIn, hideUsers }) => {
+      const mockQuery = jest.fn().mockResolvedValue(defaultQueryResponse);
+      wrapper = mountComponent({
+        provide: { isPublicVisibilityRestricted, isSignedIn },
+        issuesQueryResponse: mockQuery,
+      });
+      jest.runOnlyPendingTimers();
+
+      expect(mockQuery).toHaveBeenCalledWith(expect.objectContaining({ hideUsers }));
     });
   });
 });

@@ -22,8 +22,14 @@ module NextInstanceOf
   def stub_new(target, number, ordered = false, *new_args, &blk)
     receive_new = receive(:new)
     receive_new.ordered if ordered
-    receive_new.exactly(number).times if number
     receive_new.with(*new_args) if new_args.any?
+
+    if number.is_a?(Range)
+      receive_new.at_least(number.begin).times if number.begin
+      receive_new.at_most(number.end).times if number.end
+    elsif number
+      receive_new.exactly(number).times
+    end
 
     target.to receive_new.and_wrap_original do |method, *original_args|
       method.call(*original_args).tap(&blk)

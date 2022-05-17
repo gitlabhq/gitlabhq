@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::TestBackgroundRunner, :redis do
+  include Gitlab::Database::Migrations::ReestablishedConnectionStack
   include Gitlab::Database::Migrations::BackgroundMigrationHelpers
   include Database::MigrationTestingHelpers
 
@@ -13,6 +14,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBackgroundRunner, :redis do
   end
 
   let(:result_dir) { Dir.mktmpdir }
+  let(:connection) { ApplicationRecord.connection }
 
   after do
     FileUtils.rm_rf(result_dir)

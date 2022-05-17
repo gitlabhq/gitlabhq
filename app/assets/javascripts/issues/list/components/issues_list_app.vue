@@ -125,6 +125,7 @@ export default {
     'isAnonymousSearchDisabled',
     'isIssueRepositioningDisabled',
     'isProject',
+    'isPublicVisibilityRestricted',
     'isSignedIn',
     'jiraIntegrationPath',
     'newIssuePath',
@@ -209,6 +210,7 @@ export default {
       const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
         fullPath: this.fullPath,
+        hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
         iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         isProject: this.isProject,
         isSignedIn: this.isSignedIn,

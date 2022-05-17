@@ -17,7 +17,7 @@ fragment IssueFragment on Issue {
   userDiscussionsCount @include(if: $isSignedIn)
   webPath
   webUrl
-  assignees {
+  assignees @skip(if: $hideUsers) {
     nodes {
       __typename
       id
@@ -27,7 +27,7 @@ fragment IssueFragment on Issue {
       webUrl
     }
   }
-  author {
+  author @skip(if: $hideUsers) {
     __typename
     id
     avatarUrl

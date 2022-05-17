@@ -101,6 +101,8 @@ module Tooling
         %r{\A\.editorconfig\z} => :tooling,
         %r{Dangerfile\z} => :tooling,
         %r{\A((ee|jh)/)?(danger/|tooling/danger/)} => :tooling,
+        %r{\A((ee|jh)/)?(lib/)?scripts/.*\.rb} => [:backend, :tooling],
+        %r{\A((ee|jh)/)?(lib/)?scripts/.*\.js} => [:frontend, :tooling],
         %r{\A((ee|jh)/)?scripts/} => :tooling,
         %r{\Atooling/} => :tooling,
         %r{(CODEOWNERS)} => :tooling,

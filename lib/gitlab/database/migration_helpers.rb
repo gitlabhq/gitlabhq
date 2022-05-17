@@ -3,6 +3,7 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      include Migrations::ReestablishedConnectionStack
       include Migrations::BackgroundMigrationHelpers
       include Migrations::BatchedBackgroundMigrationHelpers
       include DynamicModelHelpers

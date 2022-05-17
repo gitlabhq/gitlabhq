@@ -50,8 +50,6 @@ module Mutations
       private
 
       def authorized_find_task!(task_id)
-        # TODO: Remove coercion when working on https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        task_id = ::Types::GlobalIDType[::WorkItem].coerce_isolated_input(task_id)
         task = ::Gitlab::Graphql::Lazy.force(GitlabSchema.find_by_gid(task_id))
 
         if current_user.can?(:delete_work_item, task)
@@ -64,8 +62,6 @@ module Mutations
 
       # method used by `authorized_find!(id: id)`
       def find_object(id:)
-        # TODO: Remove coercion when working on https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        id = ::Types::GlobalIDType[::WorkItem].coerce_isolated_input(id)
         GitlabSchema.find_by_gid(id)
       end
     end

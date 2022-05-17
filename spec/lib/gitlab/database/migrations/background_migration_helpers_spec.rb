@@ -6,12 +6,21 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
   let(:base_class) { ActiveRecord::Migration }
 
   let(:model) do
-    base_class.new.extend(described_class)
+    base_class.new
+      .extend(described_class)
+      .extend(Gitlab::Database::Migrations::ReestablishedConnectionStack)
   end
 
-  shared_examples_for 'helpers that enqueue background migrations' do |worker_class, tracking_database|
+  shared_examples_for 'helpers that enqueue background migrations' do |worker_class, connection_class, tracking_database|
     before do
       allow(model).to receive(:tracking_database).and_return(tracking_database)
+
+      # Due to lib/gitlab/database/load_balancing/configuration.rb:92 requiring RequestStore
+      # we cannot use stub_feature_flags(force_no_sharing_primary_model: true)
+      allow(connection_class.connection.load_balancer.configuration)
+        .to receive(:use_dedicated_connection?).and_return(true)
+
+      allow(model).to receive(:connection).and_return(connection_class.connection)
     end
 
     describe '#queue_background_migration_jobs_by_range_at_intervals' do
@@ -203,6 +212,22 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
         end
       end
 
+      context 'when using Migration[2.0]' do
+        let(:base_class) { Class.new(Gitlab::Database::Migration[2.0]) }
+
+        context 'when restriction is set to gitlab_shared' do
+          before do
+            base_class.restrict_gitlab_migration gitlab_schema: :gitlab_shared
+          end
+
+          it 'does raise an exception' do
+            expect do
+              model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)
+            end.to raise_error /use `restrict_gitlab_migration:` " with `:gitlab_shared`/
+          end
+        end
+      end
+
       context 'when within transaction' do
         before do
           allow(model).to receive(:transaction_open?).and_return(true)
@@ -239,6 +264,27 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
 
       it 'returns the expected duration' do
         expect(subject).to eq(20.minutes)
+      end
+
+      context 'when using Migration[2.0]' do
+        let(:base_class) { Class.new(Gitlab::Database::Migration[2.0]) }
+
+        it 'does re-enqueue pending jobs' do
+          subject
+
+          expect(worker_class.jobs).not_to be_empty
+        end
+
+        context 'when restriction is set' do
+          before do
+            base_class.restrict_gitlab_migration gitlab_schema: :gitlab_main
+          end
+
+          it 'does raise an exception' do
+            expect { subject }
+              .to raise_error /The `#requeue_background_migration_jobs_by_range_at_intervals` cannot use `restrict_gitlab_migration:`./
+          end
+        end
       end
 
       context 'when within transaction' do
@@ -373,18 +419,37 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       end
 
       context 'when using Migration[2.0]' do
-        let(:base_class) { ::Gitlab::Database::Migration[2.0] }
+        let(:base_class) { Class.new(Gitlab::Database::Migration[2.0]) }
 
-        let!(:job_class) do
-          Class.new do
-            def perform(*arguments)
-            end
+        it_behaves_like 'finalized tracked background migration', worker_class do
+          before do
+            model.finalize_background_migration(job_class_name)
           end
         end
 
-        it 'does raise an exception' do
-          expect { model.finalize_background_migration(job_class_name, delete_tracking_jobs: %w[pending succeeded]) }
-            .to raise_error /is currently not supported with/
+        context 'when restriction is set' do
+          before do
+            base_class.restrict_gitlab_migration gitlab_schema: :gitlab_main
+          end
+
+          it 'does raise an exception' do
+            expect { model.finalize_background_migration(job_class_name, delete_tracking_jobs: %w[pending succeeded]) }
+              .to raise_error /The `#finalize_background_migration` cannot use `restrict_gitlab_migration:`./
+          end
+        end
+      end
+
+      context 'when running migration in reconfigured ActiveRecord::Base context' do
+        it_behaves_like 'reconfigures connection stack', tracking_database do
+          it 'does restore connection hierarchy' do
+            expect_next_instances_of(job_class, 1..) do |job|
+              expect(job).to receive(:perform) do
+                validate_connections!
+              end
+            end
+
+            model.finalize_background_migration(job_class_name, delete_tracking_jobs: %w[pending succeeded])
+          end
         end
       end
 
@@ -505,7 +570,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
   end
 
   context 'when the migration is running against the main database' do
-    it_behaves_like 'helpers that enqueue background migrations', BackgroundMigrationWorker, 'main'
+    it_behaves_like 'helpers that enqueue background migrations', BackgroundMigrationWorker, ActiveRecord::Base, 'main'
   end
 
   context 'when the migration is running against the ci database', if: Gitlab::Database.has_config?(:ci) do
@@ -515,7 +580,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       end
     end
 
-    it_behaves_like 'helpers that enqueue background migrations', BackgroundMigration::CiDatabaseWorker, 'ci'
+    it_behaves_like 'helpers that enqueue background migrations', BackgroundMigration::CiDatabaseWorker, Ci::ApplicationRecord, 'ci'
   end
 
   describe '#delete_job_tracking' do

@@ -27,7 +27,6 @@ Rails.autoloaders.each do |autoloader|
     'dn' => 'DN',
     'gitlab_cli_activity_unique_counter' => 'GitLabCliActivityUniqueCounter',
     'global_id_type' => 'GlobalIDType',
-    'global_id_compatibility' => 'GlobalIDCompatibility',
     'hll' => 'HLL',
     'hll_redis_counter' => 'HLLRedisCounter',
     'redis_hll_metric' => 'RedisHLLMetric',

@@ -5,16 +5,16 @@ module Gitlab
     module RailsSlis
       class << self
         def initialize_request_slis!
-          Gitlab::Metrics::Sli.initialize_sli(:rails_request_apdex, possible_request_labels) unless Gitlab::Metrics::Sli.initialized?(:rails_request_apdex)
-          Gitlab::Metrics::Sli.initialize_sli(:graphql_query_apdex, possible_graphql_query_labels) unless Gitlab::Metrics::Sli.initialized?(:graphql_query_apdex)
+          Gitlab::Metrics::Sli::Apdex.initialize_sli(:rails_request, possible_request_labels)
+          Gitlab::Metrics::Sli::Apdex.initialize_sli(:graphql_query, possible_graphql_query_labels)
         end
 
         def request_apdex
-          Gitlab::Metrics::Sli[:rails_request_apdex]
+          Gitlab::Metrics::Sli::Apdex[:rails_request]
         end
 
         def graphql_query_apdex
-          Gitlab::Metrics::Sli[:graphql_query_apdex]
+          Gitlab::Metrics::Sli::Apdex[:graphql_query]
         end
 
         private

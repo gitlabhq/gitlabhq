@@ -176,4 +176,3 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 ```
 
 /label ~"feature flag" ~"type::feature" ~"feature::addition"
-/assign DRI
