@@ -23,7 +23,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
       title: GitHub Flavored Markdown Spec
       version: 0.29
       date: '2019-04-06'
-      license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
+      license: '[CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)'
       ...
 
       # Introduction
@@ -141,7 +141,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
       expect(glfm_contents).not_to match(/^version: \d\.\d/m)
       expect(glfm_contents).not_to match(/^date: /m)
       expect(glfm_contents).not_to match(/^license: /m)
-      expect(glfm_contents).to match(/#{Regexp.escape(described_class::GLFM_SPEC_TXT_HEADER)}\n/m)
+      expect(glfm_contents).to match(/#{Regexp.escape(described_class::GLFM_SPEC_TXT_HEADER)}\n/mo)
     end
 
     it 'replaces the intro section with the GitLab version' do

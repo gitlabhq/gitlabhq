@@ -82,9 +82,8 @@ secret_detection:
     expire_in: 1 week  # GitLab-specific
 
 gemnasium-dependency_scanning:
-  before_script:
-    # git-lfs is needed for auto-remediation
-    - apk add git-lfs
+  variables:
+    DS_REMEDIATE: "false"
   rules: !reference [".reports:rules:gemnasium-dependency_scanning", rules]
 
 gemnasium-python-dependency_scanning:

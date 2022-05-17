@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'fileutils'
+require 'open3'
 
 module Glfm
   module Shared
@@ -23,6 +24,20 @@ module Glfm
     # redundant here, so not including it.
     def output(string)
       puts string
+    end
+
+    def run_external_cmd(cmd)
+      # noinspection RubyMismatchedArgumentType
+      rails_root = File.expand_path('../../../', __dir__)
+
+      # See https://stackoverflow.com/a/20001569/25192
+      stdout_and_stderr_str, status = Open3.capture2e(cmd, chdir: rails_root)
+
+      return stdout_and_stderr_str if status.success?
+
+      warn("Error running command `#{cmd}`\n")
+      warn(stdout_and_stderr_str)
+      raise
     end
   end
 end

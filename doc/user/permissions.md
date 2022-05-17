@@ -550,7 +550,7 @@ Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
 
 An Auditor user should be able to access all projects and groups of a GitLab instance
-with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#permissions-and-restrictions-of-an-auditor-user).
+with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#auditor-user-permissions-and-restrictions).
 
 [Read more about Auditor users.](../administration/auditor_users.md)
 

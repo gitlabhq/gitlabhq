@@ -1,1 +1,17 @@
-PLACEHOLDER FILE. Actual contents will be added by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84347
+---
+- 06_05__inlines__emphasis_and_strong_emphasis__37:
+  skip_update_example_snapshots: 'Psych YAML library has a problem with dumping "5__6__78", it thinks its an invalid integer'
+- 07_01_first_gitlab_specific_section_with_examples_strong_but_with_two_asterisks:
+  skip_update_example_snapshots: false
+  skip_running_snapshot_static_html_tests: false
+  skip_running_snapshot_wysiwyg_html_tests: false
+  skip_running_snapshot_prosemirror_json_tests: false
+  skip_running_conformance_static_tests: false
+  skip_running_conformance_wysiwyg_tests: false
+- 07_02_first_gitlab_specific_section_with_examples_strong_but_with_html:
+  skip_update_example_snapshots: false
+  skip_running_snapshot_static_html_tests: false
+  skip_running_snapshot_wysiwyg_html_tests: false
+  skip_running_snapshot_prosemirror_json_tests: false
+  skip_running_conformance_static_tests: false
+  skip_running_conformance_wysiwyg_tests: false

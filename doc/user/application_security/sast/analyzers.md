@@ -92,6 +92,63 @@ normalized into common values, for example, `severity` and `confidence`.
 - ⚠ => Data is available, but it's partially reliable, or it has to be extracted from unstructured content.
 - ✗ => Data is not available or it would require specific, inefficient or unreliable, logic to obtain it.
 
+## Transition to Semgrep-based scanning
+
+SAST includes a [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) that covers [multiple languages](index.md#supported-languages-and-frameworks).
+GitLab maintains the analyzer and writes detection rules for it.
+
+If you use the [GitLab-managed CI/CD template](index.md#configuration), the Semgrep-based analyzer operates alongside other language-specific analyzers.
+It runs with GitLab-managed detection rules that mimic the other analyzers' detection rules.
+Work to remove language-specific analyzers and replace them with the Semgrep-based analyzer is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5245).
+
+You can choose to disable the other analyzers early and use Semgrep-based scanning for supported languages before the default behavior changes. If you do so:
+
+- You'll enjoy significantly faster scanning, reduced CI minutes usage, and more customizable scanning rules.
+- However, vulnerabilities previously reported by language-specific analyzers will be reported again under certain conditions, including if you've dismissed the vulnerabilities before. The system behavior depends on:
+  - whether you've excluded the Semgrep-based analyzer from running in the past.
+  - which analyzer first discovered the vulnerabilities shown in the project's [Vulnerability Report](../vulnerability_report/).
+
+### Vulnerability translation
+
+When you switch analyzers for a language, vulnerabilities may not match up.
+
+The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to Semgrep for certain languages:
+
+- For C, a vulnerability is moved if it has only ever been detected by Flawfinder in pipelines where Semgrep also detected it. Semgrep coverage for C was introduced by default into the CI/CD template in GitLab 14.4 (October 2021).
+- For Go, a vulnerability is moved if it has only ever been detected by Gosec in pipelines where Semgrep also detected it. Semgrep coverage for Go was introduced by default into the CI/CD template in GitLab 14.2 (August 2021).
+- For JavaScript and TypeScript, a vulnerability is moved if it has only ever been detected by ESLint in pipelines where Semgrep also detected it. Semgrep coverage for these languages was introduced into the CI/CD template in GitLab 13.12 (May 2021).
+
+However, you'll see old vulnerabilities re-created based on Semgrep results if:
+
+- A vulnerability was created by Bandit or SpotBugs and you disable those analyzers. We only recommend disabling Bandit and SpotBugs now if the analyzers aren’t working. Work to automatically translate Bandit and SpotBugs vulnerabilities to Semgrep is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328062).
+- A vulnerability was created by ESLint, Gosec, or Flawfinder in a default-branch pipeline where Semgrep scanning did not run successfully (before Semgrep coverage was introduced for the language, because you disabled Semgrep explicitly, or because the Semgrep scan failed in that pipeline). We do not currently plan to combine these vulnerabilities if they already exist.
+
+When a vulnerability is re-created, the original vulnerability is marked as “no longer detected” in the Vulnerability Report.
+A new vulnerability is then created based on the Semgrep finding.
+
+### Activating Semgrep-based scanning early
+
+You can choose to use Semgrep-based scanning instead of language-specific analyzers before the default behavior changes.
+
+We recommend taking this approach if any of these cases applies:
+
+- You haven't used SAST before on a project, so you don't already have SAST vulnerabilities in your [Vulnerability Report](../vulnerability_report/).
+- You're having trouble configuring one of the analyzers whose coverage overlaps with Semgrep-based coverage. For example, you might have trouble setting up the SpotBugs-based analyzer to compile your code.
+- You've already seen and dismissed vulnerabilities created by ESLint, Gosec, or Flawfinder scanning, and you've kept the re-created vulnerabilities created by Semgrep.
+
+You can make a separate choice for each of the language-specific analyzers, or you can disable them all.
+
+#### Activate Semgrep-based scanning
+
+To switch to Semgrep-based scanning early, you can:
+
+1. Create a merge request (MR) to set the [`SAST_EXCLUDED_ANALYZERS` CI/CD variable](#disable-specific-default-analyzers) to `"bandit,gosec,eslint"`.
+    - If you also want to disable SpotBugs scanning, add `spotbugs` to the list. We only recommend this for Java projects. SpotBugs is the only current analyzer that can scan Groovy, Kotlin, and Scala.
+    - If you also want to disable Flawfinder scanning, add `flawfinder` to the list. We only recommend this for C projects. Flawfinder is the only current analyzer that can scan C++.
+1. Verify that scanning jobs succeed in the MR. You'll notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
+1. Merge the MR and wait for the default-branch pipeline to run.
+1. Use the Vulnerability Report to dismiss the findings that are no longer detected by the language-specific analyzers.
+
 ## Customize analyzers
 
 Use [CI/CD variables](index.md#available-cicd-variables)

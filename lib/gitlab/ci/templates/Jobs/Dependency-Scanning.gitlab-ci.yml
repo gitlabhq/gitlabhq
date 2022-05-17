@@ -155,7 +155,7 @@ gemnasium-python-dependency_scanning:
           $PIP_REQUIREMENTS_FILE
 
 bundler-audit-dependency_scanning:
-  allow_failure: true
+  extends: .ds-analyzer
   script:
     - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.0"
     - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/347491"
@@ -164,7 +164,7 @@ bundler-audit-dependency_scanning:
     - when: never
 
 retire-js-dependency_scanning:
-  allow_failure: true
+  extends: .ds-analyzer
   script:
     - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.0"
     - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/289830"

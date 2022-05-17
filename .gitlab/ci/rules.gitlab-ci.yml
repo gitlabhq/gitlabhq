@@ -1495,24 +1495,32 @@
   rules:
     - if: '$SECRET_DETECTION_DISABLED'
       when: never
+    # Scan each commit on master to feed the Vulnerability Reports with detected secrets
+    - <<: *if-default-branch-refs
     - changes: *code-backstage-qa-patterns
 
 .reports:rules:gemnasium-dependency_scanning:
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
+    - <<: *if-default-branch-refs
     - changes: *dependency-patterns
 
 .reports:rules:gemnasium-python-dependency_scanning:
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
+    - <<: *if-default-branch-refs
     - changes: *python-patterns
 
 .reports:rules:yarn-audit-dependency_scanning:
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
+    - <<: *if-default-branch-refs
     - changes: *nodejs-patterns
 
 .reports:rules:schedule-dast:

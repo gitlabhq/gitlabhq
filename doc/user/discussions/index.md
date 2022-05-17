@@ -150,17 +150,17 @@ Notes are added to the page details.
 
 If an issue or merge request is locked and closed, you cannot reopen it.
 
-## Add an internal note **(FREE SELF)**
+## Add an internal note
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/351143) in GitLab 14.10: you can only mark comments in issues and epics as confidential. Previously, it was also possible for comments in merge requests and snippets.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `confidential_notes`.
-On GitLab.com, this feature is not available.
-You should not use this feature for production environments.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `confidential_notes`.
+On GitLab.com, this feature is available.
 
 You can add an internal note **to an issue or an epic**. It's then visible only to the following people:
 
