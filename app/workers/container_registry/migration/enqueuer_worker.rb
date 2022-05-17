@@ -150,7 +150,11 @@ module ContainerRegistry
 
       def next_repository
         strong_memoize(:next_repository) do
-          ContainerRepository.ready_for_import.take # rubocop:disable CodeReuse/ActiveRecord
+          # Using .limit(2)[0] instead of take here. Using a LIMIT 1 caused the query planner to
+          # use an inefficient sequential scan instead of picking an index. LIMIT 2 works around
+          # this issue.
+          # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87733 for details.
+          ContainerRepository.ready_for_import.limit(2)[0] # rubocop:disable CodeReuse/ActiveRecord
         end
       end
 

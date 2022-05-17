@@ -23,6 +23,7 @@ swap:
   filesystem: file system
   GFM: GLFM
   info: information
+  n/a: not applicable
   repo: repository
   timezone: time zone
   utilize: use

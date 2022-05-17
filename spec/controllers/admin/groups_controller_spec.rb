@@ -51,7 +51,7 @@ RSpec.describe Admin::GroupsController do
     it 'adds user to members', :aggregate_failures, :snowplow do
       put :members_update, params: {
                              id: group,
-                             user_ids: group_user.id,
+                             user_id: group_user.id,
                              access_level: Gitlab::Access::GUEST
                            }
 
@@ -70,7 +70,7 @@ RSpec.describe Admin::GroupsController do
     it 'can add unlimited members', :aggregate_failures do
       put :members_update, params: {
                              id: group,
-                             user_ids: 1.upto(1000).to_a.join(','),
+                             user_id: 1.upto(1000).to_a.join(','),
                              access_level: Gitlab::Access::GUEST
                            }
 
@@ -81,7 +81,7 @@ RSpec.describe Admin::GroupsController do
     it 'adds no user to members', :aggregate_failures do
       put :members_update, params: {
                              id: group,
-                             user_ids: '',
+                             user_id: '',
                              access_level: Gitlab::Access::GUEST
                            }
 

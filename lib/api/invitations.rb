@@ -36,7 +36,7 @@ module API
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
 
-          create_service_params = params.except(:user_id).merge({ user_ids: params[:user_id], source: source })
+          create_service_params = params.merge(source: source)
 
           ::Members::InviteService.new(current_user, create_service_params).execute
         end

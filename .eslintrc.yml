@@ -150,8 +150,7 @@ overrides:
       parser: '@graphql-eslint/eslint-plugin'
       operations:
         - '{,ee/,jh/}app/**/*.graphql'
-        # You can run `bundle exec rake gitlab:graphql:schema:dump` and then uncomment this line
-        # schema: './tmp/tests/graphql/gitlab_schema.graphql'
+      schema: './tmp/tests/graphql/gitlab_schema_apollo.graphql'
     rules:
       filenames/match-regex: off
       spaced-comment: off

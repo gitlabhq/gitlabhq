@@ -76,7 +76,7 @@ eslint:
     USE_BUNDLE_INSTALL: "false"
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
-    - run_timed_command "yarn run lint:eslint:all --parser-options=schema:${GRAPHQL_SCHEMA_APOLLO_FILE}"
+    - run_timed_command "yarn run lint:eslint:all"
 
 eslint as-if-foss:
   extends:

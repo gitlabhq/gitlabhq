@@ -46,9 +46,11 @@ module Members
                 :tasks_to_be_done_members, :member_created_member_task_id
 
     def invites_from_params
-      return params[:user_ids] if params[:user_ids].is_a?(Array)
+      # String, Nil, Array, Integer
+      return params[:user_id] if params[:user_id].is_a?(Array)
+      return [] unless params[:user_id]
 
-      params[:user_ids]&.to_s&.split(',')&.uniq&.flatten || []
+      params[:user_id].to_s.split(',').uniq
     end
 
     def validate_invite_source!

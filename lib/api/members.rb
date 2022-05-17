@@ -106,12 +106,11 @@ module API
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
 
-          user_id = params[:user_id].to_s
-          create_service_params = params.except(:user_id).merge({ user_ids: user_id, source: source })
+          create_service_params = params.merge(source: source)
 
-          if add_multiple_members?(user_id)
+          if add_multiple_members?(params[:user_id].to_s)
             ::Members::CreateService.new(current_user, create_service_params).execute
-          elsif add_single_member?(user_id)
+          elsif add_single_member?(params[:user_id].to_s)
             add_single_member_by_user_id(create_service_params)
           end
         end
