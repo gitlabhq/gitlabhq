@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Keyword reference for the `.gitlab-ci.yml` file **(FREE)**
+# `.gitlab-ci.yml` keyword reference **(FREE)**
 
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 

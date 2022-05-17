@@ -142,7 +142,7 @@ Jobs pass if they are able to complete a scan. A _pass_ result does NOT indicate
 
 Jobs fail if they are unable to complete a scan. You can view the pipeline logs for more information.
 
-All jobs are permitted to fail by default. This means that if they fail it do not fail the pipeline.
+All jobs are permitted to fail by default. This means that if they fail, it does not fail the pipeline.
 
 If you want to prevent vulnerabilities from being merged, you should do this by adding [Security Approvals in Merge Requests](#security-approvals-in-merge-requests) which prevents unknown, high or critical findings from being merged without an approval from a specific group of people that you choose.
 
@@ -171,7 +171,7 @@ reports are available to download. To download a report, select
 
 A merge request contains a security widget which displays a summary of the NEW results. New results are determined by comparing the current findings against existing findings in the target (default) branch (if there are prior findings).
 
-We recommended you run a scan of the `default` branch before enabling feature branch scans for your developers. Otherwise, there is no base for comparison and all feature branches display the full scan results in the merge request security widget.
+We recommend you run a scan of the `default` branch before enabling feature branch scans for your developers. Otherwise, there is no base for comparison and all feature branches display the full scan results in the merge request security widget.
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both NEW and EXISTING findings.
 
@@ -408,7 +408,7 @@ You can interact with the results of the security scanning tools in several loca
 
 For more details about which findings or vulnerabilities you can view in each of those locations,
 select the respective link. Each page details the ways in which you can interact with the findings
-and vulnerabilities. As an example, in most cases findings start out as _detected_ status.
+and vulnerabilities. As an example, in most cases findings start out as a _detected_ status.
 
 You have the option to:
 
@@ -622,7 +622,7 @@ involve pinning to the previous template versions, for example:
   ```
 
 Additionally, we provide a dedicated project containing the versioned legacy templates.
-This can be used for offline setups or anyone wishing to use [Auto DevOps](../../topics/autodevops/index.md).
+This can be used for offline setups or for anyone wishing to use [Auto DevOps](../../topics/autodevops/index.md).
 
 Instructions are available in the [legacy template project](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 

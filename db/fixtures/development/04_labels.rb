@@ -12,7 +12,7 @@ class Gitlab::Seeder::GroupLabels
     @label_per_group.times do
       label_title = FFaker::Product.brand
       Labels::CreateService
-        .new(title: label_title, color: "##{Digest::MD5.hexdigest(label_title)[0..5]}")
+        .new(title: label_title, color: "#{::Gitlab::Color.color_for(label_title)}")
         .execute(group: @group)
       print '.'
     end
@@ -29,7 +29,7 @@ class Gitlab::Seeder::ProjectLabels
     @label_per_project.times do
       label_title = FFaker::Vehicle.model
       Labels::CreateService
-        .new(title: label_title, color: "##{Digest::MD5.hexdigest(label_title)[0..5]}")
+        .new(title: label_title, color: "#{::Gitlab::Color.color_for(label_title)}")
         .execute(project: @project)
       print '.'
     end

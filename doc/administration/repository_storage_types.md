@@ -154,6 +154,20 @@ WARNING:
 Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
 This can cause data loss in the regular repositories that depend on the object pool.
 
+### Group wiki storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in GitLab 13.5.
+
+Unlike project wikis that are stored in the `@hashed` directory, group wikis are stored in a directory called `@groups`.
+Like project wikis, group wikis follow the hashed storage folder convention, but use a hash of the group ID rather than the project ID.
+
+For example:
+
+```ruby
+# group wiki paths
+"@groups/#{hash[0..1]}/#{hash[2..3]}/#{hash}.wiki.git"
+```
+
 ### Object storage support
 
 This table shows which storable objects are storable in each storage type:

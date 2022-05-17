@@ -111,10 +111,10 @@ class Gitlab::Seeder::TriageOps
     group = Group.find_by_full_path(group_path)
 
     label_titles.each do |label_title|
-      color = Digest::MD5.hexdigest(label_title[/[^:]+/])[0..5]
+      color = ::Gitlab::Color.color_for(label_title[/[^:]+/])
 
       Labels::CreateService
-        .new(title: label_title, color: "##{color}")
+        .new(title: label_title, color: "#{color}")
         .execute(group: group)
     end
   end

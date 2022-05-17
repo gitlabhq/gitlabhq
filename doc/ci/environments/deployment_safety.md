@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Deployment safety **(FREE)**
 
-Deployment jobs can be more sensitive than other jobs in a pipeline,
+[Deployment jobs](../jobs/#deployment-jobs) are a specific kind of CI/CD
+job. They can be more sensitive than other jobs in a pipeline,
 and might need to be treated with extra care. GitLab has several features
 that help maintain deployment security and stability.
 
@@ -64,14 +65,14 @@ For more information, see [Resource Group documentation](../resource_groups/inde
 
 ## Skip outdated deployment jobs
 
-The execution order of pipeline jobs can vary from run to run, which could cause
-undesired behavior. For example, a deployment job in a newer pipeline could
-finish before a deployment job in an older pipeline.
-This creates a race condition where the older deployment finished later,
+The effective execution order of pipeline jobs can vary from run to run, which
+could cause undesired behavior. For example, a [deployment job](../jobs/#deployment-jobs)
+in a newer pipeline could finish before a deployment job in an older pipeline.
+This creates a race condition where the older deployment finishes later,
 overwriting the "newer" deployment.
 
 You can ensure that older deployment jobs are cancelled automatically when a newer deployment
-runs by enabling the [Skip outdated deployment jobs](../pipelines/settings.md#skip-outdated-deployment-jobs) feature.
+job is started by enabling the [Skip outdated deployment jobs](../pipelines/settings.md#skip-outdated-deployment-jobs) feature.
 
 Example of a problematic pipeline flow **before** enabling Skip outdated deployment jobs:
 
@@ -85,7 +86,7 @@ The improved pipeline flow **after** enabling Skip outdated deployment jobs:
 1. Pipeline-A is created on the default branch.
 1. Later, Pipeline-B is created on the default branch (with a newer SHA).
 1. The `deploy` job in Pipeline-B finishes first, and deploys the newer code.
-1. The `deploy` job in Pipeline-A is automatically cancelled, so that it doesn't overwrite the deployment from the newer pipeline.
+1. The `deploy` job in Pipeline-A was automatically cancelled, so that it doesn't overwrite the deployment from the newer pipeline.
 
 ## Prevent deployments during deploy freeze windows
 
