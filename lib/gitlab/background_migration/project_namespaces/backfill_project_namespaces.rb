@@ -55,7 +55,7 @@ module Gitlab
         end
 
         def cleanup_gin_index(table_name)
-          index_names = ActiveRecord::Base.connection.select_values("select indexname::text from pg_indexes where tablename = '#{table_name}' and indexdef ilike '%gin%'")
+          index_names = ApplicationRecord.connection.select_values("select indexname::text from pg_indexes where tablename = '#{table_name}' and indexdef ilike '%using gin%'")
 
           index_names.each do |index_name|
             ActiveRecord::Base.connection.execute("select gin_clean_pending_list('#{index_name}')")
