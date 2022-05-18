@@ -1,7 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CommitSection from './components/commit/commit_section.vue';
 import PipelineEditorDrawer from './components/drawer/pipeline_editor_drawer.vue';
 import PipelineEditorFileNav from './components/file_nav/pipeline_editor_file_nav.vue';
@@ -34,7 +33,6 @@ export default {
     PipelineEditorHeader,
     PipelineEditorTabs,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     ciConfigData: {
       type: Object,
@@ -75,9 +73,6 @@ export default {
     },
     includesFiles() {
       return this.ciConfigData?.includes || [];
-    },
-    isFileTreeVisible() {
-      return this.showFileTree && this.glFeatures.pipelineEditorFileTree;
     },
   },
   mounted() {
@@ -140,7 +135,7 @@ export default {
     />
     <div class="gl-display-flex gl-w-full gl-sm-flex-direction-column">
       <pipeline-editor-file-tree
-        v-if="isFileTreeVisible"
+        v-if="showFileTree"
         class="gl-flex-shrink-0"
         :includes="includesFiles"
       />

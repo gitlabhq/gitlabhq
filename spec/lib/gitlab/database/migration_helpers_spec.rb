@@ -2242,10 +2242,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       }
     end
 
+    let(:migration_attributes) do
+      configuration.merge(gitlab_schema: Gitlab::Database.gitlab_schemas_for_connection(model.connection).first)
+    end
+
     subject(:ensure_batched_background_migration_is_finished) { model.ensure_batched_background_migration_is_finished(**configuration) }
 
     it 'raises an error when migration exists and is not marked as finished' do
-      create(:batched_background_migration, :active, configuration)
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!).twice
+
+      create(:batched_background_migration, :active, migration_attributes)
 
       allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
         allow(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(false)
@@ -2265,13 +2271,19 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
 
     it 'does not raise error when migration exists and is marked as finished' do
-      create(:batched_background_migration, :finished, configuration)
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
+      create(:batched_background_migration, :finished, migration_attributes)
 
       expect { ensure_batched_background_migration_is_finished }
         .not_to raise_error
     end
 
     it 'logs a warning when migration does not exist' do
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
+      create(:batched_background_migration, :active, migration_attributes.merge(gitlab_schema: :gitlab_something_else))
+
       expect(Gitlab::AppLogger).to receive(:warn)
         .with("Could not find batched background migration for the given configuration: #{configuration}")
 
@@ -2280,6 +2292,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
 
     it 'finalizes the migration' do
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!).twice
+
       migration = create(:batched_background_migration, :active, configuration)
 
       allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
@@ -2291,6 +2305,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context 'when the flag finalize is false' do
       it 'does not finalize the migration' do
+        expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
         create(:batched_background_migration, :active, configuration)
 
         allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|

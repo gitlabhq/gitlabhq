@@ -301,17 +301,23 @@ describe('CE IssuesListApp component', () => {
   describe('initial url params', () => {
     describe('page', () => {
       it('page_after is set from the url params', () => {
-        setWindowLocation('?page_after=randomCursorString');
+        setWindowLocation('?page_after=randomCursorString&first_page_size=20');
         wrapper = mountComponent();
 
-        expect(wrapper.vm.$route.query).toMatchObject({ page_after: 'randomCursorString' });
+        expect(wrapper.vm.$route.query).toMatchObject({
+          page_after: 'randomCursorString',
+          first_page_size: '20',
+        });
       });
 
       it('page_before is set from the url params', () => {
-        setWindowLocation('?page_before=anotherRandomCursorString');
+        setWindowLocation('?page_before=anotherRandomCursorString&last_page_size=20');
         wrapper = mountComponent();
 
-        expect(wrapper.vm.$route.query).toMatchObject({ page_before: 'anotherRandomCursorString' });
+        expect(wrapper.vm.$route.query).toMatchObject({
+          page_before: 'anotherRandomCursorString',
+          last_page_size: '20',
+        });
       });
     });
 
@@ -675,10 +681,10 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe.each`
-      event              | paramName        | paramValue
-      ${'next-page'}     | ${'page_after'}  | ${'endCursor'}
-      ${'previous-page'} | ${'page_before'} | ${'startCursor'}
-    `('when "$event" event is emitted by IssuableList', ({ event, paramName, paramValue }) => {
+      event              | params
+      ${'next-page'}     | ${{ page_after: 'endCursor', page_before: undefined, first_page_size: 20, last_page_size: undefined }}
+      ${'previous-page'} | ${{ page_after: undefined, page_before: 'startCursor', first_page_size: undefined, last_page_size: 20 }}
+    `('when "$event" event is emitted by IssuableList', ({ event, params }) => {
       beforeEach(() => {
         wrapper = mountComponent({
           data: {
@@ -697,9 +703,9 @@ describe('CE IssuesListApp component', () => {
         expect(scrollUp).toHaveBeenCalled();
       });
 
-      it(`updates url with "${paramName}" param`, () => {
+      it(`updates url`, () => {
         expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
-          query: expect.objectContaining({ [paramName]: paramValue }),
+          query: expect.objectContaining(params),
         });
       });
     });

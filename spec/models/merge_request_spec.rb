@@ -5077,4 +5077,57 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(assignees).to match_array([subject.merge_request_assignees[0]])
     end
   end
+
+  describe '#recent_diff_head_shas' do
+    let_it_be(:merge_request_with_diffs) do
+      params = {
+        target_project: project,
+        source_project: project,
+        target_branch: 'master',
+        source_branch: 'feature'
+      }
+
+      create(:merge_request, params).tap do |mr|
+        4.times { mr.merge_request_diffs.create! }
+        mr.create_merge_head_diff
+      end
+    end
+
+    let(:shas) do
+      # re-find to avoid caching the association
+      described_class.find(merge_request_with_diffs.id).merge_request_diffs.order(id: :desc).pluck(:head_commit_sha)
+    end
+
+    shared_examples 'correctly sorted and limited diff_head_shas' do
+      it 'has up to MAX_RECENT_DIFF_HEAD_SHAS, ordered most recent first' do
+        stub_const('MergeRequest::MAX_RECENT_DIFF_HEAD_SHAS', 3)
+
+        expect(subject.recent_diff_head_shas).to eq(shas.first(3))
+      end
+
+      it 'supports limits' do
+        expect(subject.recent_diff_head_shas(2)).to eq(shas.first(2))
+      end
+    end
+
+    context 'when the association is not loaded' do
+      subject(:mr) { merge_request_with_diffs }
+
+      include_examples 'correctly sorted and limited diff_head_shas'
+    end
+
+    context 'when the association is loaded' do
+      subject(:mr) do
+        described_class.where(id: merge_request_with_diffs.id).preload(:merge_request_diffs).first
+      end
+
+      include_examples 'correctly sorted and limited diff_head_shas'
+
+      it 'does not issue any queries' do
+        expect(subject).to be_a(described_class) # preload here
+
+        expect { subject.recent_diff_head_shas }.not_to exceed_query_limit(0)
+      end
+    end
+  end
 end

@@ -23,6 +23,7 @@ import CsvImportExportButtons from '~/issuable/components/csv_import_export_butt
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import { IssuableStatus } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import {
@@ -45,6 +46,8 @@ import {
   ISSUE_REFERENCE,
   MAX_LIST_SIZE,
   PAGE_SIZE,
+  PARAM_FIRST_PAGE_SIZE,
+  PARAM_LAST_PAGE_SIZE,
   PARAM_PAGE_AFTER,
   PARAM_PAGE_BEFORE,
   PARAM_SORT,
@@ -390,12 +393,14 @@ export default {
     },
     urlParams() {
       return {
-        page_after: this.pageParams.afterCursor,
-        page_before: this.pageParams.beforeCursor,
         search: this.searchQuery,
         sort: urlSortParams[this.sortKey],
         state: this.state,
         ...this.urlFilterParams,
+        first_page_size: this.pageParams.firstPageSize,
+        last_page_size: this.pageParams.lastPageSize,
+        page_after: this.pageParams.afterCursor,
+        page_before: this.pageParams.beforeCursor,
       };
     },
     hasCrmParameter() {
@@ -632,6 +637,8 @@ export default {
       this.showBulkEditSidebar = showBulkEditSidebar;
     },
     updateData(sortValue) {
+      const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
+      const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const pageAfter = getParameterByName(PARAM_PAGE_AFTER);
       const pageBefore = getParameterByName(PARAM_PAGE_BEFORE);
       const state = getParameterByName(PARAM_STATE);
@@ -660,7 +667,13 @@ export default {
 
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.filterTokens = isSearchDisabled ? [] : getFilterTokens(window.location.search);
-      this.pageParams = getInitialPageParams(sortKey, pageAfter, pageBefore);
+      this.pageParams = getInitialPageParams(
+        sortKey,
+        isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
+        isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
+        pageAfter,
+        pageBefore,
+      );
       this.sortKey = sortKey;
       this.state = state || IssuableStates.Opened;
     },

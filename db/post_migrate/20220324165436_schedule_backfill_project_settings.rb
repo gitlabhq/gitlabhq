@@ -18,8 +18,6 @@ class ScheduleBackfillProjectSettings < Gitlab::Database::Migration[1.0]
   end
 
   def down
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :projects, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :projects, :id, [])
   end
 end

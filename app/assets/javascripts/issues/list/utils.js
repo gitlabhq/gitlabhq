@@ -46,8 +46,15 @@ import {
   WEIGHT_DESC,
 } from './constants';
 
-export const getInitialPageParams = (sortKey, afterCursor, beforeCursor) => ({
-  firstPageSize: sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE,
+export const getInitialPageParams = (
+  sortKey,
+  firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE,
+  lastPageSize,
+  afterCursor,
+  beforeCursor,
+) => ({
+  firstPageSize: lastPageSize ? undefined : firstPageSize,
+  lastPageSize,
   afterCursor,
   beforeCursor,
 });

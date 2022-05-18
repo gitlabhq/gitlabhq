@@ -65,11 +65,13 @@ RSpec::Matchers.define :be_scheduled_migration_with_multiple_args do |*expected|
   end
 end
 
-RSpec::Matchers.define :have_scheduled_batched_migration do |table_name: nil, column_name: nil, job_arguments: [], **attributes|
+RSpec::Matchers.define :have_scheduled_batched_migration do |gitlab_schema: :gitlab_main, table_name: nil, column_name: nil, job_arguments: [], **attributes|
   define_method :matches? do |migration|
+    reset_column_information(Gitlab::Database::BackgroundMigration::BatchedMigration)
+
     batched_migrations =
       Gitlab::Database::BackgroundMigration::BatchedMigration
-        .for_configuration(migration, table_name, column_name, job_arguments)
+        .for_configuration(gitlab_schema, migration, table_name, column_name, job_arguments)
 
     expect(batched_migrations.count).to be(1)
     expect(batched_migrations).to all(have_attributes(attributes)) if attributes.present?

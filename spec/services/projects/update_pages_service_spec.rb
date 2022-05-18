@@ -13,6 +13,7 @@ RSpec.describe Projects::UpdatePagesService do
 
   let(:file) { fixture_file_upload("spec/fixtures/pages.zip") }
   let(:empty_file) { fixture_file_upload("spec/fixtures/pages_empty.zip") }
+  let(:empty_metadata_filename) { "spec/fixtures/pages_empty.zip.meta" }
   let(:metadata_filename) { "spec/fixtures/pages.zip.meta" }
   let(:metadata) { fixture_file_upload(metadata_filename) if File.exist?(metadata_filename) }
 
@@ -88,6 +89,17 @@ RSpec.describe Projects::UpdatePagesService do
           end.not_to change { PagesDeployment.count } # it creates one and deletes one
 
           expect(PagesDeployment.find_by_id(old_deployment.id)).to be_nil
+        end
+      end
+
+      context 'when archive does not have pages directory' do
+        let(:file) { empty_file }
+        let(:metadata_filename) { empty_metadata_filename }
+
+        it 'returns an error' do
+          expect(execute).not_to eq(:success)
+
+          expect(GenericCommitStatus.last.description).to eq("Error: The `public/` folder is missing, or not declared in `.gitlab-ci.yml`.")
         end
       end
 

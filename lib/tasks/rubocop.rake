@@ -36,7 +36,7 @@ unless Rails.env.production?
         # expected.
         cop_names = args.to_a
 
-        todo_dir = RuboCop::TodoDir.new(RuboCop::TodoDir::DEFAULT_TODO_DIR)
+        todo_dir = RuboCop::TodoDir.new(RuboCop::Formatter::TodoFormatter.base_directory)
 
         if cop_names.any?
           # We are sorting the cop names to benefit from RuboCop cache which

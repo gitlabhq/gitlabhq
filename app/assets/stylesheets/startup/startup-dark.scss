@@ -755,7 +755,7 @@ input {
   padding: 0 16px;
   z-index: 1000;
   margin-bottom: 0;
-  min-height: var(--header-height, 40px);
+  min-height: var(--header-height, 48px);
   border: 0;
   position: fixed;
   top: 0;
@@ -771,7 +771,7 @@ input {
   display: flex;
   justify-content: space-between;
   position: relative;
-  min-height: var(--header-height, 40px);
+  min-height: var(--header-height, 48px);
   padding-left: 0;
 }
 .navbar-gitlab .header-content .title {
@@ -786,9 +786,6 @@ input {
 }
 .navbar-gitlab .header-content .title img {
   height: 24px;
-}
-.navbar-gitlab .header-content .title img + .logo-text {
-  margin-left: 8px;
 }
 .navbar-gitlab .header-content .title a {
   display: flex;
@@ -915,6 +912,8 @@ input {
 }
 .navbar-sub-nav {
   display: flex;
+  align-items: center;
+  height: 100%;
   margin: 0 0 0 6px;
 }
 .caret-down,
@@ -1034,7 +1033,7 @@ input {
   left: 0;
   z-index: 600;
   width: 220px;
-  top: var(--header-height, 40px);
+  top: var(--header-height, 48px);
   background-color: #303030;
   transform: translate3d(0, 0, 0);
 }
@@ -2044,18 +2043,8 @@ body.gl-dark {
 .gl-display-none {
   display: none;
 }
-@media (min-width: 992px) {
-  .gl-lg-display-none\! {
-    display: none !important;
-  }
-}
 .gl-display-flex {
   display: flex;
-}
-@media (min-width: 992px) {
-  .gl-lg-display-flex {
-    display: flex;
-  }
 }
 @media (min-width: 576px) {
   .gl-sm-display-block {

@@ -7,6 +7,7 @@ RSpec.describe 'Query.project.mergeRequests.pipelines' do
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:author) { create(:user) }
+  let_it_be(:mr_nodes_path) { [:data, :project, :merge_requests, :nodes] }
   let_it_be(:merge_requests) do
     [
       create(:merge_request, author: author, source_project: project),
@@ -33,8 +34,49 @@ RSpec.describe 'Query.project.mergeRequests.pipelines' do
       GQL
     end
 
-    def run_query(first = nil)
-      post_graphql(query, current_user: author, variables: { path: project.full_path, first: first })
+    before do
+      merge_requests.first(2).each do |mr|
+        shas = mr.recent_diff_head_shas
+
+        shas.each do |sha|
+          create(:ci_pipeline, :success, project: project, ref: mr.source_branch, sha: sha)
+        end
+      end
+    end
+
+    it 'produces correct results' do
+      r = run_query(3)
+
+      nodes = graphql_dig_at(r, *mr_nodes_path)
+
+      expect(nodes).to all(match('iid' => be_present, 'pipelines' => include('count' => be_a(Integer))))
+      expect(graphql_dig_at(r, *mr_nodes_path, :pipelines, :count)).to contain_exactly(1, 1, 0)
+    end
+
+    it 'is scalable', :request_store, :use_clean_rails_memory_store_caching do
+      baseline = ActiveRecord::QueryRecorder.new { run_query(1) }
+
+      expect { run_query(2) }.not_to exceed_query_limit(baseline)
+    end
+  end
+
+  describe '.nodes' do
+    let(:query) do
+      <<~GQL
+      query($path: ID!, $first: Int) {
+        project(fullPath: $path) {
+          mergeRequests(first: $first) {
+            nodes {
+              iid
+              pipelines {
+                count
+                nodes { id }
+              }
+            }
+          }
+        }
+      }
+      GQL
     end
 
     before do
@@ -48,18 +90,27 @@ RSpec.describe 'Query.project.mergeRequests.pipelines' do
     end
 
     it 'produces correct results' do
-      run_query(2)
+      r = run_query
 
-      p_nodes = graphql_data_at(:project, :merge_requests, :nodes)
-
-      expect(p_nodes).to all(match('iid' => be_present, 'pipelines' => match('count' => 1)))
+      expect(graphql_dig_at(r, *mr_nodes_path, :pipelines, :nodes, :id).uniq.size).to eq 3
     end
 
     it 'is scalable', :request_store, :use_clean_rails_memory_store_caching do
-      # warm up
-      run_query
+      baseline = ActiveRecord::QueryRecorder.new { run_query(1) }
 
-      expect { run_query(2) }.to(issue_same_number_of_queries_as { run_query(1) }.ignoring_cached_queries)
+      expect { run_query(2) }.not_to exceed_query_limit(baseline)
     end
+
+    it 'requests merge_request_diffs at most once' do
+      r = ActiveRecord::QueryRecorder.new { run_query(2) }
+
+      expect(r.log.grep(/merge_request_diffs/)).to contain_exactly(a_string_including('SELECT'))
+    end
+  end
+
+  def run_query(first = nil)
+    run_with_clean_state(query,
+                         context: { current_user: author },
+                         variables: { path: project.full_path, first: first })
   end
 end

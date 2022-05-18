@@ -39,4 +39,34 @@ RSpec.describe Members::Mailgun::ProcessWebhookService do
       end
     end
   end
+
+  describe '#should_process?' do
+    it 'processes permanent failures for member invite emails' do
+      payload = { 'event' => 'failed', 'severity' => 'permanent', 'tags' => [Members::Mailgun::INVITE_EMAIL_TAG] }
+      service = described_class.new(payload)
+
+      expect(service.should_process?).to eq(true)
+    end
+
+    it 'does not process temporary failures' do
+      payload = { 'event' => 'failed', 'severity' => 'temporary', 'tags' => [Members::Mailgun::INVITE_EMAIL_TAG] }
+      service = described_class.new(payload)
+
+      expect(service.should_process?).to eq(false)
+    end
+
+    it 'does not process non member invite emails' do
+      payload = { 'event' => 'failed', 'severity' => 'permanent', 'tags' => [] }
+      service = described_class.new(payload)
+
+      expect(service.should_process?).to eq(false)
+    end
+
+    it 'does not process other types of events' do
+      payload = { 'event' => 'delivered', 'tags' => [Members::Mailgun::INVITE_EMAIL_TAG] }
+      service = described_class.new(payload)
+
+      expect(service.should_process?).to eq(false)
+    end
+  end
 end

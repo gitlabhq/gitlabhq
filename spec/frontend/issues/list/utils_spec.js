@@ -42,27 +42,37 @@ describe('getInitialPageParams', () => {
     'returns the correct page params for sort key %s with afterCursor',
     (sortKey) => {
       const firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE;
+      const lastPageSize = undefined;
       const afterCursor = 'randomCursorString';
       const beforeCursor = undefined;
-
-      expect(getInitialPageParams(sortKey, afterCursor, beforeCursor)).toEqual({
+      const pageParams = getInitialPageParams(
+        sortKey,
         firstPageSize,
+        lastPageSize,
         afterCursor,
-      });
+        beforeCursor,
+      );
+
+      expect(pageParams).toEqual({ firstPageSize, afterCursor });
     },
   );
 
   it.each(Object.keys(urlSortParams))(
     'returns the correct page params for sort key %s with beforeCursor',
     (sortKey) => {
-      const firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE;
+      const firstPageSize = undefined;
+      const lastPageSize = PAGE_SIZE;
       const afterCursor = undefined;
       const beforeCursor = 'anotherRandomCursorString';
-
-      expect(getInitialPageParams(sortKey, afterCursor, beforeCursor)).toEqual({
+      const pageParams = getInitialPageParams(
+        sortKey,
         firstPageSize,
+        lastPageSize,
+        afterCursor,
         beforeCursor,
-      });
+      );
+
+      expect(pageParams).toEqual({ lastPageSize, beforeCursor });
     },
   );
 });

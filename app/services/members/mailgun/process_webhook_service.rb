@@ -16,6 +16,10 @@ module Members
         Gitlab::ErrorTracking.track_exception(e)
       end
 
+      def should_process?
+        payload['event'] == 'failed' && payload['severity'] == 'permanent' && payload['tags']&.include?(::Members::Mailgun::INVITE_EMAIL_TAG)
+      end
+
       private
 
       attr_reader :payload, :member

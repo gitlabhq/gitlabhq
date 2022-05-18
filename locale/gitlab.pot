@@ -9671,6 +9671,9 @@ msgstr ""
 msgid "ContainerRegistry|Copy build command"
 msgstr ""
 
+msgid "ContainerRegistry|Copy image path"
+msgstr ""
+
 msgid "ContainerRegistry|Copy login command"
 msgstr ""
 
@@ -16848,6 +16851,9 @@ msgid "Geo|Set what should be replicated by this secondary site."
 msgstr ""
 
 msgid "Geo|Shards to synchronize"
+msgstr ""
+
+msgid "Geo|Show more"
 msgstr ""
 
 msgid "Geo|Site name can't be blank"
@@ -40790,6 +40796,12 @@ msgid "UsageQuota|This namespace contains locked projects"
 msgstr ""
 
 msgid "UsageQuota|This namespace has no projects which use shared runners"
+msgstr ""
+
+msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
+msgstr ""
+
+msgid "UsageQuota|This table omits projects that used 0 CI/CD minutes or 0 shared runners duration"
 msgstr ""
 
 msgid "UsageQuota|Total excess storage used"

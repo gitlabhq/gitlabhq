@@ -15,8 +15,6 @@ class BackfillIssueSearchData < Gitlab::Database::Migration[1.0]
   end
 
   def down
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :issues, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :issues, :id, [])
   end
 end

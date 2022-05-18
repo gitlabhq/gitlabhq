@@ -20,8 +20,6 @@ class ScheduleNullifyOrphanRunnerIdOnCiBuilds < Gitlab::Database::Migration[1.0]
   end
 
   def down
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :ci_builds, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :ci_builds, :id, [])
   end
 end

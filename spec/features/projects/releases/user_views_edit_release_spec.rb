@@ -30,10 +30,12 @@ RSpec.describe 'User edits Release', :js do
 
   it 'renders the breadcrumbs' do
     within('.breadcrumbs') do
-      expect(page).to have_content("#{project.creator.name} #{project.name} Edit Release")
+      expect(page).to have_content("#{project.creator.name} #{project.name} Releases #{release.name} Edit Release")
 
       expect(page).to have_link(project.creator.name, href: user_path(project.creator))
       expect(page).to have_link(project.name, href: project_path(project))
+      expect(page).to have_link(_('Releases'), href: project_releases_path(project))
+      expect(page).to have_link(release.name, href: project_release_path(project, release))
       expect(page).to have_link('Edit Release', href: edit_project_release_path(project, release))
     end
   end

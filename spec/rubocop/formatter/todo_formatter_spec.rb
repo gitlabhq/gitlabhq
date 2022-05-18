@@ -14,17 +14,18 @@ RSpec.describe RuboCop::Formatter::TodoFormatter do
   let(:real_tmp_dir) { File.join(tmp_dir, 'real') }
   let(:symlink_tmp_dir) { File.join(tmp_dir, 'symlink') }
   let(:rubocop_todo_dir) { "#{symlink_tmp_dir}/.rubocop_todo" }
-  let(:options) { { rubocop_todo_dir: rubocop_todo_dir } }
   let(:todo_dir) { RuboCop::TodoDir.new(rubocop_todo_dir) }
 
-  subject(:formatter) { described_class.new(stdout, options) }
+  subject(:formatter) { described_class.new(stdout) }
 
   around do |example|
     FileUtils.mkdir(real_tmp_dir)
     FileUtils.symlink(real_tmp_dir, symlink_tmp_dir)
 
     Dir.chdir(symlink_tmp_dir) do
-      example.run
+      described_class.with_base_directory(rubocop_todo_dir) do
+        example.run
+      end
     end
   end
 
@@ -38,8 +39,6 @@ RSpec.describe RuboCop::Formatter::TodoFormatter do
     let(:offense_autocorrect) { fake_offense('B/AutoCorrect') }
 
     before do
-      stub_const("#{described_class}::MAX_OFFENSE_COUNT", 1)
-
       stub_rubocop_registry(
         'A/Offense' => { autocorrectable: false },
         'B/AutoCorrect' => { autocorrectable: true }

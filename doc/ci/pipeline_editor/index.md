@@ -53,12 +53,8 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 
 ## View included CI/CD configuration
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `pipeline_editor_file_tree`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
-named `pipeline_editor_file_tree`.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `pipeline_editor_file_tree`. Disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357219) in GitLab 15.1.
 
 You can review configuration added with the [`include`](../yaml/index.md#include)
 keyword in the pipeline editor. In the top right, select the file tree (**{file-tree}**)

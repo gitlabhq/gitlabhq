@@ -945,8 +945,13 @@ module Gitlab
       end
 
       def ensure_batched_background_migration_is_finished(job_class_name:, table_name:, column_name:, job_arguments:, finalize: true)
-        migration = Gitlab::Database::BackgroundMigration::BatchedMigration
-          .for_configuration(job_class_name, table_name, column_name, job_arguments).first
+        Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
+
+        Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
+        migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
+          Gitlab::Database.gitlab_schemas_for_connection(connection),
+          job_class_name, table_name, column_name, job_arguments
+        )
 
         configuration = {
           job_class_name: job_class_name,

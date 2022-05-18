@@ -152,9 +152,7 @@ When you start the second post-deployment migration, delete the
 previously batched migration with the provided code:
 
 ```ruby
-Gitlab::Database::BackgroundMigration::BatchedMigration
-  .for_configuration(MIGRATION_NAME, TABLE_NAME, COLUMN, JOB_ARGUMENTS)
-  .delete_all
+delete_batched_background_migration(MIGRATION_NAME, TABLE_NAME, COLUMN, JOB_ARGUMENTS)
 ```
 
 ## Cleaning up
@@ -261,8 +259,7 @@ background migration.
      end
 
      def down
-       Gitlab::Database::BackgroundMigration::BatchedMigration
-         .for_configuration(MIGRATION, :routes, :id, []).delete_all
+       delete_batched_background_migration(MIGRATION_NAME, :routes, :id, [])
      end
    end
    ```

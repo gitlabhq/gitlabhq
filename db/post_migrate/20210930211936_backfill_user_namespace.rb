@@ -19,8 +19,6 @@ class BackfillUserNamespace < Gitlab::Database::Migration[1.0]
   end
 
   def down
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :namespaces, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :namespaces, :id, [])
   end
 end

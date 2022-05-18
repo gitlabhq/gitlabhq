@@ -25,6 +25,7 @@ import {
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
   MORE_ACTIONS_TEXT,
+  COPY_IMAGE_PATH_TITLE,
 } from '../../constants/index';
 
 export default {
@@ -72,6 +73,7 @@ export default {
     CONFIGURATION_DETAILS_ROW_TEST,
     MISSING_MANIFEST_WARNING_TOOLTIP,
     MORE_ACTIONS_TEXT,
+    COPY_IMAGE_PATH_TITLE,
   },
   computed: {
     formattedSize() {
@@ -138,7 +140,7 @@ export default {
 
         <clipboard-button
           v-if="tag.location"
-          :title="tag.location"
+          :title="$options.i18n.COPY_IMAGE_PATH_TITLE"
           :text="tag.location"
           category="tertiary"
           :disabled="disabled"

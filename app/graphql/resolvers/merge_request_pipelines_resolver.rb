@@ -21,8 +21,9 @@ module Resolvers
       super
     end
 
-    def query_for(args)
-      resolve_pipelines(project, args).merge(merge_request.all_pipelines)
+    def query_for(input)
+      mr, args = input
+      resolve_pipelines(mr.source_project, args).merge(mr.all_pipelines)
     end
 
     def model_class
@@ -30,7 +31,7 @@ module Resolvers
     end
 
     def query_input(**args)
-      args
+      [merge_request, args]
     end
 
     def project

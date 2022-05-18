@@ -247,81 +247,63 @@ describe('Pipeline editor home wrapper', () => {
       await nextTick();
     };
 
-    describe('with pipelineEditorFileTree feature flag OFF', () => {
+    describe('button toggle', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({
+          stubs: {
+            GlButton,
+            PipelineEditorFileNav,
+          },
+        });
       });
 
-      it('hides the file tree', () => {
-        expect(findFileTreeBtn().exists()).toBe(false);
+      it('shows button toggle', () => {
+        expect(findFileTreeBtn().exists()).toBe(true);
+      });
+
+      it('toggles the drawer on button click', async () => {
+        await toggleFileTree();
+
+        expect(findPipelineEditorFileTree().exists()).toBe(true);
+
+        await toggleFileTree();
+
         expect(findPipelineEditorFileTree().exists()).toBe(false);
+      });
+
+      it('sets the display state in local storage', async () => {
+        await toggleFileTree();
+
+        expect(localStorage.getItem(FILE_TREE_DISPLAY_KEY)).toBe('true');
+
+        await toggleFileTree();
+
+        expect(localStorage.getItem(FILE_TREE_DISPLAY_KEY)).toBe('false');
       });
     });
 
-    describe('with pipelineEditorFileTree feature flag ON', () => {
-      describe('button toggle', () => {
-        beforeEach(() => {
-          createComponent({
-            glFeatures: {
-              pipelineEditorFileTree: true,
-            },
-            stubs: {
-              GlButton,
-              PipelineEditorFileNav,
-            },
-          });
-        });
-
-        it('shows button toggle', () => {
-          expect(findFileTreeBtn().exists()).toBe(true);
-        });
-
-        it('toggles the drawer on button click', async () => {
-          await toggleFileTree();
-
-          expect(findPipelineEditorFileTree().exists()).toBe(true);
-
-          await toggleFileTree();
-
-          expect(findPipelineEditorFileTree().exists()).toBe(false);
-        });
-
-        it('sets the display state in local storage', async () => {
-          await toggleFileTree();
-
-          expect(localStorage.getItem(FILE_TREE_DISPLAY_KEY)).toBe('true');
-
-          await toggleFileTree();
-
-          expect(localStorage.getItem(FILE_TREE_DISPLAY_KEY)).toBe('false');
+    describe('when file tree display state is saved in local storage', () => {
+      beforeEach(() => {
+        localStorage.setItem(FILE_TREE_DISPLAY_KEY, 'true');
+        createComponent({
+          stubs: { PipelineEditorFileNav },
         });
       });
 
-      describe('when file tree display state is saved in local storage', () => {
-        beforeEach(() => {
-          localStorage.setItem(FILE_TREE_DISPLAY_KEY, 'true');
-          createComponent({
-            glFeatures: { pipelineEditorFileTree: true },
-            stubs: { PipelineEditorFileNav },
-          });
-        });
+      it('shows the file tree by default', () => {
+        expect(findPipelineEditorFileTree().exists()).toBe(true);
+      });
+    });
 
-        it('shows the file tree by default', () => {
-          expect(findPipelineEditorFileTree().exists()).toBe(true);
+    describe('when file tree display state is not saved in local storage', () => {
+      beforeEach(() => {
+        createComponent({
+          stubs: { PipelineEditorFileNav },
         });
       });
 
-      describe('when file tree display state is not saved in local storage', () => {
-        beforeEach(() => {
-          createComponent({
-            glFeatures: { pipelineEditorFileTree: true },
-            stubs: { PipelineEditorFileNav },
-          });
-        });
-
-        it('hides the file tree by default', () => {
-          expect(findPipelineEditorFileTree().exists()).toBe(false);
-        });
+      it('hides the file tree by default', () => {
+        expect(findPipelineEditorFileTree().exists()).toBe(false);
       });
     });
   });

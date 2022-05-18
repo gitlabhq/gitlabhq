@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
     before do
       allow(Gitlab::Database::PgClass).to receive(:for_table).and_call_original
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
     end
 
     context 'when such migration already exists' do
@@ -27,7 +28,8 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
           batch_class_name: 'MyBatchClass',
           batch_size: 200,
           sub_batch_size: 20,
-          job_arguments: [[:id], [:id_convert_to_bigint]]
+          job_arguments: [[:id], [:id_convert_to_bigint]],
+          gitlab_schema: :gitlab_ci
         )
 
         expect do
@@ -41,7 +43,8 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
             batch_max_value: 1000,
             batch_class_name: 'MyBatchClass',
             batch_size: 100,
-            sub_batch_size: 10)
+            sub_batch_size: 10,
+            gitlab_schema: :gitlab_ci)
         end.not_to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }
       end
     end
@@ -60,7 +63,8 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
           batch_class_name: 'MyBatchClass',
           batch_size: 100,
           max_batch_size: 10000,
-          sub_batch_size: 10)
+          sub_batch_size: 10,
+          gitlab_schema: :gitlab_ci)
       end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
 
       expect(Gitlab::Database::BackgroundMigration::BatchedMigration.last).to have_attributes(
@@ -76,7 +80,8 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
         sub_batch_size: 10,
         job_arguments: %w[],
         status_name: :active,
-        total_tuple_count: pgclass_info.cardinality_estimate)
+        total_tuple_count: pgclass_info.cardinality_estimate,
+        gitlab_schema: 'gitlab_ci')
     end
 
     context 'when the job interval is lower than the minimum' do
@@ -162,10 +167,28 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
         end
       end
     end
+
+    context 'when gitlab_schema is not given' do
+      it 'fetches gitlab_schema from the migration context' do
+        expect(migration).to receive(:gitlab_schema_from_context).and_return(:gitlab_ci)
+
+        expect do
+          migration.queue_batched_background_migration('MyJobClass', :events, :id, job_interval: 5.minutes)
+        end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+
+        created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
+
+        expect(created_migration.gitlab_schema).to eq('gitlab_ci')
+      end
+    end
   end
 
   describe '#finalize_batched_background_migration' do
     let!(:batched_migration) { create(:batched_background_migration, job_class_name: 'MyClass', table_name: :projects, column_name: :id, job_arguments: []) }
+
+    before do
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+    end
 
     it 'finalizes the migration' do
       allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
@@ -201,6 +224,80 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
             job_arguments: ci_migration.job_arguments
           )
         end.to raise_error /is currently not supported when running in decomposed/
+      end
+    end
+  end
+
+  describe '#delete_batched_background_migration' do
+    before do
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+    end
+
+    context 'when migration exists' do
+      it 'deletes it' do
+        create(
+          :batched_background_migration,
+          job_class_name: 'MyJobClass',
+          table_name: :projects,
+          column_name: :id,
+          interval: 10.minutes,
+          min_value: 5,
+          max_value: 1005,
+          batch_class_name: 'MyBatchClass',
+          batch_size: 200,
+          sub_batch_size: 20,
+          job_arguments: [[:id], [:id_convert_to_bigint]]
+        )
+
+        expect do
+          migration.delete_batched_background_migration(
+            'MyJobClass',
+            :projects,
+            :id,
+            [[:id], [:id_convert_to_bigint]])
+        end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.from(1).to(0)
+      end
+    end
+
+    context 'when migration does not exist' do
+      it 'does nothing' do
+        create(
+          :batched_background_migration,
+          job_class_name: 'SomeOtherJobClass',
+          table_name: :projects,
+          column_name: :id,
+          interval: 10.minutes,
+          min_value: 5,
+          max_value: 1005,
+          batch_class_name: 'MyBatchClass',
+          batch_size: 200,
+          sub_batch_size: 20,
+          job_arguments: [[:id], [:id_convert_to_bigint]]
+        )
+
+        expect do
+          migration.delete_batched_background_migration(
+            'MyJobClass',
+            :projects,
+            :id,
+            [[:id], [:id_convert_to_bigint]])
+        end.not_to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }
+      end
+    end
+  end
+
+  describe '#gitlab_schema_from_context' do
+    context 'when allowed_gitlab_schemas is not available' do
+      it 'defaults to :gitlab_main' do
+        expect(migration.gitlab_schema_from_context).to eq(:gitlab_main)
+      end
+    end
+
+    context 'when allowed_gitlab_schemas is available' do
+      it 'uses schema from allowed_gitlab_schema' do
+        expect(migration).to receive(:allowed_gitlab_schemas).and_return([:gitlab_ci])
+
+        expect(migration.gitlab_schema_from_context).to eq(:gitlab_ci)
       end
     end
   end

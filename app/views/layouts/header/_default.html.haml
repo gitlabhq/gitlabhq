@@ -9,10 +9,7 @@
         %h1.title
           %span.gl-sr-only GitLab
           = link_to root_path, title: _('Dashboard'), id: 'logo', **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation') do
-            %span{ :class => "gl-display-none gl-lg-display-flex" }
-              = brand_header_logo({add_gitlab_white_text: true})
-            %span{ :class => "gl-lg-display-none! gl-display-flex" }
-              = brand_header_logo
+            = brand_header_logo
           - if Gitlab.com_and_canary?
             = link_to Gitlab::Saas.canary_toggle_com_url, class: 'canary-badge bg-transparent', data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer' do
               = gl_badge_tag({ variant: :success, size: :sm }) do

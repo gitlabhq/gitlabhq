@@ -619,92 +619,56 @@ Parameters:
 
 ```json
 {
-  "id": 1,
-  "iid": 1,
-  "project_id": 3,
-  "title": "test1",
-  "description": "fixed login page css paddings",
-  "state": "merged",
-  "created_at": "2017-04-29T08:46:00Z",
-  "updated_at": "2017-04-29T08:46:00Z",
+  "id": 155016530,
+  "iid": 133,
+  "project_id": 15513260,
+  "title": "Manual job rules",
+  "description": "",
+  "state": "opened",
+  "created_at": "2022-05-13T07:26:38.402Z",
+  "updated_at": "2022-05-14T03:38:31.354Z",
+  "merged_by": null, // Deprecated and will be removed in API v5, use `merge_user` instead
+  "merge_user": null,
+  "merged_at": null,
+  "closed_by": null,
+  "closed_at": null,
   "target_branch": "master",
-  "source_branch": "test1",
+  "source_branch": "manual-job-rules",
+  "user_notes_count": 0,
   "upvotes": 0,
   "downvotes": 0,
   "author": {
-    "id": 1,
-    "name": "Administrator",
-    "username": "admin",
+    "id": 4155490,
+    "username": "marcel.amirault",
+    "name": "Marcel Amirault",
     "state": "active",
-    "avatar_url": null,
-    "web_url" : "https://gitlab.example.com/admin"
+    "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/4155490/avatar.png",
+    "web_url": "https://gitlab.com/marcel.amirault"
   },
-  "user" : {
-    "can_merge" : false
-  },
-  "assignee": {
-    "id": 1,
-    "name": "Administrator",
-    "username": "admin",
-    "state": "active",
-    "avatar_url": null,
-    "web_url" : "https://gitlab.example.com/admin"
-  },
-  "assignees": [{
-    "name": "Miss Monserrate Beier",
-    "username": "axel.block",
-    "id": 12,
-    "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/axel.block"
-  }],
-  "reviewers": [{
-    "id": 2,
-    "name": "Sam Bauch",
-    "username": "kenyatta_oconnell",
-    "state": "active",
-    "avatar_url": "https://www.gravatar.com/avatar/956c92487c6f6f7616b536927e22c9a0?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com//kenyatta_oconnell"
-  }],
-  "source_project_id": 2,
-  "target_project_id": 3,
-  "labels": [
-    "Community contribution",
-    "Manage"
-  ],
+  "assignees": [],
+  "assignee": null,
+  "reviewers": [],
+  "source_project_id": 15513260,
+  "target_project_id": 15513260,
+  "labels": [],
   "draft": false,
   "work_in_progress": false,
-  "milestone": {
-    "id": 5,
-    "iid": 1,
-    "project_id": 3,
-    "title": "v2.0",
-    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
-    "state": "closed",
-    "created_at": "2015-02-02T19:49:26.013Z",
-    "updated_at": "2015-02-02T19:49:26.013Z",
-    "due_date": "2018-09-22",
-    "start_date": "2018-08-08",
-    "web_url": "https://gitlab.example.com/my-group/my-project/milestones/1"
-  },
-  "merge_when_pipeline_succeeds": true,
+  "milestone": null,
+  "merge_when_pipeline_succeeds": false,
   "merge_status": "can_be_merged",
-  "merge_error": null,
-  "sha": "8888888888888888888888888888888888888888",
+  "sha": "e82eb4a098e32c796079ca3915e07487fc4db24c",
   "merge_commit_sha": null,
   "squash_commit_sha": null,
-  "user_notes_count": 1,
   "discussion_locked": null,
-  "should_remove_source_branch": true,
-  "force_remove_source_branch": false,
-  "allow_collaboration": false,
-  "allow_maintainer_to_push": false,
-  "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+  "should_remove_source_branch": null,
+  "force_remove_source_branch": true,
+  "reference": "!133",
   "references": {
-    "short": "!1",
-    "relative": "!1",
-    "full": "my-group/my-project!1"
+    "short": "!133",
+    "relative": "!133",
+    "full": "marcel.amirault/test-project!133"
   },
+  "web_url": "https://gitlab.com/marcel.amirault/test-project/-/merge_requests/133",
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -712,51 +676,80 @@ Parameters:
     "human_total_time_spent": null
   },
   "squash": false,
-  "subscribed": false,
-  "changes_count": "1",
-  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
-    "id": 87854,
-    "name": "Douwe Maan",
-    "username": "DouweM",
-    "state": "active",
-    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
-    "web_url": "https://gitlab.com/DouweM"
-  },
-  "merge_user": {
-    "id": 87854,
-    "name": "Douwe Maan",
-    "username": "DouweM",
-    "state": "active",
-    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
-    "web_url": "https://gitlab.com/DouweM"
-  },
-  "merged_at": "2018-09-07T11:16:17.520Z",
-  "closed_by": null,
-  "closed_at": null,
-  "latest_build_started_at": "2018-09-07T07:27:38.472Z",
-  "latest_build_finished_at": "2018-09-07T08:07:06.012Z",
-  "first_deployed_to_production_at": null,
-  "pipeline": {
-    "id": 29626725,
-    "sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
-    "ref": "patch-28",
-    "status": "success",
-    "web_url": "https://gitlab.example.com/my-group/my-project/pipelines/29626725"
-  },
-  "diff_refs": {
-    "base_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00",
-    "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
-    "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
-  },
-  "diverged_commits_count": 2,
-  "rebase_in_progress": false,
-  "first_contribution": false,
-  "task_completion_status":{
-    "count":0,
-    "completed_count":0
+  "task_completion_status": {
+    "count": 0,
+    "completed_count": 0
   },
   "has_conflicts": false,
-  "blocking_discussions_resolved": true
+  "blocking_discussions_resolved": true,
+  "approvals_before_merge": null,
+  "subscribed": true,
+  "changes_count": "1",
+  "latest_build_started_at": "2022-05-13T09:46:50.032Z",
+  "latest_build_finished_at": null,
+  "first_deployed_to_production_at": null,
+  "pipeline": { // Old parameter, use `head_pipeline` instead.
+    "id": 538317940,
+    "iid": 1877,
+    "project_id": 15513260,
+    "sha": "1604b0c46c395822e4e9478777f8e54ac99fe5b9",
+    "ref": "refs/merge-requests/133/merge",
+    "status": "failed",
+    "source": "merge_request_event",
+    "created_at": "2022-05-13T09:46:39.560Z",
+    "updated_at": "2022-05-13T09:47:20.706Z",
+    "web_url": "https://gitlab.com/marcel.amirault/test-project/-/pipelines/538317940"
+  },
+  "head_pipeline": {
+    "id": 538317940,
+    "iid": 1877,
+    "project_id": 15513260,
+    "sha": "1604b0c46c395822e4e9478777f8e54ac99fe5b9",
+    "ref": "refs/merge-requests/133/merge",
+    "status": "failed",
+    "source": "merge_request_event",
+    "created_at": "2022-05-13T09:46:39.560Z",
+    "updated_at": "2022-05-13T09:47:20.706Z",
+    "web_url": "https://gitlab.com/marcel.amirault/test-project/-/pipelines/538317940",
+    "before_sha": "1604b0c46c395822e4e9478777f8e54ac99fe5b9",
+    "tag": false,
+    "yaml_errors": null,
+    "user": {
+      "id": 4155490,
+      "username": "marcel.amirault",
+      "name": "Marcel Amirault",
+      "state": "active",
+      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/4155490/avatar.png",
+      "web_url": "https://gitlab.com/marcel.amirault"
+    },
+    "started_at": "2022-05-13T09:46:50.032Z",
+    "finished_at": "2022-05-13T09:47:20.697Z",
+    "committed_at": null,
+    "duration": 30,
+    "queued_duration": 10,
+    "coverage": null,
+    "detailed_status": {
+      "icon": "status_failed",
+      "text": "failed",
+      "label": "failed",
+      "group": "failed",
+      "tooltip": "failed",
+      "has_details": true,
+      "details_path": "/marcel.amirault/test-project/-/pipelines/538317940",
+      "illustration": null,
+      "favicon": "/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png"
+    }
+  },
+  "diff_refs": {
+    "base_sha": "1162f719d711319a2efb2a35566f3bfdadee8bab",
+    "head_sha": "e82eb4a098e32c796079ca3915e07487fc4db24c",
+    "start_sha": "1162f719d711319a2efb2a35566f3bfdadee8bab"
+  },
+  "merge_error": null,
+  "first_contribution": false,
+  "user": {
+    "can_merge": true
+  }
 }
 ```
 

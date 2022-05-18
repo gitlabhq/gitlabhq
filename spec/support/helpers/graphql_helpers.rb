@@ -699,13 +699,13 @@ module GraphqlHelpers
   end
 
   # assumes query_string and user to be let-bound in the current context
-  def execute_query(query_type, schema: empty_schema, graphql: query_string, raise_on_error: false)
+  def execute_query(query_type = Types::QueryType, schema: empty_schema, graphql: query_string, raise_on_error: false, variables: {})
     schema.query(query_type)
 
     r = schema.execute(
       graphql,
       context: { current_user: user },
-      variables: {}
+      variables: variables
     )
 
     if raise_on_error && r.to_h['errors'].present?

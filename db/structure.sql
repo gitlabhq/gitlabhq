@@ -11767,6 +11767,8 @@ CREATE TABLE batched_background_migrations (
     max_batch_size integer,
     started_at timestamp with time zone,
     on_hold_until timestamp with time zone,
+    gitlab_schema text NOT NULL,
+    CONSTRAINT check_0406d9776f CHECK ((char_length(gitlab_schema) <= 255)),
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),
     CONSTRAINT check_batch_size_in_range CHECK ((batch_size >= sub_batch_size)),
@@ -26911,6 +26913,8 @@ CREATE INDEX index_batched_jobs_by_batched_migration_id_and_id ON batched_backgr
 
 CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_background_migration_jobs USING btree (batched_background_migration_id, status);
 
+CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
+
 CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree (assignee_id);
 
 CREATE UNIQUE INDEX index_board_assignees_on_board_id_and_assignee_id ON board_assignees USING btree (board_id, assignee_id);
@@ -28424,6 +28428,8 @@ CREATE INDEX index_notes_for_cherry_picked_merge_requests ON notes USING btree (
 CREATE INDEX index_notes_on_author_id_and_created_at_and_id ON notes USING btree (author_id, created_at, id);
 
 CREATE INDEX index_notes_on_commit_id ON notes USING btree (commit_id);
+
+CREATE INDEX index_notes_on_confidential ON notes USING btree (confidential) WHERE (confidential = true);
 
 CREATE INDEX index_notes_on_created_at ON notes USING btree (created_at);
 
@@ -33117,9 +33123,6 @@ ALTER TABLE ONLY approval_project_rules_users
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_rails_baed5f39b7 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE CASCADE;
-
-ALTER TABLE web_hook_logs
-    ADD CONSTRAINT fk_rails_bb3355782d FOREIGN KEY (web_hook_id) REFERENCES web_hooks(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_findings
     ADD CONSTRAINT fk_rails_bb63863cf1 FOREIGN KEY (scan_id) REFERENCES security_scans(id) ON DELETE CASCADE;

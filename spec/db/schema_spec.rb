@@ -94,7 +94,10 @@ RSpec.describe 'Database schema' do
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
     security_scans: %w[pipeline_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
-    vulnerability_reads: %w[cluster_agent_id]
+    vulnerability_reads: %w[cluster_agent_id],
+    # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
+    # Fixes performance issues with the deletion of web-hooks with many log entries
+    web_hook_logs: %w[web_hook_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do

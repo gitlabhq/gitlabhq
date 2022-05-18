@@ -78,23 +78,41 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '.active_migration' do
+    let(:connection) { Gitlab::Database.database_base_models[:main].connection }
     let!(:migration1) { create(:batched_background_migration, :finished) }
 
-    context 'without migrations on hold' do
+    subject(:active_migration) { described_class.active_migration(connection: connection) }
+
+    around do |example|
+      Gitlab::Database::SharedModel.using_connection(connection) do
+        example.run
+      end
+    end
+
+    context 'when there are no migrations on hold' do
       let!(:migration2) { create(:batched_background_migration, :active) }
       let!(:migration3) { create(:batched_background_migration, :active) }
 
       it 'returns the first active migration according to queue order' do
-        expect(described_class.active_migration).to eq(migration2)
+        expect(active_migration).to eq(migration2)
       end
     end
 
-    context 'with migrations are on hold' do
+    context 'when there are migrations on hold' do
       let!(:migration2) { create(:batched_background_migration, :active, on_hold_until: 10.minutes.from_now) }
       let!(:migration3) { create(:batched_background_migration, :active, on_hold_until: 2.minutes.ago) }
 
       it 'returns the first active migration that is not on hold according to queue order' do
-        expect(described_class.active_migration).to eq(migration3)
+        expect(active_migration).to eq(migration3)
+      end
+    end
+
+    context 'when there are migrations not available for the current connection' do
+      let!(:migration2) { create(:batched_background_migration, :active, gitlab_schema: :gitlab_not_existing) }
+      let!(:migration3) { create(:batched_background_migration, :active, gitlab_schema: :gitlab_main) }
+
+      it 'returns the first active migration that is available for the current connection' do
+        expect(active_migration).to eq(migration3)
       end
     end
   end
@@ -553,25 +571,43 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '.for_configuration' do
-    let!(:migration) do
-      create(
-        :batched_background_migration,
+    let!(:attributes) do
+      {
         job_class_name: 'MyJobClass',
         table_name: :projects,
         column_name: :id,
-        job_arguments: [[:id], [:id_convert_to_bigint]]
-      )
+        job_arguments: [[:id], [:id_convert_to_bigint]],
+        gitlab_schema: :gitlab_main
+      }
     end
 
+    let!(:migration) { create(:batched_background_migration, attributes) }
+
     before do
-      create(:batched_background_migration, job_class_name: 'OtherClass')
-      create(:batched_background_migration, table_name: 'other_table')
-      create(:batched_background_migration, column_name: 'other_column')
-      create(:batched_background_migration, job_arguments: %w[other arguments])
+      create(:batched_background_migration, attributes.merge(job_class_name: 'OtherClass'))
+      create(:batched_background_migration, attributes.merge(table_name: 'other_table'))
+      create(:batched_background_migration, attributes.merge(column_name: 'other_column'))
+      create(:batched_background_migration, attributes.merge(job_arguments: %w[other arguments]))
     end
 
     it 'finds the migration matching the given configuration parameters' do
-      actual = described_class.for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])
+      actual = described_class.for_configuration(:gitlab_main, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])
+
+      expect(actual).to contain_exactly(migration)
+    end
+
+    it 'filters by gitlab schemas available for the connection' do
+      actual = described_class.for_configuration(:gitlab_ci, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])
+
+      expect(actual).to be_empty
+    end
+
+    it 'doesn not filter by gitlab schemas available for the connection if the column is nor present' do
+      skip_if_multiple_databases_not_setup
+
+      expect(described_class).to receive(:gitlab_schema_column_exists?).and_return(false)
+
+      actual = described_class.for_configuration(:gitlab_main, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])
 
       expect(actual).to contain_exactly(migration)
     end
@@ -579,7 +615,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
   describe '.find_for_configuration' do
     it 'returns nill if such migration does not exists' do
-      expect(described_class.find_for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to be_nil
+      expect(described_class.find_for_configuration(:gitlab_main, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to be_nil
     end
 
     it 'returns the migration when it exists' do
@@ -588,10 +624,25 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
         job_class_name: 'MyJobClass',
         table_name: :projects,
         column_name: :id,
-        job_arguments: [[:id], [:id_convert_to_bigint]]
+        job_arguments: [[:id], [:id_convert_to_bigint]],
+        gitlab_schema: :gitlab_main
       )
 
-      expect(described_class.find_for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to eq(migration)
+      expect(described_class.find_for_configuration(:gitlab_main, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to eq(migration)
+    end
+  end
+
+  describe '.for_gitlab_schema' do
+    let!(:migration) { create(:batched_background_migration, gitlab_schema: :gitlab_main) }
+
+    before do
+      create(:batched_background_migration, gitlab_schema: :gitlab_not_existing)
+    end
+
+    it 'finds the migrations matching the given gitlab schema' do
+      actual = described_class.for_gitlab_schema(:gitlab_main)
+
+      expect(actual).to contain_exactly(migration)
     end
   end
 end

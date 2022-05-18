@@ -193,9 +193,12 @@ The cost factor for a job running on a shared runner is:
 
 ### Additional costs on GitLab SaaS
 
-On GitLab SaaS, shared runners can have different cost factors depending on the cost involved
-in executing the runner. For example, a high spec shared runner could be set to have a cost factor of `2`.
-Conversely, a shared runner that executes jobs for public projects could have a low cost factor, like `0.008`.
+GitLab SaaS shared runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
+
+| GitLab SaaS runner type  | Virtual machine configuration   | CI/CD minutes cost factor  |
+| :--------- | :------------------- | :--------- |
+| Linux OS + Docker executor| 1 vCPU, 3.75 GB RAM   |1|
+| macOS + shell executor   | 4 vCPU, 10 GB RAM| 6 | 
 
 ### Monthly reset of CI/CD minutes
 

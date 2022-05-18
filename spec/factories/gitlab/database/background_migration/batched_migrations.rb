@@ -12,6 +12,7 @@ FactoryBot.define do
     sequence(:job_arguments) { |n| [["column_#{n}"], ["column_#{n}_convert_to_bigint"]] }
     total_tuple_count { 10_000 }
     pause_ms { 100 }
+    gitlab_schema { :gitlab_main }
 
     trait(:paused) do
       status { 0 }

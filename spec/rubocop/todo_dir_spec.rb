@@ -42,12 +42,6 @@ RSpec.describe RuboCop::TodoDir do
     end
   end
 
-  describe '#directory' do
-    subject { todo_dir.directory }
-
-    it { is_expected.to eq(directory) }
-  end
-
   describe '#read' do
     let(:content) { 'a' }
 

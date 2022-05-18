@@ -11,9 +11,6 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
     let(:configuration) { Rails::Application::Configuration.new(Rails.root) }
 
     before do
-      allow(File).to receive(:exist?).and_call_original
-      allow(File).to receive(:exist?).with(Rails.root.join("config/database_geo.yml")).and_return(false)
-
       # The `AS::ConfigurationFile` calls `read` in `def initialize`
       # thus we cannot use `expect_next_instance_of`
       # rubocop:disable RSpec/AnyInstanceOf

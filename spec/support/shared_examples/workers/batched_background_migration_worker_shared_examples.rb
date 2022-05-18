@@ -98,10 +98,26 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       end
 
       context 'when the feature flag is enabled' do
+        let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
+
         before do
           stub_feature_flags(feature_flag => true)
 
-          allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration).and_return(nil)
+          allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
+            .with(connection: base_model.connection)
+            .and_return(nil)
+        end
+
+        context 'when database config is shared' do
+          it 'does nothing' do
+            expect(Gitlab::Database).to receive(:db_config_share_with)
+              .with(base_model.connection_db_config).and_return('main')
+
+            expect(worker).not_to receive(:active_migration)
+            expect(worker).not_to receive(:run_active_migration)
+
+            worker.perform
+          end
         end
 
         context 'when no active migrations exist' do
@@ -121,6 +137,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
           before do
             allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
+              .with(connection: base_model.connection)
               .and_return(migration)
 
             allow(migration).to receive(:interval_elapsed?).with(variance: interval_variance).and_return(true)
@@ -203,6 +220,125 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
           end
         end
       end
+    end
+  end
+
+  describe 'executing an entire migration', :freeze_time, if: Gitlab::Database.has_config?(tracking_database) do
+    include Gitlab::Database::DynamicModelHelpers
+
+    let(:migration_class) do
+      Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+        def perform(matching_status)
+          each_sub_batch(
+            operation_name: :update_all,
+            batching_scope: -> (relation) { relation.where(status: matching_status) }
+          ) do |sub_batch|
+            sub_batch.update_all(some_column: 0)
+          end
+        end
+      end
+    end
+
+    let!(:migration) do
+      create(
+        :batched_background_migration,
+        :active,
+        table_name: table_name,
+        column_name: :id,
+        max_value: migration_records,
+        batch_size: batch_size,
+        sub_batch_size: sub_batch_size,
+        job_class_name: 'ExampleDataMigration',
+        job_arguments: [1]
+      )
+    end
+
+    let(:table_name) { 'example_data' }
+    let(:batch_size) { 5 }
+    let(:sub_batch_size) { 2 }
+    let(:number_of_batches) { 10 }
+    let(:migration_records) { batch_size * number_of_batches }
+
+    let(:connection) { Gitlab::Database.database_base_models[tracking_database].connection }
+    let(:example_data) { define_batchable_model(table_name, connection: connection) }
+
+    around do |example|
+      Gitlab::Database::SharedModel.using_connection(connection) do
+        example.run
+      end
+    end
+
+    before do
+      # Create example table populated with test data to migrate.
+      #
+      # Test data should have two records that won't be updated:
+      #   - one record beyond the migration's range
+      #   - one record that doesn't match the migration job's batch condition
+      connection.execute(<<~SQL)
+        CREATE TABLE #{table_name} (
+          id integer primary key,
+          some_column integer,
+          status smallint);
+
+        INSERT INTO #{table_name} (id, some_column, status)
+        SELECT generate_series, generate_series, 1
+        FROM generate_series(1, #{migration_records + 1});
+
+        UPDATE #{table_name}
+          SET status = 0
+        WHERE some_column = #{migration_records - 5};
+      SQL
+
+      stub_feature_flags(execute_batched_migrations_on_schedule: true)
+
+      stub_const('Gitlab::BackgroundMigration::ExampleDataMigration', migration_class)
+    end
+
+    subject(:full_migration_run) do
+      # process all batches, then do an extra execution to mark the job as finished
+      (number_of_batches + 1).times do
+        described_class.new.perform
+
+        travel_to((migration.interval + described_class::INTERVAL_VARIANCE).seconds.from_now)
+      end
+    end
+
+    it 'marks the migration record as finished' do
+      expect { full_migration_run }.to change { migration.reload.status }.from(1).to(3) # active -> finished
+    end
+
+    it 'creates job records for each processed batch', :aggregate_failures do
+      expect { full_migration_run }.to change { migration.reload.batched_jobs.count }.from(0)
+
+      final_min_value = migration.batched_jobs.reduce(1) do |next_min_value, batched_job|
+        expect(batched_job.min_value).to eq(next_min_value)
+
+        batched_job.max_value + 1
+      end
+
+      final_max_value = final_min_value - 1
+      expect(final_max_value).to eq(migration_records)
+    end
+
+    it 'marks all job records as succeeded', :aggregate_failures do
+      expect { full_migration_run }.to change { migration.reload.batched_jobs.count }.from(0)
+
+      expect(migration.batched_jobs).to all(be_succeeded)
+    end
+
+    it 'updates matching records in the range', :aggregate_failures do
+      expect { full_migration_run }
+        .to change { example_data.where('status = 1 AND some_column <> 0').count }
+        .from(migration_records).to(1)
+
+      record_outside_range = example_data.last
+
+      expect(record_outside_range.status).to eq(1)
+      expect(record_outside_range.some_column).not_to eq(0)
+    end
+
+    it 'does not update non-matching records in the range' do
+      expect { full_migration_run }.not_to change { example_data.where('status <> 1 AND some_column <> 0').count }
     end
   end
 end

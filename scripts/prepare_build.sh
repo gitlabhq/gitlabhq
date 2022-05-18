@@ -17,8 +17,11 @@ else
   cp config/database.yml.postgresql config/database.yml
 fi
 
-if [ -f config/database_geo.yml.postgresql ]; then
-  cp config/database_geo.yml.postgresql config/database_geo.yml
+# Remove Geo database setting if `ee/` directory does not exist. When it does
+# not exist, it runs the GitLab test suite "as if FOSS", meaning the jobs run
+# in the context of gitlab-org/gitlab-foss where the Geo is not available.
+if [ ! -d "ee/" ] ; then
+  sed -i '/geo:/,/^$/d' config/database.yml
 fi
 
 # Set user to a non-superuser to ensure we test permissions
@@ -26,11 +29,6 @@ sed -i 's/username: root/username: gitlab/g' config/database.yml
 
 sed -i 's/localhost/postgres/g' config/database.yml
 sed -i 's/username: git/username: postgres/g' config/database.yml
-
-if [ -f config/database_geo.yml ]; then
-  sed -i 's/localhost/postgres/g' config/database_geo.yml
-  sed -i 's/username: git/username: postgres/g' config/database_geo.yml
-fi
 
 cp config/cable.yml.example config/cable.yml
 sed -i 's|url:.*$|url: redis://redis:6379|g' config/cable.yml

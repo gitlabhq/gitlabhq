@@ -311,6 +311,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
     let(:table_name) { :_test_batched_migrations_test_table }
     let(:column_name) { :some_id }
     let(:job_arguments) { [:some_id, :some_id_convert_to_bigint] }
+    let(:gitlab_schemas) { Gitlab::Database.gitlab_schemas_for_connection(connection) }
 
     let(:migration_status) { :active }
 
@@ -358,7 +359,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
 
       it 'completes the migration' do
         expect(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:find_for_configuration)
-          .with('CopyColumnUsingBackgroundMigrationJob', table_name, column_name, job_arguments)
+          .with(gitlab_schemas, 'CopyColumnUsingBackgroundMigrationJob', table_name, column_name, job_arguments)
           .and_return(batched_migration)
 
         expect(batched_migration).to receive(:finalize!).and_call_original
@@ -399,7 +400,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
 
       it 'is a no-op' do
         expect(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:find_for_configuration)
-          .with('CopyColumnUsingBackgroundMigrationJob', table_name, column_name, job_arguments)
+          .with(gitlab_schemas, 'CopyColumnUsingBackgroundMigrationJob', table_name, column_name, job_arguments)
           .and_return(batched_migration)
 
         configuration = {
@@ -426,7 +427,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
     context 'when the migration does not exist' do
       it 'is a no-op' do
         expect(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:find_for_configuration)
-          .with('CopyColumnUsingBackgroundMigrationJob', table_name, column_name, [:some, :other, :arguments])
+          .with(gitlab_schemas, 'CopyColumnUsingBackgroundMigrationJob', table_name, column_name, [:some, :other, :arguments])
           .and_return(nil)
 
         configuration = {

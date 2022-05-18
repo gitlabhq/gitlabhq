@@ -8,7 +8,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
   let(:ghfm_spec_txt_uri) { described_class::GHFM_SPEC_TXT_URI }
   let(:ghfm_spec_txt_uri_io) { StringIO.new(ghfm_spec_txt_contents) }
   let(:ghfm_spec_txt_path) { described_class::GHFM_SPEC_TXT_PATH }
-  let(:ghfm_spec_txt_local_io) { StringIO.new }
+  let(:ghfm_spec_txt_local_io) { StringIO.new(ghfm_spec_txt_contents) }
 
   let(:glfm_intro_txt_path) { described_class::GLFM_INTRO_TXT_PATH }
   let(:glfm_intro_txt_io) { StringIO.new(glfm_intro_txt_contents) }
@@ -71,11 +71,15 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
   end
 
   before do
+    # Mock default ENV var values
+    allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_TXT').and_return(nil)
+    allow(ENV).to receive(:[]).and_call_original
+
     # We mock out the URI and local file IO objects with real StringIO, instead of just mock
     # objects. This gives better and more realistic coverage, while still avoiding
     # actual network and filesystem I/O during the spec run.
     allow(URI).to receive(:open).with(ghfm_spec_txt_uri) { ghfm_spec_txt_uri_io }
-    allow(File).to receive(:open).with(ghfm_spec_txt_path, 'w') { ghfm_spec_txt_local_io }
+    allow(File).to receive(:open).with(ghfm_spec_txt_path) { ghfm_spec_txt_local_io }
     allow(File).to receive(:open).with(glfm_intro_txt_path) { glfm_intro_txt_io }
     allow(File).to receive(:open).with(glfm_examples_txt_path) { glfm_examples_txt_io }
     allow(File).to receive(:open).with(glfm_spec_txt_path, 'w') { glfm_spec_txt_io }
@@ -85,45 +89,64 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
   end
 
   describe 'retrieving latest GHFM spec.txt' do
-    context 'with success' do
-      it 'downloads and saves' do
+    context 'when UPDATE_GHFM_SPEC_TXT is not true (default)' do
+      it 'does not download' do
+        expect(URI).not_to receive(:open).with(ghfm_spec_txt_uri)
+
         subject.process
 
         expect(reread_io(ghfm_spec_txt_local_io)).to eq(ghfm_spec_txt_contents)
       end
     end
 
-    context 'with error handling' do
-      context 'with a version mismatch' do
-        let(:ghfm_spec_txt_contents) do
-          <<~GHFM_SPEC_TXT_CONTENTS
-            ---
-            title: GitHub Flavored Markdown Spec
-            version: 0.30
-            ...
-          GHFM_SPEC_TXT_CONTENTS
-        end
+    context 'when UPDATE_GHFM_SPEC_TXT is true' do
+      let(:ghfm_spec_txt_local_io) { StringIO.new }
 
-        it 'raises an error' do
-          expect { subject.process }.to raise_error /version mismatch.*expected.*29.*got.*30/i
+      before do
+        allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_TXT').and_return('true')
+        allow(File).to receive(:open).with(ghfm_spec_txt_path, 'w') { ghfm_spec_txt_local_io }
+      end
+
+      context 'with success' do
+        it 'downloads and saves' do
+          subject.process
+
+          expect(reread_io(ghfm_spec_txt_local_io)).to eq(ghfm_spec_txt_contents)
         end
       end
 
-      context 'with a failed read of file lines' do
-        let(:ghfm_spec_txt_contents) { '' }
+      context 'with error handling' do
+        context 'with a version mismatch' do
+          let(:ghfm_spec_txt_contents) do
+            <<~GHFM_SPEC_TXT_CONTENTS
+              ---
+              title: GitHub Flavored Markdown Spec
+              version: 0.30
+              ...
+            GHFM_SPEC_TXT_CONTENTS
+          end
 
-        it 'raises an error if lines cannot be read' do
-          expect { subject.process }.to raise_error /unable to read lines/i
+          it 'raises an error' do
+            expect { subject.process }.to raise_error /version mismatch.*expected.*29.*got.*30/i
+          end
         end
-      end
 
-      context 'with a failed re-read of file string' do
-        before do
-          allow(ghfm_spec_txt_uri_io).to receive(:read).and_return(nil)
+        context 'with a failed read of file lines' do
+          let(:ghfm_spec_txt_contents) { '' }
+
+          it 'raises an error if lines cannot be read' do
+            expect { subject.process }.to raise_error /unable to read lines/i
+          end
         end
 
-        it 'raises an error if file is blank' do
-          expect { subject.process }.to raise_error /unable to read string/i
+        context 'with a failed re-read of file string' do
+          before do
+            allow(ghfm_spec_txt_uri_io).to receive(:read).and_return(nil)
+          end
+
+          it 'raises an error if file is blank' do
+            expect { subject.process }.to raise_error /unable to read string/i
+          end
         end
       end
     end

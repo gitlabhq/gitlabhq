@@ -16,8 +16,6 @@ class BackfillIntegrationsTypeNew < ActiveRecord::Migration[6.1]
   end
 
   def down
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :integrations, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :integrations, :id, [])
   end
 end

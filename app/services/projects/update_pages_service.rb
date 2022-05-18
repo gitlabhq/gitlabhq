@@ -30,6 +30,7 @@ module Projects
 
       validate_state!
       validate_max_size!
+      validate_public_folder!
       validate_max_entries!
 
       build.artifacts_file.use_file do |artifacts_path|
@@ -178,6 +179,10 @@ module Projects
       if pages_file_entries_limit > 0 && entries_count > pages_file_entries_limit
         raise InvalidStateError, "pages site contains #{entries_count} file entries, while limit is set to #{pages_file_entries_limit}"
       end
+    end
+
+    def validate_public_folder!
+      raise InvalidStateError, 'Error: The `public/` folder is missing, or not declared in `.gitlab-ci.yml`.' unless total_size > 0
     end
 
     def entries_count

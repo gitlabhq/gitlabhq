@@ -12,12 +12,34 @@ module Glfm
 
     def process
       output('Updating specification...')
-      ghfm_spec_txt_lines = download_and_write_ghfm_spec_txt
+      ghfm_spec_txt_lines = load_ghfm_spec_txt
       glfm_spec_txt_string = build_glfm_spec_txt(ghfm_spec_txt_lines)
       write_glfm_spec_txt(glfm_spec_txt_string)
     end
 
     private
+
+    def load_ghfm_spec_txt
+      # We only re-download the GitHub Flavored Markdown specification if the
+      # UPDATE_GHFM_SPEC_TXT environment variable is set to true, which should only
+      # ever be done manually and locally, never in CI. This provides some security
+      # protection against a possible injection attack vector, if the GitHub-hosted
+      # version of the spec is ever temporarily compromised with an injection attack.
+      #
+      # This also avoids doing external network access to download the file
+      # in CI jobs, which can avoid potentially flaky builds if the GitHub-hosted
+      # version of the file is temporarily unavailable.
+      if ENV['UPDATE_GHFM_SPEC_TXT'] == 'true'
+        download_and_write_ghfm_spec_txt
+      else
+        read_existing_ghfm_spec_txt
+      end
+    end
+
+    def read_existing_ghfm_spec_txt
+      output("Reading existing #{GHFM_SPEC_TXT_PATH}...")
+      File.open(GHFM_SPEC_TXT_PATH).readlines
+    end
 
     def download_and_write_ghfm_spec_txt
       output("Downloading #{GHFM_SPEC_TXT_URI}...")

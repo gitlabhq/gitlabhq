@@ -16,6 +16,14 @@ production:
     username: git
     password: "secure password"
     host: localhost
+  geo:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_geo_production
+    username: git
+    password: "secure password"
+    host: localhost
+
 #
 # Development specific
 #
@@ -38,6 +46,13 @@ development:
     host: localhost
     variables:
       statement_timeout: 15s
+  geo:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_geo_development
+    username: postgres
+    password: "secure password"
+    host: localhost
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -63,3 +78,10 @@ test: &test
     prepared_statements: false
     variables:
       statement_timeout: 15s
+  geo:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_geo_test
+    username: postgres
+    password:
+    host: localhost

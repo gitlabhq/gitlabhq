@@ -7,9 +7,7 @@ RSpec.describe API::UsageData do
 
   describe 'POST /usage_data/increment_counter' do
     let(:endpoint) { '/usage_data/increment_counter' }
-    let(:known_event) { "#{known_event_prefix}_#{known_event_postfix}" }
-    let(:known_event_prefix) { "static_site_editor" }
-    let(:known_event_postfix) { 'commits' }
+    let(:known_event) { "diff_searches" }
     let(:unknown_event) { 'unknown' }
 
     context 'without CSRF token' do
@@ -57,27 +55,18 @@ RSpec.describe API::UsageData do
       end
 
       context 'with correct params' do
-        using RSpec::Parameterized::TableSyntax
-
-        where(:prefix, :event) do
-          'static_site_editor' | 'merge_requests'
-          'static_site_editor' | 'commits'
-        end
-
         before do
           stub_application_setting(usage_ping_enabled: true)
           stub_feature_flags(usage_data_api: true)
           allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
         end
 
-        with_them do
-          it 'returns status :ok' do
-            expect(Gitlab::UsageDataCounters::BaseCounter).to receive(:count).with(event)
+        it 'returns status :ok' do
+          expect(Gitlab::UsageDataCounters::BaseCounter).to receive(:count).with("searches")
 
-            post api(endpoint, user), params: { event: "#{prefix}_#{event}" }
+          post api(endpoint, user), params: { event: known_event }
 
-            expect(response).to have_gitlab_http_status(:ok)
-          end
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 

@@ -228,7 +228,12 @@ Rails.application.routes.draw do
 
     draw :snippets
     draw :profile
-    draw :members
+
+    post '/mailgun/webhooks' => 'mailgun/webhooks#process_webhook'
+
+    # Deprecated route for permanent failures
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/362606
+    post '/members/mailgun/permanent_failures' => 'mailgun/webhooks#process_webhook'
 
     # Product analytics collector
     match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all

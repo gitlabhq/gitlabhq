@@ -36,7 +36,6 @@ class BackfillProjectNamespacesForGroup < Gitlab::Database::Migration[1.0]
   def down
     return unless Gitlab.com? || Gitlab.staging?
 
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :projects, :id, [GROUP_ID, 'up']).delete_all
+    delete_batched_background_migration(MIGRATION, :projects, :id, [GROUP_ID, 'up'])
   end
 end

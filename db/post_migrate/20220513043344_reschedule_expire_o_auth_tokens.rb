@@ -10,9 +10,7 @@ class RescheduleExpireOAuthTokens < Gitlab::Database::Migration[2.0]
 
   def up
     # remove the original migration from db/post_migrate/20220428133724_schedule_expire_o_auth_tokens.rb
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :oauth_access_tokens, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :oauth_access_tokens, :id, [])
 
     # reschedule
     queue_batched_background_migration(
@@ -24,8 +22,6 @@ class RescheduleExpireOAuthTokens < Gitlab::Database::Migration[2.0]
   end
 
   def down
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :oauth_access_tokens, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :oauth_access_tokens, :id, [])
   end
 end
