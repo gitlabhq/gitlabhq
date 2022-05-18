@@ -360,9 +360,16 @@ Self managed installations can also run the security scanners on a GitLab Runner
 You can enforce validation of the security report artifacts before ingesting the vulnerabilities.
 This prevents ingestion of broken vulnerability data into the database. GitLab validates the
 artifacts based on the [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist).
-
-In GitLab 14.0 and later, when artifact validation is enabled, the pipeline's **Security** tab lists
+When artifact validation is enabled, the pipeline's **Security** tab lists
 any report artifacts that failed validation.
+
+Validation depends on the schema:
+
+- If your security report does not specify which schema version it uses, GitLab attempts to verify it against the earliest supported schema version for that report type. Validation fails but it's attempted anyway because it may identify other problems present in the report.
+- If your security report uses a version that is not supported, GitLab attempts to validate it against the earliest supported schema version for that report type. Validation fails but will identify the differences between the schema version used and the earliest supported version.
+- If your security report uses a deprecated version, GitLab attempts validation against that version and adds a warning to the validation result.
+
+You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9).
 
 ### Enable security report validation
 

@@ -34,7 +34,7 @@ describe('Package Files', () => {
       },
       stubs: {
         ...stubChildren(PackageFiles),
-        GlTable: false,
+        GlTableLite: false,
       },
     });
   };

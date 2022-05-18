@@ -147,6 +147,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:job_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:build_trace_chunks).through(:builds).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:secure_files).class_name('Ci::SecureFile').dependent(:restrict_with_error) }
+    it { is_expected.to have_one(:build_artifacts_size_refresh).class_name('Projects::BuildArtifactsSizeRefresh') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -8287,6 +8288,38 @@ RSpec.describe Project, factory_default: :keep do
                                .tap { |project| project.update!(last_activity_at: 1.month.ago) }
 
       expect(described_class.inactive).to contain_exactly(inactive_large_project)
+    end
+  end
+
+  describe "#refreshing_build_artifacts_size?" do
+    let_it_be(:project) { create(:project) }
+
+    subject { project.refreshing_build_artifacts_size? }
+
+    context 'when project has no existing refresh record' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when project has existing refresh record' do
+      context 'and refresh has not yet started' do
+        before do
+          allow(project)
+            .to receive_message_chain(:build_artifacts_size_refresh, :started?)
+            .and_return(false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'and refresh has started' do
+        before do
+          allow(project)
+            .to receive_message_chain(:build_artifacts_size_refresh, :started?)
+            .and_return(true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
     end
   end
 

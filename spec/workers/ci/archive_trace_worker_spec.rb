@@ -16,6 +16,34 @@ RSpec.describe Ci::ArchiveTraceWorker do
 
         subject
       end
+
+      it 'has preloaded the arguments for archiving' do
+        allow_next_instance_of(Ci::ArchiveTraceService) do |instance|
+          allow(instance).to receive(:execute) do |job|
+            expect(job.association(:project)).to be_loaded
+            expect(job.association(:pending_state)).to be_loaded
+          end
+        end
+
+        subject
+      end
+
+      context 'when sticky_ci_archive_trace_worker is disabled' do
+        before do
+          stub_feature_flags(sticky_ci_archive_trace_worker: false)
+        end
+
+        it 'does not preload associations' do
+          allow_next_instance_of(Ci::ArchiveTraceService) do |instance|
+            allow(instance).to receive(:execute) do |job|
+              expect(job.association(:project)).not_to be_loaded
+              expect(job.association(:pending_state)).not_to be_loaded
+            end
+          end
+
+          subject
+        end
+      end
     end
 
     context 'when job is not found' do

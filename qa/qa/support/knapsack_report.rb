@@ -13,6 +13,10 @@ module QA
 
       def_delegators :new, :configure!, :move_regenerated_report, :download_report, :upload_report
 
+      def initialize(report_name = nil)
+        @report_name = report_name
+      end
+
       # Configure knapsack report
       #
       # * Setup variables
@@ -31,8 +35,8 @@ module QA
       #
       # @return [void]
       def download_report
-        logger.debug("Downloading latest knapsack report for '#{report_name}' to '#{report_path}'")
-        return logger.debug("Report already exists, skipping!") if File.exist?(report_path)
+        logger.info("Downloading latest knapsack report for '#{report_name}' to '#{report_path}'")
+        return logger.info("Report already exists, skipping!") if File.exist?(report_path)
 
         file = client.get_object(BUCKET, report_file)
         File.write(report_path, file[:body])

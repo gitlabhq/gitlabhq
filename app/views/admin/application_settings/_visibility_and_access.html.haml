@@ -63,4 +63,6 @@
       %label.label-bold= s_('AdminSettings|Feed token')
       = f.gitlab_ui_checkbox_component :disable_feed_token, s_('AdminSettings|Disable feed token')
 
+    = render_if_exists 'admin/application_settings/globally_allowed_ips', form: f
+
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

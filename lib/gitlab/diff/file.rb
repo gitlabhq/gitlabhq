@@ -43,18 +43,10 @@ module Gitlab
         # Ensure items are collected in the the batch
         new_blob_lazy
         old_blob_lazy
-
-        if use_semantic_ipynb_diff? && !use_renderable_diff?
-          diff.diff = Gitlab::Diff::CustomDiff.preprocess_before_diff(diff.new_path, old_blob_lazy, new_blob_lazy) || diff.diff
-        end
       end
 
       def use_semantic_ipynb_diff?
         strong_memoize(:_use_semantic_ipynb_diff) { Feature.enabled?(:ipynb_semantic_diff, repository.project) }
-      end
-
-      def use_renderable_diff?
-        strong_memoize(:_renderable_diff_enabled) { Feature.enabled?(:rendered_diffs_viewer, repository.project) }
       end
 
       def has_renderable?
@@ -381,7 +373,7 @@ module Gitlab
       end
 
       def rendered
-        return unless use_semantic_ipynb_diff? && use_renderable_diff? && ipynb? && modified_file? && !too_large?
+        return unless use_semantic_ipynb_diff? && ipynb? && modified_file? && !too_large?
 
         strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
       end

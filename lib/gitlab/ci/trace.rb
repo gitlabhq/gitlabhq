@@ -74,14 +74,14 @@ module Gitlab
       end
 
       def exist?
-        archived? || live_trace_exist?
+        archived? || live?
       end
 
       def archived?
         trace_artifact&.stored?
       end
 
-      def live_trace_exist?
+      def live?
         job.trace_chunks.any? || current_path.present? || old_trace.present?
       end
 

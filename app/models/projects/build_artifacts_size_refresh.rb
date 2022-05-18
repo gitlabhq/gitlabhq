@@ -83,9 +83,14 @@ module Projects
 
     def next_batch(limit:)
       project.job_artifacts.select(:id, :size)
-        .where('created_at <= ? AND id > ?', refresh_started_at, last_job_artifact_id.to_i)
-        .order(:created_at)
+        .created_at_before(refresh_started_at)
+        .id_after(last_job_artifact_id.to_i)
+        .ordered_by_created_at_and_id_asc
         .limit(limit)
+    end
+
+    def started?
+      !created?
     end
   end
 end

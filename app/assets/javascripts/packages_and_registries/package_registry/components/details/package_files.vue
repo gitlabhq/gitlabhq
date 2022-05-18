@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlTable, GlDropdownItem, GlDropdown, GlIcon, GlButton } from '@gitlab/ui';
+import { GlLink, GlTableLite, GlDropdownItem, GlDropdown, GlIcon, GlButton } from '@gitlab/ui';
 import { last } from 'lodash';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
@@ -12,7 +12,7 @@ export default {
   name: 'PackageFiles',
   components: {
     GlLink,
-    GlTable,
+    GlTableLite,
     GlIcon,
     GlDropdown,
     GlDropdownItem,
@@ -94,7 +94,7 @@ export default {
 <template>
   <div>
     <h3 class="gl-font-lg gl-mt-5">{{ __('Files') }}</h3>
-    <gl-table
+    <gl-table-lite
       :fields="filesTableHeaderFields"
       :items="filesTableRows"
       :tbody-tr-attr="{ 'data-testid': 'file-row' }"
@@ -162,6 +162,6 @@ export default {
           <file-sha v-if="item.fileSha1" data-testid="sha-1" title="SHA-1" :sha="item.fileSha1" />
         </div>
       </template>
-    </gl-table>
+    </gl-table-lite>
   </div>
 </template>

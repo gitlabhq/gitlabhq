@@ -33,7 +33,7 @@ RSpec.describe API::Internal::MailRoom do
   let(:incoming_email_secret) { 'incoming_email_secret' }
   let(:service_desk_email_secret) { 'service_desk_email_secret' }
 
-  let(:email_content) { fixture_file("emails/commands_in_reply.eml") }
+  let(:email_content) { fixture_file("emails/service_desk_reply.eml") }
 
   before do
     allow(Gitlab::MailRoom::Authenticator).to receive(:secret).with(:incoming_email).and_return(incoming_email_secret)
@@ -117,7 +117,7 @@ RSpec.describe API::Internal::MailRoom do
 
         email = ActionMailer::Base.deliveries.last
         expect(email).not_to be_nil
-        expect(email.to).to match_array(["jake@adventuretime.ooo"])
+        expect(email.to).to match_array(["alan@adventuretime.ooo"])
         expect(email.subject).to include("Rejected")
         expect(email.body.parts.last.to_s).to include("We couldn't process your email")
       end
@@ -188,6 +188,31 @@ RSpec.describe API::Internal::MailRoom do
         post api("/internal/mail_room/service_desk_email"), headers: auth_headers
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'handle invalid utf-8 email content' do
+      let(:email_content) do
+        File.open(expand_fixture_path("emails/service_desk_reply_illegal_utf8.eml"), "r:SHIFT_JIS") { |f| f.read }
+      end
+
+      let(:encoded_email_content) { Gitlab::EncodingHelper.encode_utf8(email_content) }
+      let(:auth_headers) do
+        jwt_token = JWT.encode(auth_payload, incoming_email_secret, 'HS256')
+        { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token }
+      end
+
+      it 'schedules a EmailReceiverWorker job with email content encoded to utf-8 forcefully' do
+        Sidekiq::Testing.fake! do
+          expect do
+            post api("/internal/mail_room/incoming_email"), headers: auth_headers, params: email_content
+          end.to change { EmailReceiverWorker.jobs.size }.by(1)
+        end
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        job = EmailReceiverWorker.jobs.last
+        expect(job).to match a_hash_including('args' => [encoded_email_content])
       end
     end
   end

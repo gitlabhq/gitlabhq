@@ -16,9 +16,15 @@ namespace :knapsack do
     exit QA::Specs::KnapsackRunner.run(rspec_args)
   end
 
-  desc "Download latest knapsack report"
+  desc "Download latest knapsack report or multiple reports passed via QA_KNAPSACK_REPORTS env variable"
   task :download do
-    QA::Support::KnapsackReport.download_report
+    next QA::Support::KnapsackReport.download_report unless ENV["QA_KNAPSACK_REPORTS"]
+
+    ENV["QA_KNAPSACK_REPORTS"].split(",").each do |report_name|
+      QA::Support::KnapsackReport.new(report_name).download_report
+    rescue StandardError => e
+      QA::Runtime::Logger.error(e)
+    end
   end
 
   desc "Merge and upload knapsack report"

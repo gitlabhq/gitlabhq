@@ -30,7 +30,7 @@ module API
           end
           post "/*mailbox_type" do
             worker = Gitlab::MailRoom.worker_for(params[:mailbox_type])
-            raw = request.body.read
+            raw = Gitlab::EncodingHelper.encode_utf8(request.body.read)
             begin
               worker.perform_async(raw)
             rescue Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError

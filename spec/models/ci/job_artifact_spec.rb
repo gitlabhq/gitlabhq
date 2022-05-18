@@ -302,6 +302,33 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  describe '.created_at_before' do
+    it 'returns artifacts created before' do
+      artifact1 = create(:ci_job_artifact, created_at: 1.day.ago)
+      _artifact2 = create(:ci_job_artifact, created_at: 1.day.from_now)
+
+      expect(described_class.created_at_before(Time.current)).to match_array([artifact1])
+    end
+  end
+
+  describe '.id_after' do
+    it 'returns artifacts id after' do
+      artifact1 = create(:ci_job_artifact)
+      artifact2 = create(:ci_job_artifact)
+
+      expect(described_class.id_after(artifact1.id)).to match_array([artifact2])
+    end
+  end
+
+  describe '.ordered_by_created_at_and_id_asc' do
+    it 'returns artifacts by ascending created_at ids' do
+      artifact1 = create(:ci_job_artifact)
+      artifact2 = create(:ci_job_artifact)
+
+      expect(described_class.ordered_by_created_at_and_id_asc).to eq([artifact1, artifact2])
+    end
+  end
+
   describe 'callbacks' do
     describe '#schedule_background_upload' do
       subject { create(:ci_job_artifact, :archive) }

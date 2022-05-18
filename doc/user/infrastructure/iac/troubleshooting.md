@@ -60,7 +60,7 @@ my-terraform-job:
   extends: .apply
 ```
 
-There are two different causes for the error:
+There are three different causes for the error:
 
 - In the case of `.init`, the error occurs because the init stage and jobs [were removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71188) from the templates, since they are no longer required. To resolve the syntax error, you can safely remove any jobs extending `.init`.
 - For all other jobs, the reason for the failure is that the base jobs have been [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67719): A `.terraform:` prefix has been added to every job name. For example, `.apply` became `.terraform:apply`. To fix this error, you can update the base job names. For example:
@@ -70,6 +70,21 @@ There are two different causes for the error:
   -   extends: .apply
   +   extends: .terraform:apply
   ```
+
+- In GitLab 15.0, templates use [`rules`](../../../ci/yaml/index.md#rules) syntax
+  instead of [`only/except`](../../../ci/yaml/index.md#only--except).
+  Ensure the syntax in your `.gitlab-ci.yml` file does not include both. 
+  
+#### Use an older version of the template
+
+Breaking changes can occur during major releases. If you encounter a breaking change or want to use an older version of a template, you can update your `.gitlab-ci.yml` to refer to an older one. For example:
+
+```yaml
+include:
+  remote: https://gitlab.com/gitlab-org/configure/template-archive/-/raw/main/14-10/Terraform.gitlab-ci.yml
+```
+
+View the [template-archive](https://gitlab.com/gitlab-org/configure/template-archive) to see which templates are available.
 
 ## Troubleshooting Terraform state
 

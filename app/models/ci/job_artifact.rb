@@ -139,6 +139,9 @@ module Ci
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
     scope :for_job_ids, ->(job_ids) { where(job_id: job_ids) }
     scope :for_job_name, ->(name) { joins(:job).where(ci_builds: { name: name }) }
+    scope :created_at_before, ->(time) { where(arel_table[:created_at].lteq(time)) }
+    scope :id_after, ->(id) { where(arel_table[:id].gt(id)) }
+    scope :ordered_by_created_at_and_id_asc, -> { order(:created_at, :id) }
 
     scope :with_job, -> { joins(:job).includes(:job) }
 
@@ -187,7 +190,7 @@ module Ci
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }
     scope :order_expired_asc, -> { order(expire_at: :asc) }
-    scope :with_destroy_preloads, -> { includes(project: [:route, :statistics]) }
+    scope :with_destroy_preloads, -> { includes(project: [:route, :statistics, :build_artifacts_size_refresh]) }
 
     scope :for_project, ->(project) { where(project_id: project) }
     scope :created_in_time_range, ->(from: nil, to: nil) { where(created_at: from..to) }

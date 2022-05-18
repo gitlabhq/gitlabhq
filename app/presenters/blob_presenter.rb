@@ -27,11 +27,11 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def blob_data(to)
-    @_blob_data ||= Gitlab::Diff::CustomDiff.transformed_blob_data(blob) || limited_blob_data(to: to)
+    @_blob_data ||= limited_blob_data(to: to)
   end
 
   def blob_language
-    @_blob_language ||= Gitlab::Diff::CustomDiff.transformed_blob_language(blob) || gitattr_language || detect_language
+    @_blob_language ||= gitattr_language || detect_language
   end
 
   def raw_plain_data

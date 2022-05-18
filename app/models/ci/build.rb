@@ -144,6 +144,7 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:tags) }
+    scope :eager_load_for_archiving_trace, -> { includes(:project, :pending_state) }
 
     scope :eager_load_everything, -> do
       includes(
@@ -673,7 +674,7 @@ module Ci
     end
 
     def has_live_trace?
-      trace.live_trace_exist?
+      trace.live?
     end
 
     def has_archived_trace?
@@ -826,11 +827,25 @@ module Ci
     end
 
     def erase_erasable_artifacts!
+      if project.refreshing_build_artifacts_size?
+        Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
+          method: 'Ci::Build#erase_erasable_artifacts!',
+          project_id: project_id
+        )
+      end
+
       job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
     end
 
     def erase(opts = {})
       return false unless erasable?
+
+      if project.refreshing_build_artifacts_size?
+        Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
+          method: 'Ci::Build#erase',
+          project_id: project_id
+        )
+      end
 
       job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
       erase_trace!

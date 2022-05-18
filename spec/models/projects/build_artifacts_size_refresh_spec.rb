@@ -223,5 +223,35 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
     it 'returns the job artifact records that were created not later than the refresh_started_at and IDs greater than the last_job_artifact_id' do
       expect(batch).to eq([artifact_2, artifact_3])
     end
+
+    context 'when created_at is set before artifact id is persisted' do
+      it 'returns ordered job artifacts' do
+        artifact_3.update!(created_at: artifact_2.created_at)
+
+        expect(batch).to eq([artifact_2, artifact_3])
+      end
+    end
+  end
+
+  describe '#started?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:project) { create(:project) }
+
+    subject { refresh.started? }
+
+    where(:refresh_state, :result) do
+      :created | false
+      :pending | true
+      :running | true
+    end
+
+    with_them do
+      let(:refresh) do
+        create(:project_build_artifacts_size_refresh, refresh_state, project: project)
+      end
+
+      it { is_expected.to eq(result) }
+    end
   end
 end

@@ -834,8 +834,8 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
     end
   end
 
-  describe '#live_trace_exist?' do
-    subject { trace.live_trace_exist? }
+  describe '#live?' do
+    subject { trace.live? }
 
     context 'when trace does not exist' do
       it { is_expected.to be_falsy }

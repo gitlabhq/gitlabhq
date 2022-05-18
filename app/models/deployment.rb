@@ -52,6 +52,7 @@ class Deployment < ApplicationRecord
   scope :upcoming, -> { where(status: %i[blocked running]) }
   scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
   scope :with_api_entity_associations, -> { preload({ deployable: { runner: [], tags: [], user: [], job_artifacts_archive: [] } }) }
+  scope :with_environment_page_associations, -> { preload(project: [], environment: [], deployable: [:user, :metadata, :project, pipeline: [:manual_actions]]) }
 
   scope :finished_after, ->(date) { where('finished_at >= ?', date) }
   scope :finished_before, ->(date) { where('finished_at < ?', date) }

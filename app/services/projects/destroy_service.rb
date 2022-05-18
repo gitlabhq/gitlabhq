@@ -191,6 +191,10 @@ module Projects
     # rubocop: enable CodeReuse/ActiveRecord
 
     def destroy_ci_records!
+      # Make sure to destroy this first just in case the project is undergoing stats refresh.
+      # This is to avoid logging the artifact deletion in Ci::JobArtifacts::DestroyBatchService.
+      project.build_artifacts_size_refresh&.destroy
+
       project.all_pipelines.find_each(batch_size: BATCH_SIZE) do |pipeline| # rubocop: disable CodeReuse/ActiveRecord
         # Destroy artifacts, then builds, then pipelines
         # All builds have already been dropped by Ci::AbortPipelinesService,

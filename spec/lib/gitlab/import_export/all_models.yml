@@ -613,6 +613,7 @@ project:
 - secure_files
 - security_trainings
 - vulnerability_reads
+- build_artifacts_size_refresh
 award_emoji:
 - awardable
 - user

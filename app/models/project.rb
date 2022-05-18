@@ -418,6 +418,8 @@ class Project < ApplicationRecord
   has_one :ci_project_mirror, class_name: 'Ci::ProjectMirror'
   has_many :sync_events, class_name: 'Projects::SyncEvent'
 
+  has_one :build_artifacts_size_refresh, class_name: 'Projects::BuildArtifactsSizeRefresh'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :project_setting, update_only: true
@@ -2898,6 +2900,10 @@ class Project < ApplicationRecord
   def inactive?
     (statistics || build_statistics).storage_size > ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes &&
       last_activity_at < ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
+  end
+
+  def refreshing_build_artifacts_size?
+    build_artifacts_size_refresh&.started?
   end
 
   private

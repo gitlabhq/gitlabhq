@@ -73,6 +73,18 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       end
 
       it_behaves_like 'deleting the project'
+
+      context 'when project is undergoing refresh' do
+        let!(:build_artifacts_size_refresh) { create(:project_build_artifacts_size_refresh, :pending, project: project) }
+
+        it 'does not log about artifact deletion but continues to delete artifacts' do
+          expect(Gitlab::ProjectStatsRefreshConflictsLogger).not_to receive(:warn_artifact_deletion_during_stats_refresh)
+
+          expect { destroy_project(project, user, {}) }
+            .to change { Ci::JobArtifact.count }.by(-2)
+            .and change { Projects::BuildArtifactsSizeRefresh.count }.by(-1)
+        end
+      end
     end
   end
 

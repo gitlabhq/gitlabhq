@@ -28,14 +28,10 @@ GitLab.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6589) in GitLab 14.5 as an [Alpha](../../../../policy/alpha-beta-support.md#alpha-features) release [with a flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75500) in GitLab 14.9. Feature flag `jupyter_clean_diffs` removed.
 > - [Reintroduced toggle](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85079) in GitLab 15.0 [with a flag](../../../../administration/feature_flags.md) named `ipynb_semantic_diff`. Enabled by default.
-> - Selecting between raw and cleaner diffs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85203) in GitLab 15.0 [with a flag](../../../../administration/feature_flags.md) named `rendered_diffs_viewer`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default semantic diffs are available. To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `ipynb_semantic_diff`.
 On GitLab.com, this feature is available.
-
-FLAG:
-On self-managed GitLab, by default the ability to switch between raw and rendered diffs is available. To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)named `rendered_diffs_viewer`. On GitLab.com, this feature is available.
 
 When commits include changes to Jupyter Notebook files, GitLab:
 

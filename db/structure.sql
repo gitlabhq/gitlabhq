@@ -11305,6 +11305,7 @@ CREATE TABLE application_settings (
     container_registry_pre_import_timeout integer DEFAULT 1800 NOT NULL,
     container_registry_import_timeout integer DEFAULT 600 NOT NULL,
     pipeline_limit_per_project_user_sha integer DEFAULT 0 NOT NULL,
+    globally_allowed_ips text DEFAULT ''::text NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -11326,6 +11327,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_5bcba483c4 CHECK ((char_length(sentry_environment) <= 255)),
     CONSTRAINT check_718b4458ae CHECK ((char_length(personal_access_token_prefix) <= 20)),
     CONSTRAINT check_7227fad848 CHECK ((char_length(rate_limiting_response_text) <= 255)),
+    CONSTRAINT check_734cc9407a CHECK ((char_length(globally_allowed_ips) <= 255)),
     CONSTRAINT check_7ccfe2764a CHECK ((char_length(arkose_labs_namespace) <= 255)),
     CONSTRAINT check_85a39b68ff CHECK ((char_length(encrypted_ci_jwt_signing_key_iv) <= 255)),
     CONSTRAINT check_8dca35398a CHECK ((char_length(public_runner_releases_url) <= 255)),
@@ -24125,6 +24127,9 @@ ALTER TABLE sprints
 
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE requirements
+    ADD CONSTRAINT check_requirement_issue_not_null CHECK ((issue_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);

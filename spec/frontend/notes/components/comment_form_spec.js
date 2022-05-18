@@ -582,6 +582,26 @@ describe('issue_comment_form component', () => {
           expect(checkbox.element.checked).toBe(false);
         });
 
+        it.each`
+          noteableType      | rendered | message
+          ${'Issue'}        | ${true}  | ${'render'}
+          ${'Epic'}         | ${true}  | ${'render'}
+          ${'MergeRequest'} | ${false} | ${'not render'}
+        `(
+          'should $message checkbox when noteableType is $noteableType',
+          ({ noteableType, rendered }) => {
+            mountComponent({
+              mountFunction: mount,
+              noteableType,
+              initialData: { note: 'internal note' },
+              noteableData: { ...notableDataMockCanUpdateIssuable, noteableType },
+              features,
+            });
+
+            expect(findConfidentialNoteCheckbox().exists()).toBe(rendered);
+          },
+        );
+
         describe.each`
           shouldCheckboxBeChecked
           ${true}

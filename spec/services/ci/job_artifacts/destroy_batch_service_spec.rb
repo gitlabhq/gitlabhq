@@ -52,6 +52,45 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
         .and not_change { Ci::JobArtifact.exists?(trace_artifact.id) }
     end
 
+    context 'when artifact belongs to a project that is undergoing stats refresh' do
+      let!(:artifact_under_refresh_1) do
+        create(:ci_job_artifact, :zip)
+      end
+
+      let!(:artifact_under_refresh_2) do
+        create(:ci_job_artifact, :zip)
+      end
+
+      let!(:artifact_under_refresh_3) do
+        create(:ci_job_artifact, :zip, project: artifact_under_refresh_2.project)
+      end
+
+      let(:artifacts) do
+        Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_under_refresh_1.id, artifact_under_refresh_2.id,
+                                   artifact_under_refresh_3.id])
+      end
+
+      before do
+        create(:project_build_artifacts_size_refresh, :created, project: artifact_with_file.project)
+        create(:project_build_artifacts_size_refresh, :pending, project: artifact_under_refresh_1.project)
+        create(:project_build_artifacts_size_refresh, :running, project: artifact_under_refresh_2.project)
+      end
+
+      it 'logs the artifacts undergoing refresh and continues with the delete', :aggregate_failures do
+        expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
+          method: 'Ci::JobArtifacts::DestroyBatchService#execute',
+          project_id: artifact_under_refresh_1.project.id
+        ).once
+
+        expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
+          method: 'Ci::JobArtifacts::DestroyBatchService#execute',
+          project_id: artifact_under_refresh_2.project.id
+        ).once
+
+        expect { subject }.to change { Ci::JobArtifact.count }.by(-4)
+      end
+    end
+
     context 'ProjectStatistics' do
       it 'resets project statistics' do
         expect(ProjectStatistics).to receive(:increment_statistic).once

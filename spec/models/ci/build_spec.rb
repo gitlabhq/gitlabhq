@@ -1830,6 +1830,27 @@ RSpec.describe Ci::Build do
     end
 
     context 'build is erasable' do
+      context 'when project is undergoing stats refresh' do
+        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
+
+        describe '#erase' do
+          before do
+            allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
+          end
+
+          it 'logs and continues with deleting the artifacts' do
+            expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
+              method: 'Ci::Build#erase',
+              project_id: build.project.id
+            )
+
+            build.erase
+
+            expect(build.job_artifacts.count).to eq(0)
+          end
+        end
+      end
+
       context 'new artifacts' do
         let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
 
@@ -1922,6 +1943,23 @@ RSpec.describe Ci::Build do
 
       Ci::JobArtifact::NON_ERASABLE_FILE_TYPES.each do |file_type|
         expect(build.send("job_artifacts_#{file_type}")).not_to be_nil
+      end
+    end
+
+    context 'when the project is undergoing stats refresh' do
+      before do
+        allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
+      end
+
+      it 'logs and continues with deleting the artifacts' do
+        expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
+          method: 'Ci::Build#erase_erasable_artifacts!',
+          project_id: build.project.id
+        )
+
+        subject
+
+        expect(build.job_artifacts.erasable).to be_empty
       end
     end
   end

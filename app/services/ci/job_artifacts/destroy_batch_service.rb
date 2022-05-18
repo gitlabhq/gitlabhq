@@ -25,6 +25,8 @@ module Ci
 
       # rubocop: disable CodeReuse/ActiveRecord
       def execute(update_stats: true)
+        track_artifacts_undergoing_stats_refresh
+
         # Detect and fix artifacts that had `expire_at` wrongly backfilled by migration
         # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47723
         detect_and_fix_wrongly_expired_artifacts
@@ -153,6 +155,19 @@ module Ci
         Ci::JobArtifact.id_in(artifacts).update_all(expire_at: nil)
 
         Gitlab::AppLogger.info(message: "Fixed expire_at from artifacts.", fixed_artifacts_expire_at_count: artifacts.count)
+      end
+
+      def track_artifacts_undergoing_stats_refresh
+        project_ids = @job_artifacts.find_all do |artifact|
+          artifact.project.refreshing_build_artifacts_size?
+        end.map(&:project_id).uniq
+
+        project_ids.each do |project_id|
+          Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
+            method: 'Ci::JobArtifacts::DestroyBatchService#execute',
+            project_id: project_id
+          )
+        end
       end
     end
   end

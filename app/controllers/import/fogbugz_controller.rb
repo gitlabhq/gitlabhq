@@ -55,16 +55,16 @@ class Import::FogbugzController < Import::BaseController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def create
-    repo = client.repo(params[:repo_id])
-    fb_session = { uri: session[:fogbugz_uri], token: session[:fogbugz_token] }
+    credentials = { uri: session[:fogbugz_uri], token: session[:fogbugz_token] }
+
     umap = session[:fogbugz_user_map] || client.user_map
 
-    project = Gitlab::FogbugzImport::ProjectCreator.new(repo, fb_session, current_user.namespace, current_user, umap).execute
+    result = Import::FogbugzService.new(client, current_user, params.merge(umap: umap)).execute(credentials)
 
-    if project.persisted?
-      render json: ProjectSerializer.new.represent(project, serializer: :import)
+    if result[:status] == :success
+      render json: ProjectSerializer.new.represent(result[:project], serializer: :import)
     else
-      render json: { errors: project_save_error(project) }, status: :unprocessable_entity
+      render json: { errors: result[:message] }, status: result[:http_status]
     end
   end
 
