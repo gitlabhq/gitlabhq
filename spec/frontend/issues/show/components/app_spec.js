@@ -1,4 +1,4 @@
-import { GlBadge, GlIntersectionObserver } from '@gitlab/ui';
+import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
@@ -489,7 +489,7 @@ describe('Issuable output', () => {
 
           await nextTick();
 
-          expect(findStickyHeader().findComponent(GlBadge).props('icon')).toBe(statusIcon);
+          expect(findStickyHeader().findComponent(GlIcon).props('name')).toBe(statusIcon);
         },
       );
 

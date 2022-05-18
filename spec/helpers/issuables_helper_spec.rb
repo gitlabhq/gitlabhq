@@ -294,6 +294,7 @@ RSpec.describe IssuablesHelper do
         projectPath: @project.path,
         projectId: @project.id,
         projectNamespace: @project.namespace.path,
+        state: issue.state,
         initialTitleHtml: issue.title,
         initialTitleText: issue.title,
         initialDescriptionHtml: '<p dir="auto">issue text</p>',

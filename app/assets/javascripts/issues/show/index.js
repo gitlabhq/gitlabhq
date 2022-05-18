@@ -38,6 +38,7 @@ export function initIncidentApp(issueData = {}) {
     projectId,
     slaFeatureAvailable,
     uploadMetricsFeatureAvailable,
+    state,
   } = issueData;
 
   const fullPath = `${projectNamespace}/${projectPath}`;
@@ -60,6 +61,7 @@ export function initIncidentApp(issueData = {}) {
       return createElement(IssueApp, {
         props: {
           ...issueData,
+          issuableStatus: state,
           descriptionComponent: IncidentTabs,
           showTitleBorder: false,
         },

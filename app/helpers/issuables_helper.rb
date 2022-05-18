@@ -238,6 +238,7 @@ module IssuablesHelper
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
       markdownDocsPath: help_page_path('user/markdown'),
       lockVersion: issuable.lock_version,
+      state: issuable.state,
       issuableTemplateNamesPath: template_names_path(parent, issuable),
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,

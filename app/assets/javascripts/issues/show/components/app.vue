@@ -531,8 +531,11 @@ export default {
             <div
               class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
             >
-              <gl-badge :icon="statusIcon" :variant="statusVariant" class="gl-mr-2"
-                ><span class="gl-display-none gl-sm-display-block">{{ statusText }}</span></gl-badge
+              <gl-badge :variant="statusVariant" class="gl-mr-2">
+                <gl-icon :name="statusIcon" />
+                <span class="gl-display-none gl-sm-display-block gl-ml-2">{{
+                  statusText
+                }}</span></gl-badge
               >
               <span v-if="isLocked" data-testid="locked" class="issuable-warning-icon">
                 <gl-icon name="lock" :aria-label="__('Locked')" />
