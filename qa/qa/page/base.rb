@@ -461,7 +461,7 @@ module QA
         click_by_js ? page.execute_script("arguments[0].click();", box) : box.click
       end
 
-      def feature_flag_controlled_element(feature_flag, element_when_flag_enabled, element_when_flag_disabled)
+      def feature_flag_controlled_element(feature_flag, element_when_flag_enabled, element_when_flag_disabled, visibility = true)
         # Feature flags can change the UI elements shown, but we need admin access to get feature flag values, which
         # prevents us running the tests on production. Instead we detect the UI element that should be shown when the
         # feature flag is enabled and otherwise use the element that should be displayed when the feature flag is
@@ -472,12 +472,12 @@ module QA
         # load and render the UI
         wait_for_requests
 
-        return element_when_flag_enabled if has_element?(element_when_flag_enabled, wait: 1)
-        return element_when_flag_disabled if has_element?(element_when_flag_disabled, wait: 1)
+        return element_when_flag_enabled if has_element?(element_when_flag_enabled, wait: 1, visible: visibility)
+        return element_when_flag_disabled if has_element?(element_when_flag_disabled, wait: 1, visibile: visibility)
 
         # Check both options again, this time waiting for the default duration
-        return element_when_flag_enabled if has_element?(element_when_flag_enabled)
-        return element_when_flag_disabled if has_element?(element_when_flag_disabled)
+        return element_when_flag_enabled if has_element?(element_when_flag_enabled, visible: visibility)
+        return element_when_flag_disabled if has_element?(element_when_flag_disabled, visible: visibility)
 
         raise ElementNotFound,
               "Could not find the expected element as #{element_when_flag_enabled} or #{element_when_flag_disabled}." \
