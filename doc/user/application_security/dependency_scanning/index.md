@@ -321,7 +321,7 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
     <p>
-      Support for <a href="https://python-poetry.org/">Poetry</a> projects with a <code>poetry.lock</code> file was [added in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/7006).
+      Support for <a href="https://python-poetry.org/">Poetry</a> projects with a <code>poetry.lock</code> file was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/7006">added in GitLab 15.0</a>.
       Support for projects without a <code>poetry.lock</code> file is tracked in issue:
       <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/32774">Poetry's pyproject.toml support for dependency scanning.</a>
     </p>
@@ -346,9 +346,10 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 | Composer        | N/A                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/php-composer/default/composer.lock)                                                                                                                              |
 | Conan           | 0.4                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/c-conan/default/conan.lock)                                                                                                                                      |
 | Go              | N/A                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/default/go.sum)                                                                                                                                       |
-| NuGet           | v1                             | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                               |j
+| NuGet           | v1                             | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                               |
 | npm             | v1, v2                         | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4)         |
 | yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/default/yarn.lock#L2)                                                                                                                                       |
+| Poetry          | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/blob/v3/qa/fixtures/python-poetry/default/poetry.lock)                                                                                                          |
 
 #### Obtaining dependency information by running a package manager to generate a parsable file
 

@@ -139,7 +139,9 @@ To approve or reject a deployment to a protected environment using the UI:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
+1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
+1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
 
 NOTE:

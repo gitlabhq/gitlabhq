@@ -156,10 +156,11 @@ the destination's value when [listing streaming destinations](#list-streaming-de
 
 ## Audit event streaming on Git operations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named `audit_event_streaming_git_operations`. On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named `audit_event_streaming_git_operations`. On GitLab.com, this feature is available.
 
 Streaming audit events can be sent when signed-in users push or pull a project's remote Git repositories:
 
