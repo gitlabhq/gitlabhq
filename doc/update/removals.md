@@ -224,6 +224,16 @@ All functionality related to GitLab Serverless was deprecated in GitLab 14.3 and
 
 For additional context, or to provide feedback regarding this change, please reference our [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/6).
 
+### Gitaly nodes in virtual storage
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Configuring the Gitaly nodes directly in the virtual storage's root configuration object has been deprecated in GitLab 13.12 and is no longer supported in GitLab 15.0. You must move the Gitaly nodes under the `'nodes'` key as described in [the Praefect configuration](https://docs.gitlab.com/ee/administration/gitaly/praefect.html#praefect).
+
 ### GraphQL permissions change for Package settings
 
 WARNING:

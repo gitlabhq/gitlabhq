@@ -23,7 +23,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/server"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
 )
 
@@ -241,14 +240,20 @@ func run(boot bootConfig, cfg config.Config) error {
 		Network: boot.listenNetwork,
 		Addr:    boot.listenAddr,
 	}
-	srv := &server.Server{
-		Handler:         up,
-		Umask:           boot.listenUmask,
-		ListenerConfigs: append(cfg.Listeners, listenerFromBootConfig),
-		Errors:          finalErrors,
+	var listeners []net.Listener
+	oldUmask := syscall.Umask(boot.listenUmask)
+	for _, cfg := range append(cfg.Listeners, listenerFromBootConfig) {
+		l, err := newListener("upstream", cfg)
+		if err != nil {
+			return err
+		}
+		listeners = append(listeners, l)
 	}
-	if err := srv.Run(); err != nil {
-		return fmt.Errorf("running server: %v", err)
+	syscall.Umask(oldUmask)
+
+	srv := &http.Server{Handler: up}
+	for _, l := range listeners {
+		go func(l net.Listener) { finalErrors <- srv.Serve(l) }(l)
 	}
 
 	select {

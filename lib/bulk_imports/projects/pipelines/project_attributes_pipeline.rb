@@ -8,6 +8,8 @@ module BulkImports
 
         file_extraction_pipeline!
 
+        relation_name BulkImports::FileTransfer::BaseConfig::SELF_RELATION
+
         transformer ::BulkImports::Common::Transformers::ProhibitedAttributesTransformer
 
         def extract(_context)
@@ -57,7 +59,7 @@ module BulkImports
         def download_service
           @download_service ||= BulkImports::FileDownloadService.new(
             configuration: context.configuration,
-            relative_url:  context.entity.relation_download_url_path(BulkImports::FileTransfer::BaseConfig::SELF_RELATION),
+            relative_url:  context.entity.relation_download_url_path(self.class.relation),
             tmpdir: tmpdir,
             filename: compressed_filename
           )
@@ -72,7 +74,7 @@ module BulkImports
         end
 
         def filename
-          "#{BulkImports::FileTransfer::BaseConfig::SELF_RELATION}.json"
+          "#{self.class.relation}.json"
         end
 
         def json_decode(string)

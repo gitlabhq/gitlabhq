@@ -324,8 +324,7 @@ module API
           optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
         end
         get '/:id/artifacts', feature_category: :build_artifacts do
-          if Feature.enabled?(:ci_authenticate_running_job_token_for_artifacts, current_job&.project) &&
-            request_using_running_job_token?
+          if request_using_running_job_token?
             authenticate_job_via_dependent_job!
           else
             authenticate_job!(require_running: false)

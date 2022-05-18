@@ -4,6 +4,6 @@ classes:
 - Geo::JobArtifactState
 feature_categories:
 - geo_replication
-description: TODO
+description: Separate table for job artifacts containing Geo verification metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75264
 milestone: '14.8'

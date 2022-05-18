@@ -21,16 +21,6 @@ RSpec.describe API::Entities::Ci::JobRequest::Dependency do
     expect(subject[:token]).to eq(running_job.token)
   end
 
-  context 'when ci_expose_running_job_token_for_artifacts is disabled' do
-    before do
-      stub_feature_flags(ci_expose_running_job_token_for_artifacts: false)
-    end
-
-    it 'returns the token belonging to the dependency job' do
-      expect(subject[:token]).to eq(job.token)
-    end
-  end
-
   it 'returns the dependency artifacts_file', :aggregate_failures do
     expect(subject[:artifacts_file][:filename]).to eq('ci_build_artifacts.zip')
     expect(subject[:artifacts_file][:size]).to eq(job.artifacts_size)

@@ -176,4 +176,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
       end
     end
   end
+
+  describe '.relation' do
+    it { expect(described_class.relation).to eq('self') }
+  end
 end

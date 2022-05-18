@@ -8,7 +8,7 @@ module BulkImports
 
         file_extraction_pipeline!
 
-        relation_name 'self'
+        relation_name BulkImports::FileTransfer::BaseConfig::SELF_RELATION
 
         extractor ::BulkImports::Common::Extractors::JsonExtractor, relation: relation
 

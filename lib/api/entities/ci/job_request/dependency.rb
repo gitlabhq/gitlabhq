@@ -8,11 +8,7 @@ module API
           expose :id, :name
 
           expose :token do |job, options|
-            if ::Feature.enabled?(:ci_expose_running_job_token_for_artifacts, job.project)
-              options[:running_job]&.token
-            else
-              job.token
-            end
+            options[:running_job]&.token
           end
 
           expose :artifacts_file, using: Entities::Ci::JobArtifactFile, if: ->(job, _) { job.available_artifacts? }

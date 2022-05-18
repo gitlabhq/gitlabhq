@@ -73,4 +73,8 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupAttributesPipeline do
       pipeline.after_run(nil)
     end
   end
+
+  describe '.relation' do
+    it { expect(described_class.relation).to eq('self') }
+  end
 end

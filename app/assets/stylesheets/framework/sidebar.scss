@@ -93,7 +93,7 @@
 }
 
 .right-sidebar {
-  border-left: 1px solid $gray-50;
+  border-left: 1px solid $gray-100;
 
   &.right-sidebar-merge-requests {
     @include media-breakpoint-up(md) {

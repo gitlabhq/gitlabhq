@@ -49,9 +49,10 @@ RSpec.describe Gitlab::SidekiqConfig do
     before do
       allow(described_class).to receive(:workers).and_return(workers)
       allow(Gitlab).to receive(:ee?).and_return(false)
+      allow(Gitlab).to receive(:jh?).and_return(false)
     end
 
-    it 'returns true if the YAML file does not matcph the application code' do
+    it 'returns true if the YAML file does not match the application code' do
       allow(YAML).to receive(:load_file)
                        .with(described_class::FOSS_QUEUE_CONFIG_PATH)
                        .and_return(workers.first(2).map(&:to_yaml))
@@ -101,6 +102,7 @@ RSpec.describe Gitlab::SidekiqConfig do
       ].map { |worker| described_class::Worker.new(worker, ee: false) }
 
       allow(described_class).to receive(:workers).and_return(workers)
+      allow(Gitlab).to receive(:jh?).and_return(false)
     end
 
     let(:expected_queues) do

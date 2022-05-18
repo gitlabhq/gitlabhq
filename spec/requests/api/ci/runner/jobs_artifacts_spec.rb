@@ -895,22 +895,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
               it_behaves_like 'successful artifact download'
             end
-
-            context 'when feature flag is disabled' do
-              before do
-                stub_feature_flags(ci_authenticate_running_job_token_for_artifacts: false)
-              end
-
-              it_behaves_like 'successful artifact download'
-
-              context 'when the job is no longer running' do
-                before do
-                  job.success!
-                end
-
-                it_behaves_like 'successful artifact download'
-              end
-            end
           end
 
           context 'when using token belonging to the dependent job' do
@@ -924,14 +908,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             context 'when the dependent job is no longer running' do
               before do
                 dependent_job.success!
-              end
-
-              it_behaves_like 'forbidden request'
-            end
-
-            context 'when feature flag is disabled' do
-              before do
-                stub_feature_flags(ci_authenticate_running_job_token_for_artifacts: false)
               end
 
               it_behaves_like 'forbidden request'
@@ -952,14 +928,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
 
             it_behaves_like 'successful artifact download'
-
-            context 'when feature flag is disabled' do
-              before do
-                stub_feature_flags(ci_authenticate_running_job_token_for_artifacts: false)
-              end
-
-              it_behaves_like 'forbidden request'
-            end
           end
 
           context 'when using token belonging to a pending dependent job' do
