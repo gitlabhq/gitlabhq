@@ -123,7 +123,7 @@ To enable or disable Service Ping and version check:
 
 NOTE:
 The method to disable Service Ping in the GitLab configuration file does not work in
-GitLab versions 9.3 to 13.12.3. For more information about how to disable it, see [troubleshooting](../../../development/service_ping/index.md#cannot-disable-service-ping-using-the-configuration-file).
+GitLab versions 9.3 to 13.12.3. For more information about how to disable it, see [troubleshooting](../../../development/service_ping/troubleshooting.md#cannot-disable-service-ping-with-the-configuration-file).
 
 To disable Service Ping and prevent it from being configured in the future through
 the Admin Area:

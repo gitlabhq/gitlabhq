@@ -122,18 +122,24 @@ gitlab-rake gitlab:geo:check
 If any failures are reported on either site, they should be resolved **before**
 scheduling a planned failover.
 
-### Check that secrets match between sites
+### Check that secrets and SSH host keys match between nodes
 
 The SSH host keys and `/etc/gitlab/gitlab-secrets.json` files should be
-identical on all sites. Check this by running the following on all sites and
+identical on all nodes. Check this by running the following on all nodes and
 comparing the output:
 
 ```shell
 sudo sha256sum /etc/ssh/ssh_host* /etc/gitlab/gitlab-secrets.json
 ```
 
-If any files differ, replace the content on the **secondary** site with the
-content from the **primary** site.
+If any files differ, [manually replicate GitLab secrets](../replication/configuration.md#step-1-manually-replicate-secret-gitlab-values) and [replicate SSH host keys](../replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys)
+to the **secondary** site as necessary.
+
+### Check that the correct certificates are installed for HTTPS
+
+This step can be safely skipped if the **primary** site and all external sites accessed by the **primary** site use public CA-issued certificates.
+
+If the **primary** site uses custom or self-signed TLS certificates to secure inbound connections or if the **primary** site connects to external services that use custom or self-signed certificates, the correct certificates should also be installed on the **secondary** site. Follow instructions for [using custom certificates](../replication/configuration.md#step-4-optional-using-custom-certificates) with **secondary** sites.
 
 ### Ensure Geo replication is up-to-date
 
