@@ -64,10 +64,6 @@ module QA
         end
       end
 
-      def marked_for_deletion?
-        reload!.api_response[:marked_for_deletion_on].present?
-      end
-
       # Get group badges
       #
       # @return [Array<QA::Resource::GroupBadge>]

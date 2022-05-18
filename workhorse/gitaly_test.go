@@ -28,7 +28,6 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
@@ -40,7 +39,7 @@ func TestFailedCloneNoGitaly(t *testing.T) {
 		GL_ID:       "user-123",
 		GL_USERNAME: "username",
 		// This will create a failure to connect to Gitaly
-		GitalyServer: gitaly.Server{Address: "unix:/nonexistent"},
+		GitalyServer: api.GitalyServer{Address: "unix:/nonexistent"},
 	}
 
 	// Prepare test server and backend

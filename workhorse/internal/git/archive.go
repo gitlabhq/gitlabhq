@@ -22,6 +22,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
@@ -33,7 +34,7 @@ type archiveParams struct {
 	ArchivePath       string
 	ArchivePrefix     string
 	CommitId          string
-	GitalyServer      gitaly.Server
+	GitalyServer      api.GitalyServer
 	GitalyRepository  gitalypb.Repository
 	DisableCache      bool
 	GetArchiveRequest []byte
@@ -132,7 +133,12 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 
 func handleArchiveWithGitaly(r *http.Request, params *archiveParams, format gitalypb.GetArchiveRequest_Format) (io.Reader, error) {
 	var request *gitalypb.GetArchiveRequest
-	ctx, c, err := gitaly.NewRepositoryClient(r.Context(), params.GitalyServer)
+	ctx, c, err := gitaly.NewRepositoryClient(
+		r.Context(),
+		params.GitalyServer,
+		gitaly.WithFeatures(params.GitalyServer.Features),
+	)
+
 	if err != nil {
 		return nil, err
 	}

@@ -6,6 +6,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
@@ -14,7 +15,7 @@ import (
 
 type diff struct{ senddata.Prefix }
 type diffParams struct {
-	GitalyServer   gitaly.Server
+	GitalyServer   api.GitalyServer
 	RawDiffRequest string
 }
 
@@ -33,7 +34,11 @@ func (d *diff) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 		return
 	}
 
-	ctx, diffClient, err := gitaly.NewDiffClient(r.Context(), params.GitalyServer)
+	ctx, diffClient, err := gitaly.NewDiffClient(
+		r.Context(),
+		params.GitalyServer,
+		gitaly.WithFeatures(params.GitalyServer.Features),
+	)
 	if err != nil {
 		helper.Fail500(w, r, fmt.Errorf("diff.RawDiff: %v", err))
 		return

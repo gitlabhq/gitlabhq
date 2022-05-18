@@ -551,8 +551,28 @@ they must be _deprecated_ instead.
 The deprecated parts of the schema can then be removed in a future release
 in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-and-removal-process).
 
-Fields, arguments, enum values, and mutations are deprecated using the `deprecated` property.
-The value of the property is a `Hash` of:
+To deprecate a schema item in GraphQL:
+
+1. [Create a deprecation issue](#create-a-deprecation-issue) for the item.
+1. [Mark the item as deprecated](#mark-the-item-as-deprecated) in the schema.
+
+See also:
+
+- [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
+- [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
+
+### Create a deprecation issue
+
+Every GraphQL deprecation should have a deprecation issue created [using the `Deprecations` issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Deprecations) to track its deprecation and removal.
+
+Apply these two labels to the deprecation issue:
+
+- `~GraphQL`
+- `~deprecation`
+
+### Mark the item as deprecated
+
+Fields, arguments, enum values, and mutations are deprecated using the `deprecated` property. The value of the property is a `Hash` of:
 
 - `reason` - Reason for the deprecation.
 - `milestone` - Milestone that the field was deprecated.
@@ -569,7 +589,7 @@ The original `description` of the things being deprecated should be maintained,
 and should _not_ be updated to mention the deprecation. Instead, the `reason`
 is appended to the `description`.
 
-### Deprecation reason style guide
+#### Deprecation reason style guide
 
 Where the reason for deprecation is due to the field, argument, or enum value being
 replaced, the `reason` must indicate the replacement. For example, the
@@ -601,7 +621,7 @@ end
 If the field, argument, or enum value being deprecated is not being replaced,
 a descriptive deprecation `reason` should be given.
 
-### Deprecate Global IDs
+#### Deprecate Global IDs
 
 We use the [`rails/globalid`](https://github.com/rails/globalid) gem to generate and parse
 Global IDs, so as such they are coupled to model names. When we rename a
@@ -697,11 +717,6 @@ This is because we are deprecating using a bespoke method outside of the
 aware of the support.
 
 The documentation will mention that the old Global ID style is now deprecated.
-
-See also:
-
-- [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
-- [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
 
 ## Enums
 

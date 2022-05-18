@@ -44,7 +44,13 @@ func handleUploadPack(w *HttpResponseWriter, r *http.Request, a *api.Response) e
 }
 
 func handleUploadPackWithGitaly(ctx context.Context, a *api.Response, clientRequest io.Reader, clientResponse io.Writer, gitProtocol string) error {
-	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(ctx, a.GitalyServer)
+	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(
+		ctx,
+		a.GitalyServer,
+		gitaly.WithFeatures(a.GitalyServer.Features),
+		gitaly.WithUserID(a.GL_ID),
+		gitaly.WithUsername(a.GL_USERNAME),
+	)
 	if err != nil {
 		return fmt.Errorf("get gitaly client: %w", err)
 	}
