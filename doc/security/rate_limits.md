@@ -70,6 +70,21 @@ For configuration information, see
 
 ## Non-configurable limits
 
+### Git operations using SSH
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7.
+
+GitLab rate limits Git operations by user account and project. If a request from a user for a Git operation
+on a project exceeds the rate limit, GitLab drops further connection requests from that user for the project.
+
+The rate limit applies at the Git command ([plumbing](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain)) level. 
+Each command has a rate limit of 600 per minute. For example:
+
+- `git push` has a rate limit of 600 per minute.
+- `git pull` has its own rate limit of 600 per minute.
+
+Because the same commands are shared by `git-upload-pack`, `git pull`, and `git clone`, they share a rate limit.
+
 ### Repository archives
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25750) in GitLab 12.9.

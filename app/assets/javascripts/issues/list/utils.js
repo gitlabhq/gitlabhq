@@ -1,4 +1,5 @@
 import { isPositiveInteger } from '~/lib/utils/number_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
   FILTERED_SEARCH_TERM,
@@ -20,13 +21,14 @@ import {
   NORMAL_FILTER,
   PAGE_SIZE,
   PAGE_SIZE_MANUAL,
+  PARAM_ASSIGNEE_ID,
   POPULARITY_ASC,
   POPULARITY_DESC,
   PRIORITY_ASC,
   PRIORITY_DESC,
   RELATIVE_POSITION_ASC,
   SPECIAL_FILTER,
-  SPECIAL_FILTER_VALUES,
+  specialFilterValues,
   TITLE_ASC,
   TITLE_DESC,
   TOKEN_TYPE_ASSIGNEE,
@@ -202,16 +204,19 @@ export const getFilterTokens = (locationSearch) => {
   return filterTokens.concat(searchTokens);
 };
 
-const getFilterType = (data, tokenType = '') =>
-  SPECIAL_FILTER_VALUES.includes(data) ||
-  (tokenType === TOKEN_TYPE_ASSIGNEE && isPositiveInteger(data))
-    ? SPECIAL_FILTER
-    : NORMAL_FILTER;
+const getFilterType = (data, tokenType = '') => {
+  const isAssigneeIdParam =
+    tokenType === TOKEN_TYPE_ASSIGNEE &&
+    isPositiveInteger(data) &&
+    getParameterByName(PARAM_ASSIGNEE_ID) === data;
+
+  return specialFilterValues.includes(data) || isAssigneeIdParam ? SPECIAL_FILTER : NORMAL_FILTER;
+};
 
 const wildcardTokens = [TOKEN_TYPE_ITERATION, TOKEN_TYPE_MILESTONE, TOKEN_TYPE_RELEASE];
 
 const isWildcardValue = (tokenType, value) =>
-  wildcardTokens.includes(tokenType) && SPECIAL_FILTER_VALUES.includes(value);
+  wildcardTokens.includes(tokenType) && specialFilterValues.includes(value);
 
 const requiresUpperCaseValue = (tokenType, value) =>
   tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);

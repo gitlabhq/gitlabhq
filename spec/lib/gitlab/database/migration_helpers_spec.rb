@@ -2210,12 +2210,17 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#ensure_batched_background_migration_is_finished' do
+    let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
+    let(:table) { :events }
+    let(:column_name) { :id }
+    let(:job_arguments) { [["id"], ["id_convert_to_bigint"], nil] }
+
     let(:configuration) do
       {
-        job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
-        table_name: :events,
-        column_name: :id,
-        job_arguments: [["id"], ["id_convert_to_bigint"], nil]
+        job_class_name: job_class_name,
+        table_name: table,
+        column_name: column_name,
+        job_arguments: job_arguments
       }
     end
 
@@ -2223,6 +2228,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     it 'raises an error when migration exists and is not marked as finished' do
       create(:batched_background_migration, :active, configuration)
+
+      allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+        allow(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(false)
+      end
 
       expect { ensure_batched_background_migration_is_finished }
         .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':" \
@@ -2250,6 +2259,28 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       expect { ensure_batched_background_migration_is_finished }
         .not_to raise_error
+    end
+
+    it 'finalizes the migration' do
+      migration = create(:batched_background_migration, :active, configuration)
+
+      allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+        expect(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(migration.finish!)
+      end
+
+      ensure_batched_background_migration_is_finished
+    end
+
+    context 'when the flag finalize is false' do
+      it 'does not finalize the migration' do
+        create(:batched_background_migration, :active, configuration)
+
+        allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+          expect(runner).not_to receive(:finalize).with(job_class_name, table, column_name, job_arguments)
+        end
+
+        expect { model.ensure_batched_background_migration_is_finished(**configuration.merge(finalize: false)) }.to raise_error(RuntimeError)
+      end
     end
   end
 

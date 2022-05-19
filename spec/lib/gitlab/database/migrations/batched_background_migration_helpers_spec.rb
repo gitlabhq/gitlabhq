@@ -163,4 +163,24 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
       end
     end
   end
+
+  describe '#finalize_batched_background_migration' do
+    let!(:batched_migration) { create(:batched_background_migration, job_class_name: 'MyClass', table_name: :projects, column_name: :id, job_arguments: []) }
+
+    it 'finalizes the migration' do
+      allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+        expect(runner).to receive(:finalize).with('MyClass', :projects, :id, [])
+      end
+
+      migration.finalize_batched_background_migration(job_class_name: 'MyClass', table_name: :projects, column_name: :id, job_arguments: [])
+    end
+
+    context 'when the migration does not exist' do
+      it 'raises an exception' do
+        expect do
+          migration.finalize_batched_background_migration(job_class_name: 'MyJobClass', table_name: :projects, column_name: :id, job_arguments: [])
+        end.to raise_error(RuntimeError, 'Could not find batched background migration')
+      end
+    end
+  end
 end

@@ -56,6 +56,7 @@ export const ISSUE_REFERENCE = /^#\d+$/;
 export const MAX_LIST_SIZE = 10;
 export const PAGE_SIZE = 20;
 export const PAGE_SIZE_MANUAL = 100;
+export const PARAM_ASSIGNEE_ID = 'assignee_id';
 export const PARAM_PAGE_AFTER = 'page_after';
 export const PARAM_PAGE_BEFORE = 'page_before';
 export const PARAM_STATE = 'state';
@@ -112,7 +113,8 @@ export const URL_PARAM = 'urlParam';
 export const NORMAL_FILTER = 'normalFilter';
 export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
-export const SPECIAL_FILTER_VALUES = [
+
+export const specialFilterValues = [
   FILTER_NONE,
   FILTER_ANY,
   FILTER_CURRENT,

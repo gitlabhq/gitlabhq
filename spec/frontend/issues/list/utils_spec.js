@@ -1,3 +1,5 @@
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import {
   apiParams,
   apiParamsWithSpecialValues,
@@ -127,21 +129,33 @@ describe('getFilterTokens', () => {
 });
 
 describe('convertToApiParams', () => {
+  beforeEach(() => {
+    setWindowLocation(TEST_HOST);
+  });
+
   it('returns api params given filtered tokens', () => {
     expect(convertToApiParams(filteredTokens)).toEqual(apiParams);
   });
 
   it('returns api params given filtered tokens with special values', () => {
+    setWindowLocation('?assignee_id=123');
+
     expect(convertToApiParams(filteredTokensWithSpecialValues)).toEqual(apiParamsWithSpecialValues);
   });
 });
 
 describe('convertToUrlParams', () => {
+  beforeEach(() => {
+    setWindowLocation(TEST_HOST);
+  });
+
   it('returns url params given filtered tokens', () => {
     expect(convertToUrlParams(filteredTokens)).toEqual(urlParams);
   });
 
   it('returns url params given filtered tokens with special values', () => {
+    setWindowLocation('?assignee_id=123');
+
     expect(convertToUrlParams(filteredTokensWithSpecialValues)).toEqual(urlParamsWithSpecialValues);
   });
 });

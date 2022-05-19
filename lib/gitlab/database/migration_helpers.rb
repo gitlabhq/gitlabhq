@@ -943,7 +943,7 @@ module Gitlab
         execute("DELETE FROM batched_background_migrations WHERE #{conditions}")
       end
 
-      def ensure_batched_background_migration_is_finished(job_class_name:, table_name:, column_name:, job_arguments:)
+      def ensure_batched_background_migration_is_finished(job_class_name:, table_name:, column_name:, job_arguments:, finalize: true)
         migration = Gitlab::Database::BackgroundMigration::BatchedMigration
           .for_configuration(job_class_name, table_name, column_name, job_arguments).first
 
@@ -954,9 +954,13 @@ module Gitlab
           job_arguments: job_arguments
         }
 
-        if migration.nil?
-          Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}"
-        elsif !migration.finished?
+        return Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}" if migration.nil?
+
+        return if migration.finished?
+
+        Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.finalize(job_class_name, table_name, column_name, job_arguments, connection: connection) if finalize
+
+        unless migration.reload.finished? # rubocop:disable Cop/ActiveRecordAssociationReload
           raise "Expected batched background migration for the given configuration to be marked as 'finished', " \
             "but it is '#{migration.status_name}':" \
             "\t#{configuration}" \

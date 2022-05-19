@@ -117,6 +117,7 @@ export const locationSearch = [
   'not[author_username]=marge',
   'assignee_username[]=bart',
   'assignee_username[]=lisa',
+  'assignee_username[]=5',
   'not[assignee_username][]=patty',
   'not[assignee_username][]=selma',
   'milestone_title=season+3',
@@ -165,6 +166,7 @@ export const filteredTokens = [
   { type: 'author_username', value: { data: 'marge', operator: OPERATOR_IS_NOT } },
   { type: 'assignee_username', value: { data: 'bart', operator: OPERATOR_IS } },
   { type: 'assignee_username', value: { data: 'lisa', operator: OPERATOR_IS } },
+  { type: 'assignee_username', value: { data: '5', operator: OPERATOR_IS } },
   { type: 'assignee_username', value: { data: 'patty', operator: OPERATOR_IS_NOT } },
   { type: 'assignee_username', value: { data: 'selma', operator: OPERATOR_IS_NOT } },
   { type: 'milestone', value: { data: 'season 3', operator: OPERATOR_IS } },
@@ -212,7 +214,7 @@ export const filteredTokensWithSpecialValues = [
 
 export const apiParams = {
   authorUsername: 'homer',
-  assigneeUsernames: ['bart', 'lisa'],
+  assigneeUsernames: ['bart', 'lisa', '5'],
   milestoneTitle: ['season 3', 'season 4'],
   labelName: ['cartoon', 'tv'],
   releaseTag: ['v3', 'v4'],
@@ -251,7 +253,7 @@ export const apiParamsWithSpecialValues = {
 export const urlParams = {
   author_username: 'homer',
   'not[author_username]': 'marge',
-  'assignee_username[]': ['bart', 'lisa'],
+  'assignee_username[]': ['bart', 'lisa', '5'],
   'not[assignee_username][]': ['patty', 'selma'],
   milestone_title: ['season 3', 'season 4'],
   'not[milestone_title]': ['season 20', 'season 30'],
