@@ -586,7 +586,7 @@ profile increases as the number of tests increases.
 | CI/CD variable                                              | Description |
 |-------------------------------------------------------------|-------------|
 | `SECURE_ANALYZERS_PREFIX`                                   | Specify the Docker registry base address from which to download the analyzer. |
-| `FUZZAPI_VERSION`                                           | Specify API Fuzzing container version. Defaults to `1`. |
+| `FUZZAPI_VERSION`                                           | Specify API Fuzzing container version. Defaults to `2`. |
 | `FUZZAPI_IMAGE_SUFFIX`                                      | Specify a container image suffix. Defaults to none. |
 | `FUZZAPI_TARGET_URL`                                        | Base URL of API testing target. |
 | `FUZZAPI_CONFIG`                                            | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/276395) in GitLab 13.12, replaced with default `.gitlab/gitlab-api-fuzzing-config.yml`. API Fuzzing configuration file. |

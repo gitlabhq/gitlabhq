@@ -17,7 +17,7 @@ export const initExpiresAtField = () => {
   }
 
   const { expiresAt: inputAttrs } = parseRailsFormFields(el);
-  const { maxDate } = el.dataset;
+  const { minDate, maxDate } = el.dataset;
 
   return new Vue({
     el,
@@ -25,6 +25,7 @@ export const initExpiresAtField = () => {
       return h(ExpiresAtField, {
         props: {
           inputAttrs,
+          minDate: minDate ? new Date(minDate) : undefined,
           maxDate: maxDate ? new Date(maxDate) : undefined,
         },
       });

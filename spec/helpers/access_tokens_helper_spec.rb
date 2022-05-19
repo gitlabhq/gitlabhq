@@ -64,4 +64,12 @@ RSpec.describe AccessTokensHelper do
       }.to_json)
     end
   end
+
+  describe '#expires_at_field_data', :freeze_time do
+    it 'returns expected hash' do
+      expect(helper.expires_at_field_data).to eq({
+        min_date: 1.day.from_now.iso8601
+      })
+    end
+  end
 end

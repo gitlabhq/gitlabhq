@@ -29,7 +29,9 @@ module AccessTokensHelper
   end
 
   def expires_at_field_data
-    {}
+    {
+      min_date: 1.day.from_now.iso8601
+    }
   end
 end
 

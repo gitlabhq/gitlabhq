@@ -21,16 +21,16 @@ export default {
       required: false,
       default: () => ({}),
     },
+    minDate: {
+      type: Date,
+      required: false,
+      default: () => new Date(),
+    },
     maxDate: {
       type: Date,
       required: false,
       default: () => null,
     },
-  },
-  data() {
-    return {
-      minDate: new Date(),
-    };
   },
 };
 </script>

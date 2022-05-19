@@ -989,7 +989,7 @@ input {
 .context-header {
   position: relative;
   margin-right: 2px;
-  width: 220px;
+  width: 256px;
 }
 .context-header > a,
 .context-header > button {
@@ -1019,7 +1019,7 @@ input {
 }
 @media (min-width: 1200px) {
   .page-with-contextual-sidebar {
-    padding-left: 220px;
+    padding-left: 256px;
   }
 }
 @media (min-width: 768px) {
@@ -1032,7 +1032,7 @@ input {
   bottom: 0;
   left: 0;
   z-index: 600;
-  width: 220px;
+  width: 256px;
   top: var(--header-height, 48px);
   background-color: #303030;
   transform: translate3d(0, 0, 0);
@@ -1105,7 +1105,7 @@ input {
 }
 @media (max-width: 767.98px) {
   .nav-sidebar {
-    left: -220px;
+    left: -256px;
   }
 }
 .nav-sidebar .nav-icon-container {
@@ -1405,7 +1405,7 @@ input {
   border-top: 1px solid #404040;
   position: fixed;
   bottom: 0;
-  width: 220px;
+  width: 256px;
 }
 .toggle-sidebar-button .collapse-text,
 .toggle-sidebar-button .icon-chevron-double-lg-left,
